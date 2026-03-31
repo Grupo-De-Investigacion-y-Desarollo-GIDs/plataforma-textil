@@ -52,13 +52,6 @@ const personalInfoSchema = z
 const tallerInfoSchema = z.object({
   nombreTaller: z.string().min(1, 'El nombre del taller es obligatorio'),
   cuit: z.string().refine(validarCuit, 'El CUIT debe tener 11 dígitos (ej: 20-12345678-9)'),
-  ubicacion: z.string().min(1, 'La ubicación es obligatoria'),
-  capacidadMensual: z
-    .string()
-    .min(1, 'La capacidad mensual es obligatoria')
-    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
-      message: 'Ingresá un número válido mayor a 0',
-    }),
 })
 
 const marcaInfoSchema = z.object({
@@ -266,11 +259,11 @@ function StepTallerInfo({
   defaultValues,
 }: {
   onSubmit: (data: TallerInfoData) => void
-  onBack: () => void
+  onBack: (current: Partial<TallerInfoData>) => void
   loading: boolean
   defaultValues?: Partial<TallerInfoData>
 }) {
-  const { register, handleSubmit, formState: { errors } } = useForm<TallerInfoData>({
+  const { register, handleSubmit, getValues, formState: { errors } } = useForm<TallerInfoData>({
     resolver: zodResolver(tallerInfoSchema),
     defaultValues,
   })
@@ -305,29 +298,12 @@ function StepTallerInfo({
           <Hash className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
 
-        <div className="relative">
-          <Input
-            label="Ubicación"
-            placeholder="Ciudad, Provincia"
-            error={errors.ubicacion?.message}
-            {...register('ubicacion')}
-          />
-          <MapPin className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
-        </div>
-
-        <div className="relative">
-          <Input
-            label="Capacidad mensual (prendas)"
-            type="number"
-            placeholder="500"
-            error={errors.capacidadMensual?.message}
-            {...register('capacidadMensual')}
-          />
-          <Factory className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
-        </div>
+        <p className="text-xs text-gray-400">
+          Ubicación y capacidad de producción se completan en tu perfil de taller.
+        </p>
 
         <div className="flex gap-3 pt-2">
-          <Button type="button" variant="secondary" onClick={onBack} icon={<ArrowLeft className="w-4 h-4" />} className="flex-1">
+          <Button type="button" variant="secondary" onClick={() => onBack(getValues())} icon={<ArrowLeft className="w-4 h-4" />} className="flex-1">
             Atrás
           </Button>
           <Button type="submit" loading={loading} icon={<Check className="w-4 h-4" />} className="flex-1">
@@ -348,11 +324,11 @@ function StepMarcaInfo({
   defaultValues,
 }: {
   onSubmit: (data: MarcaInfoData) => void
-  onBack: () => void
+  onBack: (current: Partial<MarcaInfoData>) => void
   loading: boolean
   defaultValues?: Partial<MarcaInfoData>
 }) {
-  const { register, handleSubmit, formState: { errors } } = useForm<MarcaInfoData>({
+  const { register, handleSubmit, getValues, formState: { errors } } = useForm<MarcaInfoData>({
     resolver: zodResolver(marcaInfoSchema),
     defaultValues,
   })
@@ -411,7 +387,7 @@ function StepMarcaInfo({
         />
 
         <div className="flex gap-3 pt-2">
-          <Button type="button" variant="secondary" onClick={onBack} icon={<ArrowLeft className="w-4 h-4" />} className="flex-1">
+          <Button type="button" variant="secondary" onClick={() => onBack(getValues())} icon={<ArrowLeft className="w-4 h-4" />} className="flex-1">
             Atrás
           </Button>
           <Button type="submit" loading={loading} icon={<Check className="w-4 h-4" />} className="flex-1">
@@ -475,8 +451,6 @@ export default function RegistroPage() {
           tallerData: {
             nombre: data.nombreTaller,
             cuit: data.cuit,
-            ubicacion: data.ubicacion,
-            capacidadMensual: Number(data.capacidadMensual),
           },
         }),
       })
@@ -488,7 +462,8 @@ export default function RegistroPage() {
         return
       }
       router.push('/login?registered=true')
-    } catch {
+    } catch (err) {
+      console.error('Error en registro taller:', err)
       setError('Ocurrió un error inesperado. Intentá de nuevo.')
       setLoading(false)
     }
@@ -526,7 +501,8 @@ export default function RegistroPage() {
         return
       }
       router.push('/login?registered=true')
-    } catch {
+    } catch (err) {
+      console.error('Error en registro marca:', err)
       setError('Ocurrió un error inesperado. Intentá de nuevo.')
       setLoading(false)
     }
@@ -555,7 +531,7 @@ export default function RegistroPage() {
       {step === 3 && role === 'TALLER' && (
         <StepTallerInfo
           onSubmit={handleTallerSubmit}
-          onBack={() => setStep(2)}
+          onBack={(current) => { setTallerInfo(prev => ({ ...prev, ...current } as TallerInfoData)); setStep(2) }}
           loading={loading}
           defaultValues={tallerInfo ?? undefined}
         />
@@ -564,7 +540,7 @@ export default function RegistroPage() {
       {step === 3 && role === 'MARCA' && (
         <StepMarcaInfo
           onSubmit={handleMarcaSubmit}
-          onBack={() => setStep(2)}
+          onBack={(current) => { setMarcaInfo(prev => ({ ...prev, ...current } as MarcaInfoData)); setStep(2) }}
           loading={loading}
           defaultValues={marcaInfo ?? undefined}
         />

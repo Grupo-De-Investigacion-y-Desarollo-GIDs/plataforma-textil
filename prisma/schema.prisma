@@ -202,6 +202,7 @@ model Taller {
   denuncias             Denuncia[]
   progresoCapacitacion  ProgresoCapacitacion[]
   certificados          Certificado[]
+  intentosEvaluacion    IntentoEvaluacion[]
 
   @@map("talleres")
 }
@@ -428,10 +429,11 @@ model Coleccion {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  videos       Video[]
-  evaluacion   Evaluacion?
-  certificados Certificado[]
-  progreso     ProgresoCapacitacion[]
+  videos             Video[]
+  evaluacion         Evaluacion?
+  certificados       Certificado[]
+  progreso           ProgresoCapacitacion[]
+  intentosEvaluacion IntentoEvaluacion[]
 
   @@map("colecciones")
 }
@@ -488,6 +490,21 @@ model ProgresoCapacitacion {
 
   @@unique([tallerId, coleccionId])
   @@map("progreso_capacitacion")
+}
+
+model IntentoEvaluacion {
+  id          String   @id @default(cuid())
+  tallerId    String
+  coleccionId String
+  respuestas  Json
+  calificacion Int
+  aprobado    Boolean
+  createdAt   DateTime @default(now())
+
+  taller    Taller    @relation(fields: [tallerId], references: [id], onDelete: Cascade)
+  coleccion Coleccion @relation(fields: [coleccionId], references: [id], onDelete: Cascade)
+
+  @@map("intentos_evaluacion")
 }
 
 // ============================================

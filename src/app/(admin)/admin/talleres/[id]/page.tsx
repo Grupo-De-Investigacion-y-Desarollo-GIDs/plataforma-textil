@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/lib/auth'
 import { aplicarNivel } from '@/lib/nivel'
+import { sendEmail, buildDocAprobadoEmail, buildDocRechazadoEmail } from '@/lib/email'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -54,7 +55,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
   async function aprobarValidacion(formData: FormData) {
     'use server'
     const validacionId = formData.get('validacionId') as string
-    await prisma.validacion.update({
+    const validacion = await prisma.validacion.update({
       where: { id: validacionId },
       data: { estado: 'COMPLETADO' },
     })
@@ -66,6 +67,10 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
         detalles: { tallerId: id, validacionId },
       },
     })
+    sendEmail({
+      to: taller!.user.email,
+      ...buildDocAprobadoEmail({ nombreTaller: taller!.nombre, tipoDoc: validacion.tipo }),
+    }).catch(() => {})
     redirect(`/admin/talleres/${id}?tab=formalizacion`)
   }
 
@@ -73,7 +78,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
     'use server'
     const validacionId = formData.get('validacionId') as string
     const motivo = formData.get('motivo') as string
-    await prisma.validacion.update({
+    const validacion = await prisma.validacion.update({
       where: { id: validacionId },
       data: { estado: 'RECHAZADO', detalle: motivo || 'Documentación insuficiente' },
     })
@@ -85,6 +90,10 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
         detalles: { tallerId: id, validacionId, motivo },
       },
     })
+    sendEmail({
+      to: taller!.user.email,
+      ...buildDocRechazadoEmail({ nombreTaller: taller!.nombre, tipoDoc: validacion.tipo, motivo: motivo || 'Documentación insuficiente' }),
+    }).catch(() => {})
     redirect(`/admin/talleres/${id}?tab=formalizacion`)
   }
 

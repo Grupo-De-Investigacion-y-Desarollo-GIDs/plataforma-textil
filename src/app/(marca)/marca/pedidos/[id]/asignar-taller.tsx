@@ -4,8 +4,6 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Modal } from '@/components/ui/modal'
 
-const PROCESOS = ['Corte', 'Costura', 'Bordado', 'Estampado', 'Terminación', 'Lavado', 'Planchado']
-
 const nivelColor: Record<string, string> = {
   BRONCE: 'bg-amber-100 text-amber-800',
   PLATA: 'bg-gray-100 text-gray-700',
@@ -33,7 +31,9 @@ export function AsignarTaller({ pedidoId }: AsignarTallerProps) {
   const [cargando, setCargando] = useState(false)
   const [q, setQ] = useState('')
   const [tallerSeleccionado, setTallerSeleccionado] = useState<Taller | null>(null)
-  const [proceso, setProceso] = useState(PROCESOS[0])
+  const [procesos, setProcesos] = useState<{ id: string; nombre: string }[]>([])
+  const [procesoId, setProcesoId] = useState<string>('')
+  const [proceso, setProceso] = useState('')
   const [precio, setPrecio] = useState('')
   const [plazo, setPlazo] = useState('')
   const [guardando, setGuardando] = useState(false)
@@ -52,16 +52,29 @@ export function AsignarTaller({ pedidoId }: AsignarTallerProps) {
     }
   }
 
-  function abrirModal() {
+  async function abrirModal() {
     setStep('buscar')
     setTallerSeleccionado(null)
     setQ('')
     setTalleres([])
+    setProcesos([])
+    setProcesoId('')
+    setProceso('')
     setPrecio('')
     setPlazo('')
     setError('')
     setOpen(true)
-    buscarTalleres('')
+
+    const [, catalogoRes] = await Promise.all([
+      buscarTalleres(''),
+      fetch('/api/catalogos').then((r) => r.json()),
+    ])
+    const lista: { id: string; nombre: string }[] = catalogoRes.procesos ?? []
+    setProcesos(lista)
+    if (lista.length > 0) {
+      setProcesoId(lista[0].id)
+      setProceso(lista[0].nombre)
+    }
   }
 
   function seleccionarTaller(taller: Taller) {
@@ -86,6 +99,7 @@ export function AsignarTaller({ pedidoId }: AsignarTallerProps) {
           moId,
           tallerId: tallerSeleccionado.id,
           proceso,
+          procesoId: procesoId || undefined,
           estado: 'PENDIENTE',
           precio: Number(precio),
           plazoDias: plazo ? Number(plazo) : null,
@@ -171,12 +185,15 @@ export function AsignarTaller({ pedidoId }: AsignarTallerProps) {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Proceso *</label>
                 <select
-                  value={proceso}
-                  onChange={(e) => setProceso(e.target.value)}
+                  value={procesoId}
+                  onChange={(e) => {
+                    const sel = procesos.find((p) => p.id === e.target.value)
+                    if (sel) { setProcesoId(sel.id); setProceso(sel.nombre) }
+                  }}
                   className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue"
                 >
-                  {PROCESOS.map((p) => (
-                    <option key={p} value={p}>{p}</option>
+                  {procesos.map((p) => (
+                    <option key={p.id} value={p.id}>{p.nombre}</option>
                   ))}
                 </select>
               </div>

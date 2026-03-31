@@ -55,6 +55,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         pedidoId: id,
         tallerId: body.tallerId,
         proceso: body.proceso,
+        procesoId: body.procesoId ?? null,
         estado: body.estado,
         precio: body.precio,
         plazoDias: body.plazoDias,

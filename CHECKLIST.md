@@ -12,8 +12,8 @@ Prioridad: P0 = bloqueante | P1 = critico | P2 = importante | P3 = deseable
 **Login** `/login` — **OK**
 Form con email + password, validacion Zod, signIn('credentials') via NextAuth. Muestra banner verde si viene de registro (?registered=true). Maneja callbackUrl para redirect post-login. Bug menor: password min 6 en frontend pero API exige min 8.
 
-**Registro** `/registro` — **PARCIAL** — P1
-Wizard de 3 pasos implementado en UI (contradice CLAUDE.md que dice "1 paso"): Paso 1 elige rol (TALLER/MARCA), Paso 2 datos personales (nombre, email, password, phone), Paso 3 datos de taller o marca (nombre, CUIT, ubicacion, capacidad/tipo). POST a /api/auth/registro crea User + Taller/Marca en transaccion. Falta: CUIT no valida formato (acepta cualquier string), ubicacion es texto libre sin selector de provincia/ciudad, no hay checkbox terminos y condiciones, password min 6 en frontend vs 8 en API causa error confuso, si se vuelve del paso 3 al 2 y se avanza se pierden los datos del paso 3.
+**Registro** `/registro` — **OK** ✅ Sprint 2 (S2-11)
+Wizard de 3 pasos: Paso 1 elige rol (TALLER/MARCA), Paso 2 datos personales, Paso 3 datos de taller o marca. POST a /api/auth/registro crea User + Taller/Marca en transaccion. CUIT validado con regex (11 digitos, acepta XX-XXXXXXXX-X o sin guiones). Password min 8 alineado con API. Checkbox terminos obligatorio con Zod refine. Datos del paso 2 se preservan al volver del paso 3 via defaultValues. Pendiente: ubicacion sigue siendo texto libre (sin selector provincia/ciudad).
 
 **Registro Paso 2 (CUIT)** — **FALTA** — P1
 El wireframe MVP pide un paso dedicado a verificacion CUIT contra ARCA. Actualmente CUIT se pide como texto libre en paso 3. Requiere integracion ARCA.
@@ -37,14 +37,14 @@ Overlay/wizard de onboarding para primer login. No hay implementacion. Necesitar
 
 ### 1.2 Taller
 
-**Dashboard** `/taller` — **PARCIAL** — P1
-Muestra nombre, nivel, puntaje y capacidad mensual desde Prisma real. Pero es solo lectura estatica — no hay pedidos recientes, alertas, actividad, progreso hacia siguiente nivel, ni acciones rapidas. Si el taller no tiene registro muestra datos fake (fallback "BRONCE", puntaje 0) en vez de redirigir a completar perfil. Esencialmente un stub con 3 stat cards.
+**Dashboard** `/taller` — **OK** ✅ Sprint 2 (S2-08)
+Hub completo: % formalizacion (ring SVG real), nivel y puntaje, pedidos activos (ultimas 3 ordenes con link a detalle), capacitaciones recomendadas con progreso, banner contextual segun estado, acciones rapidas. Las tarjetas de pedidos son Link a /taller/pedidos/[id].
 
 **Mi perfil** `/taller/perfil` — **OK**
 Carga datos completos del taller desde Prisma (con procesos, prendas, maquinaria, certificaciones). Calcula completitud del perfil (10 campos, muestra %). Muestra ProgressRing real. Si no hay taller creado, muestra empty state con link a /taller/perfil/completar. Solo lectura — el boton "Editar" redirige al wizard. No hay edicion inline ni upload de avatar/foto.
 
-**Mi formalizacion** `/taller/formalizacion` — **PARCIAL** — P1
-Carga validaciones reales desde Prisma y las mapea contra 8 tipos hardcodeados. Progress ring y conteo completadas/total son reales. Badges de estado por item (completado/pendiente/vencido/rechazado) funcionan. PERO: el boton "Subir documento" no tiene onClick ni action — es un boton muerto. No hay input type="file", no hay upload presigned URL, no hay integracion con storage. El taller no puede hacer nada desde esta pagina.
+**Mi formalizacion** `/taller/formalizacion` — **OK** ✅ Sprint 1/2 (S2-03)
+Carga validaciones reales. Progress ring real. UploadButton (upload-button.tsx) conectado a POST /api/validaciones/[id]/upload: abre file picker, valida MIME/tamano, sube a Supabase Storage, actualiza estado a PENDIENTE, recarga pagina. Solo disponible en estado NO_INICIADO o RECHAZADO.
 
 **Academia colecciones** `/taller/aprender` — **OK**
 Lista real de colecciones desde Prisma (donde activa=true). Muestra conteo de videos, progreso real (ProgresoCapacitacion), certificados obtenidos. Botones "Empezar"/"Continuar"/"Revisar" dinamicos segun estado. Stats cards (cursos, videos, certificados) desde datos reales.
@@ -53,7 +53,10 @@ Lista real de colecciones desde Prisma (donde activa=true). Muestra conteo de vi
 Server component carga coleccion real con videos ordenados y evaluacion. AcademiaCliente (client): iframe YouTube embed real, lista de videos clickeable, marcar visto via POST /api/colecciones/[id]/progreso (upsert en BD), quiz/evaluacion via POST /api/colecciones/[id]/evaluacion (corrige respuestas, genera certificado si aprueba con codigo unico). Muestra estado certificado si ya existe. Progreso pre-cargado desde BD.
 
 **Pedidos recibidos** `/taller/pedidos` — **OK**
-Lista real de OrdenManufactura asignadas al taller desde Prisma. 4 stat cards (total, pendientes, en ejecucion, completadas) calculadas de datos reales. Cada orden muestra moId, pedido, marca, proceso, precio, barra de progreso y badge de estado. Solo lectura — no hay detalle clickeable ni forma de actualizar progreso/estado. Falta acentos en "En ejecucion".
+Lista real de OrdenManufactura asignadas al taller desde Prisma. 4 stat cards reales. Cada orden es Link clickeable a /taller/pedidos/[id].
+
+**Detalle orden** `/taller/pedidos/[id]` — **OK** ✅ Sprint 2 (S2-05)
+Auth + ownership check. Muestra detalle pedido y orden (prenda, cantidad, proceso, precio, plazo, progreso). OrdenActions: acepta/rechaza si PENDIENTE, actualiza progreso con slider o marca completado si EN_EJECUCION. Card contacto marca con boton WhatsApp (wa.me con mensaje pre-armado). Banner verde si COMPLETADO.
 
 **Completar perfil wizard** `/taller/perfil/completar` — **OK** — P1
 Wizard de 14 pasos (indices 0-13): bienvenida, maquinaria, equipo, experiencia, organizacion, espacio, sam, sam-quiz, eficiencia, resultado, gestion, procesos, prendas, resumen.
@@ -81,8 +84,8 @@ Verifica ownership (pedido.marcaId === marca.id). Stat grid: unidades, progreso 
 **Mi perfil marca** `/marca/perfil` — **OK**
 Server Action updateMarca actualiza nombre, tipo, ubicacion, website, frecuenciaCompra, volumenMensual. Stats read-only: CUIT, pedidos, rating. Funciona pero no da feedback visual despues de guardar (sin toast ni banner success). Falla silenciosa si nombre esta vacio.
 
-**Perfil publico marca** — **FALTA** — P2
-Como los talleres ven el perfil de una marca. No existe.
+**Perfil publico marca** `/perfil-marca/[id]` — **OK** ✅ Sprint 2 (S2-10)
+Pagina publica sin auth. Avatar con iniciales, nombre, ubicacion, website. 3 stats (rating, pedidos, tipo). Card "Sobre la marca": tipo, ubicacion, volumen, frecuencia, CUIT verificado, fecha de alta. Card "Pedidos recientes": ultimos 5 sin montos (tipoPrenda, cantidad, estado, fecha). Boton WhatsApp si tiene phone. Ruta agregada a publicRoutes en middleware.
 
 ---
 
@@ -373,22 +376,23 @@ lib/maps.ts geocoding. Mapa embed en perfil publico taller. Env: GOOGLE_MAPS_API
 
 ## 5. SCHEMA / BASE DE DATOS
 
-**24 modelos existentes:** User, Account, Session, VerificationToken, Taller, TallerProceso, TallerPrenda, Maquinaria, TallerCertificacion, Marca, ProcesoProductivo, TipoPrenda, PrendaProceso, Pedido, OrdenManufactura, EscrowHito, Validacion, TipoDocumento, Coleccion, Video, Evaluacion, Certificado, ProgresoCapacitacion, Auditoria, AccionCorrectiva, Denuncia, Notificacion, ConfiguracionSistema, LogActividad.
+**23 modelos existentes (Sprint 2: -1 EscrowHito):** User, Account, Session, VerificationToken, Taller, TallerProceso, TallerPrenda, Maquinaria, TallerCertificacion, Marca, ProcesoProductivo, TipoPrenda, PrendaProceso, Pedido, OrdenManufactura, Validacion, TipoDocumento, Coleccion, Video, Evaluacion, Certificado, ProgresoCapacitacion, Auditoria, AccionCorrectiva, Denuncia, Notificacion, ConfiguracionSistema, LogActividad.
 
-**10 enums:** UserRole, NivelTaller, EstadoPedido, EstadoOrdenManufactura, EstadoEscrow, EstadoValidacion, TipoAuditoria, EstadoAuditoria, EstadoDenuncia, CanalNotificacion, EstadoAccionCorrectiva.
+**9 enums (Sprint 2: -1 EstadoEscrow, -ESPERANDO_ENTREGA de EstadoPedido):** UserRole, NivelTaller, EstadoPedido, EstadoOrdenManufactura, EstadoValidacion, TipoAuditoria, EstadoAuditoria, EstadoDenuncia, CanalNotificacion, EstadoAccionCorrectiva.
 
 ### Gaps identificados
 
 | Gap | Prio | Descripcion |
 |-----|------|-------------|
-| VerificationToken sin campo `type` | P1 | No puede distinguir reset password vs verify email |
-| Auditoria.inspectorId sin FK | P2 | String suelto, no relation a User. Sin integridad referencial |
-| Pedido.tipoPrenda es String | P2 | No es FK a TipoPrenda. Denormalizado |
-| OrdenManufactura.proceso es String | P2 | No es FK a ProcesoProductivo. Denormalizado |
-| TipoDocumento sin relacion a Validacion | P2 | Catalogo desconectado de los registros |
+| ~~VerificationToken sin campo `type`~~ | P1 | **RESUELTO** Sprint 2 (S2-01) — campo type String @default("EMAIL_VERIFICATION") |
+| ~~EscrowHito y ESPERANDO_ENTREGA~~ | — | **RESUELTO** Sprint 2 (S2-02) — modelo y enum eliminados (PAGAR fuera del MVP) |
+| ~~Auditoria.inspectorId sin FK~~ | P2 | **RESUELTO** Sprint 2 (S2-04) — @relation("AuditoriaInspector") a User |
+| ~~Pedido.tipoPrenda es String~~ | P2 | **RESUELTO** Sprint 2 (S2-04) — agregado tipoPrendaId FK nullable a TipoPrenda |
+| ~~OrdenManufactura.proceso es String~~ | P2 | **RESUELTO** Sprint 2 (S2-04) — agregado procesoId FK nullable a ProcesoProductivo |
+| ~~TipoDocumento sin relacion a Validacion~~ | P2 | **RESUELTO** Sprint 2 (S2-04) — agregado tipoDocumentoId FK nullable + nombres normalizados a SNAKE_UPPER |
 | Modelo FAQ | P3 | No existe. Necesita: pregunta, respuesta, categoria, orden, activo |
 | Modelo NotaInterna | P3 | Para notas admin en talleres/marcas |
-| Modelo IntentoEvaluacion | P2 | Tracking multiples intentos quiz por taller por coleccion |
+| ~~Modelo IntentoEvaluacion~~ | P2 | **RESUELTO** Sprint 2 (S2-09) — modelo + back-relations en Taller/Coleccion + persist en POST evaluacion |
 | Modelo CampanaNotificacion | P3 | Tracking envio masivo (sent/delivered/opened/clicked) |
 | Relacion MarcaTallerFavorito | P3 | M:M para favoritos |
 | Modelo ESTADO profile | P3 | TALLER tiene Taller, MARCA tiene Marca, ESTADO no tiene perfil |
@@ -474,15 +478,15 @@ No existe ningun test en el proyecto. No hay directorio __tests__, no hay archiv
 
 ---
 
-## RESUMEN GENERAL (actualizado 2026-02-25)
+## RESUMEN GENERAL (actualizado 2026-03-04)
 
 | Categoria | OK | PARCIAL | STUB | FALTA |
 |-----------|-----|---------|------|-------|
-| 1. Pantallas (70) | 21 | 9 | 20 | 20 |
+| 1. Pantallas (70) | 25 | 6 | 20 | 19 |
 | 2. Backend/API (26 rutas + 10 faltantes) | 18 | 4 | 0 | 10 |
 | 3. Integraciones (7) | 0 | 1 | 0 | 6 |
 | 4. Auth/Seguridad (8) | 5 | 1 | 0 | 2 |
-| 5. Schema (12 gaps) | — | 2 | 0 | 10 |
+| 5. Schema (13 gaps, 7 resueltos Sprint 2) | — | 0 | 0 | 6 |
 | 6. UX/Frontend (12) | 2 | 5 | 0 | 5 |
 | 7. Testing (12) | 0 | 0 | 0 | 12 |
 | 8. Deploy/Infra (11) | 5 | 2 | 0 | 4 |
@@ -494,6 +498,7 @@ No existe ningun test en el proyecto. No hay directorio __tests__, no hay archiv
 ## SPRINTS SUGERIDOS
 
 ### Sprint 1 — Seguridad + Flujos criticos — ✅ COMPLETADO (2026-02-25)
+
 1. ~~Corregir auth en APIs expuestas (auditorias, validaciones, denuncias, certificados POST, ordenes)~~ ✅
 2. ~~Agregar ownership checks en PUT (talleres, marcas, pedidos, validaciones)~~ ✅
 3. ~~Password reset completo (API + lib/email.ts + pagina /restablecer/[token])~~ ✅
@@ -503,14 +508,20 @@ No existe ningun test en el proyecto. No hay directorio __tests__, no hay archiv
 7. ~~Motor calculo nivel BRONCE/PLATA/ORO (lib/nivel.ts)~~ ✅
 8. ~~Fix middleware: landing page / accesible sin auth~~ ✅
 
-### Sprint 2 — Integraciones core (SIGUIENTE)
+### Sprint 2 — Integraciones core (Sergio: ✅ COMPLETO — 2026-03-04)
 1. SendGrid: ampliar lib/email.ts con templates (bienvenida, doc aprobado/rechazado, certificado, vencimiento)
 2. ARCA: lib/arca.ts + verificacion CUIT en registro
 3. QR: lib/qr.ts + generacion certificados
 4. ~~Academia detalle: reescribir con datos Prisma reales + progreso + evaluacion~~ ✅ (ya hecho)
 5. ~~Verificar certificado: consumir ?code= URL param + mostrar QR~~ ✅ (ya hecho)
-6. Dashboard taller con datos reales (pedidos recientes, alertas, progreso)
+6. ~~Dashboard taller con datos reales (pedidos recientes, alertas, progreso)~~ ✅ S2-08 — tarjetas pedidos son Link a /taller/pedidos/[id], mostrando moId
 7. Notificaciones: fix userId validation contra session
+8. ~~Schema: VerificationToken.type, EscrowHito removido, FKs normalizadas~~ ✅ S2-01/02/04
+9. ~~Perfil publico marca /perfil-marca/[id] (sin auth, con WhatsApp)~~ ✅ S2-10
+10. ~~Detalle orden /taller/pedidos/[id]: card contacto WhatsApp marca~~ ✅ S2-05
+11. ~~Fix registro: validar CUIT (11 digitos), checkbox terminos, persistir datos entre pasos~~ ✅ S2-11 (ya committeado)
+12. ~~Schema IntentoEvaluacion + integrar en POST evaluacion~~ ✅ S2-09
+13. ~~Reemplazar procesos hardcodeados en asignar-taller por catalogo BD~~ ✅ S2-12
 
 ### Sprint 3 — Admin funcional
 1. ~~Admin talleres/[id]: cargar datos reales + aprobar/rechazar~~ ✅ (ya hecho)

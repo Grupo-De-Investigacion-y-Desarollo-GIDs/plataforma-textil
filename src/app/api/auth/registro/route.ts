@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { Prisma } from '@prisma/client'
 import { logActividad } from '@/lib/log'
+import { sendEmail, buildBienvenidaEmail } from '@/lib/email'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 
@@ -95,6 +96,10 @@ export async function POST(req: NextRequest) {
     })
 
     logActividad('AUTH_REGISTRO', user.id, { email: data.email, role: data.role })
+
+    // Email bienvenida (fire-and-forget, no bloquea la respuesta)
+    const nombre = data.name || data.nombre || data.email
+    sendEmail({ to: data.email, ...buildBienvenidaEmail({ nombre, role: data.role }) }).catch(() => {})
 
     return NextResponse.json(user, { status: 201 })
   } catch (error) {
