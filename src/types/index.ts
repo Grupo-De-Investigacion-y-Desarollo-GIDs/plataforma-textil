@@ -1,0 +1,5 @@
+export type UserRole = 'TALLER' | 'MARCA' | 'ESTADO' | 'ADMIN'
+export type NivelTaller = 'BRONCE' | 'PLATA' | 'ORO'
+export type EstadoPedido = 'BORRADOR' | 'EN_EJECUCION' | 'COMPLETADO' | 'CANCELADO'
+export type EstadoOrdenManufactura = 'PENDIENTE' | 'EN_EJECUCION' | 'COMPLETADO' | 'CANCELADO'
+export type EstadoValidacion = 'NO_INICIADO' | 'PENDIENTE' | 'COMPLETADO' | 'VENCIDO' | 'RECHAZADO'

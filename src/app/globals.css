@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Brand Colors */
+  --color-brand-blue: #1e2dbe;
+  --color-brand-red: #fa3c4b;
+  --color-brand-bg-light: #ebf5fd;
+  --color-brand-topbar: #161d8f;
+  --color-brand-tabnav: #1a27a8;
+
+  /* Status Colors */
+  --color-status-success: #22c55e;
+  --color-status-warning: #f97316;
+  --color-status-error: #ef4444;
+  --color-status-muted: #9ca3af;
+
+  /* Fonts */
+  --font-sans: 'Noto Sans', sans-serif;
+  --font-overpass: 'Overpass', sans-serif;
+
+  /* Shadows */
+  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  --shadow-card-hover: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+
+  /* Animations */
+  --animate-progress-fill: progress-fill 1s ease-out forwards;
+}
+
+@keyframes progress-fill {
+  0% { stroke-dashoffset: 440; }
+  100% { stroke-dashoffset: var(--progress-offset); }
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s ease-out;
+}
+
+:root {
+  --brand-blue: #1e2dbe;
+  --brand-red: #fa3c4b;
+  --brand-bg-light: #ebf5fd;
+}
+
+body {
+  font-family: 'Noto Sans', sans-serif;
+  background-color: #fff;
+  color: #1e2dbe;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6,
+nav, button, select, input, label {
+  font-family: 'Overpass', sans-serif;
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #1e2dbe; }
+::-webkit-scrollbar-thumb:hover { background: #fa3c4b; }
