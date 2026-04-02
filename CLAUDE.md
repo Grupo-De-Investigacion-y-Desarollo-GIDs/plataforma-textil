@@ -38,7 +38,7 @@ src/
 - Produccion: https://pdt-nine.vercel.app
 - GitHub: https://github.com/sergiandat/textil
 - DB: Supabase (sa-east-1)
-- Env vars en Vercel: DATABASE_URL, DIRECT_URL, NEXTAUTH_SECRET, NEXTAUTH_URL
+- Env vars en Vercel: DATABASE_URL, DIRECT_URL, NEXTAUTH_SECRET, NEXTAUTH_URL, SENDGRID_API_KEY, EMAIL_FROM, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, CUIT_API_URL (pendiente)
 
 ## Decisiones tomadas
 - Middleware separado de Prisma para no exceder 1MB Edge limit
