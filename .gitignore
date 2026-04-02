@@ -37,12 +37,22 @@ dev.err.log
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
+
+# prisma
+prisma/generated
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 
-.vercel
+# excluir del repo de codigo
+*.docx
+PROPUESTA_OIT_WORD.md
+PROPUESTA_OIT.html
+PROPUESTA_OIT_REESTRUCTURADA.md
+imagenes/
+planteos_scrape/
