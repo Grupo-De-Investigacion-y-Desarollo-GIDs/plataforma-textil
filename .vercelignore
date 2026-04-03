@@ -1,0 +1,7 @@
+node_modules
+.git
+.next
+planteos_scrape
+imagenes
+*.docx
+coverage
