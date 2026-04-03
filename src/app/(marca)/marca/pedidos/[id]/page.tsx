@@ -7,8 +7,8 @@ import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import Link from 'next/link'
 import { ArrowLeft, Package, Clock, DollarSign, TrendingUp, CheckCircle } from 'lucide-react'
-import { AsignarTaller } from './asignar-taller'
-import { CancelarPedido } from './cancelar-pedido'
+import { AsignarTaller } from '@/marca/componentes/asignar-taller'
+import { CancelarPedido } from '@/marca/componentes/cancelar-pedido'
 
 const statusVariant: Record<string, 'default' | 'success' | 'warning' | 'error'> = {
   BORRADOR: 'default',
