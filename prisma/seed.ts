@@ -4,9 +4,13 @@ import bcrypt from 'bcryptjs'
 const prisma = new PrismaClient()
 
 async function main() {
-  console.log('Seeding database...')
+  console.log('🌱 Seeding database...')
 
-  // Clean existing data
+  // ============================================
+  // LIMPIEZA (orden inverso a dependencias)
+  // ============================================
+  await prisma.intentoEvaluacion.deleteMany()
+  await prisma.escrowHito.deleteMany()
   await prisma.logActividad.deleteMany()
   await prisma.notificacion.deleteMany()
   await prisma.accionCorrectiva.deleteMany()
@@ -28,202 +32,459 @@ async function main() {
   await prisma.prendaProceso.deleteMany()
   await prisma.tipoPrenda.deleteMany()
   await prisma.procesoProductivo.deleteMany()
+  await prisma.configuracionSistema.deleteMany()
   await prisma.taller.deleteMany()
   await prisma.marca.deleteMany()
   await prisma.session.deleteMany()
   await prisma.account.deleteMany()
   await prisma.user.deleteMany()
 
-  const hashedPassword = await bcrypt.hash('password123', 10)
+  const hash = await bcrypt.hash('pdt2026', 10)
 
   // ============================================
-  // USERS
+  // USUARIOS
   // ============================================
-  const adminUser = await prisma.user.create({
-    data: { email: 'admin@pdt.org.ar', password: hashedPassword, name: 'Administrador PDT', role: 'ADMIN', active: true },
+  const admin = await prisma.user.create({
+    data: { email: 'lucia.fernandez@pdt.org.ar', password: hash, name: 'Lucía Fernández', role: 'ADMIN', phone: '+5491150001001', active: true },
   })
 
-  const tallerUser1 = await prisma.user.create({
-    data: { email: 'cortesur@pdt.org.ar', password: hashedPassword, name: 'Corte Sur SRL', role: 'TALLER', phone: '+5491112345678', active: true },
+  const userBronce = await prisma.user.create({
+    data: { email: 'roberto.gimenez@pdt.org.ar', password: hash, name: 'Roberto Giménez', role: 'TALLER', phone: '+5491143567890', active: true },
   })
 
-  const tallerUser2 = await prisma.user.create({
-    data: { email: 'coop8marzo@pdt.org.ar', password: hashedPassword, name: 'Coop. Costura 8 de Marzo', role: 'TALLER', phone: '+5491198765432', active: true },
+  const userPlata = await prisma.user.create({
+    data: { email: 'graciela.sosa@pdt.org.ar', password: hash, name: 'Graciela Sosa', role: 'TALLER', phone: '+5491154321098', active: true },
   })
 
-  const tallerUser3 = await prisma.user.create({
-    data: { email: 'bluedenim@pdt.org.ar', password: hashedPassword, name: 'Lavandería BlueDenim', role: 'TALLER', active: true },
+  const userOro = await prisma.user.create({
+    data: { email: 'carlos.mendoza@pdt.org.ar', password: hash, name: 'Carlos Mendoza', role: 'TALLER', phone: '+5491167890123', active: true },
   })
 
-  const marcaUser1 = await prisma.user.create({
-    data: { email: 'urbano@pdt.org.ar', password: hashedPassword, name: 'Urbano Kids', role: 'MARCA', active: true },
+  const userMarcaChica = await prisma.user.create({
+    data: { email: 'valentina.ramos@pdt.org.ar', password: hash, name: 'Valentina Ramos', role: 'MARCA', phone: '+5491178901234', active: true },
   })
 
-  const marcaUser2 = await prisma.user.create({
-    data: { email: 'consciente@pdt.org.ar', password: hashedPassword, name: 'Marca Consciente', role: 'MARCA', active: true },
+  const userMarcaMediana = await prisma.user.create({
+    data: { email: 'martin.echevarria@pdt.org.ar', password: hash, name: 'Martín Echevarría', role: 'MARCA', phone: '+5491189012345', active: true },
   })
 
-  const estadoUser = await prisma.user.create({
-    data: { email: 'estado@pdt.org.ar', password: hashedPassword, name: 'Inspector OIT', role: 'ESTADO', active: true },
+  await prisma.user.create({
+    data: { email: 'anabelen.torres@pdt.org.ar', password: hash, name: 'Ana Belén Torres', role: 'ESTADO', phone: '+5491190123456', active: true },
   })
+
+  console.log('  ✓ 7 usuarios creados')
 
   // ============================================
-  // PROCESOS PRODUCTIVOS
+  // PROCESOS PRODUCTIVOS (5)
   // ============================================
-  const procesos = await Promise.all([
-    prisma.procesoProductivo.create({ data: { nombre: 'Corte', descripcion: 'Corte industrial de tela con cortadora vertical o CNC', maquinaria: ['Cortadora vertical', 'Mesa de corte', 'CNC'], tiempoEstimado500u: '2-3 días' } }),
-    prisma.procesoProductivo.create({ data: { nombre: 'Confección', descripcion: 'Costura y armado de la prenda', maquinaria: ['Máquina recta', 'Overlock', 'Botonera', 'Ojaladora'], tiempoEstimado500u: '5-7 días' } }),
-    prisma.procesoProductivo.create({ data: { nombre: 'Lavandería', descripcion: 'Lavado industrial', maquinaria: ['Lavadora industrial', 'Secadero', 'Centrífuga'], tiempoEstimado500u: '2-3 días' } }),
-    prisma.procesoProductivo.create({ data: { nombre: 'Desgaste', descripcion: 'Efectos de desgaste/roturas en jeans', maquinaria: ['Lijadora', 'Cepillo industrial'], tiempoEstimado500u: '2-3 días' } }),
-    prisma.procesoProductivo.create({ data: { nombre: 'Acabado', descripcion: 'Control final, etiquetado, embolsado', maquinaria: ['Mesa de revisión', 'Etiquetadora'], tiempoEstimado500u: '1-2 días' } }),
-    prisma.procesoProductivo.create({ data: { nombre: 'Estampado', descripcion: 'Estampado serigráfico o digital', maquinaria: ['Mesa de serigrafía', 'Impresora textil'], tiempoEstimado500u: '2-3 días' } }),
-    prisma.procesoProductivo.create({ data: { nombre: 'Bordado', descripcion: 'Bordado manual o industrial', maquinaria: ['Bordadora programable'], tiempoEstimado500u: '3-4 días' } }),
-    prisma.procesoProductivo.create({ data: { nombre: 'Sublimado', descripcion: 'Estampado por calor para ropa deportiva', maquinaria: ['Plancha de sublimación', 'Impresora'], tiempoEstimado500u: '2-3 días' } }),
+  const [pCorte, pConfeccion, pLavanderia, pEstampado, pAcabado] = await Promise.all([
+    prisma.procesoProductivo.create({
+      data: { nombre: 'Corte', descripcion: 'Corte industrial de tela con cortadora vertical, circular o CNC. Incluye tizado y tendido.', maquinaria: ['Cortadora vertical', 'Cortadora circular', 'Mesa de corte', 'CNC'], tiempoEstimado500u: '2-3 días' },
+    }),
+    prisma.procesoProductivo.create({
+      data: { nombre: 'Confección', descripcion: 'Costura y armado completo de la prenda. Incluye unión de piezas, cierres, botones y ojales.', maquinaria: ['Máquina recta industrial', 'Overlock 5 hilos', 'Collaretera', 'Botonera', 'Ojaladora'], tiempoEstimado500u: '5-7 días' },
+    }),
+    prisma.procesoProductivo.create({
+      data: { nombre: 'Lavandería industrial', descripcion: 'Lavado, suavizado y tratamientos especiales (stone wash, enzyme wash, blanqueo). Para jeans y prendas teñidas.', maquinaria: ['Lavadora industrial 50kg', 'Centrífuga', 'Secadero rotativo', 'Caldera'], tiempoEstimado500u: '2-3 días' },
+    }),
+    prisma.procesoProductivo.create({
+      data: { nombre: 'Estampado', descripcion: 'Aplicación de diseños sobre tela mediante serigrafía, sublimación o DTF (Direct to Film).', maquinaria: ['Pulpo serigráfico 6 colores', 'Plancha de sublimación', 'Impresora DTF'], tiempoEstimado500u: '2-4 días' },
+    }),
+    prisma.procesoProductivo.create({
+      data: { nombre: 'Acabado y control de calidad', descripcion: 'Revisión final, planchado, etiquetado, doblado y embolsado. Control de medidas y defectos.', maquinaria: ['Mesa de revisión', 'Plancha industrial', 'Etiquetadora', 'Detector de agujas'], tiempoEstimado500u: '1-2 días' },
+    }),
   ])
 
+  console.log('  ✓ 5 procesos productivos')
+
   // ============================================
-  // TIPOS DE PRENDA
+  // TIPOS DE PRENDA (5)
   // ============================================
-  const prendas = await Promise.all([
-    prisma.tipoPrenda.create({ data: { nombre: 'Jean/Vaquero', precioReferencia: 1700, variantes: ['Clásico', 'Roturas', 'Stone wash', 'Slim fit'] } }),
-    prisma.tipoPrenda.create({ data: { nombre: 'Remera', precioReferencia: 900, variantes: ['Lisa', 'Estampada', 'Bordada', 'Cuello V'] } }),
-    prisma.tipoPrenda.create({ data: { nombre: 'Camisa', precioReferencia: 1500, variantes: ['Manga corta', 'Manga larga', 'Formal'] } }),
-    prisma.tipoPrenda.create({ data: { nombre: 'Pantalón', precioReferencia: 1600, variantes: ['Vestir', 'Casual', 'Deportivo'] } }),
-    prisma.tipoPrenda.create({ data: { nombre: 'Buzo/Sweater', precioReferencia: 1800, variantes: ['Con capucha', 'Sin capucha', 'Cuello alto'] } }),
-    prisma.tipoPrenda.create({ data: { nombre: 'Ropa Deportiva', precioReferencia: 1200, variantes: ['Remera técnica', 'Calza', 'Short', 'Conjunto'] } }),
+  const [prJean, prRemera, prCamisa, prPantalon, prBuzo] = await Promise.all([
+    prisma.tipoPrenda.create({ data: { nombre: 'Jean/Vaquero', precioReferencia: 1700, variantes: ['Clásico', 'Slim fit', 'Roturas', 'Mom jean'] } }),
+    prisma.tipoPrenda.create({ data: { nombre: 'Remera', precioReferencia: 900, variantes: ['Lisa', 'Estampada', 'Oversize', 'Cuello V'] } }),
+    prisma.tipoPrenda.create({ data: { nombre: 'Camisa', precioReferencia: 1500, variantes: ['Manga corta', 'Manga larga', 'Leñadora'] } }),
+    prisma.tipoPrenda.create({ data: { nombre: 'Pantalón de vestir', precioReferencia: 1600, variantes: ['Pinzado', 'Recto', 'Chino'] } }),
+    prisma.tipoPrenda.create({ data: { nombre: 'Buzo/Hoodie', precioReferencia: 1800, variantes: ['Con capucha', 'Canguro', 'Crop', 'Oversize'] } }),
   ])
 
+  console.log('  ✓ 5 tipos de prenda')
+
   // ============================================
-  // TALLERES
+  // TIPOS DE DOCUMENTO (8)
   // ============================================
-  const taller1 = await prisma.taller.create({
+  const tiposDoc = await Promise.all([
+    prisma.tipoDocumento.create({ data: { nombre: 'CUIT/Monotributo', descripcion: 'Constancia de inscripción en AFIP/ARCA', requerido: true } }),
+    prisma.tipoDocumento.create({ data: { nombre: 'Habilitación municipal', descripcion: 'Habilitación comercial del municipio correspondiente', requerido: true } }),
+    prisma.tipoDocumento.create({ data: { nombre: 'ART', descripcion: 'Póliza de Aseguradora de Riesgos del Trabajo vigente', requerido: true } }),
+    prisma.tipoDocumento.create({ data: { nombre: 'Empleados registrados', descripcion: 'Constancia de alta temprana de empleados en AFIP', requerido: true } }),
+    prisma.tipoDocumento.create({ data: { nombre: 'Habilitación bomberos', descripcion: 'Certificado de prevención contra incendios', requerido: true } }),
+    prisma.tipoDocumento.create({ data: { nombre: 'Plan de seguridad e higiene', descripcion: 'Plan firmado por profesional de SyH matriculado', requerido: true } }),
+    prisma.tipoDocumento.create({ data: { nombre: 'Nómina digital', descripcion: 'Libro de sueldos digital (LSD) o recibos digitales', requerido: true } }),
+    prisma.tipoDocumento.create({ data: { nombre: 'Certificado ambiental', descripcion: 'Aptitud ambiental para establecimientos industriales (opcional)', requerido: false } }),
+  ])
+  const tdMap: Record<string, string> = {}
+  tiposDoc.forEach(t => { tdMap[t.nombre] = t.id })
+
+  console.log('  ✓ 8 tipos de documento')
+
+  // ============================================
+  // TALLER BRONCE — "Taller La Aguja" (Florencio Varela)
+  // Perfil ~40%: datos básicos, sin wizard, pocas validaciones
+  // ============================================
+  const tallerBronce = await prisma.taller.create({
     data: {
-      userId: tallerUser1.id, nombre: 'Corte Sur SRL', cuit: '30-71234567-8', nivel: 'ORO', puntaje: 95, rating: 4.9,
-      ubicacion: 'Avellaneda, AMBA', zona: 'Avellaneda (AMBA)', capacidadMensual: 10000, trabajadoresRegistrados: 12,
-      fundado: 2015, verificadoAfip: true, pedidosCompletados: 47, ontimeRate: 96, retrabajoRate: 2,
+      userId: userBronce.id,
+      nombre: 'Taller La Aguja',
+      cuit: '20-28345672-9',
+      nivel: 'BRONCE',
+      puntaje: 15,
+      rating: 3.2,
+      ubicacion: 'Florencio Varela, Buenos Aires',
+      zona: 'Florencio Varela',
+      descripcion: 'Taller familiar de confección básica. Trabajamos con marcas chicas del sur del conurbano.',
+      capacidadMensual: 800,
+      trabajadoresRegistrados: 3,
+      fundado: 2021,
+      verificadoAfip: true,
+      pedidosCompletados: 4,
+      ontimeRate: 75,
+      retrabajoRate: 8,
     },
   })
 
-  const taller2 = await prisma.taller.create({
-    data: {
-      userId: tallerUser2.id, nombre: 'Coop. Costura 8 de Marzo', cuit: '30-78912345-6', nivel: 'PLATA', puntaje: 78, rating: 4.6,
-      ubicacion: 'La Matanza, AMBA', zona: 'La Matanza (AMBA)', capacidadMensual: 5000, trabajadoresRegistrados: 8,
-      fundado: 2018, verificadoAfip: true, pedidosCompletados: 23, ontimeRate: 92, retrabajoRate: 3,
-    },
-  })
-
-  const taller3 = await prisma.taller.create({
-    data: {
-      userId: tallerUser3.id, nombre: 'Lavandería BlueDenim', cuit: '30-81234567-4', nivel: 'ORO', puntaje: 91, rating: 4.8,
-      ubicacion: 'San Martín, AMBA', zona: 'San Martín (AMBA)', capacidadMensual: 8000, trabajadoresRegistrados: 10,
-      fundado: 2012, verificadoAfip: true, pedidosCompletados: 38, ontimeRate: 95, retrabajoRate: 1,
-    },
-  })
-
-  // Taller-Proceso relations
-  await prisma.tallerProceso.createMany({
-    data: [
-      { tallerId: taller1.id, procesoId: procesos[0].id, precio: 1700 },
-      { tallerId: taller1.id, procesoId: procesos[1].id, precio: 1700 },
-      { tallerId: taller2.id, procesoId: procesos[1].id, precio: 2050 },
-      { tallerId: taller3.id, procesoId: procesos[2].id, precio: 1300 },
-      { tallerId: taller3.id, procesoId: procesos[3].id, precio: 800 },
-    ],
-  })
-
-  // Maquinaria
+  // Bronce: solo 1 proceso, 1 prenda, poca maquinaria
+  await prisma.tallerProceso.create({ data: { tallerId: tallerBronce.id, procesoId: pConfeccion.id, precio: 650 } })
+  await prisma.tallerPrenda.create({ data: { tallerId: tallerBronce.id, prendaId: prRemera.id } })
   await prisma.maquinaria.createMany({
     data: [
-      { tallerId: taller1.id, nombre: 'Cortadora Eastman vertical', cantidad: 1 },
-      { tallerId: taller1.id, nombre: 'Juki recta', cantidad: 5 },
-      { tallerId: taller1.id, nombre: 'Overlock', cantidad: 3 },
-      { tallerId: taller2.id, nombre: 'Recta', cantidad: 4 },
-      { tallerId: taller2.id, nombre: 'Overlock', cantidad: 2 },
-      { tallerId: taller3.id, nombre: 'Lavadora industrial 50kg', cantidad: 1 },
-      { tallerId: taller3.id, nombre: 'Secadero industrial', cantidad: 2 },
+      { tallerId: tallerBronce.id, nombre: 'Recta industrial Juki', cantidad: 2, tipo: 'Costura' },
+      { tallerId: tallerBronce.id, nombre: 'Overlock 3 hilos', cantidad: 1, tipo: 'Costura' },
     ],
   })
+
+  // Bronce: solo CUIT completado
+  await prisma.validacion.createMany({
+    data: [
+      { tallerId: tallerBronce.id, tipo: 'CUIT/Monotributo', tipoDocumentoId: tdMap['CUIT/Monotributo'], estado: 'COMPLETADO', detalle: 'Monotributo categoría D verificado' },
+      { tallerId: tallerBronce.id, tipo: 'Habilitación municipal', tipoDocumentoId: tdMap['Habilitación municipal'], estado: 'NO_INICIADO' },
+      { tallerId: tallerBronce.id, tipo: 'ART', tipoDocumentoId: tdMap['ART'], estado: 'NO_INICIADO' },
+      { tallerId: tallerBronce.id, tipo: 'Empleados registrados', tipoDocumentoId: tdMap['Empleados registrados'], estado: 'NO_INICIADO' },
+    ],
+  })
+
+  console.log('  ✓ Taller BRONCE: Taller La Aguja (Florencio Varela)')
+
+  // ============================================
+  // TALLER PLATA — "Cooperativa Hilos del Sur" (La Matanza)
+  // Perfil ~75%: wizard completo, maquinaria, 1 certificado
+  // ============================================
+  const tallerPlata = await prisma.taller.create({
+    data: {
+      userId: userPlata.id,
+      nombre: 'Cooperativa Hilos del Sur',
+      cuit: '30-71589234-6',
+      nivel: 'PLATA',
+      puntaje: 58,
+      rating: 4.4,
+      ubicacion: 'González Catán, La Matanza',
+      zona: 'La Matanza',
+      descripcion: 'Cooperativa de trabajo textil formada por 6 costureras. Especialidad en confección de jeans y pantalones. Participamos del programa Marca Registrada.',
+      capacidadMensual: 3000,
+      trabajadoresRegistrados: 6,
+      fundado: 2018,
+      verificadoAfip: true,
+      pedidosCompletados: 18,
+      ontimeRate: 88,
+      retrabajoRate: 4,
+      // Wizard completo
+      sam: 18,
+      prendaPrincipal: 'Jean/Vaquero',
+      organizacion: 'linea',
+      metrosCuadrados: 120,
+      areas: ['Corte', 'Costura', 'Planchado', 'Depósito'],
+      experienciaPromedio: 'media',
+      polivalencia: 'parcial',
+      horario: '8',
+      registroProduccion: 'planilla_papel',
+      escalabilidad: 'limitada',
+      paradasFrecuencia: 'ocasional',
+    },
+  })
+
+  // Plata: 2 procesos, 3 prendas
+  await prisma.tallerProceso.createMany({
+    data: [
+      { tallerId: tallerPlata.id, procesoId: pConfeccion.id, precio: 750 },
+      { tallerId: tallerPlata.id, procesoId: pAcabado.id, precio: 300 },
+    ],
+  })
+  await prisma.tallerPrenda.createMany({
+    data: [
+      { tallerId: tallerPlata.id, prendaId: prJean.id },
+      { tallerId: tallerPlata.id, prendaId: prRemera.id },
+      { tallerId: tallerPlata.id, prendaId: prPantalon.id },
+    ],
+  })
+  await prisma.maquinaria.createMany({
+    data: [
+      { tallerId: tallerPlata.id, nombre: 'Recta industrial Brother', cantidad: 4, tipo: 'Costura' },
+      { tallerId: tallerPlata.id, nombre: 'Overlock 5 hilos Siruba', cantidad: 2, tipo: 'Costura' },
+      { tallerId: tallerPlata.id, nombre: 'Botonera Juki', cantidad: 1, tipo: 'Costura' },
+    ],
+  })
+
+  // Plata: 3 validaciones completadas, 1 pendiente
+  await prisma.validacion.createMany({
+    data: [
+      { tallerId: tallerPlata.id, tipo: 'CUIT/Monotributo', tipoDocumentoId: tdMap['CUIT/Monotributo'], estado: 'COMPLETADO', detalle: 'Cooperativa inscripta en INAES y AFIP' },
+      { tallerId: tallerPlata.id, tipo: 'ART', tipoDocumentoId: tdMap['ART'], estado: 'COMPLETADO', detalle: 'Póliza Experta ART vigente hasta 03/2027', fechaVencimiento: new Date('2027-03-15') },
+      { tallerId: tallerPlata.id, tipo: 'Habilitación municipal', tipoDocumentoId: tdMap['Habilitación municipal'], estado: 'COMPLETADO', detalle: 'Habilitación La Matanza expediente 2024-0892' },
+      { tallerId: tallerPlata.id, tipo: 'Empleados registrados', tipoDocumentoId: tdMap['Empleados registrados'], estado: 'PENDIENTE', detalle: 'En trámite — alta temprana de 2 nuevas asociadas' },
+      { tallerId: tallerPlata.id, tipo: 'Habilitación bomberos', tipoDocumentoId: tdMap['Habilitación bomberos'], estado: 'NO_INICIADO' },
+      { tallerId: tallerPlata.id, tipo: 'Plan de seguridad e higiene', tipoDocumentoId: tdMap['Plan de seguridad e higiene'], estado: 'NO_INICIADO' },
+    ],
+  })
+
+  console.log('  ✓ Taller PLATA: Cooperativa Hilos del Sur (La Matanza)')
+
+  // ============================================
+  // TALLER ORO — "Corte Sur SRL" (Avellaneda)
+  // Perfil 100%: todo completo, 3 certificados
+  // ============================================
+  const tallerOro = await prisma.taller.create({
+    data: {
+      userId: userOro.id,
+      nombre: 'Corte Sur SRL',
+      cuit: '30-71234567-8',
+      nivel: 'ORO',
+      puntaje: 92,
+      rating: 4.9,
+      ubicacion: 'Av. Mitre 1847, Avellaneda, Buenos Aires',
+      zona: 'Avellaneda',
+      descripcion: 'Taller de corte y confección con 12 años de trayectoria. Proveedor habitual de marcas nacionales. Certificados en SST y calidad. Capacidad para lotes grandes.',
+      capacidadMensual: 10000,
+      trabajadoresRegistrados: 14,
+      fundado: 2012,
+      verificadoAfip: true,
+      pedidosCompletados: 47,
+      ontimeRate: 96,
+      retrabajoRate: 2,
+      // Wizard completo
+      sam: 12,
+      prendaPrincipal: 'Jean/Vaquero',
+      organizacion: 'modular',
+      metrosCuadrados: 280,
+      areas: ['Tizado', 'Corte', 'Costura', 'Acabado', 'Control de calidad', 'Depósito', 'Oficina'],
+      experienciaPromedio: 'alta',
+      polivalencia: 'total',
+      horario: '9',
+      registroProduccion: 'planilla_digital',
+      escalabilidad: 'alta',
+      paradasFrecuencia: 'rara_vez',
+    },
+  })
+
+  // Oro: 4 procesos, 5 prendas
+  await prisma.tallerProceso.createMany({
+    data: [
+      { tallerId: tallerOro.id, procesoId: pCorte.id, precio: 450 },
+      { tallerId: tallerOro.id, procesoId: pConfeccion.id, precio: 850 },
+      { tallerId: tallerOro.id, procesoId: pAcabado.id, precio: 280 },
+      { tallerId: tallerOro.id, procesoId: pEstampado.id, precio: 320 },
+    ],
+  })
+  await prisma.tallerPrenda.createMany({
+    data: [
+      { tallerId: tallerOro.id, prendaId: prJean.id },
+      { tallerId: tallerOro.id, prendaId: prRemera.id },
+      { tallerId: tallerOro.id, prendaId: prCamisa.id },
+      { tallerId: tallerOro.id, prendaId: prPantalon.id },
+      { tallerId: tallerOro.id, prendaId: prBuzo.id },
+    ],
+  })
+  await prisma.maquinaria.createMany({
+    data: [
+      { tallerId: tallerOro.id, nombre: 'Cortadora vertical Eastman', cantidad: 2, tipo: 'Corte' },
+      { tallerId: tallerOro.id, nombre: 'Recta industrial Juki DDL-8700', cantidad: 6, tipo: 'Costura' },
+      { tallerId: tallerOro.id, nombre: 'Overlock 5 hilos Pegasus', cantidad: 3, tipo: 'Costura' },
+      { tallerId: tallerOro.id, nombre: 'Botonera Brother', cantidad: 2, tipo: 'Costura' },
+      { tallerId: tallerOro.id, nombre: 'Ojaladora Juki', cantidad: 1, tipo: 'Costura' },
+    ],
+  })
+
+  // Oro: todas las validaciones completadas
+  await prisma.validacion.createMany({
+    data: [
+      { tallerId: tallerOro.id, tipo: 'CUIT/Monotributo', tipoDocumentoId: tdMap['CUIT/Monotributo'], estado: 'COMPLETADO', detalle: 'SRL inscripta — Responsable inscripto IVA' },
+      { tallerId: tallerOro.id, tipo: 'Habilitación municipal', tipoDocumentoId: tdMap['Habilitación municipal'], estado: 'COMPLETADO', detalle: 'Habilitación Avellaneda exp. 2023-4521', fechaVencimiento: new Date('2027-06-30') },
+      { tallerId: tallerOro.id, tipo: 'ART', tipoDocumentoId: tdMap['ART'], estado: 'COMPLETADO', detalle: 'Galeno ART — póliza vigente', fechaVencimiento: new Date('2027-01-15') },
+      { tallerId: tallerOro.id, tipo: 'Empleados registrados', tipoDocumentoId: tdMap['Empleados registrados'], estado: 'COMPLETADO', detalle: '14 empleados en libro — alta temprana al día' },
+      { tallerId: tallerOro.id, tipo: 'Habilitación bomberos', tipoDocumentoId: tdMap['Habilitación bomberos'], estado: 'COMPLETADO', detalle: 'Inspección aprobada 10/2025' },
+      { tallerId: tallerOro.id, tipo: 'Plan de seguridad e higiene', tipoDocumentoId: tdMap['Plan de seguridad e higiene'], estado: 'COMPLETADO', detalle: 'Plan firmado por Ing. Martínez (mat. 4521)' },
+      { tallerId: tallerOro.id, tipo: 'Nómina digital', tipoDocumentoId: tdMap['Nómina digital'], estado: 'COMPLETADO', detalle: 'Libro de sueldos digital activo' },
+      { tallerId: tallerOro.id, tipo: 'Certificado ambiental', tipoDocumentoId: tdMap['Certificado ambiental'], estado: 'COMPLETADO', detalle: 'Aptitud ambiental OPDS vigente' },
+    ],
+  })
+
+  // Oro: certificación externa
+  await prisma.tallerCertificacion.create({
+    data: { tallerId: tallerOro.id, nombre: 'Certificación INTI Calidad Textil', vencimiento: new Date('2027-12-01'), activa: true },
+  })
+
+  console.log('  ✓ Taller ORO: Corte Sur SRL (Avellaneda)')
 
   // ============================================
   // MARCAS
   // ============================================
-  const marca1 = await prisma.marca.create({
+  const marcaChica = await prisma.marca.create({
     data: {
-      userId: marcaUser1.id, nombre: 'Urbano Kids', cuit: '30-91234567-5',
-      ubicacion: 'Palermo, CABA', tipo: 'Pequeña', volumenMensual: 1500, rating: 4.8, pedidosRealizados: 12,
+      userId: userMarcaChica.id,
+      nombre: 'Amapola Indumentaria',
+      cuit: '27-32456789-1',
+      ubicacion: 'Palermo, CABA',
+      tipo: 'Diseño independiente',
+      volumenMensual: 300,
+      rating: 0,
+      pedidosRealizados: 0,
     },
   })
 
-  await prisma.marca.create({
+  const marcaMediana = await prisma.marca.create({
     data: {
-      userId: marcaUser2.id, nombre: 'Marca Consciente', cuit: '30-82345678-9',
-      ubicacion: 'Villa Crespo, CABA', tipo: 'Micro', volumenMensual: 500, rating: 4.9, pedidosRealizados: 8,
+      userId: userMarcaMediana.id,
+      nombre: 'Urbano Textil',
+      cuit: '30-71890234-5',
+      ubicacion: 'Villa Crespo, CABA',
+      tipo: 'Marca comercial',
+      website: 'https://urbanotextil.com.ar',
+      volumenMensual: 3000,
+      frecuenciaCompra: 'mensual',
+      rating: 4.6,
+      pedidosRealizados: 15,
     },
   })
 
-  // ============================================
-  // TIPOS DE DOCUMENTO
-  // ============================================
-  const tiposDoc = await Promise.all([
-    prisma.tipoDocumento.create({ data: { nombre: 'CUIT', descripcion: 'Clave Única de Identificación Tributaria', requerido: true } }),
-    prisma.tipoDocumento.create({ data: { nombre: 'HABILITACION_MUNICIPAL', descripcion: 'Habilitación del municipio correspondiente', requerido: true } }),
-    prisma.tipoDocumento.create({ data: { nombre: 'ART', descripcion: 'Aseguradora de Riesgos del Trabajo', requerido: true } }),
-    prisma.tipoDocumento.create({ data: { nombre: 'EMPLEADOS_REGISTRADOS', descripcion: 'Nómina de empleados registrados', requerido: true } }),
-    prisma.tipoDocumento.create({ data: { nombre: 'CERTIFICACION_INTI', descripcion: 'Certificación de calidad del INTI', requerido: false } }),
-  ])
-  const tipoDocMap: Record<string, string> = Object.fromEntries(tiposDoc.map(t => [t.nombre, t.id]))
+  console.log('  ✓ 2 marcas creadas')
 
   // ============================================
-  // PEDIDO DE EJEMPLO
+  // PEDIDOS
   // ============================================
-  const pedido = await prisma.pedido.create({
+
+  // Marca chica: 1 pedido en borrador
+  await prisma.pedido.create({
     data: {
-      omId: 'OM-2025-00045', marcaId: marca1.id,
-      tipoPrenda: 'Jean/Vaquero', tipoPrendaId: prendas[0].id,
-      cantidad: 500, fechaObjetivo: new Date('2025-07-30'),
-      estado: 'EN_EJECUCION', progresoTotal: 60, montoTotal: 2006400,
+      omId: 'OM-2026-00089',
+      marcaId: marcaChica.id,
+      tipoPrenda: 'Remera',
+      tipoPrendaId: prRemera.id,
+      cantidad: 500,
+      estado: 'BORRADOR',
+      montoTotal: 450000,
     },
   })
 
-  const orden = await prisma.ordenManufactura.create({
+  // Marca mediana: pedido activo con orden asignada a Corte Sur
+  const pedidoActivo = await prisma.pedido.create({
     data: {
-      moId: 'MO-1', pedidoId: pedido.id, tallerId: taller1.id,
-      proceso: 'Corte', procesoId: procesos[0].id,
-      estado: 'EN_EJECUCION', progreso: 75, precio: 850000, plazoDias: 12, diasTranscurridos: 9, verificacionSst: true,
+      omId: 'OM-2026-00072',
+      marcaId: marcaMediana.id,
+      tipoPrenda: 'Jean/Vaquero',
+      tipoPrendaId: prJean.id,
+      cantidad: 1000,
+      fechaObjetivo: new Date('2026-05-30'),
+      estado: 'EN_EJECUCION',
+      progresoTotal: 60,
+      montoTotal: 1700000,
     },
   })
 
-  // ============================================
-  // VALIDACIONES (Formalización)
-  // ============================================
-  await prisma.validacion.createMany({
-    data: [
-      { tallerId: taller1.id, tipo: 'CUIT', tipoDocumentoId: tipoDocMap['CUIT'], estado: 'COMPLETADO', detalle: 'Verificado con ARCA - 30-71234567-8' },
-      { tallerId: taller1.id, tipo: 'HABILITACION_MUNICIPAL', tipoDocumentoId: tipoDocMap['HABILITACION_MUNICIPAL'], estado: 'COMPLETADO', detalle: 'Certificado vigente' },
-      { tallerId: taller1.id, tipo: 'ART', tipoDocumentoId: tipoDocMap['ART'], estado: 'COMPLETADO', detalle: 'ART vigente hasta 15/08/2026' },
-      { tallerId: taller1.id, tipo: 'EMPLEADOS_REGISTRADOS', tipoDocumentoId: tipoDocMap['EMPLEADOS_REGISTRADOS'], estado: 'COMPLETADO', detalle: '12 empleados registrados' },
-      { tallerId: taller2.id, tipo: 'CUIT', tipoDocumentoId: tipoDocMap['CUIT'], estado: 'COMPLETADO', detalle: 'Verificado con ARCA' },
-      { tallerId: taller2.id, tipo: 'HABILITACION_MUNICIPAL', tipoDocumentoId: tipoDocMap['HABILITACION_MUNICIPAL'], estado: 'PENDIENTE' },
-      { tallerId: taller2.id, tipo: 'ART', tipoDocumentoId: tipoDocMap['ART'], estado: 'COMPLETADO', detalle: 'ART vigente' },
-    ],
+  await prisma.ordenManufactura.create({
+    data: {
+      moId: 'MO-2026-00072-01',
+      pedidoId: pedidoActivo.id,
+      tallerId: tallerOro.id,
+      proceso: 'Corte',
+      procesoId: pCorte.id,
+      estado: 'EN_EJECUCION',
+      progreso: 75,
+      precio: 450000,
+      plazoDias: 12,
+      diasTranscurridos: 9,
+      verificacionSst: true,
+    },
   })
 
+  await prisma.ordenManufactura.create({
+    data: {
+      moId: 'MO-2026-00072-02',
+      pedidoId: pedidoActivo.id,
+      tallerId: tallerPlata.id,
+      proceso: 'Confección',
+      procesoId: pConfeccion.id,
+      estado: 'PENDIENTE',
+      progreso: 0,
+      precio: 750000,
+      plazoDias: 20,
+      diasTranscurridos: 0,
+      verificacionSst: true,
+    },
+  })
+
+  // Marca mediana: pedido completado
+  const pedidoCompletado = await prisma.pedido.create({
+    data: {
+      omId: 'OM-2026-00058',
+      marcaId: marcaMediana.id,
+      tipoPrenda: 'Remera',
+      tipoPrendaId: prRemera.id,
+      cantidad: 800,
+      fechaObjetivo: new Date('2026-02-15'),
+      estado: 'COMPLETADO',
+      progresoTotal: 100,
+      montoTotal: 720000,
+    },
+  })
+
+  await prisma.ordenManufactura.create({
+    data: {
+      moId: 'MO-2026-00058-01',
+      pedidoId: pedidoCompletado.id,
+      tallerId: tallerOro.id,
+      proceso: 'Confección',
+      procesoId: pConfeccion.id,
+      estado: 'COMPLETADO',
+      progreso: 100,
+      precio: 680000,
+      plazoDias: 15,
+      diasTranscurridos: 14,
+      verificacionSst: true,
+    },
+  })
+
+  console.log('  ✓ 3 pedidos + 3 órdenes de manufactura')
+
   // ============================================
-  // COLECCIONES (Academia)
+  // COLECCIONES DE CAPACITACIÓN (3)
   // ============================================
+
+  // Colección 1: Seguridad e Higiene
   const col1 = await prisma.coleccion.create({
     data: {
-      titulo: 'Seguridad e Higiene en el Taller',
-      descripcion: 'Fundamentos de seguridad laboral para talleres textiles.',
-      categoria: 'Seguridad', duracion: '2h 30min', institucion: 'OIT Argentina', orden: 1,
+      titulo: 'Seguridad e Higiene en el Taller Textil',
+      descripcion: 'Fundamentos de seguridad laboral para talleres textiles. Cubre normativa vigente, uso de EPP, prevención de incendios y ergonomía en el puesto de trabajo.',
+      categoria: 'Seguridad',
+      duracion: '2h 30min',
+      institucion: 'OIT Argentina',
+      orden: 1,
     },
   })
 
   await prisma.video.createMany({
     data: [
-      { coleccionId: col1.id, titulo: 'Introducción a SST', youtubeUrl: 'https://youtube.com/watch?v=example1', duracion: '15:00', orden: 1 },
-      { coleccionId: col1.id, titulo: 'Equipos de protección personal', youtubeUrl: 'https://youtube.com/watch?v=example2', duracion: '20:00', orden: 2 },
-      { coleccionId: col1.id, titulo: 'Prevención de incendios', youtubeUrl: 'https://youtube.com/watch?v=example3', duracion: '18:00', orden: 3 },
+      { coleccionId: col1.id, titulo: 'Introducción a la SST en la industria textil', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duracion: '15:00', orden: 1 },
+      { coleccionId: col1.id, titulo: 'Equipos de protección personal para costureras', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duracion: '20:00', orden: 2 },
+      { coleccionId: col1.id, titulo: 'Prevención de incendios y plan de evacuación', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duracion: '18:00', orden: 3 },
     ],
   })
 
@@ -231,15 +492,170 @@ async function main() {
     data: {
       coleccionId: col1.id,
       preguntas: [
-        { pregunta: '¿Cuál es el elemento más importante de SST?', opciones: ['Extintor', 'Prevención', 'Señalización', 'Capacitación'], correcta: 1 },
-        { pregunta: '¿Cada cuánto se debe renovar la ART?', opciones: ['Mensualmente', 'Anualmente', 'Cada 2 años', 'Nunca'], correcta: 1 },
+        { pregunta: '¿Cuál es la primera medida de seguridad al detectar un principio de incendio?', opciones: ['Usar el extintor', 'Evacuar y dar aviso', 'Llamar a bomberos', 'Apagar las máquinas'], correcta: 1 },
+        { pregunta: '¿Cada cuánto debe renovarse la póliza de ART?', opciones: ['Cada 6 meses', 'Anualmente', 'Cada 2 años', 'No se renueva'], correcta: 1 },
+        { pregunta: '¿Qué EPP es obligatorio para operarios de corte?', opciones: ['Casco', 'Guante de malla metálica', 'Barbijo', 'Lentes de sol'], correcta: 1 },
       ],
       puntajeMinimo: 60,
     },
   })
 
-  console.log('Seed completed successfully!')
-  console.log(`Created: ${await prisma.user.count()} users, ${await prisma.taller.count()} talleres, ${await prisma.marca.count()} marcas`)
+  // Colección 2: Cálculo de Costos
+  const col2 = await prisma.coleccion.create({
+    data: {
+      titulo: 'Cálculo de Costos y Presupuestos',
+      descripcion: 'Aprende a calcular el costo real de producción de una prenda, elaborar presupuestos para marcas y definir márgenes de ganancia sostenibles.',
+      categoria: 'Gestión',
+      duracion: '3h',
+      institucion: 'INTI Textiles',
+      orden: 2,
+    },
+  })
+
+  await prisma.video.createMany({
+    data: [
+      { coleccionId: col2.id, titulo: 'Estructura de costos en confección textil', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duracion: '22:00', orden: 1 },
+      { coleccionId: col2.id, titulo: 'Cálculo de SAM y minuto productivo', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duracion: '25:00', orden: 2 },
+      { coleccionId: col2.id, titulo: 'Cómo armar un presupuesto para marcas', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duracion: '18:00', orden: 3 },
+      { coleccionId: col2.id, titulo: 'Márgenes de ganancia y punto de equilibrio', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duracion: '20:00', orden: 4 },
+    ],
+  })
+
+  await prisma.evaluacion.create({
+    data: {
+      coleccionId: col2.id,
+      preguntas: [
+        { pregunta: '¿Qué significa SAM en la industria textil?', opciones: ['Sistema de Alta Manufactura', 'Standard Allowed Minutes', 'Servicio de Asistencia Mecánica', 'Seguro de Actividad Manufacturera'], correcta: 1 },
+        { pregunta: '¿Qué componente NO forma parte del costo directo de una prenda?', opciones: ['Tela', 'Mano de obra', 'Alquiler del local', 'Avíos (botones, cierres)'], correcta: 2 },
+        { pregunta: '¿Cómo se calcula la capacidad mensual de un taller?', opciones: ['Cantidad de máquinas x 100', '(Horas x 60 / SAM) x eficiencia x máquinas x 22', 'Metros cuadrados x 10', 'Empleados x 500'], correcta: 1 },
+      ],
+      puntajeMinimo: 60,
+    },
+  })
+
+  // Colección 3: Formalización
+  const col3 = await prisma.coleccion.create({
+    data: {
+      titulo: 'Formalización y Registro del Taller',
+      descripcion: 'Guía práctica para formalizar tu taller textil. Inscripción en AFIP, monotributo, ART, habilitaciones municipales y beneficios de estar en regla.',
+      categoria: 'Formalización',
+      duracion: '1h 45min',
+      institucion: 'UNTREF',
+      orden: 3,
+    },
+  })
+
+  await prisma.video.createMany({
+    data: [
+      { coleccionId: col3.id, titulo: 'Por qué formalizar tu taller', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duracion: '12:00', orden: 1 },
+      { coleccionId: col3.id, titulo: 'Monotributo, ART y habilitaciones paso a paso', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duracion: '20:00', orden: 2 },
+      { coleccionId: col3.id, titulo: 'Beneficios del registro en la plataforma PDT', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duracion: '15:00', orden: 3 },
+    ],
+  })
+
+  await prisma.evaluacion.create({
+    data: {
+      coleccionId: col3.id,
+      preguntas: [
+        { pregunta: '¿Qué documento necesitás para inscribirte como monotributista?', opciones: ['Pasaporte', 'CUIL y clave fiscal nivel 3', 'Título universitario', 'Certificado de domicilio'], correcta: 1 },
+        { pregunta: '¿Qué es la ART?', opciones: ['Asociación de Registros Textiles', 'Aseguradora de Riesgos del Trabajo', 'Autoridad Regulatoria Tributaria', 'Agencia de Recaudación Textil'], correcta: 1 },
+        { pregunta: '¿Cuál es el principal beneficio de formalizar un taller?', opciones: ['Pagar más impuestos', 'Acceso a marcas, crédito y protección legal', 'Tener más empleados', 'Comprar máquinas importadas'], correcta: 1 },
+      ],
+      puntajeMinimo: 60,
+    },
+  })
+
+  console.log('  ✓ 3 colecciones con 10 videos y 3 evaluaciones')
+
+  // ============================================
+  // PROGRESO + CERTIFICADOS
+  // ============================================
+
+  // Plata: completó colección 1 (SST), tiene certificado
+  await prisma.progresoCapacitacion.create({
+    data: { tallerId: tallerPlata.id, coleccionId: col1.id, porcentajeCompletado: 100, videosVistos: 3 },
+  })
+  await prisma.certificado.create({
+    data: { tallerId: tallerPlata.id, coleccionId: col1.id, codigo: 'PDT-CERT-2026-000041', calificacion: 80 },
+  })
+
+  // Plata: empezó colección 2 (50%)
+  await prisma.progresoCapacitacion.create({
+    data: { tallerId: tallerPlata.id, coleccionId: col2.id, porcentajeCompletado: 50, videosVistos: 2 },
+  })
+
+  // Oro: completó las 3 colecciones, tiene 3 certificados
+  await prisma.progresoCapacitacion.createMany({
+    data: [
+      { tallerId: tallerOro.id, coleccionId: col1.id, porcentajeCompletado: 100, videosVistos: 3 },
+      { tallerId: tallerOro.id, coleccionId: col2.id, porcentajeCompletado: 100, videosVistos: 4 },
+      { tallerId: tallerOro.id, coleccionId: col3.id, porcentajeCompletado: 100, videosVistos: 3 },
+    ],
+  })
+  await prisma.certificado.createMany({
+    data: [
+      { tallerId: tallerOro.id, coleccionId: col1.id, codigo: 'PDT-CERT-2026-000012', calificacion: 100 },
+      { tallerId: tallerOro.id, coleccionId: col2.id, codigo: 'PDT-CERT-2026-000013', calificacion: 90 },
+      { tallerId: tallerOro.id, coleccionId: col3.id, codigo: 'PDT-CERT-2026-000014', calificacion: 95 },
+    ],
+  })
+
+  console.log('  ✓ Progreso y certificados (1 PLATA, 3 ORO)')
+
+  // ============================================
+  // LOGS DE ACTIVIDAD
+  // ============================================
+  await prisma.logActividad.createMany({
+    data: [
+      { userId: userBronce.id, accion: 'AUTH_REGISTRO', detalles: { role: 'TALLER', nombre: 'Taller La Aguja' } },
+      { userId: userPlata.id, accion: 'AUTH_REGISTRO', detalles: { role: 'TALLER', nombre: 'Cooperativa Hilos del Sur' } },
+      { userId: userOro.id, accion: 'AUTH_REGISTRO', detalles: { role: 'TALLER', nombre: 'Corte Sur SRL' } },
+      { userId: userMarcaChica.id, accion: 'AUTH_REGISTRO', detalles: { role: 'MARCA', nombre: 'Amapola Indumentaria' } },
+      { userId: userMarcaMediana.id, accion: 'AUTH_REGISTRO', detalles: { role: 'MARCA', nombre: 'Urbano Textil' } },
+      { userId: admin.id, accion: 'VALIDACION_APROBADA', detalles: { taller: 'Corte Sur SRL', tipo: 'CUIT/Monotributo' } },
+      { userId: admin.id, accion: 'VALIDACION_APROBADA', detalles: { taller: 'Corte Sur SRL', tipo: 'ART' } },
+      { userId: admin.id, accion: 'CERTIFICADO_EMITIDO', detalles: { taller: 'Corte Sur SRL', codigo: 'PDT-CERT-2026-000012' } },
+      { userId: admin.id, accion: 'CERTIFICADO_EMITIDO', detalles: { taller: 'Cooperativa Hilos del Sur', codigo: 'PDT-CERT-2026-000041' } },
+      { userId: userMarcaMediana.id, accion: 'CRUD_PEDIDO_CREADO', detalles: { omId: 'OM-2026-00072', prenda: 'Jean/Vaquero', cantidad: 1000 } },
+    ],
+  })
+
+  console.log('  ✓ 10 logs de actividad')
+
+  // ============================================
+  // CONFIGURACIÓN INICIAL
+  // ============================================
+  await prisma.configuracionSistema.createMany({
+    data: [
+      { clave: 'nombre_plataforma', valor: 'Plataforma Digital Textil', grupo: 'general' },
+      { clave: 'email_soporte', valor: 'soporte@pdt.org.ar', grupo: 'general' },
+      { clave: 'prefijo_certificado', valor: 'PDT-CERT-', grupo: 'certificados' },
+      { clave: 'institucion_firma', valor: 'OIT Argentina — UNTREF', grupo: 'certificados' },
+    ],
+  })
+
+  console.log('  ✓ Configuración del sistema')
+
+  // ============================================
+  // RESUMEN
+  // ============================================
+  const counts = await prisma.$transaction([
+    prisma.user.count(),
+    prisma.taller.count(),
+    prisma.marca.count(),
+    prisma.pedido.count(),
+    prisma.ordenManufactura.count(),
+    prisma.coleccion.count(),
+    prisma.video.count(),
+    prisma.certificado.count(),
+    prisma.validacion.count(),
+  ])
+
+  console.log('\n✅ Seed completado:')
+  console.log(`  ${counts[0]} usuarios | ${counts[1]} talleres | ${counts[2]} marcas`)
+  console.log(`  ${counts[3]} pedidos | ${counts[4]} órdenes | ${counts[5]} colecciones | ${counts[6]} videos`)
+  console.log(`  ${counts[7]} certificados | ${counts[8]} validaciones`)
+  console.log('\n  Credenciales: todas las cuentas usan password "pdt2026"')
 }
 
 main()
