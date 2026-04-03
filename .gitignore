@@ -56,3 +56,4 @@ PROPUESTA_OIT.html
 PROPUESTA_OIT_REESTRUCTURADA.md
 imagenes/
 planteos_scrape/
+.env*.local
