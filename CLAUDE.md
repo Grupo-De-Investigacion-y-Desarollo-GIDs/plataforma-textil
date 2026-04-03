@@ -52,6 +52,9 @@ src/
 - Prisma: config en `package.json#prisma` esta deprecada y se elimina en Prisma 7
 - Fuentes: Noto Sans y Overpass estan en `public/fonts/` como archivos woff2 locales (no dependen de Google Fonts en build)
 
+## Handover OIT
+Durante el desarrollo, cada decision tecnica importante, cambio de infraestructura o funcionalidad completada debe documentarse en `.claude/specs/handover/`. Gerardo es responsable de mantener esta documentacion actualizada. No esperar al final del proyecto para completarla.
+
 ## Decisiones tomadas
 - Middleware separado de Prisma para no exceder 1MB Edge limit
 - Navegacion: tabs activos detectados por pathname (no hardcodeados)
