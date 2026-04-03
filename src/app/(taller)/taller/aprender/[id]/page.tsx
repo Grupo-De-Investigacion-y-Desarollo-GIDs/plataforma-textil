@@ -5,7 +5,7 @@ import { prisma } from '@/compartido/lib/prisma'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { AcademiaCliente } from './academia-cliente'
+import { AcademiaCliente } from '@/taller/componentes/academia-cliente'
 
 export default async function AcademiaDetallePage({
   params,

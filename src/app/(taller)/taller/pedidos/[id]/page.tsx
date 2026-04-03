@@ -5,7 +5,7 @@ import { prisma } from '@/compartido/lib/prisma'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { OrdenActions } from './orden-actions'
+import { OrdenActions } from '@/taller/componentes/orden-actions'
 
 const estadoLabel: Record<string, string> = {
   PENDIENTE: 'Pendiente de aceptación',

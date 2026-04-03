@@ -10,7 +10,7 @@ import { ChecklistItem } from '@/compartido/componentes/ui/checklist-item'
 import { ProgressRing } from '@/compartido/componentes/ui/progress-ring'
 import { Button } from '@/compartido/componentes/ui/button'
 import { FileText, ExternalLink } from 'lucide-react'
-import { UploadButton } from './upload-button'
+import { UploadButton } from '@/taller/componentes/upload-button'
 
 const tiposValidacion = [
   { tipo: 'CUIT_MONOTRIBUTO', label: 'CUIT / Monotributo', descripcion: 'Inscripción en ARCA (ex-AFIP)', enlace: 'https://www.afip.gob.ar' },
