@@ -35,10 +35,22 @@ src/
 - `textil/NAVEGACION_POR_BARRERAS.md` — Flujos por rol (B1-B7)
 
 ## Deploy
-- Produccion: https://pdt-nine.vercel.app
-- GitHub: https://github.com/sergiandat/textil
+- Produccion: https://plataforma-textil.vercel.app
+- GitHub: https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil
 - DB: Supabase (sa-east-1)
+- Vercel user: gbreard (gbreard@gmail.com)
 - Env vars en Vercel: DATABASE_URL, DIRECT_URL, NEXTAUTH_SECRET, NEXTAUTH_URL, SENDGRID_API_KEY, EMAIL_FROM, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, CUIT_API_URL (pendiente)
+
+## Variables de entorno locales
+- `.env.local` — todas las variables (bajar con `vercel env pull .env.local`)
+- `.env` — solo `DATABASE_URL` y `DIRECT_URL` (para que Prisma CLI funcione sin `source`)
+- Ambos archivos estan en `.gitignore`
+
+## Advertencias tecnicas conocidas
+- Prisma CLI no lee `.env.local` — usar `.env` para migraciones y `db pull`
+- Next.js 16 recomienda migrar `middleware.ts` a `proxy.ts` (no bloqueante por ahora)
+- Prisma: config en `package.json#prisma` esta deprecada y se elimina en Prisma 7
+- Fuentes: Noto Sans y Overpass estan en `public/fonts/` como archivos woff2 locales (no dependen de Google Fonts en build)
 
 ## Decisiones tomadas
 - Middleware separado de Prisma para no exceder 1MB Edge limit
