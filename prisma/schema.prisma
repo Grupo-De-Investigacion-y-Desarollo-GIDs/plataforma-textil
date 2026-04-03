@@ -28,6 +28,7 @@ enum NivelTaller {
 enum EstadoPedido {
   BORRADOR
   EN_EJECUCION
+  ESPERANDO_ENTREGA
   COMPLETADO
   CANCELADO
 }
@@ -80,6 +81,13 @@ enum EstadoAccionCorrectiva {
   EN_PROCESO
   COMPLETADA
   VENCIDA
+}
+
+enum EstadoEscrow {
+  BLOQUEADO
+  PENDIENTE
+  LIBERADO
+  DISPUTADO
 }
 
 // ============================================
@@ -373,6 +381,7 @@ model OrdenManufactura {
   pedido          Pedido            @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
   taller          Taller            @relation(fields: [tallerId], references: [id])
   procesoRel      ProcesoProductivo? @relation(fields: [procesoId], references: [id])
+  escrowHitos     EscrowHito[]
 
   @@map("ordenes_manufactura")
 }
@@ -470,6 +479,8 @@ model Certificado {
   fecha       DateTime @default(now())
   calificacion Int
   revocado    Boolean  @default(false)
+  pdfUrl      String?
+  qrCode      String?
 
   taller    Taller    @relation(fields: [tallerId], references: [id], onDelete: Cascade)
   coleccion Coleccion @relation(fields: [coleccionId], references: [id])
@@ -608,4 +619,21 @@ model LogActividad {
   user User? @relation(fields: [userId], references: [id])
 
   @@map("log_actividad")
+}
+
+// ============================================
+// ESCROW (Hitos de pago)
+// ============================================
+
+model EscrowHito {
+  id                 String       @id @default(cuid())
+  ordenManufacturaId String
+  nombre             String
+  porcentaje         Float
+  monto              Float
+  estado             EstadoEscrow @default(BLOQUEADO)
+
+  ordenManufactura OrdenManufactura @relation(fields: [ordenManufacturaId], references: [id], onDelete: Cascade)
+
+  @@map("escrow_hitos")
 }
