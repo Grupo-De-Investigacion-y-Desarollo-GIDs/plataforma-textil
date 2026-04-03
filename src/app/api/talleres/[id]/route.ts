@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { auth } from '@/lib/auth'
+import { prisma } from '@/compartido/lib/prisma'
+import { auth } from '@/compartido/lib/auth'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {

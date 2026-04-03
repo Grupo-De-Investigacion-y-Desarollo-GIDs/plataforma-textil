@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { cn, formatPercent, formatFraction } from '@/lib/utils'
+import { cn, formatPercent, formatFraction } from '@/compartido/lib/utils'
 
 describe('cn', () => {
   it('merges class names', () => {

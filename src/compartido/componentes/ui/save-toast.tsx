@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { useToast } from '@/components/ui/toast'
+import { useToast } from '@/compartido/componentes/ui/toast'
 
 export function SaveToast({ message = 'Cambios guardados' }: { message?: string }) {
   const searchParams = useSearchParams()

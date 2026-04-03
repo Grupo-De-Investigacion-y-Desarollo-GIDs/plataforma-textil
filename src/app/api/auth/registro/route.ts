@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { prisma } from '@/compartido/lib/prisma'
 import { Prisma } from '@prisma/client'
-import { logActividad } from '@/lib/log'
-import { sendEmail, buildBienvenidaEmail } from '@/lib/email'
+import { logActividad } from '@/compartido/lib/log'
+import { sendEmail, buildBienvenidaEmail } from '@/compartido/lib/email'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 

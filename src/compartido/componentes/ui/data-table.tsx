@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { ChevronUp, ChevronDown } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/compartido/lib/utils'
 
 interface Column<T> {
   header: string

@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Card } from '@/compartido/componentes/ui/card'
+import { Button } from '@/compartido/componentes/ui/button'
 import { Download, FileText, CheckCircle, AlertCircle } from 'lucide-react'
 
 const reportes = [

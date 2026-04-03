@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { SearchInput } from '@/components/ui/search-input'
-import { DataTable } from '@/components/ui/data-table'
-import { StatCard } from '@/components/ui/stat-card'
+import { Card } from '@/compartido/componentes/ui/card'
+import { Badge } from '@/compartido/componentes/ui/badge'
+import { SearchInput } from '@/compartido/componentes/ui/search-input'
+import { DataTable } from '@/compartido/componentes/ui/data-table'
+import { StatCard } from '@/compartido/componentes/ui/stat-card'
 import { Eye, Edit } from 'lucide-react'
 
 interface MarcaRow {

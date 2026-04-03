@@ -1,7 +1,7 @@
 'use client'
 
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Card } from '@/compartido/componentes/ui/card'
+import { Button } from '@/compartido/componentes/ui/button'
 import { BarChart3, Download, FileText } from 'lucide-react'
 
 const reportes = [

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { auth } from '@/lib/auth'
-import { aplicarNivel } from '@/lib/nivel'
-import { logActividad } from '@/lib/log'
+import { prisma } from '@/compartido/lib/prisma'
+import { auth } from '@/compartido/lib/auth'
+import { aplicarNivel } from '@/compartido/lib/nivel'
+import { logActividad } from '@/compartido/lib/log'
 
 export async function GET(req: NextRequest) {
   try {

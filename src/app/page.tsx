@@ -1,6 +1,6 @@
-import { auth } from '@/lib/auth'
+import { auth } from '@/compartido/lib/auth'
 import { redirect } from 'next/navigation'
-import { prisma } from '@/lib/prisma'
+import { prisma } from '@/compartido/lib/prisma'
 import Link from 'next/link'
 import { ArrowRight, CheckCircle, Search, BookOpen, BarChart3, Shield, Award, ChevronRight } from 'lucide-react'
 

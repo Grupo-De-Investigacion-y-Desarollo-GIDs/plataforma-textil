@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { prisma } from '@/compartido/lib/prisma'
 
 // GET /api/catalogos — devuelve procesos productivos y tipos de prenda
 export async function GET() {

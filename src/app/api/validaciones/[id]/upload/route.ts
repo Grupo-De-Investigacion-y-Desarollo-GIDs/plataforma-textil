@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { auth } from '@/lib/auth'
-import { uploadFile } from '@/lib/storage'
+import { prisma } from '@/compartido/lib/prisma'
+import { auth } from '@/compartido/lib/auth'
+import { uploadFile } from '@/compartido/lib/storage'
 
 const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp']
 const MAX_SIZE = 5 * 1024 * 1024 // 5MB

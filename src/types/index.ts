@@ -1,5 +1,2 @@
-export type UserRole = 'TALLER' | 'MARCA' | 'ESTADO' | 'ADMIN'
-export type NivelTaller = 'BRONCE' | 'PLATA' | 'ORO'
-export type EstadoPedido = 'BORRADOR' | 'EN_EJECUCION' | 'COMPLETADO' | 'CANCELADO'
-export type EstadoOrdenManufactura = 'PENDIENTE' | 'EN_EJECUCION' | 'COMPLETADO' | 'CANCELADO'
-export type EstadoValidacion = 'NO_INICIADO' | 'PENDIENTE' | 'COMPLETADO' | 'VENCIDO' | 'RECHAZADO'
+// Re-export temporal — eliminar cuando todos los imports apunten a @/compartido/types
+export * from '@/compartido/types'

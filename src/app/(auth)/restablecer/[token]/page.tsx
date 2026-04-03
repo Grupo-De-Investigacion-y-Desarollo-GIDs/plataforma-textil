@@ -7,9 +7,9 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Lock, CheckCircle, XCircle } from 'lucide-react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import { Input } from '@/compartido/componentes/ui/input'
+import { Button } from '@/compartido/componentes/ui/button'
+import { Card } from '@/compartido/componentes/ui/card'
 
 const schema = z
   .object({

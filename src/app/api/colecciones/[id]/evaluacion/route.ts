@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { auth } from '@/lib/auth'
-import { sendEmail, buildCertificadoEmail } from '@/lib/email'
+import { prisma } from '@/compartido/lib/prisma'
+import { auth } from '@/compartido/lib/auth'
+import { sendEmail, buildCertificadoEmail } from '@/compartido/lib/email'
 
 // GET /api/colecciones/[id]/evaluacion — devuelve evaluacion existente (admin)
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

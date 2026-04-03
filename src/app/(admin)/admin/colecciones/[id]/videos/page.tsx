@@ -3,9 +3,9 @@
 import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Card } from '@/compartido/componentes/ui/card'
+import { Button } from '@/compartido/componentes/ui/button'
+import { Input } from '@/compartido/componentes/ui/input'
 import { ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react'
 
 function getYoutubeId(url: string) {

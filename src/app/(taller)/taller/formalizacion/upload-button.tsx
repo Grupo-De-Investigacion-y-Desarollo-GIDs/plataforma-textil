@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { Upload, Loader2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/compartido/componentes/ui/button'
 
 interface UploadButtonProps {
   validacionId: string

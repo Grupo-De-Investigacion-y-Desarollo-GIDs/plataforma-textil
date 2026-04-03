@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma'
+import { prisma } from '@/compartido/lib/prisma'
 import type { Prisma } from '@prisma/client'
 
 /**

@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Card } from '@/components/ui/card'
-import { StatCard } from '@/components/ui/stat-card'
+import { Card } from '@/compartido/componentes/ui/card'
+import { StatCard } from '@/compartido/componentes/ui/stat-card'
 import { BookOpen, Users, Award, Activity, Settings, BarChart3, FileText, Bell } from 'lucide-react'
 
 interface Stats {

@@ -1,13 +1,13 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { SearchInput } from '@/components/ui/search-input'
-import { DataTable } from '@/components/ui/data-table'
-import { Modal } from '@/components/ui/modal'
-import { Badge } from '@/components/ui/badge'
+import { Card } from '@/compartido/componentes/ui/card'
+import { Button } from '@/compartido/componentes/ui/button'
+import { Input } from '@/compartido/componentes/ui/input'
+import { SearchInput } from '@/compartido/componentes/ui/search-input'
+import { DataTable } from '@/compartido/componentes/ui/data-table'
+import { Modal } from '@/compartido/componentes/ui/modal'
+import { Badge } from '@/compartido/componentes/ui/badge'
 import { Plus, Edit } from 'lucide-react'
 
 interface Proceso {

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { auth } from '@/lib/auth'
+import { auth } from '@/compartido/lib/auth'
 import { redirect } from 'next/navigation'
 import {
   LayoutDashboard, BookOpen, Users, Building2, ShoppingCart, ClipboardCheck,

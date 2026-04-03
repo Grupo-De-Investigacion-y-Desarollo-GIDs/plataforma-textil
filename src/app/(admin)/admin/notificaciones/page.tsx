@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Select } from '@/components/ui/select'
+import { Card } from '@/compartido/componentes/ui/card'
+import { Button } from '@/compartido/componentes/ui/button'
+import { Input } from '@/compartido/componentes/ui/input'
+import { Select } from '@/compartido/componentes/ui/select'
 import { Plus, Mail, Eye } from 'lucide-react'
 
 interface Envio {

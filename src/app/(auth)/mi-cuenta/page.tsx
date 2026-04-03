@@ -6,11 +6,11 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { User, Phone, Lock, Save, CheckCircle } from 'lucide-react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { useToast } from '@/components/ui/toast'
+import { Input } from '@/compartido/componentes/ui/input'
+import { Button } from '@/compartido/componentes/ui/button'
+import { Card } from '@/compartido/componentes/ui/card'
+import { Badge } from '@/compartido/componentes/ui/badge'
+import { useToast } from '@/compartido/componentes/ui/toast'
 
 const profileSchema = z.object({
   name: z.string().min(1, 'El nombre es obligatorio'),

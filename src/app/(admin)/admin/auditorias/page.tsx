@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Select } from '@/components/ui/select'
-import { Modal } from '@/components/ui/modal'
-import { StatCard } from '@/components/ui/stat-card'
+import { Card } from '@/compartido/componentes/ui/card'
+import { Button } from '@/compartido/componentes/ui/button'
+import { Input } from '@/compartido/componentes/ui/input'
+import { Select } from '@/compartido/componentes/ui/select'
+import { Modal } from '@/compartido/componentes/ui/modal'
+import { StatCard } from '@/compartido/componentes/ui/stat-card'
 import { Plus, Calendar, Edit, X, AlertTriangle } from 'lucide-react'
 
 interface Auditoria {

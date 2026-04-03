@@ -3,10 +3,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, ArrowRight, Check, Factory, Users, LayoutGrid, Ruler, Clock, TrendingUp, Settings, Trophy, Shirt } from 'lucide-react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
+import { Card } from '@/compartido/componentes/ui/card'
+import { Button } from '@/compartido/componentes/ui/button'
+import { Input } from '@/compartido/componentes/ui/input'
+import { Badge } from '@/compartido/componentes/ui/badge'
 
 const STEPS = [
   { key: 'bienvenida', label: 'Inicio', icon: Factory },

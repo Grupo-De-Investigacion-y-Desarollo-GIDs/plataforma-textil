@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Card } from '@/components/ui/card'
-import { StatCard } from '@/components/ui/stat-card'
-import { Button } from '@/components/ui/button'
+import { Card } from '@/compartido/componentes/ui/card'
+import { StatCard } from '@/compartido/componentes/ui/stat-card'
+import { Button } from '@/compartido/componentes/ui/button'
 import { Users, Building2, Award, BookOpen, FileText, BarChart3, Mail, AlertTriangle, Info } from 'lucide-react'
 
 interface Stats {

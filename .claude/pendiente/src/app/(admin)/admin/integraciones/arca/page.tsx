@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
+import { Card } from '@/compartido/componentes/ui/card'
+import { Button } from '@/compartido/componentes/ui/button'
+import { Input } from '@/compartido/componentes/ui/input'
+import { Badge } from '@/compartido/componentes/ui/badge'
 import { ArrowLeft, CheckCircle, AlertTriangle } from 'lucide-react'
 
 export default function AdminIntegracionArcaPage() {

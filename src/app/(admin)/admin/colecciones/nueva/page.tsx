@@ -3,9 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+import { Card } from '@/compartido/componentes/ui/card'
+import { Input } from '@/compartido/componentes/ui/input'
+import { Button } from '@/compartido/componentes/ui/button'
 import { ArrowLeft } from 'lucide-react'
 
 export default function NuevaColeccionPage() {

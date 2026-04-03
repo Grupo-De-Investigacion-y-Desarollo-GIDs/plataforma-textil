@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { Card } from '@/compartido/componentes/ui/card'
+import { Button } from '@/compartido/componentes/ui/button'
+import { Badge } from '@/compartido/componentes/ui/badge'
 import { Database, Download, Upload, Play, AlertTriangle } from 'lucide-react'
 
 const mockTables = [

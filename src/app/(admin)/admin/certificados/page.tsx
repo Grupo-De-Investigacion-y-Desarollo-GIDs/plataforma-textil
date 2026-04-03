@@ -1,13 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { SearchInput } from '@/components/ui/search-input'
-import { DataTable } from '@/components/ui/data-table'
-import { Modal } from '@/components/ui/modal'
-import { Select } from '@/components/ui/select'
+import { Card } from '@/compartido/componentes/ui/card'
+import { Badge } from '@/compartido/componentes/ui/badge'
+import { Button } from '@/compartido/componentes/ui/button'
+import { SearchInput } from '@/compartido/componentes/ui/search-input'
+import { DataTable } from '@/compartido/componentes/ui/data-table'
+import { Modal } from '@/compartido/componentes/ui/modal'
+import { Select } from '@/compartido/componentes/ui/select'
 import { Eye, Trash2 } from 'lucide-react'
 
 interface Cert {

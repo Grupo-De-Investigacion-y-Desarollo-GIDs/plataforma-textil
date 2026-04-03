@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Card } from '@/compartido/componentes/ui/card'
+import { Button } from '@/compartido/componentes/ui/button'
+import { Input } from '@/compartido/componentes/ui/input'
 
 export default function AdminConfiguracionPage() {
   const [tab, setTab] = useState<'general' | 'emails' | 'integraciones'>('general')

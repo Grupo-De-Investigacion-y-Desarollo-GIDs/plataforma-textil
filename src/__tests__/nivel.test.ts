@@ -7,8 +7,8 @@ import {
   PTS_POR_VALIDACION,
   PTS_POR_CERTIFICADO,
   PUNTAJE_MAX,
-} from '@/lib/nivel'
-import type { DatosTaller } from '@/lib/nivel'
+} from '@/compartido/lib/nivel'
+import type { DatosTaller } from '@/compartido/lib/nivel'
 
 function datos(overrides: Partial<DatosTaller> = {}): DatosTaller {
   return {

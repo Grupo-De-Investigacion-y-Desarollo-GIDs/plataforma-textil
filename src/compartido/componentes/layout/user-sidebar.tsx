@@ -20,7 +20,7 @@ import {
   BarChart3,
   ClipboardList
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/compartido/lib/utils'
 
 interface MenuItem {
   id: string

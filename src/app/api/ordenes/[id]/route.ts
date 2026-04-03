@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { auth } from '@/lib/auth'
+import { prisma } from '@/compartido/lib/prisma'
+import { auth } from '@/compartido/lib/auth'
 import { EstadoPedido } from '@prisma/client'
 
 const TRANSICIONES_VALIDAS: Record<string, string[]> = {

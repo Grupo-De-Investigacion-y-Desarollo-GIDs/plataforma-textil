@@ -1,9 +1,9 @@
 export const dynamic = 'force-dynamic'
 
 import { notFound } from 'next/navigation'
-import { prisma } from '@/lib/prisma'
-import { Badge } from '@/components/ui/badge'
-import { Card } from '@/components/ui/card'
+import { prisma } from '@/compartido/lib/prisma'
+import { Badge } from '@/compartido/componentes/ui/badge'
+import { Card } from '@/compartido/componentes/ui/card'
 import { Star, MapPin, Users, TrendingUp, Clock, Award } from 'lucide-react'
 
 const nivelColor: Record<string, 'warning' | 'default' | 'success'> = { BRONCE: 'warning', PLATA: 'default', ORO: 'success' }

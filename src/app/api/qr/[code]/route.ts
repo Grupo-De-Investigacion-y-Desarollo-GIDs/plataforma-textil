@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { generateQrBuffer } from '@/lib/qr'
+import { generateQrBuffer } from '@/compartido/lib/qr'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ code: string }> }) {
   try {

@@ -2,11 +2,11 @@ export const dynamic = 'force-dynamic'
 
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
-import { prisma } from '@/lib/prisma'
-import { auth } from '@/lib/auth'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { StatCard } from '@/components/ui/stat-card'
+import { prisma } from '@/compartido/lib/prisma'
+import { auth } from '@/compartido/lib/auth'
+import { Card } from '@/compartido/componentes/ui/card'
+import { Badge } from '@/compartido/componentes/ui/badge'
+import { StatCard } from '@/compartido/componentes/ui/stat-card'
 import { ArrowLeft, MapPin, Mail, Phone, Globe, Calendar } from 'lucide-react'
 
 export default async function AdminDetalleMarcaPage({ params }: {

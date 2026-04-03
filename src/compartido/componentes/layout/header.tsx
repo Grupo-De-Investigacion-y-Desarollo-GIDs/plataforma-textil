@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Globe, Search, Menu, X, User } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/compartido/lib/utils'
 import { UserSidebar } from './user-sidebar'
 
 interface Tab {

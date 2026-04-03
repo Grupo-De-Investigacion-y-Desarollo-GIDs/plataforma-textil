@@ -1,11 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Modal } from '@/components/ui/modal'
-import { Badge } from '@/components/ui/badge'
+import { Card } from '@/compartido/componentes/ui/card'
+import { Button } from '@/compartido/componentes/ui/button'
+import { Input } from '@/compartido/componentes/ui/input'
+import { Modal } from '@/compartido/componentes/ui/modal'
+import { Badge } from '@/compartido/componentes/ui/badge'
 import { Plus, Edit, Shield } from 'lucide-react'
 
 interface Rol {

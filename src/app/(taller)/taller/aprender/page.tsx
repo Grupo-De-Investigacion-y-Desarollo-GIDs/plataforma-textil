@@ -1,12 +1,12 @@
 export const dynamic = 'force-dynamic'
 
-import { auth } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
+import { auth } from '@/compartido/lib/auth'
+import { prisma } from '@/compartido/lib/prisma'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Card } from '@/compartido/componentes/ui/card'
+import { Badge } from '@/compartido/componentes/ui/badge'
+import { Button } from '@/compartido/componentes/ui/button'
 import { BookOpen, Play, Award, Clock } from 'lucide-react'
 
 export default async function TallerAprenderPage() {

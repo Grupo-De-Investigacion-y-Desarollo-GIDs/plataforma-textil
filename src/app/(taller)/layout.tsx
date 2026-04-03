@@ -1,6 +1,6 @@
-import { Header } from '@/components/layout'
-import { auth } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
+import { Header } from '@/compartido/componentes/layout'
+import { auth } from '@/compartido/lib/auth'
+import { prisma } from '@/compartido/lib/prisma'
 import { redirect } from 'next/navigation'
 
 export default async function TallerLayout({ children }: { children: React.ReactNode }) {

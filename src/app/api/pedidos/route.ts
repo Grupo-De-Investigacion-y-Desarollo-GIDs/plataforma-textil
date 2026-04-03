@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { auth } from '@/lib/auth'
-import { logActividad } from '@/lib/log'
+import { prisma } from '@/compartido/lib/prisma'
+import { auth } from '@/compartido/lib/auth'
+import { logActividad } from '@/compartido/lib/log'
 
 function generateOmId() {
   const year = new Date().getFullYear()

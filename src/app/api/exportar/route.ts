@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { auth } from '@/lib/auth'
+import { prisma } from '@/compartido/lib/prisma'
+import { auth } from '@/compartido/lib/auth'
 
 function toCsv(headers: string[], rows: string[][]): string {
   const escape = (v: string) => `"${String(v ?? '').replace(/"/g, '""')}"`

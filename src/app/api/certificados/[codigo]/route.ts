@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { prisma } from '@/compartido/lib/prisma'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ codigo: string }> }) {
   try {

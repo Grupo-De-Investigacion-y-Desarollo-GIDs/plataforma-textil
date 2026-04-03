@@ -3,10 +3,10 @@
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { FileText, BookOpen, Search, ArrowRight } from 'lucide-react'
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { ProgressRing } from '@/components/ui/progress-ring'
-import { Button } from '@/components/ui/button'
+import { Card } from '@/compartido/componentes/ui/card'
+import { Badge } from '@/compartido/componentes/ui/badge'
+import { ProgressRing } from '@/compartido/componentes/ui/progress-ring'
+import { Button } from '@/compartido/componentes/ui/button'
 
 const nivelLabel: Record<string, { text: string; variant: 'warning' | 'default' | 'success' }> = {
   BRONCE: { text: 'BRONCE', variant: 'warning' },

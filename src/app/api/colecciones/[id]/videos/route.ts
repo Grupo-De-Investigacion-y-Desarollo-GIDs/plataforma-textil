@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { auth } from '@/lib/auth'
+import { prisma } from '@/compartido/lib/prisma'
+import { auth } from '@/compartido/lib/auth'
 
 // POST /api/colecciones/[id]/videos — agregar video a colección
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

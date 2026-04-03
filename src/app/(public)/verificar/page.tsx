@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Search, CheckCircle, XCircle, Award } from 'lucide-react'
-import { Button, Input, Card } from '@/components/ui'
+import { Button, Input, Card } from '@/compartido/componentes/ui'
 
 interface CertificadoResult {
   codigo: string

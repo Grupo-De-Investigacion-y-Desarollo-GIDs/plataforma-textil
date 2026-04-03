@@ -1,5 +1,5 @@
 import { CheckCircle, Clock, AlertTriangle } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/compartido/lib/utils'
 
 type ItemStatus = 'completed' | 'pending' | 'warning' | 'optional'
 

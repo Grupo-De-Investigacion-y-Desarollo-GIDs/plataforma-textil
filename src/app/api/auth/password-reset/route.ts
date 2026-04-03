@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { prisma } from '@/compartido/lib/prisma'
 import { randomBytes } from 'crypto'
-import { sendEmail, buildPasswordResetEmail } from '@/lib/email'
+import { sendEmail, buildPasswordResetEmail } from '@/compartido/lib/email'
 
 export async function POST(req: NextRequest) {
   try {

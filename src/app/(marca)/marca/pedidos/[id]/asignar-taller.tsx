@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Modal } from '@/components/ui/modal'
+import { Modal } from '@/compartido/componentes/ui/modal'
 
 const nivelColor: Record<string, string> = {
   BRONCE: 'bg-amber-100 text-amber-800',

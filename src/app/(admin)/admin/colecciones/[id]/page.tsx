@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Select } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
+import { Card } from '@/compartido/componentes/ui/card'
+import { Button } from '@/compartido/componentes/ui/button'
+import { Input } from '@/compartido/componentes/ui/input'
+import { Select } from '@/compartido/componentes/ui/select'
+import { Badge } from '@/compartido/componentes/ui/badge'
 import { ArrowLeft, Trash2, Plus, CheckCircle, AlertCircle } from 'lucide-react'
 
 const categorias = ['Formalización', 'Costos', 'Calidad', 'Plataforma', 'Otro']

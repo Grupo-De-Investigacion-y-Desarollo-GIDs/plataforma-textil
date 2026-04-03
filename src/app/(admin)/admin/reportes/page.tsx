@@ -1,10 +1,10 @@
 export const dynamic = 'force-dynamic'
 
 import { redirect } from 'next/navigation'
-import { prisma } from '@/lib/prisma'
-import { auth } from '@/lib/auth'
-import { Card } from '@/components/ui/card'
-import { StatCard } from '@/components/ui/stat-card'
+import { prisma } from '@/compartido/lib/prisma'
+import { auth } from '@/compartido/lib/auth'
+import { Card } from '@/compartido/componentes/ui/card'
+import { StatCard } from '@/compartido/componentes/ui/stat-card'
 
 export default async function AdminReportesPage() {
   const session = await auth()

@@ -20,10 +20,10 @@ import {
   Factory,
   Hash,
 } from 'lucide-react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Select } from '@/components/ui/select'
+import { Input } from '@/compartido/componentes/ui/input'
+import { Button } from '@/compartido/componentes/ui/button'
+import { Card } from '@/compartido/componentes/ui/card'
+import { Select } from '@/compartido/componentes/ui/select'
 
 type Role = 'TALLER' | 'MARCA'
 

@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils'
+import { cn } from '@/compartido/lib/utils'
 
 type BadgeVariant = 'default' | 'success' | 'warning' | 'error' | 'outline' | 'muted'
 

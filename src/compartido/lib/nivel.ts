@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma'
+import { prisma } from '@/compartido/lib/prisma'
 
 export type NivelTaller = 'BRONCE' | 'PLATA' | 'ORO'
 

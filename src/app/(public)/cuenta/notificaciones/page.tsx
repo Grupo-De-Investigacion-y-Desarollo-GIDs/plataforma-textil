@@ -2,8 +2,8 @@ export const dynamic = 'force-dynamic'
 
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-import { auth } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
+import { auth } from '@/compartido/lib/auth'
+import { prisma } from '@/compartido/lib/prisma'
 import { Bell, CheckCircle2 } from 'lucide-react'
 
 async function markAllAsRead() {

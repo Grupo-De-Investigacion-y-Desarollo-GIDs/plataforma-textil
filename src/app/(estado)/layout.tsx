@@ -1,5 +1,5 @@
-import { Header } from '@/components/layout'
-import { auth } from '@/lib/auth'
+import { Header } from '@/compartido/componentes/layout'
+import { auth } from '@/compartido/lib/auth'
 import { redirect } from 'next/navigation'
 
 export default async function EstadoLayout({ children }: { children: React.ReactNode }) {
