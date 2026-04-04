@@ -303,9 +303,10 @@ Visitante → /registro (3 pasos: rol → datos → entidad)
 - **Decisión:** Postergado al Escenario 2. APRENDER funciona sin IA. Agregarla multiplica complejidad y costo para el piloto
 - **Contexto:** Propuesta OIT lo menciona como feature de APRENDER. Stack no definido (Claude API está en CLAUDE.md). No hay presupuesto asignado para API calls de IA
 
-### DT-06: Evaluaciones admin — persistencia
-- **Qué decidir:** La UI de evaluaciones es 100% mock. Las evaluaciones de colecciones reales se gestionan por otra vía (API `/api/colecciones/[id]/evaluacion`). ¿Se unifica o se descarta la pantalla admin?
-- **Impacto:** Admin no puede crear/editar quizzes desde la UI
+### DT-06: Evaluaciones admin — persistencia — RESUELTA
+- **Estado:** El sistema está unificado y funcional — no hay dos sistemas separados
+- **Flujo:** Admin crea/edita evaluaciones via `/admin/evaluaciones` → persiste en BD via `PUT /api/colecciones/[id]/evaluacion`. Taller rinde el quiz → se corrigen respuestas → se genera certificado automático si aprueba
+- **Pendientes menores (no bloqueantes):** No se puede eliminar una evaluación completa, no hay preview del quiz desde perspectiva del taller
 
 ### DT-07: Flujo de asignación taller → pedido
 - **Qué decidir:** Cómo la marca asigna talleres a un pedido. ¿Modal en detalle pedido? ¿Matching automático con sugerencias?
