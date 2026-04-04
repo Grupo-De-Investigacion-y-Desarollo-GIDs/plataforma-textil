@@ -43,17 +43,17 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const ext = file.name.split('.').pop() || 'pdf'
     const path = `validaciones/${validacion.tallerId}/${id}.${ext}`
 
-    // Intentar subir a storage; si no está configurado, continuar sin URL
-    let url: string | null = null
+    let url: string
     try {
       url = await uploadFile(buffer, path, file.type)
     } catch (storageError) {
-      console.warn('Storage no disponible, guardando sin URL:', storageError)
+      console.error('Error al subir a storage:', storageError)
+      return NextResponse.json({ error: 'No se pudo subir el documento. Intentá de nuevo.' }, { status: 502 })
     }
 
     const updated = await prisma.validacion.update({
       where: { id },
-      data: { ...(url ? { documentoUrl: url } : {}), estado: 'PENDIENTE' },
+      data: { documentoUrl: url, estado: 'PENDIENTE' },
     })
 
     return NextResponse.json(updated)
