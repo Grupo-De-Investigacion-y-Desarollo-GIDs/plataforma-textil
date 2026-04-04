@@ -47,6 +47,16 @@
   - `.claude/specs/arquitectura-e1.md`
 - **16:14** `10a15ed` — docs: agregar inventario tareas Escenario 2
   - `.claude/specs/arquitectura-e1.md`
+- **16:21** `c1d739c` — docs: planificación completa del mes de desarrollo (4 semanas)
+  - `.claude/specs/planificacion-mes.md`
+- **16:27** `9f63c6f` — docs: reescribir planificación mes con E1 + E2 completos (requisito OIT)
+  - `.claude/specs/planificacion-mes.md`
+- **16:42** `5381016` — docs: agregar estructura y reglas de specs al CLAUDE.md
+  - `CLAUDE.md`
+- **17:10** `d6ac4ea` — specs: semana1-infra-contenido
+  - `.claude/specs/semana1-infra-contenido.md`
+- **17:21** `819c554` — specs: agregar semana1-afipsdk-cuit
+  - `.claude/specs/semana1-afipsdk-cuit.md`
 
 
 ## 2026-04-03
