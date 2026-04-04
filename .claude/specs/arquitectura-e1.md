@@ -527,3 +527,50 @@ FISCALIZAR                                                  │
 - Exportes Estado reales
 - Auditorías con datos reales
 - Notificaciones in-app
+
+---
+
+## I. ESCENARIO 2 — Tareas pendientes
+
+### Publicación de pedidos
+
+| # | Tarea | Complejidad | Quién | Dependencias |
+|---|---|---|---|---|
+| I1 | Agregar estado PUBLICADO al enum EstadoPedido en Prisma + migración | Baja | Gerardo | Ninguna |
+| I2 | Flujo publicación de pedido: marca publica BORRADOR → PUBLICADO | Media | Sergio | I1 |
+| I3 | Vista marketplace de pedidos publicados para talleres | Alta | Sergio | I2 |
+
+### Matching y notificaciones
+
+| # | Tarea | Complejidad | Quién | Dependencias |
+|---|---|---|---|---|
+| I4 | Algoritmo de matching: dado un pedido, encontrar talleres compatibles por proceso/prenda/nivel/capacidad | Alta | Gerardo | I2 |
+| I5 | Notificaciones a talleres compatibles al publicar pedido (email + WhatsApp) | Media | Gerardo | I4, H1 |
+
+### Cotizaciones
+
+| # | Tarea | Complejidad | Quién | Dependencias |
+|---|---|---|---|---|
+| I6 | Modelo Cotizacion en Prisma: pedidoId, tallerId, precio, plazo, proceso, mensaje, estado (ENVIADA/ACEPTADA/RECHAZADA/VENCIDA) + migración | Baja | Gerardo | Ninguna |
+| I7 | API CRUD de cotizaciones | Media | Gerardo | I6 |
+| I8 | Vista taller: pedidos disponibles → cotizar → formulario precio/plazo/mensaje | Alta | Sergio | I3, I6 |
+| I9 | Vista marca: cotizaciones recibidas por pedido → comparar → aceptar → crea OrdenManufactura | Alta | Sergio | I7 |
+| I10 | Vencimiento automático de cotizaciones no respondidas | Media | Gerardo | I6 |
+
+### Acuerdos comerciales
+
+| # | Tarea | Complejidad | Quién | Dependencias |
+|---|---|---|---|---|
+| I11 | Registro de acuerdo: evolución de OrdenManufactura con aceptación mutua y términos | Alta | Gerardo | I9 |
+| I12 | PDF del acuerdo generado con @react-pdf/renderer | Media | Gerardo | I11 |
+| I13 | Activar EscrowHito: hitos de pago vinculados al acuerdo (modelo ya existe en schema) | Alta | Gerardo | I11 |
+
+### Asistente RAG con IA
+
+| # | Tarea | Complejidad | Quién | Dependencias |
+|---|---|---|---|---|
+| I14 | Decidir stack RAG: Claude API + Supabase pgvector | Baja | Gerardo | Ninguna |
+| I15 | Pipeline de indexación: transcripts YouTube → chunking → embeddings → Supabase pgvector | Alta | Gerardo | I14 |
+| I16 | API de chat RAG: recibe pregunta → busca contexto → genera respuesta con LLM | Alta | Gerardo | I15 |
+| I17 | UI de chat embebida en `/taller/aprender` y global | Media | Sergio | I16 |
+| I18 | Backend configuración asistente RAG en `/admin/integraciones/llm` | Media | Gerardo | I14 |
