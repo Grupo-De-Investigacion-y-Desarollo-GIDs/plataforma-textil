@@ -3,6 +3,9 @@
 ## 2026-04-04
 
 ### Gerardo Breard
+- **18:02** `f30168d` — specs: actualizar semana1-landing-dos-entradas con ajustes de factibilidad
+  - `.claude/specs/semana1-landing-dos-entradas.md`
+
 - **17:58** `d745885` — specs: agregar semana1-landing-dos-entradas
   - `.claude/specs/semana1-landing-dos-entradas.md`
 
