@@ -1,117 +1,124 @@
-'use client'
+export const dynamic = 'force-dynamic'
 
-import { useState } from 'react'
-import { Card } from '@/compartido/componentes/ui/card'
-import { Button } from '@/compartido/componentes/ui/button'
-import { Input } from '@/compartido/componentes/ui/input'
-import { Select } from '@/compartido/componentes/ui/select'
-import { Plus, Mail, Eye } from 'lucide-react'
+import { prisma } from '@/compartido/lib/prisma'
+import { auth } from '@/compartido/lib/auth'
+import { redirect } from 'next/navigation'
+import { Mail, Bell, BellOff, Send } from 'lucide-react'
+import NotificacionesClient from './notificaciones-client'
 
-interface Envio {
-  id: number
-  asunto: string
-  fecha: string
-  destinatarios: number
-  abiertos: number
-  clicks: number
+const canalLabels: Record<string, string> = {
+  EMAIL: 'Email',
+  WHATSAPP: 'WhatsApp',
+  PUSH: 'Push',
+  PLATAFORMA: 'In-app',
 }
 
-const mockEnvios: Envio[] = [
-  { id: 1, asunto: 'Nuevo curso disponible', fecha: '01/02/26', destinatarios: 24, abiertos: 18, clicks: 12 },
-  { id: 2, asunto: 'Recordatorio: documentos por vencer', fecha: '28/01/26', destinatarios: 5, abiertos: 5, clicks: 3 },
-]
+export default async function AdminNotificacionesPage() {
+  const session = await auth()
+  if (!session?.user) redirect('/login')
 
-export default function AdminNotificacionesPage() {
-  const [mostrarForm, setMostrarForm] = useState(false)
-  const [asunto, setAsunto] = useState('')
-  const [mensaje, setMensaje] = useState('')
-  const [segmento, setSegmento] = useState('todos')
-  const [canal, setCanal] = useState('email')
+  const [notificaciones, total, sinLeer, porTipo] = await Promise.all([
+    prisma.notificacion.findMany({
+      include: { user: { select: { name: true, role: true } } },
+      orderBy: { createdAt: 'desc' },
+      take: 30,
+    }),
+    prisma.notificacion.count(),
+    prisma.notificacion.count({ where: { leida: false } }),
+    prisma.notificacion.groupBy({
+      by: ['tipo'],
+      _count: true,
+      orderBy: { _count: { tipo: 'desc' } },
+      take: 5,
+    }),
+  ])
 
   return (
     <div className="max-w-4xl mx-auto py-6 px-4">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Centro de Notificaciones</h1>
-          <p className="text-gray-500 text-sm">Envío de comunicaciones a usuarios</p>
+          <p className="text-gray-500 text-sm">Envio de comunicaciones a usuarios</p>
         </div>
-        <Button icon={<Plus className="w-4 h-4" />} onClick={() => setMostrarForm(!mostrarForm)}>Nueva Notificación</Button>
+        <NotificacionesClient />
       </div>
 
-      <h2 className="font-overpass font-bold text-lg text-brand-blue mb-3">Envíos Recientes</h2>
-      <div className="space-y-3 mb-6">
-        {mockEnvios.map(e => (
-          <Card key={e.id}>
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="font-semibold text-sm flex items-center gap-2"><Mail className="w-4 h-4 text-brand-blue" /> {e.asunto}</p>
-                <p className="text-xs text-gray-500 mt-1">
-                  Enviado: {e.fecha} | Destinatarios: {e.destinatarios} |
-                  Abiertos: {e.abiertos} ({Math.round(e.abiertos / e.destinatarios * 100)}%) |
-                  Clicks: {e.clicks} ({Math.round(e.clicks / e.destinatarios * 100)}%)
+      {/* Stats */}
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+          <div className="flex items-center gap-3">
+            <Send className="w-5 h-5 text-blue-600" />
+            <div>
+              <p className="text-2xl font-bold text-gray-800">{total}</p>
+              <p className="text-xs text-gray-500">Total enviadas</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+          <div className="flex items-center gap-3">
+            <BellOff className="w-5 h-5 text-yellow-600" />
+            <div>
+              <p className="text-2xl font-bold text-gray-800">{sinLeer}</p>
+              <p className="text-xs text-gray-500">Sin leer</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+          <div className="flex items-center gap-3">
+            <Bell className="w-5 h-5 text-green-600" />
+            <div>
+              <p className="text-2xl font-bold text-gray-800">{total - sinLeer}</p>
+              <p className="text-xs text-gray-500">Leidas</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Por tipo */}
+      {porTipo.length > 0 && (
+        <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100 mb-6">
+          <h3 className="font-overpass font-semibold text-gray-700 text-sm uppercase mb-3">Por tipo</h3>
+          <div className="flex flex-wrap gap-2">
+            {porTipo.map(g => (
+              <span key={g.tipo} className="text-xs bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full font-medium">
+                {g.tipo}: {g._count}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Historial real */}
+      <h2 className="font-overpass font-bold text-lg text-brand-blue mb-3">Notificaciones Recientes</h2>
+      {notificaciones.length === 0 ? (
+        <div className="bg-white rounded-xl shadow-sm p-8 border border-gray-100 text-center">
+          <Mail className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+          <p className="text-sm text-gray-500">No hay notificaciones enviadas todavia</p>
+        </div>
+      ) : (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 divide-y divide-gray-100">
+          {notificaciones.map(n => (
+            <div key={n.id} className="px-5 py-4 flex items-start justify-between gap-4">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <p className="font-semibold text-sm text-gray-800 truncate">{n.titulo}</p>
+                  {!n.leida && (
+                    <span className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" />
+                  )}
+                </div>
+                <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{n.mensaje}</p>
+                <p className="text-xs text-gray-400 mt-1">
+                  Para: {n.user.name ?? 'Usuario'} ({n.user.role})
+                  {' | '}{canalLabels[n.canal] ?? n.canal}
+                  {' | '}{n.createdAt.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: '2-digit' })}
                 </p>
               </div>
-              <button className="p-1 hover:bg-gray-100 rounded"><Eye className="w-4 h-4 text-gray-500" /></button>
+              <span className={`text-xs font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${n.leida ? 'bg-gray-100 text-gray-500' : 'bg-blue-100 text-blue-700'}`}>
+                {n.leida ? 'Leida' : 'Sin leer'}
+              </span>
             </div>
-          </Card>
-        ))}
-      </div>
-
-      {mostrarForm && (
-        <>
-          <h2 className="font-overpass font-bold text-lg text-brand-blue mb-3">Crear Notificación</h2>
-          <Card>
-            <div className="space-y-4">
-              <Input label="Asunto *" value={asunto} onChange={e => setAsunto(e.target.value)} placeholder="Nuevo curso disponible: Control de calidad" />
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Mensaje *</label>
-                <textarea value={mensaje} onChange={e => setMensaje(e.target.value)} rows={5}
-                  placeholder="Hola {nombre}, ..."
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent" />
-                <p className="text-xs text-gray-400 mt-1">Variables: {'{nombre}'}, {'{empresa}'}, {'{boton:texto:url}'}</p>
-              </div>
-
-              <h3 className="font-overpass font-bold text-brand-blue text-sm">Destinatarios</h3>
-              <div className="space-y-2">
-                {[
-                  { value: 'todos', label: 'Todos los usuarios' },
-                  { value: 'talleres', label: 'Solo talleres' },
-                  { value: 'marcas', label: 'Solo marcas' },
-                ].map(opt => (
-                  <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
-                    <input type="radio" name="segmento" checked={segmento === opt.value} onChange={() => setSegmento(opt.value)} />
-                    <span className="text-sm">{opt.label}</span>
-                  </label>
-                ))}
-              </div>
-
-              {segmento === 'talleres' && (
-                <Select label="Nivel" value="" onChange={() => {}}
-                  options={[{ value: '', label: 'Todos' }, { value: 'BRONCE', label: 'Bronce' }, { value: 'PLATA', label: 'Plata' }, { value: 'ORO', label: 'Oro' }]} />
-              )}
-
-              <h3 className="font-overpass font-bold text-brand-blue text-sm">Canal de Envío</h3>
-              <div className="flex gap-4">
-                {[
-                  { value: 'email', label: 'Email' },
-                  { value: 'whatsapp', label: 'WhatsApp' },
-                  { value: 'inapp', label: 'Notificación in-app' },
-                ].map(opt => (
-                  <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={canal === opt.value} onChange={() => setCanal(opt.value)} className="rounded" />
-                    <span className="text-sm">{opt.label}</span>
-                  </label>
-                ))}
-              </div>
-
-              <div className="flex justify-end gap-2 pt-4 border-t">
-                <Button variant="secondary">Vista previa</Button>
-                <Button variant="secondary">Programar</Button>
-                <Button>Enviar ahora</Button>
-              </div>
-            </div>
-          </Card>
-        </>
+          ))}
+        </div>
       )}
     </div>
   )
