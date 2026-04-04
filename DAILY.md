@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-04-04
+
+### Gerardo Breard
+- **16:15** `10a15ed` — docs: agregar inventario tareas Escenario 2
+  - `.claude/specs/arquitectura-e1.md`
+
+
 ## 2026-04-03
 
 ### Gerardo Breard
