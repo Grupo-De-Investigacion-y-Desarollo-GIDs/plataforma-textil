@@ -1,35 +1,57 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
 import { Input } from '@/compartido/componentes/ui/input'
 
 export default function AdminConfiguracionPage() {
   const [tab, setTab] = useState<'general' | 'emails' | 'integraciones'>('general')
+  const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
 
-  const [nombrePlataforma, setNombrePlataforma] = useState('Plataforma Digital Textil')
-  const [emailSoporte, setEmailSoporte] = useState('soporte@plataformatextil.ar')
-  const [whatsappSoporte, setWhatsappSoporte] = useState('+54 11 1234-5678')
+  const [nombrePlataforma, setNombrePlataforma] = useState('')
+  const [emailSoporte, setEmailSoporte] = useState('')
+  const [whatsappSoporte, setWhatsappSoporte] = useState('')
   const [permitirTalleres, setPermitirTalleres] = useState(true)
   const [permitirMarcas, setPermitirMarcas] = useState(true)
   const [requiereAprobacion, setRequiereAprobacion] = useState(false)
-  const [prefijoCertificado, setPrefijoCertificado] = useState('PDT-CERT-')
-  const [institucionFirma, setInstitucionFirma] = useState('OIT Argentina - UNTREF')
+  const [prefijoCertificado, setPrefijoCertificado] = useState('')
+  const [institucionFirma, setInstitucionFirma] = useState('')
+
+  useEffect(() => {
+    fetch('/api/admin/config')
+      .then(r => r.json())
+      .then((configs: { clave: string; valor: string }[]) => {
+        const map: Record<string, string> = {}
+        configs.forEach(c => { map[c.clave] = c.valor })
+        if (map['nombre_plataforma']) setNombrePlataforma(map['nombre_plataforma'])
+        if (map['email_soporte']) setEmailSoporte(map['email_soporte'])
+        if (map['whatsapp_soporte']) setWhatsappSoporte(map['whatsapp_soporte'])
+        if (map['permitir_talleres'] !== undefined) setPermitirTalleres(map['permitir_talleres'] !== 'false')
+        if (map['permitir_marcas'] !== undefined) setPermitirMarcas(map['permitir_marcas'] !== 'false')
+        if (map['requiere_aprobacion'] !== undefined) setRequiereAprobacion(map['requiere_aprobacion'] === 'true')
+        if (map['prefijo_certificado']) setPrefijoCertificado(map['prefijo_certificado'])
+        if (map['institucion_firma']) setInstitucionFirma(map['institucion_firma'])
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
 
   async function handleSave() {
     setSaving(true)
+    setSaved(false)
     try {
       const configs = [
-        { clave: 'nombre_plataforma', valor: nombrePlataforma },
-        { clave: 'email_soporte', valor: emailSoporte },
-        { clave: 'whatsapp_soporte', valor: whatsappSoporte },
-        { clave: 'permitir_talleres', valor: String(permitirTalleres) },
-        { clave: 'permitir_marcas', valor: String(permitirMarcas) },
-        { clave: 'requiere_aprobacion', valor: String(requiereAprobacion) },
-        { clave: 'prefijo_certificado', valor: prefijoCertificado },
-        { clave: 'institucion_firma', valor: institucionFirma },
+        { clave: 'nombre_plataforma', valor: nombrePlataforma, grupo: 'general' },
+        { clave: 'email_soporte', valor: emailSoporte, grupo: 'general' },
+        { clave: 'whatsapp_soporte', valor: whatsappSoporte, grupo: 'general' },
+        { clave: 'permitir_talleres', valor: String(permitirTalleres), grupo: 'registro' },
+        { clave: 'permitir_marcas', valor: String(permitirMarcas), grupo: 'registro' },
+        { clave: 'requiere_aprobacion', valor: String(requiereAprobacion), grupo: 'registro' },
+        { clave: 'prefijo_certificado', valor: prefijoCertificado, grupo: 'certificados' },
+        { clave: 'institucion_firma', valor: institucionFirma, grupo: 'certificados' },
       ]
       for (const config of configs) {
         await fetch('/api/admin/config', {
@@ -38,6 +60,8 @@ export default function AdminConfiguracionPage() {
           body: JSON.stringify(config),
         })
       }
+      setSaved(true)
+      setTimeout(() => setSaved(false), 3000)
     } finally {
       setSaving(false)
     }
@@ -53,6 +77,14 @@ export default function AdminConfiguracionPage() {
     <div className="max-w-3xl mx-auto py-6 px-4">
       <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Configuración General</h1>
       <p className="text-gray-500 text-sm mb-6">Parámetros del sistema</p>
+
+      {loading && (
+        <div className="space-y-4 mb-6">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="h-12 bg-gray-100 rounded-lg animate-pulse" />
+          ))}
+        </div>
+      )}
 
       <div className="flex gap-2 mb-6">
         {tabs.map(t => (
@@ -116,9 +148,13 @@ export default function AdminConfiguracionPage() {
         </Card>
       )}
 
-      <Button onClick={handleSave} disabled={saving} className="w-full">
-        {saving ? 'Guardando...' : 'Guardar Configuración'}
+      <Button onClick={handleSave} disabled={saving || loading} className="w-full">
+        {saving ? 'Guardando...' : 'Guardar Configuracion'}
       </Button>
+
+      {saved && (
+        <p className="text-sm text-green-600 text-center mt-3 font-medium">Configuracion guardada correctamente</p>
+      )}
     </div>
   )
 }
