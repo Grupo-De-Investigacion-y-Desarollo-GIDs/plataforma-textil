@@ -54,7 +54,14 @@ def main():
     time_now = datetime.now().strftime("%H:%M")
 
     daily_path = Path("DAILY.md")
-    content = daily_path.read_text() if daily_path.exists() else "# Daily Log\n"
+
+    # Si el archivo no existe o no tiene nuestro header, crearlo desde cero
+    if daily_path.exists():
+        content = daily_path.read_text()
+        if "# Daily Log" not in content:
+            content = "# Daily Log\n"
+    else:
+        content = "# Daily Log\n"
 
     # Construir entrada
     file_lines = "\n".join(f"  - `{f}`" for f in files.splitlines() if f)
