@@ -3,6 +3,9 @@
 ## 2026-04-04
 
 ### Gerardo Breard
+- **17:58** `d745885` — specs: agregar semana1-landing-dos-entradas
+  - `.claude/specs/semana1-landing-dos-entradas.md`
+
 - **17:51** `d7941e0` — fix: reescribir hook daily para no depender de tool_output
   - `.claude/hooks/post_tool_use.py`
   - `.gitignore`
