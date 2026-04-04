@@ -60,3 +60,28 @@ Durante el desarrollo, cada decision tecnica importante, cambio de infraestructu
 - Navegacion: tabs activos detectados por pathname (no hardcodeados)
 - Registro en 1 paso (simplificado vs wireframe de 3 pasos)
 - Hook PostToolUse registra commits en DAILY.md automaticamente
+
+## SPECS — Estructura y reglas
+
+### Estructura obligatoria de cada spec
+
+1. **Contexto** — por que existe, que problema resuelve, que decisiones de arquitectura aplican
+2. **Que construir** — pantallas, flujos, estados, mensajes de error
+3. **Datos** — tablas Prisma, queries, campos nuevos si hace falta
+4. **Prescripciones tecnicas** — que archivos crear/modificar, que patron usar (server component vs client, server action vs API route), que librerias usar, como manejar errores, como integrarse con codigo existente
+5. **Casos borde** — que pasa cuando algo falla
+6. **Criterio de aceptacion** — checklist concreto de como sabe Sergio que termino
+7. **Tests** — que flujos testear con Vitest o Playwright antes del PR
+
+### Reglas para Gerardo al escribir specs
+- El spec DEBE prescribir que archivos tocar, que patron usar y que librerias usar — no dejar que Claude Code elija
+- El spec NO dicta nombres de variables menores ni estilos CSS
+- Sergio no debe tomar ninguna decision de arquitectura — si algo no esta en el spec, pregunta antes de improvisar
+- Cada spec vive en `.claude/specs/` con nombre descriptivo: `semana1-registro-cuit.md`
+
+### Reglas para Sergio al implementar
+- Leer el spec completo antes de abrir Claude Code
+- Si algo no esta claro, preguntar a Gerardo antes de arrancar
+- Nunca tocar el schema de Prisma — eso es exclusivo de Gerardo
+- Nunca tomar decisiones de arquitectura no especificadas en el spec
+- El PR no se abre hasta que todos los criterios de aceptacion esten cumplidos
