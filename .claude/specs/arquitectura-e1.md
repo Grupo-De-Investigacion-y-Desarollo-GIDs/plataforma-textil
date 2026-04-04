@@ -55,12 +55,29 @@ El Estado no es un observador pasivo. Desde la plataforma puede:
 - **Mobile-first** para flujos críticos: registro, formalización básica, academia
 - **Desktop** para flujos complejos: wizard perfil productivo completo, dashboard admin
 
-### Registro simplificado
+### Autenticación y registro
 
-- 3 preguntas esenciales al registrarse (rol, CUIT, datos de contacto)
-- BRONCE inmediato al completar el registro con CUIT verificado
-- Perfil se completa progresivamente en múltiples sesiones cortas — no hay formulario maratón
-- Cada vez que el taller vuelve, se le sugiere completar un dato más (no todos)
+**Métodos de autenticación:**
+- Google OAuth
+- Email + contraseña
+- Magic link
+
+**Entradas públicas:**
+- La landing tiene dos entradas únicamente: **"Soy taller"** y **"Soy marca"**
+- Estado y Admin son creados por el administrador desde el panel — nunca se auto-registran
+- El rol queda definido desde la entrada elegida en la landing
+
+**CUIT como identificador único:**
+- Un CUIT = un solo rol en todo el sistema
+- El CUIT es señal de referencia, no verificador de rol — no bloquea ni corrige el rol elegido por el usuario
+- Si un CUIT ya está registrado, el sistema lo detecta y muestra mensaje claro
+
+**Registro mínimo para taller (3 pasos):**
+1. Elegir método de autenticación (Google, email+contraseña, magic link)
+2. Ingresar CUIT — verifica contra ARCA, asigna nivel BRONCE automáticamente
+3. Nombre del taller — visible en el directorio
+
+Todo lo demás se completa progresivamente en múltiples sesiones cortas. Cada vez que el taller vuelve, se le sugiere completar un dato más (no todos). No hay formulario maratón
 
 ---
 
