@@ -277,11 +277,13 @@ Visitante → /registro (3 pasos: rol → datos → entidad)
 
 ## 3. DECISIONES TÉCNICAS PENDIENTES
 
-### DT-01: Integración ARCA/AFIP para verificación CUIT
-- **Qué decidir:** SDK de AFIP vs API propia (CUIT_API_URL) vs servicio tercero
-- **Impacto:** Bloquea registro robusto y auto-diagnóstico de formalización
-- **Opciones:** (a) afip.js SDK, (b) API REST de ApiArgentina, (c) validar solo formato y verificar manualmente
-- **Contexto:** env var CUIT_API_URL definida pero vacía. Skill `verificar-cuit` existe como placeholder
+### DT-01: Integración ARCA/AFIP para verificación CUIT — RESUELTA
+- **Proveedor:** AfipSDK (afipsdk.com)
+- **Plan:** Free para desarrollo y piloto (suficiente para 35 registros)
+- **CUIT de plataforma:** Provisorio con CUIT de Gerardo, migrar a CUIT de UNTREF (30-68525606-8) antes del escalamiento
+- **Variables:** AFIP_SDK_TOKEN y AFIP_SDK_ENV configuradas en Vercel y .env.local
+- **Flujo:** Usuario ingresa CUIT → plataforma consulta AfipSDK → si inválido/inactivo bloquea el registro → si válido autocompleta razón social, domicilio y categoría → asigna BRONCE automáticamente
+- **Pendiente institucional:** UNTREF debe autorizar su CUIT en ARCA para producción real. Documentar en handover OIT
 
 ### DT-02: Storage para documentos de formalización
 - **Qué decidir:** Sprint 1 implementó upload a Supabase Storage, pero la UI de `/taller/formalizacion` no lo conecta. ¿Se reutiliza ese código o se reimplementa?
