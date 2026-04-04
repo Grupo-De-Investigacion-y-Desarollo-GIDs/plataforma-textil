@@ -3,15 +3,16 @@
 Fecha: 2026-04-04
 Base: arquitectura-e1.md (inventario de tareas A-I)
 Duración: 4 semanas, 5 días hábiles cada una (20 días)
-Equipo: Gerardo (backend, infra, integraciones) + Sergio (frontend, UI, stubs)
+Equipo: Gerardo (backend, infra, integraciones, E2) + Sergio (frontend, UI, stubs, apoyo)
 Regla: semana 4 es solo pruebas y fixes — no se arranca nada nuevo
+Requisito: E1 + E2 completos. Es compromiso contractual con la OIT.
 
 ---
 
-## Semana 1 — Fundaciones: registro, auth y rol CONTENIDO
+## Semana 1 — Columna vertebral: registro, auth, infra CONTENIDO, schemas E2
 
 ### Objetivo
-Cerrar los gaps de REGISTRAR que bloquean todo lo demás. Establecer la infraestructura del nuevo rol CONTENIDO. Marcar stubs como "En construcción" para no confundir en el piloto.
+Cerrar los gaps de REGISTRAR que bloquean todo. Establecer infra del rol CONTENIDO. Crear los modelos de datos del E2 (publicación, cotizaciones) para desbloquear semana 2. Marcar stubs como "En construcción".
 
 ### Gerardo
 - **A1** — Integrar AfipSDK en registro: CUIT → consulta API → autocomplete → BRONCE automático (Alta)
@@ -22,6 +23,9 @@ Cerrar los gaps de REGISTRAR que bloquean todo lo demás. Establecer la infraest
 - **F1** — Agregar CONTENIDO al enum UserRole en Prisma + migración (Baja)
 - **F2** — Actualizar middleware con rol CONTENIDO y rutas `/contenido/*` (Baja)
 - **F3** — Actualizar endpoints colecciones/videos/evaluaciones para aceptar rol CONTENIDO (Baja)
+- **I1** — Agregar estado PUBLICADO al enum EstadoPedido en Prisma + migración (Baja)
+- **I6** — Modelo Cotizacion en Prisma + migración (Baja)
+- **I14** — Decidir stack RAG: Claude API + Supabase pgvector (Baja)
 
 ### Sergio
 - **A2** — Rediseñar registro a 3 pasos: auth method → CUIT → nombre (Alta) — depende de A1
@@ -35,71 +39,86 @@ Cerrar los gaps de REGISTRAR que bloquean todo lo demás. Establecer la infraest
 ### Criterio de avance
 - Un usuario nuevo puede registrarse con Google, email o magic link
 - El CUIT se verifica contra ARCA y autocompleta datos
-- Olvide contraseña funciona end-to-end (email → token → reset)
-- El rol CONTENIDO existe en BD, middleware y tiene layout propio
+- Olvide contraseña funciona end-to-end
+- Rol CONTENIDO existe en BD, middleware y tiene layout propio
+- Modelos Cotizacion y estado PUBLICADO existen en BD (schema listo para semana 2)
+- Stack RAG decidido y documentado
 - Stubs marcados como "En construcción"
 
 ---
 
-## Semana 2 — Narrativa: gamificación, formalización y dashboard Estado
+## Semana 2 — E1 core + inicio E2: gamificación, Estado, publicación, cotizaciones
 
 ### Objetivo
-Implementar la narrativa "formalización = mejores clientes" en la UI del taller. Reconstruir el dashboard Estado con los KPIs del piloto. Conectar stubs admin prioritarios.
+Implementar narrativa de formalización. Reconstruir dashboard Estado. Abrir el flujo E2: publicación de pedidos, API de cotizaciones y matching. Avanzar páginas CONTENIDO y RAG pipeline.
 
 ### Gerardo
-- **A11** — Ubicación estandarizada: código postal o coordenadas INDEC (Media)
-- **D5** — Comparación social: "X talleres de tu zona están en nivel PLATA" (Baja) — query por zona
 - **D6** — Notificación al admin cuando un taller sube un documento (Baja)
-- **E2** — Dashboard Estado sección "¿Dónde hay que actuar?": denuncias sin resolver, talleres sin actividad 30d (Media) — queries nuevas
-- **E3** — Dashboard Estado sección "¿Qué está funcionando?": certificados este mes, subidas de nivel (Media) — queries nuevas
+- **E2** — Dashboard Estado "¿Dónde hay que actuar?": denuncias sin resolver, talleres inactivos 30d (Media)
+- **E3** — Dashboard Estado "¿Qué está funcionando?": certificados este mes, subidas de nivel (Media)
 - **E4** — Guard de rol ESTADO en `/estado/*` (Baja)
-- **H1** — WhatsApp como canal de notificaciones: definir qué eventos disparan wa.me links (Media)
-- **H2** — Email templates reutilizables: bienvenida, doc aprobado/rechazado, certificado, asignación (Media)
+- **H1** — WhatsApp como canal de notificaciones: definir eventos que disparan wa.me links (Media)
+- **H2** — Email templates reutilizables: bienvenida, docs, certificado, asignación, cotización (Media)
+- **I4** — Algoritmo de matching: dado un pedido, encontrar talleres compatibles por proceso/prenda/nivel/capacidad (Alta)
+- **I7** — API CRUD de cotizaciones (Media) — depende de I6
+- **I10** — Vencimiento automático de cotizaciones no respondidas (Media) — depende de I6
+- **I15** — Pipeline de indexación RAG: transcripts YouTube → chunking → embeddings → pgvector (Alta) — depende de I14
 
 ### Sergio
 - **D1** — Renombrar pasos formalización a lenguaje del taller (Baja)
 - **D2** — Asistente contextual en cada paso: para qué sirve, cómo obtenerlo, links y costos (Media)
 - **D3** — Barra de progreso con próximo beneficio visible en dashboard taller (Media)
 - **D4** — Notificación de logro al subir de nivel (celebración visual) (Baja)
-- **D7** — Auto-save entre pasos del wizard perfil productivo (Media)
 - **E1** — Reconstruir `/estado` según spec 0.10: sección "¿Cómo está el sector?" (Media)
+- **I2** — Flujo publicación de pedido: marca publica BORRADOR → PUBLICADO (Media) — depende de I1
 - **F5** — Crear `/contenido/colecciones` (copiar de admin, adaptar permisos) (Baja) — depende de F4
 - **F6** — Crear `/contenido/colecciones/[id]` y videos (Baja) — depende de F5
 - **F7** — Crear `/contenido/evaluaciones` (Baja) — depende de F5
+- **B8** — Ordenar directorio por nivel (ORO primero) (Baja)
 
 ### Criterio de avance
-- Dashboard taller muestra barra de progreso con próximo beneficio y comparación social
-- Formalización tiene nombres amigables y asistente contextual en cada paso
+- Dashboard taller muestra barra de progreso con próximo beneficio
+- Formalización tiene nombres amigables y asistente contextual
 - Dashboard Estado tiene las 3 secciones con datos reales
-- Rol CONTENIDO tiene sus páginas de colecciones y evaluaciones funcionando
-- WhatsApp definido como canal y templates de email creadas
+- Marca puede publicar pedido (BORRADOR → PUBLICADO)
+- API de cotizaciones funcional (CRUD + vencimiento)
+- Algoritmo de matching implementado y testeado
+- Pipeline RAG indexando transcripts en pgvector
+- Rol CONTENIDO tiene colecciones y evaluaciones funcionando
+- Templates de email y definición de canal WhatsApp listas
 
 ---
 
-## Semana 3 — Completar: ENCONTRAR, FISCALIZAR, APRENDER y admin
+## Semana 3 — Cerrar E1 + completar E2: vistas, acuerdos, RAG, denuncias, exportes
 
 ### Objetivo
-Cerrar los flujos que faltan para el piloto. Conectar stubs admin. Implementar denuncias y exportes. Generar PDF y QR.
+Completar todas las vistas del E2 (marketplace taller, cotizaciones marca, acuerdos). Cerrar flujos E1 pendientes (denuncias, notificaciones, PDF/QR, stubs admin). Entregar RAG funcional.
 
 ### Gerardo
 - **B6** — Notificación al taller cuando le asignan una orden (email + WA) (Media)
 - **B7** — Notificación a la marca cuando el taller acepta/rechaza/completa (Media)
+- **I5** — Notificaciones a talleres compatibles al publicar pedido (email + WA) (Media) — depende de I4, H1
 - **C1** — Generar PDF de certificado con @react-pdf/renderer (Media)
 - **C2** — Generar imagen QR con librería qrcode (Baja)
-- **E8** — Exportar reportes reales con Puppeteer (PDF/Excel) desde `/estado/exportar` (Alta)
-- **H3** — Tests de integración para flujos críticos: registro, login, pedidos, nivel (Alta)
-- **H4** — Tests de integración para seguridad API (Media) — depende de H3
-- **F10** — Dashboard de impacto contenido: métricas por colección (Alta)
+- **E8** — Exportar reportes reales con Puppeteer (PDF/Excel) (Alta)
+- **I11** — Registro de acuerdo: evolución de OrdenManufactura con aceptación mutua y términos (Alta) — depende de I9
+- **I12** — PDF del acuerdo generado con @react-pdf/renderer (Media) — depende de I11
+- **I13** — Activar EscrowHito: hitos de pago vinculados al acuerdo (Alta) — depende de I11
+- **I16** — API de chat RAG: pregunta → contexto → respuesta con Claude (Alta) — depende de I15
+- **I18** — Backend configuración asistente RAG en admin/integraciones/llm (Media) — depende de I14
 
 ### Sergio
-- **B1** — Botón "Contactar" WhatsApp con contexto pre-cargado en perfiles taller (Baja)
+- **I3** — Vista marketplace de pedidos publicados para talleres (Alta) — depende de I2
+- **I8** — Vista taller: pedidos disponibles → cotizar → formulario precio/plazo/mensaje (Alta) — depende de I3, I6
+- **I9** — Vista marca: cotizaciones recibidas → comparar → aceptar → crea OrdenManufactura (Alta) — depende de I7
+- **I17** — UI de chat RAG embebida en `/taller/aprender` y global (Media) — depende de I16
+- **B1** — Botón "Contactar" WhatsApp con contexto pre-cargado (Baja)
 - **B2** — Modal perfil mínimo marca al primer contacto (Media)
-- **B3** — Directorio público: agregar filtros, búsqueda y paginación (Media)
-- **B4** — Perfil público taller: traer certificados, agregar botón contactar (Baja) — depende de B1
+- **B3** — Directorio público: filtros, búsqueda y paginación (Media)
+- **B4** — Perfil público taller: certificados + botón contactar (Baja) — depende de B1
 - **B5** — Construir perfil público marca con datos reales (Media)
-- **B8** — Ordenar directorio por nivel (ORO primero) (Baja)
-- **C3** — Botón "Descargar PDF" en admin/certificados conectado al generador (Baja) — depende de C1
-- **C4** — Botón "Revocar" en admin/certificados conectado a API PATCH (Baja)
+- **C3** — Botón "Descargar PDF" en admin/certificados conectado (Baja) — depende de C1
+- **C4** — Botón "Revocar" en admin/certificados conectado a API (Baja)
 - **E5** — UI pública de denuncia (formulario → POST /api/denuncias) (Media)
 - **E6** — UI consulta estado denuncia por código (Baja)
 - **E7** — Conectar `/admin/auditorias` a datos reales (Alta)
@@ -107,25 +126,30 @@ Cerrar los flujos que faltan para el piloto. Conectar stubs admin. Implementar d
 - **G2** — Conectar `/admin/documentos` (tipos) a API real (Media)
 
 ### Criterio de avance
-- Notificaciones funcionan en flujo de pedidos (asignación, aceptar, completar)
-- Certificados generan PDF descargable y QR verificable
-- Estado puede exportar reportes reales en PDF
-- Denuncia pública funciona end-to-end (formulario → consulta por código)
-- Auditorías admin conectadas a datos reales
-- Tests de integración pasan para flujos críticos
-- Dashboard de impacto muestra métricas por colección
+- Taller ve pedidos publicados y puede cotizar
+- Marca ve cotizaciones, compara y acepta (crea OrdenManufactura)
+- Acuerdos con aceptación mutua y PDF generado
+- EscrowHito vinculado a acuerdos
+- Notificaciones funcionan en todos los flujos (pedidos, cotizaciones, asignación)
+- Certificados generan PDF + QR
+- Estado puede exportar reportes reales
+- Denuncia pública funciona end-to-end
+- Chat RAG funcional en academia
+- Auditorías y stubs admin conectados a datos reales
 
 ---
 
 ## Semana 4 — Pruebas, fixes y preparación piloto
 
 ### Objetivo
-Cero funcionalidades nuevas. Solo testing, corrección de bugs, datos de demo y preparación para el piloto.
+Cero funcionalidades nuevas. Solo testing, corrección de bugs, datos de demo y preparación para el piloto. Cerrar documentación handover.
 
 ### Gerardo
-- **H5** — Migración incremental de gaps del schema Prisma (los más críticos) (Alta — parcial)
+- **H3** — Tests de integración para flujos críticos: registro, login, pedidos, cotizaciones, nivel (Alta)
+- **H4** — Tests de integración para seguridad API (Media) — depende de H3
+- **H5** — Migración incremental de gaps del schema Prisma — los más críticos (Alta — parcial)
 - Corregir bugs encontrados en testing
-- Revisar seguridad: segunda pasada de endpoints nuevos (notificaciones, notas, exportar)
+- Revisar seguridad: segunda pasada de endpoints nuevos (cotizaciones, acuerdos, RAG, notas)
 - Verificar deploy en Vercel: todas las env vars, build OK, rutas funcionan
 - Documentar en `.claude/specs/handover/` las decisiones de infraestructura
 
@@ -134,14 +158,18 @@ Cero funcionalidades nuevas. Solo testing, corrección de bugs, datos de demo y 
 - **G4** — Conectar botones editar/suspender/resetear en `/admin/usuarios` (Media)
 - **H7** — Responsive/mobile-first para registro, formalización y academia (Media)
 - **H8** — Seed de datos realistas actualizado para demo del piloto (Baja)
+- **F11** — Opción crear usuario CONTENIDO desde admin (Baja)
 - Corregir bugs de UI encontrados en testing
 - Testing manual de todos los flujos por rol (TALLER, MARCA, ESTADO, CONTENIDO, ADMIN)
+- Testing de flujo E2 completo: publicar → cotizar → aceptar → acuerdo → escrow
 
 ### Criterio de avance
-- Todos los flujos críticos testeados manualmente por rol
-- Build pasa sin errores ni warnings críticos
-- Seed genera datos realistas para demo
+- Todos los flujos E1 y E2 testeados manualmente por rol
+- Tests de integración pasan para flujos críticos
+- Build pasa sin errores
+- Seed genera datos realistas incluyendo cotizaciones y acuerdos
 - Deploy en Vercel funcional con datos de prueba
+- Documentación handover actualizada
 - Cero stubs que aparenten ser funcionales sin serlo
 
 ---
@@ -150,38 +178,46 @@ Cero funcionalidades nuevas. Solo testing, corrección de bugs, datos de demo y 
 
 | Semana | Gerardo | Sergio | Total |
 |---|---|---|---|
-| 1 | 8 tareas (1 Alta, 3 Media, 4 Baja) | 7 tareas (1 Alta, 1 Media, 5 Baja) | 15 |
-| 2 | 8 tareas (0 Alta, 4 Media, 4 Baja) | 9 tareas (0 Alta, 3 Media, 6 Baja) | 17 |
-| 3 | 8 tareas (3 Alta, 4 Media, 1 Baja) | 13 tareas (1 Alta, 5 Media, 7 Baja) | 21 |
-| 4 | Fixes + schema + handover | 4 tareas + testing + bugs | — |
-| **Total** | **24 + fixes** | **33 + testing** | **53 + fixes** |
+| 1 | 11 tareas (1 Alta, 3 Media, 7 Baja) | 7 tareas (1 Alta, 1 Media, 5 Baja) | 18 |
+| 2 | 10 tareas (2 Alta, 5 Media, 3 Baja) | 10 tareas (0 Alta, 3 Media, 7 Baja) | 20 |
+| 3 | 11 tareas (4 Alta, 5 Media, 2 Baja) | 16 tareas (3 Alta, 5 Media, 8 Baja) | 27 |
+| 4 | 3 tareas + fixes + seguridad + handover | 5 tareas + testing + bugs | 8 + fixes |
+| **Total** | **35 + fixes** | **38 + testing** | **73** |
 
 ---
 
-## Tareas que quedan FUERA del mes (Escenario 1)
+## Tareas sacrificables si hay atraso
 
-Estas tareas se sacrifican si algo se atrasa, ordenadas de menos a más importante:
+### E1 — Se pueden postergar sin romper el piloto
 
-1. **F8** — `/contenido/notificaciones` masivas por segmento (Alta) — requiere endpoint de envío real, se puede postergar
-2. **F9** — `/contenido/mensajes` textos institucionales (Media) — nice-to-have, no bloquea piloto
-3. **F11** — Opción crear usuario CONTENIDO desde admin (Baja) — se crea por BD mientras tanto
-4. **G5** — Conectar `/admin/reportes` a datos reales (Alta) — dashboard Estado cubre lo urgente
-5. **H6** — Migrar middleware.ts a proxy.ts (Media) — no bloqueante, post-piloto
-6. **H5** — Schema gaps completos (Alta) — se hace parcial en semana 4, el resto post-piloto
+1. **A11** — Ubicación INDEC → simplificar a texto libre por ahora
+2. **D5** — Comparación social "X talleres de tu zona" → nice-to-have
+3. **D7** — Auto-save wizard → funciona sin auto-save, solo UX
+4. **H6** — Migrar middleware.ts a proxy.ts → post-piloto
+5. **G5** — Reportes admin → dashboard Estado cubre lo urgente
+6. **F8** — Notificaciones masivas contenido → se posterga
+7. **F9** — Textos institucionales contenido → se posterga
+8. **F10** — Dashboard de impacto contenido → CONTENIDO funciona sin métricas
 
-### Si semana 3 se atrasa, mover a post-piloto:
-- E8 (exportes Puppeteer) — Estado puede ver KPIs en dashboard sin exportar
-- F10 (dashboard impacto contenido) — rol CONTENIDO funciona sin métricas
-- B5 (perfil público marca) — no es crítico para piloto
+### Plan de contingencia por semana
 
-### Si semana 2 se atrasa, mover a semana 3:
-- D7 (auto-save wizard) — funciona sin auto-save, solo es UX
-- F5/F6/F7 (páginas contenido) — CONTENIDO usa admin mientras tanto
+**Si semana 1 se atrasa:**
+- A3 (Google OAuth) y A4 (magic link) se mueven a semana 2 — registro funciona con email+contraseña
+- I14 (decidir RAG) se mueve a inicio semana 2
 
----
+**Si semana 2 se atrasa:**
+- F5/F6/F7 (páginas contenido) → CONTENIDO usa `/admin/*` mientras tanto
+- I10 (vencimiento cotizaciones) se mueve a semana 3
+- D3 (barra progreso) se simplifica a texto estático con %
 
-## Tareas del Escenario 2 — NO entran en este mes
+**Si semana 3 se atrasa — priorizar esto, sacrificar el resto:**
+- **No negociable E2:** I3 + I8 + I9 (vistas marketplace y cotizaciones) — son el core del E2
+- **No negociable E2:** I11 (acuerdos) — requerimiento contractual
+- **Sacrificable E2:** I13 (EscrowHito) → se documenta como "fase siguiente" — el modelo existe pero la UI se posterga
+- **Sacrificable E2:** I12 (PDF acuerdo) → acuerdo se ve en pantalla sin PDF descargable
+- **Sacrificable E1:** E8 (exportes Puppeteer) → Estado ve KPIs en dashboard sin exportar
+- **Sacrificable E1:** B5 (perfil público marca) → no crítico para piloto
+- **Sacrificable E1:** E7 (auditorías real) → queda stub con badge "En construcción"
 
-Todas las tareas I1-I18 quedan para el mes siguiente. El Escenario 2 (publicación, matching, cotizaciones, acuerdos, RAG) depende de que el Escenario 1 esté estable y en piloto.
-
-Excepción: **I1** (agregar PUBLICADO al enum) e **I6** (modelo Cotizacion) son migraciones simples que Gerardo puede hacer en semana 4 si hay margen, para adelantar schema sin implementar funcionalidad.
+### RAG — plan B si no llega:
+Si I15/I16 no se completan, el chat RAG se reemplaza por un chatbot simple con respuestas pre-armadas (FAQ) + link a los videos relevantes. I17 (UI) se adapta a FAQ en vez de RAG. Esto cumple el entregable sin la complejidad del pipeline.
