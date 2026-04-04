@@ -1,63 +1,94 @@
 #!/usr/bin/env python3
-"""Claude Code PostToolUse hook: registra cada git commit exitoso en DAILY.md."""
+"""Claude Code PostToolUse hook: registra cada git commit exitoso en DAILY.md.
+
+Estrategia robusta: no parsea tool_output. Cuando detecta 'git commit' en el
+comando, consulta git directamente y compara HEAD contra el ultimo commit
+logueado (guardado en .last_daily_commit). Si HEAD cambio y no es un commit
+'daily:', registra la entrada.
+"""
 
 import json
-import re
 import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
 
+# Paths relativos al root del proyecto (el script esta en .claude/hooks/)
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+LAST_COMMIT_FILE = PROJECT_ROOT / ".claude" / "hooks" / ".last_daily_commit"
+LOG_FILE = PROJECT_ROOT / ".claude" / "hooks" / "daily_hook.log"
+DAILY_PATH = PROJECT_ROOT / "DAILY.md"
+
+
+def log(msg: str):
+    try:
+        with LOG_FILE.open("a") as f:
+            f.write(f"[{datetime.now().isoformat()}] {msg}\n")
+    except Exception:
+        pass
+
+
+def git(*args: str) -> str:
+    return subprocess.check_output(
+        ["git", *args], text=True, cwd=str(PROJECT_ROOT)
+    ).strip()
+
 
 def main():
-    payload = json.loads(sys.stdin.read())
+    try:
+        payload = json.loads(sys.stdin.read())
+    except Exception as e:
+        log(f"stdin parse error: {e}")
+        return
 
     if payload.get("tool_name") != "Bash":
         return
 
     command = payload.get("tool_input", {}).get("command", "")
-
-    # Solo actuar en git commit (no en nuestros propios commits de daily)
-    if "git commit" not in command or "daily:" in command:
+    if "git commit" not in command:
         return
 
-    # Verificar que el commit fue exitoso (output contiene "[branch hash]")
-    output = str(payload.get("tool_output", ""))
-    if not re.search(r"\[\S+\s+\w+\]", output):
-        return
+    log(f"git commit detected")
 
+    # Consultar git directamente — no depender de tool_output
     try:
-        msg = subprocess.check_output(
-            ["git", "log", "-1", "--format=%s"], text=True
-        ).strip()
+        head_hash = git("log", "-1", "--format=%H")
+        msg = git("log", "-1", "--format=%s")
+    except subprocess.CalledProcessError as e:
+        log(f"git log failed: {e}")
+        return
 
-        # Ignorar si el ultimo commit es un daily
-        if msg.startswith("daily:"):
-            return
+    # Ignorar commits daily (son del propio hook)
+    if msg.startswith("daily:"):
+        log(f"skip daily commit: {msg}")
+        return
 
-        author = subprocess.check_output(
-            ["git", "config", "user.name"], text=True
-        ).strip()
+    # Comparar contra el ultimo commit logueado
+    last_logged = ""
+    if LAST_COMMIT_FILE.exists():
+        last_logged = LAST_COMMIT_FILE.read_text().strip()
 
-        commit_hash = subprocess.check_output(
-            ["git", "log", "-1", "--format=%h"], text=True
-        ).strip()
+    if head_hash == last_logged:
+        log(f"already logged or commit failed: {head_hash[:8]}")
+        return
 
-        files = subprocess.check_output(
-            ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD"],
-            text=True,
-        ).strip()
-    except subprocess.CalledProcessError:
+    log(f"new commit: {head_hash[:8]} — {msg}")
+
+    # Obtener detalles del commit
+    try:
+        author = git("config", "user.name")
+        short_hash = git("log", "-1", "--format=%h")
+        files = git("diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD")
+    except subprocess.CalledProcessError as e:
+        log(f"git details failed: {e}")
         return
 
     today = datetime.now().strftime("%Y-%m-%d")
     time_now = datetime.now().strftime("%H:%M")
 
-    daily_path = Path("DAILY.md")
-
-    # Si el archivo no existe o no tiene nuestro header, crearlo desde cero
-    if daily_path.exists():
-        content = daily_path.read_text()
+    # Leer o crear DAILY.md
+    if DAILY_PATH.exists():
+        content = DAILY_PATH.read_text()
         if "# Daily Log" not in content:
             content = "# Daily Log\n"
     else:
@@ -65,43 +96,57 @@ def main():
 
     # Construir entrada
     file_lines = "\n".join(f"  - `{f}`" for f in files.splitlines() if f)
-    entry = f"- **{time_now}** `{commit_hash}` — {msg}\n{file_lines}\n"
+    entry = f"- **{time_now}** `{short_hash}` — {msg}\n{file_lines}\n"
 
     date_header = f"## {today}"
     author_header = f"### {author}"
 
     if date_header in content:
         if author_header in content:
-            # Agregar entrada despues del header del autor
             content = content.replace(
                 author_header + "\n", author_header + "\n" + entry + "\n", 1
             )
         else:
-            # Agregar seccion del autor despues del header de fecha
             content = content.replace(
                 date_header + "\n",
                 date_header + "\n\n" + author_header + "\n" + entry + "\n",
                 1,
             )
     else:
-        # Nueva fecha al principio (despues del titulo)
         content = content.replace(
             "# Daily Log\n",
-            "# Daily Log\n\n" + date_header + "\n\n" + author_header + "\n" + entry + "\n",
+            "# Daily Log\n\n"
+            + date_header
+            + "\n\n"
+            + author_header
+            + "\n"
+            + entry
+            + "\n",
             1,
         )
 
-    daily_path.write_text(content)
+    DAILY_PATH.write_text(content)
 
-    # Commitear solo si hay cambios staged
-    subprocess.run(["git", "add", "DAILY.md"], check=True)
-    diff = subprocess.run(["git", "diff", "--cached", "--quiet"], capture_output=True)
+    # Commitear el DAILY.md
+    subprocess.run(
+        ["git", "add", "DAILY.md"], check=True, cwd=str(PROJECT_ROOT)
+    )
+    diff = subprocess.run(
+        ["git", "diff", "--cached", "--quiet"],
+        capture_output=True,
+        cwd=str(PROJECT_ROOT),
+    )
     if diff.returncode != 0:
         subprocess.run(
             ["git", "commit", "--no-verify", "-m", f"daily: {today}"],
             check=True,
             capture_output=True,
+            cwd=str(PROJECT_ROOT),
         )
+
+    # Guardar hash del commit logueado (el original, no el daily)
+    LAST_COMMIT_FILE.write_text(head_hash)
+    log(f"logged OK: {short_hash} — {msg}")
 
 
 if __name__ == "__main__":

@@ -24,6 +24,10 @@
 .DS_Store
 *.pem
 
+# hook state/logs
+.claude/hooks/.last_daily_commit
+.claude/hooks/daily_hook.log
+
 # debug
 npm-debug.log*
 yarn-debug.log*
