@@ -16,7 +16,7 @@ La landing actual tiene 8 links al registro, 3 de ellos sin rol definido. La dec
 
 - Hero: copy actualizado a "Soy taller" / "Soy marca"
 - Seccion "Quien sos?": reducir a 2 cards prominentes + texto pequeno para Estado
-- Header: dos botones pequenos "Soy taller" / "Soy marca" en lugar de "Crear cuenta" generico
+- Header: "Ingresar" pasa a link de texto plano + dos botones "Soy taller" / "Soy marca" reemplazan "Crear cuenta"
 - CTA Final: bifurcar en dos botones con rol pre-seleccionado
 - Footer y links secundarios: apuntar a `/registro?rol=TALLER` como default
 - Eliminar todos los links a `/registro` sin `?rol=`
@@ -36,24 +36,34 @@ La landing actual tiene 8 links al registro, 3 de ellos sin rol definido. La dec
 
 #### Cambio 1 — Header (lineas 39-61)
 
-Reemplazar el boton "Crear cuenta" → `/registro` por dos botones pequenos lado a lado. Mantener el boton "Ingresar" existente:
+Reemplazar el bloque de botones del header (lineas 49-59). El orden final debe ser: Directorio | Ingresar (texto plano) | Soy taller (outline) | Soy marca (azul solido).
+
+"Ingresar" pasa de boton outline a link de texto plano para no competir visualmente con los dos CTAs de registro:
 
 ```tsx
-<Link
-  href="/registro?rol=TALLER"
-  className="text-sm text-brand-blue border border-brand-blue px-3 py-1.5 rounded-lg font-overpass font-semibold hover:bg-blue-50 transition-colors"
->
-  Soy taller
-</Link>
-<Link
-  href="/registro?rol=MARCA"
-  className="hidden sm:inline text-sm bg-brand-blue text-white px-3 py-1.5 rounded-lg font-overpass font-semibold hover:bg-blue-800 transition-colors"
->
-  Soy marca
-</Link>
+<div className="flex items-center gap-3">
+  <Link href="/directorio" className="text-sm text-gray-600 hover:text-brand-blue transition-colors font-overpass hidden md:inline">
+    Directorio
+  </Link>
+  <Link href="/login" className="text-sm text-gray-600 hover:text-brand-blue transition-colors font-overpass">
+    Ingresar
+  </Link>
+  <Link
+    href="/registro?rol=TALLER"
+    className="text-sm text-brand-blue border border-brand-blue px-3 py-1.5 rounded-lg font-overpass font-semibold hover:bg-blue-50 transition-colors"
+  >
+    Soy taller
+  </Link>
+  <Link
+    href="/registro?rol=MARCA"
+    className="hidden sm:inline text-sm bg-brand-blue text-white px-3 py-1.5 rounded-lg font-overpass font-semibold hover:bg-blue-800 transition-colors"
+  >
+    Soy marca
+  </Link>
+</div>
 ```
 
-Nota: "Soy marca" lleva `hidden sm:inline` para ocultarse en mobile (ver casos borde).
+Nota: "Soy marca" lleva `hidden sm:inline` para ocultarse en mobile. "Ingresar" es ahora texto plano (mismo estilo que "Directorio" pero sin `hidden md:inline` — se muestra siempre).
 
 #### Cambio 2 — Hero CTAs (lineas 75-88)
 
@@ -129,7 +139,7 @@ Cambiar el link "Registrarse" → `/registro` a `/registro?rol=TALLER`:
 
 ## 5. Casos borde
 
-- **Mobile:** el header no tiene espacio para dos botones — "Soy marca" se oculta con `hidden sm:inline` y solo se muestra "Soy taller" (el actor principal de la plataforma). En el resto de la pagina (hero, seccion identidad, CTA final) ambos botones son visibles porque hay mas espacio vertical.
+- **Mobile — decision de diseno:** en mobile el header solo muestra "Soy taller" porque es el actor principal del piloto (la plataforma esta pensada primero para talleres). "Soy marca" se oculta con `hidden sm:inline`. Las marcas pueden registrarse desde la seccion "Quien sos?" o el CTA final, que muestran ambas opciones en todos los breakpoints.
 - **Usuario llega a `/registro` sin `?rol=`:** sigue funcionando — muestra paso 0 de seleccion de rol. No es un error, solo no es el flujo ideal. Esto puede pasar si alguien comparte el link manualmente.
 - **Footer con default TALLER:** el link generico "Registrarse" apunta a `/registro?rol=TALLER` porque es el actor principal. Si una marca usa ese link, vera el paso 1 con contexto de taller pero puede volver al paso 0 y cambiar rol.
 
@@ -137,12 +147,11 @@ Cambiar el link "Registrarse" → `/registro` a `/registro?rol=TALLER`:
 
 ## 6. Criterio de aceptacion
 
-- [ ] Ningun link en la landing apunta a `/registro` sin `?rol=` excepto si el usuario llega manualmente
-- [ ] El footer apunta a `/registro?rol=TALLER`
+- [ ] Ningun link en la landing apunta a `/registro` sin `?rol=`
 - [ ] Seccion "Quien sos?" tiene 2 cards prominentes (Taller y Marca) con `p-9` y emoji `text-5xl`
 - [ ] Debajo de las 2 cards hay texto "Sos de un organismo publico? Solicita acceso institucional" con mailto
 - [ ] La card Estado fue eliminada
-- [ ] Header tiene dos botones "Soy taller" / "Soy marca"
+- [ ] Header tiene "Ingresar" como texto plano + dos botones "Soy taller" (outline) / "Soy marca" (azul solido)
 - [ ] En mobile el header muestra solo "Soy taller" ("Soy marca" oculto con `hidden sm:inline`)
 - [ ] Hero dice "Soy taller" / "Soy marca" en los CTAs
 - [ ] CTA Final tiene dos botones con rol pre-seleccionado y H2 dice "Empeza hoy"
