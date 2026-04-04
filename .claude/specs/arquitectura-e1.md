@@ -288,20 +288,17 @@ Visitante → /registro (3 pasos: rol → datos → entidad)
 - **Impacto:** Bloquea el flujo ACOMPAÑAR completo
 - **Acción:** Revisar implementación Sprint 1 y conectar el componente file-upload existente
 
-### DT-03: Generación de PDFs (certificados, reportes)
-- **Qué decidir:** Librería para generar PDFs server-side
-- **Opciones:** (a) @react-pdf/renderer, (b) puppeteer/playwright para render HTML→PDF, (c) API externa
+### DT-03: Generación de PDFs (certificados, reportes) — RESUELTA
+- **Decisión:** @react-pdf/renderer para certificados, Puppeteer para exportes del Estado
 - **Impacto:** Certificados y exportes del Estado
 
-### DT-04: Generación de códigos QR
-- **Qué decidir:** Librería para generar QR como imagen
-- **Opciones:** (a) qrcode (npm), (b) servicio externo
+### DT-04: Generación de códigos QR — RESUELTA
+- **Decisión:** Librería qrcode de npm
 - **Impacto:** Verificación funciona pero no se genera la imagen QR para imprimir/compartir
 
-### DT-05: RAG / IA companion en APRENDER
-- **Qué decidir:** Si entra en MVP o se posterga a Fase 1
+### DT-05: RAG / IA companion en APRENDER — RESUELTA
+- **Decisión:** Postergado al Escenario 2. APRENDER funciona sin IA. Agregarla multiplica complejidad y costo para el piloto
 - **Contexto:** Propuesta OIT lo menciona como feature de APRENDER. Stack no definido (Claude API está en CLAUDE.md). No hay presupuesto asignado para API calls de IA
-- **Recomendación:** Postergar. APRENDER funciona sin IA. Agregarla multiplica complejidad y costo
 
 ### DT-06: Evaluaciones admin — persistencia
 - **Qué decidir:** La UI de evaluaciones es 100% mock. Las evaluaciones de colecciones reales se gestionan por otra vía (API `/api/colecciones/[id]/evaluacion`). ¿Se unifica o se descarta la pantalla admin?
@@ -312,10 +309,9 @@ Visitante → /registro (3 pasos: rol → datos → entidad)
 - **Impacto:** Sin esto, ENCONTRAR está incompleto — el ciclo pedido→orden→ejecución no cierra
 - **Contexto:** GAPS_PANTALLAS.md documenta que Sergio implementó un modal 2 pasos (buscar + definir proceso/precio/plazo) pero no está claro si sobrevivió la migración al repo nuevo
 
-### DT-08: Notificaciones — alcance MVP
-- **Qué decidir:** ¿Se implementa bandeja de notificaciones in-app o solo email?
+### DT-08: Notificaciones — alcance MVP — RESUELTA
+- **Decisión:** Email + WhatsApp como canales de notificación. Bandeja in-app postergada
 - **Contexto:** API de notificaciones existe, modelo Notificacion en schema. Admin UI es stub
-- **Recomendación:** Solo email para MVP. Bandeja in-app para Fase 1
 
 ### DT-09: Seguridad API — ownership uniforme
 - **Qué decidir:** GAP_MATRIX marca como CRÍTICO que la validación auth+ownership es inconsistente entre endpoints
