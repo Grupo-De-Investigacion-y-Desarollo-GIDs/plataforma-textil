@@ -323,9 +323,11 @@ Visitante → /registro (3 pasos: rol → datos → entidad)
 - **Altos resueltos:** Evaluación y progreso con check de rol TALLER. Password mínimo alineado a 8 caracteres
 - **Medio resuelto:** `PUT /api/ordenes/[id]` con check de rol explícito (TALLER o ADMIN)
 
-### DT-10: Admin detalle marca — reconstruir
-- **Qué decidir:** `/admin/marcas/[id]` es un stub con datos hardcodeados. ¿Se reconstruye siguiendo el patrón de `/admin/talleres/[id]`?
-- **Impacto:** Bajo para piloto (10 marcas), pero necesario para operación real
+### DT-10: Admin detalle marca — RESUELTA
+- **Estado:** La página ya usa datos reales de Prisma — el diagnóstico del CHECKLIST estaba desactualizado
+- **Implementado:** Stats, pedidos, actividad reciente, todo con datos reales
+- **Diferencia con talleres:** Estructural — marcas no tienen formalización ni documentos
+- **Notas internas:** Se implementan en el próximo paso con modelo NotaInterna, no se postergan
 
 ---
 

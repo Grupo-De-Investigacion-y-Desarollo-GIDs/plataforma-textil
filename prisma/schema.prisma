@@ -114,6 +114,7 @@ model User {
   notificaciones Notificacion[]
   logs          LogActividad[]
   auditorias    Auditoria[]    @relation("AuditoriaInspector")
+  notasAdmin    NotaInterna[]  @relation("NotasAdmin")
 
   @@map("users")
 }
@@ -211,6 +212,7 @@ model Taller {
   progresoCapacitacion  ProgresoCapacitacion[]
   certificados          Certificado[]
   intentosEvaluacion    IntentoEvaluacion[]
+  notasInternas         NotaInterna[]
 
   @@map("talleres")
 }
@@ -236,6 +238,7 @@ model Marca {
 
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   pedidos           Pedido[]
+  notasInternas     NotaInterna[]
 
   @@map("marcas")
 }
@@ -619,6 +622,25 @@ model LogActividad {
   user User? @relation(fields: [userId], references: [id])
 
   @@map("log_actividad")
+}
+
+// ============================================
+// NOTAS INTERNAS (Admin)
+// ============================================
+
+model NotaInterna {
+  id        String   @id @default(cuid())
+  texto     String   @db.Text
+  adminId   String
+  tallerId  String?
+  marcaId   String?
+  createdAt DateTime @default(now())
+
+  admin     User     @relation("NotasAdmin", fields: [adminId], references: [id])
+  taller    Taller?  @relation(fields: [tallerId], references: [id], onDelete: Cascade)
+  marca     Marca?   @relation(fields: [marcaId], references: [id], onDelete: Cascade)
+
+  @@map("notas_internas")
 }
 
 // ============================================
