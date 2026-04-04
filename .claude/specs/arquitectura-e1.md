@@ -89,6 +89,33 @@ Tanto talleres como marcas usan un campo estructurado para ubicación — códig
 
 ---
 
+## 0.9 ESTRUCTURA DE ROLES
+
+### ADMIN — Super admin técnico
+Gestiona usuarios, configuración del sistema, logs e infraestructura. Acceso total a todos los módulos. Es el único que puede crear usuarios ESTADO y CONTENIDO desde el panel.
+
+### ESTADO — Inspector / fiscalizador del sector
+Dashboard con KPIs de formalización, matching y confianza. Gestiona auditorías, denuncias, validaciones y exportes. En el futuro evoluciona a **Mesa Tripartita** (Estado + Empleadores + SOIVA) con dashboard de gobernanza, parametrización algorítmica y actas de decisiones.
+
+### CONTENIDO — Comunicaciones institucionales (ROL NUEVO)
+Gestiona academia (colecciones, videos, evaluaciones), notificaciones masivas y textos institucionales. No tiene acceso a datos sensibles de talleres/marcas ni a configuración del sistema. Creado por ADMIN desde el panel.
+
+### MARCA — Directorio y pedidos
+Busca talleres, crea pedidos, asigna talleres, sigue ejecución. Se auto-registra desde la landing ("Soy marca").
+
+### TALLER — Formalización y capacitación
+Completa perfil productivo, sube documentos, toma cursos, recibe pedidos. Se auto-registra desde la landing ("Soy taller"). Progresa de BRONCE → PLATA → ORO.
+
+### Decisiones técnicas que implica
+
+1. **Agregar CONTENIDO al enum UserRole en Prisma** — nueva migración
+2. **Mover CRUD de academia de ADMIN a CONTENIDO** — endpoints de colecciones, videos y evaluaciones aceptan ambos roles (ADMIN y CONTENIDO)
+3. **Actualizar middleware** con nuevo rol y rutas `/contenido/*`
+4. **Crear páginas `/contenido/*`** — dashboard, colecciones, evaluaciones, notificaciones
+5. **ESTADO** pasa a tener perfil similar a ADMIN pero enfocado en fiscalización, no en gestión técnica — sin acceso a configuración del sistema, usuarios ni logs internos
+
+---
+
 ## 1. FUNCIONALIDADES
 
 ### 1.1 REGISTRAR — Onboarding en <5 minutos
