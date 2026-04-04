@@ -285,10 +285,11 @@ Visitante → /registro (3 pasos: rol → datos → entidad)
 - **Flujo:** Usuario ingresa CUIT → plataforma consulta AfipSDK → si inválido/inactivo bloquea el registro → si válido autocompleta razón social, domicilio y categoría → asigna BRONCE automáticamente
 - **Pendiente institucional:** UNTREF debe autorizar su CUIT en ARCA para producción real. Documentar en handover OIT
 
-### DT-02: Storage para documentos de formalización
-- **Qué decidir:** Sprint 1 implementó upload a Supabase Storage, pero la UI de `/taller/formalizacion` no lo conecta. ¿Se reutiliza ese código o se reimplementa?
-- **Impacto:** Bloquea el flujo ACOMPAÑAR completo
-- **Acción:** Revisar implementación Sprint 1 y conectar el componente file-upload existente
+### DT-02: Storage para documentos de formalización — RESUELTA
+- **Estado:** El código de upload ya estaba conectado desde Sprint 1 (UploadButton → API → Supabase Storage)
+- **Bucket:** `documentos` creado en Supabase Storage (privado, 5MB, PDF/JPG/PNG/WebP)
+- **Bug corregido:** Si el upload falla, la validación no pasa a PENDIENTE — retorna error HTTP 502 al usuario
+- **Variables:** SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY confirmadas en .env.local y Vercel
 
 ### DT-03: Generación de PDFs (certificados, reportes) — RESUELTA
 - **Decisión:** @react-pdf/renderer para certificados, Puppeteer para exportes del Estado
