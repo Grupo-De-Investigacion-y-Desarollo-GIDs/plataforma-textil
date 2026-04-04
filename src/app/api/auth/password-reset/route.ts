@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
       data: { identifier: email, token, expires },
     })
 
-    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
+    const baseUrl = process.env.NEXTAUTH_URL || ''
     const resetUrl = `${baseUrl}/restablecer/${token}`
 
     const { subject, html } = buildPasswordResetEmail(resetUrl)

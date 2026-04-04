@@ -373,24 +373,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ── TESTIMONIO ── */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-2xl mx-auto text-center">
-          <blockquote className="text-lg text-gray-700 italic mb-4">
-            &ldquo;Gracias a la plataforma pude formalizar mi taller y ahora trabajo con marcas que antes no me conocían.&rdquo;
-          </blockquote>
-          <div className="flex items-center justify-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
-              <span className="text-xs font-bold text-amber-700">M</span>
-            </div>
-            <div className="text-left">
-              <p className="text-sm font-semibold text-gray-800">María</p>
-              <p className="text-xs text-gray-500">Taller de confección, Florencio Varela · 🥈 Nivel Plata</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ── CTA FINAL ── */}
       <section className="py-20 px-4 bg-brand-blue text-white">
         <div className="max-w-2xl mx-auto text-center">

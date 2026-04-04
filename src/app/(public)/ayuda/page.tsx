@@ -74,7 +74,7 @@ export default function AyudaPage() {
       <section className="rounded-xl border border-gray-200 bg-white p-6">
         <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">Contacto</h2>
         <div className="space-y-3 text-sm text-gray-700">
-          <p className="flex items-center gap-2"><Mail className="w-4 h-4 text-brand-blue" /> soporte@pdt.local</p>
+          <p className="flex items-center gap-2"><Mail className="w-4 h-4 text-brand-blue" /> soporte@plataformatextil.ar</p>
           <p className="flex items-center gap-2"><MessageCircle className="w-4 h-4 text-brand-blue" /> Respuesta estimada: 24-48 hs habiles</p>
         </div>
       </section>

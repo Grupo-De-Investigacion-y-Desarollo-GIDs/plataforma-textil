@@ -1,7 +1,7 @@
 import QRCode from 'qrcode'
 
 export function getCertificadoUrl(codigo: string): string {
-  const base = process.env.NEXTAUTH_URL ?? 'https://pdt-nine.vercel.app'
+  const base = process.env.NEXTAUTH_URL ?? ''
   return `${base}/verificar?code=${encodeURIComponent(codigo)}`
 }
 

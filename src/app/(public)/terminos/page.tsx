@@ -20,7 +20,7 @@ export default function TerminosPage() {
       <p className="text-gray-600">Todo el contenido de la plataforma, incluyendo diseño, logos y materiales de capacitación, es propiedad de PDT y la OIT.</p>
 
       <h2 className="font-overpass font-bold text-xl text-brand-blue mt-8">6. Contacto</h2>
-      <p className="text-gray-600">Para consultas sobre estos términos, contacte a soporte@pdt.org.ar</p>
+      <p className="text-gray-600">Para consultas sobre estos términos, contacte a soporte@plataformatextil.ar</p>
     </div>
   )
 }

@@ -14,13 +14,13 @@ export default function PrivacidadPage() {
       <p className="text-gray-600">Implementamos medidas de seguridad técnicas y organizativas para proteger sus datos personales contra acceso no autorizado, pérdida o destrucción.</p>
 
       <h2 className="font-overpass font-bold text-xl text-brand-blue mt-8">4. Derechos del Usuario</h2>
-      <p className="text-gray-600">Usted tiene derecho a acceder, rectificar, suprimir y portar sus datos personales. Para ejercer estos derechos, contacte a privacidad@pdt.org.ar</p>
+      <p className="text-gray-600">Usted tiene derecho a acceder, rectificar, suprimir y portar sus datos personales. Para ejercer estos derechos, contacte a privacidad@plataformatextil.ar</p>
 
       <h2 className="font-overpass font-bold text-xl text-brand-blue mt-8">5. Verificación CUIT</h2>
       <p className="text-gray-600">La verificación de CUIT se realiza a través de ARCA (ex-AFIP). Solo almacenamos el resultado de la verificación, no los datos fiscales completos.</p>
 
       <h2 className="font-overpass font-bold text-xl text-brand-blue mt-8">6. Contacto</h2>
-      <p className="text-gray-600">Para consultas sobre privacidad: privacidad@pdt.org.ar</p>
+      <p className="text-gray-600">Para consultas sobre privacidad: privacidad@plataformatextil.ar</p>
     </div>
   )
 }

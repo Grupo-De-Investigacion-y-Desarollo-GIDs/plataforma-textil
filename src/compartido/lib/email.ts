@@ -14,7 +14,7 @@ export async function sendEmail({ to, subject, html }: EmailOptions): Promise<vo
       },
       body: JSON.stringify({
         personalizations: [{ to: [{ email: to }] }],
-        from: { email: process.env.EMAIL_FROM || 'noreply@pdt.org.ar', name: 'PDT' },
+        from: { email: process.env.EMAIL_FROM || 'noreply@plataformatextil.ar', name: 'PDT' },
         subject,
         content: [{ type: 'text/html', value: html }],
       }),
@@ -52,7 +52,7 @@ function btnPrimario(url: string, texto: string): string {
 
 export function buildBienvenidaEmail(data: { nombre: string; role: 'TALLER' | 'MARCA' }): { subject: string; html: string } {
   const esTaller = data.role === 'TALLER'
-  const dashUrl = `${process.env.NEXTAUTH_URL ?? 'https://pdt-nine.vercel.app'}/${esTaller ? 'taller' : 'marca/directorio'}`
+  const dashUrl = `${process.env.NEXTAUTH_URL ?? ''}/${esTaller ? 'taller' : 'marca/directorio'}`
   return {
     subject: 'Bienvenido/a a la Plataforma Digital Textil',
     html: emailWrapper(`
@@ -74,7 +74,7 @@ export function buildDocAprobadoEmail(data: { nombreTaller: string; tipoDoc: str
       <h2 style="margin: 0 0 12px; color: #16a34a;">Documento aprobado</h2>
       <p>Hola <strong>${data.nombreTaller}</strong>, tu documento <strong>${data.tipoDoc}</strong> fue revisado y aprobado por el equipo de PDT.</p>
       <p>Tu nivel de formalización fue actualizado. Seguí cargando documentos para avanzar hacia el nivel Oro.</p>
-      ${btnPrimario(`${process.env.NEXTAUTH_URL ?? 'https://pdt-nine.vercel.app'}/taller/formalizacion`, 'Ver mi formalización')}
+      ${btnPrimario(`${process.env.NEXTAUTH_URL ?? ''}/taller/formalizacion`, 'Ver mi formalización')}
     `),
   }
 }
@@ -87,13 +87,13 @@ export function buildDocRechazadoEmail(data: { nombreTaller: string; tipoDoc: st
       <p>Hola <strong>${data.nombreTaller}</strong>, tu documento <strong>${data.tipoDoc}</strong> fue revisado y necesita correcciones.</p>
       <p style="background: #fef2f2; border-left: 4px solid #dc2626; padding: 12px 16px; border-radius: 4px;"><strong>Motivo:</strong> ${data.motivo}</p>
       <p>Podés volver a subir el documento corregido desde tu panel de formalización.</p>
-      ${btnPrimario(`${process.env.NEXTAUTH_URL ?? 'https://pdt-nine.vercel.app'}/taller/formalizacion`, 'Volver a cargar el documento')}
+      ${btnPrimario(`${process.env.NEXTAUTH_URL ?? ''}/taller/formalizacion`, 'Volver a cargar el documento')}
     `),
   }
 }
 
 export function buildCertificadoEmail(data: { nombreTaller: string; tituloColeccion: string; codigo: string; calificacion: number }): { subject: string; html: string } {
-  const verificarUrl = `${process.env.NEXTAUTH_URL ?? 'https://pdt-nine.vercel.app'}/verificar?code=${data.codigo}`
+  const verificarUrl = `${process.env.NEXTAUTH_URL ?? ''}/verificar?code=${data.codigo}`
   return {
     subject: `Certificado obtenido: ${data.tituloColeccion} - PDT`,
     html: emailWrapper(`
