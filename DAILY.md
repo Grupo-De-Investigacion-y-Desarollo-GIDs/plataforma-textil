@@ -3,6 +3,10 @@
 ## 2026-04-04
 
 ### Gerardo Breard
+- **17:51** `d7941e0` — fix: reescribir hook daily para no depender de tool_output
+  - `.claude/hooks/post_tool_use.py`
+  - `.gitignore`
+
 - **00:17** `29b0523` — docs: agregar decisiones de diseño a arquitectura E1
   - `.claude/specs/arquitectura-e1.md`
 - **12:10** `dfaa2a4` — docs: agregar decisiones de autenticación y registro a arquitectura E1
