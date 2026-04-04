@@ -116,6 +116,31 @@ Completa perfil productivo, sube documentos, toma cursos, recibe pedidos. Se aut
 
 ---
 
+## 0.10 DASHBOARD ESTADO — KPIs del piloto
+
+Principio: **minimalista para el piloto, se amplía con el uso real.** Todos los KPIs se calculan con datos ya existentes en la BD. No requieren nuevas integraciones.
+
+### Sección 1: ¿Cómo está el sector?
+
+- Total talleres registrados
+- Distribución por nivel Bronce / Plata / Oro con porcentajes
+- Progreso promedio de formalización (promedio de validaciones completadas por taller)
+- Total marcas registradas
+
+### Sección 2: ¿Dónde hay que actuar?
+
+- Validaciones pendientes de aprobación — con link directo a `/admin/talleres/[id]?tab=documentos`
+- Denuncias sin resolver — con link a gestión
+- Talleres sin actividad en los últimos 30 días
+
+### Sección 3: ¿Qué está funcionando?
+
+- Certificados emitidos (total y este mes)
+- Cursos completados
+- Talleres que subieron de nivel este mes
+
+---
+
 ## 1. FUNCIONALIDADES
 
 ### 1.1 REGISTRAR — Onboarding en <5 minutos
