@@ -59,3 +59,4 @@ Durante el desarrollo, cada decision tecnica importante, cambio de infraestructu
 - Middleware separado de Prisma para no exceder 1MB Edge limit
 - Navegacion: tabs activos detectados por pathname (no hardcodeados)
 - Registro en 1 paso (simplificado vs wireframe de 3 pasos)
+- Hook PostToolUse registra commits en DAILY.md automaticamente

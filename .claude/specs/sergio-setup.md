@@ -243,6 +243,44 @@ Es un warning de Next.js 16 (recomienda migrar a `proxy.ts`). No es bloqueante, 
 
 ---
 
+## Hook: Daily Log automatico
+
+El proyecto tiene un hook de Claude Code que registra cada commit en `DAILY.md` automaticamente.
+
+**Archivos involucrados:**
+- `.claude/hooks/post_tool_use.py` — script que se ejecuta despues de cada tool Bash
+- `.claude/settings.json` — configuracion que registra el hook
+
+**Que hace:**
+1. Despues de cada `git commit` exitoso, lee el mensaje, autor y archivos del commit
+2. Agrega una entrada en `DAILY.md` con fecha, hora, hash, mensaje y archivos
+3. Commitea `DAILY.md` automaticamente con `--no-verify` (para no disparar el hook de nuevo)
+
+**No necesitas hacer nada** — el hook ya viene configurado en el repo. Solo asegurate de tener Python 3 instalado:
+```bash
+python3 --version  # debe ser 3.10+
+```
+
+---
+
+## Cuentas de prueba (seed)
+
+Todas las cuentas usan la clave: **pdt2026**
+
+Se crean al correr `npx prisma db seed`.
+
+| Rol | Nivel | Nombre | Email |
+|-----|-------|--------|-------|
+| ADMIN | — | Lucía Fernández | lucia.fernandez@pdt.org.ar |
+| TALLER | Bronce | Roberto Giménez | roberto.gimenez@pdt.org.ar |
+| TALLER | Plata | Graciela Sosa | graciela.sosa@pdt.org.ar |
+| TALLER | Oro | Carlos Mendoza | carlos.mendoza@pdt.org.ar |
+| MARCA | — | Valentina Ramos | valentina.ramos@pdt.org.ar |
+| MARCA | — | Martín Echevarría | martin.echevarria@pdt.org.ar |
+| ESTADO | — | Ana Belén Torres | anabelen.torres@pdt.org.ar |
+
+---
+
 ## Contacto
 
 - Gerardo Breard — gbreard@gmail.com
