@@ -317,10 +317,11 @@ Visitante → /registro (3 pasos: rol → datos → entidad)
 - **Decisión:** Email + WhatsApp como canales de notificación. Bandeja in-app postergada
 - **Contexto:** API de notificaciones existe, modelo Notificacion en schema. Admin UI es stub
 
-### DT-09: Seguridad API — ownership uniforme
-- **Qué decidir:** GAP_MATRIX marca como CRÍTICO que la validación auth+ownership es inconsistente entre endpoints
-- **Impacto:** Riesgo de acceso no autorizado a datos ajenos
-- **Acción:** Auditar todos los endpoints GET/PUT/DELETE y aplicar patrón uniforme
+### DT-09: Seguridad API — ownership uniforme — RESUELTA
+- **Estado:** Auditados 41 endpoints, 35 correctos, 6 corregidos
+- **Críticos resueltos:** `GET /api/pedidos/[id]` con auth + ownership (marca, taller asignado, o ADMIN). `GET /api/certificados` restringido a ADMIN/ESTADO
+- **Altos resueltos:** Evaluación y progreso con check de rol TALLER. Password mínimo alineado a 8 caracteres
+- **Medio resuelto:** `PUT /api/ordenes/[id]` con check de rol explícito (TALLER o ADMIN)
 
 ### DT-10: Admin detalle marca — reconstruir
 - **Qué decidir:** `/admin/marcas/[id]` es un stub con datos hardcodeados. ¿Se reconstruye siguiendo el patrón de `/admin/talleres/[id]`?
