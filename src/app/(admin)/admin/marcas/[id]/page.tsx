@@ -7,6 +7,7 @@ import { auth } from '@/compartido/lib/auth'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { StatCard } from '@/compartido/componentes/ui/stat-card'
+import { Button } from '@/compartido/componentes/ui/button'
 import { ArrowLeft, MapPin, Mail, Phone, Globe, Calendar } from 'lucide-react'
 
 export default async function AdminDetalleMarcaPage({ params }: {
@@ -41,6 +42,26 @@ export default async function AdminDetalleMarcaPage({ params }: {
     take: 20,
     include: { user: { select: { name: true } } },
   }).catch(() => [])
+
+  const notas = await prisma.notaInterna.findMany({
+    where: { marcaId: id },
+    include: { admin: { select: { name: true } } },
+    orderBy: { createdAt: 'desc' },
+  })
+
+  async function guardarNota(formData: FormData) {
+    'use server'
+    const texto = formData.get('texto') as string
+    if (!texto?.trim()) return
+    await prisma.notaInterna.create({
+      data: {
+        texto: texto.trim(),
+        adminId: session!.user!.id,
+        marcaId: id,
+      },
+    })
+    redirect(`/admin/marcas/${id}`)
+  }
 
   // Stats
   const totalPedidos = marca.pedidos.length
@@ -162,7 +183,7 @@ export default async function AdminDetalleMarcaPage({ params }: {
       </Card>
 
       {/* Actividad (logs) */}
-      <Card>
+      <Card className="mb-6">
         <h2 className="font-overpass font-bold text-brand-blue mb-3">Actividad Reciente</h2>
         {logs.length === 0 ? (
           <p className="text-sm text-gray-500">Sin actividad registrada.</p>
@@ -176,6 +197,35 @@ export default async function AdminDetalleMarcaPage({ params }: {
                 {log.user?.name && (
                   <span className="text-gray-400"> por {log.user.name}</span>
                 )}
+              </p>
+            ))}
+          </div>
+        )}
+      </Card>
+
+      {/* Notas */}
+      <Card>
+        <h2 className="font-overpass font-bold text-brand-blue mb-3">Notas Internas</h2>
+        <form action={guardarNota} className="flex gap-2 mb-4">
+          <input
+            type="text"
+            name="texto"
+            placeholder="Agregar nota..."
+            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue"
+          />
+          <Button size="sm" type="submit">Agregar</Button>
+        </form>
+        {notas.length === 0 ? (
+          <p className="text-sm text-gray-500">Sin notas internas.</p>
+        ) : (
+          <div className="space-y-2">
+            {notas.map(nota => (
+              <p key={nota.id} className="text-sm">
+                <span className="text-gray-400">{formatDate(nota.createdAt)}</span>
+                {' - '}
+                <strong>{nota.admin.name || 'Admin'}</strong>
+                {': '}
+                {nota.texto}
               </p>
             ))}
           </div>

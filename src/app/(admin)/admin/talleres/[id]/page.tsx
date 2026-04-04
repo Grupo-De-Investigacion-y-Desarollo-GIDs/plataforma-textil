@@ -44,6 +44,12 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
 
   if (!taller) notFound()
 
+  const notas = await prisma.notaInterna.findMany({
+    where: { tallerId: id },
+    include: { admin: { select: { name: true } } },
+    orderBy: { createdAt: 'desc' },
+  })
+
   const logs = await prisma.logActividad.findMany({
     where: { detalles: { path: ['tallerId'], equals: id } },
     orderBy: { timestamp: 'desc' },
@@ -101,11 +107,11 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
     'use server'
     const texto = formData.get('texto') as string
     if (!texto?.trim()) return
-    await prisma.logActividad.create({
+    await prisma.notaInterna.create({
       data: {
-        userId: session!.user!.id,
-        accion: 'NOTA_INTERNA',
-        detalles: { tallerId: id, texto: texto.trim() },
+        texto: texto.trim(),
+        adminId: session!.user!.id,
+        tallerId: id,
       },
     })
     redirect(`/admin/talleres/${id}?tab=${tab}`)
@@ -278,18 +284,21 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
           />
           <Button size="sm" type="submit">Agregar</Button>
         </form>
-        <div className="space-y-2">
-          {logs.filter(l => l.accion === 'NOTA_INTERNA').map(log => (
-            <p key={log.id} className="text-sm">
-              <span className="text-gray-400">{log.timestamp.toLocaleDateString('es-AR')}</span>
-              {' - '}
-              <strong>{log.user?.name || 'Admin'}</strong>
-              {': &ldquo;'}
-              {(log.detalles as Record<string, string>)?.texto || ''}
-              {'&rdquo;'}
-            </p>
-          ))}
-        </div>
+        {notas.length === 0 ? (
+          <p className="text-sm text-gray-500">Sin notas internas.</p>
+        ) : (
+          <div className="space-y-2">
+            {notas.map(nota => (
+              <p key={nota.id} className="text-sm">
+                <span className="text-gray-400">{nota.createdAt.toLocaleDateString('es-AR')}</span>
+                {' - '}
+                <strong>{nota.admin.name || 'Admin'}</strong>
+                {': '}
+                {nota.texto}
+              </p>
+            ))}
+          </div>
+        )}
       </Card>
     </div>
   )
