@@ -79,6 +79,14 @@ El Estado no es un observador pasivo. Desde la plataforma puede:
 
 Todo lo demás se completa progresivamente en múltiples sesiones cortas. Cada vez que el taller vuelve, se le sugiere completar un dato más (no todos). No hay formulario maratón
 
+### Perfil mínimo de marca para contactar talleres
+
+Nombre (del registro), tipo de marca, ubicación y volumen mensual aproximado. Se completa en un modal la primera vez que la marca intenta contactar un taller. Queda habilitado para siempre después — no vuelve a pedirse.
+
+### Ubicación estandarizada
+
+Tanto talleres como marcas usan un campo estructurado para ubicación — código postal o coordenadas del INDEC — no texto libre. El detalle de implementación va en el spec correspondiente.
+
 ---
 
 ## 1. FUNCIONALIDADES
