@@ -7,8 +7,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
     const { token } = await params
     const { password } = await req.json()
 
-    if (!password || password.length < 6) {
-      return NextResponse.json({ error: 'La contraseña debe tener al menos 6 caracteres' }, { status: 400 })
+    if (!password || password.length < 8) {
+      return NextResponse.json({ error: 'La contraseña debe tener al menos 8 caracteres' }, { status: 400 })
     }
 
     const record = await prisma.verificationToken.findUnique({ where: { token } })

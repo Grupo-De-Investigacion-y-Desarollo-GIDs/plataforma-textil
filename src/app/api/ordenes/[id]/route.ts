@@ -14,6 +14,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
     const role = (session.user as { role?: string }).role
+    if (role !== 'ADMIN' && role !== 'TALLER') {
+      return NextResponse.json({ error: 'Solo talleres o ADMIN pueden modificar órdenes' }, { status: 403 })
+    }
+
     const { id } = await params
 
     const orden = await prisma.ordenManufactura.findUnique({

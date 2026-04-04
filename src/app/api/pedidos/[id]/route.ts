@@ -4,15 +4,19 @@ import { auth } from '@/compartido/lib/auth'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const session = await auth()
+    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    const role = (session.user as { role?: string }).role
+
     const { id } = await params
 
     const pedido = await prisma.pedido.findUnique({
       where: { id },
       include: {
-        marca: { select: { id: true, nombre: true } },
+        marca: { select: { id: true, nombre: true, userId: true } },
         ordenes: {
           include: {
-            taller: { select: { id: true, nombre: true } },
+            taller: { select: { id: true, nombre: true, userId: true } },
           },
           orderBy: { createdAt: 'asc' },
         },
@@ -23,7 +27,20 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: 'Pedido no encontrado' }, { status: 404 })
     }
 
-    return NextResponse.json(pedido)
+    // Ownership: marca dueña, taller asignado, o ADMIN
+    if (role !== 'ADMIN') {
+      const isMarcaOwner = pedido.marca.userId === session.user.id
+      const isTallerAsignado = pedido.ordenes.some(o => o.taller.userId === session.user.id)
+      if (!isMarcaOwner && !isTallerAsignado) {
+        return NextResponse.json({ error: 'Sin acceso a este pedido' }, { status: 403 })
+      }
+    }
+
+    // Strip internal userId fields from response
+    const { marca: { userId: _mu, ...marca }, ordenes, ...rest } = pedido
+    const cleanOrdenes = ordenes.map(({ taller: { userId: _tu, ...taller }, ...o }) => ({ ...o, taller }))
+
+    return NextResponse.json({ ...rest, marca, ordenes: cleanOrdenes })
   } catch (error) {
     console.error('Error en GET /api/pedidos/[id]:', error)
     return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })

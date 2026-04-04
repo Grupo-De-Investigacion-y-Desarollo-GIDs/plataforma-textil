@@ -8,6 +8,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   try {
     const session = await auth()
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    const role = (session.user as { role?: string }).role
+    if (role !== 'TALLER') return NextResponse.json({ error: 'Solo talleres pueden registrar progreso' }, { status: 403 })
 
     const taller = await prisma.taller.findFirst({
       where: { userId: session.user.id },
