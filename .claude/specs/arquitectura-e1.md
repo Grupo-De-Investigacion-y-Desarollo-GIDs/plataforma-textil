@@ -308,10 +308,10 @@ Visitante → /registro (3 pasos: rol → datos → entidad)
 - **Flujo:** Admin crea/edita evaluaciones via `/admin/evaluaciones` → persiste en BD via `PUT /api/colecciones/[id]/evaluacion`. Taller rinde el quiz → se corrigen respuestas → se genera certificado automático si aprueba
 - **Pendientes menores (no bloqueantes):** No se puede eliminar una evaluación completa, no hay preview del quiz desde perspectiva del taller
 
-### DT-07: Flujo de asignación taller → pedido
-- **Qué decidir:** Cómo la marca asigna talleres a un pedido. ¿Modal en detalle pedido? ¿Matching automático con sugerencias?
-- **Impacto:** Sin esto, ENCONTRAR está incompleto — el ciclo pedido→orden→ejecución no cierra
-- **Contexto:** GAPS_PANTALLAS.md documenta que Sergio implementó un modal 2 pasos (buscar + definir proceso/precio/plazo) pero no está claro si sobrevivió la migración al repo nuevo
+### DT-07: Flujo de asignación taller → pedido — RESUELTA
+- **Estado:** El ciclo completo está implementado: crear pedido → asignar taller (modal 2 pasos) → aceptar/rechazar → progreso → completado
+- **Máquina de estados:** Definida para PEDIDO (BORRADOR→EN_EJECUCION→COMPLETADO) y ORDEN (PENDIENTE→EN_EJECUCION→COMPLETADO) con validación de transiciones en API
+- **Pendientes (van en specs de implementación):** Notificación al taller cuando le asignan una orden. Notificación a la marca cuando el taller acepta/rechaza/completa. Alternativa cuando la marca no tiene teléfono registrado. `GET /api/pedidos/[id]` sin auth → se resuelve en DT-09
 
 ### DT-08: Notificaciones — alcance MVP — RESUELTA
 - **Decisión:** Email + WhatsApp como canales de notificación. Bandeja in-app postergada
