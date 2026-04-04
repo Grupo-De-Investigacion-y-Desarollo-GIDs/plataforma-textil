@@ -12,6 +12,7 @@ const integraciones = [
     nombre: 'ARCA (ex-AFIP)',
     descripcion: 'Verificación automática de CUIT y monotributo',
     estado: 'configurado',
+    proximamente: true,
   },
   {
     href: '/admin/integraciones/llm',
@@ -19,6 +20,7 @@ const integraciones = [
     nombre: 'LLM / Chatbot',
     descripcion: 'Asistente virtual con IA para talleres',
     estado: 'pendiente',
+    proximamente: true,
   },
   {
     href: '/admin/integraciones/email',
@@ -26,6 +28,7 @@ const integraciones = [
     nombre: 'SendGrid (Email)',
     descripcion: 'Envío de emails transaccionales y masivos',
     estado: 'configurado',
+    proximamente: false,
   },
   {
     href: '/admin/integraciones/whatsapp',
@@ -33,6 +36,7 @@ const integraciones = [
     nombre: 'WhatsApp Business',
     descripcion: 'Notificaciones y comunicación por WhatsApp',
     estado: 'pendiente',
+    proximamente: true,
   },
 ]
 
@@ -43,9 +47,9 @@ export default function AdminIntegracionesPage() {
       <p className="text-gray-500 text-sm mb-6">Configuración de servicios externos</p>
 
       <div className="space-y-3">
-        {integraciones.map(int => (
-          <Link key={int.href} href={int.href}>
-            <Card className="hover:shadow-card-hover transition-shadow cursor-pointer mb-3">
+        {integraciones.map(int => {
+          const content = (
+            <Card className={`mb-3 ${int.proximamente ? 'opacity-60' : 'hover:shadow-card-hover transition-shadow cursor-pointer'}`}>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-brand-blue/10 rounded-lg flex items-center justify-center shrink-0">
                   <int.icon className="w-6 h-6 text-brand-blue" />
@@ -54,14 +58,26 @@ export default function AdminIntegracionesPage() {
                   <h2 className="font-overpass font-bold text-brand-blue">{int.nombre}</h2>
                   <p className="text-sm text-gray-500">{int.descripcion}</p>
                 </div>
-                <Badge variant={int.estado === 'configurado' ? 'success' : 'warning'}>
-                  {int.estado === 'configurado' ? 'Configurado' : 'Pendiente'}
-                </Badge>
-                <Settings className="w-5 h-5 text-gray-400" />
+                {int.proximamente ? (
+                  <Badge variant="muted">Próximamente</Badge>
+                ) : (
+                  <>
+                    <Badge variant={int.estado === 'configurado' ? 'success' : 'warning'}>
+                      {int.estado === 'configurado' ? 'Configurado' : 'Pendiente'}
+                    </Badge>
+                    <Settings className="w-5 h-5 text-gray-400" />
+                  </>
+                )}
               </div>
             </Card>
-          </Link>
-        ))}
+          )
+
+          return int.proximamente ? (
+            <div key={int.href}>{content}</div>
+          ) : (
+            <Link key={int.href} href={int.href}>{content}</Link>
+          )
+        })}
       </div>
     </div>
   )
