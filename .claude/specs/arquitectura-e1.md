@@ -141,6 +141,32 @@ Principio: **minimalista para el piloto, se amplía con el uso real.** Todos los
 
 ---
 
+## 0.11 ROL CONTENIDO — Páginas y métricas
+
+Principio: **el actor Contenido no solo gestiona materiales sino que entiende cómo los usa el sector para mejorarlos.**
+
+### Páginas de gestión
+
+- `/contenido/colecciones` — listar, crear, editar, publicar/despublicar
+- `/contenido/colecciones/[id]` — detalle con videos y evaluación
+- `/contenido/colecciones/[id]/videos` — agregar, ordenar, eliminar videos
+- `/contenido/evaluaciones` — crear y editar quizzes por colección
+- `/contenido/notificaciones` — redactar y enviar notificaciones masivas por segmento
+- `/contenido/mensajes` — textos institucionales de la plataforma
+
+### Dashboard de impacto
+
+- Colecciones publicadas vs borradores
+- Cursos más populares por inscriptos y completados
+- Tasa de completitud por colección
+- Certificados emitidos por colección
+- Progreso promedio de talleres en cada curso
+- Talleres que abandonaron a mitad — para detectar contenido difícil o poco relevante
+
+**Nota técnica:** Las páginas de gestión ya existen bajo `/admin/*`. Se mueven o duplican bajo `/contenido/*` actualizando permisos. Los endpoints de colecciones, videos y evaluaciones pasan a aceptar rol CONTENIDO además de ADMIN.
+
+---
+
 ## 1. FUNCIONALIDADES
 
 ### 1.1 REGISTRAR — Onboarding en <5 minutos
