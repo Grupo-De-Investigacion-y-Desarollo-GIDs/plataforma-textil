@@ -3,6 +3,13 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **12:06** `451fd1c` — feat: feedback con entidad parseada, pagina admin/feedback, link sidebar + tests E2E
+  - `e2e/admin.spec.ts`
+  - `src/app/(admin)/admin/feedback/page.tsx`
+  - `src/app/(admin)/layout.tsx`
+  - `src/app/api/feedback/route.ts`
+  - `src/compartido/componentes/feedback-widget.tsx`
+
 - **11:59** `88cef62` — specs: actualizar semana3-feedback-widget con contexto de entidad y vista admin
   - `.claude/specs/semana3-feedback-widget.md`
 
