@@ -3,6 +3,11 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **07:30** `2af5c97` — fix: playwright — corregir selectores, soporte BASE_URL, documentar issue NextAuth dev
+  - `e2e/helpers/auth.ts`
+  - `e2e/publico.spec.ts`
+  - `playwright.config.ts`
+
 - **07:21** `099aff4` — feat: setup Playwright — config, helpers, 14 tests E2E (3 publicos pasan, 11 auth pendientes)
   - `.gitignore`
   - `e2e/auth.spec.ts`
