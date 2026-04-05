@@ -3,6 +3,15 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **17:04** `f75f263` — fix: 4 gaps criticos de actores — dashboard marca, estado accede auditorias, admin sin 404s, denunciar en footer
+  - `src/app/(admin)/layout.tsx`
+  - `src/app/(auth)/acceso-rapido/page.tsx`
+  - `src/app/(auth)/registro/page.tsx`
+  - `src/app/(marca)/marca/page.tsx`
+  - `src/app/page.tsx`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+  - `src/middleware.ts`
+
 - **16:42** `3935d54` — docs: agregar 68 items de flujos entre actores al checklist de Sergio — total 150 items
   - `.claude/specs/semana4-checklist-sergio.md`
 
