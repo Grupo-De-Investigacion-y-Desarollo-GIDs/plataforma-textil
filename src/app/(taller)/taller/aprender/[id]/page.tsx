@@ -6,6 +6,7 @@ import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { AcademiaCliente } from '@/taller/componentes/academia-cliente'
+import { AsistenteChat } from '@/taller/componentes/asistente-chat'
 
 export default async function AcademiaDetallePage({
   params,
@@ -81,6 +82,8 @@ export default async function AcademiaDetallePage({
         progresoInicial={videosVistos}
         certificadoId={certificado?.id ?? null}
       />
+
+      <AsistenteChat />
     </div>
   )
 }
