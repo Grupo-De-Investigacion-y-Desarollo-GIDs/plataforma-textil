@@ -3,6 +3,11 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **06:42** `234f5ce` — feat: UI denuncia publica — formulario, consulta por codigo, links en ayuda
+  - `src/app/(public)/ayuda/page.tsx`
+  - `src/app/(public)/consultar-denuncia/page.tsx`
+  - `src/app/(public)/denunciar/page.tsx`
+
 - **06:36** `d71cd54` — feat: directorio publico con filtros de nivel, proceso, prenda y texto
   - `src/app/(public)/directorio/page.tsx`
 
