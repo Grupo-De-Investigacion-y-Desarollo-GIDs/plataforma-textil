@@ -3,6 +3,10 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **07:52** `a92d220` — feat: whatsapp con contexto + perfil minimo marca antes de contactar
+  - `src/app/(marca)/marca/directorio/[id]/page.tsx`
+  - `src/marca/componentes/contactar-taller.tsx`
+
 - **07:49** `ffa6269` — fix: resolver conflicto de slugs [codigo]/[id] en certificados — desbloquea NextAuth
   - `e2e/taller.spec.ts`
   - `src/app/api/certificados/[codigo]/route.ts`
