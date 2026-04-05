@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **12:32** `2eb098d` — feat: seed completo — pedidos publicados, cotizaciones, auditorias, denuncias, notificaciones, flags E2 activos
+  - `prisma/seed.ts`
+
 - **12:16** `a484f03` — feat: pagina acceso rapido — login de un click por rol para el piloto
   - `src/app/(auth)/acceso-rapido/page.tsx`
   - `src/middleware.ts`
