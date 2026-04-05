@@ -3,6 +3,23 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **03:58** `02afbf6` — feat: Google OAuth y magic link
+  - `.env.example`
+  - `package-lock.json`
+  - `package.json`
+  - `prisma/migrations/20260405064329_agregar_registro_completo_user/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/app/(admin)/admin/usuarios/page.tsx`
+  - `src/app/(auth)/login/page.tsx`
+  - `src/app/(auth)/registro/completar/page.tsx`
+  - `src/app/api/admin/usuarios/route.ts`
+  - `src/app/api/auth/registro/completar/route.ts`
+  - `src/compartido/lib/auth.config.ts`
+  - `src/compartido/lib/auth.ts`
+  - `src/compartido/lib/email.ts`
+  - `src/compartido/types/next-auth.d.ts`
+  - `src/middleware.ts`
+
 - **03:38** `d7776d1` — feat: integrar AfipSDK
   - `.env.example`
   - `package-lock.json`
