@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { ArrowLeft, Package, Clock, DollarSign, TrendingUp, CheckCircle, Download } from 'lucide-react'
 import { AsignarTaller } from '@/marca/componentes/asignar-taller'
 import { CancelarPedido } from '@/marca/componentes/cancelar-pedido'
+import { PublicarPedido } from '@/marca/componentes/publicar-pedido'
 
 const statusVariant: Record<string, 'default' | 'success' | 'warning' | 'error' | 'muted'> = {
   BORRADOR: 'muted',
@@ -182,9 +183,12 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
       {/* Acciones */}
       <div className="flex flex-wrap items-center gap-3">
         {pedido.estado === 'BORRADOR' && (
+          <PublicarPedido pedidoId={pedido.id} />
+        )}
+        {(pedido.estado === 'BORRADOR' || pedido.estado === 'PUBLICADO') && (
           <AsignarTaller pedidoId={pedido.id} />
         )}
-        {(pedido.estado === 'BORRADOR' || pedido.estado === 'EN_EJECUCION') && (
+        {['BORRADOR', 'PUBLICADO', 'EN_EJECUCION'].includes(pedido.estado) && (
           <CancelarPedido pedidoId={pedido.id} />
         )}
       </div>

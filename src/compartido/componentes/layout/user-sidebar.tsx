@@ -45,6 +45,8 @@ const menuItemsByRole: Record<string, MenuItem[]> = {
     { id: 'perfil', label: 'Mi Perfil', href: '/taller/perfil', icon: User },
     { id: 'formalizacion', label: 'Mi Formalización', href: '/taller/formalizacion', icon: ClipboardCheck },
     { id: 'academia', label: 'Academia', href: '/taller/aprender', icon: BookOpen },
+    { id: 'pedidos', label: 'Mis Pedidos', href: '/taller/pedidos', icon: ClipboardList },
+    { id: 'disponibles', label: 'Pedidos disponibles', href: '/taller/pedidos/disponibles', icon: Search },
     { id: 'notificaciones', label: 'Notificaciones', href: '/cuenta/notificaciones', icon: Bell, badge: 0 },
     { id: 'cuenta', label: 'Mi Cuenta', href: '/cuenta', icon: Settings },
   ],
