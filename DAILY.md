@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **17:24** `d4bcfc6` — docs: agregar instrucciones completas para Sergio
+  - `.claude/specs/instrucciones-sergio.md`
+
 - **17:09** `09d4c27` — docs: agregar 46 items de experiencia por actor al checklist — total 196 items
   - `.claude/specs/semana4-checklist-sergio.md`
 
