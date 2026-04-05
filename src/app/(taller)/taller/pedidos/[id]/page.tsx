@@ -4,7 +4,7 @@ import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Download } from 'lucide-react'
 import { OrdenActions } from '@/taller/componentes/orden-actions'
 
 const estadoLabel: Record<string, string> = {
@@ -142,6 +142,17 @@ export default async function TallerOrdenDetallePage({
                 style={{ width: `${Math.min(orden.progreso, 100)}%` }}
               />
             </div>
+          </div>
+        )}
+
+        {/* Descarga acuerdo PDF */}
+        {(orden.estado === 'EN_EJECUCION' || orden.estado === 'COMPLETADO') && (
+          <div className="pt-3 border-t border-gray-100 mt-3">
+            <a href={`/api/ordenes/${orden.id}/pdf`} download
+              className="inline-flex items-center gap-2 text-sm font-semibold text-brand-blue hover:underline">
+              <Download className="w-4 h-4" />
+              Descargar acuerdo PDF
+            </a>
           </div>
         )}
       </div>

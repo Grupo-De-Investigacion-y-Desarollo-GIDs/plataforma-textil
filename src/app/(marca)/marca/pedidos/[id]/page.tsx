@@ -6,7 +6,7 @@ import { redirect, notFound } from 'next/navigation'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import Link from 'next/link'
-import { ArrowLeft, Package, Clock, DollarSign, TrendingUp, CheckCircle } from 'lucide-react'
+import { ArrowLeft, Package, Clock, DollarSign, TrendingUp, CheckCircle, Download } from 'lucide-react'
 import { AsignarTaller } from '@/marca/componentes/asignar-taller'
 import { CancelarPedido } from '@/marca/componentes/cancelar-pedido'
 
@@ -228,6 +228,13 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
                   <Badge variant={ordenStatusVariant[orden.estado] || 'default'}>
                     {ordenStatusLabel[orden.estado] || orden.estado}
                   </Badge>
+                  {(orden.estado === 'EN_EJECUCION' || orden.estado === 'COMPLETADO') && (
+                    <a href={`/api/ordenes/${orden.id}/pdf`} download
+                      className="text-xs font-semibold text-brand-blue hover:underline">
+                      <Download className="w-3.5 h-3.5 inline mr-1" />
+                      Acuerdo PDF
+                    </a>
+                  )}
                 </div>
               </div>
             ))}
