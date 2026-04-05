@@ -3,6 +3,10 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **19:56** `abec3b1` — fix: aria-label en indicadores de notificacion sin leer
+  - `src/app/(admin)/admin/notificaciones/page.tsx`
+  - `src/app/(contenido)/contenido/notificaciones/page.tsx`
+
 - **19:53** `fb99d9b` — fix: estados de carga y vacios en 5 paginas admin — usuarios, talleres, marcas, pedidos, dashboard
   - `src/app/(admin)/admin/dashboard/page.tsx`
   - `src/app/(admin)/admin/marcas/page.tsx`
