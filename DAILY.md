@@ -3,6 +3,11 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **08:24** `2daeae6` — feat: vistas cotizaciones — aceptar/rechazar en marca, seccion cotizaciones recibidas
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/marca/componentes/aceptar-cotizacion.tsx`
+  - `src/marca/componentes/rechazar-cotizacion.tsx`
+
 - **08:21** `9097ef3` — feat: publicacion pedidos UI — boton publicar, marketplace disponibles, cotizar form + tests E2E
   - `e2e/pedidos.spec.ts`
   - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
