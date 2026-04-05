@@ -44,6 +44,18 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         fecha: body.fecha ? new Date(body.fecha) : undefined,
       },
     })
+
+    // Crear acciones correctivas nuevas si se enviaron
+    if (body.nuevaAccion?.descripcion) {
+      await prisma.accionCorrectiva.create({
+        data: {
+          auditoriaId: id,
+          descripcion: body.nuevaAccion.descripcion,
+          plazo: body.nuevaAccion.plazo ? new Date(body.nuevaAccion.plazo) : null,
+        },
+      })
+    }
+
     return NextResponse.json(auditoria)
   } catch (error) {
     console.error('Error en PUT /api/auditorias/[id]:', error)

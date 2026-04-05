@@ -4,6 +4,7 @@ import { auth } from '@/compartido/lib/auth'
 import { sendEmail, buildCertificadoEmail } from '@/compartido/lib/email'
 import { generateQrBuffer } from '@/compartido/lib/qr'
 import { uploadFile } from '@/compartido/lib/storage'
+import { aplicarNivel } from '@/compartido/lib/nivel'
 
 // GET /api/colecciones/[id]/evaluacion — devuelve evaluacion existente (admin)
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -127,6 +128,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       }).catch((err) => {
         console.error('Error generando QR del certificado:', err)
       })
+      // Recalcular nivel del taller (certificados suman puntaje)
+      aplicarNivel(taller.id, session.user.id)
+
       return NextResponse.json({ aprobado: true, calificacion, certificadoId: certificado.id, codigo: certificado.codigo })
     }
 

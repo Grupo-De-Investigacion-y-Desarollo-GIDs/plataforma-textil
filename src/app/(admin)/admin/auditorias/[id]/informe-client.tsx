@@ -24,6 +24,55 @@ interface AuditoriaInformeClientProps {
   acciones: AccionCorrectiva[]
 }
 
+function NuevaAccionForm({ auditoriaId }: { auditoriaId: string }) {
+  const router = useRouter()
+  const [descripcion, setDescripcion] = useState('')
+  const [plazo, setPlazo] = useState('')
+  const [guardando, setGuardando] = useState(false)
+
+  async function handleAgregar() {
+    if (!descripcion.trim()) return
+    setGuardando(true)
+    await fetch(`/api/auditorias/${auditoriaId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nuevaAccion: { descripcion, plazo: plazo || null } }),
+    })
+    setDescripcion('')
+    setPlazo('')
+    setGuardando(false)
+    router.refresh()
+  }
+
+  return (
+    <div className="bg-gray-50 rounded-lg p-3 space-y-2">
+      <p className="text-xs font-medium text-gray-500">Agregar accion correctiva</p>
+      <input
+        type="text"
+        value={descripcion}
+        onChange={e => setDescripcion(e.target.value)}
+        placeholder="Descripcion de la accion..."
+        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+      />
+      <div className="flex gap-2">
+        <input
+          type="date"
+          value={plazo}
+          onChange={e => setPlazo(e.target.value)}
+          className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+        />
+        <button
+          onClick={handleAgregar}
+          disabled={!descripcion.trim() || guardando}
+          className="bg-brand-blue text-white px-3 py-2 rounded-lg text-xs hover:bg-brand-blue/90 disabled:opacity-50"
+        >
+          {guardando ? 'Agregando...' : 'Agregar'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export function AuditoriaInformeClient({
   auditoriaId,
   estadoInicial,
@@ -124,18 +173,22 @@ export function AuditoriaInformeClient({
         {guardando ? 'Guardando...' : 'Guardar informe'}
       </button>
 
-      {acciones.length > 0 && (
-        <div className="mt-4 border-t pt-4">
-          <h3 className="font-medium text-gray-700 mb-2">Acciones correctivas</h3>
-          <div className="space-y-2">
+      {/* Acciones correctivas existentes */}
+      <div className="mt-4 border-t pt-4">
+        <h3 className="font-medium text-gray-700 mb-2">Acciones correctivas</h3>
+        {acciones.length > 0 && (
+          <div className="space-y-2 mb-4">
             {acciones.map(accion => (
               <div key={accion.id} className="text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded">
                 <span className="font-medium">{accion.estado}</span> — {accion.descripcion}
               </div>
             ))}
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Agregar nueva acción */}
+        <NuevaAccionForm auditoriaId={auditoriaId} />
+      </div>
     </div>
   )
 }

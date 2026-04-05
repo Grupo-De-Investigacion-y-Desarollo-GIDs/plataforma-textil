@@ -65,12 +65,16 @@ export default auth((req) => {
 
   // Protección por rol
 
-  // Rutas de ADMIN - solo para rol ADMIN
+  // Rutas de ADMIN — ADMIN siempre, CONTENIDO solo colecciones/evaluaciones/videos
   if (pathname.startsWith('/admin')) {
-    if (userRole !== 'ADMIN') {
-      return NextResponse.redirect(new URL('/unauthorized', nextUrl))
+    if (userRole === 'ADMIN') return NextResponse.next()
+    if (userRole === 'CONTENIDO' && (
+      pathname.startsWith('/admin/colecciones') ||
+      pathname.startsWith('/admin/evaluaciones')
+    )) {
+      return NextResponse.next()
     }
-    return NextResponse.next()
+    return NextResponse.redirect(new URL('/unauthorized', nextUrl))
   }
 
   // Rutas de TALLER - solo para rol TALLER
