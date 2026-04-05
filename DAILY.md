@@ -3,6 +3,10 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **07:33** `3e874bc` — feat: stubs admin email + perfil publico con prendas, certificados y descripcion
+  - `src/app/(admin)/admin/integraciones/email/page.tsx`
+  - `src/app/(public)/perfil/[id]/page.tsx`
+
 - **07:30** `2af5c97` — fix: playwright — corregir selectores, soporte BASE_URL, documentar issue NextAuth dev
   - `e2e/helpers/auth.ts`
   - `e2e/publico.spec.ts`
