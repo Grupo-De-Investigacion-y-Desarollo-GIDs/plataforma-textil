@@ -3,6 +3,10 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **08:15** `62bf10e` — feat: registro 3 pasos — unificar entidad, auto-login, step indicator dinamico + tests E2E
+  - `e2e/registro.spec.ts`
+  - `src/app/(auth)/registro/page.tsx`
+
 - **08:10** `fdb9e4f` — feat: gamificacion — lenguaje taller, info contextual, beneficio proximo, banner nivel + tests E2E
   - `e2e/taller.spec.ts`
   - `src/app/(taller)/taller/formalizacion/page.tsx`
