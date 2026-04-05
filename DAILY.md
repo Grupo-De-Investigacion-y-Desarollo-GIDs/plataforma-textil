@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **06:45** `1bbfc62` — fix: agregar /denunciar y /consultar-denuncia a rutas publicas del middleware
+  - `src/middleware.ts`
+
 - **06:42** `234f5ce` — feat: UI denuncia publica — formulario, consulta por codigo, links en ayuda
   - `src/app/(public)/ayuda/page.tsx`
   - `src/app/(public)/consultar-denuncia/page.tsx`
