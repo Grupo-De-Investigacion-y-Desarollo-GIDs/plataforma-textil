@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **01:29** `b88c4a3` — specs: actualizar semana2-schema-e2 con ajustes de factibilidad
+  - `.claude/specs/semana2-schema-e2.md`
+
 - **01:13** `f9bb004` — specs: agregar bloqueos de dependencia en specs de Sergio semana 1
   - `.claude/specs/semana1-infra-contenido.md`
   - `.claude/specs/semana1-registro-3-pasos.md`
