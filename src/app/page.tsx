@@ -50,11 +50,20 @@ export default async function Home() {
             <Link href="/directorio" className="text-sm text-gray-600 hover:text-brand-blue transition-colors font-overpass hidden md:inline">
               Directorio
             </Link>
-            <Link href="/login" className="text-sm text-brand-blue border border-brand-blue px-4 py-2 rounded-lg font-overpass font-semibold hover:bg-blue-50 transition-colors">
+            <Link href="/login" className="text-sm text-gray-600 hover:text-brand-blue transition-colors font-overpass">
               Ingresar
             </Link>
-            <Link href="/registro" className="text-sm bg-brand-blue text-white px-4 py-2 rounded-lg font-overpass font-semibold hover:bg-blue-800 transition-colors">
-              Crear cuenta
+            <Link
+              href="/registro?rol=TALLER"
+              className="text-sm text-brand-blue border border-brand-blue px-3 py-1.5 rounded-lg font-overpass font-semibold hover:bg-blue-50 transition-colors"
+            >
+              Soy taller
+            </Link>
+            <Link
+              href="/registro?rol=MARCA"
+              className="hidden sm:inline text-sm bg-brand-blue text-white px-3 py-1.5 rounded-lg font-overpass font-semibold hover:bg-blue-800 transition-colors"
+            >
+              Soy marca
             </Link>
           </div>
         </div>
@@ -77,13 +86,13 @@ export default async function Home() {
               href="/registro?rol=TALLER"
               className="inline-flex items-center justify-center gap-2 bg-brand-blue text-white px-8 py-3.5 rounded-lg font-overpass font-semibold text-base hover:bg-blue-800 transition-colors"
             >
-              Registrá tu taller <ArrowRight className="w-4 h-4" />
+              Soy taller <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="/registro?rol=MARCA"
               className="inline-flex items-center justify-center gap-2 border-2 border-brand-blue text-brand-blue px-8 py-3.5 rounded-lg font-overpass font-semibold text-base hover:bg-blue-50 transition-colors"
             >
-              Buscá proveedores
+              Soy marca
             </Link>
           </div>
 
@@ -111,10 +120,10 @@ export default async function Home() {
           </h2>
           <p className="text-gray-500 text-center mb-12">Elegí tu perfil para ver cómo te ayudamos</p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {/* Taller */}
-            <div className="rounded-2xl border-2 border-gray-100 p-7 hover:border-brand-blue/40 hover:shadow-lg transition-all flex flex-col">
-              <div className="text-3xl mb-3">🏭</div>
+            <div className="rounded-2xl border-2 border-gray-100 p-9 hover:border-brand-blue/40 hover:shadow-lg transition-all flex flex-col">
+              <div className="text-5xl mb-3">🏭</div>
               <h3 className="font-overpass font-bold text-xl text-brand-blue mb-2">Soy Taller</h3>
               <p className="text-sm text-gray-600 mb-5">
                 Formalizá tu taller, capacitate y accedé a mejores oportunidades comerciales
@@ -135,8 +144,8 @@ export default async function Home() {
             </div>
 
             {/* Marca */}
-            <div className="rounded-2xl border-2 border-gray-100 p-7 hover:border-brand-blue/40 hover:shadow-lg transition-all flex flex-col">
-              <div className="text-3xl mb-3">👗</div>
+            <div className="rounded-2xl border-2 border-gray-100 p-9 hover:border-brand-blue/40 hover:shadow-lg transition-all flex flex-col">
+              <div className="text-5xl mb-3">👗</div>
               <h3 className="font-overpass font-bold text-xl text-brand-blue mb-2">Soy Marca</h3>
               <p className="text-sm text-gray-600 mb-5">
                 Encontrá proveedores verificados y formalizados para tu cadena de producción
@@ -155,29 +164,17 @@ export default async function Home() {
                 Registrarme <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
-
-            {/* Estado */}
-            <div className="rounded-2xl border-2 border-gray-100 p-7 hover:border-brand-blue/40 hover:shadow-lg transition-all flex flex-col">
-              <div className="text-3xl mb-3">🏛️</div>
-              <h3 className="font-overpass font-bold text-xl text-brand-blue mb-2">Soy Estado</h3>
-              <p className="text-sm text-gray-600 mb-5">
-                Monitoreá el sector y acompañá a los talleres en su proceso de formalización
-              </p>
-              <ul className="space-y-2 mb-6 flex-1">
-                {['Dashboard de métricas', 'Reportes exportables', 'Alertas sectoriales', 'Seguimiento territorial'].map(item => (
-                  <li key={item} className="flex items-center gap-2 text-sm text-gray-700">
-                    <CheckCircle className="w-4 h-4 text-green-500 shrink-0" /> {item}
-                  </li>
-                ))}
-              </ul>
-              <a
-                href="mailto:soporte@plataformatextil.ar?subject=Solicitud de acceso - Estado"
-                className="inline-flex items-center justify-center gap-2 border border-brand-blue text-brand-blue px-6 py-2.5 rounded-lg font-overpass font-semibold text-sm hover:bg-blue-50 transition-colors"
-              >
-                Solicitar acceso <ChevronRight className="w-4 h-4" />
-              </a>
-            </div>
           </div>
+
+          <p className="text-center text-sm text-gray-500 mt-8">
+            ¿Sos de un organismo publico?{' '}
+            <a
+              href="mailto:soporte@plataformatextil.ar?subject=Solicitud de acceso - Estado"
+              className="text-brand-blue font-semibold hover:underline"
+            >
+              Solicita acceso institucional
+            </a>
+          </p>
         </div>
       </section>
 
@@ -377,15 +374,23 @@ export default async function Home() {
       <section className="py-20 px-4 bg-brand-blue text-white">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="font-overpass font-bold text-3xl mb-3">
-            Empezá hoy a formalizar tu taller
+            Empeza hoy
           </h2>
           <p className="text-blue-200 mb-8">El registro es gratuito y toma menos de 5 minutos</p>
-          <Link
-            href="/registro"
-            className="inline-flex items-center gap-2 bg-white text-brand-blue px-10 py-4 rounded-lg font-overpass font-bold text-base hover:bg-blue-50 transition-colors"
-          >
-            Crear mi cuenta <ArrowRight className="w-5 h-5" />
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              href="/registro?rol=TALLER"
+              className="inline-flex items-center justify-center gap-2 bg-white text-brand-blue px-10 py-4 rounded-lg font-overpass font-bold text-base hover:bg-blue-50 transition-colors"
+            >
+              Soy taller <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link
+              href="/registro?rol=MARCA"
+              className="inline-flex items-center justify-center gap-2 border-2 border-white text-white px-10 py-4 rounded-lg font-overpass font-bold text-base hover:bg-blue-900 transition-colors"
+            >
+              Soy marca <ArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
           <p className="mt-4 text-sm text-blue-200">
             ¿Ya tenés cuenta?{' '}
             <Link href="/login" className="text-white font-semibold hover:underline">
@@ -414,7 +419,7 @@ export default async function Home() {
               <p className="font-overpass font-semibold text-white text-sm mb-3">Plataforma</p>
               <ul className="space-y-2 text-sm">
                 <li><Link href="/login" className="hover:text-white transition-colors">Ingresar</Link></li>
-                <li><Link href="/registro" className="hover:text-white transition-colors">Registrarse</Link></li>
+                <li><Link href="/registro?rol=TALLER" className="hover:text-white transition-colors">Registrarse</Link></li>
                 <li><Link href="/directorio" className="hover:text-white transition-colors">Directorio de talleres</Link></li>
                 <li><Link href="/verificar" className="hover:text-white transition-colors">Verificar certificado</Link></li>
               </ul>
