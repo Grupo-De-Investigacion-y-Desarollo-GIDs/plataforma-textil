@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **06:13** `b1a7075` — docs: actualizar ORDEN_IMPLEMENTACION con estado de semana 3
+  - `.claude/specs/ORDEN_IMPLEMENTACION.md`
+
 - **06:13** `c57a652` — feat: exportes estado — 7 tipos de reporte con filtro de periodo
   - `src/app/(estado)/estado/exportar/page.tsx`
   - `src/app/api/exportar/route.ts`
