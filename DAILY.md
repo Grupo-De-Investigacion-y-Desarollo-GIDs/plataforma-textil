@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **02:35** `e80cabf` — specs: actualizar semana2-publicacion-pedidos-ui con ajustes de factibilidad
+  - `.claude/specs/semana2-publicacion-pedidos-ui.md`
+
 - **02:25** `f315401` — specs: actualizar semana2-dashboard-estado-ui con ajustes de factibilidad
   - `.claude/specs/semana2-dashboard-estado-ui.md`
 
