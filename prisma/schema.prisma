@@ -234,6 +234,7 @@ model Marca {
   frecuenciaCompra  String?
   rating            Float    @default(0)
   pedidosRealizados Int      @default(0)
+  verificadoAfip    Boolean  @default(false)
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { Prisma } from '@prisma/client'
 import { logActividad } from '@/compartido/lib/log'
+import { verificarCuit } from '@/compartido/lib/afip'
 import { sendEmail, buildBienvenidaEmail } from '@/compartido/lib/email'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
@@ -53,6 +54,18 @@ export async function POST(req: NextRequest) {
 
     const data = parsed.data
 
+    // Verificar CUIT con AfipSDK server-side
+    const cuitToVerify = data.tallerData?.cuit || data.marcaData?.cuit
+    if (cuitToVerify) {
+      const afipResult = await verificarCuit(cuitToVerify)
+      if (!afipResult.valid) {
+        return NextResponse.json(
+          { error: afipResult.error || 'CUIT invalido o inactivo en ARCA' },
+          { status: 400 }
+        )
+      }
+    }
+
     const exists = await prisma.user.findUnique({ where: { email: data.email } })
     if (exists) {
       return NextResponse.json({ error: 'El email ya esta registrado' }, { status: 409 })
@@ -75,6 +88,7 @@ export async function POST(req: NextRequest) {
                   cuit: data.tallerData.cuit,
                   ubicacion: data.tallerData.ubicacion || null,
                   capacidadMensual: data.tallerData.capacidadMensual || 0,
+                  verificadoAfip: true,
                 },
               },
             }
@@ -87,6 +101,7 @@ export async function POST(req: NextRequest) {
                   cuit: data.marcaData.cuit,
                   ubicacion: data.marcaData.ubicacion || null,
                   tipo: data.marcaData.tipo || null,
+                  verificadoAfip: true,
                 },
               },
             }

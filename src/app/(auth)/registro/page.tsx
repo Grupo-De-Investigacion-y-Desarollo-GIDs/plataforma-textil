@@ -263,10 +263,45 @@ function StepTallerInfo({
   loading: boolean
   defaultValues?: Partial<TallerInfoData>
 }) {
-  const { register, handleSubmit, getValues, formState: { errors } } = useForm<TallerInfoData>({
+  const { register, handleSubmit, getValues, watch, formState: { errors } } = useForm<TallerInfoData>({
     resolver: zodResolver(tallerInfoSchema),
     defaultValues,
   })
+
+  const [cuitVerificado, setCuitVerificado] = useState(false)
+  const [cuitLoading, setCuitLoading] = useState(false)
+  const [cuitData, setCuitData] = useState<{ razonSocial?: string } | null>(null)
+  const [cuitError, setCuitError] = useState('')
+
+  const cuitValue = watch('cuit')
+
+  async function verificarCuitOnBlur() {
+    const limpio = (cuitValue || '').replace(/-/g, '')
+    if (limpio.length !== 11) return
+
+    setCuitLoading(true)
+    setCuitError('')
+    setCuitData(null)
+    setCuitVerificado(false)
+
+    try {
+      const res = await fetch(`/api/auth/verificar-cuit?cuit=${limpio}`)
+      const data = await res.json()
+      if (data.valid) {
+        setCuitVerificado(true)
+        setCuitData({ razonSocial: data.razonSocial })
+      } else {
+        setCuitError(data.error || 'CUIT invalido')
+      }
+    } catch {
+      // AfipSDK no responde — advertencia sin bloqueo
+      setCuitError('')
+      setCuitVerificado(true)
+      setCuitData(null)
+    } finally {
+      setCuitLoading(false)
+    }
+  }
 
   return (
     <div>
@@ -292,10 +327,26 @@ function StepTallerInfo({
           <Input
             label="CUIT"
             placeholder="20-12345678-9"
-            error={errors.cuit?.message}
+            error={errors.cuit?.message || cuitError}
             {...register('cuit')}
+            onBlur={verificarCuitOnBlur}
           />
           <Hash className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
+          {cuitLoading && (
+            <p className="text-xs text-gray-400 mt-1">Verificando CUIT en ARCA...</p>
+          )}
+          {cuitVerificado && cuitData?.razonSocial && (
+            <div className="flex items-center gap-1.5 mt-1">
+              <Check className="w-3.5 h-3.5 text-green-600" />
+              <span className="text-xs text-green-700 font-semibold">Verificado por ARCA</span>
+              <span className="text-xs text-gray-500">— {cuitData.razonSocial}</span>
+            </div>
+          )}
+          {cuitVerificado && !cuitData?.razonSocial && (
+            <p className="text-xs text-amber-600 mt-1">
+              No se pudo verificar en ARCA. Podés continuar igualmente.
+            </p>
+          )}
         </div>
 
         <p className="text-xs text-gray-400">
@@ -306,7 +357,7 @@ function StepTallerInfo({
           <Button type="button" variant="secondary" onClick={() => onBack(getValues())} icon={<ArrowLeft className="w-4 h-4" />} className="flex-1">
             Atrás
           </Button>
-          <Button type="submit" loading={loading} icon={<Check className="w-4 h-4" />} className="flex-1">
+          <Button type="submit" loading={loading} disabled={!cuitVerificado && !cuitLoading && (cuitValue || '').replace(/-/g, '').length === 11} icon={<Check className="w-4 h-4" />} className="flex-1">
             Crear cuenta
           </Button>
         </div>
@@ -328,10 +379,44 @@ function StepMarcaInfo({
   loading: boolean
   defaultValues?: Partial<MarcaInfoData>
 }) {
-  const { register, handleSubmit, getValues, formState: { errors } } = useForm<MarcaInfoData>({
+  const { register, handleSubmit, getValues, watch, formState: { errors } } = useForm<MarcaInfoData>({
     resolver: zodResolver(marcaInfoSchema),
     defaultValues,
   })
+
+  const [cuitVerificado, setCuitVerificado] = useState(false)
+  const [cuitLoading, setCuitLoading] = useState(false)
+  const [cuitData, setCuitData] = useState<{ razonSocial?: string } | null>(null)
+  const [cuitError, setCuitError] = useState('')
+
+  const cuitValue = watch('cuit')
+
+  async function verificarCuitOnBlur() {
+    const limpio = (cuitValue || '').replace(/-/g, '')
+    if (limpio.length !== 11) return
+
+    setCuitLoading(true)
+    setCuitError('')
+    setCuitData(null)
+    setCuitVerificado(false)
+
+    try {
+      const res = await fetch(`/api/auth/verificar-cuit?cuit=${limpio}`)
+      const data = await res.json()
+      if (data.valid) {
+        setCuitVerificado(true)
+        setCuitData({ razonSocial: data.razonSocial })
+      } else {
+        setCuitError(data.error || 'CUIT invalido')
+      }
+    } catch {
+      setCuitError('')
+      setCuitVerificado(true)
+      setCuitData(null)
+    } finally {
+      setCuitLoading(false)
+    }
+  }
 
   return (
     <div>
@@ -357,10 +442,26 @@ function StepMarcaInfo({
           <Input
             label="CUIT"
             placeholder="20-12345678-9"
-            error={errors.cuit?.message}
+            error={errors.cuit?.message || cuitError}
             {...register('cuit')}
+            onBlur={verificarCuitOnBlur}
           />
           <Hash className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
+          {cuitLoading && (
+            <p className="text-xs text-gray-400 mt-1">Verificando CUIT en ARCA...</p>
+          )}
+          {cuitVerificado && cuitData?.razonSocial && (
+            <div className="flex items-center gap-1.5 mt-1">
+              <Check className="w-3.5 h-3.5 text-green-600" />
+              <span className="text-xs text-green-700 font-semibold">Verificado por ARCA</span>
+              <span className="text-xs text-gray-500">— {cuitData.razonSocial}</span>
+            </div>
+          )}
+          {cuitVerificado && !cuitData?.razonSocial && (
+            <p className="text-xs text-amber-600 mt-1">
+              No se pudo verificar en ARCA. Podés continuar igualmente.
+            </p>
+          )}
         </div>
 
         <div className="relative">
@@ -390,7 +491,7 @@ function StepMarcaInfo({
           <Button type="button" variant="secondary" onClick={() => onBack(getValues())} icon={<ArrowLeft className="w-4 h-4" />} className="flex-1">
             Atrás
           </Button>
-          <Button type="submit" loading={loading} icon={<Check className="w-4 h-4" />} className="flex-1">
+          <Button type="submit" loading={loading} disabled={!cuitVerificado && !cuitLoading && (cuitValue || '').replace(/-/g, '').length === 11} icon={<Check className="w-4 h-4" />} className="flex-1">
             Crear cuenta
           </Button>
         </div>
