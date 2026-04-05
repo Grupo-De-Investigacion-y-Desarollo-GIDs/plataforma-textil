@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **01:39** `845c497` — specs: actualizar semana2-queries-dashboard-estado con ajustes de factibilidad
+  - `.claude/specs/semana2-queries-dashboard-estado.md`
+
 - **01:29** `b88c4a3` — specs: actualizar semana2-schema-e2 con ajustes de factibilidad
   - `.claude/specs/semana2-schema-e2.md`
 
