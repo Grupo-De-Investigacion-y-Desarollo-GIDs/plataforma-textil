@@ -650,6 +650,20 @@ model ConfiguracionSistema {
   @@map("configuracion_sistema")
 }
 
+model DocumentoRAG {
+  id         String   @id @default(cuid())
+  titulo     String
+  contenido  String   @db.Text
+  categoria  String
+  fuente     String?
+  activo     Boolean  @default(true)
+  embedding  Unsupported("vector(512)")?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("documentos_rag")
+}
+
 model LogActividad {
   id        String   @id @default(cuid())
   userId    String?

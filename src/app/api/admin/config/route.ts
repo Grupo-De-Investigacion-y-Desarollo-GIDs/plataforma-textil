@@ -2,15 +2,19 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const session = await auth()
     if (!session?.user || (session.user as { role?: string }).role !== 'ADMIN') {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     }
 
-    const config = await prisma.configuracionSistema.findMany({ orderBy: { grupo: 'asc' } })
-    return NextResponse.json(config)
+    const grupo = req.nextUrl.searchParams.get('grupo')
+    const config = await prisma.configuracionSistema.findMany({
+      ...(grupo ? { where: { grupo } } : {}),
+      orderBy: { clave: 'asc' },
+    })
+    return NextResponse.json({ configs: config })
   } catch (error) {
     return NextResponse.json({ error: 'Error al obtener configuración' }, { status: 500 })
   }
