@@ -291,11 +291,85 @@ Cada flujo cruza varios roles. Probalo en orden, paso a paso. Si un paso falla, 
 
 ---
 
+## 10. EXPERIENCIA POR ACTOR — Validación de coherencia
+
+Para cada actor: entrá con su usuario desde `/acceso-rapido`, navegá como si fuera la primera vez, y anotá si la experiencia es coherente.
+
+### Actor: TALLER (Roberto Gimenez — BRONCE)
+
+- [ ] Primera impresion al entrar: dashboard con greeting, nivel, progreso → se entiende qué hacer
+- [ ] Sidebar tiene: Mi Tablero, Mi Perfil, Mi Formalizacion, Academia, Mis Pedidos, Pedidos disponibles
+- [ ] Puede navegar entre todas las secciones sin errores
+- [ ] En formalizacion: cada paso tiene nombre claro + info contextual + link de tramite
+- [ ] En academia: puede ver cursos, marcar videos, rendir quiz
+- [ ] En pedidos disponibles: ve pedidos publicados con datos reales
+- [ ] Widget de feedback aparece en todas las paginas
+- [ ] No hay secciones vacias ni placeholders visibles
+
+### Actor: TALLER ORO (Carlos Mendoza)
+
+- [ ] Dashboard muestra panel verde "Estas en el nivel maximo"
+- [ ] Formalizacion: todos los pasos en verde
+- [ ] Academia: 3 certificados obtenidos, puede descargar PDFs
+- [ ] Tiene ordenes de manufactura activas con progreso
+
+### Actor: MARCA (Martin Echevarria)
+
+- [ ] Primera impresion: dashboard con stats (pedidos, activos, cotizaciones) → sabe qué hacer
+- [ ] Sidebar tiene: Mi Panel, Directorio Talleres, Mis Pedidos, Mi Perfil
+- [ ] Puede buscar talleres con filtros
+- [ ] Puede ver perfil de un taller con certificados
+- [ ] Puede contactar por WhatsApp (modal si falta perfil)
+- [ ] Puede ver pedidos con diferentes estados
+- [ ] Pedidos PUBLICADOS muestran cotizaciones recibidas
+- [ ] Widget de feedback aparece
+
+### Actor: ESTADO (Ana Belen Torres)
+
+- [ ] Primera impresion: dashboard con 3 secciones claras y datos reales
+- [ ] Sidebar tiene: Dashboard, Exportar Datos, Auditorias
+- [ ] Puede exportar CSV de los 7 tipos de reporte
+- [ ] Puede acceder a auditorias → ve stats y lista
+- [ ] No puede acceder a /admin (excepto auditorias) → muestra "No autorizado"
+- [ ] Widget de feedback aparece
+
+### Actor: ADMIN (Lucia Fernandez)
+
+- [ ] Dashboard con stats reales
+- [ ] Sidebar tiene 17 items → NINGUN link da 404
+- [ ] Puede aprobar validaciones de talleres
+- [ ] Puede programar auditorias y cargar informes
+- [ ] Puede agregar acciones correctivas
+- [ ] Puede ver feedback de usuarios
+- [ ] Tab Features muestra 12 toggles activos
+- [ ] Integraciones/email muestra banner "En construccion"
+
+### Actor: CONTENIDO (Sofia Martinez)
+
+- [ ] Primera impresion: panel de colecciones con datos reales
+- [ ] Sidebar tiene: Colecciones, Evaluaciones, Notificaciones
+- [ ] Puede click en "Nueva Coleccion" sin error de acceso
+- [ ] Puede click en "Editar" y "Videos" sin error de acceso
+- [ ] Puede gestionar evaluaciones (preguntas del quiz)
+- [ ] Puede ver notificaciones con stats
+
+### Actor: TRABAJADOR (sin cuenta, desde incognito)
+
+- [ ] Ir a la landing → en el footer hay link "Hacer una denuncia"
+- [ ] Click → llega a `/denunciar` sin pedir login
+- [ ] Ir a `/ayuda` → hay seccion amarilla con links a denunciar y consultar
+- [ ] Completar denuncia → recibe codigo prominente
+- [ ] Consultar denuncia → muestra estado correctamente
+- [ ] Widget de feedback NO aparece (no tiene sesion)
+
+---
+
 ## Resultado
 
 - **Total items funciones:** 82
 - **Total items flujos:** 68
-- **TOTAL GENERAL:** 150
+- **Total items experiencia:** 46
+- **TOTAL GENERAL:** 196
 - **OK:** ___
 - **FALLA:** ___
 - **Observaciones:**
