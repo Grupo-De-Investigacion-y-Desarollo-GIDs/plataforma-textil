@@ -65,13 +65,16 @@ export default auth((req) => {
 
   // Protección por rol
 
-  // Rutas de ADMIN — ADMIN siempre, CONTENIDO solo colecciones/evaluaciones/videos
+  // Rutas de ADMIN — ADMIN siempre, CONTENIDO colecciones/evaluaciones, ESTADO auditorias
   if (pathname.startsWith('/admin')) {
     if (userRole === 'ADMIN') return NextResponse.next()
     if (userRole === 'CONTENIDO' && (
       pathname.startsWith('/admin/colecciones') ||
       pathname.startsWith('/admin/evaluaciones')
     )) {
+      return NextResponse.next()
+    }
+    if (userRole === 'ESTADO' && pathname.startsWith('/admin/auditorias')) {
       return NextResponse.next()
     }
     return NextResponse.redirect(new URL('/unauthorized', nextUrl))
@@ -120,7 +123,7 @@ export default auth((req) => {
       case 'TALLER':
         return NextResponse.redirect(new URL('/taller', nextUrl))
       case 'MARCA':
-        return NextResponse.redirect(new URL('/marca/directorio', nextUrl))
+        return NextResponse.redirect(new URL('/marca', nextUrl))
       case 'ESTADO':
         return NextResponse.redirect(new URL('/estado', nextUrl))
       case 'ADMIN':

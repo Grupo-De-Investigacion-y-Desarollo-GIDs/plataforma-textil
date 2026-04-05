@@ -379,7 +379,7 @@ function RegistroContent() {
       })
 
       if (loginResult?.ok) {
-        router.push(role === 'TALLER' ? '/taller' : '/marca/directorio')
+        router.push(role === 'TALLER' ? '/taller' : '/marca')
         router.refresh()
       } else {
         router.push('/login?registered=true')

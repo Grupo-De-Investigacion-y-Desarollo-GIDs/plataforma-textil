@@ -51,6 +51,7 @@ const menuItemsByRole: Record<string, MenuItem[]> = {
     { id: 'cuenta', label: 'Mi Cuenta', href: '/cuenta', icon: Settings },
   ],
   MARCA: [
+    { id: 'inicio', label: 'Mi Panel', href: '/marca', icon: Home },
     { id: 'directorio', label: 'Directorio Talleres', href: '/marca/directorio', icon: Search },
     { id: 'pedidos', label: 'Mis Pedidos', href: '/marca/pedidos', icon: ClipboardList },
     { id: 'perfil', label: 'Mi Perfil', href: '/marca/perfil', icon: Building2 },
@@ -59,8 +60,8 @@ const menuItemsByRole: Record<string, MenuItem[]> = {
   ],
   ESTADO: [
     { id: 'dashboard', label: 'Dashboard', href: '/estado', icon: Home },
-    { id: 'reportes', label: 'Reportes', href: '/estado/reportes', icon: BarChart3 },
     { id: 'exportar', label: 'Exportar Datos', href: '/estado/exportar', icon: FileText },
+    { id: 'auditorias', label: 'Auditorias', href: '/admin/auditorias', icon: ClipboardCheck },
     { id: 'notificaciones', label: 'Notificaciones', href: '/cuenta/notificaciones', icon: Bell, badge: 0 },
     { id: 'cuenta', label: 'Mi Cuenta', href: '/cuenta', icon: Settings },
   ],

@@ -422,6 +422,7 @@ export default async function Home() {
                 <li><Link href="/registro?rol=TALLER" className="hover:text-white transition-colors">Registrarse</Link></li>
                 <li><Link href="/directorio" className="hover:text-white transition-colors">Directorio de talleres</Link></li>
                 <li><Link href="/verificar" className="hover:text-white transition-colors">Verificar certificado</Link></li>
+                <li><Link href="/denunciar" className="hover:text-white transition-colors">Hacer una denuncia</Link></li>
               </ul>
             </div>
             <div>

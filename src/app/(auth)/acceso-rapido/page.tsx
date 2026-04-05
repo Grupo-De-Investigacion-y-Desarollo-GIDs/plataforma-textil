@@ -53,7 +53,7 @@ const usuarios = [
     nombre: 'Martin Echevarria',
     rol: 'MARCA',
     descripcion: 'Moda Urbana BA — Marca mediana',
-    redirect: '/marca/directorio',
+    redirect: '/marca',
     icon: ShoppingBag,
     color: 'bg-blue-500',
   },
