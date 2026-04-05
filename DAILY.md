@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **16:04** `2db6dff` — fix: AFIP no bloquea registro si no responde — verificadoAfip refleja estado real
+  - `src/app/api/auth/registro/route.ts`
+
 - **13:50** `9a69fe9` — feat: conectar paginas CONTENIDO a datos reales — colecciones, evaluaciones, notificaciones
   - `src/app/(contenido)/contenido/colecciones/page.tsx`
   - `src/app/(contenido)/contenido/evaluaciones/page.tsx`
