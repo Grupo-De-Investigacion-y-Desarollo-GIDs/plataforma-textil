@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **06:36** `570d973` — feat: landing con dos entradas — eliminar card Estado, CTAs con rol
+  - `src/app/page.tsx`
+
 - **06:19** `ff1bc04` — fix: feature flag retorna true si no existe en DB (opt-out)
   - `src/compartido/lib/features.ts`
 
