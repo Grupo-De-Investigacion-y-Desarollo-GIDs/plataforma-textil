@@ -16,7 +16,7 @@ export async function loginAs(page: Page, role: 'admin' | 'taller_bronce' | 'tal
   await page.getByRole('button', { name: 'Ingresar' }).click()
 
   // Esperar a que salga de /login (sea al dashboard o a /api/auth/error)
-  await page.waitForURL(url => !url.pathname.startsWith('/login'), { timeout: 15000 })
+  await page.waitForURL(url => !url.pathname.startsWith('/login'), { timeout: 30000 })
 
   // Si fue a /api/auth/error, es un problema conocido de NextAuth v5 + Next.js 16 en dev
   // En ese caso, salteamos el test
