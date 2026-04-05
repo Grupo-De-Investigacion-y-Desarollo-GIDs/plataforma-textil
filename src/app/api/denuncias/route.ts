@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { getFeatureFlag } from '@/compartido/lib/features'
 
 export async function GET(req: NextRequest) {
   try {
@@ -39,6 +40,10 @@ export async function GET(req: NextRequest) {
 // POST queda publico para denuncias anonimas
 export async function POST(req: NextRequest) {
   try {
+    if (!await getFeatureFlag('denuncias')) {
+      return NextResponse.json({ error: 'Funcionalidad no disponible' }, { status: 503 })
+    }
+
     const body = await req.json()
     const count = await prisma.denuncia.count()
     const codigo = `DEN-${new Date().getFullYear()}-${String(count + 1).padStart(5, '0')}`

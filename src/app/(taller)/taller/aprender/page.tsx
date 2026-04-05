@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
+import { getFeatureFlag } from '@/compartido/lib/features'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card } from '@/compartido/componentes/ui/card'
@@ -12,6 +13,14 @@ import { BookOpen, Play, Award, Clock } from 'lucide-react'
 export default async function TallerAprenderPage() {
   const session = await auth()
   if (!session?.user) redirect('/login')
+
+  if (!await getFeatureFlag('academia')) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-500">Modulo no disponible todavia.</p>
+      </div>
+    )
+  }
 
   const taller = await prisma.taller.findFirst({
     where: { userId: session.user.id },

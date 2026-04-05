@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client'
 import { prisma } from './prisma'
+import { getFeatureFlag } from './features'
 import { sendEmail, buildCotizacionRecibidaEmail, buildCotizacionAceptadaEmail, buildCotizacionRechazadaEmail, buildPedidoDisponibleEmail } from './email'
 
 interface NotificacionData {
@@ -71,6 +72,8 @@ export function notificarCotizacion(
 }
 
 export async function notificarTalleresCompatibles(pedidoId: string): Promise<void> {
+  if (!await getFeatureFlag('matching_notificaciones')) return
+
   const pedido = await prisma.pedido.findUnique({
     where: { id: pedidoId },
     include: { marca: { select: { nombre: true } } },

@@ -627,14 +627,29 @@ async function main() {
   // ============================================
   await prisma.configuracionSistema.createMany({
     data: [
+      // Configs generales
       { clave: 'nombre_plataforma', valor: 'Plataforma Digital Textil', grupo: 'general' },
       { clave: 'email_soporte', valor: 'soporte@pdt.org.ar', grupo: 'general' },
       { clave: 'prefijo_certificado', valor: 'PDT-CERT-', grupo: 'certificados' },
       { clave: 'institucion_firma', valor: 'OIT Argentina — UNTREF', grupo: 'certificados' },
+      // Feature flags E1
+      { clave: 'registro_talleres', valor: 'true', grupo: 'features_e1' },
+      { clave: 'registro_marcas', valor: 'true', grupo: 'features_e1' },
+      { clave: 'directorio_publico', valor: 'true', grupo: 'features_e1' },
+      { clave: 'academia', valor: 'true', grupo: 'features_e1' },
+      { clave: 'formalizacion', valor: 'true', grupo: 'features_e1' },
+      { clave: 'dashboard_estado', valor: 'true', grupo: 'features_e1' },
+      { clave: 'denuncias', valor: 'true', grupo: 'features_e1' },
+      // Feature flags E2
+      { clave: 'publicacion_pedidos', valor: 'false', grupo: 'features_e2' },
+      { clave: 'cotizaciones', valor: 'false', grupo: 'features_e2' },
+      { clave: 'acuerdos_pdf', valor: 'false', grupo: 'features_e2' },
+      { clave: 'matching_notificaciones', valor: 'false', grupo: 'features_e2' },
+      { clave: 'asistente_rag', valor: 'false', grupo: 'features_e2' },
     ],
   })
 
-  console.log('  ✓ Configuración del sistema')
+  console.log('  ✓ Configuración del sistema y feature flags')
 
   // ============================================
   // RESUMEN

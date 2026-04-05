@@ -1,7 +1,9 @@
 export const dynamic = 'force-dynamic'
 
+import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/compartido/lib/prisma'
+import { getFeatureFlag } from '@/compartido/lib/features'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Star, MapPin, Users, ArrowRight } from 'lucide-react'
@@ -9,6 +11,8 @@ import { Star, MapPin, Users, ArrowRight } from 'lucide-react'
 const nivelColor: Record<string, 'warning' | 'default' | 'success'> = { BRONCE: 'warning', PLATA: 'default', ORO: 'success' }
 
 export default async function DirectorioPage() {
+  if (!await getFeatureFlag('directorio_publico')) notFound()
+
   const talleres = await prisma.taller.findMany({
     include: { procesos: { include: { proceso: true } } },
     orderBy: { rating: 'desc' },
