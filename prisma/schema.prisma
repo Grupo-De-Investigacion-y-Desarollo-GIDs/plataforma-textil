@@ -444,6 +444,8 @@ model Validacion {
   tipoDocumento TipoDocumento? @relation(fields: [tipoDocumentoId], references: [id])
 
   @@unique([tallerId, tipo])
+  @@index([estado])
+  @@index([tallerId])
   @@map("validaciones")
 }
 
@@ -523,6 +525,7 @@ model Certificado {
   taller    Taller    @relation(fields: [tallerId], references: [id], onDelete: Cascade)
   coleccion Coleccion @relation(fields: [coleccionId], references: [id])
 
+  @@index([fecha])
   @@map("certificados")
 }
 
@@ -611,6 +614,7 @@ model Denuncia {
 
   taller Taller? @relation(fields: [tallerId], references: [id])
 
+  @@index([estado])
   @@map("denuncias")
 }
 
@@ -656,6 +660,8 @@ model LogActividad {
 
   user User? @relation(fields: [userId], references: [id])
 
+  @@index([accion, timestamp])
+  @@index([userId])
   @@map("log_actividad")
 }
 

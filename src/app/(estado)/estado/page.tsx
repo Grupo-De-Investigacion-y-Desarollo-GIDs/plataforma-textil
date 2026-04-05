@@ -12,29 +12,77 @@ export default async function EstadoDashboardPage() {
   const session = await auth()
   if (!session?.user) redirect('/login')
 
+  const hace30dias = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+  const inicioMes = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+
   const [
+    // Seccion 1: Como esta el sector?
     totalTalleres,
     totalMarcas,
-    bronce,
-    plata,
-    oro,
-    validacionesPendientes,
-    totalCertificados,
-    talleresConProgreso,
+    bronce, plata, oro,
+    progresoData,
     pedidosActivos,
+
+    // Seccion 2: Donde hay que actuar?
+    validacionesPendientes,
+    denunciasSinResolver,
+    talleresInactivos,
+
+    // Seccion 3: Que esta funcionando?
+    certificadosMes,
+    totalCertificados,
+    subieronNivelMes,
+    cursosCompletados,
   ] = await prisma.$transaction([
+    // Seccion 1
     prisma.taller.count(),
     prisma.marca.count(),
     prisma.taller.count({ where: { nivel: 'BRONCE' } }),
     prisma.taller.count({ where: { nivel: 'PLATA' } }),
     prisma.taller.count({ where: { nivel: 'ORO' } }),
-    prisma.validacion.count({ where: { estado: 'PENDIENTE' } }),
-    prisma.certificado.count({ where: { revocado: false } }),
-    prisma.progresoCapacitacion.count({ where: { porcentajeCompletado: 100 } }),
+    prisma.validacion.groupBy({
+      by: ['estado'],
+      _count: { estado: true },
+      orderBy: { estado: 'asc' },
+    }),
     prisma.pedido.count({ where: { estado: 'EN_EJECUCION' } }),
+
+    // Seccion 2
+    prisma.validacion.count({ where: { estado: 'PENDIENTE' } }),
+    prisma.denuncia.count({
+      where: { estado: { in: ['RECIBIDA', 'EN_INVESTIGACION'] } },
+    }),
+    prisma.taller.count({
+      where: {
+        createdAt: { lt: hace30dias },
+        user: {
+          logs: { none: { timestamp: { gte: hace30dias } } },
+        },
+      },
+    }),
+
+    // Seccion 3
+    prisma.certificado.count({
+      where: { fecha: { gte: inicioMes }, revocado: false },
+    }),
+    prisma.certificado.count({ where: { revocado: false } }),
+    prisma.logActividad.count({
+      where: { accion: 'NIVEL_SUBIDO', timestamp: { gte: inicioMes } },
+    }),
+    prisma.progresoCapacitacion.count({
+      where: { porcentajeCompletado: 100 },
+    }),
   ])
 
-  // Últimas validaciones pendientes de revisión
+  // Calcular progreso promedio desde groupBy
+  const progresoArr = (progresoData ?? []) as { estado: string; _count: { estado: number } }[]
+  const aprobadas = progresoArr.find(d => d.estado === 'APROBADO')?._count.estado ?? 0
+  const totalValidaciones = progresoArr.reduce((acc, d) => acc + d._count.estado, 0)
+  const progresoPromedio = totalValidaciones > 0
+    ? Math.round((aprobadas / totalValidaciones) * 100)
+    : 0
+
+  // Ultimas validaciones pendientes de revision
   const ultimasPendientes = await prisma.validacion.findMany({
     where: { estado: 'PENDIENTE' },
     include: { taller: { select: { id: true, nombre: true } } },
@@ -42,9 +90,9 @@ export default async function EstadoDashboardPage() {
     take: 5,
   })
 
-  // Talleres que subieron de nivel recientemente (logs)
+  // Actividad reciente
   const logsNivel = await prisma.logActividad.findMany({
-    where: { accion: 'VALIDACION_APROBADA' },
+    where: { accion: { in: ['VALIDACION_APROBADA', 'NIVEL_SUBIDO'] } },
     orderBy: { timestamp: 'desc' },
     take: 5,
     include: { user: { select: { name: true } } },
@@ -115,7 +163,7 @@ export default async function EstadoDashboardPage() {
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Cursos completados</span>
-              <span className="font-overpass font-bold text-brand-blue text-xl">{talleresConProgreso}</span>
+              <span className="font-overpass font-bold text-brand-blue text-xl">{cursosCompletados}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Certificados emitidos</span>

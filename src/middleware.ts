@@ -86,9 +86,9 @@ export default auth((req) => {
     return NextResponse.next()
   }
 
-  // Rutas de ESTADO - solo para rol ESTADO
+  // Rutas de ESTADO - para rol ESTADO y ADMIN
   if (pathname.startsWith('/estado')) {
-    if (userRole !== 'ESTADO') {
+    if (userRole !== 'ESTADO' && userRole !== 'ADMIN') {
       return NextResponse.redirect(new URL('/unauthorized', nextUrl))
     }
     return NextResponse.next()

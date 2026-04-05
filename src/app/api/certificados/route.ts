@@ -58,7 +58,7 @@ export async function PATCH(req: NextRequest) {
       include: { taller: { select: { id: true } } },
     })
 
-    await aplicarNivel(cert.taller.id)
+    await aplicarNivel(cert.taller.id, session.user.id)
 
     await prisma.logActividad.create({
       data: {
@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
     })
 
     // Recalculate taller level after new certificate
-    await aplicarNivel(body.tallerId)
+    await aplicarNivel(body.tallerId, session.user.id)
 
     logActividad('CERTIFICADO_EMITIDO', session.user.id, { certificadoId: certificado.id, tallerId: body.tallerId, codigo: body.codigo })
 

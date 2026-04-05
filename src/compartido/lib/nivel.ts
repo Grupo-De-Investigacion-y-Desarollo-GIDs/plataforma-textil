@@ -1,4 +1,5 @@
 import { prisma } from '@/compartido/lib/prisma'
+import { logActividad } from './log'
 
 export type NivelTaller = 'BRONCE' | 'PLATA' | 'ORO'
 
@@ -88,7 +89,14 @@ export async function calcularNivel(tallerId: string): Promise<ResultadoNivel> {
   })
 }
 
-export async function aplicarNivel(tallerId: string): Promise<ResultadoNivel> {
+export async function aplicarNivel(tallerId: string, userId?: string): Promise<ResultadoNivel> {
+  // Leer nivel actual antes del calculo
+  const tallerActual = await prisma.taller.findUnique({
+    where: { id: tallerId },
+    select: { nivel: true },
+  })
+  const nivelAnterior = tallerActual?.nivel ?? 'BRONCE'
+
   const resultado = await calcularNivel(tallerId)
 
   await prisma.taller.update({
@@ -98,6 +106,15 @@ export async function aplicarNivel(tallerId: string): Promise<ResultadoNivel> {
       puntaje: resultado.puntaje,
     },
   })
+
+  // Loguear si el nivel cambio
+  if (nivelAnterior !== resultado.nivel) {
+    logActividad('NIVEL_SUBIDO', userId, {
+      tallerId,
+      nivelAnterior,
+      nivelNuevo: resultado.nivel,
+    })
+  }
 
   return resultado
 }

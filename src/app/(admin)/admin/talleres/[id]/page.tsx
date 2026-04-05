@@ -65,7 +65,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
       where: { id: validacionId },
       data: { estado: 'COMPLETADO' },
     })
-    await aplicarNivel(id)
+    await aplicarNivel(id, session!.user!.id)
     await prisma.logActividad.create({
       data: {
         userId: session!.user!.id,
@@ -88,7 +88,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
       where: { id: validacionId },
       data: { estado: 'RECHAZADO', detalle: motivo || 'Documentación insuficiente' },
     })
-    await aplicarNivel(id)
+    await aplicarNivel(id, session!.user!.id)
     await prisma.logActividad.create({
       data: {
         userId: session!.user!.id,
