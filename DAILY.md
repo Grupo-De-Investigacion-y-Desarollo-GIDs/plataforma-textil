@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **08:28** `812f77c` — fix: selector ambiguo en test pedidos disponibles
+  - `e2e/pedidos.spec.ts`
+
 - **08:24** `2daeae6` — feat: vistas cotizaciones — aceptar/rechazar en marca, seccion cotizaciones recibidas
   - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
   - `src/marca/componentes/aceptar-cotizacion.tsx`
