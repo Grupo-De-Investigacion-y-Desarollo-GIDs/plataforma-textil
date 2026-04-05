@@ -641,15 +641,250 @@ async function main() {
       { clave: 'dashboard_estado', valor: 'true', grupo: 'features_e1' },
       { clave: 'denuncias', valor: 'true', grupo: 'features_e1' },
       // Feature flags E2
-      { clave: 'publicacion_pedidos', valor: 'false', grupo: 'features_e2' },
-      { clave: 'cotizaciones', valor: 'false', grupo: 'features_e2' },
-      { clave: 'acuerdos_pdf', valor: 'false', grupo: 'features_e2' },
-      { clave: 'matching_notificaciones', valor: 'false', grupo: 'features_e2' },
-      { clave: 'asistente_rag', valor: 'false', grupo: 'features_e2' },
+      { clave: 'publicacion_pedidos', valor: 'true', grupo: 'features_e2' },
+      { clave: 'cotizaciones', valor: 'true', grupo: 'features_e2' },
+      { clave: 'acuerdos_pdf', valor: 'true', grupo: 'features_e2' },
+      { clave: 'matching_notificaciones', valor: 'true', grupo: 'features_e2' },
+      { clave: 'asistente_rag', valor: 'true', grupo: 'features_e2' },
     ],
   })
 
   console.log('  ✓ Configuración del sistema y feature flags')
+
+  // ============================================
+  // PEDIDOS PUBLICADOS (marketplace)
+  // ============================================
+  const pedidoPublicado1 = await prisma.pedido.create({
+    data: {
+      omId: 'OM-2026-00090',
+      marcaId: marcaChica.id,
+      tipoPrenda: 'Buzo/Hoodie',
+      tipoPrendaId: prBuzo.id,
+      cantidad: 1500,
+      fechaObjetivo: new Date('2026-06-15'),
+      estado: 'PUBLICADO',
+      montoTotal: 0,
+      presupuesto: 2700000,
+      descripcion: 'Buzos con capucha oversize para coleccion invierno. Tela french terry 280gr. Estampa en frente y espalda.',
+    },
+  })
+
+  const pedidoPublicado2 = await prisma.pedido.create({
+    data: {
+      omId: 'OM-2026-00091',
+      marcaId: marcaMediana.id,
+      tipoPrenda: 'Remera',
+      tipoPrendaId: prRemera.id,
+      cantidad: 2000,
+      fechaObjetivo: new Date('2026-05-20'),
+      estado: 'PUBLICADO',
+      montoTotal: 0,
+      presupuesto: 1800000,
+      descripcion: 'Remeras lisas de algodon 24/1 para sublimacion. Colores: blanco, negro, gris melange. Talles S a XXL.',
+    },
+  })
+
+  await prisma.pedido.create({
+    data: {
+      omId: 'OM-2026-00092',
+      marcaId: marcaMediana.id,
+      tipoPrenda: 'Camisa',
+      tipoPrendaId: prCamisa.id,
+      cantidad: 600,
+      fechaObjetivo: new Date('2026-07-01'),
+      estado: 'PUBLICADO',
+      montoTotal: 0,
+      presupuesto: 900000,
+      descripcion: 'Camisas manga larga en gabardina. Corte regular. Para uniforme corporativo.',
+    },
+  })
+
+  // Pedido ESPERANDO_ENTREGA
+  await prisma.pedido.create({
+    data: {
+      omId: 'OM-2026-00085',
+      marcaId: marcaMediana.id,
+      tipoPrenda: 'Pantalón de vestir',
+      tipoPrendaId: prPantalon.id,
+      cantidad: 400,
+      fechaObjetivo: new Date('2026-04-10'),
+      estado: 'ESPERANDO_ENTREGA',
+      progresoTotal: 100,
+      montoTotal: 640000,
+    },
+  })
+
+  // Pedido CANCELADO
+  await prisma.pedido.create({
+    data: {
+      omId: 'OM-2026-00075',
+      marcaId: marcaChica.id,
+      tipoPrenda: 'Jean/Vaquero',
+      tipoPrendaId: prJean.id,
+      cantidad: 200,
+      estado: 'CANCELADO',
+      montoTotal: 0,
+      descripcion: 'Cancelado por falta de stock de tela.',
+    },
+  })
+
+  console.log('  ✓ 5 pedidos adicionales (3 PUBLICADOS, 1 ESPERANDO_ENTREGA, 1 CANCELADO)')
+
+  // ============================================
+  // COTIZACIONES (para pedidos publicados)
+  // ============================================
+  await prisma.cotizacion.create({
+    data: {
+      pedidoId: pedidoPublicado1.id,
+      tallerId: tallerOro.id,
+      precio: 1600,
+      plazoDias: 18,
+      proceso: 'Confeccion completa + estampado',
+      mensaje: 'Podemos hacer los buzos con el estampado incluido. Tenemos experiencia en french terry pesado.',
+      estado: 'ENVIADA',
+      venceEn: new Date('2026-04-20'),
+    },
+  })
+  await prisma.cotizacion.create({
+    data: {
+      pedidoId: pedidoPublicado1.id,
+      tallerId: tallerPlata.id,
+      precio: 1850,
+      plazoDias: 25,
+      proceso: 'Confeccion (sin estampado)',
+      mensaje: 'Podemos hacer la confeccion. El estampado habria que tercerizarlo.',
+      estado: 'ENVIADA',
+      venceEn: new Date('2026-04-20'),
+    },
+  })
+  await prisma.cotizacion.create({
+    data: {
+      pedidoId: pedidoPublicado2.id,
+      tallerId: tallerOro.id,
+      precio: 750,
+      plazoDias: 12,
+      proceso: 'Corte y confeccion de remeras',
+      mensaje: 'Tenemos capacidad inmediata para este volumen.',
+      estado: 'ENVIADA',
+      venceEn: new Date('2026-04-18'),
+    },
+  })
+
+  console.log('  ✓ 3 cotizaciones para pedidos publicados')
+
+  // ============================================
+  // AUDITORIAS
+  // ============================================
+  const auditoria1 = await prisma.auditoria.create({
+    data: {
+      tallerId: tallerBronce.id,
+      inspectorId: admin.id,
+      fecha: new Date('2026-04-15T10:00:00'),
+      tipo: 'PRIMERA_VISITA',
+      estado: 'PROGRAMADA',
+      prioridad: 'alta',
+    },
+  })
+  const auditoria2 = await prisma.auditoria.create({
+    data: {
+      tallerId: tallerPlata.id,
+      inspectorId: admin.id,
+      fecha: new Date('2026-04-08T14:00:00'),
+      tipo: 'VERIFICACION',
+      estado: 'EN_CURSO',
+    },
+  })
+  await prisma.auditoria.create({
+    data: {
+      tallerId: tallerOro.id,
+      inspectorId: admin.id,
+      fecha: new Date('2026-03-20T09:00:00'),
+      tipo: 'SEGUIMIENTO',
+      estado: 'COMPLETADA',
+      resultado: 'Aprobado con observaciones menores. Recomendacion: mejorar senalizacion de salida de emergencia.',
+      hallazgos: { observaciones: ['Senalizacion de emergencia incompleta en sector deposito'], cumplimientos: ['EPP completo', 'ART vigente', 'Matafuegos en fecha'] },
+    },
+  })
+  await prisma.auditoria.create({
+    data: {
+      tallerId: tallerPlata.id,
+      inspectorId: admin.id,
+      fecha: new Date('2026-04-22T11:00:00'),
+      tipo: 'RE_AUDITORIA',
+      estado: 'PROGRAMADA',
+    },
+  })
+  await prisma.auditoria.create({
+    data: {
+      tallerId: tallerBronce.id,
+      inspectorId: admin.id,
+      fecha: new Date('2026-02-10T10:00:00'),
+      tipo: 'PRIMERA_VISITA',
+      estado: 'CANCELADA',
+      resultado: 'Cancelada — taller no disponible en la fecha coordinada.',
+    },
+  })
+
+  // Acciones correctivas para auditoria EN_CURSO
+  await prisma.accionCorrectiva.createMany({
+    data: [
+      { auditoriaId: auditoria2.id, descripcion: 'Instalar matafuegos ABC en sector de planchado', estado: 'PENDIENTE', plazo: new Date('2026-04-30') },
+      { auditoriaId: auditoria2.id, descripcion: 'Actualizar carteleria de salida de emergencia', estado: 'EN_PROCESO' },
+    ],
+  })
+
+  console.log('  ✓ 5 auditorias + 2 acciones correctivas')
+
+  // ============================================
+  // DENUNCIAS
+  // ============================================
+  const denunciaCount = await prisma.denuncia.count()
+  await prisma.denuncia.createMany({
+    data: [
+      { tipo: 'Trabajo no registrado', tallerId: tallerBronce.id, descripcion: 'Se observaron personas trabajando sin registro visible. Turno noche.', estado: 'RECIBIDA', anonima: true, codigo: `DEN-2026-${String(denunciaCount + 1).padStart(5, '0')}` },
+      { tipo: 'Condiciones insalubres', tallerId: tallerBronce.id, descripcion: 'Ventilacion insuficiente en el area de corte. Polvo de tela acumulado.', estado: 'EN_INVESTIGACION', anonima: true, codigo: `DEN-2026-${String(denunciaCount + 2).padStart(5, '0')}` },
+      { tipo: 'Incumplimiento de normas de seguridad', descripcion: 'Taller sin matafuegos ni senalizacion de emergencia. Ubicado en zona de Florencio Varela.', estado: 'RECIBIDA', anonima: true, codigo: `DEN-2026-${String(denunciaCount + 3).padStart(5, '0')}` },
+      { tipo: 'Acoso laboral', descripcion: 'Situacion de maltrato verbal reiterado hacia operarias. Se solicita intervencion urgente.', estado: 'RESUELTA', anonima: true, codigo: `DEN-2026-${String(denunciaCount + 4).padStart(5, '0')}` },
+      { tipo: 'No pago de salarios', tallerId: tallerPlata.id, descripcion: 'Retraso de 2 meses en el pago de haberes a 3 trabajadoras.', estado: 'DESESTIMADA', anonima: false, codigo: `DEN-2026-${String(denunciaCount + 5).padStart(5, '0')}` },
+    ],
+  })
+
+  console.log('  ✓ 5 denuncias con estados variados')
+
+  // ============================================
+  // NOTIFICACIONES
+  // ============================================
+  await prisma.notificacion.createMany({
+    data: [
+      { userId: userPlata.id, tipo: 'PEDIDO_DISPONIBLE', titulo: 'Nuevo pedido disponible: Buzo/Hoodie', mensaje: 'Amapola Indumentaria publico un pedido de 1500 buzos. Podes cotizar!', canal: 'PLATAFORMA' },
+      { userId: userOro.id, tipo: 'PEDIDO_DISPONIBLE', titulo: 'Nuevo pedido disponible: Remera', mensaje: 'Urbano Textil publico un pedido de 2000 remeras. Podes cotizar!', canal: 'PLATAFORMA' },
+      { userId: userMarcaChica.id, tipo: 'COTIZACION', titulo: 'Nueva cotizacion recibida', mensaje: 'Corte Sur SRL cotizo tu pedido de buzos: $1600/u en 18 dias.', canal: 'PLATAFORMA' },
+      { userId: userMarcaChica.id, tipo: 'COTIZACION', titulo: 'Nueva cotizacion recibida', mensaje: 'Cooperativa Hilos del Sur cotizo tu pedido de buzos: $1850/u en 25 dias.', canal: 'PLATAFORMA' },
+      { userId: userMarcaMediana.id, tipo: 'COTIZACION', titulo: 'Nueva cotizacion recibida', mensaje: 'Corte Sur SRL cotizo tu pedido de remeras: $750/u en 12 dias.', canal: 'PLATAFORMA' },
+      { userId: admin.id, tipo: 'SISTEMA', titulo: 'Validaciones pendientes', mensaje: 'Hay 1 validacion pendiente de revision.', canal: 'PLATAFORMA' },
+    ],
+  })
+
+  console.log('  ✓ 6 notificaciones')
+
+  // ============================================
+  // LOGS ADICIONALES (NIVEL_SUBIDO, etc.)
+  // ============================================
+  await prisma.logActividad.createMany({
+    data: [
+      { userId: admin.id, accion: 'NIVEL_SUBIDO', detalles: { tallerId: tallerPlata.id, nivelAnterior: 'BRONCE', nivelNuevo: 'PLATA', taller: 'Cooperativa Hilos del Sur' } },
+      { userId: admin.id, accion: 'NIVEL_SUBIDO', detalles: { tallerId: tallerOro.id, nivelAnterior: 'PLATA', nivelNuevo: 'ORO', taller: 'Corte Sur SRL' } },
+      { userId: admin.id, accion: 'VALIDACION_RECHAZADA', detalles: { taller: 'Taller La Aguja', tipo: 'Habilitacion municipal', motivo: 'Documento ilegible' } },
+      { userId: admin.id, accion: 'DENUNCIA_RECIBIDA', detalles: { codigo: `DEN-2026-${String(denunciaCount + 1).padStart(5, '0')}`, tipo: 'Trabajo no registrado' } },
+    ],
+  })
+
+  // Progreso bronce (recien empezo)
+  await prisma.progresoCapacitacion.create({
+    data: { tallerId: tallerBronce.id, coleccionId: col3.id, porcentajeCompletado: 33, videosVistos: 1 },
+  })
+
+  console.log('  ✓ 4 logs adicionales + progreso bronce')
 
   // ============================================
   // RESUMEN
@@ -664,13 +899,19 @@ async function main() {
     prisma.video.count(),
     prisma.certificado.count(),
     prisma.validacion.count(),
+    prisma.cotizacion.count(),
+    prisma.auditoria.count(),
+    prisma.denuncia.count(),
+    prisma.notificacion.count(),
   ])
 
   console.log('\n✅ Seed completado:')
   console.log(`  ${counts[0]} usuarios | ${counts[1]} talleres | ${counts[2]} marcas`)
-  console.log(`  ${counts[3]} pedidos | ${counts[4]} órdenes | ${counts[5]} colecciones | ${counts[6]} videos`)
+  console.log(`  ${counts[3]} pedidos | ${counts[4]} ordenes | ${counts[5]} colecciones | ${counts[6]} videos`)
   console.log(`  ${counts[7]} certificados | ${counts[8]} validaciones`)
-  console.log('\n  Credenciales: todas las cuentas usan password "pdt2026"')
+  console.log(`  ${counts[9]} cotizaciones | ${counts[10]} auditorias | ${counts[11]} denuncias | ${counts[12]} notificaciones`)
+  console.log('\n  Feature flags E2: TODOS ACTIVADOS')
+  console.log('  Credenciales: todas las cuentas usan password "pdt2026"')
 }
 
 main()
