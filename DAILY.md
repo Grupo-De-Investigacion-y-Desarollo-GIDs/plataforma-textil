@@ -3,6 +3,12 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **06:13** `ab97320` — feat: acuerdos comerciales — PDF orden de manufactura
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/[id]/page.tsx`
+  - `src/app/api/ordenes/[id]/pdf/route.tsx`
+  - `src/compartido/componentes/pdf/orden-pdf.tsx`
+
 - **06:12** `ca44365` — feat: feature flags — helper, seed, tab admin y puntos de control
   - `prisma/seed.ts`
   - `src/app/(admin)/admin/configuracion/page.tsx`
