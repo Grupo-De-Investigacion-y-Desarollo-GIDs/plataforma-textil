@@ -3,6 +3,17 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **03:32** `3e49900` — feat: agregar rol CONTENIDO al schema y middleware
+  - `prisma/migrations/20260405062904_agregar_rol_contenido/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/app/(admin)/layout.tsx`
+  - `src/app/api/colecciones/[id]/evaluacion/route.ts`
+  - `src/app/api/colecciones/[id]/route.ts`
+  - `src/app/api/colecciones/[id]/videos/route.ts`
+  - `src/app/api/colecciones/route.ts`
+  - `src/compartido/componentes/ui/logout-button.tsx`
+  - `src/middleware.ts`
+
 - **03:21** `3daf862` — docs: agregar orden de implementacion con grafo de dependencias
   - `.claude/specs/ORDEN_IMPLEMENTACION.md`
   - `CLAUDE.md`
