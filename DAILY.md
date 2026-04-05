@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **02:10** `ae15d17` — specs: actualizar semana2-layout-contenido fix iconos serializacion
+  - `.claude/specs/semana2-layout-contenido.md`
+
 - **02:02** `bfc6830` — specs: actualizar semana2-rag-decision-pipeline con fixes criticos Voyage AI
   - `.claude/specs/semana2-rag-decision-pipeline.md`
 
