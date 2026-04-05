@@ -3,6 +3,11 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **13:50** `9a69fe9` — feat: conectar paginas CONTENIDO a datos reales — colecciones, evaluaciones, notificaciones
+  - `src/app/(contenido)/contenido/colecciones/page.tsx`
+  - `src/app/(contenido)/contenido/evaluaciones/page.tsx`
+  - `src/app/(contenido)/contenido/notificaciones/page.tsx`
+
 - **12:52** `58fa295` — feat: agregar usuario CONTENIDO al seed y acceso rapido
   - `prisma/seed.ts`
   - `src/app/(auth)/acceso-rapido/page.tsx`
