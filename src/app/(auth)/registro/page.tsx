@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { signIn } from 'next-auth/react'
 import {
   ArrowLeft,
   ArrowRight,
@@ -16,18 +17,15 @@ import {
   Mail,
   Lock,
   Phone,
-  MapPin,
   Factory,
   Hash,
 } from 'lucide-react'
 import { Input } from '@/compartido/componentes/ui/input'
 import { Button } from '@/compartido/componentes/ui/button'
 import { Card } from '@/compartido/componentes/ui/card'
-import { Select } from '@/compartido/componentes/ui/select'
 
 type Role = 'TALLER' | 'MARCA'
 
-// Valida CUIT argentino: XX-XXXXXXXX-X o XXXXXXXXXXX (sin guiones)
 function validarCuit(val: string) {
   const limpio = val.replace(/-/g, '')
   return /^\d{11}$/.test(limpio)
@@ -38,37 +36,29 @@ function validarCuit(val: string) {
 const personalInfoSchema = z
   .object({
     nombre: z.string().min(1, 'El nombre es obligatorio'),
-    email: z.string().min(1, 'El email es obligatorio').email('Ingresá un email válido'),
-    password: z.string().min(8, 'La contraseña debe tener al menos 8 caracteres'),
-    confirmPassword: z.string().min(1, 'Confirmá tu contraseña'),
+    email: z.string().min(1, 'El email es obligatorio').email('Ingresa un email valido'),
+    password: z.string().min(8, 'La contrasena debe tener al menos 8 caracteres'),
+    confirmPassword: z.string().min(1, 'Confirma tu contrasena'),
     phone: z.string().optional(),
-    terminos: z.boolean().refine(v => v === true, 'Debés aceptar los términos y condiciones'),
+    terminos: z.boolean().refine(v => v === true, 'Debes aceptar los terminos y condiciones'),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: 'Las contraseñas no coinciden',
+    message: 'Las contrasenas no coinciden',
     path: ['confirmPassword'],
   })
 
-const tallerInfoSchema = z.object({
-  nombreTaller: z.string().min(1, 'El nombre del taller es obligatorio'),
-  cuit: z.string().refine(validarCuit, 'El CUIT debe tener 11 dígitos (ej: 20-12345678-9)'),
-})
-
-const marcaInfoSchema = z.object({
-  nombreMarca: z.string().min(1, 'El nombre de la marca es obligatorio'),
-  cuit: z.string().refine(validarCuit, 'El CUIT debe tener 11 dígitos (ej: 20-12345678-9)'),
-  ubicacion: z.string().min(1, 'La ubicación es obligatoria'),
-  tipo: z.string().min(1, 'Seleccioná el tipo de empresa'),
+const entidadInfoSchema = z.object({
+  nombreEntidad: z.string().min(1, 'El nombre es obligatorio'),
+  cuit: z.string().refine(validarCuit, 'El CUIT debe tener 11 digitos (ej: 20-12345678-9)'),
 })
 
 type PersonalInfoData = z.infer<typeof personalInfoSchema>
-type TallerInfoData = z.infer<typeof tallerInfoSchema>
-type MarcaInfoData = z.infer<typeof marcaInfoSchema>
+type EntidadInfoData = z.infer<typeof entidadInfoSchema>
 
 // --- Step indicator ---
 
-function StepIndicator({ currentStep }: { currentStep: number }) {
-  const steps = [1, 2, 3]
+function StepIndicator({ currentStep, totalSteps }: { currentStep: number; totalSteps: number }) {
+  const steps = Array.from({ length: totalSteps }, (_, i) => i + 1)
   return (
     <div className="flex items-center justify-center gap-2 mb-8">
       {steps.map((step, index) => (
@@ -93,7 +83,7 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
   )
 }
 
-// --- Step 1: Role selection ---
+// --- Step 0: Role selection ---
 
 function StepRole({ onSelect }: { onSelect: (role: Role) => void }) {
   return (
@@ -102,7 +92,7 @@ function StepRole({ onSelect }: { onSelect: (role: Role) => void }) {
         Crear cuenta
       </h2>
       <p className="text-sm text-gray-500 text-center mb-6">
-        Seleccioná tu rol en la plataforma
+        Selecciona tu rol en la plataforma
       </p>
       <div className="grid grid-cols-1 gap-4">
         <button
@@ -137,15 +127,17 @@ function StepRole({ onSelect }: { onSelect: (role: Role) => void }) {
   )
 }
 
-// --- Step 2: Personal info ---
+// --- Step 1: Personal info ---
 
 function StepPersonalInfo({
   onNext,
   onBack,
+  showBack,
   defaultValues,
 }: {
   onNext: (data: PersonalInfoData) => void
   onBack: () => void
+  showBack: boolean
   defaultValues?: Partial<PersonalInfoData>
 }) {
   const { register, handleSubmit, formState: { errors }, watch } = useForm<PersonalInfoData>({
@@ -161,86 +153,47 @@ function StepPersonalInfo({
         Datos personales
       </h2>
       <p className="text-sm text-gray-500 text-center mb-6">
-        Completá tu información personal
+        Completa tu informacion personal
       </p>
 
       <form onSubmit={handleSubmit(onNext)} className="space-y-4">
         <div className="relative">
-          <Input
-            label="Nombre completo"
-            placeholder="Juan Pérez"
-            error={errors.nombre?.message}
-            {...register('nombre')}
-          />
+          <Input label="Nombre completo" placeholder="Juan Perez" error={errors.nombre?.message} {...register('nombre')} />
           <User className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
-
         <div className="relative">
-          <Input
-            label="Email"
-            type="email"
-            placeholder="tu@email.com"
-            error={errors.email?.message}
-            {...register('email')}
-          />
+          <Input label="Email" type="email" placeholder="tu@email.com" error={errors.email?.message} {...register('email')} />
           <Mail className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
-
         <div className="relative">
-          <Input
-            label="Contraseña (mínimo 8 caracteres)"
-            type="password"
-            placeholder="••••••••"
-            error={errors.password?.message}
-            {...register('password')}
-          />
+          <Input label="Contrasena (minimo 8 caracteres)" type="password" placeholder="........" error={errors.password?.message} {...register('password')} />
           <Lock className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
-
         <div className="relative">
-          <Input
-            label="Confirmar contraseña"
-            type="password"
-            placeholder="••••••••"
-            error={errors.confirmPassword?.message}
-            {...register('confirmPassword')}
-          />
+          <Input label="Confirmar contrasena" type="password" placeholder="........" error={errors.confirmPassword?.message} {...register('confirmPassword')} />
           <Lock className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
-
         <div className="relative">
-          <Input
-            label="Teléfono (opcional)"
-            type="tel"
-            placeholder="+54 11 1234-5678"
-            error={errors.phone?.message}
-            {...register('phone')}
-          />
+          <Input label="Telefono (opcional)" type="tel" placeholder="+54 11 1234-5678" error={errors.phone?.message} {...register('phone')} />
           <Phone className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
 
         <label className={`flex items-start gap-3 cursor-pointer rounded-lg border p-3 transition-colors ${terminosValue ? 'border-brand-blue bg-blue-50/40' : 'border-gray-200'}`}>
-          <input
-            type="checkbox"
-            className="mt-0.5 accent-[var(--color-brand-blue)]"
-            {...register('terminos')}
-          />
+          <input type="checkbox" className="mt-0.5 accent-[var(--color-brand-blue)]" {...register('terminos')} />
           <span className="text-sm text-gray-600">
             Acepto los{' '}
-            <a href="/terminos" target="_blank" className="text-brand-blue font-semibold hover:underline">
-              términos y condiciones
-            </a>{' '}
-            de la Plataforma Digital Textil
+            <a href="/terminos" target="_blank" className="text-brand-blue font-semibold hover:underline">terminos y condiciones</a>
+            {' '}de la Plataforma Digital Textil
           </span>
         </label>
-        {errors.terminos && (
-          <p className="text-xs text-red-500 -mt-2">{errors.terminos.message}</p>
-        )}
+        {errors.terminos && <p className="text-xs text-red-500 -mt-2">{errors.terminos.message}</p>}
 
         <div className="flex gap-3 pt-2">
-          <Button type="button" variant="secondary" onClick={onBack} icon={<ArrowLeft className="w-4 h-4" />} className="flex-1">
-            Atrás
-          </Button>
+          {showBack && (
+            <Button type="button" variant="secondary" onClick={onBack} icon={<ArrowLeft className="w-4 h-4" />} className="flex-1">
+              Atras
+            </Button>
+          )}
           <Button type="submit" icon={<ArrowRight className="w-4 h-4" />} className="flex-1">
             Siguiente
           </Button>
@@ -250,137 +203,23 @@ function StepPersonalInfo({
   )
 }
 
-// --- Step 3: Role-specific info (Taller) ---
+// --- Step 2: Entity info (unified for taller and marca) ---
 
-function StepTallerInfo({
+function StepEntidadInfo({
+  role,
   onSubmit,
   onBack,
   loading,
   defaultValues,
 }: {
-  onSubmit: (data: TallerInfoData) => void
-  onBack: (current: Partial<TallerInfoData>) => void
+  role: 'TALLER' | 'MARCA'
+  onSubmit: (data: EntidadInfoData) => void
+  onBack: (current: Partial<EntidadInfoData>) => void
   loading: boolean
-  defaultValues?: Partial<TallerInfoData>
+  defaultValues?: Partial<EntidadInfoData>
 }) {
-  const { register, handleSubmit, getValues, watch, formState: { errors } } = useForm<TallerInfoData>({
-    resolver: zodResolver(tallerInfoSchema),
-    defaultValues,
-  })
-
-  const [cuitVerificado, setCuitVerificado] = useState(false)
-  const [cuitLoading, setCuitLoading] = useState(false)
-  const [cuitData, setCuitData] = useState<{ razonSocial?: string } | null>(null)
-  const [cuitError, setCuitError] = useState('')
-
-  const cuitValue = watch('cuit')
-
-  async function verificarCuitOnBlur() {
-    const limpio = (cuitValue || '').replace(/-/g, '')
-    if (limpio.length !== 11) return
-
-    setCuitLoading(true)
-    setCuitError('')
-    setCuitData(null)
-    setCuitVerificado(false)
-
-    try {
-      const res = await fetch(`/api/auth/verificar-cuit?cuit=${limpio}`)
-      const data = await res.json()
-      if (data.valid) {
-        setCuitVerificado(true)
-        setCuitData({ razonSocial: data.razonSocial })
-      } else {
-        setCuitError(data.error || 'CUIT invalido')
-      }
-    } catch {
-      // AfipSDK no responde — advertencia sin bloqueo
-      setCuitError('')
-      setCuitVerificado(true)
-      setCuitData(null)
-    } finally {
-      setCuitLoading(false)
-    }
-  }
-
-  return (
-    <div>
-      <h2 className="font-overpass font-bold text-xl text-brand-blue text-center mb-2">
-        Datos del taller
-      </h2>
-      <p className="text-sm text-gray-500 text-center mb-6">
-        Contanos sobre tu taller textil
-      </p>
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="relative">
-          <Input
-            label="Nombre del taller"
-            placeholder="Taller La Costura"
-            error={errors.nombreTaller?.message}
-            {...register('nombreTaller')}
-          />
-          <Building2 className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
-        </div>
-
-        <div className="relative">
-          <Input
-            label="CUIT"
-            placeholder="20-12345678-9"
-            error={errors.cuit?.message || cuitError}
-            {...register('cuit')}
-            onBlur={verificarCuitOnBlur}
-          />
-          <Hash className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
-          {cuitLoading && (
-            <p className="text-xs text-gray-400 mt-1">Verificando CUIT en ARCA...</p>
-          )}
-          {cuitVerificado && cuitData?.razonSocial && (
-            <div className="flex items-center gap-1.5 mt-1">
-              <Check className="w-3.5 h-3.5 text-green-600" />
-              <span className="text-xs text-green-700 font-semibold">Verificado por ARCA</span>
-              <span className="text-xs text-gray-500">— {cuitData.razonSocial}</span>
-            </div>
-          )}
-          {cuitVerificado && !cuitData?.razonSocial && (
-            <p className="text-xs text-amber-600 mt-1">
-              No se pudo verificar en ARCA. Podés continuar igualmente.
-            </p>
-          )}
-        </div>
-
-        <p className="text-xs text-gray-400">
-          Ubicación y capacidad de producción se completan en tu perfil de taller.
-        </p>
-
-        <div className="flex gap-3 pt-2">
-          <Button type="button" variant="secondary" onClick={() => onBack(getValues())} icon={<ArrowLeft className="w-4 h-4" />} className="flex-1">
-            Atrás
-          </Button>
-          <Button type="submit" loading={loading} disabled={!cuitVerificado && !cuitLoading && (cuitValue || '').replace(/-/g, '').length === 11} icon={<Check className="w-4 h-4" />} className="flex-1">
-            Crear cuenta
-          </Button>
-        </div>
-      </form>
-    </div>
-  )
-}
-
-// --- Step 3: Role-specific info (Marca) ---
-
-function StepMarcaInfo({
-  onSubmit,
-  onBack,
-  loading,
-  defaultValues,
-}: {
-  onSubmit: (data: MarcaInfoData) => void
-  onBack: (current: Partial<MarcaInfoData>) => void
-  loading: boolean
-  defaultValues?: Partial<MarcaInfoData>
-}) {
-  const { register, handleSubmit, getValues, watch, formState: { errors } } = useForm<MarcaInfoData>({
-    resolver: zodResolver(marcaInfoSchema),
+  const { register, handleSubmit, getValues, watch, formState: { errors } } = useForm<EntidadInfoData>({
+    resolver: zodResolver(entidadInfoSchema),
     defaultValues,
   })
 
@@ -418,24 +257,25 @@ function StepMarcaInfo({
     }
   }
 
+  const titulo = role === 'TALLER' ? 'Datos del taller' : 'Datos de la marca'
+  const subtitulo = role === 'TALLER' ? 'Contanos sobre tu taller textil' : 'Contanos sobre tu marca'
+  const placeholderNombre = role === 'TALLER' ? 'Taller La Costura' : 'Mi Marca'
+  const IconoNombre = role === 'TALLER' ? Building2 : ShoppingBag
+
   return (
     <div>
-      <h2 className="font-overpass font-bold text-xl text-brand-blue text-center mb-2">
-        Datos de la marca
-      </h2>
-      <p className="text-sm text-gray-500 text-center mb-6">
-        Contanos sobre tu marca
-      </p>
+      <h2 className="font-overpass font-bold text-xl text-brand-blue text-center mb-2">{titulo}</h2>
+      <p className="text-sm text-gray-500 text-center mb-6">{subtitulo}</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="relative">
           <Input
-            label="Nombre de la marca"
-            placeholder="Mi Marca"
-            error={errors.nombreMarca?.message}
-            {...register('nombreMarca')}
+            label={role === 'TALLER' ? 'Nombre del taller' : 'Nombre de la marca'}
+            placeholder={placeholderNombre}
+            error={errors.nombreEntidad?.message}
+            {...register('nombreEntidad')}
           />
-          <ShoppingBag className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
+          <IconoNombre className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
 
         <div className="relative">
@@ -447,9 +287,7 @@ function StepMarcaInfo({
             onBlur={verificarCuitOnBlur}
           />
           <Hash className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
-          {cuitLoading && (
-            <p className="text-xs text-gray-400 mt-1">Verificando CUIT en ARCA...</p>
-          )}
+          {cuitLoading && <p className="text-xs text-gray-400 mt-1">Verificando CUIT en ARCA...</p>}
           {cuitVerificado && cuitData?.razonSocial && (
             <div className="flex items-center gap-1.5 mt-1">
               <Check className="w-3.5 h-3.5 text-green-600" />
@@ -458,40 +296,15 @@ function StepMarcaInfo({
             </div>
           )}
           {cuitVerificado && !cuitData?.razonSocial && (
-            <p className="text-xs text-amber-600 mt-1">
-              No se pudo verificar en ARCA. Podés continuar igualmente.
-            </p>
+            <p className="text-xs text-amber-600 mt-1">No se pudo verificar en ARCA. Podes continuar igualmente.</p>
           )}
         </div>
 
-        <div className="relative">
-          <Input
-            label="Ubicación"
-            placeholder="Ciudad, Provincia"
-            error={errors.ubicacion?.message}
-            {...register('ubicacion')}
-          />
-          <MapPin className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
-        </div>
-
-        <Select
-          label="Tipo de empresa"
-          placeholder="Seleccioná el tipo"
-          error={errors.tipo?.message}
-          options={[
-            { value: 'Micro', label: 'Micro' },
-            { value: 'Pequeña', label: 'Pequeña' },
-            { value: 'Mediana', label: 'Mediana' },
-            { value: 'Grande', label: 'Grande' },
-          ]}
-          {...register('tipo')}
-        />
-
         <div className="flex gap-3 pt-2">
           <Button type="button" variant="secondary" onClick={() => onBack(getValues())} icon={<ArrowLeft className="w-4 h-4" />} className="flex-1">
-            Atrás
+            Atras
           </Button>
-          <Button type="submit" loading={loading} disabled={!cuitVerificado && !cuitLoading && (cuitValue || '').replace(/-/g, '').length === 11} icon={<Check className="w-4 h-4" />} className="flex-1">
+          <Button type="submit" loading={loading} disabled={!cuitVerificado && !cuitLoading} icon={<Check className="w-4 h-4" />} className="flex-1">
             Crear cuenta
           </Button>
         </div>
@@ -502,44 +315,43 @@ function StepMarcaInfo({
 
 // --- Main page ---
 
-export default function RegistroPage() {
+function RegistroContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const rolParam = searchParams.get('rol')
 
-  const [step, setStep] = useState(1)
-  const [role, setRole] = useState<Role | null>(null)
-
-  // Pre-seleccionar rol si viene de la landing (?rol=TALLER o ?rol=MARCA)
-  useEffect(() => {
-    const rolParam = searchParams.get('rol')
-    if (rolParam === 'TALLER' || rolParam === 'MARCA') {
-      setRole(rolParam)
-      setStep(2)
-    }
-  }, [searchParams])
+  const [step, setStep] = useState(
+    rolParam === 'TALLER' || rolParam === 'MARCA' ? 1 : 0
+  )
+  const [role, setRole] = useState<Role | null>(
+    rolParam === 'TALLER' ? 'TALLER' : rolParam === 'MARCA' ? 'MARCA' : null
+  )
   const [personalInfo, setPersonalInfo] = useState<PersonalInfoData | null>(null)
-  const [tallerInfo, setTallerInfo] = useState<TallerInfoData | null>(null)
-  const [marcaInfo, setMarcaInfo] = useState<MarcaInfoData | null>(null)
+  const [entidadInfo, setEntidadInfo] = useState<EntidadInfoData | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
+  const totalSteps = rolParam ? 2 : 3
+  const indicatorStep = rolParam ? step : step + 1
+
   function handleRoleSelect(selectedRole: Role) {
     setRole(selectedRole)
-    setStep(2)
+    setStep(1)
   }
 
   function handlePersonalInfoNext(data: PersonalInfoData) {
     setPersonalInfo(data)
-    setStep(3)
+    setStep(2)
   }
 
-  async function handleTallerSubmit(data: TallerInfoData) {
+  async function handleEntidadSubmit(data: EntidadInfoData) {
     if (!personalInfo || !role) return
-    setTallerInfo(data)
+    setEntidadInfo(data)
     setError(null)
     setLoading(true)
 
     try {
+      const entidadPayload = { nombre: data.nombreEntidad, cuit: data.cuit }
       const res = await fetch('/api/auth/registro', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -549,10 +361,7 @@ export default function RegistroPage() {
           password: personalInfo.password,
           phone: personalInfo.phone || undefined,
           role,
-          tallerData: {
-            nombre: data.nombreTaller,
-            cuit: data.cuit,
-          },
+          ...(role === 'TALLER' ? { tallerData: entidadPayload } : { marcaData: entidadPayload }),
         }),
       })
 
@@ -562,56 +371,28 @@ export default function RegistroPage() {
         setLoading(false)
         return
       }
-      router.push('/login?registered=true')
-    } catch (err) {
-      console.error('Error en registro taller:', err)
-      setError('Ocurrió un error inesperado. Intentá de nuevo.')
-      setLoading(false)
-    }
-  }
 
-  async function handleMarcaSubmit(data: MarcaInfoData) {
-    if (!personalInfo || !role) return
-    setMarcaInfo(data)
-    setError(null)
-    setLoading(true)
-
-    try {
-      const res = await fetch('/api/auth/registro', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nombre: personalInfo.nombre,
-          email: personalInfo.email,
-          password: personalInfo.password,
-          phone: personalInfo.phone || undefined,
-          role,
-          marcaData: {
-            nombre: data.nombreMarca,
-            cuit: data.cuit,
-            ubicacion: data.ubicacion,
-            tipo: data.tipo,
-          },
-        }),
+      const loginResult = await signIn('credentials', {
+        email: personalInfo.email,
+        password: personalInfo.password,
+        redirect: false,
       })
 
-      const body = await res.json()
-      if (!res.ok) {
-        setError(body.error || 'Error al crear la cuenta')
-        setLoading(false)
-        return
+      if (loginResult?.ok) {
+        router.push(role === 'TALLER' ? '/taller' : '/marca/directorio')
+        router.refresh()
+      } else {
+        router.push('/login?registered=true')
       }
-      router.push('/login?registered=true')
-    } catch (err) {
-      console.error('Error en registro marca:', err)
-      setError('Ocurrió un error inesperado. Intentá de nuevo.')
+    } catch {
+      setError('Ocurrio un error inesperado. Intenta de nuevo.')
       setLoading(false)
     }
   }
 
   return (
     <Card className="p-8">
-      <StepIndicator currentStep={step} />
+      <StepIndicator currentStep={indicatorStep} totalSteps={totalSteps} />
 
       {error && (
         <div className="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
@@ -619,40 +400,41 @@ export default function RegistroPage() {
         </div>
       )}
 
-      {step === 1 && <StepRole onSelect={handleRoleSelect} />}
+      {step === 0 && <StepRole onSelect={handleRoleSelect} />}
 
-      {step === 2 && (
+      {step === 1 && (
         <StepPersonalInfo
           onNext={handlePersonalInfoNext}
-          onBack={() => setStep(1)}
+          onBack={() => setStep(0)}
+          showBack={!rolParam}
           defaultValues={personalInfo ?? undefined}
         />
       )}
 
-      {step === 3 && role === 'TALLER' && (
-        <StepTallerInfo
-          onSubmit={handleTallerSubmit}
-          onBack={(current) => { setTallerInfo(prev => ({ ...prev, ...current } as TallerInfoData)); setStep(2) }}
+      {step === 2 && role && (
+        <StepEntidadInfo
+          role={role}
+          onSubmit={handleEntidadSubmit}
+          onBack={(current) => { setEntidadInfo(prev => ({ ...prev, ...current } as EntidadInfoData)); setStep(1) }}
           loading={loading}
-          defaultValues={tallerInfo ?? undefined}
-        />
-      )}
-
-      {step === 3 && role === 'MARCA' && (
-        <StepMarcaInfo
-          onSubmit={handleMarcaSubmit}
-          onBack={(current) => { setMarcaInfo(prev => ({ ...prev, ...current } as MarcaInfoData)); setStep(2) }}
-          loading={loading}
-          defaultValues={marcaInfo ?? undefined}
+          defaultValues={entidadInfo ?? undefined}
         />
       )}
 
       <p className="mt-6 text-center text-sm text-gray-600">
-        ¿Ya tenés cuenta?{' '}
+        ¿Ya tenes cuenta?{' '}
         <Link href="/login" className="font-semibold text-brand-blue hover:underline">
-          Iniciar sesión
+          Iniciar sesion
         </Link>
       </p>
     </Card>
+  )
+}
+
+export default function RegistroPage() {
+  return (
+    <Suspense>
+      <RegistroContent />
+    </Suspense>
   )
 }
