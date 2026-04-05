@@ -3,6 +3,23 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **19:36** `22371e2` — fix: 13 issues criticos UI — responsive grids mobile + aria-labels accesibilidad
+  - `src/app/(admin)/admin/auditorias/page.tsx`
+  - `src/app/(admin)/admin/certificados/page.tsx`
+  - `src/app/(admin)/admin/dashboard/page.tsx`
+  - `src/app/(admin)/admin/marcas/page.tsx`
+  - `src/app/(admin)/admin/notificaciones/page.tsx`
+  - `src/app/(admin)/admin/pedidos/page.tsx`
+  - `src/app/(admin)/admin/talleres/page.tsx`
+  - `src/app/(admin)/admin/usuarios/page.tsx`
+  - `src/app/(contenido)/contenido/notificaciones/page.tsx`
+  - `src/app/(marca)/marca/page.tsx`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(public)/directorio/page.tsx`
+  - `src/app/(public)/perfil-marca/[id]/page.tsx`
+  - `src/app/(taller)/taller/aprender/page.tsx`
+  - `src/app/page.tsx`
+
 - **17:24** `d4bcfc6` — docs: agregar instrucciones completas para Sergio
   - `.claude/specs/instrucciones-sergio.md`
 
