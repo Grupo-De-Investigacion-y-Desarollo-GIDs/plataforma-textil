@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **05:52** `78a68d9` — specs: agregar semana1-feature-flags
+  - `.claude/specs/semana1-feature-flags.md`
+
 - **05:41** `7577bce` — specs: agregar semana4-testing-checklist
   - `.claude/specs/semana4-testing-checklist.md`
 
