@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **05:38** `b3cda5b` — specs: agregar semana3-stubs-perfil-publico
+  - `.claude/specs/semana3-stubs-perfil-publico.md`
+
 - **05:33** `cb2dc72` — specs: agregar semana3-vistas-cotizaciones
   - `.claude/specs/semana3-vistas-cotizaciones.md`
 
