@@ -3,6 +3,15 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **08:21** `9097ef3` — feat: publicacion pedidos UI — boton publicar, marketplace disponibles, cotizar form + tests E2E
+  - `e2e/pedidos.spec.ts`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+  - `src/marca/componentes/publicar-pedido.tsx`
+  - `src/taller/componentes/cotizar-form.tsx`
+
 - **08:15** `62bf10e` — feat: registro 3 pasos — unificar entidad, auto-login, step indicator dinamico + tests E2E
   - `e2e/registro.spec.ts`
   - `src/app/(auth)/registro/page.tsx`
