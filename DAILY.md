@@ -3,6 +3,15 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **04:16** `52c99b3` — feat: queries dashboard estado
+  - `prisma/migrations/20260405071500_agregar_indices_dashboard_estado/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(estado)/estado/page.tsx`
+  - `src/app/api/certificados/route.ts`
+  - `src/compartido/lib/nivel.ts`
+  - `src/middleware.ts`
+
 - **04:07** `7bf203f` — feat: agregar estado PUBLICADO y modelo Cotizacion
   - `prisma/migrations/20260405070321_agregar_publicado_y_cotizaciones/migration.sql`
   - `prisma/schema.prisma`
