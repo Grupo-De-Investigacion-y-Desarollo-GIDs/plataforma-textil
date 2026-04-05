@@ -3,6 +3,13 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **16:35** `8f6183f` — fix: 4 gaps de flujos — aplicarNivel en APIs, contenido accede a colecciones admin, crear acciones correctivas
+  - `src/app/(admin)/admin/auditorias/[id]/informe-client.tsx`
+  - `src/app/api/auditorias/[id]/route.ts`
+  - `src/app/api/colecciones/[id]/evaluacion/route.ts`
+  - `src/app/api/validaciones/[id]/route.ts`
+  - `src/middleware.ts`
+
 - **16:08** `5f03ad2` — docs: checklist de validacion manual para Sergio — 82 items por funcion
   - `.claude/specs/semana4-checklist-sergio.md`
 
