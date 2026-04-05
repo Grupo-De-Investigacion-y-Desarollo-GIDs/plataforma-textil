@@ -3,6 +3,10 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **06:13** `c57a652` — feat: exportes estado — 7 tipos de reporte con filtro de periodo
+  - `src/app/(estado)/estado/exportar/page.tsx`
+  - `src/app/api/exportar/route.ts`
+
 - **06:13** `ab97320` — feat: acuerdos comerciales — PDF orden de manufactura
   - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
   - `src/app/(taller)/taller/pedidos/[id]/page.tsx`
