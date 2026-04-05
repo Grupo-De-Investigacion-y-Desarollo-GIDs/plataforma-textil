@@ -3,6 +3,17 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **03:38** `d7776d1` — feat: integrar AfipSDK
+  - `.env.example`
+  - `package-lock.json`
+  - `package.json`
+  - `prisma/migrations/20260405063537_agregar_verificado_afip_marca/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/app/(auth)/registro/page.tsx`
+  - `src/app/api/auth/registro/route.ts`
+  - `src/app/api/auth/verificar-cuit/route.ts`
+  - `src/compartido/lib/afip.ts`
+
 - **03:32** `3e49900` — feat: agregar rol CONTENIDO al schema y middleware
   - `prisma/migrations/20260405062904_agregar_rol_contenido/migration.sql`
   - `prisma/schema.prisma`
