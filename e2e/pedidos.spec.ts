@@ -4,7 +4,7 @@ import { loginAs } from './helpers/auth'
 test('taller ve pagina de pedidos disponibles', async ({ page }) => {
   await loginAs(page, 'taller_bronce')
   await page.goto('/taller/pedidos/disponibles')
-  await expect(page.getByText('Pedidos disponibles')).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Pedidos disponibles' })).toBeVisible()
 })
 
 test('marca ve boton publicar en pedido borrador', async ({ page }) => {
