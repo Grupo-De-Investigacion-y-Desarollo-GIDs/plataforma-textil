@@ -136,3 +136,64 @@ export function buildMagicLinkEmail(url: string): { subject: string; html: strin
     `),
   }
 }
+
+export function buildCotizacionRecibidaEmail(data: {
+  nombreMarca: string
+  nombreTaller: string
+  proceso: string
+  precio: number
+  plazoDias: number
+}): { subject: string; html: string } {
+  return {
+    subject: `Nueva cotizacion de ${data.nombreTaller} - PDT`,
+    html: emailWrapper(`
+      <h2 style="margin: 0 0 12px;">Nueva cotizacion recibida</h2>
+      <p>Hola <strong>${data.nombreMarca}</strong>, el taller <strong>${data.nombreTaller}</strong> cotizo tu pedido:</p>
+      <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin: 16px 0;">
+        <p style="margin: 4px 0;"><strong>Proceso:</strong> ${data.proceso}</p>
+        <p style="margin: 4px 0;"><strong>Precio:</strong> $${data.precio.toLocaleString('es-AR')}</p>
+        <p style="margin: 4px 0;"><strong>Plazo:</strong> ${data.plazoDias} dias</p>
+      </div>
+      ${btnPrimario(`${process.env.NEXTAUTH_URL ?? ''}/marca/pedidos`, 'Ver cotizaciones')}
+    `),
+  }
+}
+
+export function buildCotizacionAceptadaEmail(data: {
+  nombreTaller: string
+  nombreMarca: string
+  proceso: string
+  precio: number
+  plazoDias: number
+}): { subject: string; html: string } {
+  return {
+    subject: 'Tu cotizacion fue aceptada - PDT',
+    html: emailWrapper(`
+      <h2 style="margin: 0 0 12px; color: #16a34a;">Cotizacion aceptada</h2>
+      <p>Felicitaciones <strong>${data.nombreTaller}</strong>, la marca <strong>${data.nombreMarca}</strong> acepto tu cotizacion:</p>
+      <div style="background: #f0fdf4; border-radius: 8px; padding: 16px; margin: 16px 0;">
+        <p style="margin: 4px 0;"><strong>Proceso:</strong> ${data.proceso}</p>
+        <p style="margin: 4px 0;"><strong>Precio:</strong> $${data.precio.toLocaleString('es-AR')}</p>
+        <p style="margin: 4px 0;"><strong>Plazo:</strong> ${data.plazoDias} dias</p>
+      </div>
+      <p>Ya se creo la orden de manufactura. Revisa los detalles en tu panel.</p>
+      ${btnPrimario(`${process.env.NEXTAUTH_URL ?? ''}/taller/pedidos`, 'Ver mis pedidos')}
+    `),
+  }
+}
+
+export function buildCotizacionRechazadaEmail(data: {
+  nombreTaller: string
+  nombreMarca: string
+  proceso: string
+}): { subject: string; html: string } {
+  return {
+    subject: 'Actualizacion sobre tu cotizacion - PDT',
+    html: emailWrapper(`
+      <h2 style="margin: 0 0 12px;">Cotizacion no seleccionada</h2>
+      <p>Hola <strong>${data.nombreTaller}</strong>, la marca <strong>${data.nombreMarca}</strong> selecciono otra cotizacion para el proceso <strong>${data.proceso}</strong>.</p>
+      <p>Segui cotizando otros pedidos disponibles en la plataforma.</p>
+      ${btnPrimario(`${process.env.NEXTAUTH_URL ?? ''}/taller/pedidos`, 'Ver pedidos disponibles')}
+    `),
+  }
+}
