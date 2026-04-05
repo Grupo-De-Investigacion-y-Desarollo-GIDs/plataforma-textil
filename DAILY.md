@@ -3,6 +3,14 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **04:39** `c293954` — feat: PDF y QR certificados
+  - `src/app/(admin)/admin/certificados/page.tsx`
+  - `src/app/(taller)/taller/aprender/[id]/page.tsx`
+  - `src/app/api/certificados/[id]/pdf/route.tsx`
+  - `src/app/api/colecciones/[id]/evaluacion/route.ts`
+  - `src/compartido/componentes/pdf/certificado-pdf.tsx`
+  - `src/taller/componentes/academia-cliente.tsx`
+
 - **04:28** `4e6e248` — feat: RAG infraestructura y pipeline
   - `.env.example`
   - `package-lock.json`
