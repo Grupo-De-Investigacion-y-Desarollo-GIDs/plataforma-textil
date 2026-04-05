@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **05:14** `36877ac` — specs: agregar semana3-whatsapp-perfil-marca
+  - `.claude/specs/semana3-whatsapp-perfil-marca.md`
+
 - **05:09** `bb257f7` — specs: agregar semana3-chat-rag-ui
   - `.claude/specs/semana3-chat-rag-ui.md`
 
