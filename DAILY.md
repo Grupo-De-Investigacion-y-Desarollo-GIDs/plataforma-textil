@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-04-05
+
+### Gerardo Breard
+- **01:04** `4018f34` — specs: actualizar semana1-oauth-magiclink con fixes criticos de factibilidad
+  - `.claude/specs/semana1-oauth-magiclink.md`
+
+
 ## 2026-04-04
 
 ### Gerardo Breard
