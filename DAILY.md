@@ -3,6 +3,10 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **06:53** `7c64b49` — feat: auditoria detalle — pagina de informe con estado, resultado y hallazgos
+  - `src/app/(admin)/admin/auditorias/[id]/informe-client.tsx`
+  - `src/app/(admin)/admin/auditorias/[id]/page.tsx`
+
 - **06:45** `1bbfc62` — fix: agregar /denunciar y /consultar-denuncia a rutas publicas del middleware
   - `src/middleware.ts`
 
