@@ -73,7 +73,7 @@ export default async function ContenidoNotificacionesPage() {
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <p className="font-semibold text-sm text-gray-800 truncate">{n.titulo}</p>
-                  {!n.leida && <span className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" />}
+                  {!n.leida && <span className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" aria-label="Sin leer" />}
                 </div>
                 <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{n.mensaje}</p>
                 <p className="text-xs text-gray-400 mt-1">
