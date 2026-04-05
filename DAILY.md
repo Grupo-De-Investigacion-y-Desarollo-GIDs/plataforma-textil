@@ -3,6 +3,10 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **12:16** `a484f03` — feat: pagina acceso rapido — login de un click por rol para el piloto
+  - `src/app/(auth)/acceso-rapido/page.tsx`
+  - `src/middleware.ts`
+
 - **12:06** `451fd1c` — feat: feedback con entidad parseada, pagina admin/feedback, link sidebar + tests E2E
   - `e2e/admin.spec.ts`
   - `src/app/(admin)/admin/feedback/page.tsx`
