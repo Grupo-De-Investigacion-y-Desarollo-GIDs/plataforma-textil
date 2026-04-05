@@ -202,9 +202,100 @@ Para cada item: probalo en el browser y marcá OK o FALLA. Si falla, anotá qué
 
 ---
 
+## 9. FLUJOS ENTRE ACTORES — Validación de punta a punta
+
+Cada flujo cruza varios roles. Probalo en orden, paso a paso. Si un paso falla, anotá cuál y seguí con el siguiente flujo.
+
+### Flujo 1: Taller se formaliza (Roberto → Admin → Roberto)
+
+- [ ] Login como Roberto (TALLER BRONCE) → ir a `/taller/formalizacion`
+- [ ] Ver los 8 pasos con nombres como "Registrate en ARCA", "Habilita tu local"
+- [ ] Click en un paso NO completado → ver panel gris con info, costo y link "Cómo tramitarlo"
+- [ ] Click en "Subir documento" de un paso NO_INICIADO → seleccionar archivo → sube
+- [ ] Verificar que el paso pasa a "Pendiente" (en revisión)
+- [ ] Login como Admin (Lucia) → ir a `/admin/talleres` → click en Taller La Aguja
+- [ ] En la pestaña documentos → aprobar la validación pendiente
+- [ ] Login como Roberto → ir a `/taller` → verificar que el nivel/puntaje se actualizó
+
+### Flujo 2: Taller se capacita (Carlos → verificación pública)
+
+- [ ] Login como Carlos (TALLER ORO) → ir a `/taller/aprender`
+- [ ] Las 3 colecciones muestran badge "Certificado" verde
+- [ ] Click en una colección → se ven los videos marcados como vistos
+- [ ] Botón "Descargar certificado PDF" visible → click → se baja PDF
+- [ ] Abrir el PDF → tiene nombre del taller, curso, calificación, código
+- [ ] Copiar el código del certificado
+- [ ] Sin login → ir a `/verificar` → pegar el código → muestra "Certificado Válido"
+
+### Flujo 3: Marca encuentra taller (Martin → Carlos por WhatsApp)
+
+- [ ] Login como Martin (MARCA) → ir a `/marca/directorio`
+- [ ] Filtrar por nivel ORO → solo aparece Corte Sur SRL
+- [ ] Click en Corte Sur → ver perfil con rating, certificaciones, procesos
+- [ ] Click en "Contactar por WhatsApp" → si falta perfil mínimo, aparece modal
+- [ ] Completar modal (tipo, ubicación, volumen) → guardar → se abre WhatsApp
+- [ ] El mensaje de WhatsApp incluye "Hola Corte Sur SRL, te contacto desde PDT"
+
+### Flujo 4: Ciclo comercial E2 (Martin → Roberto)
+
+- [ ] Login como Martin (MARCA) → ir a `/marca/pedidos`
+- [ ] Click en un pedido BORRADOR → ver botón "Publicar pedido"
+- [ ] Click en "Publicar pedido" → confirmar → estado cambia a PUBLICADO
+- [ ] Ver sección "Cotizaciones recibidas" — muestra cotizaciones del seed
+- [ ] Login como Roberto (TALLER BRONCE) → ir a `/taller/pedidos/disponibles`
+- [ ] Ver los pedidos publicados → click "Ver y cotizar" en uno
+- [ ] Ver detalle del pedido + formulario de cotización
+- [ ] Completar precio, plazo, proceso → enviar cotización
+- [ ] Login como Martin → ir al pedido PUBLICADO → ver la nueva cotización
+- [ ] Click "Aceptar" en una cotización → confirmar
+- [ ] Verificar que se creó la orden de manufactura
+- [ ] Login como taller asignado → ir a `/taller/pedidos/[id]` → ver la orden
+- [ ] Mover slider de progreso → guardar → progreso actualizado
+- [ ] Link "Descargar acuerdo PDF" visible → click → se baja PDF
+
+### Flujo 5: Denuncia y auditoría (Anónimo → Admin → Anónimo)
+
+- [ ] Sin login → ir a `/denunciar`
+- [ ] Elegir tipo "Condiciones insalubres" → escribir descripción (>20 chars) → enviar
+- [ ] Anotar el código que aparece (ej: DEN-2026-00006)
+- [ ] Login como Admin (Lucia) → ir a `/admin/auditorias`
+- [ ] Verificar stats > 0 (Programadas, En curso, Completadas)
+- [ ] Click "Cargar informe" en una auditoría EN_CURSO
+- [ ] Cambiar estado → escribir resultado → guardar → mensaje de éxito
+- [ ] En la sección "Acciones correctivas" → escribir descripción + fecha plazo → click "Agregar"
+- [ ] Verificar que la acción aparece en la lista
+- [ ] Sin login → ir a `/consultar-denuncia` → ingresar el código anotado → ver estado
+
+### Flujo 6: Gestión de contenidos (Sofia → Roberto → Ana Belén)
+
+- [ ] Login como Sofia (CONTENIDO) → llega a `/contenido/colecciones`
+- [ ] Se ven las 3 colecciones del seed con datos reales
+- [ ] Click "Nueva Colección" → llega a formulario (no da error de acceso)
+- [ ] Click "Editar" en una colección → llega al editor (no da error de acceso)
+- [ ] Click "Videos" → llega a la gestión de videos (no da error de acceso)
+- [ ] Click en "Evaluaciones" en el sidebar → se ven preguntas del quiz
+- [ ] Click en "Notificaciones" → se ven stats y historial
+- [ ] Login como Roberto (TALLER) → ir a `/taller/aprender` → verificar que ve las colecciones
+- [ ] Login como Ana Belén (ESTADO) → dashboard muestra certificados y cursos completados
+
+### Flujo 7: Operación del piloto (Admin)
+
+- [ ] Login como Admin (Lucia) → ir a `/admin/configuracion`
+- [ ] Tab "Features" → verificar que E1 (7 flags) y E2 (5 flags) están en "Activo"
+- [ ] Desactivar "academia" → ir a `/taller/aprender` (como taller) → debe mostrar "Módulo no disponible"
+- [ ] Volver a activar "academia"
+- [ ] Ir a `/admin/logs` → verificar historial de actividad con filtros
+- [ ] Ir a `/admin/feedback` → verificar tabla (puede estar vacía si nadie envió)
+- [ ] Como cualquier usuario logueado → click "Feedback" → enviar un feedback
+- [ ] Volver a `/admin/feedback` como admin → verificar que aparece el feedback enviado
+
+---
+
 ## Resultado
 
-- **Total items:** 82
+- **Total items funciones:** 82
+- **Total items flujos:** 68
+- **TOTAL GENERAL:** 150
 - **OK:** ___
 - **FALLA:** ___
 - **Observaciones:**
