@@ -3,6 +3,15 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **04:07** `7bf203f` — feat: agregar estado PUBLICADO y modelo Cotizacion
+  - `prisma/migrations/20260405070321_agregar_publicado_y_cotizaciones/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/app/(admin)/admin/marcas/[id]/page.tsx`
+  - `src/app/(admin)/admin/pedidos/page.tsx`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(marca)/marca/pedidos/page.tsx`
+  - `src/app/api/pedidos/[id]/route.ts`
+
 - **03:58** `02afbf6` — feat: Google OAuth y magic link
   - `.env.example`
   - `package-lock.json`
