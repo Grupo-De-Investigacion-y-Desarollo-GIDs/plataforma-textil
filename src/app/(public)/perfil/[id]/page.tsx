@@ -14,8 +14,14 @@ export default async function PerfilPublicoPage({ params }: { params: Promise<{ 
     where: { id },
     include: {
       procesos: { include: { proceso: true } },
+      prendas: { include: { prenda: true } },
       maquinaria: true,
       certificaciones: { where: { activa: true } },
+      certificados: {
+        where: { revocado: false },
+        include: { coleccion: { select: { titulo: true, institucion: true } } },
+        orderBy: { fecha: 'desc' },
+      },
     },
   })
 
@@ -23,6 +29,12 @@ export default async function PerfilPublicoPage({ params }: { params: Promise<{ 
 
   return (
     <div className="max-w-3xl mx-auto">
+      <div className="mb-4">
+        <a href="/directorio" className="text-brand-blue hover:underline text-sm">
+          ← Volver al directorio
+        </a>
+      </div>
+
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-2">
           <h1 className="font-overpass font-bold text-3xl text-brand-blue">{taller.nombre}</h1>
@@ -32,6 +44,9 @@ export default async function PerfilPublicoPage({ params }: { params: Promise<{ 
           <p className="flex items-center gap-1 text-gray-600">
             <MapPin className="w-4 h-4" /> {taller.ubicacion}
           </p>
+        )}
+        {taller.descripcion && (
+          <p className="text-gray-600 text-sm italic mt-2">&quot;{taller.descripcion}&quot;</p>
         )}
       </div>
 
@@ -68,6 +83,16 @@ export default async function PerfilPublicoPage({ params }: { params: Promise<{ 
         </Card>
       )}
 
+      {taller.prendas.length > 0 && (
+        <Card title="Tipos de prenda" className="mb-4">
+          <div className="flex flex-wrap gap-2">
+            {taller.prendas.map((tp: { id: string; prenda: { nombre: string } }) => (
+              <Badge key={tp.id} variant="outline">{tp.prenda.nombre}</Badge>
+            ))}
+          </div>
+        </Card>
+      )}
+
       {taller.maquinaria.length > 0 && (
         <Card title="Maquinaria" className="mb-4">
           <ul className="space-y-1 text-sm">
@@ -82,12 +107,33 @@ export default async function PerfilPublicoPage({ params }: { params: Promise<{ 
       )}
 
       {taller.certificaciones.length > 0 && (
-        <Card title="Certificaciones">
+        <Card title="Certificaciones" className="mb-4">
           <div className="flex flex-wrap gap-2">
             {taller.certificaciones.map((c: { id: string; nombre: string }) => (
               <Badge key={c.id} variant="success">
                 <Award className="w-3 h-3 mr-1" />{c.nombre}
               </Badge>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      {taller.certificados.length > 0 && (
+        <Card title="Capacitaciones certificadas">
+          <div className="space-y-2">
+            {taller.certificados.map((cert: { id: string; codigo: string; coleccion: { titulo: string; institucion: string | null } }) => (
+              <div key={cert.id} className="flex items-center justify-between text-sm">
+                <div>
+                  <span className="font-medium">{cert.coleccion.titulo}</span>
+                  {cert.coleccion.institucion && (
+                    <span className="text-gray-500 ml-2">· {cert.coleccion.institucion}</span>
+                  )}
+                </div>
+                <a href={`/verificar?code=${cert.codigo}`}
+                  className="text-brand-blue underline text-xs">
+                  Verificar
+                </a>
+              </div>
             ))}
           </div>
         </Card>
