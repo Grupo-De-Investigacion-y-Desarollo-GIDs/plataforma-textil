@@ -3,6 +3,11 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **04:43** `e86f5dd` — feat: notificaciones talleres compatibles
+  - `src/app/api/pedidos/[id]/route.ts`
+  - `src/compartido/lib/email.ts`
+  - `src/compartido/lib/notificaciones.ts`
+
 - **04:39** `c293954` — feat: PDF y QR certificados
   - `src/app/(admin)/admin/certificados/page.tsx`
   - `src/app/(taller)/taller/aprender/[id]/page.tsx`
