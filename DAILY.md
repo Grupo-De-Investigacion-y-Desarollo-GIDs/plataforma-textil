@@ -3,6 +3,15 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **08:03** `2eaf845` — feat: layout contenido — sidebar, 3 paginas stub, auth guard + tests E2E
+  - `e2e/contenido.spec.ts`
+  - `src/app/(contenido)/contenido-sidebar.tsx`
+  - `src/app/(contenido)/contenido/colecciones/page.tsx`
+  - `src/app/(contenido)/contenido/evaluaciones/page.tsx`
+  - `src/app/(contenido)/contenido/notificaciones/page.tsx`
+  - `src/app/(contenido)/contenido/page.tsx`
+  - `src/app/(contenido)/layout.tsx`
+
 - **08:00** `cd32865` — feat: dashboard estado UI — 3 secciones con metricas del sector + tests E2E
   - `e2e/estado.spec.ts`
   - `e2e/helpers/auth.ts`
