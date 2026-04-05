@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **05:28** `8613422` — specs: agregar semana3-auditoria-detalle
+  - `.claude/specs/semana3-auditoria-detalle.md`
+
 - **05:24** `b36b0df` — specs: agregar semana3-denuncia-publica
   - `.claude/specs/semana3-denuncia-publica.md`
 
