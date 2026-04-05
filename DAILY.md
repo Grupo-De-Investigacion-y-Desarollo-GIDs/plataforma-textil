@@ -3,6 +3,10 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **06:57** `ca382f1` — feat: chat RAG UI — asistente embebido en pagina de curso
+  - `src/app/(taller)/taller/aprender/[id]/page.tsx`
+  - `src/taller/componentes/asistente-chat.tsx`
+
 - **06:53** `7c64b49` — feat: auditoria detalle — pagina de informe con estado, resultado y hallazgos
   - `src/app/(admin)/admin/auditorias/[id]/informe-client.tsx`
   - `src/app/(admin)/admin/auditorias/[id]/page.tsx`
