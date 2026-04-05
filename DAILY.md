@@ -3,6 +3,10 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **03:21** `3daf862` — docs: agregar orden de implementacion con grafo de dependencias
+  - `.claude/specs/ORDEN_IMPLEMENTACION.md`
+  - `CLAUDE.md`
+
 - **03:05** `f859f28` — specs: actualizar semana3-pdf-qr-certificados con ajustes de factibilidad
   - `.claude/specs/semana3-pdf-qr-certificados.md`
 
