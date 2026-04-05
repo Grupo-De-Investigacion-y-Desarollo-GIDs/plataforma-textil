@@ -75,9 +75,9 @@ export default function AdminCertificadosPage() {
     )},
     { header: 'Acciones', accessor: (row: Cert) => (
       <div className="flex gap-1">
-        <button onClick={() => setVerModal(row)} className="p-1 hover:bg-gray-100 rounded"><Eye className="w-4 h-4 text-gray-500" /></button>
+        <button onClick={() => setVerModal(row)} className="p-1 hover:bg-gray-100 rounded" aria-label="Ver detalle"><Eye className="w-4 h-4 text-gray-500" /></button>
         {!row.revocado && (
-          <button onClick={() => setRevocarModal(row)} className="p-1 hover:bg-gray-100 rounded"><Trash2 className="w-4 h-4 text-gray-400" /></button>
+          <button onClick={() => setRevocarModal(row)} className="p-1 hover:bg-gray-100 rounded" aria-label="Revocar certificado"><Trash2 className="w-4 h-4 text-gray-400" /></button>
         )}
       </div>
     )},

@@ -47,7 +47,7 @@ export default async function TallerAprenderPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="text-center p-4">
           <BookOpen className="w-5 h-5 text-brand-blue mx-auto mb-1" />
           <p className="font-overpass font-bold text-2xl text-brand-blue">{colecciones.length}</p>

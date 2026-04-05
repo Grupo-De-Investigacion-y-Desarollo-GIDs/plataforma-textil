@@ -47,8 +47,8 @@ export default function AdminMarcasPage() {
     { header: 'Registro', accessor: (row: MarcaRow) => new Date(row.createdAt).toLocaleDateString('es-AR'), sortable: true },
     { header: 'Acciones', accessor: (row: MarcaRow) => (
       <div className="flex gap-1">
-        <Link href={`/admin/marcas/${row.id}`}><button className="p-1 hover:bg-gray-100 rounded"><Eye className="w-4 h-4 text-gray-500" /></button></Link>
-        <button className="p-1 hover:bg-gray-100 rounded"><Edit className="w-4 h-4 text-gray-500" /></button>
+        <Link href={`/admin/marcas/${row.id}`}><button className="p-1 hover:bg-gray-100 rounded" aria-label="Ver detalle"><Eye className="w-4 h-4 text-gray-500" /></button></Link>
+        <button className="p-1 hover:bg-gray-100 rounded" aria-label="Editar"><Edit className="w-4 h-4 text-gray-500" /></button>
       </div>
     )},
   ]

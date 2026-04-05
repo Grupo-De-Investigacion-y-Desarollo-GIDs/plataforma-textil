@@ -66,9 +66,9 @@ export default function AdminUsuariosPage() {
     { header: 'Registro', accessor: (row: Usuario) => new Date(row.createdAt).toLocaleDateString('es-AR'), sortable: true },
     { header: 'Acciones', accessor: (row: Usuario) => (
       <div className="flex gap-1">
-        <button onClick={() => setDetalleModal(row)} className="p-1 hover:bg-gray-100 rounded"><Eye className="w-4 h-4 text-gray-500" /></button>
-        <button className="p-1 hover:bg-gray-100 rounded"><Edit className="w-4 h-4 text-gray-500" /></button>
-        <button className="p-1 hover:bg-gray-100 rounded"><UserX className="w-4 h-4 text-gray-400" /></button>
+        <button onClick={() => setDetalleModal(row)} className="p-1 hover:bg-gray-100 rounded" aria-label="Ver detalle"><Eye className="w-4 h-4 text-gray-500" /></button>
+        <button className="p-1 hover:bg-gray-100 rounded" aria-label="Editar"><Edit className="w-4 h-4 text-gray-500" /></button>
+        <button className="p-1 hover:bg-gray-100 rounded" aria-label="Desactivar usuario"><UserX className="w-4 h-4 text-gray-400" /></button>
       </div>
     )},
   ]
@@ -98,7 +98,7 @@ export default function AdminUsuariosPage() {
         </Card>
       )}
 
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <StatCard value={String(usuarios.length)} label="Total" variant="success" />
         <StatCard value={String(totalTalleres)} label="Talleres" variant="warning" />
         <StatCard value={String(totalMarcas)} label="Marcas" variant="muted" />

@@ -57,8 +57,8 @@ export default function AdminTalleresPage() {
     { header: 'Registro', accessor: (row: TallerRow) => new Date(row.createdAt).toLocaleDateString('es-AR'), sortable: true },
     { header: 'Acciones', accessor: (row: TallerRow) => (
       <div className="flex gap-1">
-        <Link href={`/admin/talleres/${row.id}`}><button className="p-1 hover:bg-gray-100 rounded"><Eye className="w-4 h-4 text-gray-500" /></button></Link>
-        <button className="p-1 hover:bg-gray-100 rounded"><Edit className="w-4 h-4 text-gray-500" /></button>
+        <Link href={`/admin/talleres/${row.id}`}><button className="p-1 hover:bg-gray-100 rounded" aria-label="Ver detalle"><Eye className="w-4 h-4 text-gray-500" /></button></Link>
+        <button className="p-1 hover:bg-gray-100 rounded" aria-label="Editar"><Edit className="w-4 h-4 text-gray-500" /></button>
       </div>
     )},
   ]

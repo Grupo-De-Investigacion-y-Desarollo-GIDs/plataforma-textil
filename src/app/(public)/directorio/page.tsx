@@ -71,9 +71,11 @@ export default async function DirectorioPage({
             name="q"
             defaultValue={query}
             placeholder="Buscar por nombre o ubicacion..."
+            aria-label="Buscar por nombre o ubicacion"
             className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/30"
           />
           <select name="nivel" defaultValue={nivel}
+            aria-label="Filtrar por nivel"
             className="border border-gray-300 rounded-lg px-3 py-2 text-sm">
             <option value="">Todos los niveles</option>
             <option value="BRONCE">Bronce</option>
@@ -81,11 +83,13 @@ export default async function DirectorioPage({
             <option value="ORO">Oro</option>
           </select>
           <select name="proceso" defaultValue={procesoId}
+            aria-label="Filtrar por proceso productivo"
             className="border border-gray-300 rounded-lg px-3 py-2 text-sm">
             <option value="">Todos los procesos</option>
             {procesos.map(p => <option key={p.id} value={p.id}>{p.nombre}</option>)}
           </select>
           <select name="prenda" defaultValue={prendaId}
+            aria-label="Filtrar por tipo de prenda"
             className="border border-gray-300 rounded-lg px-3 py-2 text-sm">
             <option value="">Todas las prendas</option>
             {prendas.map(p => <option key={p.id} value={p.id}>{p.nombre}</option>)}

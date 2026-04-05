@@ -227,7 +227,7 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
                       cot.estado === 'RECHAZADA' ? 'error' : 'muted'
                     }>{cot.estado}</Badge>
                   </div>
-                  <div className="grid grid-cols-3 gap-3 mt-3 text-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3 text-sm">
                     <div><span className="text-gray-500">Proceso:</span> <span className="font-medium">{cot.proceso}</span></div>
                     <div><span className="text-gray-500">Precio:</span> <span className="font-medium">$ {cot.precio.toLocaleString('es-AR')}</span></div>
                     <div><span className="text-gray-500">Plazo:</span> <span className="font-medium">{cot.plazoDias} dias</span></div>

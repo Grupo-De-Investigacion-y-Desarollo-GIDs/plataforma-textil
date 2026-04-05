@@ -64,7 +64,7 @@ export default function AdminDashboardPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <Card title="Accesos Rápidos">
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {[
               { href: '/admin/colecciones', icon: BookOpen, label: 'Colecciones' },
               { href: '/admin/usuarios', icon: Users, label: 'Usuarios' },

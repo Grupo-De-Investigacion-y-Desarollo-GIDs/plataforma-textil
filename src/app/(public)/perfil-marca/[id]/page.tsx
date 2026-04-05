@@ -88,7 +88,7 @@ export default async function PerfilMarcaPage({
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="text-center p-4">
           <Star className="w-5 h-5 text-yellow-500 mx-auto mb-1" />
           <p className="font-overpass font-bold text-2xl text-brand-blue">
@@ -114,7 +114,7 @@ export default async function PerfilMarcaPage({
 
       {/* Sobre la marca */}
       <Card title="Sobre la marca">
-        <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+        <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div>
             <dt className="text-gray-500">Tipo</dt>
             <dd className="font-medium text-gray-800">{marca.tipo ?? '—'}</dd>

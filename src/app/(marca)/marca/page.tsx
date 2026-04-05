@@ -50,7 +50,7 @@ export default async function MarcaDashboardPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="text-center">
           <ShoppingBag className="w-6 h-6 text-brand-blue mx-auto mb-1" />
           <p className="font-overpass font-bold text-3xl text-brand-blue">{totalPedidos}</p>

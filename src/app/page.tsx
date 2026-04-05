@@ -97,7 +97,7 @@ export default async function Home() {
           </div>
 
           {/* Contadores */}
-          <div className="grid grid-cols-3 gap-6 max-w-lg mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-lg mx-auto">
             {[
               { value: talleres as number, label: 'Talleres activos' },
               { value: marcas as number, label: 'Marcas registradas' },

@@ -60,7 +60,7 @@ export default function AdminPedidosPage() {
     { header: 'Órdenes', accessor: (row: Pedido) => String(row._count.ordenes) },
     { header: 'Fecha', accessor: (row: Pedido) => new Date(row.createdAt).toLocaleDateString('es-AR'), sortable: true },
     { header: 'Acciones', accessor: () => (
-      <button className="p-1 hover:bg-gray-100 rounded"><Eye className="w-4 h-4 text-gray-500" /></button>
+      <button className="p-1 hover:bg-gray-100 rounded" aria-label="Ver detalle"><Eye className="w-4 h-4 text-gray-500" /></button>
     )},
   ]
 

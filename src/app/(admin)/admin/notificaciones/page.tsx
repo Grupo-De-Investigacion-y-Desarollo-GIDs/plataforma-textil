@@ -44,7 +44,7 @@ export default async function AdminNotificacionesPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
           <div className="flex items-center gap-3">
             <Send className="w-5 h-5 text-blue-600" />
