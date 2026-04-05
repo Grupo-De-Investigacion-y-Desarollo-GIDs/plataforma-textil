@@ -1,13 +1,31 @@
 import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
+import Google from 'next-auth/providers/google'
+import EmailProvider from 'next-auth/providers/email'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import bcrypt from 'bcryptjs'
 import { prisma } from './prisma'
+import { sendEmail, buildMagicLinkEmail } from './email'
 import authConfig from './auth.config'
+
+const baseAdapter = PrismaAdapter(prisma)
+
+const adapter = {
+  ...baseAdapter,
+  createUser: async (data: { email: string; name?: string | null; image?: string | null; emailVerified?: Date | null }) => {
+    // Usuarios creados por adapter (OAuth/magic link) empiezan con registro incompleto
+    return prisma.user.create({
+      data: {
+        ...data,
+        registroCompleto: false,
+      },
+    })
+  },
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
-  adapter: PrismaAdapter(prisma),
+  adapter,
   session: { strategy: 'jwt' },
   providers: [
     Credentials({
@@ -33,8 +51,50 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           email: user.email,
           name: user.name,
           role: user.role,
+          registroCompleto: user.registroCompleto,
         }
       },
     }),
+    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+      ? [Google({
+          clientId: process.env.GOOGLE_CLIENT_ID,
+          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        })]
+      : []),
+    EmailProvider({
+      server: {
+        host: 'smtp.sendgrid.net',
+        port: 587,
+        auth: {
+          user: 'apikey',
+          pass: process.env.SENDGRID_API_KEY || 'placeholder',
+        },
+      },
+      from: process.env.EMAIL_FROM || 'noreply@plataformatextil.ar',
+      sendVerificationRequest: async ({ identifier, url }) => {
+        // Override: usa SendGrid REST API en vez de SMTP
+        await sendEmail({
+          to: identifier,
+          ...buildMagicLinkEmail(url),
+        })
+      },
+    }),
   ],
+  callbacks: {
+    ...authConfig.callbacks,
+    async signIn({ user, account }) {
+      // Para OAuth/email, verificar si el email ya existe con otro provider
+      if (account?.provider === 'google' || account?.provider === 'email') {
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email! },
+          include: { accounts: true },
+        })
+        if (existingUser && existingUser.accounts.length === 0 && existingUser.password) {
+          // Usuario con email+contrasena intentando entrar con OAuth
+          return '/login?error=OAuthAccountNotLinked'
+        }
+      }
+      return true
+    },
+  },
 })

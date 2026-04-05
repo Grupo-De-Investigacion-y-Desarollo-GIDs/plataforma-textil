@@ -21,14 +21,23 @@ interface Usuario {
   phone: string | null
 }
 
+interface RegistroIncompleto {
+  id: string
+  name: string | null
+  email: string
+  createdAt: string
+}
+
 export default function AdminUsuariosPage() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([])
+  const [registrosIncompletos, setRegistrosIncompletos] = useState<RegistroIncompleto[]>([])
   const [search, setSearch] = useState('')
   const [filtroRol, setFiltroRol] = useState('')
   const [detalleModal, setDetalleModal] = useState<Usuario | null>(null)
 
   useEffect(() => {
     fetch('/api/admin/usuarios').then(r => r.json()).then((d: { usuarios?: Usuario[] }) => setUsuarios(d.usuarios || [])).catch(() => {})
+    fetch('/api/admin/usuarios?incompletos=true').then(r => r.json()).then((d: { usuarios?: RegistroIncompleto[] }) => setRegistrosIncompletos(d.usuarios || [])).catch(() => {})
   }, [])
 
   const filtered = usuarios.filter(u => {
@@ -69,6 +78,26 @@ export default function AdminUsuariosPage() {
       <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Usuarios</h1>
       <p className="text-gray-500 text-sm mb-6">Gestión de usuarios de la plataforma</p>
 
+      {registrosIncompletos.length > 0 && (
+        <Card className="mb-6 border-l-4 border-l-amber-400">
+          <h2 className="font-overpass font-bold text-brand-blue mb-3">Registros incompletos</h2>
+          <p className="text-sm text-gray-500 mb-3">Usuarios que iniciaron registro con Google o magic link pero no completaron el CUIT y rol.</p>
+          <div className="divide-y divide-gray-100">
+            {registrosIncompletos.map((r) => (
+              <div key={r.id} className="py-2 flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold">{r.email}</p>
+                  <p className="text-xs text-gray-400">{r.name || 'Sin nombre'} · {new Date(r.createdAt).toLocaleDateString('es-AR')}</p>
+                </div>
+                <a href={`mailto:${r.email}`} className="text-xs text-brand-blue font-semibold hover:underline">
+                  Contactar
+                </a>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
       <div className="grid grid-cols-3 gap-4 mb-6">
         <StatCard value={String(usuarios.length)} label="Total" variant="success" />
         <StatCard value={String(totalTalleres)} label="Talleres" variant="warning" />
@@ -85,6 +114,7 @@ export default function AdminUsuariosPage() {
             { value: 'TALLER', label: 'Taller' },
             { value: 'MARCA', label: 'Marca' },
             { value: 'ESTADO', label: 'Estado' },
+            { value: 'CONTENIDO', label: 'Contenido' },
             { value: 'ADMIN', label: 'Admin' },
           ]}
         />

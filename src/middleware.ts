@@ -50,8 +50,17 @@ export default auth((req) => {
     )
   }
 
-  // Protección por rol
+  // Usuarios con registro incompleto (OAuth/magic link sin completar)
   const pathname = nextUrl.pathname
+  const registroCompleto = (req.auth?.user as { registroCompleto?: boolean })?.registroCompleto
+  if (isLoggedIn && registroCompleto === false) {
+    if (pathname === '/registro/completar' || pathname.startsWith('/api/')) {
+      return NextResponse.next()
+    }
+    return NextResponse.redirect(new URL('/registro/completar', nextUrl))
+  }
+
+  // Protección por rol
 
   // Rutas de ADMIN - solo para rol ADMIN
   if (pathname.startsWith('/admin')) {

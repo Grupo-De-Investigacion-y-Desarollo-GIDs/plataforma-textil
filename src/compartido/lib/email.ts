@@ -124,3 +124,15 @@ export function buildPasswordResetEmail(resetUrl: string): { subject: string; ht
     `,
   }
 }
+
+export function buildMagicLinkEmail(url: string): { subject: string; html: string } {
+  return {
+    subject: 'Tu link de acceso a PDT',
+    html: emailWrapper(`
+      <h2 style="margin: 0 0 12px;">Link de acceso</h2>
+      <p>Hace click en el boton para ingresar a la Plataforma Digital Textil. El link expira en 24 horas.</p>
+      ${btnPrimario(url, 'Ingresar a PDT')}
+      <p style="color: #94a3b8; font-size: 13px; margin-top: 16px;">Si no solicitaste este acceso, podes ignorar este email.</p>
+    `),
+  }
+}

@@ -11,6 +11,17 @@ export async function GET(req: NextRequest) {
     }
 
     const { searchParams } = req.nextUrl
+
+    // Registros incompletos (OAuth/magic link sin completar)
+    if (searchParams.get('incompletos') === 'true') {
+      const usuarios = await prisma.user.findMany({
+        where: { registroCompleto: false },
+        select: { id: true, name: true, email: true, createdAt: true },
+        orderBy: { createdAt: 'desc' },
+      })
+      return NextResponse.json({ usuarios })
+    }
+
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '10')
     const role = searchParams.get('role')

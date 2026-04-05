@@ -16,12 +16,14 @@ export default {
   ],
   pages: {
     signIn: '/login',
+    error: '/login',
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as { role: string }).role
+        token.role = (user as { role?: string }).role
         token.id = user.id
+        token.registroCompleto = (user as { registroCompleto?: boolean }).registroCompleto ?? true
       }
       return token
     },
@@ -29,6 +31,8 @@ export default {
       if (session.user) {
         session.user.id = token.id as string
         session.user.role = token.role as string
+        ;(session.user as { registroCompleto: boolean }).registroCompleto =
+          (token.registroCompleto as boolean) ?? true
       }
       return session
     },
