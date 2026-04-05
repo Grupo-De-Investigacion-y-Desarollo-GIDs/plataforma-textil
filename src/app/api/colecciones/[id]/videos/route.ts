@@ -8,7 +8,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const session = await auth()
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN') return NextResponse.json({ error: 'Solo ADMIN puede agregar videos' }, { status: 403 })
+    if (role !== 'ADMIN' && role !== 'CONTENIDO') return NextResponse.json({ error: 'Solo ADMIN o CONTENIDO puede agregar videos' }, { status: 403 })
 
     const { id: coleccionId } = await params
     const body = await req.json()
@@ -46,7 +46,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     const session = await auth()
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN') return NextResponse.json({ error: 'Solo ADMIN puede eliminar videos' }, { status: 403 })
+    if (role !== 'ADMIN' && role !== 'CONTENIDO') return NextResponse.json({ error: 'Solo ADMIN o CONTENIDO puede eliminar videos' }, { status: 403 })
 
     const { id: coleccionId } = await params
     const videoId = req.nextUrl.searchParams.get('videoId')

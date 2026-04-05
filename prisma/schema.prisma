@@ -17,6 +17,7 @@ enum UserRole {
   MARCA
   ESTADO
   ADMIN
+  CONTENIDO
 }
 
 enum NivelTaller {

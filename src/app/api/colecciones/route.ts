@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     const session = await auth()
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN') return NextResponse.json({ error: 'Solo ADMIN puede crear colecciones' }, { status: 403 })
+    if (role !== 'ADMIN' && role !== 'CONTENIDO') return NextResponse.json({ error: 'Solo ADMIN o CONTENIDO puede crear colecciones' }, { status: 403 })
 
     const body = await req.json()
     if (!body.titulo?.trim()) return NextResponse.json({ error: 'El título es obligatorio' }, { status: 400 })

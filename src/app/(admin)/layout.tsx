@@ -6,7 +6,7 @@ import {
   Settings, Shield, Database, BarChart3, FileText, Bell, Award, HelpCircle,
   Plug, UserCheck, Briefcase
 } from 'lucide-react'
-import { AdminLogoutButton } from './logout-button'
+import { LogoutButton } from '@/compartido/componentes/ui/logout-button'
 
 const sidebarItems = [
   { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
@@ -51,7 +51,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </div>
           <div className="flex items-center gap-4">
             <Link href="/" className="text-sm hover:text-blue-200 transition-colors">Volver al sitio</Link>
-            <AdminLogoutButton />
+            <LogoutButton />
           </div>
         </div>
       </header>

@@ -9,7 +9,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     const session = await auth()
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN') return NextResponse.json({ error: 'Solo admin' }, { status: 403 })
+    if (role !== 'ADMIN' && role !== 'CONTENIDO') return NextResponse.json({ error: 'Solo ADMIN o CONTENIDO' }, { status: 403 })
 
     const { id: coleccionId } = await params
     const evaluacion = await prisma.evaluacion.findUnique({ where: { coleccionId } })
@@ -27,7 +27,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     const session = await auth()
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN') return NextResponse.json({ error: 'Solo admin' }, { status: 403 })
+    if (role !== 'ADMIN' && role !== 'CONTENIDO') return NextResponse.json({ error: 'Solo ADMIN o CONTENIDO' }, { status: 403 })
 
     const { id: coleccionId } = await params
     const { preguntas, puntajeMinimo } = await req.json()

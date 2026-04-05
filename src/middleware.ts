@@ -85,6 +85,14 @@ export default auth((req) => {
     return NextResponse.next()
   }
 
+  // Rutas de CONTENIDO - para rol CONTENIDO y ADMIN
+  if (pathname.startsWith('/contenido')) {
+    if (userRole !== 'CONTENIDO' && userRole !== 'ADMIN') {
+      return NextResponse.redirect(new URL('/unauthorized', nextUrl))
+    }
+    return NextResponse.next()
+  }
+
   // Rutas de cuenta - accesibles para todos los usuarios logueados
   if (pathname.startsWith('/cuenta')) {
     return NextResponse.next()
@@ -101,6 +109,8 @@ export default auth((req) => {
         return NextResponse.redirect(new URL('/estado', nextUrl))
       case 'ADMIN':
         return NextResponse.redirect(new URL('/admin', nextUrl))
+      case 'CONTENIDO':
+        return NextResponse.redirect(new URL('/contenido', nextUrl))
       default:
         return NextResponse.next()
     }

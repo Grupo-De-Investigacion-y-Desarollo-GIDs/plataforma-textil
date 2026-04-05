@@ -29,8 +29,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     const session = await auth()
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Solo ADMIN puede modificar colecciones' }, { status: 403 })
+    if (role !== 'ADMIN' && role !== 'CONTENIDO') {
+      return NextResponse.json({ error: 'Solo ADMIN o CONTENIDO puede modificar colecciones' }, { status: 403 })
     }
 
     const { id } = await params
@@ -60,8 +60,8 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     const session = await auth()
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Solo ADMIN puede eliminar colecciones' }, { status: 403 })
+    if (role !== 'ADMIN' && role !== 'CONTENIDO') {
+      return NextResponse.json({ error: 'Solo ADMIN o CONTENIDO puede eliminar colecciones' }, { status: 403 })
     }
 
     const { id } = await params
