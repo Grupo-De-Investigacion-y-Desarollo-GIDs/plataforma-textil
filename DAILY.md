@@ -3,6 +3,16 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **07:21** `099aff4` — feat: setup Playwright — config, helpers, 14 tests E2E (3 publicos pasan, 11 auth pendientes)
+  - `.gitignore`
+  - `e2e/auth.spec.ts`
+  - `e2e/helpers/auth.ts`
+  - `e2e/marca.spec.ts`
+  - `e2e/publico.spec.ts`
+  - `e2e/taller.spec.ts`
+  - `package.json`
+  - `playwright.config.ts`
+
 - **07:07** `beaf411` — specs: agregar semana1-playwright-setup
   - `.claude/specs/semana1-playwright-setup.md`
 
