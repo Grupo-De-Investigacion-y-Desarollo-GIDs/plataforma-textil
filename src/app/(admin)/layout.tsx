@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import {
   LayoutDashboard, BookOpen, Users, Building2, ShoppingCart, ClipboardCheck,
   Settings, Shield, Database, BarChart3, FileText, Bell, Award, HelpCircle,
-  Plug, UserCheck, Briefcase
+  Plug, UserCheck, Briefcase, MessageSquare
 } from 'lucide-react'
 import { LogoutButton } from '@/compartido/componentes/ui/logout-button'
 
@@ -24,6 +24,7 @@ const sidebarItems = [
   { label: 'Notificaciones', href: '/admin/notificaciones', icon: Bell },
   { label: 'FAQ', href: '/admin/faq', icon: HelpCircle },
   { label: 'Integraciones', href: '/admin/integraciones', icon: Plug },
+  { label: 'Feedback', href: '/admin/feedback', icon: MessageSquare },
   { label: 'Configuración', href: '/admin/configuracion', icon: Settings },
   { label: 'Roles', href: '/admin/roles', icon: Shield },
   { label: 'Seguridad', href: '/admin/logs', icon: Shield },

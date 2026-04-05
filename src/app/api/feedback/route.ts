@@ -7,7 +7,7 @@ export async function POST(request: Request) {
   if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
   const body = await request.json()
-  const { tipo, mensaje, pagina } = body
+  const { tipo, mensaje, pagina, entidad, entidadId } = body
 
   if (!tipo || !mensaje || mensaje.length < 10) {
     return NextResponse.json({ error: 'Datos invalidos' }, { status: 400 })
@@ -19,6 +19,8 @@ export async function POST(request: Request) {
     tipo,
     mensaje,
     pagina,
+    entidad: entidad ?? null,
+    entidadId: entidadId ?? null,
     rol: role,
     userAgent: request.headers.get('user-agent') ?? '',
   })
@@ -39,7 +41,7 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         title: `[${tipo.toUpperCase()}] ${mensaje.slice(0, 60)}${mensaje.length > 60 ? '...' : ''}`,
-        body: `**Tipo:** ${tipo}\n**Rol:** ${role}\n**Pagina:** ${pagina}\n\n**Descripcion:**\n${mensaje}`,
+        body: `**Tipo:** ${tipo}\n**Rol:** ${role}\n**Pagina:** ${pagina}\n${entidad ? `**Entidad:** ${entidad} ${entidadId}\n` : ''}\n**Descripcion:**\n${mensaje}`,
         labels: labels[tipo] ?? ['piloto'],
       }),
     }).catch(() => {})

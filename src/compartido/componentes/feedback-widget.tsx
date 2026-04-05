@@ -10,6 +10,24 @@ const TIPOS = [
   { value: 'confusion', label: '😕 No entendi como usar esto', color: 'text-purple-600' },
 ]
 
+function parsearEntidad(pathname: string): { entidad: string; id: string } | null {
+  const patrones = [
+    { regex: /\/taller\/pedidos\/disponibles\/([^/]+)/, entidad: 'pedido_disponible' },
+    { regex: /\/taller\/pedidos\/([^/]+)/, entidad: 'pedido' },
+    { regex: /\/taller\/aprender\/([^/]+)/, entidad: 'coleccion' },
+    { regex: /\/marca\/directorio\/([^/]+)/, entidad: 'taller' },
+    { regex: /\/marca\/pedidos\/([^/]+)/, entidad: 'pedido' },
+    { regex: /\/admin\/talleres\/([^/]+)/, entidad: 'taller' },
+    { regex: /\/admin\/marcas\/([^/]+)/, entidad: 'marca' },
+    { regex: /\/admin\/auditorias\/([^/]+)/, entidad: 'auditoria' },
+  ]
+  for (const { regex, entidad } of patrones) {
+    const match = pathname.match(regex)
+    if (match) return { entidad, id: match[1] }
+  }
+  return null
+}
+
 export function FeedbackWidget() {
   const pathname = usePathname()
   const [abierto, setAbierto] = useState(false)
@@ -18,6 +36,8 @@ export function FeedbackWidget() {
   const [enviando, setEnviando] = useState(false)
   const [enviado, setEnviado] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const entidadParseada = parsearEntidad(pathname)
 
   async function handleEnviar() {
     if (!tipo || mensaje.length < 10) {
@@ -30,7 +50,13 @@ export function FeedbackWidget() {
       const res = await fetch('/api/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tipo, mensaje, pagina: pathname }),
+        body: JSON.stringify({
+          tipo,
+          mensaje,
+          pagina: pathname,
+          entidad: entidadParseada?.entidad ?? null,
+          entidadId: entidadParseada?.id ?? null,
+        }),
       })
       if (!res.ok) throw new Error()
       setEnviado(true)
@@ -86,7 +112,12 @@ export function FeedbackWidget() {
                 {enviando ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />}
                 {enviando ? 'Enviando...' : 'Enviar feedback'}
               </button>
-              <p className="text-xs text-gray-400 text-center">Pagina actual: {pathname}</p>
+              <p className="text-xs text-gray-400 text-center">Pagina: {pathname}</p>
+              {entidadParseada && (
+                <p className="text-xs text-gray-400 text-center">
+                  Entidad: <span className="font-medium">{entidadParseada.entidad}</span> {entidadParseada.id.slice(0, 8)}...
+                </p>
+              )}
             </div>
           )}
         </div>

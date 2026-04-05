@@ -15,6 +15,17 @@ test('admin puede abrir tab Features y ver toggles E1 y E2', async ({ page }) =>
   await expect(page.getByText('Escenario 2')).toBeVisible()
 })
 
+test('admin ve link Feedback en sidebar', async ({ page }) => {
+  await loginAs(page, 'admin')
+  await expect(page.getByRole('link', { name: 'Feedback' })).toBeVisible()
+})
+
+test('admin puede acceder a /admin/feedback', async ({ page }) => {
+  await loginAs(page, 'admin')
+  await page.goto('/admin/feedback')
+  await expect(page.getByText('Feedback del piloto')).toBeVisible()
+})
+
 test('admin ve banner en construccion en email', async ({ page }) => {
   await loginAs(page, 'admin')
   await page.goto('/admin/integraciones/email')
