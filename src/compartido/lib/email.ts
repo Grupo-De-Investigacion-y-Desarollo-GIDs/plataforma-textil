@@ -197,3 +197,22 @@ export function buildCotizacionRechazadaEmail(data: {
     `),
   }
 }
+
+export function buildPedidoDisponibleEmail(data: {
+  nombreTaller: string
+  nombreMarca: string
+  tipoPrenda: string
+  cantidad: number
+  pedidoUrl: string
+}): { subject: string; html: string } {
+  return {
+    subject: `Nuevo pedido disponible: ${data.tipoPrenda} - PDT`,
+    html: emailWrapper(`
+      <h2 style="margin: 0 0 12px;">Nuevo pedido disponible</h2>
+      <p>Hola <strong>${data.nombreTaller}</strong>, ${data.nombreMarca} publico un pedido de <strong>${data.cantidad} unidades de ${data.tipoPrenda}</strong>.</p>
+      <p>Podes ver el pedido y enviar tu cotizacion desde la plataforma.</p>
+      ${btnPrimario(data.pedidoUrl, 'Ver pedido y cotizar')}
+      <p style="color: #94a3b8; font-size: 13px; margin-top: 16px;">Solo recibis este email porque tu taller es compatible con este pedido.</p>
+    `),
+  }
+}

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { notificarTalleresCompatibles } from '@/compartido/lib/notificaciones'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -119,6 +120,12 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         where: { id },
         data: { estado: body.estado },
       })
+
+      // Notificar talleres compatibles cuando se publica
+      if (body.estado === 'PUBLICADO') {
+        notificarTalleresCompatibles(id).catch(() => {})
+      }
+
       return NextResponse.json(pedido)
     }
 
