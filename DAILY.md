@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **17:09** `09d4c27` — docs: agregar 46 items de experiencia por actor al checklist — total 196 items
+  - `.claude/specs/semana4-checklist-sergio.md`
+
 - **17:04** `f75f263` — fix: 4 gaps criticos de actores — dashboard marca, estado accede auditorias, admin sin 404s, denunciar en footer
   - `src/app/(admin)/layout.tsx`
   - `src/app/(auth)/acceso-rapido/page.tsx`
