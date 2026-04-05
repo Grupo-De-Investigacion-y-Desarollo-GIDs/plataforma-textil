@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **02:25** `f315401` — specs: actualizar semana2-dashboard-estado-ui con ajustes de factibilidad
+  - `.claude/specs/semana2-dashboard-estado-ui.md`
+
 - **02:18** `67f0daa` — specs: actualizar semana2-gamificacion con ajustes de factibilidad
   - `.claude/specs/semana2-gamificacion.md`
 
