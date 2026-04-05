@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **05:01** `f3f9fbf` — specs: actualizar semana3-acuerdos-comerciales con ajustes de factibilidad
+  - `.claude/specs/semana3-acuerdos-comerciales.md`
+
 - **04:53** `42d5682` — specs: agregar semana3-exportes-estado
   - `.claude/specs/semana3-exportes-estado.md`
 
