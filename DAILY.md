@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **08:39** `543a958` — specs: agregar semana3-feedback-widget
+  - `.claude/specs/semana3-feedback-widget.md`
+
 - **08:28** `812f77c` — fix: selector ambiguo en test pedidos disponibles
   - `e2e/pedidos.spec.ts`
 
