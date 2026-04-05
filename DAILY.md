@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **05:19** `1a3b26f` — specs: agregar semana3-directorio-publico
+  - `.claude/specs/semana3-directorio-publico.md`
+
 - **05:14** `36877ac` — specs: agregar semana3-whatsapp-perfil-marca
   - `.claude/specs/semana3-whatsapp-perfil-marca.md`
 
