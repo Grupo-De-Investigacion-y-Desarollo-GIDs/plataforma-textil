@@ -67,6 +67,16 @@ const usuarios = [
     icon: BarChart3,
     color: 'bg-green-600',
   },
+  {
+    email: 'sofia.martinez@pdt.org.ar',
+    password: 'pdt2026',
+    nombre: 'Sofia Martinez',
+    rol: 'CONTENIDO',
+    descripcion: 'Gestion de colecciones, evaluaciones y notificaciones',
+    redirect: '/contenido/colecciones',
+    icon: BookOpen,
+    color: 'bg-purple-500',
+  },
 ]
 
 export default function AccesoRapidoPage() {

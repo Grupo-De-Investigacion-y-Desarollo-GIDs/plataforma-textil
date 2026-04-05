@@ -72,7 +72,11 @@ async function main() {
     data: { email: 'anabelen.torres@pdt.org.ar', password: hash, name: 'Ana Belén Torres', role: 'ESTADO', phone: '+5491190123456', active: true },
   })
 
-  console.log('  ✓ 7 usuarios creados')
+  await prisma.user.create({
+    data: { email: 'sofia.martinez@pdt.org.ar', password: hash, name: 'Sofía Martínez', role: 'CONTENIDO', phone: '+5491101234567', active: true },
+  })
+
+  console.log('  ✓ 8 usuarios creados (incl. CONTENIDO)')
 
   // ============================================
   // PROCESOS PRODUCTIVOS (5)
