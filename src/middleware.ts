@@ -13,6 +13,7 @@ export default auth((req) => {
   const publicRoutes = [
     '/',
     '/login',
+    '/acceso-rapido',
     '/registro',
     '/olvide-contrasena',
     '/restablecer',
