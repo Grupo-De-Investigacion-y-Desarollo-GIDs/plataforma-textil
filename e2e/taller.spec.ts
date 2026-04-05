@@ -9,7 +9,7 @@ test('taller ve su nivel en el dashboard', async ({ page }) => {
 test('taller puede navegar a formalizacion', async ({ page }) => {
   await loginAs(page, 'taller_bronce')
   await page.goto('/taller/formalizacion')
-  await expect(page.getByText('Registrate en ARCA')).toBeVisible()
+  await expect(page.getByText('CUIT / Monotributo')).toBeVisible()
 })
 
 test('taller puede navegar a academia', async ({ page }) => {
