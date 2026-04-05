@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **02:18** `67f0daa` — specs: actualizar semana2-gamificacion con ajustes de factibilidad
+  - `.claude/specs/semana2-gamificacion.md`
+
 - **02:10** `ae15d17` — specs: actualizar semana2-layout-contenido fix iconos serializacion
   - `.claude/specs/semana2-layout-contenido.md`
 
