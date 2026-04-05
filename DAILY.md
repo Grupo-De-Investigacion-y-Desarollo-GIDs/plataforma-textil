@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **16:42** `3935d54` — docs: agregar 68 items de flujos entre actores al checklist de Sergio — total 150 items
+  - `.claude/specs/semana4-checklist-sergio.md`
+
 - **16:35** `8f6183f` — fix: 4 gaps de flujos — aplicarNivel en APIs, contenido accede a colecciones admin, crear acciones correctivas
   - `src/app/(admin)/admin/auditorias/[id]/informe-client.tsx`
   - `src/app/api/auditorias/[id]/route.ts`
