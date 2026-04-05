@@ -1,20 +1,26 @@
 export const dynamic = 'force-dynamic'
 
 import { notFound } from 'next/navigation'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/compartido/lib/prisma'
+import { auth } from '@/compartido/lib/auth'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
-import { ArrowLeft, Star, MapPin, Users, TrendingUp, Clock, Award, MessageCircle } from 'lucide-react'
-import { Button } from '@/compartido/componentes/ui/button'
+import { ArrowLeft, Star, MapPin, Users, TrendingUp, Clock, Award } from 'lucide-react'
+import { ContactarTaller } from '@/marca/componentes/contactar-taller'
 
 const nivelColor: Record<string, 'warning' | 'default' | 'success'> = { BRONCE: 'warning', PLATA: 'default', ORO: 'success' }
 
 export default async function TallerPerfilMarcaPage({ params }: { params: Promise<{ id: string }> }) {
+  const session = await auth()
+  if (!session?.user) redirect('/login')
+
   const { id } = await params
   const taller = await prisma.taller.findUnique({
     where: { id },
     include: {
+      user: { select: { phone: true } },
       procesos: { include: { proceso: true } },
       prendas: { include: { prenda: true } },
       maquinaria: true,
@@ -24,6 +30,11 @@ export default async function TallerPerfilMarcaPage({ params }: { params: Promis
   })
 
   if (!taller) notFound()
+
+  const marca = await prisma.marca.findFirst({
+    where: { userId: session.user.id },
+    select: { id: true, tipo: true, ubicacion: true, volumenMensual: true },
+  })
 
   return (
     <div className="max-w-3xl mx-auto py-6 px-4">
@@ -46,7 +57,17 @@ export default async function TallerPerfilMarcaPage({ params }: { params: Promis
               <Star className="w-4 h-4 text-yellow-500" /> {taller.rating.toFixed(1)} ({taller.pedidosCompletados} valoraciones)
             </div>
             <div className="flex gap-2 mt-3">
-              <Button size="sm" icon={<MessageCircle className="w-4 h-4" />}>Contactar por WhatsApp</Button>
+              {marca && (
+                <ContactarTaller
+                  taller={{
+                    id: taller.id,
+                    nombre: taller.nombre,
+                    nivel: taller.nivel,
+                    phone: taller.user.phone,
+                  }}
+                  marca={marca}
+                />
+              )}
             </div>
           </div>
         </div>
