@@ -65,7 +65,7 @@ export default async function PedidosDisponiblesPage() {
                 </div>
                 <Link
                   href={`/taller/pedidos/disponibles/${pedido.id}`}
-                  className="inline-flex items-center gap-2 bg-brand-blue text-white px-4 py-2 rounded-lg text-sm font-overpass font-semibold hover:bg-blue-800 transition-colors shrink-0"
+                  className="inline-flex items-center gap-2 bg-brand-blue text-white px-4 py-2 rounded-lg text-sm font-overpass font-semibold hover:bg-brand-blue-hover transition-colors shrink-0"
                 >
                   Ver y cotizar
                 </Link>

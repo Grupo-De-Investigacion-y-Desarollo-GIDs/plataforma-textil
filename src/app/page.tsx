@@ -61,7 +61,7 @@ export default async function Home() {
             </Link>
             <Link
               href="/registro?rol=MARCA"
-              className="hidden sm:inline text-sm bg-brand-blue text-white px-3 py-1.5 rounded-lg font-overpass font-semibold hover:bg-blue-800 transition-colors"
+              className="hidden sm:inline text-sm bg-brand-blue text-white px-3 py-1.5 rounded-lg font-overpass font-semibold hover:bg-brand-blue-hover transition-colors"
             >
               Soy marca
             </Link>
@@ -84,7 +84,7 @@ export default async function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-14">
             <Link
               href="/registro?rol=TALLER"
-              className="inline-flex items-center justify-center gap-2 bg-brand-blue text-white px-8 py-3.5 rounded-lg font-overpass font-semibold text-base hover:bg-blue-800 transition-colors"
+              className="inline-flex items-center justify-center gap-2 bg-brand-blue text-white px-8 py-3.5 rounded-lg font-overpass font-semibold text-base hover:bg-brand-blue-hover transition-colors"
             >
               Soy taller <ArrowRight className="w-4 h-4" />
             </Link>
@@ -137,7 +137,7 @@ export default async function Home() {
               </ul>
               <Link
                 href="/registro?rol=TALLER"
-                className="inline-flex items-center justify-center gap-2 bg-brand-blue text-white px-6 py-2.5 rounded-lg font-overpass font-semibold text-sm hover:bg-blue-800 transition-colors"
+                className="inline-flex items-center justify-center gap-2 bg-brand-blue text-white px-6 py-2.5 rounded-lg font-overpass font-semibold text-sm hover:bg-brand-blue-hover transition-colors"
               >
                 Registrarme <ChevronRight className="w-4 h-4" />
               </Link>
@@ -159,7 +159,7 @@ export default async function Home() {
               </ul>
               <Link
                 href="/registro?rol=MARCA"
-                className="inline-flex items-center justify-center gap-2 bg-brand-blue text-white px-6 py-2.5 rounded-lg font-overpass font-semibold text-sm hover:bg-blue-800 transition-colors"
+                className="inline-flex items-center justify-center gap-2 bg-brand-blue text-white px-6 py-2.5 rounded-lg font-overpass font-semibold text-sm hover:bg-brand-blue-hover transition-colors"
               >
                 Registrarme <ChevronRight className="w-4 h-4" />
               </Link>
@@ -345,7 +345,7 @@ export default async function Home() {
             />
             <button
               type="submit"
-              className="bg-brand-blue text-white px-6 py-3 rounded-lg font-overpass font-semibold text-sm hover:bg-blue-800 transition-colors whitespace-nowrap"
+              className="bg-brand-blue text-white px-6 py-3 rounded-lg font-overpass font-semibold text-sm hover:bg-brand-blue-hover transition-colors whitespace-nowrap"
             >
               Verificar
             </button>
@@ -386,7 +386,7 @@ export default async function Home() {
             </Link>
             <Link
               href="/registro?rol=MARCA"
-              className="inline-flex items-center justify-center gap-2 border-2 border-white text-white px-10 py-4 rounded-lg font-overpass font-bold text-base hover:bg-blue-900 transition-colors"
+              className="inline-flex items-center justify-center gap-2 border-2 border-white text-white px-10 py-4 rounded-lg font-overpass font-bold text-base hover:bg-brand-blue-hover transition-colors"
             >
               Soy marca <ArrowRight className="w-5 h-5" />
             </Link>

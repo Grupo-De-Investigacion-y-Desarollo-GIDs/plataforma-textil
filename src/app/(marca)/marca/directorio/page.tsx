@@ -156,7 +156,7 @@ export default async function DirectorioPage({
           <div className="flex items-center gap-2">
             <button
               type="submit"
-              className="inline-flex items-center justify-center rounded-lg font-overpass font-semibold transition-colors bg-brand-blue hover:bg-blue-800 text-white px-4 py-2.5 text-sm"
+              className="inline-flex items-center justify-center rounded-lg font-overpass font-semibold transition-colors bg-brand-blue hover:bg-brand-blue-hover text-white px-4 py-2.5 text-sm"
             >
               Filtrar
             </button>
@@ -234,7 +234,7 @@ export default async function DirectorioPage({
               <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
                 <Link
                   href={`/marca/directorio/${taller.id}`}
-                  className="inline-flex items-center justify-center rounded-lg font-overpass font-semibold transition-colors bg-brand-blue hover:bg-blue-800 text-white px-4 py-2 text-sm"
+                  className="inline-flex items-center justify-center rounded-lg font-overpass font-semibold transition-colors bg-brand-blue hover:bg-brand-blue-hover text-white px-4 py-2 text-sm"
                 >
                   Ver perfil
                 </Link>

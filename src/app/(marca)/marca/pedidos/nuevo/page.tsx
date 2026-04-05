@@ -152,7 +152,7 @@ export default async function MarcaNuevoPedidoPage({
 
         <button
           type="submit"
-          className="inline-flex items-center justify-center rounded-lg font-overpass font-semibold transition-colors bg-brand-blue hover:bg-blue-800 text-white px-5 py-2.5 text-sm"
+          className="inline-flex items-center justify-center rounded-lg font-overpass font-semibold transition-colors bg-brand-blue hover:bg-brand-blue-hover text-white px-5 py-2.5 text-sm"
         >
           Crear pedido
         </button>

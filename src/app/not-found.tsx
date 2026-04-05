@@ -10,7 +10,7 @@ export default function NotFound() {
         <h1 className="font-overpass font-bold text-3xl text-brand-blue mb-2">Página no encontrada</h1>
         <p className="text-gray-600 mb-8">La página que buscás no existe o fue movida.</p>
         <Link href="/"
-          className="inline-flex items-center px-6 py-3 bg-brand-blue text-white rounded-lg font-overpass font-semibold hover:bg-blue-800 transition-colors">
+          className="inline-flex items-center px-6 py-3 bg-brand-blue text-white rounded-lg font-overpass font-semibold hover:bg-brand-blue-hover transition-colors">
           Volver al inicio
         </Link>
       </div>

@@ -125,7 +125,7 @@ export default async function MarcaPerfilPage() {
           </div>
         </div>
 
-        <button type="submit" className="inline-flex items-center gap-2 rounded-lg bg-brand-blue px-5 py-2.5 text-sm font-overpass font-semibold text-white hover:bg-blue-800 transition-colors">
+        <button type="submit" className="inline-flex items-center gap-2 rounded-lg bg-brand-blue px-5 py-2.5 text-sm font-overpass font-semibold text-white hover:bg-brand-blue-hover transition-colors">
           <Save className="w-4 h-4" />
           Guardar cambios
         </button>

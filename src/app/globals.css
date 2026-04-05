@@ -47,6 +47,7 @@
 @theme inline {
   /* Brand Colors */
   --color-brand-blue: #1e2dbe;
+  --color-brand-blue-hover: #161f8f;
   --color-brand-red: #fa3c4b;
   --color-brand-bg-light: #ebf5fd;
   --color-brand-topbar: #161d8f;
