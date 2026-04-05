@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **03:05** `f859f28` — specs: actualizar semana3-pdf-qr-certificados con ajustes de factibilidad
+  - `.claude/specs/semana3-pdf-qr-certificados.md`
+
 - **02:56** `cc54741` — specs: actualizar semana3-notificaciones-matching con ajustes de factibilidad
   - `.claude/specs/semana3-notificaciones-matching.md`
 
