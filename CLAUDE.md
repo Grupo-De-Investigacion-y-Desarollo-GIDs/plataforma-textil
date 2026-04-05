@@ -61,6 +61,11 @@ Durante el desarrollo, cada decision tecnica importante, cambio de infraestructu
 - Registro en 1 paso (simplificado vs wireframe de 3 pasos)
 - Hook PostToolUse registra commits en DAILY.md automaticamente
 
+## Implementacion — orden y dependencias
+- `.claude/specs/ORDEN_IMPLEMENTACION.md` — grafo de dependencias, orden por persona, commits esperados
+- Gerardo actualiza el estado (pendiente/mergeado) al terminar cada spec
+- Sergio consulta antes de arrancar cualquier spec
+
 ## SPECS — Estructura y reglas
 
 ### Estructura obligatoria de cada spec
