@@ -21,12 +21,15 @@ export async function GET(req: NextRequest) {
     }
 
     const tipo = req.nextUrl.searchParams.get('tipo') || 'talleres'
+    const desde = req.nextUrl.searchParams.get('desde')
+    const whereBase = desde ? { createdAt: { gte: new Date(desde) } } : {}
 
     let csv = ''
     let filename = 'reporte.csv'
 
     if (tipo === 'talleres') {
       const talleres = await prisma.taller.findMany({
+        where: whereBase,
         include: {
           user: { select: { email: true, phone: true, createdAt: true } },
           _count: { select: { validaciones: true, certificados: true } },
@@ -45,11 +48,20 @@ export async function GET(req: NextRequest) {
       filename = 'talleres.csv'
 
     } else if (tipo === 'resumen') {
-      const [totalTalleres, totalMarcas, totalCerts, niveles] = await Promise.all([
+      const hace30dias = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+      const inicioMes = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+
+      const [totalTalleres, totalMarcas, totalCerts, niveles, talleresInactivos, denunciasSinResolver, certificadosMes, subieronNivelMes] = await Promise.all([
         prisma.taller.count(),
         prisma.marca.count(),
         prisma.certificado.count({ where: { revocado: false } }),
         prisma.taller.groupBy({ by: ['nivel'], _count: true }),
+        prisma.taller.count({
+          where: { createdAt: { lt: hace30dias }, user: { logs: { none: { timestamp: { gte: hace30dias } } } } },
+        }),
+        prisma.denuncia.count({ where: { estado: { in: ['RECIBIDA', 'EN_INVESTIGACION'] } } }),
+        prisma.certificado.count({ where: { fecha: { gte: inicioMes }, revocado: false } }),
+        prisma.logActividad.count({ where: { accion: 'NIVEL_SUBIDO', timestamp: { gte: inicioMes } } }),
       ])
       const nivelMap: Record<string, number> = {}
       for (const g of niveles) nivelMap[g.nivel] = g._count
@@ -62,13 +74,17 @@ export async function GET(req: NextRequest) {
           ['Talleres Bronce', String(nivelMap.BRONCE ?? 0)],
           ['Talleres Plata', String(nivelMap.PLATA ?? 0)],
           ['Talleres Oro', String(nivelMap.ORO ?? 0)],
+          ['Talleres inactivos (30 dias)', String(talleresInactivos)],
+          ['Denuncias sin resolver', String(denunciasSinResolver)],
+          ['Certificados este mes', String(certificadosMes)],
+          ['Subieron de nivel este mes', String(subieronNivelMes)],
         ],
       )
       filename = 'resumen.csv'
 
     } else if (tipo === 'capacitaciones') {
       const certs = await prisma.certificado.findMany({
-        where: { revocado: false },
+        where: { revocado: false, ...whereBase },
         include: {
           taller: { select: { nombre: true } },
           coleccion: { select: { titulo: true } },
@@ -85,7 +101,6 @@ export async function GET(req: NextRequest) {
       filename = 'capacitaciones.csv'
 
     } else if (tipo === 'acompanamiento') {
-      // Talleres con menos de 50% de validaciones completadas
       const talleres = await prisma.taller.findMany({
         include: {
           user: { select: { email: true } },
@@ -95,7 +110,7 @@ export async function GET(req: NextRequest) {
       })
       const necesitan = talleres.filter(t => {
         const completadas = t.validaciones.filter(v => v.estado === 'COMPLETADO').length
-        return completadas < 4 // menos de 50% de 8
+        return completadas < 4
       })
       csv = toCsv(
         ['Taller', 'CUIT', 'Nivel', 'Puntaje', 'Validaciones completadas', 'Email'],
@@ -105,6 +120,53 @@ export async function GET(req: NextRequest) {
         }),
       )
       filename = 'acompanamiento.csv'
+
+    } else if (tipo === 'marcas') {
+      const marcas = await prisma.marca.findMany({
+        where: whereBase,
+        include: { user: { select: { email: true, createdAt: true } } },
+        orderBy: { createdAt: 'desc' },
+      })
+      csv = toCsv(
+        ['Nombre', 'CUIT', 'Tipo', 'Ubicacion', 'Email', 'Volumen mensual', 'Pedidos realizados', 'Fecha registro'],
+        marcas.map(m => [
+          m.nombre, m.cuit, m.tipo ?? '', m.ubicacion ?? '',
+          m.user.email, String(m.volumenMensual), String(m.pedidosRealizados),
+          m.user.createdAt.toISOString().split('T')[0],
+        ]),
+      )
+      filename = 'marcas.csv'
+
+    } else if (tipo === 'pedidos') {
+      const pedidos = await prisma.pedido.findMany({
+        where: whereBase,
+        include: { marca: { select: { nombre: true } } },
+        orderBy: { createdAt: 'desc' },
+      })
+      csv = toCsv(
+        ['ID', 'Marca', 'Tipo prenda', 'Cantidad', 'Estado', 'Monto total', 'Fecha creacion', 'Fecha objetivo'],
+        pedidos.map(p => [
+          p.omId, p.marca.nombre, p.tipoPrenda, String(p.cantidad), p.estado,
+          String(p.montoTotal ?? ''), p.createdAt.toISOString().split('T')[0],
+          p.fechaObjetivo ? p.fechaObjetivo.toISOString().split('T')[0] : '',
+        ]),
+      )
+      filename = 'pedidos.csv'
+
+    } else if (tipo === 'denuncias') {
+      const denuncias = await prisma.denuncia.findMany({
+        where: whereBase,
+        orderBy: { createdAt: 'desc' },
+      })
+      csv = toCsv(
+        ['Tipo', 'Estado', 'Anonima', 'Fecha recepcion', 'Ultima actualizacion'],
+        denuncias.map(d => [
+          d.tipo, d.estado, d.anonima ? 'Si' : 'No',
+          d.createdAt.toISOString().split('T')[0],
+          d.updatedAt.toISOString().split('T')[0],
+        ]),
+      )
+      filename = 'denuncias.csv'
     }
 
     return new NextResponse(csv, {
