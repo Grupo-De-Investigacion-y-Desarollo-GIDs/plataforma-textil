@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **11:59** `88cef62` — specs: actualizar semana3-feedback-widget con contexto de entidad y vista admin
+  - `.claude/specs/semana3-feedback-widget.md`
+
 - **11:45** `f8b0df5` — test: agregar E2E admin — feature flags tab, toggles E1/E2, banner email
   - `e2e/admin.spec.ts`
 
