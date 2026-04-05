@@ -13,15 +13,58 @@ import { FileText, ExternalLink } from 'lucide-react'
 import { UploadButton } from '@/taller/componentes/upload-button'
 
 const tiposValidacion = [
-  { tipo: 'CUIT_MONOTRIBUTO', label: 'CUIT / Monotributo', descripcion: 'Inscripción en ARCA (ex-AFIP)', enlace: 'https://www.afip.gob.ar' },
-  { tipo: 'HABILITACION_MUNICIPAL', label: 'Habilitación Municipal', descripcion: 'Permiso de funcionamiento del municipio', enlace: null },
-  { tipo: 'ART', label: 'ART (Aseguradora de Riesgos)', descripcion: 'Seguro para trabajadores', enlace: null },
-  { tipo: 'INSCRIPCION_EMPLEADOR', label: 'Inscripción como Empleador', descripcion: 'Registro en ARCA como empleador', enlace: 'https://www.afip.gob.ar' },
-  { tipo: 'SEGURIDAD_HIGIENE', label: 'Seguridad e Higiene', descripcion: 'Plan de seguridad e higiene laboral', enlace: null },
-  { tipo: 'HABILITACION_BOMBEROS', label: 'Habilitación de Bomberos', descripcion: 'Certificado de prevención contra incendios', enlace: null },
-  { tipo: 'LIBRO_SUELDOS', label: 'Libro de Sueldos Digital', descripcion: 'Registro digital de remuneraciones', enlace: null },
-  { tipo: 'CERTIFICACION_AMBIENTAL', label: 'Certificación Ambiental', descripcion: 'Gestión de residuos textiles (opcional)', enlace: null },
+  { tipo: 'CUIT_MONOTRIBUTO', label: 'Registrate en ARCA', descripcion: 'Inscripcion en ARCA (ex-AFIP)', enlace: 'https://www.afip.gob.ar' },
+  { tipo: 'HABILITACION_MUNICIPAL', label: 'Habilita tu local', descripcion: 'Permiso de funcionamiento del municipio', enlace: null },
+  { tipo: 'ART', label: 'Asegura a tu equipo', descripcion: 'Seguro para trabajadores', enlace: null },
+  { tipo: 'INSCRIPCION_EMPLEADOR', label: 'Registra tus empleados', descripcion: 'Registro en ARCA como empleador', enlace: 'https://www.afip.gob.ar' },
+  { tipo: 'SEGURIDAD_HIGIENE', label: 'Plan de seguridad', descripcion: 'Plan de seguridad e higiene laboral', enlace: null },
+  { tipo: 'HABILITACION_BOMBEROS', label: 'Habilitacion de bomberos', descripcion: 'Certificado de prevencion contra incendios', enlace: null },
+  { tipo: 'LIBRO_SUELDOS', label: 'Libro de sueldos digital', descripcion: 'Registro digital de remuneraciones', enlace: null },
+  { tipo: 'CERTIFICACION_AMBIENTAL', label: 'Certificacion ambiental', descripcion: 'Gestion de residuos textiles (opcional)', enlace: null },
 ]
+
+const validacionInfo: Record<string, { info: string; link: string; costo: string }> = {
+  CUIT_MONOTRIBUTO: {
+    info: 'Tu numero de identificacion fiscal. Es gratuito y se tramita online en ARCA.',
+    link: 'https://www.afip.gob.ar/monotributo/',
+    costo: 'Gratuito',
+  },
+  HABILITACION_MUNICIPAL: {
+    info: 'Autorizacion del municipio para operar como taller. Varia segun el municipio.',
+    link: 'https://www.gba.gob.ar/municipios',
+    costo: 'Varia segun municipio',
+  },
+  ART: {
+    info: 'Seguro obligatorio que cubre a tus trabajadores ante accidentes laborales.',
+    link: 'https://www.srt.gob.ar/',
+    costo: 'Desde $8.000/mes segun cantidad de empleados',
+  },
+  INSCRIPCION_EMPLEADOR: {
+    info: 'Registro de tus empleados en AFIP. Obligatorio si tenes personal en relacion de dependencia.',
+    link: 'https://www.afip.gob.ar/empleadores/',
+    costo: 'Gratuito',
+  },
+  SEGURIDAD_HIGIENE: {
+    info: 'Plan basico de prevencion de riesgos laborales en tu taller.',
+    link: 'https://www.srt.gob.ar/index.shtml',
+    costo: 'Desde $15.000 con profesional habilitado',
+  },
+  HABILITACION_BOMBEROS: {
+    info: 'Verificacion de condiciones de seguridad contra incendios.',
+    link: 'https://www.bomberos.gob.ar/',
+    costo: 'Varia segun municipio',
+  },
+  LIBRO_SUELDOS: {
+    info: 'Registro digital de sueldos y jornadas. Obligatorio para empleadores.',
+    link: 'https://www.argentina.gob.ar/trabajo/librodesueldos',
+    costo: 'Gratuito',
+  },
+  CERTIFICACION_AMBIENTAL: {
+    info: 'Declaracion de impacto ambiental ante el municipio.',
+    link: 'https://www.argentina.gob.ar/ambiente',
+    costo: 'Varia segun municipio',
+  },
+}
 
 const estadoToStatus: Record<string, 'completed' | 'pending' | 'warning' | 'optional'> = {
   COMPLETADO: 'completed',
@@ -136,18 +179,36 @@ export default async function TallerFormalizacionPage() {
                   }
                 />
                 {estado !== 'COMPLETADO' && (
-                  <div className="flex gap-2 mt-2 ml-8">
-                    {(estado === 'NO_INICIADO' || estado === 'RECHAZADO') && validacion && (
-                      <UploadButton validacionId={validacion.id} />
+                  <>
+                    <div className="flex gap-2 mt-2 ml-8">
+                      {(estado === 'NO_INICIADO' || estado === 'RECHAZADO') && validacion && (
+                        <UploadButton validacionId={validacion.id} />
+                      )}
+                      {tipo.enlace && (
+                        <a href={tipo.enlace} target="_blank" rel="noopener noreferrer">
+                          <Button size="sm" variant="secondary" icon={<ExternalLink className="w-3 h-3" />}>
+                            Ir al tramite
+                          </Button>
+                        </a>
+                      )}
+                    </div>
+                    {validacionInfo[tipo.tipo] && (
+                      <div className="mt-2 ml-8 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
+                        <p>{validacionInfo[tipo.tipo].info}</p>
+                        <div className="flex gap-4 mt-2 text-xs text-gray-500">
+                          <span className="font-medium">Costo: {validacionInfo[tipo.tipo].costo}</span>
+                          <a
+                            href={validacionInfo[tipo.tipo].link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-brand-blue font-semibold hover:underline"
+                          >
+                            Como tramitarlo →
+                          </a>
+                        </div>
+                      </div>
                     )}
-                    {tipo.enlace && (
-                      <a href={tipo.enlace} target="_blank" rel="noopener noreferrer">
-                        <Button size="sm" variant="secondary" icon={<ExternalLink className="w-3 h-3" />}>
-                          Ir al trámite
-                        </Button>
-                      </a>
-                    )}
-                  </div>
+                  </>
                 )}
               </div>
             )

@@ -4,6 +4,7 @@ import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { ProgressRing } from '@/compartido/componentes/ui/progress-ring'
 
 const TOTAL_VALIDACIONES = 8
 
@@ -27,6 +28,22 @@ export default async function TallerDashboardPage() {
       },
     },
   })
+
+  // Detectar si subio de nivel en las ultimas 24hs
+  const hace24hs = new Date(Date.now() - 24 * 60 * 60 * 1000)
+  const logNivelReciente = taller
+    ? await prisma.logActividad.findFirst({
+        where: {
+          accion: 'NIVEL_SUBIDO',
+          timestamp: { gte: hace24hs },
+          detalles: { path: ['tallerId'], equals: taller.id },
+        },
+        orderBy: { timestamp: 'desc' },
+      })
+    : null
+  const nivelNuevo = logNivelReciente
+    ? (logNivelReciente.detalles as { nivelNuevo?: string })?.nivelNuevo
+    : null
 
   // Colecciones recomendadas (las que no tienen progreso o están incompletas)
   const coleccionesRecomendadas = await prisma.coleccion.findMany({
@@ -84,6 +101,21 @@ export default async function TallerDashboardPage() {
         </p>
       </div>
 
+      {/* Banner de logro al subir de nivel */}
+      {nivelNuevo && (
+        <div className="p-4 bg-green-50 border-2 border-green-400 rounded-xl text-center">
+          <p className="text-2xl mb-1">
+            {nivelNuevo === 'ORO' ? '🥇' : '🥈'}
+          </p>
+          <p className="font-overpass font-bold text-green-800 text-lg">
+            Subiste a nivel {nivelNuevo}!
+          </p>
+          <p className="text-green-600 text-sm mt-1">
+            Tu taller ahora tiene mas visibilidad en el directorio
+          </p>
+        </div>
+      )}
+
       {/* Progreso principal */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Ring formalización */}
@@ -92,22 +124,7 @@ export default async function TallerDashboardPage() {
             Progreso de Formalización
           </h3>
           <div className="flex items-center gap-6">
-            {/* SVG ring */}
-            <div className="relative w-24 h-24 flex-shrink-0">
-              <svg className="w-24 h-24 -rotate-90" viewBox="0 0 36 36">
-                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#e5e7eb" strokeWidth="3" />
-                <circle
-                  cx="18" cy="18" r="15.9" fill="none"
-                  stroke="#1e3a5f"
-                  strokeWidth="3"
-                  strokeDasharray={`${porcentajeFormal} ${100 - porcentajeFormal}`}
-                  strokeLinecap="round"
-                />
-              </svg>
-              <span className="absolute inset-0 flex items-center justify-center font-bold text-xl text-brand-blue">
-                {porcentajeFormal}%
-              </span>
-            </div>
+            <ProgressRing percentage={porcentajeFormal} size={120} strokeWidth={10} />
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2">
                 <span className="w-5 h-5 rounded-full bg-green-100 text-green-700 flex items-center justify-center text-xs font-bold">✓</span>
@@ -131,6 +148,33 @@ export default async function TallerDashboardPage() {
           >
             Ver detalle →
           </Link>
+          {taller && taller.nivel === 'BRONCE' && porcentajeFormal < 100 && (
+            <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm">
+              <p className="font-medium text-amber-800">
+                Te faltan {TOTAL_VALIDACIONES - completadas} documentos para ser PLATA
+              </p>
+              <p className="text-amber-600 text-xs mt-1">
+                Con PLATA apareces mas arriba en el directorio y accedes a marcas mas grandes
+              </p>
+            </div>
+          )}
+          {taller && taller.nivel === 'PLATA' && porcentajeFormal < 100 && (
+            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
+              <p className="font-medium text-yellow-800">
+                Te faltan {TOTAL_VALIDACIONES - completadas} documentos para ser ORO
+              </p>
+              <p className="text-yellow-600 text-xs mt-1">
+                Con ORO apareces primero en el directorio y podes recibir pedidos grandes
+              </p>
+            </div>
+          )}
+          {taller && taller.nivel === 'ORO' && (
+            <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-sm">
+              <p className="font-medium text-green-800">
+                Estas en el nivel maximo! Sos un taller verificado ORO
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Stats secundarios */}
