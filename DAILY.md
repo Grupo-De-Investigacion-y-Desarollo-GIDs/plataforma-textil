@@ -3,6 +3,20 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **04:28** `4e6e248` — feat: RAG infraestructura y pipeline
+  - `.env.example`
+  - `package-lock.json`
+  - `package.json`
+  - `prisma/migrations/20260405072000_agregar_documento_rag/migration.sql`
+  - `prisma/schema.prisma`
+  - `scripts/indexar-corpus.ts`
+  - `src/app/(admin)/admin/integraciones/llm/page.tsx`
+  - `src/app/api/admin/config/route.ts`
+  - `src/app/api/admin/rag/[id]/route.ts`
+  - `src/app/api/admin/rag/route.ts`
+  - `src/app/api/chat/route.ts`
+  - `src/compartido/lib/rag.ts`
+
 - **04:20** `4178e38` — feat: API cotizaciones
   - `src/app/api/cotizaciones/[id]/route.ts`
   - `src/app/api/cotizaciones/route.ts`
