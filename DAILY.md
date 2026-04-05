@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **02:02** `bfc6830` — specs: actualizar semana2-rag-decision-pipeline con fixes criticos Voyage AI
+  - `.claude/specs/semana2-rag-decision-pipeline.md`
+
 - **01:49** `b105984` — specs: actualizar semana2-api-cotizaciones con ajustes de factibilidad
   - `.claude/specs/semana2-api-cotizaciones.md`
 
