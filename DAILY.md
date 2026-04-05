@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **16:08** `5f03ad2` — docs: checklist de validacion manual para Sergio — 82 items por funcion
+  - `.claude/specs/semana4-checklist-sergio.md`
+
 - **16:04** `2db6dff` — fix: AFIP no bloquea registro si no responde — verificadoAfip refleja estado real
   - `src/app/api/auth/registro/route.ts`
 
