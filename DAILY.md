@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **02:56** `cc54741` — specs: actualizar semana3-notificaciones-matching con ajustes de factibilidad
+  - `.claude/specs/semana3-notificaciones-matching.md`
+
 - **02:35** `e80cabf` — specs: actualizar semana2-publicacion-pedidos-ui con ajustes de factibilidad
   - `.claude/specs/semana2-publicacion-pedidos-ui.md`
 
