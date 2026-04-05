@@ -6,6 +6,17 @@
 
 ---
 
+## ANTES DE ARRANCAR
+
+Verificar que estos commits estan en develop antes de tocar codigo:
+
+- [ ] semana1-infra-contenido (Gerardo) — commit con mensaje `feat: agregar rol CONTENIDO`
+- [ ] semana1-afipsdk-cuit (Gerardo) — commit con mensaje `feat: integrar AfipSDK`
+
+Si no estan mergeados, NO arrancar. Avisarle a Gerardo.
+
+---
+
 ## 1. Contexto
 
 El registro actual tiene 3 pasos pero el paso 1 (elegir rol) es redundante porque la landing ya manda con `?rol=` en la URL. Hay que simplificar el flujo, integrar la verificacion AfipSDK del spec anterior y agregar auto-login post-registro. El objetivo es que un taller pueda registrarse en menos de 3 minutos desde el celular.

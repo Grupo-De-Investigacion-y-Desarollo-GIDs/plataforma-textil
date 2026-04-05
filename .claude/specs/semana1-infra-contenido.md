@@ -93,6 +93,14 @@ if (role !== 'ADMIN' && role !== 'CONTENIDO') {
 
 ---
 
+### ANTES DE ARRANCAR (solo parte Sergio)
+
+Verificar que este commit esta en develop:
+
+- [ ] Parte Gerardo de este mismo spec — commit con mensaje `feat: agregar rol CONTENIDO al schema y middleware`
+
+Si no esta mergeado, NO arrancar. Avisarle a Gerardo.
+
 ### Sergio (solo despues de que Gerardo mergee)
 
 #### `src/app/(contenido)/layout.tsx`
