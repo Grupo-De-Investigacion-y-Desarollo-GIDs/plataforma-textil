@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **11:45** `f8b0df5` — test: agregar E2E admin — feature flags tab, toggles E1/E2, banner email
+  - `e2e/admin.spec.ts`
+
 - **08:44** `b10d7d8` — feat: feedback widget — API + widget flotante + GitHub issues + tests E2E
   - `.env.example`
   - `e2e/feedback.spec.ts`
