@@ -3,6 +3,14 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **08:44** `b10d7d8` — feat: feedback widget — API + widget flotante + GitHub issues + tests E2E
+  - `.env.example`
+  - `e2e/feedback.spec.ts`
+  - `src/app/api/feedback/route.ts`
+  - `src/app/layout.tsx`
+  - `src/compartido/componentes/feedback-widget-wrapper.tsx`
+  - `src/compartido/componentes/feedback-widget.tsx`
+
 - **08:39** `543a958` — specs: agregar semana3-feedback-widget
   - `.claude/specs/semana3-feedback-widget.md`
 
