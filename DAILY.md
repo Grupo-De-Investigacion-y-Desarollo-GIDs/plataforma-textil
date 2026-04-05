@@ -3,6 +3,18 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **19:46** `97037a7` — fix: unificar hover de brand-blue — token brand-blue-hover en 10 archivos
+  - `src/app/(marca)/marca/directorio/page.tsx`
+  - `src/app/(marca)/marca/pedidos/nuevo/page.tsx`
+  - `src/app/(marca)/marca/pedidos/page.tsx`
+  - `src/app/(marca)/marca/perfil/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+  - `src/app/error.tsx`
+  - `src/app/globals.css`
+  - `src/app/not-found.tsx`
+  - `src/app/page.tsx`
+  - `src/app/unauthorized/page.tsx`
+
 - **19:36** `22371e2` — fix: 13 issues criticos UI — responsive grids mobile + aria-labels accesibilidad
   - `src/app/(admin)/admin/auditorias/page.tsx`
   - `src/app/(admin)/admin/certificados/page.tsx`
