@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **06:36** `d71cd54` — feat: directorio publico con filtros de nivel, proceso, prenda y texto
+  - `src/app/(public)/directorio/page.tsx`
+
 - **06:36** `570d973` — feat: landing con dos entradas — eliminar card Estado, CTAs con rol
   - `src/app/page.tsx`
 
