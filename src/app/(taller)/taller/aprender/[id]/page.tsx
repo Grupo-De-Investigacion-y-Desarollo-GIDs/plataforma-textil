@@ -79,7 +79,7 @@ export default async function AcademiaDetallePage({
             : null
         }
         progresoInicial={videosVistos}
-        certificadoExistente={!!certificado}
+        certificadoId={certificado?.id ?? null}
       />
     </div>
   )

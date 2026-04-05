@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Play, Check, Lock, ChevronRight } from 'lucide-react'
+import { Play, Check, Lock, ChevronRight, Download } from 'lucide-react'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
 
@@ -25,7 +25,7 @@ interface AcademiaClienteProps {
   videos: Video[]
   evaluacion: { preguntas: Pregunta[]; puntajeMinimo: number } | null
   progresoInicial: number   // videosVistos al cargar
-  certificadoExistente: boolean
+  certificadoId: string | null
 }
 
 export function AcademiaCliente({
@@ -33,7 +33,7 @@ export function AcademiaCliente({
   videos,
   evaluacion,
   progresoInicial,
-  certificadoExistente,
+  certificadoId,
 }: AcademiaClienteProps) {
   const router = useRouter()
   const [videosVistos, setVideosVistos] = useState<Set<number>>(
@@ -148,7 +148,7 @@ export function AcademiaCliente({
             <div className="h-full bg-brand-blue rounded-full transition-all" style={{ width: `${progreso}%` }} />
           </div>
           <p className="text-xs text-gray-400 mt-2">{progreso}% completado</p>
-          {certificadoExistente && (
+          {certificadoId && (
             <p className="text-xs text-green-600 font-semibold mt-3">✓ Certificado obtenido</p>
           )}
         </Card>
@@ -187,7 +187,7 @@ export function AcademiaCliente({
       </div>
 
       {/* Evaluación */}
-      {evaluacion && !certificadoExistente && (
+      {evaluacion && !certificadoId && (
         <Card title="Evaluación final">
           {!mostrarQuiz && !resultadoQuiz && (
             <>
@@ -280,10 +280,18 @@ export function AcademiaCliente({
         </Card>
       )}
 
-      {certificadoExistente && (
+      {certificadoId && (
         <div className="rounded-xl bg-green-50 border border-green-200 p-4 text-center">
-          <p className="text-green-700 font-bold text-lg">Colección completada</p>
-          <p className="text-green-600 text-sm mt-1">Ya obtuviste tu certificado para esta colección.</p>
+          <p className="text-green-700 font-bold text-lg">Coleccion completada</p>
+          <p className="text-green-600 text-sm mt-1">Ya obtuviste tu certificado para esta coleccion.</p>
+          <a
+            href={`/api/certificados/${certificadoId}/pdf`}
+            download
+            className="inline-flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm font-overpass font-semibold transition-colors mt-3"
+          >
+            <Download className="w-4 h-4" />
+            Descargar certificado PDF
+          </a>
         </div>
       )}
     </div>

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { sendEmail, buildCertificadoEmail } from '@/compartido/lib/email'
+import { generateQrBuffer } from '@/compartido/lib/qr'
+import { uploadFile } from '@/compartido/lib/storage'
 
 // GET /api/colecciones/[id]/evaluacion — devuelve evaluacion existente (admin)
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -112,6 +114,19 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         to: taller.user.email,
         ...buildCertificadoEmail({ nombreTaller: taller.nombre, tituloColeccion: coleccion.titulo, codigo: certificado.codigo, calificacion }),
       }).catch(() => {})
+      // Generar QR y subirlo a Storage (fire-and-forget)
+      generateQrBuffer(codigo).then(async (qrBuffer) => {
+        const qrPath = `qr/${taller.id}/${certificado.id}.png`
+        const qrUrl = await uploadFile(qrBuffer, qrPath, 'image/png')
+        if (qrUrl) {
+          await prisma.certificado.update({
+            where: { id: certificado.id },
+            data: { qrCode: qrUrl },
+          })
+        }
+      }).catch((err) => {
+        console.error('Error generando QR del certificado:', err)
+      })
       return NextResponse.json({ aprobado: true, calificacion, certificadoId: certificado.id, codigo: certificado.codigo })
     }
 

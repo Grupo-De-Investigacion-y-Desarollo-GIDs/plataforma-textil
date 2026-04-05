@@ -68,6 +68,11 @@ export default function AdminCertificadosPage() {
         {!row.revocado ? 'Válido' : 'Revocado'}
       </Badge>
     )},
+    { header: 'PDF', accessor: (row: Cert) => (
+      <a href={`/api/certificados/${row.id}/pdf`} download className="text-brand-blue font-semibold text-sm hover:underline">
+        Descargar
+      </a>
+    )},
     { header: 'Acciones', accessor: (row: Cert) => (
       <div className="flex gap-1">
         <button onClick={() => setVerModal(row)} className="p-1 hover:bg-gray-100 rounded"><Eye className="w-4 h-4 text-gray-500" /></button>
