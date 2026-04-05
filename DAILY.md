@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **05:33** `cb2dc72` — specs: agregar semana3-vistas-cotizaciones
+  - `.claude/specs/semana3-vistas-cotizaciones.md`
+
 - **05:28** `8613422` — specs: agregar semana3-auditoria-detalle
   - `.claude/specs/semana3-auditoria-detalle.md`
 
