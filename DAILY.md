@@ -3,6 +3,13 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **19:53** `fb99d9b` — fix: estados de carga y vacios en 5 paginas admin — usuarios, talleres, marcas, pedidos, dashboard
+  - `src/app/(admin)/admin/dashboard/page.tsx`
+  - `src/app/(admin)/admin/marcas/page.tsx`
+  - `src/app/(admin)/admin/pedidos/page.tsx`
+  - `src/app/(admin)/admin/talleres/page.tsx`
+  - `src/app/(admin)/admin/usuarios/page.tsx`
+
 - **19:46** `97037a7` — fix: unificar hover de brand-blue — token brand-blue-hover en 10 archivos
   - `src/app/(marca)/marca/directorio/page.tsx`
   - `src/app/(marca)/marca/pedidos/nuevo/page.tsx`
