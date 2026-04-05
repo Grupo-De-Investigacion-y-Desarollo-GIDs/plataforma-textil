@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **04:53** `42d5682` — specs: agregar semana3-exportes-estado
+  - `.claude/specs/semana3-exportes-estado.md`
+
 - **04:43** `e86f5dd` — feat: notificaciones talleres compatibles
   - `src/app/api/pedidos/[id]/route.ts`
   - `src/compartido/lib/email.ts`
