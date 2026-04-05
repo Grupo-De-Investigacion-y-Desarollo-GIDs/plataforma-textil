@@ -20,6 +20,8 @@ export default auth((req) => {
     '/terminos',
     '/privacidad',
     '/verificar',
+    '/denunciar',
+    '/consultar-denuncia',
     '/directorio',
     '/perfil/',        // Perfil público taller /perfil/[id]
     '/perfil-marca/',  // Perfil público marca /perfil-marca/[id]
