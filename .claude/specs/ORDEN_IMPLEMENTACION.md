@@ -1,4 +1,4 @@
-# Orden de implementacion — Semanas 1-3
+# Orden de implementacion — Semanas 1-4
 
 Fecha: 2026-04-05
 Referencia: cada spec vive en `.claude/specs/semanaX-nombre.md`
@@ -35,75 +35,79 @@ Regla: Sergio no arranca un spec hasta que sus dependencias esten mergeadas en d
            ├─► api-cotizaciones (G)
            │        │ desbloquea
            │        ├─► publicacion-pedidos-ui (S)
+           │        │        │ desbloquea
+           │        │        └─► vistas-cotizaciones (S)
            │        └─► notificaciones-matching (G)
            └─► publicacion-pedidos-ui (S)
 
+    pdf-qr-certificados (G) ─► acuerdos-comerciales (G)
+
+    queries-dashboard-estado (G) ─► exportes-estado (G)
+                                 ─► dashboard-estado-ui (S)
+
+    rag-decision-pipeline (G) ─► chat-rag-ui (S)
+
+    feature-flags (G) ← sin deps
+
     Sin dependencias (paralelos):
     ├── landing-dos-entradas (S)
-    ├── queries-dashboard-estado (G) ─► dashboard-estado-ui (S)
-    ├── gamificacion (S)  [D4 necesita queries-dashboard implicitamente]
-    ├── rag-decision-pipeline (G)
-    └── pdf-qr-certificados (G)
+    ├── gamificacion (S)
+    ├── directorio-publico (S)
+    ├── denuncia-publica (S)
+    ├── whatsapp-perfil-marca (S)
+    ├── stubs-perfil-publico (S)
+    └── auditoria-detalle (S)
 ```
 
 G = Gerardo, S = Sergio
 
 ---
 
-## Orden de implementacion — Gerardo
-
-Prioridad por impacto: primero lo que desbloquea a Sergio, despues lo independiente.
+## Estado de implementacion — Gerardo (11 specs, todos mergeados)
 
 | # | Spec | Deps | Desbloquea | Estado |
 |---|------|------|------------|--------|
-| 1 | `semana1-infra-contenido` (parte G) | ninguna | registro-3-pasos (S), layout-contenido (S) | pendiente |
-| 2 | `semana1-afipsdk-cuit` | ninguna | registro-3-pasos (S) | pendiente |
-| 3 | `semana2-schema-e2` | ninguna | api-cotizaciones (G), publicacion-pedidos-ui (S) | pendiente |
-| 4 | `semana2-queries-dashboard-estado` | ninguna | dashboard-estado-ui (S), gamificacion D4 (S) | pendiente |
-| 5 | `semana2-api-cotizaciones` | schema-e2 | publicacion-pedidos-ui (S), notificaciones-matching (G) | pendiente |
-| 6 | `semana1-oauth-magiclink` | registro-3-pasos (S) | — | pendiente |
-| 7 | `semana2-rag-decision-pipeline` | ninguna | — | pendiente |
-| 8 | `semana3-pdf-qr-certificados` | ninguna | — | pendiente |
-| 9 | `semana3-notificaciones-matching` | schema-e2 + api-cotizaciones | — | pendiente |
-
-Nota: oauth-magiclink (#6) espera que Sergio termine registro-3-pasos. Si Sergio se atrasa, Gerardo salta a #7 o #8.
+| 1 | `semana1-infra-contenido` (parte G) | ninguna | registro-3-pasos (S), layout-contenido (S) | mergeado |
+| 2 | `semana1-afipsdk-cuit` | ninguna | registro-3-pasos (S) | mergeado |
+| 3 | `semana1-feature-flags` | ninguna | — | mergeado |
+| 4 | `semana2-schema-e2` | ninguna | api-cotizaciones (G), publicacion-pedidos-ui (S) | mergeado |
+| 5 | `semana2-queries-dashboard-estado` | ninguna | dashboard-estado-ui (S), exportes-estado (G) | mergeado |
+| 6 | `semana2-api-cotizaciones` | schema-e2 | publicacion-pedidos-ui (S), notificaciones-matching (G) | mergeado |
+| 7 | `semana1-oauth-magiclink` | — | — | mergeado |
+| 8 | `semana2-rag-decision-pipeline` | ninguna | chat-rag-ui (S) | mergeado |
+| 9 | `semana3-pdf-qr-certificados` | ninguna | acuerdos-comerciales (G) | mergeado |
+| 10 | `semana3-notificaciones-matching` | schema-e2 + api-cotizaciones | — | mergeado |
+| 11 | `semana3-acuerdos-comerciales` | pdf-qr-certificados | — | mergeado |
+| 12 | `semana3-exportes-estado` | queries-dashboard-estado | — | mergeado |
 
 ---
 
-## Orden de implementacion — Sergio
+## Estado de implementacion — Sergio (13 specs, todos pendientes)
 
 | # | Spec | Deps (esperar merge de Gerardo) | Estado |
 |---|------|---------------------------------|--------|
 | 1 | `semana1-landing-dos-entradas` | ninguna — puede arrancar dia 1 | pendiente |
-| 2 | `semana2-gamificacion` (D1+D2+D3) | ninguna — D4 espera queries-dashboard | pendiente |
-| 3 | `semana1-registro-3-pasos` | infra-contenido (G) + afipsdk-cuit (G) | pendiente |
-| 4 | `semana2-layout-contenido` | infra-contenido (G) | pendiente |
+| 2 | `semana1-registro-3-pasos` | infra-contenido (G) + afipsdk-cuit (G) | pendiente |
+| 3 | `semana2-layout-contenido` | infra-contenido (G) | pendiente |
+| 4 | `semana2-gamificacion` | ninguna (D4 espera queries-dashboard) | pendiente |
 | 5 | `semana2-dashboard-estado-ui` | queries-dashboard-estado (G) | pendiente |
-| 6 | `semana2-gamificacion` (D4) | queries-dashboard-estado (G) | pendiente |
-| 7 | `semana2-publicacion-pedidos-ui` | schema-e2 (G) + api-cotizaciones (G) | pendiente |
-| 8 | `semana1-infra-contenido` (parte S) | infra-contenido parte G | pendiente |
+| 6 | `semana2-publicacion-pedidos-ui` | schema-e2 (G) + api-cotizaciones (G) | pendiente |
+| 7 | `semana3-auditoria-detalle` | ninguna | pendiente |
+| 8 | `semana3-chat-rag-ui` | rag-decision-pipeline (G) | pendiente |
+| 9 | `semana3-denuncia-publica` | ninguna | pendiente |
+| 10 | `semana3-directorio-publico` | ninguna | pendiente |
+| 11 | `semana3-stubs-perfil-publico` | ninguna | pendiente |
+| 12 | `semana3-vistas-cotizaciones` | api-cotizaciones (G) + publicacion-pedidos-ui (S) | pendiente |
+| 13 | `semana3-whatsapp-perfil-marca` | ninguna | pendiente |
 
-Sergio puede hacer #1 y #2 desde el dia 1 sin esperar nada.
+**Todas las dependencias de Gerardo estan mergeadas.** Sergio puede arrancar cualquier spec excepto:
+- `vistas-cotizaciones` (#12) que necesita que el propio Sergio termine `publicacion-pedidos-ui` (#6) primero.
 
 ---
 
-## Commits esperados por spec
+## Semana 4 — Testing
 
-Para que los bloqueos "ANTES DE ARRANCAR" funcionen, estos son los mensajes de commit que Gerardo debe usar al terminar cada spec:
-
-| Spec | Mensaje de commit |
-|------|-------------------|
-| infra-contenido (parte G) | `feat: agregar rol CONTENIDO al schema y middleware` |
-| afipsdk-cuit | `feat: integrar AfipSDK` |
-| schema-e2 | `feat: agregar estado PUBLICADO y modelo Cotizacion` |
-| queries-dashboard-estado | `feat: queries dashboard estado` |
-| api-cotizaciones | `feat: API cotizaciones` |
-| oauth-magiclink | `feat: Google OAuth y magic link` |
-| rag-decision-pipeline | `feat: RAG infraestructura y pipeline` |
-| pdf-qr-certificados | `feat: PDF y QR certificados` |
-| notificaciones-matching | `feat: notificaciones talleres compatibles` |
-
-Sergio busca estos mensajes en `git log` antes de arrancar.
+Ver `.claude/specs/semana4-testing-checklist.md`. No se agrega funcionalidad nueva.
 
 ---
 
