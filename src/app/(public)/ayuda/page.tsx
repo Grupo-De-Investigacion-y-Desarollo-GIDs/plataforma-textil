@@ -78,6 +78,23 @@ export default function AyudaPage() {
           <p className="flex items-center gap-2"><MessageCircle className="w-4 h-4 text-brand-blue" /> Respuesta estimada: 24-48 hs habiles</p>
         </div>
       </section>
+
+      <section className="rounded-xl border border-amber-200 bg-amber-50 p-6">
+        <h2 className="font-overpass font-bold text-xl text-amber-800 mb-2">¿Queres reportar una situacion?</h2>
+        <p className="text-sm text-amber-700 mb-4">
+          Podes hacer una denuncia de forma anonima o consultar el estado de una denuncia existente.
+        </p>
+        <div className="flex gap-3">
+          <a href="/denunciar"
+            className="inline-flex items-center justify-center rounded-lg font-overpass font-semibold text-sm bg-amber-600 text-white px-4 py-2 hover:bg-amber-700 transition-colors">
+            Hacer una denuncia
+          </a>
+          <a href="/consultar-denuncia"
+            className="inline-flex items-center justify-center rounded-lg font-overpass font-semibold text-sm border border-amber-600 text-amber-700 px-4 py-2 hover:bg-amber-100 transition-colors">
+            Consultar estado
+          </a>
+        </div>
+      </section>
     </div>
   )
 }
