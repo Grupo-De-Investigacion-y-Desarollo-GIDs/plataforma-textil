@@ -34,9 +34,10 @@ export default function AdminPedidosPage() {
   const [pedidos, setPedidos] = useState<Pedido[]>([])
   const [search, setSearch] = useState('')
   const [filtroEstado, setFiltroEstado] = useState('')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/pedidos?limit=100').then(r => r.json()).then((d: { pedidos?: Pedido[] }) => setPedidos(d.pedidos || [])).catch(() => {})
+    fetch('/api/pedidos?limit=100').then(r => r.json()).then((d: { pedidos?: Pedido[] }) => setPedidos(d.pedidos || [])).catch(() => {}).finally(() => setLoading(false))
   }, [])
 
   const filtered = pedidos.filter(p => {
@@ -96,9 +97,19 @@ export default function AdminPedidosPage() {
 
       <Button size="sm" variant="secondary" className="mb-4">Exportar reporte de pedidos</Button>
 
-      <Card>
-        <DataTable columns={columns} data={filtered} />
-      </Card>
+      {loading && (
+        <div className="text-center py-8 text-gray-500">Cargando...</div>
+      )}
+
+      {!loading && filtered.length === 0 && (
+        <div className="text-center py-8 text-gray-400">No se encontraron pedidos.</div>
+      )}
+
+      {!loading && filtered.length > 0 && (
+        <Card>
+          <DataTable columns={columns} data={filtered} />
+        </Card>
+      )}
     </div>
   )
 }

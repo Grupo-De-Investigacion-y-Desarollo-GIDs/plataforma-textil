@@ -44,10 +44,13 @@ const menuItems = [
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState<Stats | null>(null)
   const [logs, setLogs] = useState<LogEntry[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/admin/stats').then(r => r.json()).then(setStats).catch(() => {})
-    fetch('/api/admin/logs?limit=5').then(r => r.json()).then((d: { logs?: LogEntry[] }) => setLogs(d.logs || [])).catch(() => {})
+    Promise.all([
+      fetch('/api/admin/stats').then(r => r.json()).then(setStats).catch(() => {}),
+      fetch('/api/admin/logs?limit=5').then(r => r.json()).then((d: { logs?: LogEntry[] }) => setLogs(d.logs || [])).catch(() => {})
+    ]).finally(() => setLoading(false))
   }, [])
 
   return (
@@ -55,12 +58,18 @@ export default function AdminDashboardPage() {
       <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Panel de Administración</h1>
       <p className="text-gray-500 text-sm mb-6">Gestión completa de la plataforma</p>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <StatCard value={String(stats?.talleres || 0)} label="Talleres registrados" variant="success" />
-        <StatCard value={String(stats?.marcas || 0)} label="Marcas registradas" variant="success" />
-        <StatCard value={String(stats?.colecciones || 0)} label="Colecciones activas" variant="warning" />
-        <StatCard value={String(stats?.certificados || 0)} label="Certificados emitidos" variant="muted" />
-      </div>
+      {loading && (
+        <div className="text-center py-8 text-gray-500">Cargando...</div>
+      )}
+
+      {!loading && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <StatCard value={String(stats?.talleres || 0)} label="Talleres registrados" variant="success" />
+          <StatCard value={String(stats?.marcas || 0)} label="Marcas registradas" variant="success" />
+          <StatCard value={String(stats?.colecciones || 0)} label="Colecciones activas" variant="warning" />
+          <StatCard value={String(stats?.certificados || 0)} label="Certificados emitidos" variant="muted" />
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <Card title="Accesos Rápidos">

@@ -20,9 +20,10 @@ interface MarcaRow {
 export default function AdminMarcasPage() {
   const [marcas, setMarcas] = useState<MarcaRow[]>([])
   const [search, setSearch] = useState('')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/marcas?limit=100').then(r => r.json()).then((d: { marcas?: MarcaRow[] }) => setMarcas(d.marcas || [])).catch(() => {})
+    fetch('/api/marcas?limit=100').then(r => r.json()).then((d: { marcas?: MarcaRow[] }) => setMarcas(d.marcas || [])).catch(() => {}).finally(() => setLoading(false))
   }, [])
 
   const filtered = marcas.filter(m =>
@@ -65,9 +66,19 @@ export default function AdminMarcasPage() {
 
       <SearchInput onChange={setSearch} placeholder="Buscar por nombre, CUIT o email..." className="mb-4" />
 
-      <Card>
-        <DataTable columns={columns} data={filtered} />
-      </Card>
+      {loading && (
+        <div className="text-center py-8 text-gray-500">Cargando...</div>
+      )}
+
+      {!loading && filtered.length === 0 && (
+        <div className="text-center py-8 text-gray-400">No se encontraron marcas.</div>
+      )}
+
+      {!loading && filtered.length > 0 && (
+        <Card>
+          <DataTable columns={columns} data={filtered} />
+        </Card>
+      )}
     </div>
   )
 }

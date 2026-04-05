@@ -34,10 +34,13 @@ export default function AdminUsuariosPage() {
   const [search, setSearch] = useState('')
   const [filtroRol, setFiltroRol] = useState('')
   const [detalleModal, setDetalleModal] = useState<Usuario | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/admin/usuarios').then(r => r.json()).then((d: { usuarios?: Usuario[] }) => setUsuarios(d.usuarios || [])).catch(() => {})
-    fetch('/api/admin/usuarios?incompletos=true').then(r => r.json()).then((d: { usuarios?: RegistroIncompleto[] }) => setRegistrosIncompletos(d.usuarios || [])).catch(() => {})
+    Promise.all([
+      fetch('/api/admin/usuarios').then(r => r.json()).then((d: { usuarios?: Usuario[] }) => setUsuarios(d.usuarios || [])).catch(() => {}),
+      fetch('/api/admin/usuarios?incompletos=true').then(r => r.json()).then((d: { usuarios?: RegistroIncompleto[] }) => setRegistrosIncompletos(d.usuarios || [])).catch(() => {})
+    ]).finally(() => setLoading(false))
   }, [])
 
   const filtered = usuarios.filter(u => {
@@ -120,9 +123,19 @@ export default function AdminUsuariosPage() {
         />
       </div>
 
-      <Card>
-        <DataTable columns={columns} data={filtered} />
-      </Card>
+      {loading && (
+        <div className="text-center py-8 text-gray-500">Cargando...</div>
+      )}
+
+      {!loading && filtered.length === 0 && (
+        <div className="text-center py-8 text-gray-400">No se encontraron usuarios.</div>
+      )}
+
+      {!loading && filtered.length > 0 && (
+        <Card>
+          <DataTable columns={columns} data={filtered} />
+        </Card>
+      )}
 
       <Modal open={!!detalleModal} onClose={() => setDetalleModal(null)} title="Detalle de Usuario" size="lg">
         {detalleModal && (

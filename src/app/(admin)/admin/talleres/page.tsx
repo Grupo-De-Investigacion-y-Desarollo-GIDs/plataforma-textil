@@ -25,9 +25,10 @@ export default function AdminTalleresPage() {
   const [talleres, setTalleres] = useState<TallerRow[]>([])
   const [search, setSearch] = useState('')
   const [filtroNivel, setFiltroNivel] = useState('')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/talleres?limit=100').then(r => r.json()).then((d: { talleres?: TallerRow[] }) => setTalleres(d.talleres || [])).catch(() => {})
+    fetch('/api/talleres?limit=100').then(r => r.json()).then((d: { talleres?: TallerRow[] }) => setTalleres(d.talleres || [])).catch(() => {}).finally(() => setLoading(false))
   }, [])
 
   const filtered = talleres.filter(t => {
@@ -94,9 +95,19 @@ export default function AdminTalleresPage() {
         <Button size="sm" variant="secondary">Exportar Excel</Button>
       </div>
 
-      <Card>
-        <DataTable columns={columns} data={filtered} />
-      </Card>
+      {loading && (
+        <div className="text-center py-8 text-gray-500">Cargando...</div>
+      )}
+
+      {!loading && filtered.length === 0 && (
+        <div className="text-center py-8 text-gray-400">No se encontraron talleres.</div>
+      )}
+
+      {!loading && filtered.length > 0 && (
+        <Card>
+          <DataTable columns={columns} data={filtered} />
+        </Card>
+      )}
     </div>
   )
 }
