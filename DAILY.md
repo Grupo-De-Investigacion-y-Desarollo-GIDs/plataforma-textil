@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **05:41** `7577bce` — specs: agregar semana4-testing-checklist
+  - `.claude/specs/semana4-testing-checklist.md`
+
 - **05:38** `b3cda5b` — specs: agregar semana3-stubs-perfil-publico
   - `.claude/specs/semana3-stubs-perfil-publico.md`
 
