@@ -3,6 +3,11 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **08:00** `cd32865` — feat: dashboard estado UI — 3 secciones con metricas del sector + tests E2E
+  - `e2e/estado.spec.ts`
+  - `e2e/helpers/auth.ts`
+  - `src/app/(estado)/estado/page.tsx`
+
 - **07:54** `356caef` — test: agregar E2E marca ve boton contactar en perfil taller
   - `e2e/marca.spec.ts`
 
