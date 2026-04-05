@@ -10,7 +10,9 @@ export async function getFeatureFlag(clave: string): Promise<boolean> {
   const config = await prisma.configuracionSistema.findUnique({
     where: { clave },
   })
-  return config?.valor === 'true'
+  // Si el flag no existe en DB, la funcionalidad queda habilitada (opt-out)
+  if (!config) return true
+  return config.valor === 'true'
 }
 
 export async function getFeatureFlags(grupo: string): Promise<Record<string, boolean>> {
