@@ -3,6 +3,12 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **04:20** `4178e38` — feat: API cotizaciones
+  - `src/app/api/cotizaciones/[id]/route.ts`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/compartido/lib/email.ts`
+  - `src/compartido/lib/notificaciones.ts`
+
 - **04:16** `52c99b3` — feat: queries dashboard estado
   - `prisma/migrations/20260405071500_agregar_indices_dashboard_estado/migration.sql`
   - `prisma/schema.prisma`
