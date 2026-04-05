@@ -69,42 +69,56 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
     const body = await req.json()
 
-    // Si se intenta cambiar el estado, solo se permite → CANCELADO
+    // Transiciones de estado
     if (body.estado) {
       const pedidoActual = await prisma.pedido.findUnique({
         where: { id },
         select: { estado: true },
       })
+      if (!pedidoActual) {
+        return NextResponse.json({ error: 'Pedido no encontrado' }, { status: 404 })
+      }
 
-      if (body.estado !== 'CANCELADO') {
+      // Transiciones validas
+      const transiciones: Record<string, string[]> = {
+        BORRADOR: ['PUBLICADO', 'CANCELADO'],
+        PUBLICADO: ['CANCELADO'],
+        EN_EJECUCION: ['ESPERANDO_ENTREGA', 'CANCELADO'],
+        ESPERANDO_ENTREGA: ['COMPLETADO', 'CANCELADO'],
+        COMPLETADO: [],
+        CANCELADO: [],
+      }
+
+      const permitidas = transiciones[pedidoActual.estado] ?? []
+      if (!permitidas.includes(body.estado)) {
         return NextResponse.json(
-          { error: 'Solo se permite cancelar manualmente. El resto de estados se calcula automáticamente.' },
+          { error: `No se puede pasar de ${pedidoActual.estado} a ${body.estado}` },
           { status: 400 }
         )
       }
 
-      if (pedidoActual?.estado === 'COMPLETADO' || pedidoActual?.estado === 'CANCELADO') {
-        return NextResponse.json(
-          { error: `No se puede cancelar un pedido en estado ${pedidoActual.estado}` },
-          { status: 400 }
-        )
+      // Si se cancela, cascadear a ordenes no completadas
+      if (body.estado === 'CANCELADO') {
+        const [pedido] = await prisma.$transaction([
+          prisma.pedido.update({
+            where: { id },
+            data: { estado: 'CANCELADO' },
+          }),
+          prisma.ordenManufactura.updateMany({
+            where: {
+              pedidoId: id,
+              estado: { notIn: ['COMPLETADO', 'CANCELADO'] },
+            },
+            data: { estado: 'CANCELADO' },
+          }),
+        ])
+        return NextResponse.json(pedido)
       }
 
-      // Cancelar pedido + cascadear a ordenes no completadas
-      const [pedido] = await prisma.$transaction([
-        prisma.pedido.update({
-          where: { id },
-          data: { estado: 'CANCELADO' },
-        }),
-        prisma.ordenManufactura.updateMany({
-          where: {
-            pedidoId: id,
-            estado: { notIn: ['COMPLETADO', 'CANCELADO'] },
-          },
-          data: { estado: 'CANCELADO' },
-        }),
-      ])
-
+      const pedido = await prisma.pedido.update({
+        where: { id },
+        data: { estado: body.estado },
+      })
       return NextResponse.json(pedido)
     }
 

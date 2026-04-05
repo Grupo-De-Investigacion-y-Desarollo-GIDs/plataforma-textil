@@ -10,16 +10,20 @@ import { ArrowLeft, Package, Clock, DollarSign, TrendingUp, CheckCircle } from '
 import { AsignarTaller } from '@/marca/componentes/asignar-taller'
 import { CancelarPedido } from '@/marca/componentes/cancelar-pedido'
 
-const statusVariant: Record<string, 'default' | 'success' | 'warning' | 'error'> = {
-  BORRADOR: 'default',
-  EN_EJECUCION: 'warning',
+const statusVariant: Record<string, 'default' | 'success' | 'warning' | 'error' | 'muted'> = {
+  BORRADOR: 'muted',
+  PUBLICADO: 'warning',
+  EN_EJECUCION: 'default',
+  ESPERANDO_ENTREGA: 'warning',
   COMPLETADO: 'success',
   CANCELADO: 'error',
 }
 
 const statusLabel: Record<string, string> = {
   BORRADOR: 'Borrador',
-  EN_EJECUCION: 'En ejecución',
+  PUBLICADO: 'Publicado',
+  EN_EJECUCION: 'En ejecucion',
+  ESPERANDO_ENTREGA: 'Esperando entrega',
   COMPLETADO: 'Completado',
   CANCELADO: 'Cancelado',
 }
@@ -41,7 +45,9 @@ const ordenStatusVariant: Record<string, 'default' | 'success' | 'warning'> = {
 // Flujo de estados del pedido (3 pasos)
 const FLOW_STEPS = [
   { key: 'BORRADOR', label: 'Borrador' },
-  { key: 'EN_EJECUCION', label: 'En ejecución' },
+  { key: 'PUBLICADO', label: 'Publicado' },
+  { key: 'EN_EJECUCION', label: 'En ejecucion' },
+  { key: 'ESPERANDO_ENTREGA', label: 'Esperando entrega' },
   { key: 'COMPLETADO', label: 'Completado' },
 ]
 

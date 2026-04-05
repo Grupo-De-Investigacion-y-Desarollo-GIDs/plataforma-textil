@@ -21,11 +21,13 @@ interface Pedido {
   _count: { ordenes: number }
 }
 
-const estadoVariant: Record<string, 'success' | 'warning' | 'default'> = {
+const estadoVariant: Record<string, 'success' | 'warning' | 'default' | 'muted' | 'error'> = {
+  BORRADOR: 'muted',
+  PUBLICADO: 'warning',
+  EN_EJECUCION: 'default',
+  ESPERANDO_ENTREGA: 'warning',
   COMPLETADO: 'success',
-  EN_EJECUCION: 'warning',
-  BORRADOR: 'default',
-  CANCELADO: 'warning',
+  CANCELADO: 'error',
 }
 
 export default function AdminPedidosPage() {
@@ -71,6 +73,7 @@ export default function AdminPedidosPage() {
         <StatCard value={String(pedidos.length)} label="Total" variant="success" />
         <StatCard value={String(byEstado('COMPLETADO'))} label="Completados" variant="success" />
         <StatCard value={String(byEstado('EN_EJECUCION'))} label="En ejecución" variant="warning" />
+        <StatCard value={String(byEstado('PUBLICADO'))} label="Publicados" variant="warning" />
         <StatCard value={String(byEstado('BORRADOR'))} label="Borradores" variant="muted" />
       </div>
 
@@ -82,7 +85,9 @@ export default function AdminPedidosPage() {
           options={[
             { value: '', label: 'Todos los estados' },
             { value: 'BORRADOR', label: 'Borrador' },
-            { value: 'EN_EJECUCION', label: 'En ejecución' },
+            { value: 'PUBLICADO', label: 'Publicado' },
+            { value: 'EN_EJECUCION', label: 'En ejecucion' },
+            { value: 'ESPERANDO_ENTREGA', label: 'Esperando entrega' },
             { value: 'COMPLETADO', label: 'Completado' },
             { value: 'CANCELADO', label: 'Cancelado' },
           ]}

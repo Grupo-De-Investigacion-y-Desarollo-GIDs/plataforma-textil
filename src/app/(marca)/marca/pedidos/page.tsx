@@ -7,21 +7,25 @@ import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import Link from 'next/link'
 
-const statusVariant: Record<string, 'default' | 'success' | 'warning'> = {
-  BORRADOR: 'default',
-  EN_EJECUCION: 'warning',
+const statusVariant: Record<string, 'default' | 'success' | 'warning' | 'muted' | 'error'> = {
+  BORRADOR: 'muted',
+  PUBLICADO: 'warning',
+  EN_EJECUCION: 'default',
+  ESPERANDO_ENTREGA: 'warning',
   COMPLETADO: 'success',
-  CANCELADO: 'warning',
+  CANCELADO: 'error',
 }
 
 const statusLabel: Record<string, string> = {
   BORRADOR: 'Borrador',
-  EN_EJECUCION: 'En ejecución',
+  PUBLICADO: 'Publicado',
+  EN_EJECUCION: 'En ejecucion',
+  ESPERANDO_ENTREGA: 'Esperando entrega',
   COMPLETADO: 'Completado',
   CANCELADO: 'Cancelado',
 }
 
-const allowedEstados = ['BORRADOR', 'EN_EJECUCION', 'COMPLETADO', 'CANCELADO'] as const
+const allowedEstados = ['BORRADOR', 'PUBLICADO', 'EN_EJECUCION', 'ESPERANDO_ENTREGA', 'COMPLETADO', 'CANCELADO'] as const
 
 type SearchParams = {
   q?: string
@@ -73,6 +77,7 @@ export default async function MarcaPedidosPage({
   })
 
   const total = pedidos.length
+  const publicados = pedidos.filter(p => p.estado === 'PUBLICADO').length
   const enEjecucion = pedidos.filter(p => p.estado === 'EN_EJECUCION').length
   const completados = pedidos.filter(p => p.estado === 'COMPLETADO').length
   const cancelados = pedidos.filter(p => p.estado === 'CANCELADO').length
@@ -143,7 +148,9 @@ export default async function MarcaPedidosPage({
             >
               <option value="">Todos</option>
               <option value="BORRADOR">Borrador</option>
-              <option value="EN_EJECUCION">En ejecución</option>
+              <option value="PUBLICADO">Publicado</option>
+              <option value="EN_EJECUCION">En ejecucion</option>
+              <option value="ESPERANDO_ENTREGA">Esperando entrega</option>
               <option value="COMPLETADO">Completado</option>
               <option value="CANCELADO">Cancelado</option>
             </select>

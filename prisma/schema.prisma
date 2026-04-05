@@ -28,6 +28,7 @@ enum NivelTaller {
 
 enum EstadoPedido {
   BORRADOR
+  PUBLICADO
   EN_EJECUCION
   ESPERANDO_ENTREGA
   COMPLETADO
@@ -215,6 +216,7 @@ model Taller {
   certificados          Certificado[]
   intentosEvaluacion    IntentoEvaluacion[]
   notasInternas         NotaInterna[]
+  cotizaciones          Cotizacion[]
 
   @@map("talleres")
 }
@@ -357,14 +359,44 @@ model Pedido {
   estado        EstadoPedido @default(BORRADOR)
   progresoTotal Float        @default(0)
   montoTotal    Float        @default(0)
+  descripcion   String?      @db.Text
+  presupuesto   Float?
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 
   marca         Marca        @relation(fields: [marcaId], references: [id])
   tipoPrendaRel TipoPrenda?  @relation(fields: [tipoPrendaId], references: [id])
   ordenes       OrdenManufactura[]
+  cotizaciones  Cotizacion[]
 
   @@map("pedidos")
+}
+
+enum EstadoCotizacion {
+  ENVIADA
+  ACEPTADA
+  RECHAZADA
+  VENCIDA
+}
+
+model Cotizacion {
+  id          String            @id @default(cuid())
+  pedidoId    String
+  tallerId    String
+  precio      Float
+  plazoDias   Int
+  proceso     String
+  mensaje     String?           @db.Text
+  estado      EstadoCotizacion  @default(ENVIADA)
+  venceEn     DateTime
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  pedido      Pedido            @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+  taller      Taller            @relation(fields: [tallerId], references: [id], onDelete: Cascade)
+
+  @@unique([pedidoId, tallerId])
+  @@map("cotizaciones")
 }
 
 model OrdenManufactura {

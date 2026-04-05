@@ -66,7 +66,7 @@ export default async function AdminDetalleMarcaPage({ params }: {
   // Stats
   const totalPedidos = marca.pedidos.length
   const pedidosActivos = marca.pedidos.filter(p =>
-    ['BORRADOR', 'PUBLICADO', 'EN_PROCESO'].includes(p.estado)
+    ['BORRADOR', 'PUBLICADO', 'EN_EJECUCION', 'ESPERANDO_ENTREGA'].includes(p.estado)
   ).length
   const montoTotal = marca.pedidos.reduce((sum, p) => sum + (p.montoTotal ?? 0), 0)
 
@@ -76,16 +76,18 @@ export default async function AdminDetalleMarcaPage({ params }: {
   const estadoLabel: Record<string, string> = {
     BORRADOR: 'Borrador',
     PUBLICADO: 'Publicado',
-    EN_PROCESO: 'En proceso',
+    EN_EJECUCION: 'En ejecucion',
+    ESPERANDO_ENTREGA: 'Esperando entrega',
     COMPLETADO: 'Completado',
     CANCELADO: 'Cancelado',
   }
-  const estadoVariant: Record<string, 'success' | 'warning' | 'muted'> = {
+  const estadoVariant: Record<string, 'success' | 'warning' | 'muted' | 'default' | 'error'> = {
     BORRADOR: 'muted',
     PUBLICADO: 'warning',
-    EN_PROCESO: 'warning',
+    EN_EJECUCION: 'default',
+    ESPERANDO_ENTREGA: 'warning',
     COMPLETADO: 'success',
-    CANCELADO: 'muted',
+    CANCELADO: 'error',
   }
 
   return (
