@@ -55,14 +55,24 @@ export async function POST(req: NextRequest) {
     const data = parsed.data
 
     // Verificar CUIT con AfipSDK server-side
+    // Si AFIP no responde, permite continuar (verificadoAfip queda false)
+    let cuitVerificado = false
     const cuitToVerify = data.tallerData?.cuit || data.marcaData?.cuit
     if (cuitToVerify) {
-      const afipResult = await verificarCuit(cuitToVerify)
-      if (!afipResult.valid) {
-        return NextResponse.json(
-          { error: afipResult.error || 'CUIT invalido o inactivo en ARCA' },
-          { status: 400 }
-        )
+      try {
+        const afipResult = await verificarCuit(cuitToVerify)
+        if (afipResult.valid) {
+          cuitVerificado = true
+        } else if (afipResult.error && !afipResult.error.includes('no responde') && !afipResult.error.includes('timeout')) {
+          // Solo rechazar si AFIP confirmo que el CUIT es invalido (no por timeout)
+          return NextResponse.json(
+            { error: afipResult.error || 'CUIT invalido o inactivo en ARCA' },
+            { status: 400 }
+          )
+        }
+      } catch {
+        // AFIP no disponible — permitir registro sin verificacion
+        console.error('AFIP no disponible durante registro, permitiendo continuar')
       }
     }
 
@@ -88,7 +98,7 @@ export async function POST(req: NextRequest) {
                   cuit: data.tallerData.cuit,
                   ubicacion: data.tallerData.ubicacion || null,
                   capacidadMensual: data.tallerData.capacidadMensual || 0,
-                  verificadoAfip: true,
+                  verificadoAfip: cuitVerificado,
                 },
               },
             }
@@ -101,7 +111,7 @@ export async function POST(req: NextRequest) {
                   cuit: data.marcaData.cuit,
                   ubicacion: data.marcaData.ubicacion || null,
                   tipo: data.marcaData.tipo || null,
-                  verificadoAfip: true,
+                  verificadoAfip: cuitVerificado,
                 },
               },
             }
