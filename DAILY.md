@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **07:54** `356caef` — test: agregar E2E marca ve boton contactar en perfil taller
+  - `e2e/marca.spec.ts`
+
 - **07:52** `a92d220` — feat: whatsapp con contexto + perfil minimo marca antes de contactar
   - `src/app/(marca)/marca/directorio/[id]/page.tsx`
   - `src/marca/componentes/contactar-taller.tsx`
