@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **06:19** `ff1bc04` — fix: feature flag retorna true si no existe en DB (opt-out)
+  - `src/compartido/lib/features.ts`
+
 - **06:13** `b1a7075` — docs: actualizar ORDEN_IMPLEMENTACION con estado de semana 3
   - `.claude/specs/ORDEN_IMPLEMENTACION.md`
 
