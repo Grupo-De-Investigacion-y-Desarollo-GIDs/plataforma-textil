@@ -3,6 +3,11 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **07:49** `ffa6269` — fix: resolver conflicto de slugs [codigo]/[id] en certificados — desbloquea NextAuth
+  - `e2e/taller.spec.ts`
+  - `src/app/api/certificados/[codigo]/route.ts`
+  - `src/app/api/certificados/[id]/route.ts`
+
 - **07:33** `3e874bc` — feat: stubs admin email + perfil publico con prendas, certificados y descripcion
   - `src/app/(admin)/admin/integraciones/email/page.tsx`
   - `src/app/(public)/perfil/[id]/page.tsx`
