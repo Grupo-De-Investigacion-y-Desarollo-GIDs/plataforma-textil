@@ -3,6 +3,9 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **01:49** `b105984` — specs: actualizar semana2-api-cotizaciones con ajustes de factibilidad
+  - `.claude/specs/semana2-api-cotizaciones.md`
+
 - **01:39** `845c497` — specs: actualizar semana2-queries-dashboard-estado con ajustes de factibilidad
   - `.claude/specs/semana2-queries-dashboard-estado.md`
 
