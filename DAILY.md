@@ -3,6 +3,10 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **12:52** `58fa295` — feat: agregar usuario CONTENIDO al seed y acceso rapido
+  - `prisma/seed.ts`
+  - `src/app/(auth)/acceso-rapido/page.tsx`
+
 - **12:32** `2eb098d` — feat: seed completo — pedidos publicados, cotizaciones, auditorias, denuncias, notificaciones, flags E2 activos
   - `prisma/seed.ts`
 
