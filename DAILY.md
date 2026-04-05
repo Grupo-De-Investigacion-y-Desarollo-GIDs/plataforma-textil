@@ -3,6 +3,15 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **06:12** `ca44365` — feat: feature flags — helper, seed, tab admin y puntos de control
+  - `prisma/seed.ts`
+  - `src/app/(admin)/admin/configuracion/page.tsx`
+  - `src/app/(public)/directorio/page.tsx`
+  - `src/app/(taller)/taller/aprender/page.tsx`
+  - `src/app/api/denuncias/route.ts`
+  - `src/compartido/lib/features.ts`
+  - `src/compartido/lib/notificaciones.ts`
+
 - **05:52** `78a68d9` — specs: agregar semana1-feature-flags
   - `.claude/specs/semana1-feature-flags.md`
 
