@@ -3,6 +3,10 @@
 ## 2026-04-05
 
 ### Gerardo Breard
+- **01:13** `f9bb004` — specs: agregar bloqueos de dependencia en specs de Sergio semana 1
+  - `.claude/specs/semana1-infra-contenido.md`
+  - `.claude/specs/semana1-registro-3-pasos.md`
+
 - **01:04** `4018f34` — specs: actualizar semana1-oauth-magiclink con fixes criticos de factibilidad
   - `.claude/specs/semana1-oauth-magiclink.md`
 
