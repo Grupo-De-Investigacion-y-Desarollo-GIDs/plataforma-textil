@@ -3,6 +3,9 @@
 ## 2026-04-07
 
 ### Gerardo Breard
+- **18:36** `cb8851b` — docs: actualizar epica contenido visual — wireframes, eliminar presupuesto de pedido
+  - `.claude/specs/v2-epica-contenido-visual.md`
+
 - **18:15** `483dcca` — docs: validacion v2 — 24 hallazgos, propuesta soluciones, flujo comercial unificado, contenido visual
   - `.claude/specs/v2-decision-flujo-comercial-unificado.md`
   - `.claude/specs/v2-epica-contenido-visual.md`
