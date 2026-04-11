@@ -3,6 +3,9 @@
 ## 2026-04-11
 
 ### Gerardo Breard
+- **18:32** `efe59c4` — specs: agregar v2-epica-storage-documentos
+  - `.claude/specs/v2-epica-storage-documentos.md`
+
 - **17:23** `d21386b` — specs: agregar v2-log-niveles-bidireccional
   - `.claude/specs/v2-log-niveles-bidireccional.md`
 
