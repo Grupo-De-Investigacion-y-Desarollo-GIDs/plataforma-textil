@@ -3,6 +3,9 @@
 ## 2026-04-11
 
 ### Gerardo Breard
+- **16:12** `90cea52` — specs: agregar v2-seguridad-tests-e2e
+  - `.claude/specs/v2-seguridad-tests-e2e.md`
+
 - **15:41** `5bc0950` — specs: agregar v2-config-piloto-pre-deploy
   - `.claude/specs/v2-config-piloto-pre-deploy.md`
 
