@@ -3,6 +3,9 @@
 ## 2026-04-11
 
 ### Gerardo Breard
+- **17:23** `d21386b` — specs: agregar v2-log-niveles-bidireccional
+  - `.claude/specs/v2-log-niveles-bidireccional.md`
+
 - **16:56** `cdcd130` — specs: agregar v2-epica-flujo-comercial-unificado
   - `.claude/specs/v2-epica-flujo-comercial-unificado.md`
 
