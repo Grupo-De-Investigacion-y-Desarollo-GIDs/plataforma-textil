@@ -3,6 +3,9 @@
 ## 2026-04-11
 
 ### Gerardo Breard
+- **12:55** `c33f0c4` — specs: agregar v2-epica-notificaciones
+  - `.claude/specs/v2-epica-notificaciones.md`
+
 - **11:07** `6a1b695` — specs: agregar v2-epica-academia
   - `.claude/specs/v2-epica-academia.md`
 
