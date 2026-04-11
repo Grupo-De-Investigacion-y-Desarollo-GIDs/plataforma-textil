@@ -3,6 +3,9 @@
 ## 2026-04-11
 
 ### Gerardo Breard
+- **16:56** `cdcd130` — specs: agregar v2-epica-flujo-comercial-unificado
+  - `.claude/specs/v2-epica-flujo-comercial-unificado.md`
+
 - **16:12** `90cea52` — specs: agregar v2-seguridad-tests-e2e
   - `.claude/specs/v2-seguridad-tests-e2e.md`
 
