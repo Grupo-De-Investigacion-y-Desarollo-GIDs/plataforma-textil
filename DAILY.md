@@ -3,6 +3,9 @@
 ## 2026-04-11
 
 ### Gerardo Breard
+- **15:41** `5bc0950` — specs: agregar v2-config-piloto-pre-deploy
+  - `.claude/specs/v2-config-piloto-pre-deploy.md`
+
 - **12:55** `c33f0c4` — specs: agregar v2-epica-notificaciones
   - `.claude/specs/v2-epica-notificaciones.md`
 
