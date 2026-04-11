@@ -3,6 +3,9 @@
 ## 2026-04-11
 
 ### Gerardo Breard
+- **11:07** `6a1b695` — specs: agregar v2-epica-academia
+  - `.claude/specs/v2-epica-academia.md`
+
 - **10:36** `455b73c` — specs: actualizar v2-epica-perfil-productivo con ajustes de factibilidad
   - `.claude/specs/v2-epica-perfil-productivo.md`
 
