@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-04-12
+
+### Gerardo Breard
+- **08:59** `8c8a36d` — specs: agregar v2-epica-perfiles-contacto
+  - `.claude/specs/v2-epica-perfiles-contacto.md`
+
+
 ## 2026-04-11
 
 ### Gerardo Breard
