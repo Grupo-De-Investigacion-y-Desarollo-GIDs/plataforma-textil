@@ -3,6 +3,11 @@
 ## 2026-04-13
 
 ### Gerardo Breard
+- **14:07** `be81aed` — feat: feedback widget funciona sin autenticación para auditorías QA
+  - `src/app/api/feedback/route.ts`
+  - `src/compartido/componentes/feedback-widget-wrapper.tsx`
+  - `src/compartido/componentes/feedback-widget.tsx`
+
 - **13:41** `4ce51cc` — docs: actualizar ORDEN_IMPLEMENTACION para modalidad v2 Gerardo-solo
   - `.claude/specs/ORDEN_IMPLEMENTACION.md`
 
