@@ -3,6 +3,19 @@
 ## 2026-04-13
 
 ### Gerardo Breard
+- **16:37** `fed7a93` — docs: agregar QA v2-epica-storage-documentos
+  - `.claude/auditorias/QA_v2-epica-storage-documentos.md`
+  - `prisma/migrations/20260413160000_storage_documentos_v2/migration.sql`
+  - `prisma/schema.prisma`
+  - `prisma/seed.ts`
+  - `src/__tests__/nivel.test.ts`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+  - `src/app/api/auth/registro/route.ts`
+  - `src/app/api/tipos-documento/route.ts`
+  - `src/app/api/validaciones/route.ts`
+  - `src/compartido/lib/nivel.ts`
+
 - **15:44** `6ccc569` — docs: agregar QA v2-config-piloto-pre-deploy con instructivo de uso
   - `.claude/auditorias/QA_v2-config-piloto-pre-deploy.md`
 
