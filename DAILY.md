@@ -3,6 +3,9 @@
 ## 2026-04-13
 
 ### Gerardo Breard
+- **13:27** `acde86d` — specs: agregar v2-impl-contenido-visual
+  - `.claude/specs/v2-impl-contenido-visual.md`
+
 - **12:51** `13c0ad8` — specs: agregar v2-rag-corpus-real
   - `.claude/specs/v2-rag-corpus-real.md`
 
