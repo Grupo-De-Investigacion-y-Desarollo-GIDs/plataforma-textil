@@ -1,119 +1,102 @@
-# Orden de implementacion — Semanas 1-4
+# Orden de Implementación — v2
 
-Fecha: 2026-04-05
-Referencia: cada spec vive en `.claude/specs/semanaX-nombre.md`
-Regla: Sergio no arranca un spec hasta que sus dependencias esten mergeadas en develop.
+**Modalidad:** Implementación completa por Gerardo (backend + frontend + tests). Sergio realiza auditoría/validación humana posterior a cada implementación.
 
----
-
-## Grafo de dependencias
+**Comando estándar por spec:**
 
 ```
-                    ┌─────────────────────┐
-                    │ infra-contenido (G)  │ ← sin deps
-                    └──────┬──────────────┘
-                           │ desbloquea
-              ┌────────────┼────────────────┐
-              ▼            ▼                ▼
-     registro-3-pasos  layout-contenido  (middleware CONTENIDO)
-         (S)              (S)
-              │
-              ▼
-     oauth-magiclink (G)
-
-    ┌──────────────────┐
-    │ afipsdk-cuit (G) │ ← sin deps
-    └──────┬───────────┘
-           │ desbloquea
-           ▼
-     registro-3-pasos (S)
-
-    ┌──────────────────┐
-    │ schema-e2 (G)    │ ← sin deps
-    └──────┬───────────┘
-           │ desbloquea
-           ├─► api-cotizaciones (G)
-           │        │ desbloquea
-           │        ├─► publicacion-pedidos-ui (S)
-           │        │        │ desbloquea
-           │        │        └─► vistas-cotizaciones (S)
-           │        └─► notificaciones-matching (G)
-           └─► publicacion-pedidos-ui (S)
-
-    pdf-qr-certificados (G) ─► acuerdos-comerciales (G)
-
-    queries-dashboard-estado (G) ─► exportes-estado (G)
-                                 ─► dashboard-estado-ui (S)
-
-    rag-decision-pipeline (G) ─► chat-rag-ui (S)
-
-    feature-flags (G) ← sin deps
-
-    Sin dependencias (paralelos):
-    ├── landing-dos-entradas (S)
-    ├── gamificacion (S)
-    ├── directorio-publico (S)
-    ├── denuncia-publica (S)
-    ├── whatsapp-perfil-marca (S)
-    ├── stubs-perfil-publico (S)
-    └── auditoria-detalle (S)
+Lee [spec].md y ejecutá el spec completo
 ```
 
-G = Gerardo, S = Sergio
+---
+
+## Prerrequisito único antes de arrancar
+
+Responder estas dos preguntas:
+
+1. **¿Hay datos reales en producción que no se pueden perder?** (afecta si se puede hacer `migrate reset`)
+2. **¿Hay alguien de OIT/UNTREF asignado para redactar el corpus RAG?**
 
 ---
 
-## Estado de implementacion — Gerardo (11 specs, todos mergeados)
+## Orden de implementación
 
-| # | Spec | Deps | Desbloquea | Estado |
-|---|------|------|------------|--------|
-| 1 | `semana1-infra-contenido` (parte G) | ninguna | registro-3-pasos (S), layout-contenido (S) | mergeado |
-| 2 | `semana1-afipsdk-cuit` | ninguna | registro-3-pasos (S) | mergeado |
-| 3 | `semana1-feature-flags` | ninguna | — | mergeado |
-| 4 | `semana2-schema-e2` | ninguna | api-cotizaciones (G), publicacion-pedidos-ui (S) | mergeado |
-| 5 | `semana2-queries-dashboard-estado` | ninguna | dashboard-estado-ui (S), exportes-estado (G) | mergeado |
-| 6 | `semana2-api-cotizaciones` | schema-e2 | publicacion-pedidos-ui (S), notificaciones-matching (G) | mergeado |
-| 7 | `semana1-oauth-magiclink` | — | — | mergeado |
-| 8 | `semana2-rag-decision-pipeline` | ninguna | chat-rag-ui (S) | mergeado |
-| 9 | `semana3-pdf-qr-certificados` | ninguna | acuerdos-comerciales (G) | mergeado |
-| 10 | `semana3-notificaciones-matching` | schema-e2 + api-cotizaciones | — | mergeado |
-| 11 | `semana3-acuerdos-comerciales` | pdf-qr-certificados | — | mergeado |
-| 12 | `semana3-exportes-estado` | queries-dashboard-estado | — | mergeado |
+### Bloque 1 — Operativo (ejecutar primero, sin esto nada funciona en prod)
 
----
+| # | Spec | Commit | Notas |
+|---|------|--------|-------|
+| 1 | `v2-config-piloto-pre-deploy` | `5bc0950` | Buckets, keys, feature flags — checklist manual en Supabase + Vercel |
 
-## Estado de implementacion — Sergio (13 specs, todos pendientes)
+### Bloque 2 — Schema y datos (ejecutar antes de cualquier UI)
 
-| # | Spec | Deps (esperar merge de Gerardo) | Estado |
-|---|------|---------------------------------|--------|
-| 1 | `semana1-landing-dos-entradas` | ninguna — puede arrancar dia 1 | pendiente |
-| 2 | `semana1-registro-3-pasos` | infra-contenido (G) + afipsdk-cuit (G) | pendiente |
-| 3 | `semana2-layout-contenido` | infra-contenido (G) | pendiente |
-| 4 | `semana2-gamificacion` | ninguna (D4 espera queries-dashboard) | pendiente |
-| 5 | `semana2-dashboard-estado-ui` | queries-dashboard-estado (G) | pendiente |
-| 6 | `semana2-publicacion-pedidos-ui` | schema-e2 (G) + api-cotizaciones (G) | pendiente |
-| 7 | `semana3-auditoria-detalle` | ninguna | pendiente |
-| 8 | `semana3-chat-rag-ui` | rag-decision-pipeline (G) | pendiente |
-| 9 | `semana3-denuncia-publica` | ninguna | pendiente |
-| 10 | `semana3-directorio-publico` | ninguna | pendiente |
-| 11 | `semana3-stubs-perfil-publico` | ninguna | pendiente |
-| 12 | `semana3-vistas-cotizaciones` | api-cotizaciones (G) + publicacion-pedidos-ui (S) | pendiente |
-| 13 | `semana3-whatsapp-perfil-marca` | ninguna | pendiente |
+| # | Spec | Commit | Notas |
+|---|------|--------|-------|
+| 2 | `v2-epica-storage-documentos` | `efe59c4` | ⚠️ Requiere `migrate reset --force` — punto de no retorno |
+| 3 | `v2-epica-flujo-comercial-unificado` | `cdcd130` | Depende de Bloque 2 mergeado |
 
-**Todas las dependencias de Gerardo estan mergeadas.** Sergio puede arrancar cualquier spec excepto:
-- `vistas-cotizaciones` (#12) que necesita que el propio Sergio termine `publicacion-pedidos-ui` (#6) primero.
+### Bloque 3 — Backend independiente (paralelo o en cualquier orden)
 
----
+| # | Spec | Commit | Notas |
+|---|------|--------|-------|
+| 4 | `v2-log-niveles-bidireccional` | `d21386b` | 0 migraciones, independiente |
+| 5 | `v2-rag-corpus-real` | `13c0ad8` | Deshabilitar flag + limpiar corpus + conectar config |
+| 6 | `v2-seguridad-tests-e2e` | `90cea52` | Fix falsos positivos — correr contra prod |
 
-## Semana 4 — Testing
+### Bloque 4 — Features principales (dependen de Bloques 2 y 3)
 
-Ver `.claude/specs/semana4-testing-checklist.md`. No se agrega funcionalidad nueva.
+| # | Spec | Commit | Notas |
+|---|------|--------|-------|
+| 7 | `v2-epica-perfil-productivo` | `455b73c` | Depende de storage-documentos (`nivel.ts`) |
+| 8 | `v2-epica-academia` | `6a1b695` | Depende de storage-documentos (tipos canónicos) |
+| 9 | `v2-epica-notificaciones` | `c33f0c4` | Independiente |
+| 10 | `v2-notificaciones-accionables` | `592de2d` | Depende de `v2-epica-notificaciones` |
+| 11 | `v2-epica-perfiles-contacto` | `8c8a36d` | Independiente |
+
+### Bloque 5 — Contenido visual (depende de Bloque 2 y flujo comercial)
+
+| # | Spec | Commit | Notas |
+|---|------|--------|-------|
+| 12 | `v2-impl-contenido-visual` | `acde86d` | Depende de flujo-comercial-unificado + storage multi-bucket |
 
 ---
 
-## Como usar este archivo
+## Validación humana (Sergio) — por bloque
 
-1. **Gerardo** actualiza la columna "Estado" de su tabla al terminar cada spec (pendiente → mergeado)
-2. **Sergio** consulta la tabla de Sergio para saber que puede arrancar
-3. Si un spec se retrasa o cambia de prioridad, actualizar este archivo
-4. Los specs individuales tienen su propio "ANTES DE ARRANCAR" con checks concretos — este archivo es el mapa general
+Sergio audita después de cada bloque completo, no spec por spec:
+
+| Bloque | Qué valida |
+|--------|-----------|
+| Bloque 2 completo | Re-seed correcto, 7 validaciones por taller, labels legibles, flujo de invitación |
+| Bloque 3 completo | Tests E2E en verde, logs de nivel correctos, RAG deshabilitado |
+| Bloque 4 completo | Wizard, academia, notificaciones, perfiles |
+| Bloque 5 completo | Portfolio, imágenes en pedidos, cotizaciones con fotos |
+
+---
+
+## Corpus RAG — trabajo editorial (OIT/UNTREF)
+
+Independiente del desarrollo. Se puede hacer en paralelo.
+
+**Acceso:** `/admin/integraciones/llm` → sección "Corpus RAG"
+
+**Categorías a cubrir:**
+
+- **tramites** — 7 documentos (uno por tipo de documento de formalización)
+- **plataforma** — 5 documentos (niveles, cómo funciona, directorio, pedidos, cotizaciones)
+- **capacitacion** — según contenido disponible
+- **formalizacion** — beneficios, auditorías
+
+**Formato de cada documento:** ver guía en `v2-rag-corpus-real.md` §6
+
+Una vez cargados y validados: activar flag `asistente_rag` desde `/admin/configuracion`
+
+---
+
+## Post-piloto (no implementar ahora)
+
+- **S1-04** — Vencimiento de documentos
+- **S3-04** — KPI de reputación (fill rate, on-time rate)
+- **S-VIS-10** — Fotos de instalaciones
+- Badge dinámico de notificaciones en el sidebar
+- Edición básica del perfil de marca
+- Signed URLs para bucket `documentos` (reemplazar URLs públicas)
