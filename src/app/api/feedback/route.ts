@@ -4,24 +4,30 @@ import { logActividad } from '@/compartido/lib/log'
 
 export async function POST(request: Request) {
   const session = await auth()
-  if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
   const body = await request.json()
-  const { tipo, mensaje, pagina, entidad, entidadId } = body
+  const { tipo, mensaje, pagina, entidad, entidadId, auditorNombre, auditorRol } = body
 
   if (!tipo || !mensaje || mensaje.length < 10) {
     return NextResponse.json({ error: 'Datos invalidos' }, { status: 400 })
   }
 
-  const role = (session.user as { role?: string }).role
+  // Datos del usuario: de la sesion si esta logueado, del body si es auditor externo
+  const userId = session?.user?.id ?? null
+  const role = session?.user
+    ? (session.user as { role?: string }).role
+    : auditorRol ?? 'SIN_LOGIN'
+  const nombre = session?.user?.name ?? auditorNombre ?? 'Anonimo'
 
-  logActividad('FEEDBACK', session.user.id, {
+  logActividad('FEEDBACK', userId, {
     tipo,
     mensaje,
     pagina,
     entidad: entidad ?? null,
     entidadId: entidadId ?? null,
     rol: role,
+    auditorNombre: !session?.user ? (auditorNombre ?? null) : null,
+    auditorRol: !session?.user ? (auditorRol ?? null) : null,
     userAgent: request.headers.get('user-agent') ?? '',
   })
 
@@ -32,6 +38,9 @@ export async function POST(request: Request) {
       falta: ['feature-request', 'piloto'],
       confusion: ['ux', 'piloto'],
     }
+
+    const rolDisplay = session?.user ? role : `${auditorRol ?? 'SIN_LOGIN'} (auditor: ${nombre})`
+
     fetch(`https://api.github.com/repos/${process.env.GITHUB_REPO}/issues`, {
       method: 'POST',
       headers: {
@@ -41,7 +50,7 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         title: `[${tipo.toUpperCase()}] ${mensaje.slice(0, 60)}${mensaje.length > 60 ? '...' : ''}`,
-        body: `**Tipo:** ${tipo}\n**Rol:** ${role}\n**Pagina:** ${pagina}\n${entidad ? `**Entidad:** ${entidad} ${entidadId}\n` : ''}\n**Descripcion:**\n${mensaje}`,
+        body: `**Tipo:** ${tipo}\n**Rol:** ${rolDisplay}\n**Pagina:** ${pagina}\n${entidad ? `**Entidad:** ${entidad} ${entidadId}\n` : ''}\n**Descripcion:**\n${mensaje}`,
         labels: labels[tipo] ?? ['piloto'],
       }),
     }).catch(() => {})
