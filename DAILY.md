@@ -3,6 +3,9 @@
 ## 2026-04-13
 
 ### Gerardo Breard
+- **12:51** `13c0ad8` — specs: agregar v2-rag-corpus-real
+  - `.claude/specs/v2-rag-corpus-real.md`
+
 - **08:43** `592de2d` — specs: agregar v2-notificaciones-accionables
   - `.claude/specs/v2-notificaciones-accionables.md`
 
