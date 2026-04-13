@@ -3,6 +3,9 @@
 ## 2026-04-13
 
 ### Gerardo Breard
+- **17:04** `6b94016` — fix: actualizar commit hash en QA v2-epica-storage-documentos
+  - `.claude/auditorias/QA_v2-epica-storage-documentos.md`
+
 - **16:37** `fed7a93` — docs: agregar QA v2-epica-storage-documentos
   - `.claude/auditorias/QA_v2-epica-storage-documentos.md`
   - `prisma/migrations/20260413160000_storage_documentos_v2/migration.sql`
