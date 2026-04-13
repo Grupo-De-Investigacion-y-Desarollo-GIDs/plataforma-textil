@@ -3,6 +3,9 @@
 ## 2026-04-13
 
 ### Gerardo Breard
+- **15:16** `ccf8643` — fix: corregir tildes en nombres de usuarios seed en acceso-rapido
+  - `src/app/(auth)/acceso-rapido/page.tsx`
+
 - **14:27** `8642713` — docs: agregar template QA con credenciales correctas
   - `.claude/auditorias/TEMPLATE_QA.md`
 
