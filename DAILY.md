@@ -3,6 +3,9 @@
 ## 2026-04-13
 
 ### Gerardo Breard
+- **13:41** `4ce51cc` — docs: actualizar ORDEN_IMPLEMENTACION para modalidad v2 Gerardo-solo
+  - `.claude/specs/ORDEN_IMPLEMENTACION.md`
+
 - **13:27** `acde86d` — specs: agregar v2-impl-contenido-visual
   - `.claude/specs/v2-impl-contenido-visual.md`
 
