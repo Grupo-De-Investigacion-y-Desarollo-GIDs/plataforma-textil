@@ -122,6 +122,25 @@ export async function POST(req: NextRequest) {
 
     logActividad('AUTH_REGISTRO', user.id, { email: data.email, role: data.role })
 
+    // Crear validaciones iniciales para talleres nuevos
+    if (data.role === 'TALLER') {
+      const nuevoTaller = await prisma.taller.findUnique({ where: { userId: user.id }, select: { id: true } })
+      if (nuevoTaller) {
+        const tiposDoc = await prisma.tipoDocumento.findMany({
+          where: { activo: true },
+          select: { id: true, nombre: true },
+        })
+        await prisma.validacion.createMany({
+          data: tiposDoc.map(td => ({
+            tallerId: nuevoTaller.id,
+            tipo: td.nombre,
+            tipoDocumentoId: td.id,
+            estado: 'NO_INICIADO' as const,
+          })),
+        })
+      }
+    }
+
     // Email bienvenida (fire-and-forget, no bloquea la respuesta)
     const nombre = data.name || data.nombre || data.email
     sendEmail({ to: data.email, ...buildBienvenidaEmail({ nombre, role: data.role }) }).catch(() => {})

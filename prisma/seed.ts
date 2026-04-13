@@ -115,22 +115,94 @@ async function main() {
   console.log('  ✓ 5 tipos de prenda')
 
   // ============================================
-  // TIPOS DE DOCUMENTO (8)
+  // TIPOS DE DOCUMENTO (7)
   // ============================================
-  const tiposDoc = await Promise.all([
-    prisma.tipoDocumento.create({ data: { nombre: 'CUIT/Monotributo', descripcion: 'Constancia de inscripción en AFIP/ARCA', requerido: true } }),
-    prisma.tipoDocumento.create({ data: { nombre: 'Habilitación municipal', descripcion: 'Habilitación comercial del municipio correspondiente', requerido: true } }),
-    prisma.tipoDocumento.create({ data: { nombre: 'ART', descripcion: 'Póliza de Aseguradora de Riesgos del Trabajo vigente', requerido: true } }),
-    prisma.tipoDocumento.create({ data: { nombre: 'Empleados registrados', descripcion: 'Constancia de alta temprana de empleados en AFIP', requerido: true } }),
-    prisma.tipoDocumento.create({ data: { nombre: 'Habilitación bomberos', descripcion: 'Certificado de prevención contra incendios', requerido: true } }),
-    prisma.tipoDocumento.create({ data: { nombre: 'Plan de seguridad e higiene', descripcion: 'Plan firmado por profesional de SyH matriculado', requerido: true } }),
-    prisma.tipoDocumento.create({ data: { nombre: 'Nómina digital', descripcion: 'Libro de sueldos digital (LSD) o recibos digitales', requerido: true } }),
-    prisma.tipoDocumento.create({ data: { nombre: 'Certificado ambiental', descripcion: 'Aptitud ambiental para establecimientos industriales (opcional)', requerido: false } }),
-  ])
+  const tiposDocData = [
+    {
+      nombre: 'CUIT/Monotributo',
+      label: 'Registrate en ARCA',
+      descripcion: 'Inscripción en ARCA (ex-AFIP) como Monotributista o Responsable Inscripto',
+      enlaceTramite: 'https://www.afip.gob.ar',
+      costoEstimado: 'Gratuito',
+      nivelMinimo: 'PLATA' as const,
+      requerido: true,
+      orden: 1,
+    },
+    {
+      nombre: 'Habilitación municipal',
+      label: 'Habilita tu local',
+      descripcion: 'Permiso de funcionamiento del municipio correspondiente',
+      enlaceTramite: null,
+      costoEstimado: 'Variable según municipio',
+      nivelMinimo: 'PLATA' as const,
+      requerido: true,
+      orden: 2,
+    },
+    {
+      nombre: 'ART',
+      label: 'Asegura a tu equipo',
+      descripcion: 'Póliza de Aseguradora de Riesgos del Trabajo vigente',
+      enlaceTramite: null,
+      costoEstimado: 'Variable según aseguradora',
+      nivelMinimo: 'PLATA' as const,
+      requerido: true,
+      orden: 3,
+    },
+    {
+      nombre: 'Empleados registrados',
+      label: 'Registra tus empleados',
+      descripcion: 'Constancia de alta temprana de empleados en ARCA',
+      enlaceTramite: 'https://www.afip.gob.ar',
+      costoEstimado: 'Gratuito',
+      nivelMinimo: 'ORO' as const,
+      requerido: true,
+      orden: 4,
+    },
+    {
+      nombre: 'Habilitación bomberos',
+      label: 'Habilitación de bomberos',
+      descripcion: 'Certificado de prevención contra incendios',
+      enlaceTramite: null,
+      costoEstimado: 'Variable',
+      nivelMinimo: 'ORO' as const,
+      requerido: true,
+      orden: 5,
+    },
+    {
+      nombre: 'Plan de seguridad e higiene',
+      label: 'Plan de seguridad',
+      descripcion: 'Plan firmado por profesional de SyH matriculado',
+      enlaceTramite: null,
+      costoEstimado: 'Variable según profesional',
+      nivelMinimo: 'ORO' as const,
+      requerido: true,
+      orden: 6,
+    },
+    {
+      nombre: 'Nómina digital',
+      label: 'Libro de sueldos digital',
+      descripcion: 'Libro de sueldos digital (LSD) o recibos digitales',
+      enlaceTramite: null,
+      costoEstimado: 'Gratuito',
+      nivelMinimo: 'ORO' as const,
+      requerido: true,
+      orden: 7,
+    },
+  ]
+
+  const tiposDoc = await Promise.all(
+    tiposDocData.map(td =>
+      prisma.tipoDocumento.upsert({
+        where: { nombre: td.nombre },
+        update: td,
+        create: td,
+      })
+    )
+  )
   const tdMap: Record<string, string> = {}
   tiposDoc.forEach(t => { tdMap[t.nombre] = t.id })
 
-  console.log('  ✓ 8 tipos de documento')
+  console.log('  ✓ 7 tipos de documento')
 
   // ============================================
   // TALLER BRONCE — "Taller La Aguja" (Florencio Varela)
@@ -327,7 +399,6 @@ async function main() {
       { tallerId: tallerOro.id, tipo: 'Habilitación bomberos', tipoDocumentoId: tdMap['Habilitación bomberos'], estado: 'COMPLETADO', detalle: 'Inspección aprobada 10/2025' },
       { tallerId: tallerOro.id, tipo: 'Plan de seguridad e higiene', tipoDocumentoId: tdMap['Plan de seguridad e higiene'], estado: 'COMPLETADO', detalle: 'Plan firmado por Ing. Martínez (mat. 4521)' },
       { tallerId: tallerOro.id, tipo: 'Nómina digital', tipoDocumentoId: tdMap['Nómina digital'], estado: 'COMPLETADO', detalle: 'Libro de sueldos digital activo' },
-      { tallerId: tallerOro.id, tipo: 'Certificado ambiental', tipoDocumentoId: tdMap['Certificado ambiental'], estado: 'COMPLETADO', detalle: 'Aptitud ambiental OPDS vigente' },
     ],
   })
 
@@ -337,6 +408,29 @@ async function main() {
   })
 
   console.log('  ✓ Taller ORO: Corte Sur SRL (Avellaneda)')
+
+  // Post-seed: garantizar que cada taller tenga las 7 validaciones.
+  for (const taller of [tallerBronce, tallerPlata, tallerOro]) {
+    const existentes = await prisma.validacion.findMany({
+      where: { tallerId: taller.id },
+      select: { tipo: true },
+    })
+    const nombresExistentes = new Set(existentes.map(v => v.tipo))
+    const faltantes = tiposDoc.filter(td => !nombresExistentes.has(td.nombre))
+
+    if (faltantes.length > 0) {
+      await prisma.validacion.createMany({
+        data: faltantes.map(td => ({
+          tallerId: taller.id,
+          tipo: td.nombre,
+          tipoDocumentoId: td.id,
+          estado: 'NO_INICIADO' as const,
+        })),
+      })
+    }
+  }
+
+  console.log('  ✓ Post-seed: cada taller tiene 7 validaciones')
 
   // ============================================
   // MARCAS

@@ -12,18 +12,9 @@ export interface DatosTaller {
   verificadoAfip: boolean
   tiposValidacionCompletados: string[]
   numCertificadosActivos: number
+  tiposPlata: string[]
+  tiposOro: string[]
 }
-
-// Validaciones requeridas para cada nivel
-// Deben coincidir con tiposValidacion en /taller/formalizacion/page.tsx
-export const VALIDACIONES_PLATA = ['CUIT_MONOTRIBUTO', 'HABILITACION_MUNICIPAL', 'ART']
-export const VALIDACIONES_ORO = [
-  ...VALIDACIONES_PLATA,
-  'INSCRIPCION_EMPLEADOR',
-  'HABILITACION_BOMBEROS',
-  'SEGURIDAD_HIGIENE',
-  'LIBRO_SUELDOS',
-]
 
 // Puntaje
 export const PTS_VERIFICADO_AFIP = 10
@@ -44,18 +35,21 @@ export function calcularNivelPuro(datos: DatosTaller): ResultadoNivel {
   puntaje += numCertificados * PTS_POR_CERTIFICADO
   puntaje = Math.min(puntaje, PUNTAJE_MAX)
 
-  // Determinar nivel
+  // Determinar nivel usando los parámetros
   let nivel: NivelTaller = 'BRONCE'
 
   const tienePlata =
     datos.verificadoAfip &&
-    VALIDACIONES_PLATA.every((v) => tiposCompletados.has(v)) &&
+    datos.tiposPlata.every((v) => tiposCompletados.has(v)) &&
     numCertificados >= 1
 
   if (tienePlata) {
     nivel = 'PLATA'
 
-    const tieneOro = VALIDACIONES_ORO.every((v) => tiposCompletados.has(v))
+    // Para ORO se requieren TODOS los de PLATA + TODOS los de ORO
+    const tieneOro = [...datos.tiposPlata, ...datos.tiposOro].every((v) =>
+      tiposCompletados.has(v)
+    )
     if (tieneOro) {
       nivel = 'ORO'
     }
@@ -65,27 +59,42 @@ export function calcularNivelPuro(datos: DatosTaller): ResultadoNivel {
 }
 
 export async function calcularNivel(tallerId: string): Promise<ResultadoNivel> {
-  const taller = await prisma.taller.findUnique({
-    where: { id: tallerId },
-    select: {
-      verificadoAfip: true,
-      validaciones: {
-        where: { estado: 'COMPLETADO' },
-        select: { tipo: true },
+  const [taller, tiposRequeridos] = await Promise.all([
+    prisma.taller.findUnique({
+      where: { id: tallerId },
+      select: {
+        verificadoAfip: true,
+        validaciones: {
+          where: { estado: 'COMPLETADO' },
+          select: { tipo: true },
+        },
+        certificados: {
+          where: { revocado: false },
+          select: { id: true },
+        },
       },
-      certificados: {
-        where: { revocado: false },
-        select: { id: true },
-      },
-    },
-  })
+    }),
+    prisma.tipoDocumento.findMany({
+      where: { requerido: true, activo: true },
+      select: { nombre: true, nivelMinimo: true },
+    }),
+  ])
 
   if (!taller) throw new Error(`Taller ${tallerId} no encontrado`)
+
+  const tiposPlata = tiposRequeridos
+    .filter(t => t.nivelMinimo === 'PLATA')
+    .map(t => t.nombre)
+  const tiposOro = tiposRequeridos
+    .filter(t => t.nivelMinimo === 'ORO')
+    .map(t => t.nombre)
 
   return calcularNivelPuro({
     verificadoAfip: taller.verificadoAfip,
     tiposValidacionCompletados: taller.validaciones.map((v) => v.tipo),
     numCertificadosActivos: taller.certificados.length,
+    tiposPlata,
+    tiposOro,
   })
 }
 
@@ -109,7 +118,9 @@ export async function aplicarNivel(tallerId: string, userId?: string): Promise<R
 
   // Loguear si el nivel cambio
   if (nivelAnterior !== resultado.nivel) {
-    logActividad('NIVEL_SUBIDO', userId, {
+    const orden: Record<string, number> = { BRONCE: 0, PLATA: 1, ORO: 2 }
+    const accion = orden[resultado.nivel] > orden[nivelAnterior] ? 'NIVEL_SUBIDO' : 'NIVEL_BAJADO'
+    logActividad(accion, userId, {
       tallerId,
       nivelAnterior,
       nivelNuevo: resultado.nivel,

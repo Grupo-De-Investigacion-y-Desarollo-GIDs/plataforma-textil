@@ -432,7 +432,7 @@ model Validacion {
   id               String           @id @default(cuid())
   tallerId         String
   tipo             String
-  tipoDocumentoId  String?
+  tipoDocumentoId  String
   estado           EstadoValidacion @default(NO_INICIADO)
   detalle          String?
   documentoUrl     String?
@@ -441,7 +441,7 @@ model Validacion {
   updatedAt        DateTime         @updatedAt
 
   taller        Taller         @relation(fields: [tallerId], references: [id], onDelete: Cascade)
-  tipoDocumento TipoDocumento? @relation(fields: [tipoDocumentoId], references: [id])
+  tipoDocumento TipoDocumento @relation(fields: [tipoDocumentoId], references: [id])
 
   @@unique([tallerId, tipo])
   @@index([estado])
@@ -450,11 +450,16 @@ model Validacion {
 }
 
 model TipoDocumento {
-  id          String  @id @default(cuid())
-  nombre      String  @unique
-  descripcion String?
-  requerido   Boolean @default(true)
-  activo      Boolean @default(true)
+  id            String      @id @default(cuid())
+  nombre        String      @unique
+  label         String
+  descripcion   String?
+  enlaceTramite String?
+  costoEstimado String?
+  nivelMinimo   NivelTaller
+  requerido     Boolean     @default(true)
+  activo        Boolean     @default(true)
+  orden         Int         @default(0)
 
   validaciones Validacion[]
 

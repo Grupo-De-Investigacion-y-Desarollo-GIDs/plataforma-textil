@@ -10,7 +10,7 @@ import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Button } from '@/compartido/componentes/ui/button'
 import { ChecklistItem } from '@/compartido/componentes/ui/checklist-item'
-import { ArrowLeft, MapPin, Mail, Phone } from 'lucide-react'
+import { ArrowLeft, MapPin, Mail, Phone, FileText } from 'lucide-react'
 
 const estadoToStatus: Record<string, 'completed' | 'pending' | 'warning' | 'optional'> = {
   COMPLETADO: 'completed',
@@ -32,17 +32,28 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
   const { id } = await params
   const { tab = 'formalizacion' } = await searchParams
 
-  const taller = await prisma.taller.findUnique({
-    where: { id },
-    include: {
-      user: { select: { email: true, phone: true, name: true, active: true } },
-      validaciones: { orderBy: { createdAt: 'asc' } },
-      maquinaria: true,
-      certificados: { include: { coleccion: { select: { titulo: true } } } },
-    },
-  })
+  const [taller, tiposDocumento] = await Promise.all([
+    prisma.taller.findUnique({
+      where: { id },
+      include: {
+        user: { select: { email: true, phone: true, name: true, active: true } },
+        validaciones: { orderBy: { createdAt: 'asc' } },
+        maquinaria: true,
+        certificados: { include: { coleccion: { select: { titulo: true } } } },
+      },
+    }),
+    prisma.tipoDocumento.findMany({
+      where: { activo: true },
+      orderBy: { orden: 'asc' },
+      select: { nombre: true, label: true },
+    }),
+  ])
 
   if (!taller) notFound()
+
+  const labelPorNombre = Object.fromEntries(
+    tiposDocumento.map(td => [td.nombre, td.label])
+  )
 
   const notas = await prisma.notaInterna.findMany({
     where: { tallerId: id },
@@ -54,6 +65,16 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
     where: { detalles: { path: ['tallerId'], equals: id } },
     orderBy: { timestamp: 'desc' },
     take: 20,
+    include: { user: { select: { name: true } } },
+  })
+
+  const historialLogs = await prisma.logActividad.findMany({
+    where: {
+      accion: { in: ['VALIDACION_APROBADA', 'VALIDACION_RECHAZADA', 'NIVEL_SUBIDO', 'NIVEL_BAJADO'] },
+      detalles: { path: ['tallerId'], equals: id },
+    },
+    orderBy: { timestamp: 'desc' },
+    take: 30,
     include: { user: { select: { name: true } } },
   })
 
@@ -118,7 +139,9 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
   }
 
   const nivelVariant = taller.nivel === 'ORO' ? 'success' : taller.nivel === 'PLATA' ? 'default' : 'warning'
-  const docsConUrl = taller.validaciones.filter(v => v.documentoUrl && v.estado === 'PENDIENTE')
+  const docsConUrlPendientes = taller.validaciones.filter(
+    v => v.estado === 'PENDIENTE' && v.documentoUrl
+  ).length
 
   return (
     <div className="max-w-4xl mx-auto py-6 px-4">
@@ -159,7 +182,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
 
       {/* Tabs */}
       <div className="flex gap-2 mb-4">
-        {(['formalizacion', 'documentos', 'actividad'] as const).map(t => (
+        {(['formalizacion', 'historial', 'actividad'] as const).map(t => (
           <Link
             key={t}
             href={`/admin/talleres/${id}?tab=${t}`}
@@ -167,7 +190,11 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
               tab === t ? 'bg-brand-blue text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            {t === 'formalizacion' ? 'Formalización' : t === 'documentos' ? `Documentos (${docsConUrl.length})` : 'Actividad'}
+            {t === 'formalizacion'
+              ? `Formalización${docsConUrlPendientes > 0 ? ` (${docsConUrlPendientes})` : ''}`
+              : t === 'historial'
+                ? 'Historial'
+                : 'Actividad'}
           </Link>
         ))}
       </div>
@@ -180,7 +207,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
             {taller.validaciones.map(v => (
               <div key={v.id} className="py-3 first:pt-0 last:pb-0">
                 <ChecklistItem
-                  title={v.tipo.replace(/_/g, ' ')}
+                  title={labelPorNombre[v.tipo] ?? v.tipo}
                   status={estadoToStatus[v.estado] || 'optional'}
                   description={
                     v.estado === 'COMPLETADO' ? 'Verificado'
@@ -190,18 +217,36 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
                     : 'No iniciado'
                   }
                 />
+                {/* Link del documento visible en cualquier estado si existe URL */}
+                {v.documentoUrl && (
+                  <div className="mt-2 ml-8">
+                    <a
+                      href={v.documentoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-brand-blue underline text-sm inline-flex items-center gap-1"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      Ver documento
+                    </a>
+                  </div>
+                )}
+                {/* Acciones solo para PENDIENTE */}
                 {v.estado === 'PENDIENTE' && v.documentoUrl && (
                   <div className="flex gap-2 mt-2 ml-8">
-                    <a href={v.documentoUrl} target="_blank" rel="noopener noreferrer">
-                      <Button size="sm" variant="secondary">Ver documento</Button>
-                    </a>
                     <form action={aprobarValidacion}>
                       <input type="hidden" name="validacionId" value={v.id} />
                       <Button size="sm" type="submit">Aprobar</Button>
                     </form>
                     <form action={rechazarValidacion} className="flex gap-1">
                       <input type="hidden" name="validacionId" value={v.id} />
-                      <input type="text" name="motivo" placeholder="Motivo..." className="text-xs border rounded px-2 py-1 w-40" />
+                      <input
+                        type="text"
+                        name="motivo"
+                        placeholder="Motivo del rechazo..."
+                        required
+                        className="text-xs border border-gray-300 rounded px-2 py-1 w-48"
+                      />
                       <Button size="sm" variant="secondary" type="submit">Rechazar</Button>
                     </form>
                   </div>
@@ -212,36 +257,35 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
         </Card>
       )}
 
-      {/* Tab: Documentos */}
-      {tab === 'documentos' && (
+      {/* Tab: Historial */}
+      {tab === 'historial' && (
         <Card>
-          <h2 className="font-overpass font-bold text-brand-blue mb-3">Documentos Pendientes de Revisión</h2>
-          {docsConUrl.length === 0 ? (
-            <p className="text-sm text-gray-500">No hay documentos pendientes de revisión.</p>
+          <h2 className="font-overpass font-bold text-brand-blue mb-3">Historial del taller</h2>
+          {historialLogs.length === 0 ? (
+            <p className="text-sm text-gray-500">Sin actividad registrada.</p>
           ) : (
-            <div className="space-y-3">
-              {docsConUrl.map(v => (
-                <div key={v.id} className="flex items-center justify-between border rounded-lg p-3">
-                  <div>
-                    <p className="text-sm font-semibold">{v.tipo.replace(/_/g, ' ')}</p>
-                    <p className="text-xs text-gray-500">Subido: {v.updatedAt.toLocaleDateString('es-AR')}</p>
+            <div className="space-y-2">
+              {historialLogs.map(log => {
+                const detalles = log.detalles as {
+                  nivelAnterior?: string
+                  nivelNuevo?: string
+                  motivo?: string
+                }
+                const descripcion =
+                  log.accion === 'VALIDACION_APROBADA' ? `${log.user?.name ?? 'Admin'} aprobó una validación`
+                : log.accion === 'VALIDACION_RECHAZADA' ? `${log.user?.name ?? 'Admin'} rechazó una validación${detalles.motivo ? ` — ${detalles.motivo}` : ''}`
+                : log.accion === 'NIVEL_SUBIDO' ? `Subió de nivel: ${detalles.nivelAnterior} → ${detalles.nivelNuevo}`
+                : log.accion === 'NIVEL_BAJADO' ? `Bajó de nivel: ${detalles.nivelAnterior} → ${detalles.nivelNuevo}`
+                : log.accion
+                return (
+                  <div key={log.id} className="text-sm border-b border-gray-50 pb-2">
+                    <span className="text-gray-400">
+                      {log.timestamp.toLocaleDateString('es-AR')}
+                    </span>
+                    <p className="text-gray-700">{descripcion}</p>
                   </div>
-                  <div className="flex gap-2">
-                    <a href={v.documentoUrl!} target="_blank" rel="noopener noreferrer">
-                      <Button size="sm" variant="secondary">Ver</Button>
-                    </a>
-                    <form action={aprobarValidacion}>
-                      <input type="hidden" name="validacionId" value={v.id} />
-                      <Button size="sm" type="submit">Aprobar</Button>
-                    </form>
-                    <form action={rechazarValidacion}>
-                      <input type="hidden" name="validacionId" value={v.id} />
-                      <input type="hidden" name="motivo" value="Documento ilegible o incorrecto" />
-                      <Button size="sm" variant="secondary" type="submit">Rechazar</Button>
-                    </form>
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </Card>
