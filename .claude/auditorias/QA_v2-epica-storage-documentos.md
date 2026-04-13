@@ -1,7 +1,7 @@
 # QA: Epica Storage y Documentos
 
 **Spec:** `v2-epica-storage-documentos.md`
-**Commit de implementacion:** pendiente (cambios en 9 archivos + migracion)
+**Commit de implementacion:** `fed7a93` (9 archivos + migracion + bucket publico)
 **URL de prueba:** https://plataforma-textil.vercel.app
 **Fecha:** 2026-04-13
 **Auditor:** Sergio
