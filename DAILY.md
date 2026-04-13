@@ -3,6 +3,9 @@
 ## 2026-04-13
 
 ### Gerardo Breard
+- **15:44** `6ccc569` — docs: agregar QA v2-config-piloto-pre-deploy con instructivo de uso
+  - `.claude/auditorias/QA_v2-config-piloto-pre-deploy.md`
+
 - **15:16** `ccf8643` — fix: corregir tildes en nombres de usuarios seed en acceso-rapido
   - `src/app/(auth)/acceso-rapido/page.tsx`
 
