@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-04-13
+
+### Gerardo Breard
+- **08:43** `592de2d` — specs: agregar v2-notificaciones-accionables
+  - `.claude/specs/v2-notificaciones-accionables.md`
+
+
 ## 2026-04-12
 
 ### Gerardo Breard
