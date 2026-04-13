@@ -3,6 +3,9 @@
 ## 2026-04-13
 
 ### Gerardo Breard
+- **14:27** `8642713` — docs: agregar template QA con credenciales correctas
+  - `.claude/auditorias/TEMPLATE_QA.md`
+
 - **14:07** `be81aed` — feat: feedback widget funciona sin autenticación para auditorías QA
   - `src/app/api/feedback/route.ts`
   - `src/compartido/componentes/feedback-widget-wrapper.tsx`
