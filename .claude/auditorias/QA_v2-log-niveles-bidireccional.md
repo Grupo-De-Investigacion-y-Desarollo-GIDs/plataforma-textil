@@ -1,7 +1,7 @@
 # QA: Log de niveles bidireccional + panel transparente
 
 **Spec:** `v2-log-niveles-bidireccional.md`
-**Commit de implementación:** `pendiente`
+**Commit de implementación:** `1221239`
 **URL de prueba:** https://plataforma-textil.vercel.app
 **Fecha:** 2026-04-14
 **Auditor:** Sergio
