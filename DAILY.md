@@ -3,6 +3,9 @@
 ## 2026-04-14
 
 ### Gerardo Breard
+- **15:42** `75cef2d` — docs: agregar QA v2-notificaciones-accionables
+  - `.claude/auditorias/QA_v2-notificaciones-accionables.md`
+
 - **15:40** `e687d5a` — feat: v2-notificaciones-accionables — deep links + mark-as-read al click
   - `prisma/migrations/20260414180000_add_notificacion_link/migration.sql`
   - `prisma/schema.prisma`
