@@ -97,7 +97,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
 - **URL de inicio:** https://plataforma-textil.vercel.app/acceso-rapido
 - **Accion:** Abrir la pagina y leer los nombres de los 7 usuarios
 - **Esperado:** Los nombres muestran tildes correctas: Lucia Fernandez (con tildes), Roberto Gimenez (con tilde en e), Martin Echevarria (con tildes), Ana Belen Torres (con tilde en e), Sofia Martinez (con tildes). Graciela Sosa y Carlos Mendoza sin tildes (correcto asi).
-- **Resultado:** [ ]
+- **Resultado:** [ No aparecen tildes en nombres]
 - **Notas:**
 
 ### Paso 2 — Checklist de formalizacion con labels legibles (TALLER Bronce)
@@ -117,7 +117,8 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
      - "Plan de seguridad"
      - "Libro de sueldos digital"
 - **Esperado:** 7 items con labels legibles. El progreso muestra `X/7` (no `X/8`). No aparece "Certificacion ambiental".
-- **Resultado:** [ ]
+- **Resultado:** [no carga panel formalizacion, tira erro:Error en Taller
+Ocurrio un error cargando esta seccion. Podes reintentar o volver al inicio. ]
 - **Notas:**
 
 > Si ves "CUIT_MONOTRIBUTO" o "HABILITACION_MUNICIPAL" → abrir widget → tipo **bug** → describir "Labels en SCREAMING_SNAKE_CASE en vez de texto legible"
@@ -133,7 +134,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
   4. Verificar que "Registra tus empleados" tiene boton "Ir al tramite" (afip.gob.ar)
   5. Verificar que items como "Asegura a tu equipo" o "Plan de seguridad" no tienen boton "Ir al tramite" (porque su enlace es null)
 - **Esperado:** Solo los items con enlaceTramite muestran el boton. Todos los items no completados muestran su costo estimado.
-- **Resultado:** [ ]
+- **Resultado:** [no se epuede probar ]
 - **Notas:**
 
 ### Paso 4 — Subir documento PDF (TALLER Bronce)
@@ -146,7 +147,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
   3. Seleccionar un archivo PDF de prueba
   4. Confirmar la subida
 - **Esperado:** El documento se sube sin error. El estado cambia a "PENDIENTE" con el texto "En revision por el equipo de PDT". No debe aparecer "Bucket not found" ni error 403.
-- **Resultado:** [ ]
+- **Resultado:** [ no s epuede probar]
 - **Notas:**
 
 > Si ves "Bucket not found" o error de storage → abrir widget → tipo **bug** → describir el error exacto
@@ -163,7 +164,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
   5. Verificar que los items muestran labels legibles ("Registrate en ARCA", "Habilita tu local", etc.)
   6. Verificar que NO dice "CUIT MONOTRIBUTO" ni "HABILITACION MUNICIPAL"
 - **Esperado:** Labels identicos a los que ve el taller. Texto legible en espanol.
-- **Resultado:** [ ]
+- **Resultado:** [los labels son legible, Dice "CUIT MONOTIRBUTO" y "HABILITACION MUNICPAL", las otras listadas son: Plan de seguridad e higiene,art,Empleados registrados, Habilitación bomberos, Nómina digital]
 - **Notas:**
 
 ### Paso 6 — Aprobar documento y ver link (ADMIN)
@@ -178,7 +179,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
   5. Verificar que la validacion pasa a estado COMPLETADO
   6. Verificar que **sigue visible** el link "Ver documento" en estado COMPLETADO
 - **Esperado:** El link del documento es visible en PENDIENTE y en COMPLETADO. El PDF abre correctamente (bucket publico). Despues de aprobar, la pagina recarga y la validacion aparece como verificada.
-- **Resultado:** [ ]
+- **Resultado:** [ no hay validacion pendiente porque no se puede cargar documento en usuario taller. no s epueden ingreasar al docuemnto, ni ver, tampoco aprobar. Hay un estado completado perpo el resto son "OPCIONAL"]
 - **Notas:**
 
 > Si el documento da error 403 → abrir widget → tipo **bug** → describir "Error 403 al ver documento — bucket sigue privado"
@@ -193,7 +194,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
   3. Verificar que muestra los logs del taller con textos descriptivos:
      - "Lucia Fernandez aprobo una validacion" (del Paso 6)
 - **Esperado:** Tab "Documentos" no existe. Tab "Historial" muestra los logs del taller con nombre del admin y descripcion de la accion.
-- **Resultado:** [ ]
+- **Resultado:** [ no hay tab "historial" en admin/talleres/id_taller. figutan Formalizacion, Documentos y Actividad. nose puede prbar panel "Hisotrial"]
 - **Notas:**
 
 > Si ves un tab "Documentos" → abrir widget → tipo **bug** → describir "Tab Documentos sigue existiendo, deberia ser Historial"
@@ -208,7 +209,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
   3. Si tiene documentos pendientes: verificar que el tab dice "Formalizacion (N)" donde N es la cantidad
   4. Si no tiene documentos pendientes: verificar que dice solo "Formalizacion" sin numero
 - **Esperado:** El badge solo aparece cuando hay documentos en estado PENDIENTE que tienen URL de documento subido.
-- **Resultado:** [ ]
+- **Resultado:** [ no dice cantidad en el tab "Fomalizacion" a pesar de tener un documento pendiente ]
 - **Notas:**
 
 ### Paso 9 — Rechazar con motivo libre (ADMIN)
@@ -222,7 +223,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
   4. Escribir motivo "Fecha vencida en el documento" y rechazar
   5. Verificar que la validacion pasa a RECHAZADO con el motivo escrito
 - **Esperado:** El campo motivo es `required` — el navegador no permite enviar vacio. El motivo escrito aparece como detalle del rechazo ("Rechazado: Fecha vencida en el documento"). No dice "Documento ilegible o incorrecto" (el viejo hardcoded).
-- **Resultado:** [ ]
+- **Resultado:** [ no se puede ingrsar al documento pendiente a ver detalle apara aprobacion. no se puede hacer aprobacion, no existe opcion]
 - **Notas:**
 
 > Si el rechazo se envia sin motivo o con motivo hardcodeado → abrir widget → tipo **bug** → describir
@@ -239,7 +240,25 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
   5. Verificar que no hay duplicados (por ejemplo, no hay dos "Registrate en ARCA")
   6. Verificar que el progreso dice `X/7` (no `X/13` ni `X/8`)
 - **Esperado:** Exactamente 7 items sin duplicados. El progreso muestra el denominador correcto. Esto confirma que el bug de dual naming esta resuelto.
-- **Resultado:** [ ]
+- **Resultado:** [son siete items ( CUIT/Monotributo
+Verificado
+COMPLETADO
+ART
+Verificado
+COMPLETADO
+Habilitación municipal
+Verificado
+COMPLETADO
+Empleados registrados
+Pendiente de revisión
+PENDIENTE
+Habilitación bomberos
+No iniciado
+OPCIONAL
+Plan de seguridad e higiene
+No iniciado
+OPCIONAL
+Nómina digital )no hay indicdor d eproegreso en el panel ]
 - **Notas:**
 
 > Si hay mas de 7 items o hay duplicados → abrir widget → tipo **bug** → describir "Validaciones duplicadas — el bug de dual naming no esta resuelto"
@@ -258,7 +277,8 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
   2. Despues del registro, ir a `/taller/formalizacion`
   3. Contar los items del checklist
 - **Esperado:** El taller nuevo tiene exactamente 7 validaciones, todas en estado NO_INICIADO. El progreso dice `0/7`.
-- **Resultado:** [ ]
+- **Resultado:** [no se puede ingreesar con estos datos  mail: `prueba.qa@pdt.org.ar`
+     - Password: `pdt2026qa`]
 - **Notas:**
 
 > **Nota:** si el registro falla por CUIT duplicado, probar con otro CUIT. Si AFIP no responde, el registro deberia continuar igual (verificadoAfip queda false).
@@ -277,7 +297,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
   7. Verificar si el nivel cambia a PLATA (tambien necesita 1 certificado — si no lo tiene, permanece en BRONCE)
   8. Verificar el nivel en el badge del header del taller
 - **Esperado:** Si se cumplen las condiciones de PLATA (3 validaciones PLATA + AFIP + 1 certificado), el nivel sube. Si falta el certificado, queda BRONCE pero el puntaje aumenta. En el tab Historial aparece "Subio de nivel: BRONCE → PLATA".
-- **Resultado:** [ ]
+- **Resultado:** [no se puede aprobar validacion, no existe opcion en el panel de formalizacion ]
 - **Notas:**
 
 > **Nota:** Roberto (BRONCE) tiene 0 certificados en el seed. Para llegar a PLATA necesita al menos 1 certificado activo, que solo se obtiene completando una coleccion de capacitacion y aprobando la evaluacion. Si no se puede completar este paso completo, verificar al menos que aprobar validaciones sube el puntaje y que el log de actividad registra la aprobacion.
@@ -294,7 +314,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
   5. Ir a tab Historial
   6. Verificar que aparece un log que dice "Bajo de nivel: PLATA → BRONCE" (no "Subio de nivel")
 - **Esperado:** Al rechazar una validacion requerida para PLATA, el nivel recalcula y baja. El log dice NIVEL_BAJADO con la direccion correcta. Esto confirma que el fix bidireccional funciona.
-- **Resultado:** [ ]
+- **Resultado:** [no se puede aprobar validacion, no existe opcion en el panel de formalizacion  ]
 - **Notas:**
 
 > Si el log dice "Subio de nivel" cuando en realidad bajo → abrir widget → tipo **bug** → describir "NIVEL_BAJADO mal etiquetado como NIVEL_SUBIDO"
