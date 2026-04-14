@@ -3,6 +3,11 @@
 ## 2026-04-14
 
 ### Gerardo Breard
+- **17:35** `2f7407b` — feat: v2-seguridad-tests-e2e — fix falsos positivos, helper assertAccesoBloqueado, 10 tests nuevos
+  - `e2e/checklist-sec7-8.spec.ts`
+  - `e2e/helpers/auth.ts`
+  - `e2e/seguridad-roles.spec.ts`
+
 - **17:24** `2cada9d` — docs: agregar QA v2-epica-academia
   - `.claude/auditorias/QA_v2-epica-academia.md`
 
