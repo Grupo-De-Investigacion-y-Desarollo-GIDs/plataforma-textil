@@ -3,6 +3,9 @@
 ## 2026-04-14
 
 ### Gerardo Breard
+- **15:22** `b0bf4e9` — docs: agregar QA v2-epica-notificaciones
+  - `.claude/auditorias/QA_v2-epica-notificaciones.md`
+
 - **15:19** `871ffcd` — feat: v2-epica-notificaciones — centro de comunicaciones + historial
   - `prisma/migrations/20260414170000_notificacion_created_by_batch/migration.sql`
   - `prisma/schema.prisma`
