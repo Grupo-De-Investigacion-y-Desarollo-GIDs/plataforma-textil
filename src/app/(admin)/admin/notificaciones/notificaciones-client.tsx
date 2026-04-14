@@ -16,7 +16,7 @@ export default function NotificacionesClient() {
   const [form, setForm] = useState({
     asunto: '',
     mensaje: '',
-    segmento: 'todos' as 'todos' | 'talleres' | 'marcas',
+    segmento: 'todos' as string,
     canal: 'PLATAFORMA' as string,
   })
 
@@ -51,7 +51,7 @@ export default function NotificacionesClient() {
       setTimeout(() => {
         setModalOpen(false)
         setSent(false)
-        setForm({ asunto: '', mensaje: '', segmento: 'todos', canal: 'PLATAFORMA' })
+        setForm({ asunto: '', mensaje: '', segmento: 'todos', canal: 'PLATAFORMA' as string })
         router.refresh()
       }, 1500)
     } catch {
@@ -94,9 +94,12 @@ export default function NotificacionesClient() {
             <label className="block text-sm font-semibold text-gray-700 mb-2">Destinatarios</label>
             <div className="space-y-2">
               {[
-                { value: 'todos' as const, label: 'Todos los usuarios' },
-                { value: 'talleres' as const, label: 'Solo talleres' },
-                { value: 'marcas' as const, label: 'Solo marcas' },
+                { value: 'todos', label: 'Todos los usuarios' },
+                { value: 'talleres', label: 'Todos los talleres' },
+                { value: 'talleres_bronce', label: 'Talleres Bronce' },
+                { value: 'talleres_plata', label: 'Talleres Plata' },
+                { value: 'talleres_oro', label: 'Talleres Oro' },
+                { value: 'marcas', label: 'Todas las marcas' },
               ].map(opt => (
                 <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -113,21 +116,35 @@ export default function NotificacionesClient() {
 
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Canal</label>
-            <div className="flex gap-4">
-              {[
-                { value: 'PLATAFORMA', label: 'In-app' },
-                { value: 'EMAIL', label: 'Email' },
-              ].map(opt => (
-                <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="canal"
-                    checked={form.canal === opt.value}
-                    onChange={() => setForm(f => ({ ...f, canal: opt.value }))}
-                  />
-                  <span className="text-sm">{opt.label}</span>
-                </label>
-              ))}
+            <div className="space-y-2">
+              <label className="flex items-start gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="canal"
+                  value="PLATAFORMA"
+                  checked={form.canal === 'PLATAFORMA'}
+                  onChange={() => setForm(f => ({ ...f, canal: 'PLATAFORMA' }))}
+                  className="mt-1"
+                />
+                <div>
+                  <span className="text-sm font-medium">Solo en plataforma</span>
+                  <p className="text-xs text-gray-400">Aparece en la bandeja del usuario. No se envia email.</p>
+                </div>
+              </label>
+              <label className="flex items-start gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="canal"
+                  value="EMAIL"
+                  checked={form.canal === 'EMAIL'}
+                  onChange={() => setForm(f => ({ ...f, canal: 'EMAIL' }))}
+                  className="mt-1"
+                />
+                <div>
+                  <span className="text-sm font-medium">Email + plataforma</span>
+                  <p className="text-xs text-gray-400">Se envia por email y tambien queda en la bandeja.</p>
+                </div>
+              </label>
             </div>
           </div>
 

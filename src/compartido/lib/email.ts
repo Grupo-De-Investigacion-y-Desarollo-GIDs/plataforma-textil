@@ -50,6 +50,22 @@ function btnPrimario(url: string, texto: string): string {
   return `<a href="${url}" style="display: inline-block; margin: 20px 0; padding: 12px 28px; background: #1e3a5f; color: #fff; text-decoration: none; border-radius: 6px; font-weight: 600;">${texto}</a>`
 }
 
+export function buildComunicacionAdminEmail(data: {
+  titulo: string
+  mensaje: string
+  nombreUsuario: string
+}): { subject: string; html: string } {
+  const dashUrl = process.env.NEXTAUTH_URL ?? ''
+  return {
+    subject: data.titulo,
+    html: emailWrapper(`
+      <h2>Hola ${data.nombreUsuario}</h2>
+      <p>${data.mensaje.replace(/\n/g, '<br>')}</p>
+      ${btnPrimario(dashUrl, 'Ir a la plataforma')}
+    `),
+  }
+}
+
 export function buildBienvenidaEmail(data: { nombre: string; role: 'TALLER' | 'MARCA' }): { subject: string; html: string } {
   const esTaller = data.role === 'TALLER'
   const dashUrl = `${process.env.NEXTAUTH_URL ?? ''}/${esTaller ? 'taller' : 'marca/directorio'}`

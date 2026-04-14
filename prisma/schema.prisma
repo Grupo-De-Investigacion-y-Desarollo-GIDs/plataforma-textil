@@ -119,7 +119,8 @@ model User {
   marca         Marca?
   accounts      Account[]
   sessions      Session[]
-  notificaciones Notificacion[]
+  notificacionesRecibidas Notificacion[] @relation("NotificacionDestinatario")
+  notificacionesEnviadas  Notificacion[] @relation("NotificacionCreador")
   logs          LogActividad[]
   auditorias    Auditoria[]    @relation("AuditoriaInspector")
   notasAdmin    NotaInterna[]  @relation("NotasAdmin")
@@ -652,17 +653,21 @@ model Denuncia {
 // ============================================
 
 model Notificacion {
-  id      String             @id @default(cuid())
-  userId  String
-  tipo    String
-  titulo  String
-  mensaje String             @db.Text
-  leida   Boolean            @default(false)
-  canal   CanalNotificacion  @default(PLATAFORMA)
-  createdAt DateTime         @default(now())
+  id          String            @id @default(cuid())
+  userId      String
+  tipo        String
+  titulo      String
+  mensaje     String            @db.Text
+  leida       Boolean           @default(false)
+  canal       CanalNotificacion @default(PLATAFORMA)
+  createdById String?
+  batchId     String?
+  createdAt   DateTime          @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User  @relation("NotificacionDestinatario", fields: [userId],      references: [id], onDelete: Cascade)
+  creadaPor User? @relation("NotificacionCreador",      fields: [createdById], references: [id], onDelete: SetNull)
 
+  @@index([batchId])
   @@map("notificaciones")
 }
 
