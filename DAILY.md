@@ -3,6 +3,9 @@
 ## 2026-04-14
 
 ### Gerardo Breard
+- **14:18** `e6c28b4` — docs: agregar QA v2-rag-corpus-real
+  - `.claude/auditorias/QA_v2-rag-corpus-real.md`
+
 - **14:18** `1d6d7cb` — feat: v2-rag-corpus-real — limpiar corpus falso, conectar config admin, fallback visual
   - `package-lock.json`
   - `package.json`
