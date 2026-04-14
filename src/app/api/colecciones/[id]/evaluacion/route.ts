@@ -73,12 +73,24 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: 'Esta colección no tiene evaluación' }, { status: 400 })
     }
 
+    // Verificar que el taller completó todos los videos
+    const progreso = await prisma.progresoCapacitacion.findUnique({
+      where: { tallerId_coleccionId: { tallerId: taller.id, coleccionId } },
+      select: { porcentajeCompletado: true },
+    })
+    if ((progreso?.porcentajeCompletado ?? 0) < 100) {
+      return NextResponse.json(
+        { error: 'Debés completar todos los videos antes de rendir la evaluación' },
+        { status: 403 }
+      )
+    }
+
     // Verificar que no tenga certificado vigente
     const certExistente = await prisma.certificado.findFirst({
       where: { tallerId: taller.id, coleccionId, revocado: false },
     })
     if (certExistente) {
-      return NextResponse.json({ aprobado: true, calificacion: certExistente.calificacion, certificadoId: certExistente.id, yaExiste: true })
+      return NextResponse.json({ aprobado: true, calificacion: certExistente.calificacion, certificadoId: certExistente.id, codigo: certExistente.codigo, yaExiste: true })
     }
 
     const body = await req.json()
@@ -114,7 +126,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       sendEmail({
         to: taller.user.email,
         ...buildCertificadoEmail({ nombreTaller: taller.nombre, tituloColeccion: coleccion.titulo, codigo: certificado.codigo, calificacion }),
-      }).catch(() => {})
+      }).catch((err) => {
+        console.error('[academia] Error enviando email de certificado:', err)
+      })
       // Generar QR y subirlo a Storage (fire-and-forget)
       generateQrBuffer(codigo).then(async (qrBuffer) => {
         const qrPath = `qr/${taller.id}/${certificado.id}.png`
@@ -126,10 +140,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
           })
         }
       }).catch((err) => {
-        console.error('Error generando QR del certificado:', err)
+        console.error('[academia] Error generando QR del certificado:', err)
       })
       // Recalcular nivel del taller (certificados suman puntaje)
-      aplicarNivel(taller.id, session.user.id)
+      try {
+        await aplicarNivel(taller.id, session.user.id)
+      } catch (err) {
+        console.error('[academia] Error recalculando nivel tras certificado:', err)
+      }
 
       return NextResponse.json({ aprobado: true, calificacion, certificadoId: certificado.id, codigo: certificado.codigo })
     }

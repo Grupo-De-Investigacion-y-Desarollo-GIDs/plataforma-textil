@@ -19,7 +19,23 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     const { id: coleccionId } = await params
     const body = await req.json()
-    const { videosVistos, totalVideos } = body
+    const { videosVistos: videosVistosRaw } = body
+
+    // Contar videos reales de la colección (server-side, no confiar en el cliente)
+    const coleccion = await prisma.coleccion.findUnique({
+      where: { id: coleccionId },
+      select: { _count: { select: { videos: true } } },
+    })
+    if (!coleccion) {
+      return NextResponse.json({ error: 'Colección no encontrada' }, { status: 404 })
+    }
+    const totalVideos = coleccion._count.videos
+
+    // Clampar el input del cliente al rango válido
+    const videosVistos = Math.min(
+      Math.max(0, Number(videosVistosRaw) || 0),
+      totalVideos
+    )
 
     const porcentajeCompletado =
       totalVideos > 0 ? Math.round((videosVistos / totalVideos) * 100) : 0

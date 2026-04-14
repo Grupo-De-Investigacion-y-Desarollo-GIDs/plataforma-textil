@@ -46,7 +46,7 @@ export function AcademiaCliente({
   const [mostrarQuiz, setMostrarQuiz] = useState(false)
   const [respuestas, setRespuestas] = useState<number[]>([])
   const [enviandoQuiz, setEnviandoQuiz] = useState(false)
-  const [resultadoQuiz, setResultadoQuiz] = useState<{ aprobado: boolean; calificacion: number; codigo?: string } | null>(null)
+  const [resultadoQuiz, setResultadoQuiz] = useState<{ aprobado: boolean; calificacion: number; codigo?: string; error?: string } | null>(null)
 
   const cantidadVistos = videosVistos.size
   const progreso = videos.length > 0 ? Math.round((cantidadVistos / videos.length) * 100) : 0
@@ -90,6 +90,24 @@ export function AcademiaCliente({
         body: JSON.stringify({ respuestas }),
       })
       const data = await res.json()
+
+      if (!res.ok) {
+        if (res.status === 403) {
+          setResultadoQuiz({
+            aprobado: false,
+            calificacion: 0,
+            error: data.error ?? 'Completá todos los videos antes de rendir',
+          })
+        } else {
+          setResultadoQuiz({
+            aprobado: false,
+            calificacion: 0,
+            error: 'Error al enviar la evaluación. Intentá de nuevo.',
+          })
+        }
+        return
+      }
+
       setResultadoQuiz(data)
       if (data.aprobado) router.refresh()
     } finally {
@@ -201,7 +219,14 @@ export function AcademiaCliente({
               )}
               <Button
                 disabled={!todosVistos}
-                onClick={() => {
+                onClick={async () => {
+                  // Asegurar que todos los videos estén marcados antes de rendir
+                  const faltantes = videos
+                    .map((_, i) => i)
+                    .filter(i => !videosVistos.has(i))
+                  for (const i of faltantes) {
+                    await marcarVisto(i)
+                  }
                   setRespuestas(new Array(evaluacion.preguntas.length).fill(-1))
                   setMostrarQuiz(true)
                 }}
@@ -254,17 +279,27 @@ export function AcademiaCliente({
           )}
 
           {resultadoQuiz && (
-            <div className={`rounded-lg p-4 ${resultadoQuiz.aprobado ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+            <>
               {resultadoQuiz.aprobado ? (
-                <>
+                <div className="rounded-lg p-4 bg-green-50 border border-green-200">
                   <p className="font-bold text-green-700 text-lg">¡Aprobaste! {resultadoQuiz.calificacion}%</p>
                   <p className="text-green-600 text-sm mt-1">Tu certificado fue generado.</p>
                   {resultadoQuiz.codigo && (
                     <p className="text-xs text-gray-500 mt-2 font-mono">Código: {resultadoQuiz.codigo}</p>
                   )}
-                </>
+                </div>
+              ) : resultadoQuiz.error ? (
+                <Card className="bg-red-50 border border-red-200">
+                  <div className="flex items-center gap-3">
+                    <Lock className="w-5 h-5 text-red-500 shrink-0" />
+                    <div>
+                      <p className="font-semibold text-red-800">No podés rendir todavía</p>
+                      <p className="text-sm text-red-600">{resultadoQuiz.error}</p>
+                    </div>
+                  </div>
+                </Card>
               ) : (
-                <>
+                <Card className="bg-red-50 border border-red-200">
                   <p className="font-bold text-red-700">No aprobaste — {resultadoQuiz.calificacion}%</p>
                   <p className="text-red-600 text-sm mt-1">Revisá los videos e intentá de nuevo.</p>
                   <button
@@ -273,9 +308,9 @@ export function AcademiaCliente({
                   >
                     Intentar de nuevo
                   </button>
-                </>
+                </Card>
               )}
-            </div>
+            </>
           )}
         </Card>
       )}
