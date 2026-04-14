@@ -5,6 +5,12 @@ import { prisma } from '@/compartido/lib/prisma'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ProgressRing } from '@/compartido/componentes/ui/progress-ring'
+import {
+  PTS_VERIFICADO_AFIP,
+  PTS_POR_VALIDACION,
+  PTS_POR_CERTIFICADO,
+  PUNTAJE_MAX,
+} from '@/compartido/lib/nivel'
 
 const TOTAL_VALIDACIONES = 8
 
@@ -16,10 +22,10 @@ export default async function TallerDashboardPage() {
     where: { userId: session.user.id },
     include: {
       validaciones: true,
+      certificados: { where: { revocado: false } },
       progresoCapacitacion: {
         include: { coleccion: { select: { titulo: true } } },
       },
-      certificados: true,
       ordenesManufactura: {
         where: { estado: { in: ['PENDIENTE', 'EN_EJECUCION'] } },
         include: { pedido: { select: { omId: true, tipoPrenda: true } } },
@@ -29,21 +35,40 @@ export default async function TallerDashboardPage() {
     },
   })
 
-  // Detectar si subio de nivel en las ultimas 24hs
+  const certificadosActivos = taller?.certificados.length ?? 0
+
+  // Detectar cambio de nivel en las ultimas 24hs
   const hace24hs = new Date(Date.now() - 24 * 60 * 60 * 1000)
   const logNivelReciente = taller
     ? await prisma.logActividad.findFirst({
         where: {
-          accion: 'NIVEL_SUBIDO',
+          accion: { in: ['NIVEL_SUBIDO', 'NIVEL_BAJADO'] },
           timestamp: { gte: hace24hs },
           detalles: { path: ['tallerId'], equals: taller.id },
         },
         orderBy: { timestamp: 'desc' },
       })
     : null
-  const nivelNuevo = logNivelReciente
-    ? (logNivelReciente.detalles as { nivelNuevo?: string })?.nivelNuevo
+
+  const cambioNivel = logNivelReciente
+    ? {
+        accion: logNivelReciente.accion as 'NIVEL_SUBIDO' | 'NIVEL_BAJADO',
+        nivelNuevo: (logNivelReciente.detalles as { nivelNuevo?: string })?.nivelNuevo,
+        nivelAnterior: (logNivelReciente.detalles as { nivelAnterior?: string })?.nivelAnterior,
+      }
     : null
+
+  // Ultimos 10 cambios de nivel para este taller
+  const historialNiveles = taller
+    ? await prisma.logActividad.findMany({
+        where: {
+          accion: { in: ['NIVEL_SUBIDO', 'NIVEL_BAJADO'] },
+          detalles: { path: ['tallerId'], equals: taller.id },
+        },
+        orderBy: { timestamp: 'desc' },
+        take: 10,
+      })
+    : []
 
   // Colecciones recomendadas (las que no tienen progreso o están incompletas)
   const coleccionesRecomendadas = await prisma.coleccion.findMany({
@@ -101,19 +126,35 @@ export default async function TallerDashboardPage() {
         </p>
       </div>
 
-      {/* Banner de logro al subir de nivel */}
-      {nivelNuevo && (
-        <div className="p-4 bg-green-50 border-2 border-green-400 rounded-xl text-center">
-          <p className="text-2xl mb-1">
-            {nivelNuevo === 'ORO' ? '🥇' : '🥈'}
-          </p>
-          <p className="font-overpass font-bold text-green-800 text-lg">
-            Subiste a nivel {nivelNuevo}!
-          </p>
-          <p className="text-green-600 text-sm mt-1">
-            Tu taller ahora tiene mas visibilidad en el directorio
-          </p>
-        </div>
+      {/* Banner de cambio de nivel */}
+      {cambioNivel && cambioNivel.nivelNuevo && (
+        cambioNivel.accion === 'NIVEL_SUBIDO' ? (
+          <div className="border-l-4 border-l-green-500 bg-green-50 rounded-xl p-4 flex items-center gap-3">
+            <span className="text-2xl">
+              {cambioNivel.nivelNuevo === 'ORO' ? '🥇' : '🥈'}
+            </span>
+            <div>
+              <p className="font-overpass font-bold text-green-800">
+                Subiste a nivel {cambioNivel.nivelNuevo}!
+              </p>
+              <p className="text-sm text-green-600">
+                Ahora tenes mas visibilidad en el directorio.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="border-l-4 border-l-amber-500 bg-amber-50 rounded-xl p-4 flex items-center gap-3">
+            <span className="text-2xl">⚠️</span>
+            <div>
+              <p className="font-overpass font-bold text-amber-800">
+                Tu nivel bajo a {cambioNivel.nivelNuevo}
+              </p>
+              <p className="text-sm text-amber-600">
+                Revisa tus documentos en Formalizacion para volver a subir.
+              </p>
+            </div>
+          </div>
+        )
       )}
 
       {/* Progreso principal */}
@@ -182,6 +223,22 @@ export default async function TallerDashboardPage() {
           <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
             <p className="text-xs uppercase text-gray-500 font-semibold mb-1">Puntaje</p>
             <p className="text-3xl font-bold text-brand-red">{taller?.puntaje ?? 0}</p>
+            <div className="text-xs text-gray-400 space-y-0.5 mt-1">
+              {taller?.verificadoAfip && (
+                <p>+ {PTS_VERIFICADO_AFIP} pts CUIT verificado</p>
+              )}
+              {completadas > 0 && (
+                <p>+ {completadas * PTS_POR_VALIDACION} pts documentos ({completadas})</p>
+              )}
+              {certificadosActivos > 0 && (
+                <p>+ {certificadosActivos * PTS_POR_CERTIFICADO} pts capacitaciones ({certificadosActivos})</p>
+              )}
+              {(taller?.puntaje ?? 0) >= PUNTAJE_MAX && (
+                <p className="text-gray-500 font-medium mt-1">
+                  Puntaje maximo alcanzado ({PUNTAJE_MAX} pts)
+                </p>
+              )}
+            </div>
           </div>
           <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
             <p className="text-xs uppercase text-gray-500 font-semibold mb-1">Capacidad</p>
@@ -198,6 +255,37 @@ export default async function TallerDashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Historial de nivel */}
+      {historialNiveles.length > 1 && (
+        <div className="bg-white rounded-xl border border-gray-100 p-6">
+          <h2 className="font-overpass font-bold text-gray-800 mb-4">Historial de nivel</h2>
+          <div className="space-y-2">
+            {historialNiveles.map(log => {
+              const detalles = log.detalles as { nivelAnterior?: string; nivelNuevo?: string }
+              const subio = log.accion === 'NIVEL_SUBIDO'
+              return (
+                <div
+                  key={log.id}
+                  className="flex items-center justify-between text-sm py-2 border-b border-gray-50 last:border-0"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className={subio ? 'text-green-600' : 'text-amber-600'}>
+                      {subio ? '↑' : '↓'}
+                    </span>
+                    <span className="text-gray-600">
+                      {detalles.nivelAnterior} → {detalles.nivelNuevo}
+                    </span>
+                  </div>
+                  <span className="text-gray-400 text-xs">
+                    {new Date(log.timestamp).toLocaleDateString('es-AR')}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Banner contextual */}
       <div className="bg-brand-bg-light rounded-xl p-5 border-l-4 border-brand-blue">

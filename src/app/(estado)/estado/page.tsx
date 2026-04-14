@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
-import { Factory, Store, FileCheck, Award, Clock, TrendingUp, AlertCircle, BookOpen, ShoppingBag } from 'lucide-react'
+import { Factory, Store, FileCheck, Award, Clock, TrendingUp, TrendingDown, AlertCircle, BookOpen, ShoppingBag } from 'lucide-react'
 
 export default async function EstadoDashboardPage() {
   const session = await auth()
@@ -77,7 +77,7 @@ export default async function EstadoDashboardPage() {
   })
 
   const logsNivel = await prisma.logActividad.findMany({
-    where: { accion: { in: ['VALIDACION_APROBADA', 'NIVEL_SUBIDO'] } },
+    where: { accion: { in: ['VALIDACION_APROBADA', 'NIVEL_SUBIDO', 'NIVEL_BAJADO'] } },
     orderBy: { timestamp: 'desc' },
     take: 5,
     include: { user: { select: { name: true } } },
@@ -259,26 +259,45 @@ export default async function EstadoDashboardPage() {
           </Card>
         </div>
 
-        {logsNivel.length > 0 && (
-          <Card title="Actividad reciente — Aprobaciones" className="mt-4">
-            <div className="divide-y divide-gray-100">
-              {logsNivel.map((log) => (
-                <div key={log.id} className="py-2.5 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <FileCheck className="w-4 h-4 text-green-500 shrink-0" />
-                    <div>
-                      <p className="text-sm">
-                        <span className="font-semibold">{log.user?.name || 'Admin'}</span>
-                        {' aprobo validacion'}
-                      </p>
-                      <p className="text-xs text-gray-400">{log.timestamp.toLocaleDateString('es-AR')}</p>
+        {logsNivel.length > 0 && (() => {
+          const textoPorAccion: Record<string, { texto: string; icono: React.ReactNode }> = {
+            VALIDACION_APROBADA: {
+              texto: 'aprobo una validacion',
+              icono: <FileCheck className="w-4 h-4 text-green-500 shrink-0" />,
+            },
+            NIVEL_SUBIDO: {
+              texto: 'subio de nivel',
+              icono: <TrendingUp className="w-4 h-4 text-blue-500 shrink-0" />,
+            },
+            NIVEL_BAJADO: {
+              texto: 'bajo de nivel',
+              icono: <TrendingDown className="w-4 h-4 text-amber-500 shrink-0" />,
+            },
+          }
+          return (
+            <Card title="Actividad reciente" className="mt-4">
+              <div className="divide-y divide-gray-100">
+                {logsNivel.map((log) => {
+                  const info = textoPorAccion[log.accion] ?? textoPorAccion.VALIDACION_APROBADA
+                  return (
+                    <div key={log.id} className="py-2.5 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        {info.icono}
+                        <div>
+                          <p className="text-sm">
+                            <span className="font-semibold">{log.user?.name || 'Admin'}</span>
+                            {' '}{info.texto}
+                          </p>
+                          <p className="text-xs text-gray-400">{log.timestamp.toLocaleDateString('es-AR')}</p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
-        )}
+                  )
+                })}
+              </div>
+            </Card>
+          )
+        })()}
       </div>
     </div>
   )
