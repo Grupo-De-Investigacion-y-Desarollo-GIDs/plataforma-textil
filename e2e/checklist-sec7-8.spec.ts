@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { loginAs } from './helpers/auth'
+import { loginAs, assertAccesoBloqueado } from './helpers/auth'
 
 test.describe('Sec 7: MARKETPLACE', () => {
   test('7.1 Marca: /marca/pedidos muestra pedidos', async ({ page }) => {
@@ -69,10 +69,7 @@ test.describe('Sec 8: SEGURIDAD', () => {
     await page.waitForLoadState('networkidle')
     const url = page.url()
     const body = await page.locator('body').textContent()
-    const blocked = url.includes('/login') || url.includes('/taller') ||
-      body?.includes('No autorizado') || body?.includes('no autorizado') ||
-      body?.includes('Acceso denegado')
-    expect(blocked).toBeTruthy()
+    expect(assertAccesoBloqueado(url, body)).toBeTruthy()
   })
 
   test('8.2 Taller NO puede acceder a /estado', async ({ page }) => {
@@ -81,10 +78,7 @@ test.describe('Sec 8: SEGURIDAD', () => {
     await page.waitForLoadState('networkidle')
     const url = page.url()
     const body = await page.locator('body').textContent()
-    const blocked = url.includes('/login') || url.includes('/taller') ||
-      body?.includes('No autorizado') || body?.includes('no autorizado') ||
-      body?.includes('Acceso denegado')
-    expect(blocked).toBeTruthy()
+    expect(assertAccesoBloqueado(url, body)).toBeTruthy()
   })
 
   test('8.3 Marca NO puede acceder a /taller', async ({ page }) => {
@@ -93,10 +87,7 @@ test.describe('Sec 8: SEGURIDAD', () => {
     await page.waitForLoadState('networkidle')
     const url = page.url()
     const body = await page.locator('body').textContent()
-    const blocked = url.includes('/login') || url.includes('/marca') ||
-      body?.includes('No autorizado') || body?.includes('no autorizado') ||
-      body?.includes('Acceso denegado')
-    expect(blocked).toBeTruthy()
+    expect(assertAccesoBloqueado(url, body)).toBeTruthy()
   })
 
   test('8.4 Sin sesion redirige a /login', async ({ page }) => {
