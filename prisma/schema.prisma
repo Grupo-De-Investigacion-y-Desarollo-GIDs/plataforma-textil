@@ -78,6 +78,11 @@ enum CanalNotificacion {
   PLATAFORMA
 }
 
+enum VisibilidadPedido {
+  PUBLICO
+  INVITACION
+}
+
 enum EstadoAccionCorrectiva {
   PENDIENTE
   EN_PROCESO
@@ -217,6 +222,7 @@ model Taller {
   intentosEvaluacion    IntentoEvaluacion[]
   notasInternas         NotaInterna[]
   cotizaciones          Cotizacion[]
+  pedidosInvitado       PedidoInvitacion[]
 
   @@map("talleres")
 }
@@ -357,6 +363,7 @@ model Pedido {
   fechaCreacion DateTime     @default(now())
   fechaObjetivo DateTime?
   estado        EstadoPedido @default(BORRADOR)
+  visibilidad   VisibilidadPedido @default(PUBLICO)
   progresoTotal Float        @default(0)
   montoTotal    Float        @default(0)
   descripcion   String?      @db.Text
@@ -368,6 +375,7 @@ model Pedido {
   tipoPrendaRel TipoPrenda?  @relation(fields: [tipoPrendaId], references: [id])
   ordenes       OrdenManufactura[]
   cotizaciones  Cotizacion[]
+  invitaciones  PedidoInvitacion[]
 
   @@map("pedidos")
 }
@@ -394,6 +402,7 @@ model Cotizacion {
 
   pedido      Pedido            @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
   taller      Taller            @relation(fields: [tallerId], references: [id], onDelete: Cascade)
+  ordenManufactura OrdenManufactura?
 
   @@unique([pedidoId, tallerId])
   @@map("cotizaciones")
@@ -413,15 +422,30 @@ model OrdenManufactura {
   diasTranscurridos Int                    @default(0)
   verificacionSst Boolean                  @default(false)
   alertaTiempo    String?
+  cotizacionId    String?                  @unique
   createdAt       DateTime                 @default(now())
   updatedAt       DateTime                 @updatedAt
 
   pedido          Pedido            @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
   taller          Taller            @relation(fields: [tallerId], references: [id])
   procesoRel      ProcesoProductivo? @relation(fields: [procesoId], references: [id])
+  cotizacion      Cotizacion?       @relation(fields: [cotizacionId], references: [id], onDelete: SetNull)
   escrowHitos     EscrowHito[]
 
   @@map("ordenes_manufactura")
+}
+
+model PedidoInvitacion {
+  id        String   @id @default(cuid())
+  pedidoId  String
+  tallerId  String
+  createdAt DateTime @default(now())
+
+  pedido Pedido @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+  taller Taller @relation(fields: [tallerId], references: [id], onDelete: Cascade)
+
+  @@unique([pedidoId, tallerId])
+  @@map("pedido_invitaciones")
 }
 
 // ============================================

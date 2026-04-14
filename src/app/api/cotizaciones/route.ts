@@ -95,11 +95,24 @@ export async function POST(req: NextRequest) {
     // Verificar que el pedido existe y esta PUBLICADO
     const pedido = await prisma.pedido.findUnique({
       where: { id: data.pedidoId },
-      include: { marca: { select: { userId: true, nombre: true } } },
+      select: { id: true, estado: true, visibilidad: true, marca: { select: { userId: true, nombre: true } }, omId: true, tipoPrenda: true, cantidad: true, marcaId: true },
     })
     if (!pedido) return NextResponse.json({ error: 'Pedido no encontrado' }, { status: 404 })
     if (pedido.estado !== 'PUBLICADO') {
       return NextResponse.json({ error: 'El pedido no esta disponible para cotizar' }, { status: 400 })
+    }
+
+    // Si el pedido es INVITACION, validar que este taller fue invitado
+    if (pedido.visibilidad === 'INVITACION') {
+      const invitacion = await prisma.pedidoInvitacion.findUnique({
+        where: { pedidoId_tallerId: { pedidoId: data.pedidoId, tallerId: taller.id } },
+      })
+      if (!invitacion) {
+        return NextResponse.json(
+          { error: 'No fuiste invitado a cotizar este pedido' },
+          { status: 403 }
+        )
+      }
     }
 
     // Calcular vencimiento: 7 dias desde ahora

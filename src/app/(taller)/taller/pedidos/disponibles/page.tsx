@@ -5,16 +5,31 @@ import { prisma } from '@/compartido/lib/prisma'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card } from '@/compartido/componentes/ui/card'
+import { Badge } from '@/compartido/componentes/ui/badge'
 import { Package, MapPin, Calendar } from 'lucide-react'
 
 export default async function PedidosDisponiblesPage() {
   const session = await auth()
   if (!session?.user) redirect('/login')
 
+  const taller = await prisma.taller.findFirst({ where: { userId: session.user.id } })
+
   const pedidosDisponibles = await prisma.pedido.findMany({
-    where: { estado: 'PUBLICADO' },
+    where: {
+      estado: 'PUBLICADO',
+      OR: [
+        { visibilidad: 'PUBLICO' },
+        ...(taller ? [{ invitaciones: { some: { tallerId: taller.id } } }] : []),
+      ],
+    },
     include: {
       marca: { select: { nombre: true, tipo: true, ubicacion: true } },
+      ...(taller ? {
+        invitaciones: {
+          where: { tallerId: taller.id },
+          select: { id: true },
+        },
+      } : {}),
     },
     orderBy: { createdAt: 'desc' },
   })
@@ -36,7 +51,12 @@ export default async function PedidosDisponiblesPage() {
             <Card key={pedido.id}>
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                 <div className="space-y-1">
-                  <p className="font-overpass font-bold text-gray-800">{pedido.tipoPrenda}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-overpass font-bold text-gray-800">{pedido.tipoPrenda}</p>
+                    {'invitaciones' in pedido && Array.isArray(pedido.invitaciones) && pedido.invitaciones.length > 0 && (
+                      <Badge variant="default">Te invitaron</Badge>
+                    )}
+                  </div>
                   <p className="text-sm text-gray-500">
                     {pedido.marca.nombre}
                     {pedido.marca.ubicacion && (

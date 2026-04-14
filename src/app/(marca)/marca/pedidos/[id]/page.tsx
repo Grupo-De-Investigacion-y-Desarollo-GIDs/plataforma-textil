@@ -7,9 +7,9 @@ import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import Link from 'next/link'
 import { ArrowLeft, Package, Clock, DollarSign, TrendingUp, CheckCircle, Download } from 'lucide-react'
-import { AsignarTaller } from '@/marca/componentes/asignar-taller'
 import { CancelarPedido } from '@/marca/componentes/cancelar-pedido'
 import { PublicarPedido } from '@/marca/componentes/publicar-pedido'
+import { InvitarACotizar } from '@/marca/componentes/invitar-a-cotizar'
 import { AceptarCotizacion } from '@/marca/componentes/aceptar-cotizacion'
 import { RechazarCotizacion } from '@/marca/componentes/rechazar-cotizacion'
 
@@ -86,13 +86,11 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
 
   if (!pedido || pedido.marcaId !== marca.id) notFound()
 
-  const cotizaciones = pedido.estado === 'PUBLICADO'
-    ? await prisma.cotizacion.findMany({
-        where: { pedidoId: pedido.id },
-        include: { taller: { select: { nombre: true, nivel: true } } },
-        orderBy: { createdAt: 'desc' },
-      })
-    : []
+  const cotizaciones = await prisma.cotizacion.findMany({
+    where: { pedidoId: pedido.id },
+    include: { taller: { select: { nombre: true, nivel: true } } },
+    orderBy: { createdAt: 'desc' },
+  })
 
   const currentStep = getStepIndex(pedido.estado)
   const isCancelled = pedido.estado === 'CANCELADO'
@@ -195,54 +193,57 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
         {pedido.estado === 'BORRADOR' && (
           <PublicarPedido pedidoId={pedido.id} />
         )}
-        {(pedido.estado === 'BORRADOR' || pedido.estado === 'PUBLICADO') && (
-          <AsignarTaller pedidoId={pedido.id} />
+        {pedido.estado === 'BORRADOR' && (
+          <InvitarACotizar pedidoId={pedido.id} />
         )}
         {['BORRADOR', 'PUBLICADO', 'EN_EJECUCION'].includes(pedido.estado) && (
           <CancelarPedido pedidoId={pedido.id} />
         )}
       </div>
 
-      {/* Cotizaciones recibidas */}
-      {pedido.estado === 'PUBLICADO' && (
-        <Card title={`Cotizaciones recibidas (${cotizaciones.length})`}>
-          {cotizaciones.length === 0 ? (
-            <p className="text-gray-500 text-sm py-4">
-              Todavia no recibiste cotizaciones. Los talleres compatibles fueron notificados.
-            </p>
-          ) : (
-            <div className="space-y-3">
-              {cotizaciones.map(cot => (
-                <div key={cot.id} className="border border-gray-100 rounded-lg p-4">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-1">
-                      <p className="font-medium text-gray-800">{cot.taller.nombre}</p>
-                      <Badge variant={cot.taller.nivel === 'ORO' ? 'success' : cot.taller.nivel === 'PLATA' ? 'default' : 'warning'}>
-                        {cot.taller.nivel}
-                      </Badge>
-                    </div>
-                    <Badge variant={
-                      cot.estado === 'ENVIADA' ? 'default' :
-                      cot.estado === 'ACEPTADA' ? 'success' :
-                      cot.estado === 'RECHAZADA' ? 'error' : 'muted'
-                    }>{cot.estado}</Badge>
+      {/* Cotizaciones */}
+      {cotizaciones.length > 0 && (
+        <Card title={`Cotizaciones (${cotizaciones.length})`}>
+          <div className="space-y-3">
+            {cotizaciones.map(cot => (
+              <div
+                key={cot.id}
+                className={`border rounded-lg p-4 ${
+                  cot.estado === 'ACEPTADA'
+                    ? 'border-green-300 bg-green-50'
+                    : 'border-gray-100'
+                }`}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="space-y-1">
+                    <p className="font-medium text-gray-800">{cot.taller.nombre}</p>
+                    <Badge variant={cot.taller.nivel === 'ORO' ? 'success' : cot.taller.nivel === 'PLATA' ? 'default' : 'warning'}>
+                      {cot.taller.nivel}
+                    </Badge>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3 text-sm">
-                    <div><span className="text-gray-500">Proceso:</span> <span className="font-medium">{cot.proceso}</span></div>
-                    <div><span className="text-gray-500">Precio:</span> <span className="font-medium">$ {cot.precio.toLocaleString('es-AR')}</span></div>
-                    <div><span className="text-gray-500">Plazo:</span> <span className="font-medium">{cot.plazoDias} dias</span></div>
-                  </div>
-                  {cot.mensaje && <p className="text-sm text-gray-600 mt-2 italic">{cot.mensaje}</p>}
-                  {cot.estado === 'ENVIADA' && (
-                    <div className="flex gap-2 mt-3">
-                      <AceptarCotizacion cotizacionId={cot.id} />
-                      <RechazarCotizacion cotizacionId={cot.id} />
-                    </div>
-                  )}
+                  <Badge variant={
+                    cot.estado === 'ENVIADA' ? 'default' :
+                    cot.estado === 'ACEPTADA' ? 'success' :
+                    cot.estado === 'RECHAZADA' ? 'error' : 'muted'
+                  }>
+                    {cot.estado}
+                  </Badge>
                 </div>
-              ))}
-            </div>
-          )}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3 text-sm">
+                  <div><span className="text-gray-500">Proceso:</span> <span className="font-medium">{cot.proceso}</span></div>
+                  <div><span className="text-gray-500">Precio:</span> <span className="font-medium">$ {cot.precio.toLocaleString('es-AR')}</span></div>
+                  <div><span className="text-gray-500">Plazo:</span> <span className="font-medium">{cot.plazoDias} dias</span></div>
+                </div>
+                {cot.mensaje && <p className="text-sm text-gray-600 mt-2 italic">{cot.mensaje}</p>}
+                {cot.estado === 'ENVIADA' && pedido.estado === 'PUBLICADO' && (
+                  <div className="flex gap-2 mt-3">
+                    <AceptarCotizacion cotizacionId={cot.id} />
+                    <RechazarCotizacion cotizacionId={cot.id} />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </Card>
       )}
 

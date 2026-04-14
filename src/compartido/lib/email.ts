@@ -198,6 +198,24 @@ export function buildCotizacionRechazadaEmail(data: {
   }
 }
 
+export function buildInvitacionCotizarEmail(data: {
+  nombreTaller: string
+  nombreMarca: string
+  tipoPrenda: string
+  cantidad: number
+  pedidoUrl: string
+}): { subject: string; html: string } {
+  return {
+    subject: `Te invitaron a cotizar: ${data.tipoPrenda}`,
+    html: emailWrapper(`
+      <h2>Hola ${data.nombreTaller}</h2>
+      <p>${data.nombreMarca} te invito a cotizar un pedido de <strong>${data.cantidad} unidades de ${data.tipoPrenda}</strong>.</p>
+      <p>Solo vos y los talleres invitados pueden ver este pedido.</p>
+      ${btnPrimario(data.pedidoUrl, 'Ver pedido y cotizar')}
+    `),
+  }
+}
+
 export function buildPedidoDisponibleEmail(data: {
   nombreTaller: string
   nombreMarca: string

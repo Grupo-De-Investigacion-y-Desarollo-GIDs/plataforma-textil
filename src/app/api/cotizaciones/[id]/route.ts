@@ -64,6 +64,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
             proceso: cotizacion.proceso,
             precio: cotizacion.precio,
             plazoDias: cotizacion.plazoDias,
+            cotizacionId: cotizacion.id,
           },
         }),
         prisma.pedido.update({
