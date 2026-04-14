@@ -3,6 +3,11 @@
 ## 2026-04-14
 
 ### Gerardo Breard
+- **17:15** `ac76919` — feat: v2-epica-academia — gate real de videos, fix puntaje bypass, manejo 403
+  - `src/app/api/colecciones/[id]/evaluacion/route.ts`
+  - `src/app/api/colecciones/[id]/progreso/route.ts`
+  - `src/taller/componentes/academia-cliente.tsx`
+
 - **17:01** `fbc3323` — docs: agregar QA v2-epica-perfil-productivo
   - `.claude/auditorias/QA_v2-epica-perfil-productivo.md`
 
