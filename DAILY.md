@@ -3,6 +3,9 @@
 ## 2026-04-14
 
 ### Gerardo Breard
+- **17:24** `2cada9d` — docs: agregar QA v2-epica-academia
+  - `.claude/auditorias/QA_v2-epica-academia.md`
+
 - **17:15** `ac76919` — feat: v2-epica-academia — gate real de videos, fix puntaje bypass, manejo 403
   - `src/app/api/colecciones/[id]/evaluacion/route.ts`
   - `src/app/api/colecciones/[id]/progreso/route.ts`
