@@ -662,6 +662,7 @@ model Notificacion {
   canal       CanalNotificacion @default(PLATAFORMA)
   createdById String?
   batchId     String?
+  link        String?
   createdAt   DateTime          @default(now())
 
   user      User  @relation("NotificacionDestinatario", fields: [userId],      references: [id], onDelete: Cascade)

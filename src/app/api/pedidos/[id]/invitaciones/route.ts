@@ -73,6 +73,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
           titulo: `Te invitaron a cotizar: ${pedido.tipoPrenda}`,
           mensaje: `${pedido.marca.nombre} te invitó a cotizar un pedido de ${pedido.cantidad} unidades de ${pedido.tipoPrenda}.`,
           canal: 'PLATAFORMA',
+          link: `/taller/pedidos/disponibles/${id}`,
         },
       }).catch((err) => console.error('[invitaciones] Error creando notificación:', err))
 

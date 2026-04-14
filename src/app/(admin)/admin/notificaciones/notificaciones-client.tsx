@@ -18,6 +18,7 @@ export default function NotificacionesClient() {
     mensaje: '',
     segmento: 'todos' as string,
     canal: 'PLATAFORMA' as string,
+    link: '',
   })
 
   async function handleSubmit() {
@@ -38,6 +39,7 @@ export default function NotificacionesClient() {
           tipo: 'ADMIN_ENVIO',
           canal: form.canal,
           segmento: form.segmento,
+          link: form.link || null,
         }),
       })
 
@@ -51,7 +53,7 @@ export default function NotificacionesClient() {
       setTimeout(() => {
         setModalOpen(false)
         setSent(false)
-        setForm({ asunto: '', mensaje: '', segmento: 'todos', canal: 'PLATAFORMA' as string })
+        setForm({ asunto: '', mensaje: '', segmento: 'todos', canal: 'PLATAFORMA' as string, link: '' })
         router.refresh()
       }, 1500)
     } catch {
@@ -88,6 +90,22 @@ export default function NotificacionesClient() {
               placeholder="Escribi el mensaje de la notificacion..."
               className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Link de destino <span className="text-gray-400 font-normal">(opcional)</span>
+            </label>
+            <input
+              type="url"
+              value={form.link}
+              onChange={e => setForm(f => ({ ...f, link: e.target.value }))}
+              placeholder="/taller/aprender o https://..."
+              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+            />
+            <p className="text-xs text-gray-400 mt-1">
+              Si completas este campo, los usuarios pueden hacer click en la notificacion para ir al destino
+            </p>
           </div>
 
           <div>

@@ -136,7 +136,7 @@ export async function POST(req: NextRequest) {
         cotizacion,
         taller: { nombre: taller.nombre },
         marca: { userId: pedido.marca.userId, nombre: pedido.marca.nombre },
-        pedido: { omId: pedido.omId },
+        pedido: { omId: pedido.omId, id: pedido.id },
       })
 
       return NextResponse.json(cotizacion, { status: 201 })

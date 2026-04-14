@@ -78,7 +78,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         cotizacion,
         taller: { nombre: cotizacion.taller.nombre, userId: cotizacion.taller.userId },
         marca: { nombre: cotizacion.pedido.marca.nombre },
-        pedido: { omId: cotizacion.pedido.omId },
+        pedido: { omId: cotizacion.pedido.omId, id: cotizacion.pedidoId },
       })
 
       // Notificar a talleres rechazados
@@ -97,7 +97,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
           cotizacion: cot,
           taller: { nombre: cot.taller.nombre, userId: cot.taller.userId },
           marca: { nombre: cotizacion.pedido.marca.nombre },
-          pedido: { omId: cotizacion.pedido.omId },
+          pedido: { omId: cotizacion.pedido.omId, id: cotizacion.pedidoId },
         })
       }
 
@@ -120,7 +120,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         cotizacion,
         taller: { nombre: cotizacion.taller.nombre, userId: cotizacion.taller.userId },
         marca: { nombre: cotizacion.pedido.marca.nombre },
-        pedido: { omId: cotizacion.pedido.omId },
+        pedido: { omId: cotizacion.pedido.omId, id: cotizacion.pedidoId },
       })
 
       return NextResponse.json({ ok: true })

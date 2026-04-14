@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     if (role !== 'ADMIN') return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 })
 
     const body = await req.json()
-    const { titulo, mensaje, tipo, canal, segmento } = body
+    const { titulo, mensaje, tipo, canal, segmento, link } = body
 
     if (!titulo || !mensaje) {
       return NextResponse.json({ error: 'Título y mensaje son obligatorios' }, { status: 400 })
@@ -61,6 +61,7 @@ export async function POST(req: NextRequest) {
         titulo,
         mensaje,
         canal: canal || 'PLATAFORMA',
+        link: link || null,
         createdById: session.user!.id!,
         batchId,
       })),
