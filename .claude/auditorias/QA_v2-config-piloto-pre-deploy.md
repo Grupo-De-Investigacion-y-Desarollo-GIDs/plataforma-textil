@@ -95,7 +95,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
   - Ana Belen Torres → **Ana Belen Torres** (con tilde en la e)
   - Sofia Martinez → **Sofia Martinez** (con tilde en i y en i)
   - Graciela Sosa y Carlos Mendoza **sin tildes** (correcto asi)
-- **Resultado:** [ ]
+- **Resultado:** [ ninguno de los nombres tiene tildes ]
 - **Notas:**
 
 > Si algun nombre no tiene tildes → abrir widget → tipo **bug** → describir cual nombre falta
@@ -106,7 +106,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
 - **URL de inicio:** https://plataforma-textil.vercel.app/acceso-rapido
 - **Accion:** Click en la tarjeta de Lucia Fernandez. Esperar a que cargue.
 - **Esperado:** Redirige a `/admin`. Se ve el panel de administracion. El nombre "Lucia Fernandez" aparece en el sidebar o header.
-- **Resultado:** [ ]
+- **Resultado:** [no esta el nombre en el panel admin de "lucia Fernandez" una vez ingresada con su usuario ]
 - **Notas:**
 
 ### Paso 3 — Login con Roberto Gimenez (TALLER BRONCE)
@@ -115,7 +115,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
 - **URL de inicio:** https://plataforma-textil.vercel.app/acceso-rapido
 - **Accion:** Si tenes sesion activa, primero cerrar sesion. Luego click en Roberto Gimenez.
 - **Esperado:** Redirige a `/taller`. Se ve el dashboard de taller.
-- **Resultado:** [ ]
+- **Resultado:** [Ok, se ve tablero ]
 - **Notas:**
 
 ### Paso 4 — Login con Graciela Sosa (TALLER PLATA)
@@ -124,7 +124,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
 - **URL de inicio:** https://plataforma-textil.vercel.app/acceso-rapido
 - **Accion:** Cerrar sesion anterior. Click en Graciela Sosa.
 - **Esperado:** Redirige a `/taller`. Se ve el dashboard de taller.
-- **Resultado:** [ ]
+- **Resultado:** [Ok, se ve tablero ]
 - **Notas:**
 
 ### Paso 5 — Login con Carlos Mendoza (TALLER ORO)
@@ -133,7 +133,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
 - **URL de inicio:** https://plataforma-textil.vercel.app/acceso-rapido
 - **Accion:** Cerrar sesion anterior. Click en Carlos Mendoza.
 - **Esperado:** Redirige a `/taller`. Se ve el dashboard de taller.
-- **Resultado:** [ ]
+- **Resultado:** [Ok, se ve tablero ]
 - **Notas:**
 
 ### Paso 6 — Login con Martin Echevarria (MARCA)
@@ -142,7 +142,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
 - **URL de inicio:** https://plataforma-textil.vercel.app/acceso-rapido
 - **Accion:** Cerrar sesion anterior. Click en Martin Echevarria.
 - **Esperado:** Redirige a `/marca`. Se ve el panel de marca.
-- **Resultado:** [ ]
+- **Resultado:** [ Ok, se ve tablero]
 - **Notas:**
 
 ### Paso 7 — Login con Ana Belen Torres (ESTADO)
@@ -151,7 +151,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
 - **URL de inicio:** https://plataforma-textil.vercel.app/acceso-rapido
 - **Accion:** Cerrar sesion anterior. Click en Ana Belen Torres.
 - **Esperado:** Redirige a `/estado`. Se ve el dashboard del sector.
-- **Resultado:** [ ]
+- **Resultado:** [Ok, se ve tablero ]
 - **Notas:**
 
 ### Paso 8 — Login con Sofia Martinez (CONTENIDO)
@@ -160,7 +160,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
 - **URL de inicio:** https://plataforma-textil.vercel.app/acceso-rapido
 - **Accion:** Cerrar sesion anterior. Click en Sofia Martinez.
 - **Esperado:** Redirige a `/contenido/colecciones`. Se ve el panel de contenido.
-- **Resultado:** [ ]
+- **Resultado:** [ Ok, se ve tablero]
 - **Notas:**
 
 ### Paso 9 — Widget de feedback sin login
@@ -176,7 +176,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
   6. Escribir: "Test de feedback sin login — ignorar este reporte"
   7. Click en "Enviar feedback"
 - **Esperado:** Aparece el mensaje de confirmacion "Gracias por tu feedback!" con el icono verde. Despues de 2 segundos el widget se cierra solo.
-- **Resultado:** [ ]
+- **Resultado:** [no aparece boton de "feedback" en sl sitio sin logueo ]
 - **Notas:**
 
 ### Paso 10 — Widget de feedback con login
@@ -192,7 +192,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
   6. Escribir: "Test de feedback con login — ignorar este reporte"
   7. Click en "Enviar feedback"
 - **Esperado:** Aparece "Gracias por tu feedback!" y se cierra. Los campos de nombre y rol no deben estar visibles cuando hay sesion activa.
-- **Resultado:** [ ]
+- **Resultado:** [Aparece el boton de Feedback, no aparecen los camps de "Tu nombre " ni de "Rol", funciona el envio de feedback ]
 - **Notas:**
 
 ### Paso 11 — Subir documento de formalizacion (bucket documentos)
@@ -207,8 +207,9 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
   5. Seleccionar un archivo PDF de prueba (o imagen JPG/PNG)
   6. Confirmar la subida
 - **Esperado:** El documento se sube sin error. No debe aparecer "Bucket not found" ni error de storage. El documento queda visible con estado "Pendiente de revision".
-- **Resultado:** [ ]
-- **Notas:**
+- **Resultado:** [Pagina de Fromalización da error:Error en Taller
+Ocurrio un error cargando esta seccion. Podes reintentar o volver al inicio. ]
+- **Notas:** no se puede comprobar subida de documento
 
 > Si ves "Bucket not found" → abrir widget → tipo **bug** → describir "Error de storage al subir documento de formalizacion"
 
@@ -225,7 +226,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
   6. Buscar el documento subido en el paso anterior
   7. Click en "Ver documento"
 - **Esperado:** El documento se abre o descarga sin error 403 ni "archivo no encontrado".
-- **Resultado:** [ ]
+- **Resultado:** [ no se puede completar el test porque no se puede subir documentoes con el perfil talleres. No aparece en las opciones del listado de dcoumento en panel admin/talleres/formalizacion el boton "detale".]
 - **Notas:**
 
 > **Nota:** el bucket es privado actualmente. Si el documento no se puede visualizar (error 403), reportar como **bug** — se resolvera en el spec de storage-documentos.
@@ -240,7 +241,7 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
   3. Verificar que existe el toggle "Academia"
   4. Verificar si esta activo o inactivo
 - **Esperado:** El toggle de Academia existe y se puede cambiar. Si Gerardo ya lo activo, debe estar en "Activo".
-- **Resultado:** [ ]
+- **Resultado:** [ Esta activo el togle de academia]
 - **Notas:** Si el toggle no existe o la pagina da error → reportar como **bug**
 
 ---
@@ -254,7 +255,10 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
 | 3 | Feedback sin tipo seleccionado | Escribir mensaje largo pero no seleccionar tipo, enviar | Debe mostrar error de validacion | |
 | 4 | Login con credenciales incorrectas | Ir a `/login`, usar email correcto pero password incorrecto | No debe loguearse, debe mostrar error | |
 
----
+Resultados: 1 No aparece boton feedbacjk sin logueo
+            2 Funciona
+            3 Funciona la accionde no enviar feedback si no se marca el "tipo" pero no muestra mesaje de error
+---         4 Funciona, muetsra error con pass incorrecto
 
 ## Eje 4 — Performance
 
@@ -295,14 +299,14 @@ Pasos de navegacion a seguir en orden. Cada paso es una accion concreta.
 
 ## Checklist de cierre
 
-- [ ] Nombres con tildes verificados en `/acceso-rapido`
-- [ ] Login funcional con las 7 credenciales del seed
-- [ ] Widget de feedback funciona sin login (campos nombre + rol visibles)
-- [ ] Widget de feedback funciona con login (sin campos extra)
-- [ ] Subida de documento de formalizacion probada
-- [ ] Visualizacion de documento desde admin probada
-- [ ] Feature flags revisados en `/admin/configuracion`
-- [ ] Casos borde probados
+- [ No] Nombres con tildes verificados en `/acceso-rapido`
+- [ si] Login funcional con las 7 credenciales del seed
+- [ no] Widget de feedback funciona sin login (campos nombre + rol visibles)
+- [ si ] Widget de feedback funciona con login (sin campos extra)
+- [ no se pudo probar] Subida de documento de formalizacion probada
+- [ no se pudo probar] Visualizacion de documento desde admin probada
+- [ si] Feature flags revisados en `/admin/configuracion`
+- [ si] Casos borde probados
 - [ ] Performance revisada en desktop y movil
 - [ ] Issues abiertos en GitHub con labels correctos
 - [ ] Resultado global definido
