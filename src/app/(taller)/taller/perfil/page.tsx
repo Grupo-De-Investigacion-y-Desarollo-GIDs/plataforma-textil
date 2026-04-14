@@ -8,7 +8,8 @@ import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
 import { ProgressRing } from '@/compartido/componentes/ui/progress-ring'
-import { Star, MapPin, Users, TrendingUp, Clock, Award, Edit } from 'lucide-react'
+import { Star, MapPin, Users, TrendingUp, Clock, Award } from 'lucide-react'
+import { PortfolioManager } from '@/taller/componentes/portfolio-manager'
 
 const nivelColor: Record<string, 'warning' | 'default' | 'success'> = { BRONCE: 'warning', PLATA: 'default', ORO: 'success' }
 
@@ -161,6 +162,10 @@ export default async function TallerPerfilPage() {
           </div>
         </Card>
       )}
+
+      <Card title="Mi portfolio">
+        <PortfolioManager tallerId={taller.id} fotosActuales={taller.portfolioFotos} />
+      </Card>
 
       {taller.organizacion && (
         <Card title="Perfil productivo">

@@ -103,6 +103,9 @@ export async function POST(req: NextRequest) {
         fechaObjetivo: body.fechaObjetivo ? new Date(body.fechaObjetivo) : undefined,
         estado: role === 'ADMIN' ? body.estado : 'BORRADOR',
         montoTotal: Number.isFinite(montoTotal) && montoTotal >= 0 ? montoTotal : 0,
+        descripcion: typeof body.descripcion === 'string' ? body.descripcion.trim() || null : undefined,
+        imagenes: Array.isArray(body.imagenes) ? body.imagenes.filter((u: unknown) => typeof u === 'string') : undefined,
+        procesosRequeridos: Array.isArray(body.procesosRequeridos) ? body.procesosRequeridos.filter((u: unknown) => typeof u === 'string') : undefined,
       },
     })
 

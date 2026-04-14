@@ -5,6 +5,7 @@ import { prisma } from '@/compartido/lib/prisma'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Star, MapPin, Users, TrendingUp, Clock, Award } from 'lucide-react'
+import { GaleriaFotos } from '@/taller/componentes/galeria-fotos'
 
 const nivelColor: Record<string, 'warning' | 'default' | 'success'> = { BRONCE: 'warning', PLATA: 'default', ORO: 'success' }
 
@@ -90,6 +91,12 @@ export default async function PerfilPublicoPage({ params }: { params: Promise<{ 
               <Badge key={tp.id} variant="outline">{tp.prenda.nombre}</Badge>
             ))}
           </div>
+        </Card>
+      )}
+
+      {taller.portfolioFotos.length > 0 && (
+        <Card title="Trabajos realizados" className="mb-4">
+          <GaleriaFotos fotos={taller.portfolioFotos} />
         </Card>
       )}
 

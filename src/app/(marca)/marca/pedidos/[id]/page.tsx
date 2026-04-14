@@ -7,6 +7,8 @@ import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import Link from 'next/link'
 import { ArrowLeft, Package, Clock, DollarSign, TrendingUp, CheckCircle, Download } from 'lucide-react'
+import { GaleriaFotos } from '@/taller/componentes/galeria-fotos'
+import { CotizacionImagenes } from '@/marca/componentes/cotizacion-imagenes'
 import { CancelarPedido } from '@/marca/componentes/cancelar-pedido'
 import { PublicarPedido } from '@/marca/componentes/publicar-pedido'
 import { InvitarACotizar } from '@/marca/componentes/invitar-a-cotizar'
@@ -188,6 +190,13 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
         </Card>
       </div>
 
+      {/* Imagenes del pedido */}
+      {pedido.imagenes.length > 0 && (
+        <Card title="Imagenes de referencia">
+          <GaleriaFotos fotos={pedido.imagenes} />
+        </Card>
+      )}
+
       {/* Acciones */}
       <div className="flex flex-wrap items-center gap-3">
         {pedido.estado === 'BORRADOR' && (
@@ -235,6 +244,9 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
                   <div><span className="text-gray-500">Plazo:</span> <span className="font-medium">{cot.plazoDias} dias</span></div>
                 </div>
                 {cot.mensaje && <p className="text-sm text-gray-600 mt-2 italic">{cot.mensaje}</p>}
+                {cot.imagenes && cot.imagenes.length > 0 && (
+                  <CotizacionImagenes imagenes={cot.imagenes} />
+                )}
                 {cot.estado === 'ENVIADA' && pedido.estado === 'PUBLICADO' && (
                   <div className="flex gap-2 mt-3">
                     <AceptarCotizacion cotizacionId={cot.id} />

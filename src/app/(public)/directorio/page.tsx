@@ -6,7 +6,7 @@ import { prisma } from '@/compartido/lib/prisma'
 import { getFeatureFlag } from '@/compartido/lib/features'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
-import { Star, MapPin, Users, ArrowRight } from 'lucide-react'
+import { Star, MapPin, Users, ArrowRight, Factory } from 'lucide-react'
 
 const nivelColor: Record<string, 'warning' | 'default' | 'success'> = { BRONCE: 'warning', PLATA: 'default', ORO: 'success' }
 const allowedNiveles = ['BRONCE', 'PLATA', 'ORO'] as const
@@ -127,7 +127,22 @@ export default async function DirectorioPage({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {talleres.map((taller) => (
             <Link key={taller.id} href={`/perfil/${taller.id}`}>
-              <Card className="h-full hover:shadow-card-hover transition-shadow">
+              <Card className="h-full hover:shadow-card-hover transition-shadow p-0 overflow-hidden">
+                <div className="aspect-video bg-gray-100 overflow-hidden">
+                  {taller.portfolioFotos?.[0] ? (
+                    <img
+                      src={taller.portfolioFotos[0]}
+                      alt={taller.nombre}
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Factory className="w-8 h-8 text-gray-300" />
+                    </div>
+                  )}
+                </div>
+                <div className="p-4">
                 <div className="flex items-start justify-between mb-3">
                   <h2 className="font-overpass font-bold text-lg text-brand-blue">{taller.nombre}</h2>
                   <Badge variant={nivelColor[taller.nivel]}>{taller.nivel}</Badge>
@@ -160,6 +175,7 @@ export default async function DirectorioPage({
                 <span className="inline-flex items-center gap-1 text-sm text-brand-blue font-semibold">
                   Ver perfil <ArrowRight className="w-3.5 h-3.5" />
                 </span>
+                </div>
               </Card>
             </Link>
           ))}

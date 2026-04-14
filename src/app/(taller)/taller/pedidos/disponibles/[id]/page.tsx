@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { Card } from '@/compartido/componentes/ui/card'
 import { ArrowLeft } from 'lucide-react'
 import { CotizarForm } from '@/taller/componentes/cotizar-form'
+import { GaleriaFotos } from '@/taller/componentes/galeria-fotos'
 
 export default async function PedidoDisponibleDetallePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -72,6 +73,12 @@ export default async function PedidoDisponibleDetallePage({ params }: { params: 
           </div>
         )}
       </Card>
+
+      {pedido.imagenes.length > 0 && (
+        <Card title="Imagenes de referencia">
+          <GaleriaFotos fotos={pedido.imagenes} />
+        </Card>
+      )}
 
       {cotizacionExistente ? (
         <Card>

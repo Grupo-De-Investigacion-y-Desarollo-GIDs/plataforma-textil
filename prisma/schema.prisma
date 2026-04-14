@@ -372,6 +372,9 @@ model Pedido {
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 
+  imagenes           String[]
+  procesosRequeridos String[]
+
   marca         Marca        @relation(fields: [marcaId], references: [id])
   tipoPrendaRel TipoPrenda?  @relation(fields: [tipoPrendaId], references: [id])
   ordenes       OrdenManufactura[]
@@ -400,6 +403,8 @@ model Cotizacion {
   venceEn     DateTime
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
+
+  imagenes    String[]
 
   pedido      Pedido            @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
   taller      Taller            @relation(fields: [tallerId], references: [id], onDelete: Cascade)

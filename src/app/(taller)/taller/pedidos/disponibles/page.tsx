@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
-import { Package, MapPin, Calendar } from 'lucide-react'
+import { Package, MapPin, Calendar, ImageIcon } from 'lucide-react'
 
 export default async function PedidosDisponiblesPage() {
   const session = await auth()
@@ -49,6 +49,16 @@ export default async function PedidosDisponiblesPage() {
         <div className="space-y-4">
           {pedidosDisponibles.map((pedido) => (
             <Card key={pedido.id}>
+              {pedido.imagenes?.[0] && (
+                <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden mb-3">
+                  <img
+                    src={pedido.imagenes[0]}
+                    alt={pedido.tipoPrenda}
+                    loading="lazy"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">

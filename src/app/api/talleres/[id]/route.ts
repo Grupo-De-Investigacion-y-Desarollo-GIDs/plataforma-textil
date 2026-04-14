@@ -56,6 +56,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       'sam', 'prendaPrincipal', 'organizacion', 'metrosCuadrados',
       'areas', 'experienciaPromedio', 'polivalencia', 'horario',
       'registroProduccion', 'escalabilidad', 'paradasFrecuencia',
+      'portfolioFotos',
     ]
     for (const f of fields) {
       if (body[f] !== undefined) data[f] = body[f]

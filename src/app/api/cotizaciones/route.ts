@@ -118,6 +118,11 @@ export async function POST(req: NextRequest) {
     // Calcular vencimiento: 7 dias desde ahora
     const venceEn = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 
+    // Imagenes opcionales (no validadas por zod, vienen como URLs ya subidas)
+    const imagenes = Array.isArray(body.imagenes)
+      ? body.imagenes.filter((u: unknown) => typeof u === 'string')
+      : []
+
     try {
       const cotizacion = await prisma.cotizacion.create({
         data: {
@@ -128,6 +133,7 @@ export async function POST(req: NextRequest) {
           proceso: data.proceso,
           mensaje: data.mensaje ?? null,
           venceEn,
+          imagenes,
         },
       })
 

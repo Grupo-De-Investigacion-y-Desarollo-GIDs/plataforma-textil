@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import Link from 'next/link'
-import { MapPin, Star, MessageCircle } from 'lucide-react'
+import { MapPin, Star, MessageCircle, Factory } from 'lucide-react'
 
 const nivelVariant: Record<string, 'warning' | 'default' | 'success'> = {
   BRONCE: 'warning',
@@ -189,8 +189,23 @@ export default async function DirectorioPage({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {talleres.map((taller) => (
-            <Card key={taller.id} className="flex flex-col justify-between">
+            <Card key={taller.id} className="flex flex-col justify-between p-0 overflow-hidden">
               <div>
+                <div className="aspect-video bg-gray-100 overflow-hidden">
+                  {taller.portfolioFotos?.[0] ? (
+                    <img
+                      src={taller.portfolioFotos[0]}
+                      alt={taller.nombre}
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Factory className="w-8 h-8 text-gray-300" />
+                    </div>
+                  )}
+                </div>
+                <div className="p-4">
                 <div className="flex items-start justify-between mb-3">
                   <h3 className="font-overpass font-bold text-xl text-brand-blue">
                     {taller.nombre}
@@ -231,7 +246,8 @@ export default async function DirectorioPage({
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
+              </div>
+              <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100 px-4 pb-4">
                 <Link
                   href={`/marca/directorio/${taller.id}`}
                   className="inline-flex items-center justify-center rounded-lg font-overpass font-semibold transition-colors bg-brand-blue hover:bg-brand-blue-hover text-white px-4 py-2 text-sm"

@@ -62,7 +62,7 @@ next-env.d.ts
 PROPUESTA_OIT_WORD.md
 PROPUESTA_OIT.html
 PROPUESTA_OIT_REESTRUCTURADA.md
-imagenes/
+/imagenes/
 planteos_scrape/
 .env*.local
 
