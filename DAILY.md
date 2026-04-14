@@ -3,6 +3,15 @@
 ## 2026-04-14
 
 ### Gerardo Breard
+- **15:19** `871ffcd` — feat: v2-epica-notificaciones — centro de comunicaciones + historial
+  - `prisma/migrations/20260414170000_notificacion_created_by_batch/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/app/(admin)/admin/notificaciones/notificaciones-client.tsx`
+  - `src/app/(admin)/admin/notificaciones/page.tsx`
+  - `src/app/(public)/cuenta/page.tsx`
+  - `src/app/api/admin/notificaciones/route.ts`
+  - `src/compartido/lib/email.ts`
+
 - **14:18** `e6c28b4` — docs: agregar QA v2-rag-corpus-real
   - `.claude/auditorias/QA_v2-rag-corpus-real.md`
 
