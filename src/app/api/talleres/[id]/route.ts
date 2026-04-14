@@ -53,55 +53,77 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     const fields = [
       'nombre', 'ubicacion', 'zona', 'descripcion',
       'capacidadMensual', 'trabajadoresRegistrados', 'fundado',
-      // Wizard fields
       'sam', 'prendaPrincipal', 'organizacion', 'metrosCuadrados',
       'areas', 'experienciaPromedio', 'polivalencia', 'horario',
-      'registroProduccion', 'escalabilidad', 'paradasFrecuencia', 'puntaje',
+      'registroProduccion', 'escalabilidad', 'paradasFrecuencia',
     ]
     for (const f of fields) {
       if (body[f] !== undefined) data[f] = body[f]
     }
 
-    // Maquinaria: replace all if provided
-    if (Array.isArray(body.maquinaria)) {
-      await prisma.maquinaria.deleteMany({ where: { tallerId: id } })
-      if (body.maquinaria.length > 0) {
-        await prisma.maquinaria.createMany({
-          data: body.maquinaria.map((m: { nombre: string; cantidad?: number; tipo?: string }) => ({
-            tallerId: id,
-            nombre: m.nombre,
-            cantidad: m.cantidad ?? 1,
-            tipo: m.tipo,
-          })),
-        })
+    // Todo en una transacción atómica
+    await prisma.$transaction(async (tx) => {
+      // Maquinaria: replace all if provided
+      if (Array.isArray(body.maquinaria)) {
+        await tx.maquinaria.deleteMany({ where: { tallerId: id } })
+        if (body.maquinaria.length > 0) {
+          await tx.maquinaria.createMany({
+            data: body.maquinaria.map((m: { nombre: string; cantidad?: number; tipo?: string }) => ({
+              tallerId: id,
+              nombre: m.nombre,
+              cantidad: m.cantidad ?? 1,
+              tipo: m.tipo,
+            })),
+          })
+        }
       }
-    }
 
-    // Procesos: replace all if provided (array of procesoId strings)
-    if (Array.isArray(body.procesosIds)) {
-      await prisma.tallerProceso.deleteMany({ where: { tallerId: id } })
-      if (body.procesosIds.length > 0) {
-        await prisma.tallerProceso.createMany({
-          data: body.procesosIds.map((procesoId: string) => ({ tallerId: id, procesoId })),
-          skipDuplicates: true,
-        })
+      // Procesos: replace all if provided
+      if (Array.isArray(body.procesosIds)) {
+        await tx.tallerProceso.deleteMany({ where: { tallerId: id } })
+        if (body.procesosIds.length > 0) {
+          await tx.tallerProceso.createMany({
+            data: body.procesosIds.map((procesoId: string) => ({ tallerId: id, procesoId })),
+            skipDuplicates: true,
+          })
+        }
       }
-    }
 
-    // Prendas: replace all if provided (array of prendaId strings)
-    if (Array.isArray(body.prendasIds)) {
-      await prisma.tallerPrenda.deleteMany({ where: { tallerId: id } })
-      if (body.prendasIds.length > 0) {
-        await prisma.tallerPrenda.createMany({
-          data: body.prendasIds.map((prendaId: string) => ({ tallerId: id, prendaId })),
-          skipDuplicates: true,
-        })
+      // Prendas: replace all if provided
+      if (Array.isArray(body.prendasIds)) {
+        await tx.tallerPrenda.deleteMany({ where: { tallerId: id } })
+        if (body.prendasIds.length > 0) {
+          await tx.tallerPrenda.createMany({
+            data: body.prendasIds.map((prendaId: string) => ({ tallerId: id, prendaId })),
+            skipDuplicates: true,
+          })
+        }
       }
-    }
 
-    const taller = await prisma.taller.update({
+      // Taller update
+      await tx.taller.update({ where: { id }, data })
+
+      // User update — solo name y phone
+      if (body.user && typeof body.user === 'object') {
+        const userData: Record<string, unknown> = {}
+        if (typeof body.user.name === 'string') {
+          userData.name = body.user.name.trim() || null
+        }
+        if (typeof body.user.phone === 'string') {
+          userData.phone = body.user.phone.trim() || null
+        }
+        if (Object.keys(userData).length > 0) {
+          await tx.user.update({
+            where: { id: existing.userId },
+            data: userData,
+          })
+        }
+      }
+    })
+
+    // Re-fetch con includes para el response
+    const taller = await prisma.taller.findUnique({
       where: { id },
-      data,
       include: {
         maquinaria: true,
         procesos: { include: { proceso: true } },

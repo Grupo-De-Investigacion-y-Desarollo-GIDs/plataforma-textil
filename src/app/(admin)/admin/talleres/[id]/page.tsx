@@ -10,7 +10,7 @@ import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Button } from '@/compartido/componentes/ui/button'
 import { ChecklistItem } from '@/compartido/componentes/ui/checklist-item'
-import { ArrowLeft, MapPin, Mail, Phone, FileText } from 'lucide-react'
+import { ArrowLeft, MapPin, Mail, Phone, FileText, AlertTriangle, Calendar } from 'lucide-react'
 
 const estadoToStatus: Record<string, 'completed' | 'pending' | 'warning' | 'optional'> = {
   COMPLETADO: 'completed',
@@ -36,7 +36,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
     prisma.taller.findUnique({
       where: { id },
       include: {
-        user: { select: { email: true, phone: true, name: true, active: true } },
+        user: { select: { email: true, phone: true, name: true, active: true, createdAt: true } },
         validaciones: { orderBy: { createdAt: 'asc' } },
         maquinaria: true,
         certificados: { include: { coleccion: { select: { titulo: true } } } },
@@ -176,6 +176,59 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
             <div><span className="text-gray-500">Capacidad:</span> {taller.capacidadMensual}/mes</div>
             <div><span className="text-gray-500">Organización:</span> {taller.organizacion || '—'}</div>
             <div><span className="text-gray-500">Trabajadores:</span> {taller.trabajadoresRegistrados}</div>
+          </div>
+        )}
+      </Card>
+
+      {/* Responsable / Contacto */}
+      <Card title="Responsable / Contacto" className="mb-6">
+        <div className="grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <p className="text-gray-500">Responsable</p>
+            <p className="font-medium text-gray-800">
+              {taller.user.name ?? (
+                <span className="text-gray-400 italic">Sin nombre registrado</span>
+              )}
+            </p>
+          </div>
+          <div>
+            <p className="text-gray-500">Fecha de registro</p>
+            <p className="font-medium text-gray-800">
+              {new Date(taller.user.createdAt).toLocaleDateString('es-AR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              })}
+            </p>
+          </div>
+          <div>
+            <p className="text-gray-500">Email</p>
+            <a
+              href={`mailto:${taller.user.email}`}
+              className="text-brand-blue hover:underline font-medium"
+            >
+              {taller.user.email}
+            </a>
+          </div>
+          <div>
+            <p className="text-gray-500">Teléfono</p>
+            {taller.user.phone ? (
+              <a
+                href={`tel:${taller.user.phone}`}
+                className="text-brand-blue hover:underline font-medium"
+              >
+                {taller.user.phone}
+              </a>
+            ) : (
+              <span className="text-gray-400 italic">Sin teléfono</span>
+            )}
+          </div>
+        </div>
+
+        {(!taller.user.name || !taller.user.phone || !taller.ubicacion) && (
+          <div className="mt-3 flex items-center gap-2 text-amber-600 text-xs bg-amber-50 px-3 py-2 rounded-lg">
+            <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
+            Datos de contacto incompletos — el taller puede completarlos desde su perfil
           </div>
         )}
       </Card>

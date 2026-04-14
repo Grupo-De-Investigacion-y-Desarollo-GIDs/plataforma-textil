@@ -66,9 +66,14 @@ export default async function TallerPerfilPage() {
           )}
           <p className="text-sm text-gray-500 mt-1">{taller.user.email} {taller.user.phone && `· ${taller.user.phone}`}</p>
         </div>
-        <Link href="/taller/perfil/completar">
-          <Button variant="secondary" size="sm" icon={<Edit className="w-4 h-4" />}>Editar</Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/taller/perfil/editar">
+            <Button variant="secondary" size="sm">Editar datos básicos</Button>
+          </Link>
+          <Link href="/taller/perfil/completar">
+            <Button variant="ghost" size="sm">Perfil productivo</Button>
+          </Link>
+        </div>
       </div>
 
       <Card>
