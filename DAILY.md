@@ -3,6 +3,9 @@
 ## 2026-04-14
 
 ### Gerardo Breard
+- **16:30** `b9698e2` — docs: agregar QA v2-epica-perfiles-contacto
+  - `.claude/auditorias/QA_v2-epica-perfiles-contacto.md`
+
 - **16:22** `89bce8b` — feat: v2-epica-perfiles-contacto — edición básica taller, contacto en admin, fix puntaje
   - `src/app/(admin)/admin/marcas/[id]/page.tsx`
   - `src/app/(admin)/admin/talleres/[id]/page.tsx`
