@@ -3,6 +3,16 @@
 ## 2026-04-14
 
 ### Gerardo Breard
+- **16:57** `1f8d531` — feat: v2-epica-perfil-productivo — fix puntaje wizard, perfil productivo, recomendaciones, dashboard sector
+  - `prisma/migrations/20260414200000_add_coleccion_recomendacion_targets/migration.sql`
+  - `prisma/schema.prisma`
+  - `prisma/seed.ts`
+  - `src/app/(estado)/estado/sector/page.tsx`
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/compartido/componentes/layout/header.tsx`
+
 - **16:30** `b9698e2` — docs: agregar QA v2-epica-perfiles-contacto
   - `.claude/auditorias/QA_v2-epica-perfiles-contacto.md`
 
