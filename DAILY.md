@@ -3,6 +3,16 @@
 ## 2026-04-14
 
 ### Gerardo Breard
+- **14:18** `1d6d7cb` — feat: v2-rag-corpus-real — limpiar corpus falso, conectar config admin, fallback visual
+  - `package-lock.json`
+  - `package.json`
+  - `scripts/indexar-corpus.ts`
+  - `src/app/(taller)/taller/aprender/[id]/page.tsx`
+  - `src/app/api/chat/route.ts`
+  - `src/app/globals.css`
+  - `src/compartido/lib/rag.ts`
+  - `src/taller/componentes/asistente-chat.tsx`
+
 - **13:05** `f48d1b8` — fix: actualizar commit hash en QA v2-log-niveles-bidireccional
   - `.claude/auditorias/QA_v2-log-niveles-bidireccional.md`
 
