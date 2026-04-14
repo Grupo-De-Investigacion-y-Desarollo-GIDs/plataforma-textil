@@ -3,6 +3,32 @@
 ## 2026-04-14
 
 ### Gerardo Breard
+- **18:12** `ca54c06` — feat: v2-impl-contenido-visual — portfolio, imagenes en pedidos y cotizaciones
+  - `.gitignore`
+  - `prisma/migrations/20260414220000_contenido_visual_imagenes/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/app/(marca)/marca/directorio/page.tsx`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(marca)/marca/pedidos/nuevo/nuevo-pedido-form.tsx`
+  - `src/app/(marca)/marca/pedidos/nuevo/page.tsx`
+  - `src/app/(public)/directorio/page.tsx`
+  - `src/app/(public)/perfil/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/app/api/pedidos/route.ts`
+  - `src/app/api/talleres/[id]/route.ts`
+  - `src/app/api/upload/imagenes/route.ts`
+  - `src/compartido/componentes/ui/file-upload.tsx`
+  - `src/compartido/componentes/ui/image-lightbox.tsx`
+  - `src/compartido/lib/storage.ts`
+  - `src/compartido/lib/upload-imagen.ts`
+  - `src/marca/componentes/cotizacion-imagenes.tsx`
+  - `src/taller/componentes/cotizar-form.tsx`
+  - `src/taller/componentes/galeria-fotos.tsx`
+  - `src/taller/componentes/portfolio-manager.tsx`
+
 - **17:38** `469654b` — docs: agregar QA v2-seguridad-tests-e2e
   - `.claude/auditorias/QA_v2-seguridad-tests-e2e.md`
 
