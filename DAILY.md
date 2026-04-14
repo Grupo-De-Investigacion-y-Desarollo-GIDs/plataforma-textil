@@ -3,6 +3,9 @@
 ## 2026-04-14
 
 ### Gerardo Breard
+- **13:05** `f48d1b8` — fix: actualizar commit hash en QA v2-log-niveles-bidireccional
+  - `.claude/auditorias/QA_v2-log-niveles-bidireccional.md`
+
 - **13:05** `1221239` — docs: agregar QA v2-log-niveles-bidireccional
   - `.claude/auditorias/QA_v2-log-niveles-bidireccional.md`
   - `src/app/(estado)/estado/page.tsx`
