@@ -3,6 +3,9 @@
 ## 2026-04-14
 
 ### Gerardo Breard
+- **12:21** `74c20f8` — fix: actualizar commit hash en QA v2-epica-flujo-comercial-unificado
+  - `.claude/auditorias/QA_v2-epica-flujo-comercial-unificado.md`
+
 - **12:21** `74ee26f` — docs: agregar QA v2-epica-flujo-comercial-unificado
   - `.claude/auditorias/QA_v2-epica-flujo-comercial-unificado.md`
   - `prisma/migrations/20260414160000_flujo_comercial_unificado/migration.sql`
