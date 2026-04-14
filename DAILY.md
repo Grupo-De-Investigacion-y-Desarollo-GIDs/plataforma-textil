@@ -3,6 +3,14 @@
 ## 2026-04-14
 
 ### Gerardo Breard
+- **16:22** `89bce8b` — feat: v2-epica-perfiles-contacto — edición básica taller, contacto en admin, fix puntaje
+  - `src/app/(admin)/admin/marcas/[id]/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(taller)/taller/perfil/editar/editar-form.tsx`
+  - `src/app/(taller)/taller/perfil/editar/page.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/app/api/talleres/[id]/route.ts`
+
 - **15:42** `75cef2d` — docs: agregar QA v2-notificaciones-accionables
   - `.claude/auditorias/QA_v2-notificaciones-accionables.md`
 
