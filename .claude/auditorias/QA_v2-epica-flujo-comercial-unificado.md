@@ -1,7 +1,7 @@
 # QA: Épica Flujo Comercial Unificado
 
 **Spec:** `v2-epica-flujo-comercial-unificado.md`
-**Commit de implementación:** `pendiente`
+**Commit de implementación:** `74ee26f`
 **URL de prueba:** https://plataforma-textil.vercel.app
 **Fecha:** 2026-04-14
 **Auditor:** Sergio
