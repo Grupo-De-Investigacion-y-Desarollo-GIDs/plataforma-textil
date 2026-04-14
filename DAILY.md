@@ -1,5 +1,23 @@
 # Daily Log
 
+## 2026-04-14
+
+### Gerardo Breard
+- **12:21** `74ee26f` — docs: agregar QA v2-epica-flujo-comercial-unificado
+  - `.claude/auditorias/QA_v2-epica-flujo-comercial-unificado.md`
+  - `prisma/migrations/20260414160000_flujo_comercial_unificado/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+  - `src/app/api/cotizaciones/[id]/route.ts`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/app/api/pedidos/[id]/invitaciones/route.ts`
+  - `src/app/api/pedidos/[id]/ordenes/route.ts`
+  - `src/compartido/lib/email.ts`
+  - `src/marca/componentes/asignar-taller.tsx`
+  - `src/marca/componentes/invitar-a-cotizar.tsx`
+
+
 ## 2026-04-13
 
 ### Gerardo Breard
