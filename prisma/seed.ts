@@ -575,6 +575,8 @@ async function main() {
       duracion: '2h 30min',
       institucion: 'OIT Argentina',
       orden: 1,
+      procesosTarget: [],
+      formalizacionTarget: ['Habilitación bomberos', 'Plan de seguridad e higiene', 'Empleados registrados'],
     },
   })
 
@@ -607,6 +609,8 @@ async function main() {
       duracion: '3h',
       institucion: 'INTI Textiles',
       orden: 2,
+      procesosTarget: [pConfeccion.id, pCorte.id],
+      formalizacionTarget: ['Nómina digital'],
     },
   })
 
@@ -640,6 +644,8 @@ async function main() {
       duracion: '1h 45min',
       institucion: 'UNTREF',
       orden: 3,
+      procesosTarget: [],
+      formalizacionTarget: ['CUIT/Monotributo', 'Habilitación municipal', 'ART'],
     },
   })
 

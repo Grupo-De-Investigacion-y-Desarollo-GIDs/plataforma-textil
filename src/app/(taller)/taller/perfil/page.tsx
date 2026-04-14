@@ -162,6 +162,79 @@ export default async function TallerPerfilPage() {
         </Card>
       )}
 
+      {taller.organizacion && (
+        <Card title="Perfil productivo">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-gray-500 text-xs mb-1">Organización</p>
+              <p className="font-medium text-gray-800">
+                {taller.organizacion === 'linea' ? 'En línea'
+                 : taller.organizacion === 'modular' ? 'Modular'
+                 : 'Prenda completa'}
+              </p>
+            </div>
+
+            {(taller.metrosCuadrados ?? 0) > 0 && (
+              <div className="bg-gray-50 rounded-lg p-3">
+                <p className="text-gray-500 text-xs mb-1">Espacio</p>
+                <p className="font-medium text-gray-800">{taller.metrosCuadrados} m²</p>
+              </div>
+            )}
+
+            {taller.experienciaPromedio && (
+              <div className="bg-gray-50 rounded-lg p-3">
+                <p className="text-gray-500 text-xs mb-1">Experiencia del equipo</p>
+                <p className="font-medium text-gray-800">
+                  {taller.experienciaPromedio === '5+' ? 'Más de 5 años'
+                   : taller.experienciaPromedio === '3-5' ? '3 a 5 años'
+                   : taller.experienciaPromedio === '1-3' ? '1 a 3 años'
+                   : 'Menos de 1 año'}
+                </p>
+              </div>
+            )}
+
+            {taller.registroProduccion && (
+              <div className="bg-gray-50 rounded-lg p-3">
+                <p className="text-gray-500 text-xs mb-1">Registro de producción</p>
+                <p className="font-medium text-gray-800">
+                  {taller.registroProduccion === 'software' ? 'Software'
+                   : taller.registroProduccion === 'excel' ? 'Excel/planilla'
+                   : taller.registroProduccion === 'papel' ? 'Papel'
+                   : 'Sin registro'}
+                </p>
+              </div>
+            )}
+
+            {taller.escalabilidad && (
+              <div className="bg-gray-50 rounded-lg p-3">
+                <p className="text-gray-500 text-xs mb-1">Puede escalar</p>
+                <p className="font-medium text-gray-800">
+                  {taller.escalabilidad === 'turno' ? 'Segundo turno'
+                   : taller.escalabilidad === 'tercerizar' ? 'Tercerización'
+                   : taller.escalabilidad === 'contratar' ? 'Contratando personal'
+                   : taller.escalabilidad === 'horas-extra' ? 'Horas extra'
+                   : 'Sin capacidad de escalar'}
+                </p>
+              </div>
+            )}
+
+            {(taller.sam ?? 0) > 0 && (
+              <div className="bg-gray-50 rounded-lg p-3">
+                <p className="text-gray-500 text-xs mb-1">SAM ({taller.prendaPrincipal})</p>
+                <p className="font-medium text-gray-800">{taller.sam} min</p>
+              </div>
+            )}
+
+          </div>
+
+          <p className="text-xs text-gray-400 mt-4">
+            Esta información es visible para el equipo de la plataforma y organismos del Estado.
+            No afecta tu nivel de formalización.
+          </p>
+        </Card>
+      )}
+
       {taller.maquinaria.length > 0 && (
         <Card title="Maquinaria">
           <ul className="space-y-1 text-sm">

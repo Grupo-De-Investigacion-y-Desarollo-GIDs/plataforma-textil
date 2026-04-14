@@ -70,22 +70,88 @@ export default async function TallerDashboardPage() {
       })
     : []
 
-  // Colecciones recomendadas (las que no tienen progreso o están incompletas)
-  const coleccionesRecomendadas = await prisma.coleccion.findMany({
-    where: {
-      activa: true,
-      ...(taller
-        ? {
-            NOT: {
-              certificados: { some: { tallerId: taller.id, revocado: false } },
+  // Colecciones recomendadas — priorización por formalización → procesos → fallback
+  type ColeccionConCount = Awaited<ReturnType<typeof prisma.coleccion.findMany<{ include: { _count: { select: { videos: true } } } }>>>[number]
+  let coleccionesRecomendadas: ColeccionConCount[]
+  if (taller) {
+    // 1. Tipos de validación completados
+    const completadasSet = new Set(
+      (await prisma.validacion.findMany({
+        where: { tallerId: taller.id, estado: 'COMPLETADO' },
+        select: { tipo: true },
+      })).map(v => v.tipo)
+    )
+
+    // 2. Todos los tipos requeridos → pendientes
+    const tiposRequeridos = await prisma.tipoDocumento.findMany({
+      where: { requerido: true, activo: true },
+      select: { nombre: true },
+    })
+    const tiposPendientes = tiposRequeridos.map(t => t.nombre).filter(t => !completadasSet.has(t))
+
+    // 3. Procesos del taller
+    const procesosTaller = (taller.progresoCapacitacion ? [] : []).length === 0
+      ? (await prisma.tallerProceso.findMany({
+          where: { tallerId: taller.id },
+          select: { procesoId: true },
+        })).map(p => p.procesoId)
+      : []
+
+    // Query 1 — prioridad alta: por formalización pendiente
+    const porFormalizacion = await prisma.coleccion.findMany({
+      where: {
+        activa: true,
+        formalizacionTarget: { hasSome: tiposPendientes.length > 0 ? tiposPendientes : ['__none__'] },
+        NOT: { certificados: { some: { tallerId: taller.id, revocado: false } } },
+      },
+      include: { _count: { select: { videos: true } } },
+      orderBy: { orden: 'asc' },
+      take: 3,
+    })
+
+    // Query 2 — prioridad media: por procesos del taller
+    const restantes = 3 - porFormalizacion.length
+    const idsYaIncluidos = porFormalizacion.map(c => c.id)
+    const porProcesos = restantes > 0 && procesosTaller.length > 0
+      ? await prisma.coleccion.findMany({
+          where: {
+            activa: true,
+            id: { notIn: idsYaIncluidos },
+            procesosTarget: { hasSome: procesosTaller },
+            NOT: { certificados: { some: { tallerId: taller.id, revocado: false } } },
+          },
+          include: { _count: { select: { videos: true } } },
+          orderBy: { orden: 'asc' },
+          take: restantes,
+        })
+      : []
+
+    // Query 3 — fallback: cualquier colección no completada
+    const totalEncontradas = [...porFormalizacion, ...porProcesos]
+    coleccionesRecomendadas = totalEncontradas.length < 3
+      ? [
+          ...totalEncontradas,
+          ...(await prisma.coleccion.findMany({
+            where: {
+              activa: true,
+              id: { notIn: totalEncontradas.map(c => c.id) },
+              NOT: { certificados: { some: { tallerId: taller.id, revocado: false } } },
             },
-          }
-        : {}),
-    },
-    include: { _count: { select: { videos: true } } },
-    orderBy: { orden: 'asc' },
-    take: 3,
-  })
+            include: { _count: { select: { videos: true } } },
+            orderBy: { orden: 'asc' },
+            take: 3 - totalEncontradas.length,
+          })),
+        ]
+      : totalEncontradas
+  } else {
+    // Sin taller — query simple
+    coleccionesRecomendadas = await prisma.coleccion.findMany({
+      where: { activa: true },
+      include: { _count: { select: { videos: true } } },
+      orderBy: { orden: 'asc' },
+      take: 3,
+    })
+  }
 
   // Calcular progreso de formalización
   const validaciones = taller?.validaciones ?? []

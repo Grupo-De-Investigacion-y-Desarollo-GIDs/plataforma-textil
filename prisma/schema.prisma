@@ -508,6 +508,9 @@ model Coleccion {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  procesosTarget      String[]
+  formalizacionTarget String[]
+
   videos             Video[]
   evaluacion         Evaluacion?
   certificados       Certificado[]

@@ -179,7 +179,7 @@ export default function WizardPage() {
       const res = await fetch(`/api/talleres/${tallerId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...buildPayload(), puntaje: scoreGeneral }),
+        body: JSON.stringify(buildPayload()),
       })
       if (!res.ok) throw new Error('Error del servidor')
       router.push(redirectTo)
@@ -578,24 +578,17 @@ export default function WizardPage() {
       {/* STEP 13: Resumen */}
       {step === 13 && (
         <div className="text-center">
-          <h2 className="font-overpass font-bold text-2xl text-brand-blue mb-4">¡Perfil Completado!</h2>
+          <h2 className="font-overpass font-bold text-2xl text-brand-blue mb-4">¡Perfil productivo completado!</h2>
+          <p className="text-gray-600 mb-1">Las marcas pueden ver tu capacidad, maquinaria y procesos</p>
+          <p className="text-xs text-gray-400 mb-6">Este diagnóstico ayuda al equipo de la plataforma a entender el sector textil</p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <Card>
-              <div className="text-center">
-                <p className="font-overpass font-bold text-5xl text-brand-blue">{scoreGeneral}%</p>
-                <p className="text-sm text-gray-500 mt-1">Score General</p>
-                <p className="text-xs text-gray-400">Top {100 - scoreGeneral}% de talleres</p>
-              </div>
-            </Card>
-            <Card>
-              <p className="font-semibold text-sm mb-2">Capacidad</p>
-              <p className="text-sm">Diaria: {capacidadDiaria} prendas</p>
-              <p className="text-sm">Mensual: {capacidadMensual.toLocaleString()} prendas</p>
-              <p className="text-sm mt-2 font-semibold">Especialidad</p>
-              <p className="text-sm">{prendaPrincipal} — Confección {organizacion}</p>
-            </Card>
-          </div>
+          <Card className="mb-6">
+            <p className="font-semibold text-sm mb-2">Capacidad</p>
+            <p className="text-sm">Diaria: {capacidadDiaria} prendas</p>
+            <p className="text-sm">Mensual: {capacidadMensual.toLocaleString()} prendas</p>
+            <p className="text-sm mt-2 font-semibold">Especialidad</p>
+            <p className="text-sm">{prendaPrincipal} — Confección {organizacion}</p>
+          </Card>
 
           {procesosSeleccionados.length > 0 && (
             <Card title="Procesos seleccionados" className="mb-4 text-left">
@@ -616,16 +609,6 @@ export default function WizardPage() {
               </div>
             </Card>
           )}
-
-          <Card title="Indicadores de Madurez" className="mb-6 text-left">
-            {[{ label: 'Equipo', pct: scoreEquipo }, { label: 'Organización', pct: scoreOrg }, { label: 'Maquinaria', pct: scoreMaq }, { label: 'Gestión', pct: scoreGestion }, { label: 'Escalabilidad', pct: scoreEscalabilidad }].map(i => (
-              <div key={i.label} className="flex items-center gap-3 mb-2">
-                <span className="w-24 text-xs font-semibold">{i.label}</span>
-                <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden"><div className="h-full bg-brand-blue rounded-full" style={{ width: `${i.pct}%` }} /></div>
-                <span className="w-10 text-xs text-gray-500">{i.pct}%</span>
-              </div>
-            ))}
-          </Card>
 
           <Card title="Badges Desbloqueados" className="mb-6">
             <div className="flex flex-wrap gap-3 justify-center">
