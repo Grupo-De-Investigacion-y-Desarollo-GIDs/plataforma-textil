@@ -3,6 +3,9 @@
 ## 2026-04-14
 
 ### Gerardo Breard
+- **17:01** `fbc3323` — docs: agregar QA v2-epica-perfil-productivo
+  - `.claude/auditorias/QA_v2-epica-perfil-productivo.md`
+
 - **16:57** `1f8d531` — feat: v2-epica-perfil-productivo — fix puntaje wizard, perfil productivo, recomendaciones, dashboard sector
   - `prisma/migrations/20260414200000_add_coleccion_recomendacion_targets/migration.sql`
   - `prisma/schema.prisma`
