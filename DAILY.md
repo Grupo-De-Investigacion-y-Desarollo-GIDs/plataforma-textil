@@ -3,6 +3,18 @@
 ## 2026-04-14
 
 ### Gerardo Breard
+- **15:40** `e687d5a` — feat: v2-notificaciones-accionables — deep links + mark-as-read al click
+  - `prisma/migrations/20260414180000_add_notificacion_link/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/app/(admin)/admin/notificaciones/notificaciones-client.tsx`
+  - `src/app/(public)/cuenta/notificaciones/notificaciones-lista.tsx`
+  - `src/app/(public)/cuenta/notificaciones/page.tsx`
+  - `src/app/api/admin/notificaciones/route.ts`
+  - `src/app/api/cotizaciones/[id]/route.ts`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/app/api/pedidos/[id]/invitaciones/route.ts`
+  - `src/compartido/lib/notificaciones.ts`
+
 - **15:22** `b0bf4e9` — docs: agregar QA v2-epica-notificaciones
   - `.claude/auditorias/QA_v2-epica-notificaciones.md`
 
