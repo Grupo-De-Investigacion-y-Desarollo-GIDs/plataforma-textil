@@ -226,6 +226,10 @@ async function main() {
       pedidosCompletados: 4,
       ontimeRate: 75,
       retrabajoRate: 8,
+      portfolioFotos: [
+        '/images/portfolio/taller-aguja-1.svg',
+        '/images/portfolio/taller-aguja-2.svg',
+      ],
     },
   })
 
@@ -273,6 +277,11 @@ async function main() {
       pedidosCompletados: 18,
       ontimeRate: 88,
       retrabajoRate: 4,
+      portfolioFotos: [
+        '/images/portfolio/taller-hilos-1.svg',
+        '/images/portfolio/taller-hilos-2.svg',
+        '/images/portfolio/taller-hilos-3.svg',
+      ],
       // Wizard completo
       sam: 18,
       prendaPrincipal: 'Jean/Vaquero',
@@ -346,6 +355,12 @@ async function main() {
       pedidosCompletados: 47,
       ontimeRate: 96,
       retrabajoRate: 2,
+      portfolioFotos: [
+        '/images/portfolio/taller-cortesur-1.svg',
+        '/images/portfolio/taller-cortesur-2.svg',
+        '/images/portfolio/taller-cortesur-3.svg',
+        '/images/portfolio/taller-cortesur-4.svg',
+      ],
       // Wizard completo
       sam: 12,
       prendaPrincipal: 'Jean/Vaquero',
