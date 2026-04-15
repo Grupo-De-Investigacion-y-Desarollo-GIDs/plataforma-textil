@@ -3,6 +3,9 @@
 ## 2026-04-15
 
 ### Gerardo Breard
+- **13:22** `a494abf` — fix: await fetch a GitHub en endpoint de feedback
+  - `src/app/api/feedback/route.ts`
+
 - **10:58** `b98f4f8` — docs: agregar QA v2-impl-contenido-visual
   - `.claude/auditorias/QA_v2-impl-contenido-visual.md`
 
