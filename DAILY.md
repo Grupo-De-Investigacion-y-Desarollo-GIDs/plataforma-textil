@@ -3,6 +3,9 @@
 ## 2026-04-15
 
 ### Gerardo Breard
+- **15:43** `bcda56a` — fix: CORS preflight 500 en /api/feedback
+  - `src/app/api/feedback/route.ts`
+
 - **15:09** `7f25a29` — feat: GitHub Pages + botón crear issue para QA interactivos
   - `.claude/specs/v2-generador-qa-issues.md`
   - `.github/workflows/qa-pages.yml`
