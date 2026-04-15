@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QA: Épica Flujo Comercial Unificado</title>
+  <style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #f5f7fa;
+    color: #1a1a2e;
+    line-height: 1.5;
+    padding: 20px;
+    padding-bottom: 80px;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  .header {
+    background: #1e3a5f;
+    color: white;
+    padding: 24px 28px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  .header h1 { font-size: 22px; margin-bottom: 12px; }
+  .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 13px; opacity: 0.9; }
+  .meta-label { font-weight: 600; }
+  .meta-item a { color: #7fb3ff; }
+  .meta-item code { background: rgba(255,255,255,0.15); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+  .section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .section h2 {
+    font-size: 17px;
+    color: #1e3a5f;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e8ecf1;
+    cursor: default;
+  }
+  .collapsible { cursor: pointer; }
+  .collapsible h2 { cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+  .collapse-icon { font-size: 12px; color: #999; transition: transform 0.2s; }
+  .collapsed .collapse-content { display: none; }
+  .collapsed .collapse-icon { transform: rotate(0deg); }
+  .collapsible:not(.collapsed) .collapse-icon { transform: rotate(90deg); }
+  .readonly-block {
+    background: #f8f9fa;
+    border: 1px solid #e2e5ea;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 13px;
+    white-space: pre-wrap;
+    color: #555;
+  }
+  .cred-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .cred-table th { background: #f0f2f5; padding: 8px 10px; text-align: left; font-weight: 600; color: #444; }
+  .cred-table td { padding: 6px 10px; border-bottom: 1px solid #eee; }
+  .cred-table code { background: #f0f2f5; padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+  .radio-group { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .radio-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 14px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.15s;
+  }
+  .radio-btn:hover { border-color: #1e3a5f; }
+  .radio-btn.selected { border-color: #1e3a5f; background: #eef3f9; }
+  .radio-btn input { display: none; }
+  .field-group { margin-bottom: 10px; }
+  .field-group label { font-size: 13px; font-weight: 600; color: #555; display: block; margin-bottom: 4px; }
+  .text-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  .text-input:focus, .obs-input:focus, .obs-textarea:focus, .large-textarea:focus {
+    outline: none;
+    border-color: #1e3a5f;
+    box-shadow: 0 0 0 2px rgba(30,58,95,0.15);
+  }
+  .item-card {
+    border: 1px solid #e8ecf1;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    transition: border-color 0.15s;
+  }
+  .item-card.status-ok { border-left: 4px solid #27ae60; }
+  .item-card.status-bug { border-left: 4px solid #f39c12; }
+  .item-card.status-fail { border-left: 4px solid #c0392b; }
+  .item-header { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+  .item-num { font-weight: 700; color: #1e3a5f; min-width: 30px; font-size: 14px; }
+  .item-text { font-size: 14px; flex: 1; }
+  .item-details { margin-bottom: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; font-size: 13px; }
+  .detail-row { margin-bottom: 4px; }
+  .detail-label { font-weight: 600; color: #666; }
+  .item-controls { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+  .status-btns { display: flex; gap: 4px; flex-shrink: 0; }
+  .status-btn {
+    width: 36px; height: 36px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .status-btn:hover { transform: scale(1.1); }
+  .status-btn.active { border-color: #1e3a5f; background: #eef3f9; transform: scale(1.1); }
+  .obs-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 7px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .obs-textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    resize: vertical;
+  }
+  .large-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+  }
+  .paso-card {
+    border: 1px solid #e8ecf1;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .paso-card.status-ok { border-left: 4px solid #27ae60; }
+  .paso-card.status-bug { border-left: 4px solid #f39c12; }
+  .paso-card.status-fail { border-left: 4px solid #c0392b; }
+  .paso-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px;
+    cursor: pointer;
+    background: #fafbfc;
+    border-bottom: 1px solid transparent;
+  }
+  .paso-header:hover { background: #f0f2f5; }
+  .paso-header-right { display: flex; align-items: center; gap: 8px; }
+  .paso-status-indicator { font-size: 16px; }
+  .paso-title { font-weight: 600; font-size: 14px; color: #1e3a5f; }
+  .paso-body { display: none; padding: 16px; }
+  .paso-card.expanded .paso-body { display: block; }
+  .paso-card.expanded .paso-header { border-bottom: 1px solid #e8ecf1; }
+  .paso-card.expanded .collapse-icon { transform: rotate(90deg); }
+  .paso-fields { margin-bottom: 12px; }
+  .paso-field { margin-bottom: 6px; font-size: 13px; }
+  .paso-label { font-weight: 600; color: #555; }
+  .paso-value { margin-top: 2px; padding-left: 0; white-space: pre-wrap; }
+  .checklist-items { display: flex; flex-direction: column; gap: 8px; }
+  .checklist-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .checklist-item:hover { background: #f5f7fa; }
+  .checklist-item input { margin-top: 3px; width: 16px; height: 16px; cursor: pointer; }
+  .unknown { border-left: 3px solid #f39c12; }
+  .text-muted { color: #999; font-size: 13px; }
+  .sticky-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 2px solid #1e3a5f;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    z-index: 100;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  }
+  .btn-copiar {
+    background: #1e3a5f;
+    color: white;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-copiar:hover { background: #2a4f7f; }
+  .btn-copiar.copiado { background: #27ae60; }
+  .progress-summary { font-size: 13px; color: #666; }
+  .btn-issue {
+    display: none;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    border: 1px solid #c0392b;
+    border-radius: 6px;
+    background: white;
+    color: #c0392b;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn-issue:hover { background: #fdf0ef; }
+  .btn-issue.visible { display: inline-flex; }
+  .btn-issue.enviado { border-color: #27ae60; color: #27ae60; cursor: default; }
+  .btn-issue.error { border-color: #e74c3c; color: #e74c3c; }
+  .btn-issue:disabled { opacity: 0.6; cursor: not-allowed; }
+  @media (max-width: 600px) {
+    body { padding: 10px; padding-bottom: 80px; }
+    .meta-grid { grid-template-columns: 1fr; }
+    .item-controls { flex-direction: column; }
+    .obs-input { min-width: 100%; }
+    .radio-group { flex-direction: column; }
+  }
+</style>
+</head>
+<body data-spec="v2-epica-flujo-comercial-unificado.md" data-url="https://plataforma-textil.vercel.app" data-api-url="https://plataforma-textil.vercel.app/api/feedback">
+  <div class="container">
+    
+    <div class="header">
+      <h1>Épica Flujo Comercial Unificado</h1>
+      <div class="meta-grid">
+        <div class="meta-item"><span class="meta-label">Spec:</span> <code>v2-epica-flujo-comercial-unificado.md</code></div>
+        <div class="meta-item"><span class="meta-label">Commit:</span> <code>74ee26f</code></div>
+        <div class="meta-item"><span class="meta-label">URL:</span> <a href="https://plataforma-textil.vercel.app" target="_blank">https://plataforma-textil.vercel.app</a></div>
+        <div class="meta-item"><span class="meta-label">Fecha:</span> 2026-04-14</div>
+        <div class="meta-item"><span class="meta-label">Auditor:</span> Sergio</div>
+      </div>
+    </div><div class="section collapsible collapsed" onclick="toggleCollapse(this)">
+    <h2>Como trabajar con este documento <span class="collapse-icon">&#9654;</span></h2>
+    <div class="collapse-content"><div class="readonly-block">1. Abrí este archivo y la plataforma en paralelo
+2. Seguí los pasos en orden — cada paso depende del anterior
+3. Marcá cada resultado con ✅ (ok), 🐛 (bug menor) o ❌ (bloqueante)
+4. Si el resultado no es ✅ → abrí el widget azul &quot;Feedback&quot; en esa página → tipo [bug/falta] → describí qué pasó
+5. Quedate en la página donde encontraste el problema antes de abrir el widget (captura la URL automáticamente)
+6. Al terminar, completá el resultado global y commiteá este archivo actualizado
+
+**Regla de oro:** un issue por hallazgo, desde la página donde ocurre.
+
+&gt; **Nota:** si los hallazgos no aparecen en GitHub Issues, verificar que `GITHUB_TOKEN` y `GITHUB_REPO` están configurados en Vercel. Los hallazgos siempre quedan registrados en la DB aunque el token no esté configurado — se pueden ver en `/admin` desde `LogActividad`.
+
+---</div></div>
+  </div><div class="section collapsible collapsed" onclick="toggleCollapse(this)">
+    <h2>Credenciales de prueba <span class="collapse-icon">&#9654;</span></h2>
+    <div class="collapse-content">
+    <table class="cred-table"><thead><tr><th>Rol</th><th>Email</th><th>Password</th><th>URL</th></tr></thead><tbody><tr>
+      <td>ADMIN</td>
+      <td><code>`lucia.fernandez@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/admin`</code></td>
+    </tr><tr>
+      <td>TALLER Bronce</td>
+      <td><code>`roberto.gimenez@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/taller`</code></td>
+    </tr><tr>
+      <td>TALLER Plata</td>
+      <td><code>`graciela.sosa@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/taller`</code></td>
+    </tr><tr>
+      <td>TALLER Oro</td>
+      <td><code>`carlos.mendoza@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/taller`</code></td>
+    </tr><tr>
+      <td>MARCA</td>
+      <td><code>`martin.echevarria@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/marca`</code></td>
+    </tr><tr>
+      <td>ESTADO</td>
+      <td><code>`anabelen.torres@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/estado`</code></td>
+    </tr></tbody></table></div></div><div class="section" id="resultado-global"><h2>Resultado global</h2><div class="radio-group"><label class="radio-btn" data-value="aprobado">
+      <input type="radio" name="resultado-global" value="aprobado">
+      <span class="radio-label">✅ Aprobado</span>
+    </label><label class="radio-btn" data-value="aprobado-fixes">
+      <input type="radio" name="resultado-global" value="aprobado-fixes">
+      <span class="radio-label">🔧 Aprobado con fixes</span>
+    </label><label class="radio-btn" data-value="rechazado">
+      <input type="radio" name="resultado-global" value="rechazado">
+      <span class="radio-label">❌ Rechazado</span>
+    </label></div>
+    <div class="field-group">
+      <label>Decision:</label>
+      <input type="text" id="decision-global" placeholder="cerrar v2 / fix inmediato / abrir item v3" class="text-input">
+    </div>
+    <div class="field-group">
+      <label>Issues abiertos:</label>
+      <input type="text" id="issues-global" placeholder="#" class="text-input">
+    </div>
+  </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1">
+      <div class="item-header">
+        <span class="item-num">#1</span>
+        <span class="item-text">No existe el archivo `src/marca/componentes/asignar-taller.tsx`</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="2">
+      <div class="item-header">
+        <span class="item-num">#2</span>
+        <span class="item-text">No existe el botón &quot;Asignar taller&quot; en ninguna pantalla</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="3">
+      <div class="item-header">
+        <span class="item-num">#3</span>
+        <span class="item-text">`POST /api/pedidos/[id]/ordenes` no responde (handler removido)</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="4">
+      <div class="item-header">
+        <span class="item-num">#4</span>
+        <span class="item-text">Botón &quot;Invitar a cotizar&quot; aparece en pedidos en estado BORRADOR</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="5">
+      <div class="item-header">
+        <span class="item-num">#5</span>
+        <span class="item-text">Al invitar: pedido pasa a PUBLICADO con visibilidad INVITACION</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="6">
+      <div class="item-header">
+        <span class="item-num">#6</span>
+        <span class="item-text">Talleres invitados reciben notificación in-app</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="7">
+      <div class="item-header">
+        <span class="item-num">#7</span>
+        <span class="item-text">Talleres invitados ven el pedido con badge &quot;Te invitaron&quot;</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="8">
+      <div class="item-header">
+        <span class="item-num">#8</span>
+        <span class="item-text">Talleres NO invitados no ven el pedido si visibilidad es INVITACION</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="9">
+      <div class="item-header">
+        <span class="item-num">#9</span>
+        <span class="item-text">Taller no invitado que intenta cotizar via API recibe 403</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="10">
+      <div class="item-header">
+        <span class="item-num">#10</span>
+        <span class="item-text">Cotizaciones se muestran en TODOS los estados del pedido (fix H-08)</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="11">
+      <div class="item-header">
+        <span class="item-num">#11</span>
+        <span class="item-text">Cotización ACEPTADA se destaca visualmente en verde</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="12">
+      <div class="item-header">
+        <span class="item-num">#12</span>
+        <span class="item-text">Al aceptar cotización, OrdenManufactura.cotizacionId queda seteado</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="13">
+      <div class="item-header">
+        <span class="item-num">#13</span>
+        <span class="item-text">Órdenes históricas mantienen cotizacionId = null sin romper nada</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="14">
+      <div class="item-header">
+        <span class="item-num">#14</span>
+        <span class="item-text">Build de TypeScript pasa sin errores</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div></div><div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2><div class="paso-card" data-eje="2" data-num="1">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 1 — Verificar que NO aparece botón &quot;Asignar taller&quot;</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/marca/pedidos`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Login como MARCA
+2. Ir a `/marca/pedidos` → click en un pedido existente en estado BORRADOR (o crear uno nuevo desde &quot;Nuevo pedido&quot;)
+3. En la pantalla de detalle del pedido, revisar la sección de acciones</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">NO aparece ningún botón &quot;Asignar taller&quot;. Solo deben verse &quot;Publicar al mercado&quot;, &quot;Invitar a cotizar&quot; y &quot;Cancelar&quot;</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="2">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 2 — Verificar botones &quot;Publicar al mercado&quot; e &quot;Invitar a cotizar&quot;</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>Detalle de un pedido en BORRADOR</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Desde el detalle de un pedido en estado BORRADOR, verificar que existen exactamente estos botones de acción:
+- &quot;Publicar al mercado&quot;
+- &quot;Invitar a cotizar&quot;
+- &quot;Cancelar&quot;</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Los tres botones están visibles. &quot;Publicar al mercado&quot; e &quot;Invitar a cotizar&quot; solo aparecen en estado BORRADOR</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="3">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 3 — Flujo completo de invitación</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>Detalle de un pedido en BORRADOR</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Click en &quot;Invitar a cotizar&quot;
+2. Se abre modal &quot;Invitar talleres a cotizar&quot;
+3. Escribir &quot;Corte&quot; en el campo de búsqueda
+4. Esperar resultados (~300ms) → debe aparecer &quot;Corte Sur SRL&quot;
+5. Seleccionar &quot;Corte Sur SRL&quot; (checkbox)
+6. Buscar &quot;Hilos&quot; → seleccionar &quot;Cooperativa Hilos del Sur&quot;
+7. Verificar que dice &quot;2 talleres seleccionados&quot;
+8. Click en &quot;Continuar (2)&quot;
+9. Pantalla de confirmación muestra los 2 talleres seleccionados
+10. Click en &quot;Invitar a cotizar&quot;
+11. Modal se cierra, la página se refresca</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">El pedido pasa de BORRADOR a PUBLICADO. Los botones &quot;Publicar al mercado&quot; e &quot;Invitar a cotizar&quot; desaparecen</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="4">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 4 — Badge &quot;Te invitaron&quot; para taller invitado</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Oro (carlos.mendoza@pdt.org.ar / pdt2026) — es el user de Corte Sur SRL</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller/pedidos/disponibles`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Cerrar sesión de MARCA, login como TALLER Oro
+2. Ir a `/taller/pedidos/disponibles`
+3. Buscar el pedido que fue invitado en el Paso 3</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">El pedido aparece en la lista con un badge &quot;Te invitaron&quot; junto al nombre de la prenda</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="5">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 5 — Taller NO invitado no ve el pedido</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Bronce (roberto.gimenez@pdt.org.ar / pdt2026) — NO fue invitado</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller/pedidos/disponibles`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Cerrar sesión, login como TALLER Bronce
+2. Ir a `/taller/pedidos/disponibles`
+3. Buscar el pedido del Paso 3</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">El pedido con visibilidad INVITACION **NO** aparece en la lista. Solo aparecen pedidos con visibilidad PUBLICO</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="6">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 6 — Taller invitado cotiza el pedido</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Oro (carlos.mendoza@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller/pedidos/disponibles`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Login como TALLER Oro
+2. Ir a `/taller/pedidos/disponibles` → click en &quot;Ver y cotizar&quot; del pedido invitado
+3. Completar el formulario de cotización (precio, plazo, proceso)
+4. Enviar la cotización</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Cotización se crea exitosamente. Mensaje de confirmación visible</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="7">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 7 — MARCA ve la cotización recibida</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/marca/pedidos`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Login como MARCA
+2. Ir al detalle del pedido que ahora está en PUBLICADO
+3. Verificar la sección &quot;Cotizaciones&quot;</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">La sección &quot;Cotizaciones (1)&quot; aparece con la cotización del taller Corte Sur SRL, mostrando precio, plazo, proceso y botones &quot;Aceptar&quot; y &quot;Rechazar&quot;</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="8">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 8 — MARCA acepta la cotización</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>Detalle del pedido PUBLICADO</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. En la sección de cotizaciones, click en &quot;Aceptar&quot; de la cotización de Corte Sur SRL
+2. Confirmar si se pide confirmación
+3. La página se refresca</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">El pedido pasa a estado EN_EJECUCION. Se crea una orden de manufactura visible en la sección de órdenes</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="9">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 9 — Cotización ACEPTADA en verde</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>Detalle del pedido (ahora EN_EJECUCION)</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Verificar visualmente la sección de cotizaciones</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">La cotización aceptada se muestra con borde verde y fondo verde claro (`border-green-300 bg-green-50`). El badge muestra &quot;ACEPTADA&quot; en verde</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="10">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 10 — Cotizaciones visibles en EN_EJECUCION (fix H-08)</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>Detalle del pedido en EN_EJECUCION</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Verificar que la sección &quot;Cotizaciones&quot; sigue visible aún cuando el pedido ya no está en PUBLICADO</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">La sección &quot;Cotizaciones (N)&quot; aparece con las cotizaciones históricas (ACEPTADA en verde, RECHAZADA si las hay). Los botones &quot;Aceptar/Rechazar&quot; NO aparecen (porque el pedido ya no está PUBLICADO)</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="11">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 11 — Publicar pedido al mercado (flujo público)</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/marca/pedidos`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Crear un nuevo pedido (o usar uno existente en BORRADOR)
+2. Click en &quot;Publicar al mercado&quot; (NO &quot;Invitar a cotizar&quot;)
+3. Confirmar la publicación</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">El pedido pasa a PUBLICADO con visibilidad PUBLICO (default). Aparece para TODOS los talleres en `/taller/pedidos/disponibles`, sin badge &quot;Te invitaron&quot;</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="12">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 12 — Taller NO invitado no puede cotizar via API (seguridad)</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Bronce (roberto.gimenez@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>Cualquier página logueado como TALLER Bronce</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Login como TALLER Bronce
+2. Abrir DevTools → Console
+3. Ejecutar:
+```js
+fetch(&#39;/api/cotizaciones&#39;, {
+method: &#39;POST&#39;,
+headers: { &#39;Content-Type&#39;: &#39;application/json&#39; },
+body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, precio: 100, plazoDias: 30, proceso: &#39;confeccion&#39; }),
+}).then(r =&gt; r.json()).then(console.log)
+```
+(Reemplazar `&lt;ID_DEL_PEDIDO_INVITACION&gt;` con el ID del pedido del Paso 3)</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Respuesta con status **403** y mensaje `&quot;No fuiste invitado a cotizar este pedido&quot;`</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="13">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 13 — Verificar cotizacionId en OrdenManufactura (DB)</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN o acceso a Supabase</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>Supabase Dashboard → Table Editor → `ordenes_manufactura`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Abrir la tabla `ordenes_manufactura` en Supabase
+2. Buscar la orden creada en el Paso 8 (la más reciente, o filtrar por el pedidoId)
+3. Verificar el campo `cotizacionId`</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">El campo `cotizacionId` tiene el ID de la cotización aceptada (no es null). Las órdenes creadas antes de esta épica (si las hay) mantienen `cotizacionId = null`</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">---</textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1">
+      <div class="item-header">
+        <span class="item-num">#1</span>
+        <span class="item-text">Pedido ya PUBLICADO no permite invitar</span>
+      </div>
+      <div class="item-details">
+        <div class="detail-row"><span class="detail-label">Accion:</span> Desde un pedido PUBLICADO, verificar que NO aparece el botón &quot;Invitar a cotizar&quot;</div>
+        <div class="detail-row"><span class="detail-label">Esperado:</span> Botón solo aparece en BORRADOR</div>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="3" data-num="2">
+      <div class="item-header">
+        <span class="item-num">#2</span>
+        <span class="item-text">Taller ya invitado (duplicado)</span>
+      </div>
+      <div class="item-details">
+        <div class="detail-row"><span class="detail-label">Accion:</span> Invitar al mismo taller dos veces al mismo pedido</div>
+        <div class="detail-row"><span class="detail-label">Esperado:</span> `skipDuplicates` ignora silenciosamente, no falla</div>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="3" data-num="3">
+      <div class="item-header">
+        <span class="item-num">#3</span>
+        <span class="item-text">tallerIds con IDs inválidos</span>
+      </div>
+      <div class="item-details">
+        <div class="detail-row"><span class="detail-label">Accion:</span> Enviar POST a invitaciones con IDs que no existen</div>
+        <div class="detail-row"><span class="detail-label">Esperado:</span> Los válidos se crean, los inválidos se ignoran. Si todos son inválidos → 400</div>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="3" data-num="4">
+      <div class="item-header">
+        <span class="item-num">#4</span>
+        <span class="item-text">Cotización vencida no se puede aceptar</span>
+      </div>
+      <div class="item-details">
+        <div class="detail-row"><span class="detail-label">Accion:</span> Si existe una cotización con venceEn en el pasado, intentar aceptarla</div>
+        <div class="detail-row"><span class="detail-label">Esperado:</span> Retorna error &quot;La cotizacion vencio&quot;</div>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="3" data-num="5">
+      <div class="item-header">
+        <span class="item-num">#5</span>
+        <span class="item-text">montoTotal y presupuesto deprecados</span>
+      </div>
+      <div class="item-details">
+        <div class="detail-row"><span class="detail-label">Accion:</span> Verificar que no se usan en código nuevo ni en UI nueva</div>
+        <div class="detail-row"><span class="detail-label">Esperado:</span> Campos siguen en schema pero no aparecen en flujos nuevos</div>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1">
+      <div class="item-header">
+        <span class="item-text">Detalle pedido marca carga en &lt; 3s</span>
+      </div>
+      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Network → recargar `/marca/pedidos/[id]`</div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="4" data-num="2">
+      <div class="item-header">
+        <span class="item-text">Pedidos disponibles taller carga en &lt; 3s</span>
+      </div>
+      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Network → recargar `/taller/pedidos/disponibles`</div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="4" data-num="3">
+      <div class="item-header">
+        <span class="item-text">Modal &quot;Invitar a cotizar&quot; responde en &lt; 500ms</span>
+      </div>
+      <div class="item-details"><span class="detail-label">Metodo:</span> Click en botón → medir tiempo hasta que aparece el modal</div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="4" data-num="4">
+      <div class="item-header">
+        <span class="item-text">Búsqueda de talleres responde en &lt; 1s</span>
+      </div>
+      <div class="item-details"><span class="detail-label">Metodo:</span> Escribir &quot;Corte&quot; → medir tiempo hasta resultados</div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="4" data-num="5">
+      <div class="item-header">
+        <span class="item-text">Sin errores en consola del browser</span>
+      </div>
+      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Console → revisar en todas las páginas</div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="4" data-num="6">
+      <div class="item-header">
+        <span class="item-text">Funciona en móvil (responsive)</span>
+      </div>
+      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Toggle device toolbar → probar flujo completo</div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1">
+      <div class="item-header">
+        <span class="item-text">Tipografías consistentes (Overpass para títulos)</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="2">
+      <div class="item-header">
+        <span class="item-text">Colores del design system (brand-blue, brand-red)</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="3">
+      <div class="item-header">
+        <span class="item-text">Botón &quot;Invitar a cotizar&quot; coherente con otros botones outline</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="4">
+      <div class="item-header">
+        <span class="item-text">Modal de invitación tiene estilo consistente con otros modales</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="5">
+      <div class="item-header">
+        <span class="item-text">Badge &quot;Te invitaron&quot; usa variant default (azul)</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="6">
+      <div class="item-header">
+        <span class="item-text">Cotización ACEPTADA en verde es claramente distinguible</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="7">
+      <div class="item-header">
+        <span class="item-text">Estados vacíos tienen mensaje descriptivo</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="8">
+      <div class="item-header">
+        <span class="item-text">Textos en español argentino (vos/tenés)</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="9">
+      <div class="item-header">
+        <span class="item-text">Sin texto en inglés visible al usuario</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div></div><div class="section" id="resumen-issues">
+    <h2>Resumen de issues abiertos</h2>
+    <textarea class="large-textarea" id="textarea-resumen-issues" placeholder="Listar issues abiertos con # y descripcion breve" rows="4"></textarea>
+  </div><div class="section" id="notas-auditor">
+    <h2>Notas del auditor</h2>
+    <textarea class="large-textarea" id="textarea-notas" placeholder="Observaciones generales, sugerencias de UX, contexto adicional..." rows="6"></textarea>
+  </div><div class="section" id="checklist"><h2>Checklist de cierre</h2><div class="checklist-items"><label class="checklist-item">
+      <input type="checkbox" data-checklist="0">
+      <span>Todos los criterios de aceptación del spec verificados (14 criterios)</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="1">
+      <span>13 pasos de navegación probados</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="2">
+      <span>5 casos borde probados</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="3">
+      <span>Performance revisada en desktop y móvil</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="4">
+      <span>Issues abiertos en GitHub con labels correctos</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="5">
+      <span>Resultado global definido</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="6">
+      <span>Documento commiteado a develop</span>
+    </label></div></div>
+  </div>
+  <div class="sticky-bar">
+    <span class="progress-summary" id="progress-text"></span>
+    <button class="btn-copiar" id="btn-copiar" onclick="copiarResultados()">Copiar resultados como markdown</button>
+  </div>
+  <script>
+  function toggleCollapse(el) {
+    if (el.querySelector('.collapse-content')) {
+      el.classList.toggle('collapsed');
+    }
+  }
+
+  function togglePaso(header) {
+    header.closest('.paso-card').classList.toggle('expanded');
+  }
+
+  function setStatus(btn, emoji) {
+    const card = btn.closest('.item-card, .paso-card');
+    const btns = card.querySelectorAll('.status-btn');
+    const wasActive = btn.classList.contains('active');
+    btns.forEach(b => b.classList.remove('active'));
+    card.classList.remove('status-ok', 'status-bug', 'status-fail');
+
+    if (!wasActive) {
+      btn.classList.add('active');
+      if (emoji === '✅') card.classList.add('status-ok');
+      else if (emoji === '🐛') card.classList.add('status-bug');
+      else if (emoji === '❌') card.classList.add('status-fail');
+    }
+
+    // Update paso status indicator
+    const indicator = card.querySelector('.paso-status-indicator');
+    if (indicator) {
+      indicator.textContent = wasActive ? '' : emoji;
+    }
+
+    // Show/hide issue button for bug/fail
+    const issueBtn = card.querySelector('.btn-issue');
+    if (issueBtn && !issueBtn.classList.contains('enviado')) {
+      if (!wasActive && (emoji === '🐛' || emoji === '❌')) {
+        issueBtn.classList.add('visible');
+      } else {
+        issueBtn.classList.remove('visible');
+      }
+    }
+
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const cards = document.querySelectorAll('.item-card, .paso-card');
+    let total = 0, done = 0;
+    cards.forEach(c => {
+      total++;
+      if (c.querySelector('.status-btn.active')) done++;
+    });
+    const el = document.getElementById('progress-text');
+    if (el) el.textContent = done + ' / ' + total + ' completados';
+  }
+
+  function getCardStatus(card) {
+    const active = card.querySelector('.status-btn.active');
+    if (!active) return '—';
+    if (active.classList.contains('ok')) return '✅';
+    if (active.classList.contains('bug')) return '🐛';
+    if (active.classList.contains('fail')) return '❌';
+    return '—';
+  }
+
+  function getCardObs(card) {
+    const input = card.querySelector('.obs-input, .obs-textarea');
+    return input ? input.value.trim() : '';
+  }
+
+  function copiarResultados() {
+    const titulo = document.querySelector('.header h1')?.textContent || 'QA';
+    const fecha = new Date().toISOString().split('T')[0];
+    let md = '';
+
+    // Resultado global
+    const globalRadio = document.querySelector('input[name="resultado-global"]:checked');
+    const globalLabel = globalRadio ? globalRadio.closest('.radio-btn').querySelector('.radio-label').textContent.trim() : '—';
+    const decision = document.getElementById('decision-global')?.value.trim() || '—';
+    const issues = document.getElementById('issues-global')?.value.trim() || '#';
+
+    md += '## Resultados — ' + titulo + '\n';
+    md += '**Fecha de auditoria:** ' + fecha + '\n';
+    md += '**Auditor:** Sergio\n\n';
+    md += '### Resultado global\n';
+    md += globalLabel + '\n';
+    md += '**Decision:** ' + decision + '\n';
+    md += '**Issues abiertos:** ' + issues + '\n\n';
+
+    // Eje 1
+    const eje1Cards = document.querySelectorAll('#eje1 .item-card');
+    if (eje1Cards.length > 0) {
+      md += '### Eje 1 — Funcionalidad\n';
+      md += '| # | Criterio | Resultado | Observaciones |\n';
+      md += '|---|----------|-----------|---------------|\n';
+      eje1Cards.forEach(c => {
+        const num = c.dataset.num;
+        const criterio = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + num + ' | ' + criterio + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 2
+    const eje2Cards = document.querySelectorAll('#eje2 .paso-card');
+    if (eje2Cards.length > 0) {
+      md += '### Eje 2 — Navegabilidad\n';
+      eje2Cards.forEach(c => {
+        const num = c.dataset.num;
+        const titulo = c.querySelector('.paso-title')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '**' + titulo + ':** ' + status;
+        if (obs) md += ' — ' + obs;
+        md += '\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 3
+    const eje3Cards = document.querySelectorAll('#eje3 .item-card');
+    if (eje3Cards.length > 0) {
+      md += '### Eje 3 — Casos borde\n';
+      md += '| # | Caso | Resultado | Observaciones |\n';
+      md += '|---|------|-----------|---------------|\n';
+      eje3Cards.forEach(c => {
+        const num = c.dataset.num;
+        const caso = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + num + ' | ' + caso + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 4
+    const eje4Cards = document.querySelectorAll('#eje4 .item-card');
+    if (eje4Cards.length > 0) {
+      md += '### Eje 4 — Performance\n';
+      md += '| Verificacion | Resultado | Notas |\n';
+      md += '|-------------|-----------|-------|\n';
+      eje4Cards.forEach(c => {
+        const verif = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + verif + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 5
+    const eje5Cards = document.querySelectorAll('#eje5 .item-card');
+    if (eje5Cards.length > 0) {
+      md += '### Eje 5 — Consistencia visual\n';
+      md += '| Verificacion | Resultado | Notas |\n';
+      md += '|-------------|-----------|-------|\n';
+      eje5Cards.forEach(c => {
+        const verif = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + verif + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Resumen issues
+    const resumenIssues = document.getElementById('textarea-resumen-issues')?.value.trim();
+    if (resumenIssues) {
+      md += '### Resumen de issues abiertos\n';
+      md += resumenIssues + '\n\n';
+    }
+
+    // Notas
+    const notas = document.getElementById('textarea-notas')?.value.trim();
+    if (notas) {
+      md += '### Notas del auditor\n';
+      md += notas + '\n\n';
+    }
+
+    // Checklist
+    const checkItems = document.querySelectorAll('#checklist input[type="checkbox"]');
+    if (checkItems.length > 0) {
+      md += '### Checklist de cierre\n';
+      checkItems.forEach(cb => {
+        const label = cb.closest('.checklist-item')?.querySelector('span')?.textContent.trim() || '';
+        md += '- [' + (cb.checked ? 'x' : ' ') + '] ' + label + '\n';
+      });
+    }
+
+    navigator.clipboard.writeText(md).then(() => {
+      const btn = document.getElementById('btn-copiar');
+      btn.textContent = 'Copiado!';
+      btn.classList.add('copiado');
+      setTimeout(() => {
+        btn.textContent = 'Copiar resultados como markdown';
+        btn.classList.remove('copiado');
+      }, 2000);
+    });
+  }
+
+  function crearIssue(btn) {
+    const card = btn.closest('.item-card, .paso-card');
+    const obs = getCardObs(card);
+    if (!obs || obs.length < 10) {
+      btn.title = 'Escribi una observacion primero (min 10 caracteres)';
+      btn.classList.add('error');
+      btn.textContent = 'Escribi una observacion';
+      setTimeout(() => { btn.classList.remove('error'); btn.textContent = '📋 Crear issue'; }, 2000);
+      return;
+    }
+
+    const status = getCardStatus(card);
+    const tipo = status === '❌' ? 'bloqueante' : 'bug';
+    const eje = card.closest('.section')?.querySelector('h2')?.textContent.trim() || '';
+    const itemText = card.querySelector('.item-text, .paso-title')?.textContent.trim() || '';
+    const num = card.dataset.num || '';
+    const spec = document.body.dataset.spec || '';
+    const pagina = document.body.dataset.url || '';
+
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    const apiUrl = document.body.dataset.apiUrl;
+
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tipo: tipo,
+        mensaje: obs,
+        pagina: pagina,
+        auditorNombre: 'Sergio',
+        auditorRol: 'QA',
+        contextoQA: {
+          spec: spec,
+          eje: eje,
+          item: '#' + num + ' ' + itemText,
+          resultado: status
+        }
+      })
+    }).then(r => {
+      if (r.ok) {
+        btn.textContent = '✅ Issue creado';
+        btn.classList.add('enviado');
+      } else {
+        throw new Error();
+      }
+    }).catch(() => {
+      btn.textContent = '❌ Error — reintenta';
+      btn.classList.add('error');
+      btn.disabled = false;
+      setTimeout(() => { btn.classList.remove('error'); btn.textContent = '📋 Crear issue'; }, 3000);
+    });
+  }
+
+  // Init radio buttons
+  document.querySelectorAll('.radio-btn').forEach(label => {
+    label.addEventListener('click', () => {
+      const radio = label.querySelector('input[type="radio"]');
+      radio.checked = true;
+      label.closest('.radio-group').querySelectorAll('.radio-btn').forEach(l => l.classList.remove('selected'));
+      label.classList.add('selected');
+    });
+  });
+
+  updateProgress();
+</script>
+</body>
+</html>

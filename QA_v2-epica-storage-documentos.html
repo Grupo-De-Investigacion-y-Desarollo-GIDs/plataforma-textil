@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QA: Epica Storage y Documentos</title>
+  <style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #f5f7fa;
+    color: #1a1a2e;
+    line-height: 1.5;
+    padding: 20px;
+    padding-bottom: 80px;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  .header {
+    background: #1e3a5f;
+    color: white;
+    padding: 24px 28px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  .header h1 { font-size: 22px; margin-bottom: 12px; }
+  .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 13px; opacity: 0.9; }
+  .meta-label { font-weight: 600; }
+  .meta-item a { color: #7fb3ff; }
+  .meta-item code { background: rgba(255,255,255,0.15); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+  .section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .section h2 {
+    font-size: 17px;
+    color: #1e3a5f;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e8ecf1;
+    cursor: default;
+  }
+  .collapsible { cursor: pointer; }
+  .collapsible h2 { cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+  .collapse-icon { font-size: 12px; color: #999; transition: transform 0.2s; }
+  .collapsed .collapse-content { display: none; }
+  .collapsed .collapse-icon { transform: rotate(0deg); }
+  .collapsible:not(.collapsed) .collapse-icon { transform: rotate(90deg); }
+  .readonly-block {
+    background: #f8f9fa;
+    border: 1px solid #e2e5ea;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 13px;
+    white-space: pre-wrap;
+    color: #555;
+  }
+  .cred-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .cred-table th { background: #f0f2f5; padding: 8px 10px; text-align: left; font-weight: 600; color: #444; }
+  .cred-table td { padding: 6px 10px; border-bottom: 1px solid #eee; }
+  .cred-table code { background: #f0f2f5; padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+  .radio-group { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .radio-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 14px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.15s;
+  }
+  .radio-btn:hover { border-color: #1e3a5f; }
+  .radio-btn.selected { border-color: #1e3a5f; background: #eef3f9; }
+  .radio-btn input { display: none; }
+  .field-group { margin-bottom: 10px; }
+  .field-group label { font-size: 13px; font-weight: 600; color: #555; display: block; margin-bottom: 4px; }
+  .text-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  .text-input:focus, .obs-input:focus, .obs-textarea:focus, .large-textarea:focus {
+    outline: none;
+    border-color: #1e3a5f;
+    box-shadow: 0 0 0 2px rgba(30,58,95,0.15);
+  }
+  .item-card {
+    border: 1px solid #e8ecf1;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    transition: border-color 0.15s;
+  }
+  .item-card.status-ok { border-left: 4px solid #27ae60; }
+  .item-card.status-bug { border-left: 4px solid #f39c12; }
+  .item-card.status-fail { border-left: 4px solid #c0392b; }
+  .item-header { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+  .item-num { font-weight: 700; color: #1e3a5f; min-width: 30px; font-size: 14px; }
+  .item-text { font-size: 14px; flex: 1; }
+  .item-details { margin-bottom: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; font-size: 13px; }
+  .detail-row { margin-bottom: 4px; }
+  .detail-label { font-weight: 600; color: #666; }
+  .item-controls { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+  .status-btns { display: flex; gap: 4px; flex-shrink: 0; }
+  .status-btn {
+    width: 36px; height: 36px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .status-btn:hover { transform: scale(1.1); }
+  .status-btn.active { border-color: #1e3a5f; background: #eef3f9; transform: scale(1.1); }
+  .obs-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 7px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .obs-textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    resize: vertical;
+  }
+  .large-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+  }
+  .paso-card {
+    border: 1px solid #e8ecf1;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .paso-card.status-ok { border-left: 4px solid #27ae60; }
+  .paso-card.status-bug { border-left: 4px solid #f39c12; }
+  .paso-card.status-fail { border-left: 4px solid #c0392b; }
+  .paso-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px;
+    cursor: pointer;
+    background: #fafbfc;
+    border-bottom: 1px solid transparent;
+  }
+  .paso-header:hover { background: #f0f2f5; }
+  .paso-header-right { display: flex; align-items: center; gap: 8px; }
+  .paso-status-indicator { font-size: 16px; }
+  .paso-title { font-weight: 600; font-size: 14px; color: #1e3a5f; }
+  .paso-body { display: none; padding: 16px; }
+  .paso-card.expanded .paso-body { display: block; }
+  .paso-card.expanded .paso-header { border-bottom: 1px solid #e8ecf1; }
+  .paso-card.expanded .collapse-icon { transform: rotate(90deg); }
+  .paso-fields { margin-bottom: 12px; }
+  .paso-field { margin-bottom: 6px; font-size: 13px; }
+  .paso-label { font-weight: 600; color: #555; }
+  .paso-value { margin-top: 2px; padding-left: 0; white-space: pre-wrap; }
+  .checklist-items { display: flex; flex-direction: column; gap: 8px; }
+  .checklist-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .checklist-item:hover { background: #f5f7fa; }
+  .checklist-item input { margin-top: 3px; width: 16px; height: 16px; cursor: pointer; }
+  .unknown { border-left: 3px solid #f39c12; }
+  .text-muted { color: #999; font-size: 13px; }
+  .sticky-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 2px solid #1e3a5f;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    z-index: 100;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  }
+  .btn-copiar {
+    background: #1e3a5f;
+    color: white;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-copiar:hover { background: #2a4f7f; }
+  .btn-copiar.copiado { background: #27ae60; }
+  .progress-summary { font-size: 13px; color: #666; }
+  .btn-issue {
+    display: none;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    border: 1px solid #c0392b;
+    border-radius: 6px;
+    background: white;
+    color: #c0392b;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn-issue:hover { background: #fdf0ef; }
+  .btn-issue.visible { display: inline-flex; }
+  .btn-issue.enviado { border-color: #27ae60; color: #27ae60; cursor: default; }
+  .btn-issue.error { border-color: #e74c3c; color: #e74c3c; }
+  .btn-issue:disabled { opacity: 0.6; cursor: not-allowed; }
+  @media (max-width: 600px) {
+    body { padding: 10px; padding-bottom: 80px; }
+    .meta-grid { grid-template-columns: 1fr; }
+    .item-controls { flex-direction: column; }
+    .obs-input { min-width: 100%; }
+    .radio-group { flex-direction: column; }
+  }
+</style>
+</head>
+<body data-spec="v2-epica-storage-documentos.md" data-url="https://plataforma-textil.vercel.app" data-api-url="https://plataforma-textil.vercel.app/api/feedback">
+  <div class="container">
+    
+    <div class="header">
+      <h1>Epica Storage y Documentos</h1>
+      <div class="meta-grid">
+        <div class="meta-item"><span class="meta-label">Spec:</span> <code>v2-epica-storage-documentos.md</code></div>
+        <div class="meta-item"><span class="meta-label">Commit:</span> <code>fed7a93</code></div>
+        <div class="meta-item"><span class="meta-label">URL:</span> <a href="https://plataforma-textil.vercel.app" target="_blank">https://plataforma-textil.vercel.app</a></div>
+        <div class="meta-item"><span class="meta-label">Fecha:</span> 2026-04-13</div>
+        <div class="meta-item"><span class="meta-label">Auditor:</span> Sergio</div>
+      </div>
+    </div><div class="section collapsible collapsed" onclick="toggleCollapse(this)">
+    <h2>Como trabajar con este documento <span class="collapse-icon">&#9654;</span></h2>
+    <div class="collapse-content"><div class="readonly-block">Este documento es tu guia de navegacion para auditar el spec implementado.
+
+**Lo que necesitas:**
+
+- Este documento abierto en una pestana
+- La plataforma abierta en otra pestana: https://plataforma-textil.vercel.app
+
+**Como reportar hallazgos:**
+
+1. Cuando encuentres algo que no funciona o falta — quedate en esa pagina de la plataforma
+2. Abri el widget azul &quot;Feedback&quot; en el angulo inferior derecho
+3. Si estas sin login: completa tu nombre y selecciona el rol que estas probando
+4. Selecciona el tipo de hallazgo:
+   - **bug** — algo que deberia funcionar y no funciona
+   - **falta** — algo prometido en el spec que no esta implementado
+   - **mejora** — funciona pero podria ser mejor
+   - **confusion** — la UI no es clara
+5. Describi: que esperabas ver + que viste en cambio
+6. Envia — queda registrado automaticamente
+
+**Regla de oro:** un reporte por hallazgo. No acumules varios problemas en un solo mensaje.
+
+**No necesitas editar este documento.** Solo segui los pasos y reporta con el widget.
+
+&gt; **Nota:** si los hallazgos no aparecen en GitHub Issues, verificar que `GITHUB_TOKEN` y `GITHUB_REPO` estan configurados en Vercel. Los hallazgos siempre quedan registrados en la DB aunque el token no este configurado — se pueden ver en `/admin` desde `LogActividad`.
+
+---</div></div>
+  </div><div class="section" id="resultado-global"><h2>Resultado global</h2><div class="radio-group"><label class="radio-btn" data-value="aprobado">
+      <input type="radio" name="resultado-global" value="aprobado">
+      <span class="radio-label">✅ Aprobado</span>
+    </label><label class="radio-btn" data-value="aprobado-fixes">
+      <input type="radio" name="resultado-global" value="aprobado-fixes">
+      <span class="radio-label">🔧 Aprobado con fixes</span>
+    </label><label class="radio-btn" data-value="rechazado">
+      <input type="radio" name="resultado-global" value="rechazado">
+      <span class="radio-label">❌ Rechazado</span>
+    </label></div>
+    <div class="field-group">
+      <label>Decision:</label>
+      <input type="text" id="decision-global" placeholder="cerrar v2 / fix inmediato / abrir item v3" class="text-input">
+    </div>
+    <div class="field-group">
+      <label>Issues abiertos:</label>
+      <input type="text" id="issues-global" placeholder="#" class="text-input">
+    </div>
+  </div><div class="section collapsible collapsed" onclick="toggleCollapse(this)">
+    <h2>Credenciales de prueba <span class="collapse-icon">&#9654;</span></h2>
+    <div class="collapse-content">
+    <table class="cred-table"><thead><tr><th>Rol</th><th>Email</th><th>Password</th><th>URL</th></tr></thead><tbody><tr>
+      <td>ADMIN</td>
+      <td><code>`lucia.fernandez@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/admin`</code></td>
+    </tr><tr>
+      <td>TALLER Bronce</td>
+      <td><code>`roberto.gimenez@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/taller`</code></td>
+    </tr><tr>
+      <td>TALLER Plata</td>
+      <td><code>`graciela.sosa@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/taller`</code></td>
+    </tr><tr>
+      <td>TALLER Oro</td>
+      <td><code>`carlos.mendoza@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/taller`</code></td>
+    </tr><tr>
+      <td>MARCA</td>
+      <td><code>`martin.echevarria@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/marca`</code></td>
+    </tr><tr>
+      <td>ESTADO</td>
+      <td><code>`anabelen.torres@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/estado`</code></td>
+    </tr><tr>
+      <td>CONTENIDO</td>
+      <td><code>`sofia.martinez@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/contenido`</code></td>
+    </tr><tr>
+      <td>Sin login</td>
+      <td><code>—</code></td>
+      <td><code>—</code></td>
+      <td><code>`/`</code></td>
+    </tr></tbody></table></div></div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1">
+      <div class="item-header">
+        <span class="item-num">#1</span>
+        <span class="item-text">7 TipoDocumento en la DB (sin Certificado ambiental)</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="2">
+      <div class="item-header">
+        <span class="item-num">#2</span>
+        <span class="item-text">Cada taller del seed tiene exactamente 7 validaciones (no 13 duplicadas)</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="3">
+      <div class="item-header">
+        <span class="item-num">#3</span>
+        <span class="item-text">`/taller/formalizacion` muestra labels legibles desde DB (&quot;Registrate en ARCA&quot;, no &quot;CUIT_MONOTRIBUTO&quot;)</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="4">
+      <div class="item-header">
+        <span class="item-num">#4</span>
+        <span class="item-text">`/taller/formalizacion` denominador del progreso = 7</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="5">
+      <div class="item-header">
+        <span class="item-num">#5</span>
+        <span class="item-text">Admin ve los mismos labels legibles en `/admin/talleres/[id]`</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="6">
+      <div class="item-header">
+        <span class="item-num">#6</span>
+        <span class="item-text">Admin puede ver link del documento en estados COMPLETADO, RECHAZADO y VENCIDO (no solo PENDIENTE)</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="7">
+      <div class="item-header">
+        <span class="item-num">#7</span>
+        <span class="item-text">Motivo de rechazo es un input libre con `required` (no hardcodeado)</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="8">
+      <div class="item-header">
+        <span class="item-num">#8</span>
+        <span class="item-text">Tab &quot;Documentos&quot; eliminado — nuevo tab &quot;Historial&quot; con logs del taller</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="9">
+      <div class="item-header">
+        <span class="item-num">#9</span>
+        <span class="item-text">Badge del tab &quot;Formalizacion&quot; muestra contador de pendientes cuando &gt; 0</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="10">
+      <div class="item-header">
+        <span class="item-num">#10</span>
+        <span class="item-text">`calcularNivel` devuelve niveles correctos para los 3 talleres del seed (BRONCE/PLATA/ORO)</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="11">
+      <div class="item-header">
+        <span class="item-num">#11</span>
+        <span class="item-text">Taller registrado post-merge tiene 7 validaciones creadas automaticamente</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="12">
+      <div class="item-header">
+        <span class="item-num">#12</span>
+        <span class="item-text">Bucket `documentos` es publico en Supabase</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="13">
+      <div class="item-header">
+        <span class="item-num">#13</span>
+        <span class="item-text">Build de TypeScript pasa sin errores</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="14">
+      <div class="item-header">
+        <span class="item-num">#14</span>
+        <span class="item-text">26 tests unitarios pasando</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div></div><div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2><div class="paso-card" data-eje="2" data-num="1">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 1 — Verificar nombres con tildes en acceso rapido</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> Sin login</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>https://plataforma-textil.vercel.app/acceso-rapido</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">Abrir la pagina y leer los nombres de los 7 usuarios</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Los nombres muestran tildes correctas: Lucia Fernandez (con tildes), Roberto Gimenez (con tilde en e), Martin Echevarria (con tildes), Ana Belen Torres (con tilde en e), Sofia Martinez (con tildes). Graciela Sosa y Carlos Mendoza sin tildes (correcto asi).</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="2">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 2 — Checklist de formalizacion con labels legibles (TALLER Bronce)</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Bronce (Roberto Gimenez)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>https://plataforma-textil.vercel.app/acceso-rapido</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Click en Roberto Gimenez para hacer login
+2. Ir a `/taller/formalizacion`
+3. Verificar que el checklist muestra exactamente **7 items**
+4. Verificar que los labels son legibles en espanol:
+- &quot;Registrate en ARCA&quot; (no &quot;CUIT_MONOTRIBUTO&quot;)
+- &quot;Habilita tu local&quot; (no &quot;HABILITACION_MUNICIPAL&quot;)
+- &quot;Asegura a tu equipo&quot; (no &quot;ART&quot;)
+- &quot;Registra tus empleados&quot;
+- &quot;Habilitacion de bomberos&quot;
+- &quot;Plan de seguridad&quot;
+- &quot;Libro de sueldos digital&quot;</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">7 items con labels legibles. El progreso muestra `X/7` (no `X/8`). No aparece &quot;Certificacion ambiental&quot;.</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="3">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 3 — Enlace al tramite y costo estimado (TALLER Bronce)</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Bronce (Roberto Gimenez)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>https://plataforma-textil.vercel.app/taller/formalizacion</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Verificar que &quot;Registrate en ARCA&quot; tiene un boton &quot;Ir al tramite&quot; que apunta a afip.gob.ar
+2. Verificar que debajo del item aparece la descripcion y el texto &quot;Costo: Gratuito&quot;
+3. Verificar que &quot;Habilita tu local&quot; muestra &quot;Costo: Variable segun municipio&quot;
+4. Verificar que &quot;Registra tus empleados&quot; tiene boton &quot;Ir al tramite&quot; (afip.gob.ar)
+5. Verificar que items como &quot;Asegura a tu equipo&quot; o &quot;Plan de seguridad&quot; no tienen boton &quot;Ir al tramite&quot; (porque su enlace es null)</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Solo los items con enlaceTramite muestran el boton. Todos los items no completados muestran su costo estimado.</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="4">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 4 — Subir documento PDF (TALLER Bronce)</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Bronce (Roberto Gimenez)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>https://plataforma-textil.vercel.app/taller/formalizacion</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Buscar &quot;Habilita tu local&quot; (estado NO_INICIADO)
+2. Click en el boton de subir documento
+3. Seleccionar un archivo PDF de prueba
+4. Confirmar la subida</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">El documento se sube sin error. El estado cambia a &quot;PENDIENTE&quot; con el texto &quot;En revision por el equipo de PDT&quot;. No debe aparecer &quot;Bucket not found&quot; ni error 403.</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="5">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 5 — Admin ve labels legibles (ADMIN)</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN (Lucia Fernandez)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>https://plataforma-textil.vercel.app/acceso-rapido</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Cerrar sesion anterior. Login como Lucia Fernandez.
+2. Ir a `/admin/talleres`
+3. Click en &quot;Taller La Aguja&quot; (Roberto Gimenez, BRONCE)
+4. Verificar tab Formalizacion activo por defecto
+5. Verificar que los items muestran labels legibles (&quot;Registrate en ARCA&quot;, &quot;Habilita tu local&quot;, etc.)
+6. Verificar que NO dice &quot;CUIT MONOTRIBUTO&quot; ni &quot;HABILITACION MUNICIPAL&quot;</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Labels identicos a los que ve el taller. Texto legible en espanol.</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="6">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 6 — Aprobar documento y ver link (ADMIN)</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN (Lucia Fernandez)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>https://plataforma-textil.vercel.app/admin/talleres/[id-de-roberto]</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. En tab Formalizacion, buscar la validacion en estado PENDIENTE (la que Roberto subio en el Paso 4)
+2. Verificar que aparece el link &quot;Ver documento&quot; con el icono de archivo
+3. Click en &quot;Ver documento&quot; — verificar que abre el PDF/imagen sin error 403
+4. Click en &quot;Aprobar&quot;
+5. Verificar que la validacion pasa a estado COMPLETADO
+6. Verificar que **sigue visible** el link &quot;Ver documento&quot; en estado COMPLETADO</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">El link del documento es visible en PENDIENTE y en COMPLETADO. El PDF abre correctamente (bucket publico). Despues de aprobar, la pagina recarga y la validacion aparece como verificada.</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="7">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 7 — Verificar tab Historial (ADMIN)</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN (Lucia Fernandez)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>https://plataforma-textil.vercel.app/admin/talleres/[id-de-roberto]</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Verificar que los tabs son: **Formalizacion**, **Historial**, **Actividad** (no &quot;Documentos&quot;)
+2. Click en tab &quot;Historial&quot;
+3. Verificar que muestra los logs del taller con textos descriptivos:
+- &quot;Lucia Fernandez aprobo una validacion&quot; (del Paso 6)</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Tab &quot;Documentos&quot; no existe. Tab &quot;Historial&quot; muestra los logs del taller con nombre del admin y descripcion de la accion.</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="8">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 8 — Badge contador en tab Formalizacion (ADMIN)</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN (Lucia Fernandez)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>https://plataforma-textil.vercel.app/admin/talleres/[id-de-graciela]</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Ir a `/admin/talleres` y click en &quot;Cooperativa Hilos del Sur&quot; (Graciela Sosa, PLATA)
+2. Verificar si la Cooperativa tiene documentos PENDIENTES con URL
+3. Si tiene documentos pendientes: verificar que el tab dice &quot;Formalizacion (N)&quot; donde N es la cantidad
+4. Si no tiene documentos pendientes: verificar que dice solo &quot;Formalizacion&quot; sin numero</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">El badge solo aparece cuando hay documentos en estado PENDIENTE que tienen URL de documento subido.</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="9">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 9 — Rechazar con motivo libre (ADMIN)</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN (Lucia Fernandez)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>https://plataforma-textil.vercel.app/admin/talleres/[id-de-graciela]</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. En tab Formalizacion de Graciela, buscar una validacion PENDIENTE con documento
+2. Si no hay una PENDIENTE, primero loguearse como Graciela, subir un documento, y volver como admin
+3. Intentar rechazar **sin escribir motivo** — verificar que el navegador bloquea el envio
+4. Escribir motivo &quot;Fecha vencida en el documento&quot; y rechazar
+5. Verificar que la validacion pasa a RECHAZADO con el motivo escrito</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">El campo motivo es `required` — el navegador no permite enviar vacio. El motivo escrito aparece como detalle del rechazo (&quot;Rechazado: Fecha vencida en el documento&quot;). No dice &quot;Documento ilegible o incorrecto&quot; (el viejo hardcoded).</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="10">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 10 — Verificar 7 validaciones sin duplicados (TALLER Plata)</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Plata (Graciela Sosa)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>https://plataforma-textil.vercel.app/acceso-rapido</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Cerrar sesion anterior. Login como Graciela Sosa.
+2. Ir a `/taller/formalizacion`
+3. Contar la cantidad de items en el checklist
+4. Verificar que son exactamente **7** items
+5. Verificar que no hay duplicados (por ejemplo, no hay dos &quot;Registrate en ARCA&quot;)
+6. Verificar que el progreso dice `X/7` (no `X/13` ni `X/8`)</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Exactamente 7 items sin duplicados. El progreso muestra el denominador correcto. Esto confirma que el bug de dual naming esta resuelto.</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="11">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 11 — Registro de taller nuevo crea 7 validaciones</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> Sin login</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>https://plataforma-textil.vercel.app/registro</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Registrar un taller nuevo con datos de prueba:
+- Email: `prueba.qa@pdt.org.ar`
+- Password: `pdt2026qa`
+- Nombre: &quot;Taller QA Test&quot;
+- CUIT: `20-12345678-9` (o cualquier CUIT valido)
+- Ubicacion: &quot;CABA&quot;
+2. Despues del registro, ir a `/taller/formalizacion`
+3. Contar los items del checklist</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">El taller nuevo tiene exactamente 7 validaciones, todas en estado NO_INICIADO. El progreso dice `0/7`.</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="12">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 12 — Subida de nivel de BRONCE a PLATA (ADMIN)</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN (Lucia Fernandez)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>https://plataforma-textil.vercel.app/admin/talleres/[id-de-roberto]</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Login como admin
+2. Ir al taller de Roberto (BRONCE)
+3. Roberto ya tiene CUIT/Monotributo COMPLETADO en el seed
+4. Necesita: Habilitacion municipal + ART completados + 1 certificado activo + verificadoAfip = true
+5. Roberto ya tiene verificadoAfip = true en el seed
+6. Aprobar las validaciones pendientes de &quot;Habilita tu local&quot; y &quot;Asegura a tu equipo&quot; (necesitan que Roberto haya subido documentos primero)
+7. Verificar si el nivel cambia a PLATA (tambien necesita 1 certificado — si no lo tiene, permanece en BRONCE)
+8. Verificar el nivel en el badge del header del taller</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Si se cumplen las condiciones de PLATA (3 validaciones PLATA + AFIP + 1 certificado), el nivel sube. Si falta el certificado, queda BRONCE pero el puntaje aumenta. En el tab Historial aparece &quot;Subio de nivel: BRONCE → PLATA&quot;.</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="13">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 13 — Bajada de nivel registra NIVEL_BAJADO (ADMIN)</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN (Lucia Fernandez)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>https://plataforma-textil.vercel.app/admin/talleres/[id-de-graciela]</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Ir al taller de Graciela (PLATA)
+2. Graciela tiene 3 validaciones PLATA completadas + 1 certificado
+3. Rechazar una de las validaciones PLATA (ej: &quot;Habilita tu local&quot;) con motivo &quot;Vencido&quot;
+4. Verificar si el nivel baja de PLATA a BRONCE
+5. Ir a tab Historial
+6. Verificar que aparece un log que dice &quot;Bajo de nivel: PLATA → BRONCE&quot; (no &quot;Subio de nivel&quot;)</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Al rechazar una validacion requerida para PLATA, el nivel recalcula y baja. El log dice NIVEL_BAJADO con la direccion correcta. Esto confirma que el fix bidireccional funciona.</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">---</textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1">
+      <div class="item-header">
+        <span class="item-num">#1</span>
+        <span class="item-text">Certificado ambiental eliminado</span>
+      </div>
+      <div class="item-details">
+        <div class="detail-row"><span class="detail-label">Accion:</span> Buscar &quot;Certificacion ambiental&quot; en `/taller/formalizacion` de cualquier taller</div>
+        <div class="detail-row"><span class="detail-label">Esperado:</span> No debe aparecer en ninguna vista</div>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="3" data-num="2">
+      <div class="item-header">
+        <span class="item-num">#2</span>
+        <span class="item-text">Motivo de rechazo vacio</span>
+      </div>
+      <div class="item-details">
+        <div class="detail-row"><span class="detail-label">Accion:</span> Como admin, intentar rechazar sin escribir motivo</div>
+        <div class="detail-row"><span class="detail-label">Esperado:</span> El navegador bloquea el envio (campo `required`)</div>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="3" data-num="3">
+      <div class="item-header">
+        <span class="item-num">#3</span>
+        <span class="item-text">Admin aprueba validacion del seed (sin bajadas fantasma)</span>
+      </div>
+      <div class="item-details">
+        <div class="detail-row"><span class="detail-label">Accion:</span> Como admin, aprobar una validacion de Graciela (PLATA)</div>
+        <div class="detail-row"><span class="detail-label">Esperado:</span> Graciela sigue siendo PLATA (no baja a BRONCE)</div>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="3" data-num="4">
+      <div class="item-header">
+        <span class="item-num">#4</span>
+        <span class="item-text">Documento visible despues de aprobacion</span>
+      </div>
+      <div class="item-details">
+        <div class="detail-row"><span class="detail-label">Accion:</span> Aprobar un documento con URL → recargar</div>
+        <div class="detail-row"><span class="detail-label">Esperado:</span> Link &quot;Ver documento&quot; sigue visible en estado COMPLETADO</div>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="3" data-num="5">
+      <div class="item-header">
+        <span class="item-num">#5</span>
+        <span class="item-text">Taller nuevo tiene 7 validaciones</span>
+      </div>
+      <div class="item-details">
+        <div class="detail-row"><span class="detail-label">Accion:</span> Registrar taller → ir a formalizacion</div>
+        <div class="detail-row"><span class="detail-label">Esperado:</span> Exactamente 7 items, todos NO_INICIADO, progreso 0/7</div>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1">
+      <div class="item-header">
+        <span class="item-text">`/taller/formalizacion` carga en menos de 3 segundos</span>
+      </div>
+      <div class="item-details"><span class="detail-label">Metodo:</span> Abrir DevTools → Network → recargar</div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="4" data-num="2">
+      <div class="item-header">
+        <span class="item-text">`/admin/talleres/[id]` carga en menos de 3 segundos</span>
+      </div>
+      <div class="item-details"><span class="detail-label">Metodo:</span> Abrir DevTools → Network → recargar</div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="4" data-num="3">
+      <div class="item-header">
+        <span class="item-text">Tab Historial carga sin delay visible</span>
+      </div>
+      <div class="item-details"><span class="detail-label">Metodo:</span> Click en tab, medir tiempo</div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="4" data-num="4">
+      <div class="item-header">
+        <span class="item-text">Sin errores en consola del browser</span>
+      </div>
+      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Console → revisar en ambas paginas</div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="4" data-num="5">
+      <div class="item-header">
+        <span class="item-text">Funciona en movil (responsive)</span>
+      </div>
+      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Toggle device toolbar → verificar checklist</div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1">
+      <div class="item-header">
+        <span class="item-text">Labels del checklist en espanol legible (no SCREAMING_SNAKE)</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="2">
+      <div class="item-header">
+        <span class="item-text">Labels identicos entre vista taller y vista admin</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="3">
+      <div class="item-header">
+        <span class="item-text">Link &quot;Ver documento&quot; usa color brand-blue con underline</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="4">
+      <div class="item-header">
+        <span class="item-text">Boton &quot;Ir al tramite&quot; tiene icono ExternalLink</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="5">
+      <div class="item-header">
+        <span class="item-text">Tab Historial tiene el mismo estilo que los otros tabs</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="6">
+      <div class="item-header">
+        <span class="item-text">Badge contador en tab Formalizacion usa estilo consistente</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="7">
+      <div class="item-header">
+        <span class="item-text">Textos del checklist en espanol argentino</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="8">
+      <div class="item-header">
+        <span class="item-text">Costos estimados visibles debajo de cada item no completado</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div></div><div class="section" id="resumen-issues">
+    <h2>Resumen de issues abiertos</h2>
+    <textarea class="large-textarea" id="textarea-resumen-issues" placeholder="Listar issues abiertos con # y descripcion breve" rows="4"></textarea>
+  </div><div class="section" id="notas-auditor">
+    <h2>Notas del auditor</h2>
+    <textarea class="large-textarea" id="textarea-notas" placeholder="Observaciones generales, sugerencias de UX, contexto adicional..." rows="6"></textarea>
+  </div><div class="section" id="checklist"><h2>Checklist de cierre</h2><div class="checklist-items"><label class="checklist-item">
+      <input type="checkbox" data-checklist="0">
+      <span>7 tipos de documento verificados (sin Certificado ambiental)</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="1">
+      <span>Cada taller del seed tiene 7 validaciones sin duplicados</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="2">
+      <span>Labels legibles en `/taller/formalizacion` (desde DB)</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="3">
+      <span>Labels legibles en `/admin/talleres/[id]` (desde DB)</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="4">
+      <span>Subida de documento funciona (bucket publico)</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="5">
+      <span>Link &quot;Ver documento&quot; visible en todos los estados con URL</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="6">
+      <span>Motivo de rechazo libre y obligatorio</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="7">
+      <span>Tab Documentos eliminado — tab Historial funcional</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="8">
+      <span>Badge contador en tab Formalizacion</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="9">
+      <span>Registro de taller nuevo crea 7 validaciones</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="10">
+      <span>Subida y bajada de nivel funciona correctamente</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="11">
+      <span>Log NIVEL_BAJADO (no NIVEL_SUBIDO) cuando baja</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="12">
+      <span>Casos borde probados</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="13">
+      <span>Performance revisada en desktop y movil</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="14">
+      <span>Issues abiertos en GitHub con labels correctos</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="15">
+      <span>Resultado global definido</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="16">
+      <span>Documento commiteado a develop</span>
+    </label></div></div>
+  </div>
+  <div class="sticky-bar">
+    <span class="progress-summary" id="progress-text"></span>
+    <button class="btn-copiar" id="btn-copiar" onclick="copiarResultados()">Copiar resultados como markdown</button>
+  </div>
+  <script>
+  function toggleCollapse(el) {
+    if (el.querySelector('.collapse-content')) {
+      el.classList.toggle('collapsed');
+    }
+  }
+
+  function togglePaso(header) {
+    header.closest('.paso-card').classList.toggle('expanded');
+  }
+
+  function setStatus(btn, emoji) {
+    const card = btn.closest('.item-card, .paso-card');
+    const btns = card.querySelectorAll('.status-btn');
+    const wasActive = btn.classList.contains('active');
+    btns.forEach(b => b.classList.remove('active'));
+    card.classList.remove('status-ok', 'status-bug', 'status-fail');
+
+    if (!wasActive) {
+      btn.classList.add('active');
+      if (emoji === '✅') card.classList.add('status-ok');
+      else if (emoji === '🐛') card.classList.add('status-bug');
+      else if (emoji === '❌') card.classList.add('status-fail');
+    }
+
+    // Update paso status indicator
+    const indicator = card.querySelector('.paso-status-indicator');
+    if (indicator) {
+      indicator.textContent = wasActive ? '' : emoji;
+    }
+
+    // Show/hide issue button for bug/fail
+    const issueBtn = card.querySelector('.btn-issue');
+    if (issueBtn && !issueBtn.classList.contains('enviado')) {
+      if (!wasActive && (emoji === '🐛' || emoji === '❌')) {
+        issueBtn.classList.add('visible');
+      } else {
+        issueBtn.classList.remove('visible');
+      }
+    }
+
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const cards = document.querySelectorAll('.item-card, .paso-card');
+    let total = 0, done = 0;
+    cards.forEach(c => {
+      total++;
+      if (c.querySelector('.status-btn.active')) done++;
+    });
+    const el = document.getElementById('progress-text');
+    if (el) el.textContent = done + ' / ' + total + ' completados';
+  }
+
+  function getCardStatus(card) {
+    const active = card.querySelector('.status-btn.active');
+    if (!active) return '—';
+    if (active.classList.contains('ok')) return '✅';
+    if (active.classList.contains('bug')) return '🐛';
+    if (active.classList.contains('fail')) return '❌';
+    return '—';
+  }
+
+  function getCardObs(card) {
+    const input = card.querySelector('.obs-input, .obs-textarea');
+    return input ? input.value.trim() : '';
+  }
+
+  function copiarResultados() {
+    const titulo = document.querySelector('.header h1')?.textContent || 'QA';
+    const fecha = new Date().toISOString().split('T')[0];
+    let md = '';
+
+    // Resultado global
+    const globalRadio = document.querySelector('input[name="resultado-global"]:checked');
+    const globalLabel = globalRadio ? globalRadio.closest('.radio-btn').querySelector('.radio-label').textContent.trim() : '—';
+    const decision = document.getElementById('decision-global')?.value.trim() || '—';
+    const issues = document.getElementById('issues-global')?.value.trim() || '#';
+
+    md += '## Resultados — ' + titulo + '\n';
+    md += '**Fecha de auditoria:** ' + fecha + '\n';
+    md += '**Auditor:** Sergio\n\n';
+    md += '### Resultado global\n';
+    md += globalLabel + '\n';
+    md += '**Decision:** ' + decision + '\n';
+    md += '**Issues abiertos:** ' + issues + '\n\n';
+
+    // Eje 1
+    const eje1Cards = document.querySelectorAll('#eje1 .item-card');
+    if (eje1Cards.length > 0) {
+      md += '### Eje 1 — Funcionalidad\n';
+      md += '| # | Criterio | Resultado | Observaciones |\n';
+      md += '|---|----------|-----------|---------------|\n';
+      eje1Cards.forEach(c => {
+        const num = c.dataset.num;
+        const criterio = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + num + ' | ' + criterio + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 2
+    const eje2Cards = document.querySelectorAll('#eje2 .paso-card');
+    if (eje2Cards.length > 0) {
+      md += '### Eje 2 — Navegabilidad\n';
+      eje2Cards.forEach(c => {
+        const num = c.dataset.num;
+        const titulo = c.querySelector('.paso-title')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '**' + titulo + ':** ' + status;
+        if (obs) md += ' — ' + obs;
+        md += '\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 3
+    const eje3Cards = document.querySelectorAll('#eje3 .item-card');
+    if (eje3Cards.length > 0) {
+      md += '### Eje 3 — Casos borde\n';
+      md += '| # | Caso | Resultado | Observaciones |\n';
+      md += '|---|------|-----------|---------------|\n';
+      eje3Cards.forEach(c => {
+        const num = c.dataset.num;
+        const caso = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + num + ' | ' + caso + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 4
+    const eje4Cards = document.querySelectorAll('#eje4 .item-card');
+    if (eje4Cards.length > 0) {
+      md += '### Eje 4 — Performance\n';
+      md += '| Verificacion | Resultado | Notas |\n';
+      md += '|-------------|-----------|-------|\n';
+      eje4Cards.forEach(c => {
+        const verif = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + verif + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 5
+    const eje5Cards = document.querySelectorAll('#eje5 .item-card');
+    if (eje5Cards.length > 0) {
+      md += '### Eje 5 — Consistencia visual\n';
+      md += '| Verificacion | Resultado | Notas |\n';
+      md += '|-------------|-----------|-------|\n';
+      eje5Cards.forEach(c => {
+        const verif = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + verif + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Resumen issues
+    const resumenIssues = document.getElementById('textarea-resumen-issues')?.value.trim();
+    if (resumenIssues) {
+      md += '### Resumen de issues abiertos\n';
+      md += resumenIssues + '\n\n';
+    }
+
+    // Notas
+    const notas = document.getElementById('textarea-notas')?.value.trim();
+    if (notas) {
+      md += '### Notas del auditor\n';
+      md += notas + '\n\n';
+    }
+
+    // Checklist
+    const checkItems = document.querySelectorAll('#checklist input[type="checkbox"]');
+    if (checkItems.length > 0) {
+      md += '### Checklist de cierre\n';
+      checkItems.forEach(cb => {
+        const label = cb.closest('.checklist-item')?.querySelector('span')?.textContent.trim() || '';
+        md += '- [' + (cb.checked ? 'x' : ' ') + '] ' + label + '\n';
+      });
+    }
+
+    navigator.clipboard.writeText(md).then(() => {
+      const btn = document.getElementById('btn-copiar');
+      btn.textContent = 'Copiado!';
+      btn.classList.add('copiado');
+      setTimeout(() => {
+        btn.textContent = 'Copiar resultados como markdown';
+        btn.classList.remove('copiado');
+      }, 2000);
+    });
+  }
+
+  function crearIssue(btn) {
+    const card = btn.closest('.item-card, .paso-card');
+    const obs = getCardObs(card);
+    if (!obs || obs.length < 10) {
+      btn.title = 'Escribi una observacion primero (min 10 caracteres)';
+      btn.classList.add('error');
+      btn.textContent = 'Escribi una observacion';
+      setTimeout(() => { btn.classList.remove('error'); btn.textContent = '📋 Crear issue'; }, 2000);
+      return;
+    }
+
+    const status = getCardStatus(card);
+    const tipo = status === '❌' ? 'bloqueante' : 'bug';
+    const eje = card.closest('.section')?.querySelector('h2')?.textContent.trim() || '';
+    const itemText = card.querySelector('.item-text, .paso-title')?.textContent.trim() || '';
+    const num = card.dataset.num || '';
+    const spec = document.body.dataset.spec || '';
+    const pagina = document.body.dataset.url || '';
+
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    const apiUrl = document.body.dataset.apiUrl;
+
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tipo: tipo,
+        mensaje: obs,
+        pagina: pagina,
+        auditorNombre: 'Sergio',
+        auditorRol: 'QA',
+        contextoQA: {
+          spec: spec,
+          eje: eje,
+          item: '#' + num + ' ' + itemText,
+          resultado: status
+        }
+      })
+    }).then(r => {
+      if (r.ok) {
+        btn.textContent = '✅ Issue creado';
+        btn.classList.add('enviado');
+      } else {
+        throw new Error();
+      }
+    }).catch(() => {
+      btn.textContent = '❌ Error — reintenta';
+      btn.classList.add('error');
+      btn.disabled = false;
+      setTimeout(() => { btn.classList.remove('error'); btn.textContent = '📋 Crear issue'; }, 3000);
+    });
+  }
+
+  // Init radio buttons
+  document.querySelectorAll('.radio-btn').forEach(label => {
+    label.addEventListener('click', () => {
+      const radio = label.querySelector('input[type="radio"]');
+      radio.checked = true;
+      label.closest('.radio-group').querySelectorAll('.radio-btn').forEach(l => l.classList.remove('selected'));
+      label.classList.add('selected');
+    });
+  });
+
+  updateProgress();
+</script>
+</body>
+</html>

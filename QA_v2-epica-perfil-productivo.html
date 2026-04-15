@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QA: Épica Perfil Productivo — Wizard, Perfil Taller y Dashboard Sectorial</title>
+  <style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #f5f7fa;
+    color: #1a1a2e;
+    line-height: 1.5;
+    padding: 20px;
+    padding-bottom: 80px;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  .header {
+    background: #1e3a5f;
+    color: white;
+    padding: 24px 28px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  .header h1 { font-size: 22px; margin-bottom: 12px; }
+  .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 13px; opacity: 0.9; }
+  .meta-label { font-weight: 600; }
+  .meta-item a { color: #7fb3ff; }
+  .meta-item code { background: rgba(255,255,255,0.15); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+  .section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .section h2 {
+    font-size: 17px;
+    color: #1e3a5f;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e8ecf1;
+    cursor: default;
+  }
+  .collapsible { cursor: pointer; }
+  .collapsible h2 { cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+  .collapse-icon { font-size: 12px; color: #999; transition: transform 0.2s; }
+  .collapsed .collapse-content { display: none; }
+  .collapsed .collapse-icon { transform: rotate(0deg); }
+  .collapsible:not(.collapsed) .collapse-icon { transform: rotate(90deg); }
+  .readonly-block {
+    background: #f8f9fa;
+    border: 1px solid #e2e5ea;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 13px;
+    white-space: pre-wrap;
+    color: #555;
+  }
+  .cred-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .cred-table th { background: #f0f2f5; padding: 8px 10px; text-align: left; font-weight: 600; color: #444; }
+  .cred-table td { padding: 6px 10px; border-bottom: 1px solid #eee; }
+  .cred-table code { background: #f0f2f5; padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+  .radio-group { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .radio-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 14px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.15s;
+  }
+  .radio-btn:hover { border-color: #1e3a5f; }
+  .radio-btn.selected { border-color: #1e3a5f; background: #eef3f9; }
+  .radio-btn input { display: none; }
+  .field-group { margin-bottom: 10px; }
+  .field-group label { font-size: 13px; font-weight: 600; color: #555; display: block; margin-bottom: 4px; }
+  .text-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  .text-input:focus, .obs-input:focus, .obs-textarea:focus, .large-textarea:focus {
+    outline: none;
+    border-color: #1e3a5f;
+    box-shadow: 0 0 0 2px rgba(30,58,95,0.15);
+  }
+  .item-card {
+    border: 1px solid #e8ecf1;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    transition: border-color 0.15s;
+  }
+  .item-card.status-ok { border-left: 4px solid #27ae60; }
+  .item-card.status-bug { border-left: 4px solid #f39c12; }
+  .item-card.status-fail { border-left: 4px solid #c0392b; }
+  .item-header { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+  .item-num { font-weight: 700; color: #1e3a5f; min-width: 30px; font-size: 14px; }
+  .item-text { font-size: 14px; flex: 1; }
+  .item-details { margin-bottom: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; font-size: 13px; }
+  .detail-row { margin-bottom: 4px; }
+  .detail-label { font-weight: 600; color: #666; }
+  .item-controls { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+  .status-btns { display: flex; gap: 4px; flex-shrink: 0; }
+  .status-btn {
+    width: 36px; height: 36px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .status-btn:hover { transform: scale(1.1); }
+  .status-btn.active { border-color: #1e3a5f; background: #eef3f9; transform: scale(1.1); }
+  .obs-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 7px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .obs-textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    resize: vertical;
+  }
+  .large-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+  }
+  .paso-card {
+    border: 1px solid #e8ecf1;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .paso-card.status-ok { border-left: 4px solid #27ae60; }
+  .paso-card.status-bug { border-left: 4px solid #f39c12; }
+  .paso-card.status-fail { border-left: 4px solid #c0392b; }
+  .paso-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px;
+    cursor: pointer;
+    background: #fafbfc;
+    border-bottom: 1px solid transparent;
+  }
+  .paso-header:hover { background: #f0f2f5; }
+  .paso-header-right { display: flex; align-items: center; gap: 8px; }
+  .paso-status-indicator { font-size: 16px; }
+  .paso-title { font-weight: 600; font-size: 14px; color: #1e3a5f; }
+  .paso-body { display: none; padding: 16px; }
+  .paso-card.expanded .paso-body { display: block; }
+  .paso-card.expanded .paso-header { border-bottom: 1px solid #e8ecf1; }
+  .paso-card.expanded .collapse-icon { transform: rotate(90deg); }
+  .paso-fields { margin-bottom: 12px; }
+  .paso-field { margin-bottom: 6px; font-size: 13px; }
+  .paso-label { font-weight: 600; color: #555; }
+  .paso-value { margin-top: 2px; padding-left: 0; white-space: pre-wrap; }
+  .checklist-items { display: flex; flex-direction: column; gap: 8px; }
+  .checklist-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .checklist-item:hover { background: #f5f7fa; }
+  .checklist-item input { margin-top: 3px; width: 16px; height: 16px; cursor: pointer; }
+  .unknown { border-left: 3px solid #f39c12; }
+  .text-muted { color: #999; font-size: 13px; }
+  .sticky-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 2px solid #1e3a5f;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    z-index: 100;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  }
+  .btn-copiar {
+    background: #1e3a5f;
+    color: white;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-copiar:hover { background: #2a4f7f; }
+  .btn-copiar.copiado { background: #27ae60; }
+  .progress-summary { font-size: 13px; color: #666; }
+  .btn-issue {
+    display: none;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    border: 1px solid #c0392b;
+    border-radius: 6px;
+    background: white;
+    color: #c0392b;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn-issue:hover { background: #fdf0ef; }
+  .btn-issue.visible { display: inline-flex; }
+  .btn-issue.enviado { border-color: #27ae60; color: #27ae60; cursor: default; }
+  .btn-issue.error { border-color: #e74c3c; color: #e74c3c; }
+  .btn-issue:disabled { opacity: 0.6; cursor: not-allowed; }
+  @media (max-width: 600px) {
+    body { padding: 10px; padding-bottom: 80px; }
+    .meta-grid { grid-template-columns: 1fr; }
+    .item-controls { flex-direction: column; }
+    .obs-input { min-width: 100%; }
+    .radio-group { flex-direction: column; }
+  }
+</style>
+</head>
+<body data-spec="v2-epica-perfil-productivo.md" data-url="https://plataforma-textil.vercel.app" data-api-url="https://plataforma-textil.vercel.app/api/feedback">
+  <div class="container">
+    
+    <div class="header">
+      <h1>Épica Perfil Productivo — Wizard, Perfil Taller y Dashboard Sectorial</h1>
+      <div class="meta-grid">
+        <div class="meta-item"><span class="meta-label">Spec:</span> <code>v2-epica-perfil-productivo.md</code></div>
+        <div class="meta-item"><span class="meta-label">Commit:</span> <code>1f8d531</code></div>
+        <div class="meta-item"><span class="meta-label">URL:</span> <a href="https://plataforma-textil.vercel.app" target="_blank">https://plataforma-textil.vercel.app</a></div>
+        <div class="meta-item"><span class="meta-label">Fecha:</span> 2026-04-14</div>
+        <div class="meta-item"><span class="meta-label">Auditor:</span> Sergio</div>
+      </div>
+    </div><div class="section collapsible collapsed" onclick="toggleCollapse(this)">
+    <h2>Como trabajar con este documento <span class="collapse-icon">&#9654;</span></h2>
+    <div class="collapse-content"><div class="readonly-block">1. Abrí este archivo y la plataforma en paralelo
+2. Seguí los pasos en orden — cada paso depende del anterior
+3. Marcá cada resultado con ✅ (ok), 🐛 (bug menor) o ❌ (bloqueante)
+4. Si el resultado no es ✅ → abrí el widget azul &quot;Feedback&quot; en esa página → tipo [bug/falta] → describí qué pasó
+5. Quedate en la página donde encontraste el problema antes de abrir el widget (captura la URL automáticamente)
+6. Al terminar, completá el resultado global y commiteá este archivo actualizado
+
+**Regla de oro:** un issue por hallazgo, desde la página donde ocurre.
+
+&gt; **Nota:** si los hallazgos no aparecen en GitHub Issues, verificar que `GITHUB_TOKEN` y `GITHUB_REPO` están configurados en Vercel. Los hallazgos siempre quedan registrados en la DB aunque el token no esté configurado — se pueden ver en `/admin` desde `LogActividad`.
+
+---</div></div>
+  </div><div class="section collapsible collapsed" onclick="toggleCollapse(this)">
+    <h2>Credenciales de prueba <span class="collapse-icon">&#9654;</span></h2>
+    <div class="collapse-content">
+    <table class="cred-table"><thead><tr><th>Rol</th><th>Email</th><th>Password</th><th>URL</th></tr></thead><tbody><tr>
+      <td>ADMIN</td>
+      <td><code>`lucia.fernandez@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/admin`</code></td>
+    </tr><tr>
+      <td>TALLER Bronce</td>
+      <td><code>`roberto.gimenez@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/taller`</code></td>
+    </tr><tr>
+      <td>TALLER Plata</td>
+      <td><code>`graciela.sosa@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/taller`</code></td>
+    </tr><tr>
+      <td>TALLER Oro</td>
+      <td><code>`carlos.mendoza@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/taller`</code></td>
+    </tr><tr>
+      <td>MARCA</td>
+      <td><code>`martin.echevarria@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/marca`</code></td>
+    </tr><tr>
+      <td>ESTADO</td>
+      <td><code>`anabelen.torres@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/estado`</code></td>
+    </tr></tbody></table></div></div><div class="section" id="resultado-global"><h2>Resultado global</h2><div class="radio-group"><label class="radio-btn" data-value="aprobado">
+      <input type="radio" name="resultado-global" value="aprobado">
+      <span class="radio-label">✅ Aprobado</span>
+    </label><label class="radio-btn" data-value="aprobado-fixes">
+      <input type="radio" name="resultado-global" value="aprobado-fixes">
+      <span class="radio-label">🔧 Aprobado con fixes</span>
+    </label><label class="radio-btn" data-value="rechazado">
+      <input type="radio" name="resultado-global" value="rechazado">
+      <span class="radio-label">❌ Rechazado</span>
+    </label></div>
+    <div class="field-group">
+      <label>Decision:</label>
+      <input type="text" id="decision-global" placeholder="cerrar v2 / fix inmediato / abrir item v3" class="text-input">
+    </div>
+    <div class="field-group">
+      <label>Issues abiertos:</label>
+      <input type="text" id="issues-global" placeholder="#" class="text-input">
+    </div>
+  </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1">
+      <div class="item-header">
+        <span class="item-num">#1</span>
+        <span class="item-text">El wizard ya no envía `puntaje: scoreGeneral` en `handleSave`</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="2">
+      <div class="item-header">
+        <span class="item-num">#2</span>
+        <span class="item-text">El paso de resumen del wizard no muestra el &quot;Score General&quot; ni los &quot;Indicadores de Madurez&quot; (las 5 barras)</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="3">
+      <div class="item-header">
+        <span class="item-num">#3</span>
+        <span class="item-text">El paso de resumen sigue mostrando &quot;Capacidad&quot;, &quot;Procesos seleccionados&quot;, &quot;Prendas seleccionadas&quot; y &quot;Badges Desbloqueados&quot;</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="4">
+      <div class="item-header">
+        <span class="item-num">#4</span>
+        <span class="item-text">`/taller/perfil` muestra la sección &quot;Perfil productivo&quot; si `taller.organizacion !== null`</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="5">
+      <div class="item-header">
+        <span class="item-num">#5</span>
+        <span class="item-text">Los talleres que no completaron el wizard no ven la sección</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="6">
+      <div class="item-header">
+        <span class="item-num">#6</span>
+        <span class="item-text">Los cursos recomendados en `/taller` priorizan colecciones que matcheen pasos de formalización pendientes del taller</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="7">
+      <div class="item-header">
+        <span class="item-num">#7</span>
+        <span class="item-text">Si el taller es BRONCE recién creado (sin filas en Validacion), los cursos de formalización básica aparecen primero</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="8">
+      <div class="item-header">
+        <span class="item-num">#8</span>
+        <span class="item-text">`/estado/sector` carga con datos agregados reales y resuelve los nombres de procesos y prendas (no muestra IDs crudos)</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="9">
+      <div class="item-header">
+        <span class="item-num">#9</span>
+        <span class="item-text">El item &quot;Diagnóstico del sector&quot; aparece en el Header del rol ESTADO y el tab se marca activo al estar en `/estado/sector`</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="10">
+      <div class="item-header">
+        <span class="item-num">#10</span>
+        <span class="item-text">La migración de schema aplica limpio (campos `procesosTarget` y `formalizacionTarget` en Coleccion)</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="11">
+      <div class="item-header">
+        <span class="item-num">#11</span>
+        <span class="item-text">Build pasa sin errores de TypeScript</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div></div><div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2><div class="paso-card" data-eje="2" data-num="1">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 1 — TALLER completa el wizard y verifica el resumen</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Bronce (roberto.gimenez@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller/perfil/completar`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Login como Roberto Giménez (TALLER Bronce)
+2. Ir a `/taller/perfil/completar`
+3. Avanzar por los 14 pasos del wizard completando datos (o si ya están cargados, avanzar con &quot;Siguiente&quot;)
+4. Llegar al paso 13 (Resumen final)</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">El paso 13 muestra:
+- Título: **&quot;¡Perfil productivo completado!&quot;**
+- Subtítulo: &quot;Las marcas pueden ver tu capacidad, maquinaria y procesos&quot;
+- Texto auxiliar: &quot;Este diagnóstico ayuda al equipo de la plataforma a entender el sector textil&quot;
+- Card **&quot;Capacidad&quot;** con capacidad diaria y mensual + especialidad
+- Card **&quot;Procesos seleccionados&quot;** con badges de procesos
+- Card **&quot;Prendas seleccionadas&quot;** con badges de prendas
+- Card **&quot;Badges Desbloqueados&quot;** con 6 badges verdes
+- **NO** aparece el &quot;Score General&quot; con el número grande en porcentaje
+- **NO** aparecen los &quot;Indicadores de Madurez&quot; (las 5 barras de progreso: Equipo, Organización, Maquinaria, Gestión, Escalabilidad)
+- Dos botones: &quot;Ver mi perfil&quot; y &quot;Guardar e ir a Academia&quot;</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">Si aparece el Score General o las 5 barras, el step 13 del wizard no fue actualizado</textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="2">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 2 — Sección &quot;Perfil productivo&quot; visible en el perfil</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Bronce (roberto.gimenez@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller/perfil`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Después de completar el wizard (Paso 1), click en &quot;Ver mi perfil&quot; o ir a `/taller/perfil`
+2. Buscar la sección &quot;Perfil productivo&quot; entre &quot;Tipos de Prenda&quot; y &quot;Certificaciones&quot;</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Aparece una Card titulada **&quot;Perfil productivo&quot;** con hasta 6 campos en grilla:
+- **Organización:** &quot;En línea&quot;, &quot;Modular&quot; o &quot;Prenda completa&quot;
+- **Espacio:** metros cuadrados (solo si &gt; 0)
+- **Experiencia del equipo:** &quot;Más de 5 años&quot;, &quot;3 a 5 años&quot;, &quot;1 a 3 años&quot; o &quot;Menos de 1 año&quot;
+- **Registro de producción:** &quot;Software&quot;, &quot;Excel/planilla&quot;, &quot;Papel&quot; o &quot;Sin registro&quot;
+- **Puede escalar:** &quot;Segundo turno&quot;, &quot;Tercerización&quot;, &quot;Contratando personal&quot;, &quot;Horas extra&quot; o &quot;Sin capacidad de escalar&quot;
+- **SAM (prenda principal):** valor en minutos
+- Texto al pie: *&quot;Esta información es visible para el equipo de la plataforma y organismos del Estado. No afecta tu nivel de formalización.&quot;*
+- Cada campo tiene fondo `bg-gray-50` con `rounded-lg p-3`</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">Si la sección no aparece, verificar que Roberto completó el wizard (proxy: `taller.organizacion !== null` en la DB)</textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="3">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 3 — El puntaje NO cambió por el wizard</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Bronce (roberto.gimenez@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller/perfil`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Ir a `/taller/perfil` → sección &quot;Información General&quot; → leer &quot;Puntaje: X pts&quot;
+2. Comparar con el puntaje que tenía **antes** de completar el wizard
+3. Si no anotaste el puntaje antes, ir al dashboard `/taller` → card &quot;Puntaje&quot; → verificar que es consistente con validaciones aprobadas</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">El puntaje es el mismo que antes de completar el wizard. El wizard ya NO envía `puntaje: scoreGeneral` al endpoint — el puntaje lo calcula exclusivamente `aplicarNivel` basado en documentos y certificados</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">El puntaje de Roberto Bronce debería ser 10 (solo tiene CUIT verificado + 1 validación completada). Si cambió a un valor como 60-80%, el bug del wizard sigue presente</textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="4">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 4 — Recomendaciones para TALLER Bronce</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Bronce (roberto.gimenez@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Ir al dashboard `/taller`
+2. Scroll hasta la sección &quot;Capacitaciones recomendadas&quot;
+3. Verificar qué colecciones se muestran</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Como Roberto es BRONCE y le faltan casi todos los documentos de formalización (Habilitación municipal, ART, Empleados registrados, Habilitación bomberos, Plan de seguridad e higiene, Nómina digital), las colecciones recomendadas deberían incluir:
+- **&quot;Formalización y Registro del Taller&quot;** (col3) — matchea CUIT/Monotributo, Habilitación municipal, ART
+- **&quot;Seguridad e Higiene en el Taller Textil&quot;** (col1) — matchea Habilitación bomberos, Plan de seguridad e higiene, Empleados registrados
+- Las recomendaciones priorizan por formalización pendiente, no por orden genérico</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">Si las colecciones aparecen en orden genérico (1, 2, 3) sin relación con documentos pendientes, la lógica de priorización no funciona. Si Roberto ya completó la col3 (tiene certificado), no debería aparecer</textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="5">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 5 — Recomendaciones para TALLER Plata (distintas)</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Plata (graciela.sosa@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Cerrar sesión, login como Graciela Sosa (TALLER Plata)
+2. Ir al dashboard `/taller`
+3. Verificar las &quot;Capacitaciones recomendadas&quot;</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Graciela tiene PLATA — sus documentos pendientes son distintos a Roberto (tiene CUIT, ART y Habilitación municipal completados, le faltan los de ORO). Las colecciones recomendadas deberían reflejar esos documentos pendientes. Si completó la col1 (tiene certificado de Seguridad e Higiene), esa NO debería aparecer</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">La clave es que las recomendaciones sean **distintas** a las de Roberto. Si son idénticas, la priorización por formalización no está diferenciando</textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="6">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 6 — Recomendaciones para TALLER Oro (fallback)</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Oro (carlos.mendoza@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Cerrar sesión, login como Carlos Mendoza (TALLER Oro)
+2. Ir al dashboard `/taller`
+3. Verificar las &quot;Capacitaciones recomendadas&quot;</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Carlos es ORO — tiene TODOS los documentos de formalización completados. Las colecciones recomendadas deberían venir de la query por procesos (si matchean) o del fallback (cualquier colección no completada). Si Carlos completó las 3 colecciones (tiene 3 certificados), la sección no debería aparecer</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">Si Carlos tiene las 3 colecciones completadas, no se esperan recomendaciones. Eso es correcto</textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="7">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 7 — ESTADO ve tab &quot;Diagnóstico del sector&quot;</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> ESTADO (anabelen.torres@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/estado`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Cerrar sesión, login como Ana Belén Torres (ESTADO)
+2. Verificar la barra de navegación (tabs)</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">En la barra de tabs del Header aparecen 3 items:
+- &quot;Dashboard&quot; (activo si estás en `/estado`)
+- **&quot;Diagnóstico del sector&quot;** (nuevo)
+- &quot;Exportar&quot;</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">Si solo hay 2 tabs (Dashboard y Exportar), el cambio en `header.tsx` no se deployó</textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="8">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 8 — Dashboard sectorial muestra datos agregados</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> ESTADO (anabelen.torres@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/estado/sector`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Click en el tab &quot;Diagnóstico del sector&quot; o ir a `/estado/sector`
+2. Verificar que la página carga y muestra datos</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">- Título: **&quot;Diagnóstico del sector&quot;**
+- Subtítulo: &quot;Datos productivos agregados de los talleres registrados&quot;
+- Nota: &quot;Basado en el perfil productivo completado por cada taller. No refleja la situación de formalización.&quot; + si hay menos de 10 talleres: &quot;Datos del piloto — N talleres.&quot;
+- **Capacidad instalada:** 2 cards grandes:
+- Capacidad total instalada (unidades/mes) — suma de `capacidadMensual` de todos los talleres
+- Promedio por taller (unidades/mes) — promedio de los que tienen `capacidadMensual &gt; 0`
+- **Organización productiva:** barras proporcionales (En línea / Modular / Prenda completa)
+- **Gestión y registro:** barras (Software / Excel / Papel / Sin registro)
+- **Capacidad de escalar:** barras por tipo
+- **Experiencia promedio del equipo:** barras
+- El tab &quot;Diagnóstico del sector&quot; está activo en el Header</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">Si la página da error, puede ser que ningún taller completó el wizard (todos los groupBy devuelven vacío). Esto es aceptable — debería mostrar cards con 0 o barras vacías</textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="9">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 9 — Top 5 procesos y prendas con nombres legibles</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> ESTADO (anabelen.torres@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/estado/sector`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Scroll hasta las Cards &quot;Top 5 procesos productivos&quot; y &quot;Top 5 tipos de prenda&quot;
+2. Verificar el contenido</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">- **Top 5 procesos productivos:** lista con nombre legible (&quot;Confección&quot;, &quot;Corte&quot;, &quot;Estampado&quot;, etc.) y cantidad de talleres. **NO muestra IDs crudos** (cuids tipo `clxyz123...`)
+- **Top 5 tipos de prenda:** lista con nombre legible (&quot;Remera&quot;, &quot;Jean&quot;, &quot;Pantalón&quot;, etc.) y cantidad de talleres. **NO muestra IDs crudos**
+- Si hay menos de 5 procesos o prendas registrados, se muestran los que haya</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">Si aparecen IDs en lugar de nombres, la resolución de nombres no funciona (`nombresProcesos` / `nombresPrendas` queries fallaron)</textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="10">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 10 — Distribución por zona</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> ESTADO (anabelen.torres@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/estado/sector`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Scroll hasta la Card &quot;Distribución por zona&quot;
+2. Verificar el contenido</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">- Lista de zonas con cantidad de talleres por cada una
+- Si un taller no tiene zona, aparece &quot;Sin zona&quot;
+- Los nombres coinciden con las zonas del seed (ej: &quot;Mataderos, CABA&quot;, &quot;La Matanza, Buenos Aires&quot;, &quot;Avellaneda, Buenos Aires&quot;)</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">---</textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1">
+      <div class="item-header">
+        <span class="item-num">#1</span>
+        <span class="item-text">Taller sin wizard completado</span>
+      </div>
+      <div class="item-details">
+        <div class="detail-row"><span class="detail-label">Accion:</span> Login como taller que no completó el wizard → `/taller/perfil`</div>
+        <div class="detail-row"><span class="detail-label">Esperado:</span> Sección &quot;Perfil productivo&quot; NO aparece</div>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="3" data-num="2">
+      <div class="item-header">
+        <span class="item-num">#2</span>
+        <span class="item-text">Dashboard sin talleres con wizard</span>
+      </div>
+      <div class="item-details">
+        <div class="detail-row"><span class="detail-label">Accion:</span> Si ningún taller completó el wizard → `/estado/sector`</div>
+        <div class="detail-row"><span class="detail-label">Esperado:</span> Barras vacías o 0 en capacidad, página carga sin error</div>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="3" data-num="3">
+      <div class="item-header">
+        <span class="item-num">#3</span>
+        <span class="item-text">Taller Oro sin colecciones pendientes</span>
+      </div>
+      <div class="item-details">
+        <div class="detail-row"><span class="detail-label">Accion:</span> Login como Carlos (Oro, 3 certificados) → `/taller`</div>
+        <div class="detail-row"><span class="detail-label">Esperado:</span> Sección &quot;Capacitaciones recomendadas&quot; no aparece o muestra vacío</div>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="3" data-num="4">
+      <div class="item-header">
+        <span class="item-num">#4</span>
+        <span class="item-text">Paso 13 sin procesos/prendas</span>
+      </div>
+      <div class="item-details">
+        <div class="detail-row"><span class="detail-label">Accion:</span> Completar wizard sin seleccionar procesos ni prendas → paso 13</div>
+        <div class="detail-row"><span class="detail-label">Esperado:</span> Cards &quot;Procesos seleccionados&quot; y &quot;Prendas seleccionadas&quot; no aparecen, sin error</div>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="3" data-num="5">
+      <div class="item-header">
+        <span class="item-num">#5</span>
+        <span class="item-text">`hasSome` con array vacío</span>
+      </div>
+      <div class="item-details">
+        <div class="detail-row"><span class="detail-label">Accion:</span> Taller sin procesos → recomendaciones</div>
+        <div class="detail-row"><span class="detail-label">Esperado:</span> Query 2 (por procesos) no falla — Prisma maneja `hasSome: []` retornando vacío</div>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1">
+      <div class="item-header">
+        <span class="item-text">`/taller/perfil` con sección productiva carga en &lt; 3s</span>
+      </div>
+      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Network → recargar</div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="4" data-num="2">
+      <div class="item-header">
+        <span class="item-text">`/taller` (dashboard) con recomendaciones priorizadas carga en &lt; 3s</span>
+      </div>
+      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Network → recargar</div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="4" data-num="3">
+      <div class="item-header">
+        <span class="item-text">`/estado/sector` con 8 queries agregadas carga en &lt; 3s</span>
+      </div>
+      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Network → recargar</div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="4" data-num="4">
+      <div class="item-header">
+        <span class="item-text">Sin errores en consola del browser</span>
+      </div>
+      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Console → revisar en todas las páginas</div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="4" data-num="5">
+      <div class="item-header">
+        <span class="item-text">Funciona en móvil (responsive)</span>
+      </div>
+      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Toggle device toolbar → verificar dashboard sectorial y perfil productivo</div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1">
+      <div class="item-header">
+        <span class="item-text">Card &quot;Perfil productivo&quot;: campos con bg-gray-50 rounded-lg p-3</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="2">
+      <div class="item-header">
+        <span class="item-text">Labels de campos en text-gray-500 text-xs, valores en font-medium text-gray-800</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="3">
+      <div class="item-header">
+        <span class="item-text">Texto al pie de Card productiva en text-xs text-gray-400</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="4">
+      <div class="item-header">
+        <span class="item-text">Dashboard sectorial: barras proporcionales como las de &quot;Distribución por nivel&quot; en `/estado`</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="5">
+      <div class="item-header">
+        <span class="item-text">Cards de capacidad instalada: número en text-2xl font-bold text-brand-blue</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="6">
+      <div class="item-header">
+        <span class="item-text">Tab &quot;Diagnóstico del sector&quot; activo con bg-white text-brand-blue</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="7">
+      <div class="item-header">
+        <span class="item-text">Paso 13 del wizard: sin score ni barras de madurez, layout limpio</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="8">
+      <div class="item-header">
+        <span class="item-text">Tipografías consistentes (Overpass para títulos)</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div><div class="item-card compact" data-eje="5" data-num="9">
+      <div class="item-header">
+        <span class="item-text">Textos en español argentino</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+      </div>
+    </div></div><div class="section" id="resumen-issues">
+    <h2>Resumen de issues abiertos</h2>
+    <textarea class="large-textarea" id="textarea-resumen-issues" placeholder="Listar issues abiertos con # y descripcion breve" rows="4"></textarea>
+  </div><div class="section" id="notas-auditor">
+    <h2>Notas del auditor</h2>
+    <textarea class="large-textarea" id="textarea-notas" placeholder="Observaciones generales, sugerencias de UX, contexto adicional..." rows="6"></textarea>
+  </div><div class="section" id="checklist"><h2>Checklist de cierre</h2><div class="checklist-items"><label class="checklist-item">
+      <input type="checkbox" data-checklist="0">
+      <span>11 criterios de aceptación del spec verificados</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="1">
+      <span>10 pasos de navegación probados</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="2">
+      <span>5 casos borde probados</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="3">
+      <span>Performance revisada en desktop y móvil</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="4">
+      <span>Issues abiertos en GitHub con labels correctos</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="5">
+      <span>Resultado global definido</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="6">
+      <span>Documento commiteado a develop</span>
+    </label></div></div>
+  </div>
+  <div class="sticky-bar">
+    <span class="progress-summary" id="progress-text"></span>
+    <button class="btn-copiar" id="btn-copiar" onclick="copiarResultados()">Copiar resultados como markdown</button>
+  </div>
+  <script>
+  function toggleCollapse(el) {
+    if (el.querySelector('.collapse-content')) {
+      el.classList.toggle('collapsed');
+    }
+  }
+
+  function togglePaso(header) {
+    header.closest('.paso-card').classList.toggle('expanded');
+  }
+
+  function setStatus(btn, emoji) {
+    const card = btn.closest('.item-card, .paso-card');
+    const btns = card.querySelectorAll('.status-btn');
+    const wasActive = btn.classList.contains('active');
+    btns.forEach(b => b.classList.remove('active'));
+    card.classList.remove('status-ok', 'status-bug', 'status-fail');
+
+    if (!wasActive) {
+      btn.classList.add('active');
+      if (emoji === '✅') card.classList.add('status-ok');
+      else if (emoji === '🐛') card.classList.add('status-bug');
+      else if (emoji === '❌') card.classList.add('status-fail');
+    }
+
+    // Update paso status indicator
+    const indicator = card.querySelector('.paso-status-indicator');
+    if (indicator) {
+      indicator.textContent = wasActive ? '' : emoji;
+    }
+
+    // Show/hide issue button for bug/fail
+    const issueBtn = card.querySelector('.btn-issue');
+    if (issueBtn && !issueBtn.classList.contains('enviado')) {
+      if (!wasActive && (emoji === '🐛' || emoji === '❌')) {
+        issueBtn.classList.add('visible');
+      } else {
+        issueBtn.classList.remove('visible');
+      }
+    }
+
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const cards = document.querySelectorAll('.item-card, .paso-card');
+    let total = 0, done = 0;
+    cards.forEach(c => {
+      total++;
+      if (c.querySelector('.status-btn.active')) done++;
+    });
+    const el = document.getElementById('progress-text');
+    if (el) el.textContent = done + ' / ' + total + ' completados';
+  }
+
+  function getCardStatus(card) {
+    const active = card.querySelector('.status-btn.active');
+    if (!active) return '—';
+    if (active.classList.contains('ok')) return '✅';
+    if (active.classList.contains('bug')) return '🐛';
+    if (active.classList.contains('fail')) return '❌';
+    return '—';
+  }
+
+  function getCardObs(card) {
+    const input = card.querySelector('.obs-input, .obs-textarea');
+    return input ? input.value.trim() : '';
+  }
+
+  function copiarResultados() {
+    const titulo = document.querySelector('.header h1')?.textContent || 'QA';
+    const fecha = new Date().toISOString().split('T')[0];
+    let md = '';
+
+    // Resultado global
+    const globalRadio = document.querySelector('input[name="resultado-global"]:checked');
+    const globalLabel = globalRadio ? globalRadio.closest('.radio-btn').querySelector('.radio-label').textContent.trim() : '—';
+    const decision = document.getElementById('decision-global')?.value.trim() || '—';
+    const issues = document.getElementById('issues-global')?.value.trim() || '#';
+
+    md += '## Resultados — ' + titulo + '\n';
+    md += '**Fecha de auditoria:** ' + fecha + '\n';
+    md += '**Auditor:** Sergio\n\n';
+    md += '### Resultado global\n';
+    md += globalLabel + '\n';
+    md += '**Decision:** ' + decision + '\n';
+    md += '**Issues abiertos:** ' + issues + '\n\n';
+
+    // Eje 1
+    const eje1Cards = document.querySelectorAll('#eje1 .item-card');
+    if (eje1Cards.length > 0) {
+      md += '### Eje 1 — Funcionalidad\n';
+      md += '| # | Criterio | Resultado | Observaciones |\n';
+      md += '|---|----------|-----------|---------------|\n';
+      eje1Cards.forEach(c => {
+        const num = c.dataset.num;
+        const criterio = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + num + ' | ' + criterio + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 2
+    const eje2Cards = document.querySelectorAll('#eje2 .paso-card');
+    if (eje2Cards.length > 0) {
+      md += '### Eje 2 — Navegabilidad\n';
+      eje2Cards.forEach(c => {
+        const num = c.dataset.num;
+        const titulo = c.querySelector('.paso-title')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '**' + titulo + ':** ' + status;
+        if (obs) md += ' — ' + obs;
+        md += '\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 3
+    const eje3Cards = document.querySelectorAll('#eje3 .item-card');
+    if (eje3Cards.length > 0) {
+      md += '### Eje 3 — Casos borde\n';
+      md += '| # | Caso | Resultado | Observaciones |\n';
+      md += '|---|------|-----------|---------------|\n';
+      eje3Cards.forEach(c => {
+        const num = c.dataset.num;
+        const caso = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + num + ' | ' + caso + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 4
+    const eje4Cards = document.querySelectorAll('#eje4 .item-card');
+    if (eje4Cards.length > 0) {
+      md += '### Eje 4 — Performance\n';
+      md += '| Verificacion | Resultado | Notas |\n';
+      md += '|-------------|-----------|-------|\n';
+      eje4Cards.forEach(c => {
+        const verif = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + verif + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 5
+    const eje5Cards = document.querySelectorAll('#eje5 .item-card');
+    if (eje5Cards.length > 0) {
+      md += '### Eje 5 — Consistencia visual\n';
+      md += '| Verificacion | Resultado | Notas |\n';
+      md += '|-------------|-----------|-------|\n';
+      eje5Cards.forEach(c => {
+        const verif = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + verif + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Resumen issues
+    const resumenIssues = document.getElementById('textarea-resumen-issues')?.value.trim();
+    if (resumenIssues) {
+      md += '### Resumen de issues abiertos\n';
+      md += resumenIssues + '\n\n';
+    }
+
+    // Notas
+    const notas = document.getElementById('textarea-notas')?.value.trim();
+    if (notas) {
+      md += '### Notas del auditor\n';
+      md += notas + '\n\n';
+    }
+
+    // Checklist
+    const checkItems = document.querySelectorAll('#checklist input[type="checkbox"]');
+    if (checkItems.length > 0) {
+      md += '### Checklist de cierre\n';
+      checkItems.forEach(cb => {
+        const label = cb.closest('.checklist-item')?.querySelector('span')?.textContent.trim() || '';
+        md += '- [' + (cb.checked ? 'x' : ' ') + '] ' + label + '\n';
+      });
+    }
+
+    navigator.clipboard.writeText(md).then(() => {
+      const btn = document.getElementById('btn-copiar');
+      btn.textContent = 'Copiado!';
+      btn.classList.add('copiado');
+      setTimeout(() => {
+        btn.textContent = 'Copiar resultados como markdown';
+        btn.classList.remove('copiado');
+      }, 2000);
+    });
+  }
+
+  function crearIssue(btn) {
+    const card = btn.closest('.item-card, .paso-card');
+    const obs = getCardObs(card);
+    if (!obs || obs.length < 10) {
+      btn.title = 'Escribi una observacion primero (min 10 caracteres)';
+      btn.classList.add('error');
+      btn.textContent = 'Escribi una observacion';
+      setTimeout(() => { btn.classList.remove('error'); btn.textContent = '📋 Crear issue'; }, 2000);
+      return;
+    }
+
+    const status = getCardStatus(card);
+    const tipo = status === '❌' ? 'bloqueante' : 'bug';
+    const eje = card.closest('.section')?.querySelector('h2')?.textContent.trim() || '';
+    const itemText = card.querySelector('.item-text, .paso-title')?.textContent.trim() || '';
+    const num = card.dataset.num || '';
+    const spec = document.body.dataset.spec || '';
+    const pagina = document.body.dataset.url || '';
+
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    const apiUrl = document.body.dataset.apiUrl;
+
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tipo: tipo,
+        mensaje: obs,
+        pagina: pagina,
+        auditorNombre: 'Sergio',
+        auditorRol: 'QA',
+        contextoQA: {
+          spec: spec,
+          eje: eje,
+          item: '#' + num + ' ' + itemText,
+          resultado: status
+        }
+      })
+    }).then(r => {
+      if (r.ok) {
+        btn.textContent = '✅ Issue creado';
+        btn.classList.add('enviado');
+      } else {
+        throw new Error();
+      }
+    }).catch(() => {
+      btn.textContent = '❌ Error — reintenta';
+      btn.classList.add('error');
+      btn.disabled = false;
+      setTimeout(() => { btn.classList.remove('error'); btn.textContent = '📋 Crear issue'; }, 3000);
+    });
+  }
+
+  // Init radio buttons
+  document.querySelectorAll('.radio-btn').forEach(label => {
+    label.addEventListener('click', () => {
+      const radio = label.querySelector('input[type="radio"]');
+      radio.checked = true;
+      label.closest('.radio-group').querySelectorAll('.radio-btn').forEach(l => l.classList.remove('selected'));
+      label.classList.add('selected');
+    });
+  });
+
+  updateProgress();
+</script>
+</body>
+</html>
