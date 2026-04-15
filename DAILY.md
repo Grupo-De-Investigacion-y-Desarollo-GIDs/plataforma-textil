@@ -3,6 +3,10 @@
 ## 2026-04-15
 
 ### Gerardo Breard
+- **14:42** `29e4c35` — feat: agregar comando --index al generador QA
+  - `tools/generate-qa.js`
+  - `tools/generate-qa.test.js`
+
 - **14:33** `49ee518` — feat: generador QA .md → .html interactivo (tools/generate-qa.js)
   - `.gitignore`
   - `tools/generate-qa.js`
