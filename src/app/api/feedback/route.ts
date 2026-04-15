@@ -41,19 +41,21 @@ export async function POST(request: Request) {
 
     const rolDisplay = session?.user ? role : `${auditorRol ?? 'SIN_LOGIN'} (auditor: ${nombre})`
 
-    fetch(`https://api.github.com/repos/${process.env.GITHUB_REPO}/issues`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
-        'Content-Type': 'application/json',
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
-      body: JSON.stringify({
-        title: `[${tipo.toUpperCase()}] ${mensaje.slice(0, 60)}${mensaje.length > 60 ? '...' : ''}`,
-        body: `**Tipo:** ${tipo}\n**Rol:** ${rolDisplay}\n**Pagina:** ${pagina}\n${entidad ? `**Entidad:** ${entidad} ${entidadId}\n` : ''}\n**Descripcion:**\n${mensaje}`,
-        labels: labels[tipo] ?? ['piloto'],
-      }),
-    }).catch(() => {})
+    try {
+      await fetch(`https://api.github.com/repos/${process.env.GITHUB_REPO}/issues`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
+          'Content-Type': 'application/json',
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+        body: JSON.stringify({
+          title: `[${tipo.toUpperCase()}] ${mensaje.slice(0, 60)}${mensaje.length > 60 ? '...' : ''}`,
+          body: `**Tipo:** ${tipo}\n**Rol:** ${rolDisplay}\n**Pagina:** ${pagina}\n${entidad ? `**Entidad:** ${entidad} ${entidadId}\n` : ''}\n**Descripcion:**\n${mensaje}`,
+          labels: labels[tipo] ?? ['piloto'],
+        }),
+      })
+    } catch { /* GitHub failure should not block feedback response */ }
   }
 
   return NextResponse.json({ ok: true })
