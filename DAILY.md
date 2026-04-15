@@ -3,6 +3,13 @@
 ## 2026-04-15
 
 ### Gerardo Breard
+- **15:09** `7f25a29` — feat: GitHub Pages + botón crear issue para QA interactivos
+  - `.claude/specs/v2-generador-qa-issues.md`
+  - `.github/workflows/qa-pages.yml`
+  - `src/app/api/feedback/route.ts`
+  - `tools/generate-qa.js`
+  - `tools/generate-qa.test.js`
+
 - **14:42** `29e4c35` — feat: agregar comando --index al generador QA
   - `tools/generate-qa.js`
   - `tools/generate-qa.test.js`
