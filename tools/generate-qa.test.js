@@ -428,6 +428,59 @@ console.log('\n📋 Test 10: Comando --index')
 }
 
 // ============================================
+// Test 11: HTML contiene botón "Crear issue"
+// ============================================
+console.log('\n📋 Test 11: Boton Crear issue en Eje 1/2/3')
+{
+  const auditoriaDir = path.resolve(__dirname, '..', '.claude', 'auditorias')
+  const mdPath = path.join(auditoriaDir, 'QA_v2-epica-academia.md')
+  generarHtml(mdPath)
+  const htmlPath = mdPath.replace('.md', '.html')
+  const html = fs.readFileSync(htmlPath, 'utf-8')
+
+  assert(html.includes('Crear issue'), 'HTML contiene boton Crear issue')
+  assert(html.includes('crearIssue'), 'HTML contiene funcion crearIssue')
+  assert(html.includes('plataforma-textil.vercel.app'), 'HTML contiene URL de la plataforma')
+  assert(html.includes('data-spec='), 'HTML contiene data-spec')
+  assert(html.includes('data-api-url='), 'HTML contiene data-api-url')
+
+  fs.unlinkSync(htmlPath)
+}
+
+// ============================================
+// Test 12: PLATAFORMA_URL custom
+// ============================================
+console.log('\n📋 Test 12: PLATAFORMA_URL custom')
+{
+  const fixture = `# QA: Test URL Custom
+**Spec:** \`test.md\`
+**Fecha:** 2026-01-01
+**Auditor:** Test
+
+## Eje 1 — Funcionalidad
+| # | Criterio | Resultado | Issue |
+|---|----------|-----------|-------|
+| 1 | Test item | | |
+`
+  const tmpPath = path.join(__dirname, '_test_custom_url.md')
+  fs.writeFileSync(tmpPath, fixture)
+
+  // Set custom URL
+  process.env.PLATAFORMA_URL = 'https://custom.example.com'
+  generarHtml(tmpPath)
+  delete process.env.PLATAFORMA_URL
+
+  const htmlPath = tmpPath.replace('.md', '.html')
+  const html = fs.readFileSync(htmlPath, 'utf-8')
+
+  assert(html.includes('custom.example.com/api/feedback'), 'HTML usa URL custom en api-url')
+  assert(!html.includes('plataforma-textil.vercel.app/api/feedback'), 'HTML no usa URL default en api-url')
+
+  fs.unlinkSync(htmlPath)
+  fs.unlinkSync(tmpPath)
+}
+
+// ============================================
 // RESUMEN
 // ============================================
 console.log('\n' + '='.repeat(50))

@@ -302,6 +302,7 @@ function renderEje1(contenido) {
           <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
         </div>
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
     </div>`
   }
@@ -336,6 +337,7 @@ function renderEje2(contenido) {
             <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
           </div>
           <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">${escapeHtml(p.notas || '')}</textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
     </div>`
@@ -367,6 +369,7 @@ function renderEje3(contenido) {
           <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
         </div>
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
     </div>`
   }
@@ -695,6 +698,26 @@ const CSS = `
   .btn-copiar:hover { background: #2a4f7f; }
   .btn-copiar.copiado { background: #27ae60; }
   .progress-summary { font-size: 13px; color: #666; }
+  .btn-issue {
+    display: none;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    border: 1px solid #c0392b;
+    border-radius: 6px;
+    background: white;
+    color: #c0392b;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn-issue:hover { background: #fdf0ef; }
+  .btn-issue.visible { display: inline-flex; }
+  .btn-issue.enviado { border-color: #27ae60; color: #27ae60; cursor: default; }
+  .btn-issue.error { border-color: #e74c3c; color: #e74c3c; }
+  .btn-issue:disabled { opacity: 0.6; cursor: not-allowed; }
   @media (max-width: 600px) {
     body { padding: 10px; padding-bottom: 80px; }
     .meta-grid { grid-template-columns: 1fr; }
@@ -737,6 +760,16 @@ const JS = `
     const indicator = card.querySelector('.paso-status-indicator');
     if (indicator) {
       indicator.textContent = wasActive ? '' : emoji;
+    }
+
+    // Show/hide issue button for bug/fail
+    const issueBtn = card.querySelector('.btn-issue');
+    if (issueBtn && !issueBtn.classList.contains('enviado')) {
+      if (!wasActive && (emoji === '🐛' || emoji === '❌')) {
+        issueBtn.classList.add('visible');
+      } else {
+        issueBtn.classList.remove('visible');
+      }
     }
 
     updateProgress();
@@ -899,6 +932,61 @@ const JS = `
     });
   }
 
+  function crearIssue(btn) {
+    const card = btn.closest('.item-card, .paso-card');
+    const obs = getCardObs(card);
+    if (!obs || obs.length < 10) {
+      btn.title = 'Escribi una observacion primero (min 10 caracteres)';
+      btn.classList.add('error');
+      btn.textContent = 'Escribi una observacion';
+      setTimeout(() => { btn.classList.remove('error'); btn.textContent = '📋 Crear issue'; }, 2000);
+      return;
+    }
+
+    const status = getCardStatus(card);
+    const tipo = status === '❌' ? 'bloqueante' : 'bug';
+    const eje = card.closest('.section')?.querySelector('h2')?.textContent.trim() || '';
+    const itemText = card.querySelector('.item-text, .paso-title')?.textContent.trim() || '';
+    const num = card.dataset.num || '';
+    const spec = document.body.dataset.spec || '';
+    const pagina = document.body.dataset.url || '';
+
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    const apiUrl = document.body.dataset.apiUrl;
+
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tipo: tipo,
+        mensaje: obs,
+        pagina: pagina,
+        auditorNombre: 'Sergio',
+        auditorRol: 'QA',
+        contextoQA: {
+          spec: spec,
+          eje: eje,
+          item: '#' + num + ' ' + itemText,
+          resultado: status
+        }
+      })
+    }).then(r => {
+      if (r.ok) {
+        btn.textContent = '✅ Issue creado';
+        btn.classList.add('enviado');
+      } else {
+        throw new Error();
+      }
+    }).catch(() => {
+      btn.textContent = '❌ Error — reintenta';
+      btn.classList.add('error');
+      btn.disabled = false;
+      setTimeout(() => { btn.classList.remove('error'); btn.textContent = '📋 Crear issue'; }, 3000);
+    });
+  }
+
   // Init radio buttons
   document.querySelectorAll('.radio-btn').forEach(label => {
     label.addEventListener('click', () => {
@@ -920,6 +1008,8 @@ function generarHtml(mdPath) {
   const contenidoMd = fs.readFileSync(mdPath, 'utf-8')
   const { header, secciones } = dividirSecciones(contenidoMd)
   const meta = parsearMetadata(header)
+  const plataformaUrl = process.env.PLATAFORMA_URL || 'https://plataforma-textil.vercel.app'
+  const apiUrl = plataformaUrl + '/api/feedback'
 
   let bodyHtml = renderMetaHeader(meta)
 
@@ -945,7 +1035,7 @@ function generarHtml(mdPath) {
   <title>QA: ${escapeHtml(meta.titulo)}</title>
   <style>${CSS}</style>
 </head>
-<body>
+<body data-spec="${escapeHtml(meta.spec)}" data-url="${escapeHtml(meta.url)}" data-api-url="${escapeHtml(apiUrl)}">
   <div class="container">
     ${bodyHtml}
   </div>
