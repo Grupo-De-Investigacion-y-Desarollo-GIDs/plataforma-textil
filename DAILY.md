@@ -3,6 +3,11 @@
 ## 2026-04-15
 
 ### Gerardo Breard
+- **14:33** `49ee518` — feat: generador QA .md → .html interactivo (tools/generate-qa.js)
+  - `.gitignore`
+  - `tools/generate-qa.js`
+  - `tools/generate-qa.test.js`
+
 - **14:23** `a7d0e95` — docs: spec v2-generador-qa-html con correcciones de formato real
   - `.claude/specs/v2-generador-qa-html.md`
 
