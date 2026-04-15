@@ -3,6 +3,9 @@
 ## 2026-04-15
 
 ### Gerardo Breard
+- **17:26** `65ae5f7` — fix: toast de confirmación al subir documento (#6)
+  - `src/taller/componentes/upload-button.tsx`
+
 - **17:25** `06f15c2` — fix: agregar portfolioFotos al seed e imágenes placeholder (#3)
   - `prisma/seed.ts`
   - `public/images/portfolio/taller-aguja-1.svg`
