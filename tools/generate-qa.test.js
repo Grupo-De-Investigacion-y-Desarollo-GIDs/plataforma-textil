@@ -15,6 +15,7 @@ const {
   parsearChecklist,
   parsearResultadoGlobal,
   generarHtml,
+  generarIndex,
 } = require('./generate-qa')
 
 let passed = 0
@@ -365,6 +366,64 @@ console.log('\n📋 Tests de integración — QAs reales')
     } else {
       assert(false, `${nombre}: HTML no fue creado`)
     }
+  }
+}
+
+// ============================================
+// Test 10: Comando --index
+// ============================================
+console.log('\n📋 Test 10: Comando --index')
+{
+  const auditoriaDir = path.resolve(__dirname, '..', '.claude', 'auditorias')
+
+  // Primero generar los HTMLs individuales para que el index los detecte
+  const mdFiles = fs.readdirSync(auditoriaDir).filter(f => f.startsWith('QA_v2-') && f.endsWith('.md'))
+  for (const f of mdFiles) {
+    generarHtml(path.join(auditoriaDir, f))
+  }
+
+  // Generar el index
+  let error = null
+  try {
+    generarIndex(auditoriaDir)
+  } catch (e) {
+    error = e
+  }
+  assert(error === null, 'genera index.html sin crash')
+
+  const indexPath = path.join(auditoriaDir, 'index.html')
+  assert(fs.existsSync(indexPath), 'index.html fue creado')
+
+  if (fs.existsSync(indexPath)) {
+    const html = fs.readFileSync(indexPath, 'utf-8')
+
+    assert(html.includes('Auditorias QA'), 'contiene titulo del index')
+    assert(!html.includes('undefined'), 'sin undefined')
+    assert(!html.includes('[object Object]'), 'sin [object Object]')
+
+    // Verificar que tiene links a los 12 QAs
+    let linksFound = 0
+    for (const f of mdFiles) {
+      const htmlFile = f.replace('.md', '.html')
+      if (html.includes(htmlFile)) linksFound++
+    }
+    assertEq(linksFound, mdFiles.length, `contiene links a los ${mdFiles.length} QAs`)
+
+    // Verificar que contiene títulos de los QAs
+    assert(html.includes('Academia'), 'contiene titulo de academia')
+    assert(html.includes('Config Piloto'), 'contiene titulo de config piloto')
+
+    // Verificar que tiene badges "HTML listo"
+    assert(html.includes('HTML listo'), 'contiene badge de HTML listo')
+
+    // Limpiar
+    fs.unlinkSync(indexPath)
+  }
+
+  // Limpiar HTMLs individuales
+  for (const f of mdFiles) {
+    const htmlPath = path.join(auditoriaDir, f.replace('.md', '.html'))
+    if (fs.existsSync(htmlPath)) fs.unlinkSync(htmlPath)
   }
 }
 

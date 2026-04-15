@@ -963,25 +963,161 @@ function generarHtml(mdPath) {
 }
 
 // ============================================
+// INDEX GENERATOR
+// ============================================
+
+/**
+ * Genera un index.html con cards para cada QA_v2-*.md en el directorio.
+ * Lee metadata de cada .md para mostrar título, fecha y spec.
+ */
+function generarIndex(dirPath) {
+  const archivos = fs.readdirSync(dirPath)
+    .filter(f => f.startsWith('QA_v2-') && f.endsWith('.md'))
+    .sort()
+
+  const qas = archivos.map(archivo => {
+    const mdContent = fs.readFileSync(path.join(dirPath, archivo), 'utf-8')
+    const headerEnd = mdContent.indexOf('\n## ')
+    const headerText = headerEnd > -1 ? mdContent.slice(0, headerEnd) : mdContent
+    const meta = parsearMetadata(headerText)
+    const htmlFile = archivo.replace('.md', '.html')
+    const htmlExists = fs.existsSync(path.join(dirPath, htmlFile))
+    return { archivo, htmlFile, htmlExists, meta }
+  })
+
+  const INDEX_CSS = `
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f5f7fa;
+      color: #1a1a2e;
+      line-height: 1.5;
+      padding: 20px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    .index-header {
+      background: #1e3a5f;
+      color: white;
+      padding: 24px 28px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+    .index-header h1 { font-size: 22px; margin-bottom: 4px; }
+    .index-header p { font-size: 14px; opacity: 0.8; }
+    .qa-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .qa-card {
+      background: white;
+      border: 1px solid #e8ecf1;
+      border-radius: 10px;
+      padding: 18px 22px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.15s;
+      display: block;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .qa-card:hover { border-color: #1e3a5f; box-shadow: 0 2px 8px rgba(30,58,95,0.15); transform: translateY(-1px); }
+    .qa-card.disabled { opacity: 0.5; pointer-events: none; }
+    .qa-title { font-size: 16px; font-weight: 600; color: #1e3a5f; margin-bottom: 8px; }
+    .qa-meta { display: flex; gap: 16px; font-size: 13px; color: #666; flex-wrap: wrap; }
+    .qa-meta-item { display: flex; align-items: center; gap: 4px; }
+    .qa-meta-label { font-weight: 600; color: #888; }
+    .qa-badge {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .badge-ready { background: #e8f5e9; color: #2e7d32; }
+    .badge-pending { background: #fff3e0; color: #e65100; }
+    @media (max-width: 600px) {
+      body { padding: 10px; }
+      .qa-meta { flex-direction: column; gap: 4px; }
+    }
+  `
+
+  let cardsHtml = ''
+  for (const qa of qas) {
+    const tag = qa.htmlExists
+      ? '<span class="qa-badge badge-ready">HTML listo</span>'
+      : '<span class="qa-badge badge-pending">Sin generar</span>'
+    const cardTag = qa.htmlExists ? 'a' : 'div'
+    const href = qa.htmlExists ? ` href="${escapeHtml(qa.htmlFile)}"` : ''
+    const disabledClass = qa.htmlExists ? '' : ' disabled'
+
+    cardsHtml += `
+      <${cardTag}${href} class="qa-card${disabledClass}">
+        <div class="qa-title">${escapeHtml(qa.meta.titulo || qa.archivo)}</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>${escapeHtml(qa.meta.spec || '—')}</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> ${escapeHtml(qa.meta.fecha || '—')}</div>
+          <div class="qa-meta-item">${tag}</div>
+        </div>
+      </${cardTag}>`
+  }
+
+  const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QA Index — Plataforma Digital Textil</title>
+  <style>${INDEX_CSS}</style>
+</head>
+<body>
+  <div class="container">
+    <div class="index-header">
+      <h1>Auditorias QA</h1>
+      <p>${qas.length} documentos de auditoria</p>
+    </div>
+    <div class="qa-grid">
+      ${cardsHtml}
+    </div>
+  </div>
+</body>
+</html>`
+
+  const outputPath = path.join(dirPath, 'index.html')
+  fs.writeFileSync(outputPath, html, 'utf-8')
+  return outputPath
+}
+
+// ============================================
 // CLI
 // ============================================
 
 if (require.main === module) {
   const args = process.argv.slice(2)
+
   if (args.length === 0) {
-    console.error('Uso: node tools/generate-qa.js <ruta-al-QA.md>')
-    console.error('Ejemplo: node tools/generate-qa.js .claude/auditorias/QA_v2-epica-academia.md')
+    console.error('Uso:')
+    console.error('  node tools/generate-qa.js <ruta-al-QA.md>        # genera HTML individual')
+    console.error('  node tools/generate-qa.js --index <directorio>   # genera index.html')
+    console.error('')
+    console.error('Ejemplo:')
+    console.error('  node tools/generate-qa.js .claude/auditorias/QA_v2-epica-academia.md')
+    console.error('  node tools/generate-qa.js --index .claude/auditorias/')
     process.exit(1)
   }
 
-  const mdPath = path.resolve(args[0])
-  if (!fs.existsSync(mdPath)) {
-    console.error(`Error: archivo no encontrado: ${mdPath}`)
-    process.exit(1)
+  if (args[0] === '--index') {
+    const dir = path.resolve(args[1] || '.')
+    if (!fs.existsSync(dir) || !fs.statSync(dir).isDirectory()) {
+      console.error(`Error: directorio no encontrado: ${dir}`)
+      process.exit(1)
+    }
+    const outputPath = generarIndex(dir)
+    console.log(`✅ Index generado: ${outputPath}`)
+  } else {
+    const mdPath = path.resolve(args[0])
+    if (!fs.existsSync(mdPath)) {
+      console.error(`Error: archivo no encontrado: ${mdPath}`)
+      process.exit(1)
+    }
+    const outputPath = generarHtml(mdPath)
+    console.log(`✅ HTML generado: ${outputPath}`)
   }
-
-  const outputPath = generarHtml(mdPath)
-  console.log(`✅ HTML generado: ${outputPath}`)
 }
 
 // Export para tests
@@ -994,4 +1130,5 @@ module.exports = {
   parsearChecklist,
   parsearResultadoGlobal,
   generarHtml,
+  generarIndex,
 }
