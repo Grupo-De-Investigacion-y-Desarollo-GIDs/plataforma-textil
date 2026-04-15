@@ -32,6 +32,9 @@
 .claude/hooks/.last_daily_commit
 .claude/hooks/daily_hook.log
 
+# QA HTMLs generados (tooling, no se commitean)
+.claude/auditorias/*.html
+
 # debug
 npm-debug.log*
 yarn-debug.log*
