@@ -3,6 +3,18 @@
 ## 2026-04-15
 
 ### Gerardo Breard
+- **17:25** `06f15c2` — fix: agregar portfolioFotos al seed e imágenes placeholder (#3)
+  - `prisma/seed.ts`
+  - `public/images/portfolio/taller-aguja-1.svg`
+  - `public/images/portfolio/taller-aguja-2.svg`
+  - `public/images/portfolio/taller-cortesur-1.svg`
+  - `public/images/portfolio/taller-cortesur-2.svg`
+  - `public/images/portfolio/taller-cortesur-3.svg`
+  - `public/images/portfolio/taller-cortesur-4.svg`
+  - `public/images/portfolio/taller-hilos-1.svg`
+  - `public/images/portfolio/taller-hilos-2.svg`
+  - `public/images/portfolio/taller-hilos-3.svg`
+
 - **15:43** `bcda56a` — fix: CORS preflight 500 en /api/feedback
   - `src/app/api/feedback/route.ts`
 
