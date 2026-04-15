@@ -3,6 +3,9 @@
 ## 2026-04-15
 
 ### Gerardo Breard
+- **17:26** `c725c8d` — fix: mostrar nombre de usuario en header admin (#7)
+  - `src/app/(admin)/layout.tsx`
+
 - **17:26** `65ae5f7` — fix: toast de confirmación al subir documento (#6)
   - `src/taller/componentes/upload-button.tsx`
 
