@@ -48,6 +48,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <span className="font-overpass font-bold text-lg">Admin Panel</span>
           </div>
           <div className="flex items-center gap-4">
+            <span className="text-sm text-blue-200">{session.user.name}</span>
             <Link href="/" className="text-sm hover:text-blue-200 transition-colors">Volver al sitio</Link>
             <LogoutButton />
           </div>
