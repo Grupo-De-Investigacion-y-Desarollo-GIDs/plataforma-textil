@@ -3,6 +3,9 @@
 ## 2026-04-15
 
 ### Gerardo Breard
+- **14:23** `a7d0e95` — docs: spec v2-generador-qa-html con correcciones de formato real
+  - `.claude/specs/v2-generador-qa-html.md`
+
 - **13:22** `a494abf` — fix: await fetch a GitHub en endpoint de feedback
   - `src/app/api/feedback/route.ts`
 
