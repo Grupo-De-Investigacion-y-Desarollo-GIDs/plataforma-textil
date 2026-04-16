@@ -8,7 +8,7 @@ import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
 import { ProgressRing } from '@/compartido/componentes/ui/progress-ring'
-import { Star, MapPin, Users, TrendingUp, Clock, Award } from 'lucide-react'
+import { Star, MapPin, Users, TrendingUp, Clock, Award, Download } from 'lucide-react'
 import { PortfolioManager } from '@/taller/componentes/portfolio-manager'
 
 const nivelColor: Record<string, 'warning' | 'default' | 'success'> = { BRONCE: 'warning', PLATA: 'default', ORO: 'success' }
@@ -25,6 +25,11 @@ export default async function TallerPerfilPage() {
       prendas: { include: { prenda: true } },
       maquinaria: true,
       certificaciones: { where: { activa: true } },
+      certificados: {
+        where: { revocado: false },
+        include: { coleccion: { select: { titulo: true } } },
+        orderBy: { fecha: 'desc' },
+      },
     },
   })
 
@@ -260,6 +265,31 @@ export default async function TallerPerfilPage() {
               <Badge key={c.id} variant="success">
                 <Award className="w-3 h-3 mr-1" />{c.nombre}
               </Badge>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      {taller.certificados.length > 0 && (
+        <Card title="Certificados de Academia">
+          <div className="space-y-2">
+            {taller.certificados.map((c) => (
+              <div key={c.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                <div className="flex items-center gap-2">
+                  <Award className="w-4 h-4 text-green-600" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-800">{c.coleccion.titulo}</p>
+                    <p className="text-xs text-gray-500">Código: {c.codigo} · Calificación: {c.calificacion}%</p>
+                  </div>
+                </div>
+                <a
+                  href={`/api/certificados/${c.id}/pdf`}
+                  download
+                  className="inline-flex items-center gap-1 text-xs text-brand-blue hover:underline"
+                >
+                  <Download className="w-3 h-3" /> PDF
+                </a>
+              </div>
             ))}
           </div>
         </Card>
