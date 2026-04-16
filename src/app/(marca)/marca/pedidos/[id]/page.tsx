@@ -6,7 +6,7 @@ import { redirect, notFound } from 'next/navigation'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import Link from 'next/link'
-import { ArrowLeft, Package, Clock, DollarSign, TrendingUp, CheckCircle, Download } from 'lucide-react'
+import { ArrowLeft, Package, Clock, DollarSign, TrendingUp, CheckCircle } from 'lucide-react'
 import { GaleriaFotos } from '@/taller/componentes/galeria-fotos'
 import { CotizacionImagenes } from '@/marca/componentes/cotizacion-imagenes'
 import { CancelarPedido } from '@/marca/componentes/cancelar-pedido'
@@ -274,37 +274,50 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
             {pedido.ordenes.map((orden) => (
               <div
                 key={orden.id}
-                className="border border-gray-100 rounded-lg p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3"
+                className="border border-gray-100 rounded-lg p-4 space-y-3"
               >
-                <div className="space-y-1">
-                  <p className="font-overpass font-semibold text-brand-blue">{orden.moId}</p>
-                  <p className="text-sm text-gray-600">
-                    Taller: {orden.taller.nombre} ({orden.taller.nivel})
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Proceso: {orden.proceso} - ${orden.precio.toLocaleString()}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="text-right">
-                    <p className="text-sm font-medium">{orden.progreso}%</p>
-                    <div className="w-20 h-2 bg-gray-200 rounded-full mt-1">
-                      <div
-                        className="h-2 bg-brand-blue rounded-full"
-                        style={{ width: `${Math.min(orden.progreso, 100)}%` }}
-                      />
-                    </div>
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                  <div className="space-y-1">
+                    <p className="font-overpass font-semibold text-brand-blue">{orden.moId}</p>
+                    <p className="text-sm text-gray-600">
+                      Taller: {orden.taller.nombre} ({orden.taller.nivel})
+                    </p>
                   </div>
                   <Badge variant={ordenStatusVariant[orden.estado] || 'default'}>
                     {ordenStatusLabel[orden.estado] || orden.estado}
                   </Badge>
-                  {(orden.estado === 'EN_EJECUCION' || orden.estado === 'COMPLETADO') && (
-                    <a href={`/api/ordenes/${orden.id}/pdf`} download
-                      className="text-xs font-semibold text-brand-blue hover:underline">
-                      <Download className="w-3.5 h-3.5 inline mr-1" />
-                      Acuerdo PDF
-                    </a>
-                  )}
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+                  <div>
+                    <span className="text-gray-500">Proceso:</span>
+                    <p className="font-medium">{orden.proceso}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Precio:</span>
+                    <p className="font-medium">$ {orden.precio.toLocaleString('es-AR')}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Plazo:</span>
+                    <p className="font-medium">{orden.plazoDias} dias</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Creada:</span>
+                    <p className="font-medium">{new Date(orden.createdAt).toLocaleDateString('es-AR')}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                      <span>Progreso</span>
+                      <span className="font-medium">{orden.progreso}%</span>
+                    </div>
+                    <div className="w-full h-2 bg-gray-200 rounded-full">
+                      <div
+                        className="h-2 bg-brand-blue rounded-full transition-all"
+                        style={{ width: `${Math.min(orden.progreso, 100)}%` }}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
