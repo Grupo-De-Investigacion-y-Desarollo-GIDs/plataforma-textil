@@ -3,6 +3,10 @@
 ## 2026-04-16
 
 ### Gerardo Breard
+- **12:42** `e51ad40` — fix: validar que fechaObjetivo no sea pasada en backend y frontend (#26)
+  - `src/app/(marca)/marca/pedidos/nuevo/nuevo-pedido-form.tsx`
+  - `src/app/api/pedidos/route.ts`
+
 - **12:08** `49977b5` — fix: KPIs de marca/pedidos contaban sobre resultados filtrados (#24)
   - `src/app/(marca)/marca/pedidos/page.tsx`
 
