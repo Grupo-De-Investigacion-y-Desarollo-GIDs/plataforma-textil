@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
-import { Package, MapPin, Calendar, ImageIcon } from 'lucide-react'
+import { Package, MapPin, Calendar, ImageIcon, ArrowLeft } from 'lucide-react'
 
 export default async function PedidosDisponiblesPage() {
   const session = await auth()
@@ -37,7 +37,13 @@ export default async function PedidosDisponiblesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-overpass font-bold text-3xl text-brand-blue">Pedidos disponibles</h1>
+        <Link
+          href="/taller/pedidos"
+          className="inline-flex items-center gap-1 text-sm text-brand-blue hover:underline"
+        >
+          <ArrowLeft className="w-4 h-4" /> Volver a mis pedidos
+        </Link>
+        <h1 className="font-overpass font-bold text-3xl text-brand-blue mt-2">Pedidos disponibles</h1>
         <p className="text-gray-500 mt-1">Pedidos publicados por marcas que buscan talleres</p>
       </div>
 
