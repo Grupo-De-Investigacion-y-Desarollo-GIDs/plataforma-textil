@@ -68,9 +68,11 @@ Cada spec implementado genera un archivo `QA_[nombre-spec].md` con esta estructu
 
 Verificar que cada criterio de aceptación del spec está implementado.
 
-| # | Criterio | Resultado | Issue |
-|---|----------|-----------|-------|
-| 1 | [criterio del spec] | ✅ / 🐛 / ❌ | # |
+> **Nota:** Los ítems marcados **DEV** los verifica Gerardo desde el código o la terminal — no son verificables desde el browser. El auditor solo verifica los ítems marcados **QA**.
+
+| # | Criterio | Verificador | Resultado | Issue |
+|---|----------|-------------|-----------|-------|
+| 1 | [criterio del spec] | QA / DEV | ✅ / 🐛 / ❌ | # |
 
 ---
 
@@ -95,9 +97,13 @@ Pasos de navegación a seguir en orden. Cada paso es una acción concreta.
 
 Probar situaciones límite prescritas en el spec.
 
-| # | Caso | Acción | Esperado | Resultado |
-|---|------|--------|----------|-----------|
-| 1 | [caso borde] | [qué hacer] | [qué debería pasar] | ✅ / 🐛 / ❌ |
+> **Nota:** Los ítems marcados **DEV** los verifica Gerardo desde el código o la terminal — no son verificables desde el browser. El auditor solo verifica los ítems marcados **QA**.
+>
+> **Si la acción requiere cambiar de usuario:** cerrá sesión, logueate como el rol indicado, y recién entonces ejecutá el comando. Un fetch ejecutado con el usuario equivocado puede dar falso positivo o falso negativo.
+
+| # | Caso | Acción | Esperado | Verificador | Resultado |
+|---|------|--------|----------|-------------|-----------|
+| 1 | [caso borde] | [qué hacer] | [qué debería pasar] | QA / DEV | ✅ / 🐛 / ❌ |
 
 ---
 
