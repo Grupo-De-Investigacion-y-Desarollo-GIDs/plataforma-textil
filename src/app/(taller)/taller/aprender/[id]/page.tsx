@@ -73,11 +73,16 @@ export default async function AcademiaDetallePage({
         evaluacion={
           coleccion.evaluacion
             ? {
-                preguntas: coleccion.evaluacion.preguntas as Array<{
-                  texto: string
+                preguntas: (coleccion.evaluacion.preguntas as Array<{
+                  pregunta?: string
+                  texto?: string
                   opciones: string[]
                   correcta: number
-                }>,
+                }>).map(p => ({
+                  texto: p.texto ?? p.pregunta ?? '',
+                  opciones: p.opciones,
+                  correcta: p.correcta,
+                })),
                 puntajeMinimo: coleccion.evaluacion.puntajeMinimo,
               }
             : null
