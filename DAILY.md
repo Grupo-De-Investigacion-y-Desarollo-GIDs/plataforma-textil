@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-04-16
+
+### Gerardo Breard
+- **11:11** `0b74e72` — fix: .vercelignore excluía ruta /api/upload/imagenes del deploy (#22)
+  - `.vercelignore`
+
+
 ## 2026-04-15
 
 ### Gerardo Breard
