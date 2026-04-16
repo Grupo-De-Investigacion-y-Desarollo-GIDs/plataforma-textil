@@ -75,6 +75,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Datos inválidos' }, { status: 400 })
     }
 
+    if (body.fechaObjetivo) {
+      const fecha = new Date(body.fechaObjetivo)
+      const hoy = new Date()
+      hoy.setHours(0, 0, 0, 0)
+      if (fecha < hoy) {
+        return NextResponse.json({ error: 'La fecha objetivo no puede ser anterior a hoy' }, { status: 400 })
+      }
+    }
+
     let resolvedMarcaId = ''
     if (role === 'MARCA') {
       const marca = await prisma.marca.findUnique({
