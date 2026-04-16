@@ -3,6 +3,9 @@
 ## 2026-04-16
 
 ### Gerardo Breard
+- **12:49** `b0ecb97` — docs: agregar etiqueta DEV y nota de cambio de usuario en TEMPLATE_QA
+  - `.claude/auditorias/TEMPLATE_QA.md`
+
 - **12:42** `e51ad40` — fix: validar que fechaObjetivo no sea pasada en backend y frontend (#26)
   - `src/app/(marca)/marca/pedidos/nuevo/nuevo-pedido-form.tsx`
   - `src/app/api/pedidos/route.ts`
