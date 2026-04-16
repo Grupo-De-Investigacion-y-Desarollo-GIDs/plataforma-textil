@@ -3,6 +3,9 @@
 ## 2026-04-16
 
 ### Gerardo Breard
+- **11:32** `90ee763` — fix: agregar desglose de puntaje por certificación en admin (#12)
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+
 - **11:27** `a2f0c36` — fix: mostrar certificados de academia en taller/perfil (#11)
   - `src/app/(taller)/taller/perfil/page.tsx`
 
