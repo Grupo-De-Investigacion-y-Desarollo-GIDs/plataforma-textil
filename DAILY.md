@@ -3,6 +3,10 @@
 ## 2026-04-16
 
 ### Gerardo Breard
+- **11:45** `1c01218` — fix: agregar navegación entre pedidos recibidos y disponibles (#21)
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+  - `src/app/(taller)/taller/pedidos/page.tsx`
+
 - **11:32** `90ee763` — fix: agregar desglose de puntaje por certificación en admin (#12)
   - `src/app/(admin)/admin/talleres/[id]/page.tsx`
 
