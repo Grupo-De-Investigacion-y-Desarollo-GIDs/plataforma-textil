@@ -57,6 +57,19 @@ export default async function MarcaPedidosPage({
 
   if (!marca) redirect('/login?callbackUrl=%2Fmarca%2Fpedidos')
 
+  // KPIs: siempre sobre todos los pedidos de la marca (sin filtros)
+  const todosPedidos = await prisma.pedido.groupBy({
+    by: ['estado'],
+    where: { marcaId: marca.id },
+    _count: true,
+  })
+  const kpiMap = Object.fromEntries(todosPedidos.map(g => [g.estado, g._count]))
+  const kpiTotal = todosPedidos.reduce((sum, g) => sum + g._count, 0)
+  const kpiPublicados = kpiMap['PUBLICADO'] ?? 0
+  const kpiEnEjecucion = kpiMap['EN_EJECUCION'] ?? 0
+  const kpiCompletados = kpiMap['COMPLETADO'] ?? 0
+
+  // Lista: filtrada por searchParams
   const pedidos = await prisma.pedido.findMany({
     where: {
       marcaId: marca.id,
@@ -75,12 +88,6 @@ export default async function MarcaPedidosPage({
     },
     orderBy: { createdAt: 'desc' },
   })
-
-  const total = pedidos.length
-  const publicados = pedidos.filter(p => p.estado === 'PUBLICADO').length
-  const enEjecucion = pedidos.filter(p => p.estado === 'EN_EJECUCION').length
-  const completados = pedidos.filter(p => p.estado === 'COMPLETADO').length
-  const cancelados = pedidos.filter(p => p.estado === 'CANCELADO').length
 
   return (
     <div className="space-y-6">
@@ -106,19 +113,19 @@ export default async function MarcaPedidosPage({
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="text-center p-4">
           <p className="text-xs text-gray-500">Total</p>
-          <p className="font-overpass font-bold text-2xl text-brand-blue">{total}</p>
+          <p className="font-overpass font-bold text-2xl text-brand-blue">{kpiTotal}</p>
+        </Card>
+        <Card className="text-center p-4">
+          <p className="text-xs text-gray-500">Publicados</p>
+          <p className="font-overpass font-bold text-2xl text-brand-blue">{kpiPublicados}</p>
         </Card>
         <Card className="text-center p-4">
           <p className="text-xs text-gray-500">En ejecución</p>
-          <p className="font-overpass font-bold text-2xl text-brand-blue">{enEjecucion}</p>
+          <p className="font-overpass font-bold text-2xl text-brand-blue">{kpiEnEjecucion}</p>
         </Card>
         <Card className="text-center p-4">
           <p className="text-xs text-gray-500">Completados</p>
-          <p className="font-overpass font-bold text-2xl text-brand-blue">{completados}</p>
-        </Card>
-        <Card className="text-center p-4">
-          <p className="text-xs text-gray-500">Cancelados</p>
-          <p className="font-overpass font-bold text-2xl text-brand-blue">{cancelados}</p>
+          <p className="font-overpass font-bold text-2xl text-brand-blue">{kpiCompletados}</p>
         </Card>
       </div>
 
