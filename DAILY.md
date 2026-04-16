@@ -3,6 +3,9 @@
 ## 2026-04-16
 
 ### Gerardo Breard
+- **12:08** `49977b5` — fix: KPIs de marca/pedidos contaban sobre resultados filtrados (#24)
+  - `src/app/(marca)/marca/pedidos/page.tsx`
+
 - **11:54** `397c2c7` — fix: expandir card de orden y eliminar link PDF roto en marca (#23)
   - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
 
