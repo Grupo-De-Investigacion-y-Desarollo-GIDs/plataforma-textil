@@ -3,6 +3,9 @@
 ## 2026-04-16
 
 ### Gerardo Breard
+- **11:27** `a2f0c36` — fix: mostrar certificados de academia en taller/perfil (#11)
+  - `src/app/(taller)/taller/perfil/page.tsx`
+
 - **11:19** `4c2760a` — fix: quiz mostraba opciones sin enunciado — campo pregunta vs texto (#10)
   - `src/app/(taller)/taller/aprender/[id]/page.tsx`
 
