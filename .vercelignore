@@ -2,6 +2,6 @@ node_modules
 .git
 .next
 planteos_scrape
-imagenes
+/imagenes
 *.docx
 coverage
