@@ -3,6 +3,9 @@
 ## 2026-04-16
 
 ### Gerardo Breard
+- **11:54** `397c2c7` — fix: expandir card de orden y eliminar link PDF roto en marca (#23)
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+
 - **11:45** `1c01218` — fix: agregar navegación entre pedidos recibidos y disponibles (#21)
   - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
   - `src/app/(taller)/taller/pedidos/page.tsx`
