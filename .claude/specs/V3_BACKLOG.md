@@ -31,7 +31,10 @@ Base: validación interna V2 + QA de Sergio + análisis arquitectural
 
 ## Funcionalidades nuevas
 
-*(Se agregan a medida que V2 avanza)*
+### F-01 — "Tu próximo nivel" (guía de formalización en dashboard del taller)
+- **Spec:** `v3-proximo-nivel-dashboard.md`
+- **Depende de:** D-01, D-02
+- **Descripción:** Sección en `/taller` que muestra pasos concretos para subir de nivel, con prioridad, puntos y botones de acción directos. Requerimiento OIT — la plataforma debe guiar activamente hacia la formalización.
 
 ---
 
