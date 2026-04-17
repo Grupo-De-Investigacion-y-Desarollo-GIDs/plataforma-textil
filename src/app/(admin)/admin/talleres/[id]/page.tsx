@@ -223,6 +223,19 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
               <span className="text-gray-400 italic">Sin teléfono</span>
             )}
           </div>
+          {taller.website && (
+            <div>
+              <p className="text-gray-500">Web</p>
+              <a
+                href={taller.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand-blue hover:underline font-medium break-all"
+              >
+                {taller.website.replace(/^https?:\/\//, '')}
+              </a>
+            </div>
+          )}
         </div>
 
         {(!taller.user.name || !taller.user.phone || !taller.ubicacion) && (

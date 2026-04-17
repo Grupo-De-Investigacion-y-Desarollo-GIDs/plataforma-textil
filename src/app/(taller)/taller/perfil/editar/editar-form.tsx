@@ -11,6 +11,7 @@ interface Props {
     id: string
     nombre: string
     ubicacion: string | null
+    website: string | null
     provincia: string | null
     partido: string | null
     ubicacionDetalle: string | null
@@ -30,6 +31,7 @@ export function EditarPerfilForm({ taller }: Props) {
   const [error, setError] = useState('')
 
   const [nombre, setNombre] = useState(taller.nombre)
+  const [website, setWebsite] = useState(taller.website ?? '')
   const [ubicacion, setUbicacion] = useState(taller.ubicacion ?? '')
   const [provincia, setProvincia] = useState(taller.provincia ?? '')
   const [partido, setPartido] = useState(taller.partido ?? '')
@@ -49,6 +51,7 @@ export function EditarPerfilForm({ taller }: Props) {
         body: JSON.stringify({
           nombre,
           ubicacion: ubicacion || null,
+          website: website || null,
           provincia: provincia || null,
           partido: partido || null,
           ubicacionDetalle: ubicacionDetalle || null,
@@ -103,6 +106,15 @@ export function EditarPerfilForm({ taller }: Props) {
             value={ubicacion}
             onChange={e => setUbicacion(e.target.value)}
             placeholder="Ej: Av. Corrientes 1234, CABA"
+            className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium text-gray-700">Sitio web <span className="text-gray-400 font-normal">(opcional)</span></label>
+          <input
+            value={website}
+            onChange={e => setWebsite(e.target.value)}
+            placeholder="Ej: https://www.mitaller.com.ar"
             className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
           />
         </div>

@@ -51,7 +51,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     // Build update data with only provided fields
     const data: Record<string, unknown> = {}
     const fields = [
-      'nombre', 'ubicacion', 'provincia', 'partido', 'ubicacionDetalle', 'descripcion',
+      'nombre', 'ubicacion', 'website', 'provincia', 'partido', 'ubicacionDetalle', 'descripcion',
       'capacidadMensual', 'trabajadoresRegistrados', 'fundado',
       'sam', 'prendaPrincipal', 'organizacion', 'metrosCuadrados',
       'areas', 'experienciaPromedio', 'polivalencia', 'horario',
