@@ -182,7 +182,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
 
       {/* Responsable / Contacto */}
       <Card title="Responsable / Contacto" className="mb-6">
-        <div className="grid grid-cols-2 gap-4 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div>
             <p className="text-gray-500">Responsable</p>
             <p className="font-medium text-gray-800">
@@ -205,7 +205,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
             <p className="text-gray-500">Email</p>
             <a
               href={`mailto:${taller.user.email}`}
-              className="text-brand-blue hover:underline font-medium"
+              className="text-brand-blue hover:underline font-medium break-all"
             >
               {taller.user.email}
             </a>

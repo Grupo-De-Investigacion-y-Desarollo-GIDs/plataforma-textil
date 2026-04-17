@@ -135,7 +135,7 @@ export default async function AdminDetalleMarcaPage({ params }: {
 
       {/* Responsable / Contacto */}
       <Card title="Responsable / Contacto" className="mb-6">
-        <div className="grid grid-cols-2 gap-4 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div>
             <p className="text-gray-500">Responsable</p>
             <p className="font-medium text-gray-800">
@@ -158,7 +158,7 @@ export default async function AdminDetalleMarcaPage({ params }: {
             <p className="text-gray-500">Email</p>
             <a
               href={`mailto:${marca.user.email}`}
-              className="text-brand-blue hover:underline font-medium"
+              className="text-brand-blue hover:underline font-medium break-all"
             >
               {marca.user.email}
             </a>
