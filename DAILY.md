@@ -3,6 +3,13 @@
 ## 2026-04-17
 
 ### Gerardo Breard
+- **18:52** `464d1eb` — feat: agregar campo website al modelo Taller (#42)
+  - `prisma/migrations/20260417190000_add_website_taller/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(taller)/taller/perfil/editar/editar-form.tsx`
+  - `src/app/api/talleres/[id]/route.ts`
+
 - **18:33** `6176090` — fix: cards de contacto responsive en mobile — grid 1col en mobile, 2col en desktop (#41)
   - `src/app/(admin)/admin/marcas/[id]/page.tsx`
   - `src/app/(admin)/admin/talleres/[id]/page.tsx`
