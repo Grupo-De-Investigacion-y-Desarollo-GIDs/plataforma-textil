@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Globe, Search, Menu, X, User } from 'lucide-react'
+import { Globe, Search, Menu, X, User, Bell } from 'lucide-react'
 import { cn } from '@/compartido/lib/utils'
 import { UserSidebar } from './user-sidebar'
 
@@ -96,6 +96,13 @@ export function Header({
                 </button>
                 <nav className="hidden md:flex items-center gap-6">
                   <span className="text-green-400 font-semibold">V2.0</span>
+                  <Link
+                    href="/cuenta/notificaciones"
+                    className="hover:text-blue-200 transition-colors relative"
+                    aria-label="Notificaciones"
+                  >
+                    <Bell className="w-4 h-4" />
+                  </Link>
                   <button
                     onClick={() => setSidebarOpen(true)}
                     className="hover:text-blue-200 transition-colors flex items-center gap-2"
@@ -162,6 +169,13 @@ export function Header({
                 {tab.label}
               </Link>
             ))}
+            <Link
+              href="/cuenta/notificaciones"
+              className="flex items-center gap-2 px-4 py-3 font-overpass font-medium rounded-lg text-white hover:bg-white/10"
+            >
+              <Bell className="w-4 h-4" />
+              Notificaciones
+            </Link>
           </nav>
         </div>
       )}
