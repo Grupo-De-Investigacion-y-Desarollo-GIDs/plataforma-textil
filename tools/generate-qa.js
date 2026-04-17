@@ -394,6 +394,7 @@ function renderEje4(contenido) {
           <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
         </div>
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
     </div>`
   }
@@ -417,6 +418,7 @@ function renderEje5(contenido) {
           <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
         </div>
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
     </div>`
   }
