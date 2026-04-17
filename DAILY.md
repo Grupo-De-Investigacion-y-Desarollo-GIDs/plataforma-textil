@@ -3,6 +3,9 @@
 ## 2026-04-17
 
 ### Gerardo Breard
+- **14:53** `1c0607e` — docs: documentar flujo QA interactivo en CLAUDE.md
+  - `CLAUDE.md`
+
 - **14:34** `ded020c` — docs: agregar QA spec v2-actividad-contextual-pedidos
   - `.claude/auditorias/QA_v2-actividad-contextual-pedidos.md`
 
