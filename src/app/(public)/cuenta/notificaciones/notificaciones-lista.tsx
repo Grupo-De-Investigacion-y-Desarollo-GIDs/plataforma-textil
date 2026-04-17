@@ -37,7 +37,7 @@ function marcarTodasLeidas() {
   })
 }
 
-export function NotificacionesLista({ notificaciones: initial }: { notificaciones: Notificacion[] }) {
+export function NotificacionesLista({ notificaciones: initial, emptyMessage }: { notificaciones: Notificacion[]; emptyMessage?: string }) {
   const [notificaciones, setNotificaciones] = useState(initial)
 
   const sinLeer = notificaciones.filter(n => !n.leida).length
@@ -78,7 +78,7 @@ export function NotificacionesLista({ notificaciones: initial }: { notificacione
       {notificaciones.length === 0 ? (
         <div className="rounded-xl border border-gray-200 bg-white p-8 text-center">
           <Bell className="w-8 h-8 text-gray-400 mx-auto mb-3" />
-          <p className="text-gray-600">No tenes notificaciones por ahora.</p>
+          <p className="text-gray-600">{emptyMessage ?? 'No tenes notificaciones por ahora.'}</p>
         </div>
       ) : (
         <div className="space-y-3">
