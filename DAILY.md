@@ -3,6 +3,10 @@
 ## 2026-04-17
 
 ### Gerardo Breard
+- **18:33** `6176090` — fix: cards de contacto responsive en mobile — grid 1col en mobile, 2col en desktop (#41)
+  - `src/app/(admin)/admin/marcas/[id]/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+
 - **16:14** `d315a11` — docs: agregar QA spec v2-estandarizacion-ubicacion
   - `.claude/auditorias/QA_v2-estandarizacion-ubicacion.md`
 
