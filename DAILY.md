@@ -3,6 +3,9 @@
 ## 2026-04-17
 
 ### Gerardo Breard
+- **19:41** `2e74fd1` — docs: iniciar backlog V3 con aprendizajes de V2
+  - `.claude/specs/V3_BACKLOG.md`
+
 - **19:01** `0dc6544` — fix: texto condicional en botón del wizard — "Actualizar" si ya completó, "Completar" si no (#39)
   - `src/app/(taller)/taller/page.tsx`
   - `src/app/(taller)/taller/perfil/page.tsx`
