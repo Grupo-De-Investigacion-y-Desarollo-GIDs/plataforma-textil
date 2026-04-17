@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Bell, CheckCircle2 } from 'lucide-react'
+import { Bell, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react'
 
 interface Notificacion {
   id: string
@@ -39,6 +39,7 @@ function marcarTodasLeidas() {
 
 export function NotificacionesLista({ notificaciones: initial, emptyMessage }: { notificaciones: Notificacion[]; emptyMessage?: string }) {
   const [notificaciones, setNotificaciones] = useState(initial)
+  const [expandedId, setExpandedId] = useState<string | null>(null)
 
   const sinLeer = notificaciones.filter(n => !n.leida).length
 
@@ -83,25 +84,7 @@ export function NotificacionesLista({ notificaciones: initial, emptyMessage }: {
       ) : (
         <div className="space-y-3">
           {notificaciones.map(n => {
-            const contenido = (
-              <>
-                <div className="flex items-center justify-between gap-2 mb-1">
-                  <h2 className="font-overpass font-semibold text-brand-blue">{n.titulo}</h2>
-                  {!n.leida && (
-                    <span className="text-xs font-overpass font-semibold text-brand-red">NUEVA</span>
-                  )}
-                </div>
-                <p className="text-sm text-gray-700 mb-1">{n.mensaje}</p>
-                {n.link && (
-                  <span className="text-xs text-brand-blue font-medium">
-                    {labelPorTipo[n.tipo] ?? 'Ver'} →
-                  </span>
-                )}
-                <p className="text-xs text-gray-500 mt-1">
-                  {new Date(n.createdAt).toLocaleString('es-AR')}
-                </p>
-              </>
-            )
+            const isExpanded = expandedId === n.id
 
             const baseClasses = `block rounded-xl border p-4 transition-colors ${
               n.leida
@@ -109,13 +92,62 @@ export function NotificacionesLista({ notificaciones: initial, emptyMessage }: {
                 : 'border-brand-blue/30 bg-brand-blue/5'
             }`
 
+            const header = (
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <h2 className="font-overpass font-semibold text-brand-blue">{n.titulo}</h2>
+                <div className="flex items-center gap-2">
+                  {!n.leida && (
+                    <span className="text-xs font-overpass font-semibold text-brand-red">NUEVA</span>
+                  )}
+                  {!n.link && (
+                    isExpanded
+                      ? <ChevronUp className="w-4 h-4 text-gray-400" />
+                      : <ChevronDown className="w-4 h-4 text-gray-400" />
+                  )}
+                </div>
+              </div>
+            )
+
+            const fecha = (
+              <p className="text-xs text-gray-500 mt-1">
+                {new Date(n.createdAt).toLocaleString('es-AR')}
+              </p>
+            )
+
+            // Notificaciones sin link: click expande/colapsa el mensaje
             if (!n.link) {
               return (
-                <div key={n.id} className={baseClasses}>
-                  {contenido}
-                </div>
+                <button
+                  key={n.id}
+                  type="button"
+                  onClick={() => {
+                    setExpandedId(prev => prev === n.id ? null : n.id)
+                    handleClickNotificacion(n)
+                  }}
+                  className={`${baseClasses} w-full text-left cursor-pointer hover:bg-gray-50`}
+                >
+                  {header}
+                  {isExpanded ? (
+                    <p className="text-sm text-gray-700 mb-1">{n.mensaje}</p>
+                  ) : (
+                    <p className="text-sm text-gray-700 mb-1 line-clamp-1">{n.mensaje}</p>
+                  )}
+                  {fecha}
+                </button>
               )
             }
+
+            // Notificaciones con link: navegan al destino
+            const contenido = (
+              <>
+                {header}
+                <p className="text-sm text-gray-700 mb-1">{n.mensaje}</p>
+                <span className="text-xs text-brand-blue font-medium">
+                  {labelPorTipo[n.tipo] ?? 'Ver'} →
+                </span>
+                {fecha}
+              </>
+            )
 
             const isExternal = n.link.startsWith('http')
 
