@@ -3,6 +3,22 @@
 ## 2026-04-17
 
 ### Gerardo Breard
+- **16:05** `3734b17` — feat: estandarizar ubicación con provincias y partidos INDEC (#38)
+  - `.claude/specs/v2-estandarizacion-ubicacion.md`
+  - `prisma/migrations/20260417180000_estandarizar_ubicacion_taller/migration.sql`
+  - `prisma/schema.prisma`
+  - `prisma/seed.ts`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(admin)/admin/talleres/page.tsx`
+  - `src/app/(estado)/estado/sector/page.tsx`
+  - `src/app/(public)/directorio/page.tsx`
+  - `src/app/(taller)/taller/perfil/editar/editar-form.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/app/api/talleres/[id]/route.ts`
+  - `src/app/api/talleres/route.ts`
+  - `src/compartido/componentes/ubicacion-selector.tsx`
+  - `src/compartido/data/ubicaciones-ar.json`
+
 - **15:01** `0e0bbfe` — fix: agregar boton de issue en Eje 4 y Eje 5 del generador QA
   - `tools/generate-qa.js`
 
