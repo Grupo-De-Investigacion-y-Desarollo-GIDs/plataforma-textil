@@ -3,6 +3,9 @@
 ## 2026-04-17
 
 ### Gerardo Breard
+- **14:34** `ded020c` — docs: agregar QA spec v2-actividad-contextual-pedidos
+  - `.claude/auditorias/QA_v2-actividad-contextual-pedidos.md`
+
 - **14:25** `2cd0a0f` — fix: corregir numeración de pasos en comentarios del wizard (#35)
   - `src/app/(taller)/taller/perfil/completar/page.tsx`
 
