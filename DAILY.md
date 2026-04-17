@@ -3,6 +3,10 @@
 ## 2026-04-17
 
 ### Gerardo Breard
+- **19:50** `c94c889` — docs: mover proximo-nivel a V3 y registrar en backlog
+  - `.claude/specs/V3_BACKLOG.md`
+  - `.claude/specs/v3-proximo-nivel-dashboard.md`
+
 - **19:41** `2e74fd1` — docs: iniciar backlog V3 con aprendizajes de V2
   - `.claude/specs/V3_BACKLOG.md`
 
