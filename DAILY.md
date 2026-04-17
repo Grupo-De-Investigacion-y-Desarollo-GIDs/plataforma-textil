@@ -3,6 +3,9 @@
 ## 2026-04-17
 
 ### Gerardo Breard
+- **15:01** `0e0bbfe` — fix: agregar boton de issue en Eje 4 y Eje 5 del generador QA
+  - `tools/generate-qa.js`
+
 - **14:53** `1c0607e` — docs: documentar flujo QA interactivo en CLAUDE.md
   - `CLAUDE.md`
 
