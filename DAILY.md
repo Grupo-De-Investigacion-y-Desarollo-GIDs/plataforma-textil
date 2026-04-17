@@ -3,6 +3,9 @@
 ## 2026-04-17
 
 ### Gerardo Breard
+- **12:50** `6f8c158` — fix: notificaciones sin link ahora son clickeables con expand/collapse (#27)
+  - `src/app/(public)/cuenta/notificaciones/notificaciones-lista.tsx`
+
 - **12:42** `d39162a` — fix: agregar tabs Comunicaciones/Historial en /cuenta/notificaciones (#34)
   - `src/app/(public)/cuenta/notificaciones/notificaciones-lista.tsx`
   - `src/app/(public)/cuenta/notificaciones/page.tsx`
