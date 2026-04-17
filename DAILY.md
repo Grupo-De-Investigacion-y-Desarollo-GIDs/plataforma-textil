@@ -3,6 +3,16 @@
 ## 2026-04-17
 
 ### Gerardo Breard
+- **14:18** `d08bb0a` — feat: actividad contextual en pedidos — timeline por entidad (#33)
+  - `src/app/(admin)/admin/notificaciones/page.tsx`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/[id]/page.tsx`
+  - `src/app/api/cotizaciones/[id]/route.ts`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/app/api/ordenes/[id]/route.ts`
+  - `src/app/api/pedidos/[id]/route.ts`
+  - `src/compartido/componentes/activity-timeline.tsx`
+
 - **12:50** `6f8c158` — fix: notificaciones sin link ahora son clickeables con expand/collapse (#27)
   - `src/app/(public)/cuenta/notificaciones/notificaciones-lista.tsx`
 
