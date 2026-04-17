@@ -3,6 +3,9 @@
 ## 2026-04-17
 
 ### Gerardo Breard
+- **14:25** `2cd0a0f` — fix: corregir numeración de pasos en comentarios del wizard (#35)
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+
 - **14:18** `d08bb0a` — feat: actividad contextual en pedidos — timeline por entidad (#33)
   - `src/app/(admin)/admin/notificaciones/page.tsx`
   - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
