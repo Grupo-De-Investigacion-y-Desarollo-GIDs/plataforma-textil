@@ -3,6 +3,10 @@
 ## 2026-04-17
 
 ### Gerardo Breard
+- **12:42** `d39162a` — fix: agregar tabs Comunicaciones/Historial en /cuenta/notificaciones (#34)
+  - `src/app/(public)/cuenta/notificaciones/notificaciones-lista.tsx`
+  - `src/app/(public)/cuenta/notificaciones/page.tsx`
+
 - **12:09** `3ccbaf0` — fix: agregar acceso visible a notificaciones desde header y layout público (#28-#32)
   - `src/app/(public)/layout.tsx`
   - `src/compartido/componentes/layout/header.tsx`
