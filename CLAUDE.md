@@ -52,6 +52,15 @@ src/
 - Prisma: config en `package.json#prisma` esta deprecada y se elimina en Prisma 7
 - Fuentes: Noto Sans y Overpass estan en `public/fonts/` como archivos woff2 locales (no dependen de Google Fonts en build)
 
+## QA — Auditorías interactivas
+- Template: `.claude/auditorias/TEMPLATE_QA.md`
+- Cada spec implementado genera un `QA_v2-[nombre].md` en `.claude/auditorias/`
+- Generador: `node tools/generate-qa.js .claude/auditorias/QA_v2-xxx.md` convierte `.md` → `.html` interactivo
+- Publicación automática: el workflow `.github/workflows/qa-pages.yml` detecta pushes a `develop` que tocan `.claude/auditorias/QA_v2-*.md` o `tools/generate-qa.js`, regenera todos los HTMLs + index, y los publica en GitHub Pages
+- URL pública: https://grupo-de-investigacion-y-desarollo-gids.github.io/plataforma-textil/
+- Sergio accede a los QA interactivos desde esa URL, no necesita generar HTMLs localmente
+- Los `.html` locales están en `.gitignore` — no commitearlos
+
 ## Handover OIT
 Durante el desarrollo, cada decision tecnica importante, cambio de infraestructura o funcionalidad completada debe documentarse en `.claude/specs/handover/`. Gerardo es responsable de mantener esta documentacion actualizada. No esperar al final del proyecto para completarla.
 
