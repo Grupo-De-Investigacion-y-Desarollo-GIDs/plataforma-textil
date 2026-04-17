@@ -14,6 +14,7 @@ import { PublicarPedido } from '@/marca/componentes/publicar-pedido'
 import { InvitarACotizar } from '@/marca/componentes/invitar-a-cotizar'
 import { AceptarCotizacion } from '@/marca/componentes/aceptar-cotizacion'
 import { RechazarCotizacion } from '@/marca/componentes/rechazar-cotizacion'
+import { ActivityTimeline } from '@/compartido/componentes/activity-timeline'
 
 const statusVariant: Record<string, 'default' | 'success' | 'warning' | 'error' | 'muted'> = {
   BORRADOR: 'muted',
@@ -92,6 +93,23 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
     where: { pedidoId: pedido.id },
     include: { taller: { select: { nombre: true, nivel: true } } },
     orderBy: { createdAt: 'desc' },
+  })
+
+  const actividad = await prisma.logActividad.findMany({
+    where: {
+      accion: {
+        in: [
+          'PEDIDO_PUBLICADO', 'COTIZACION_RECIBIDA', 'COTIZACION_ACEPTADA',
+          'COTIZACION_RECHAZADA', 'ORDEN_CREADA', 'PROGRESO_ACTUALIZADO',
+          'ORDEN_ACEPTADA', 'ORDEN_RECHAZADA', 'ORDEN_COMPLETADA',
+          'PEDIDO_COMPLETADO', 'PEDIDO_CANCELADO',
+        ],
+      },
+      detalles: { path: ['pedidoId'], equals: pedido.id },
+    },
+    orderBy: { timestamp: 'desc' },
+    take: 50,
+    include: { user: { select: { name: true } } },
   })
 
   const currentStep = getStepIndex(pedido.estado)
@@ -324,6 +342,13 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
           </div>
         )}
       </Card>
+
+      {actividad.length > 0 && (
+        <Card>
+          <h2 className="font-overpass font-bold text-brand-blue mb-3">Actividad del pedido</h2>
+          <ActivityTimeline eventos={actividad} perspective="marca" />
+        </Card>
+      )}
     </div>
   )
 }

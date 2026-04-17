@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { notificarCotizacion } from '@/compartido/lib/notificaciones'
+import { logActividad } from '@/compartido/lib/log'
 import { z } from 'zod'
 
 const cotizacionSchema = z.object({
@@ -135,6 +136,13 @@ export async function POST(req: NextRequest) {
           venceEn,
           imagenes,
         },
+      })
+
+      logActividad('COTIZACION_RECIBIDA', session.user.id, {
+        pedidoId: data.pedidoId,
+        cotizacionId: cotizacion.id,
+        tallerId: taller.id,
+        tallerNombre: taller.nombre,
       })
 
       // Notificar a la marca (fire-and-forget)

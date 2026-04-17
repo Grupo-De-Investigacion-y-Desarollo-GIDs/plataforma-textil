@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { notificarCotizacion } from '@/compartido/lib/notificaciones'
+import { logActividad } from '@/compartido/lib/log'
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -73,6 +74,18 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         }),
       ])
 
+      logActividad('COTIZACION_ACEPTADA', userId, {
+        pedidoId: cotizacion.pedidoId,
+        cotizacionId: id,
+        tallerNombre: cotizacion.taller.nombre,
+      })
+      logActividad('ORDEN_CREADA', userId, {
+        pedidoId: cotizacion.pedidoId,
+        ordenId: moId,
+        tallerId: cotizacion.tallerId,
+        tallerNombre: cotizacion.taller.nombre,
+      })
+
       // Despues del commit: notificaciones fire-and-forget
       notificarCotizacion('ACEPTADA', {
         cotizacion,
@@ -115,6 +128,12 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       }
 
       await prisma.cotizacion.update({ where: { id }, data: { estado: 'RECHAZADA' } })
+
+      logActividad('COTIZACION_RECHAZADA', userId, {
+        pedidoId: cotizacion.pedidoId,
+        cotizacionId: id,
+        tallerNombre: cotizacion.taller.nombre,
+      })
 
       notificarCotizacion('RECHAZADA', {
         cotizacion,

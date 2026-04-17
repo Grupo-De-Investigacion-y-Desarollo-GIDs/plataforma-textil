@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { logActividad } from '@/compartido/lib/log'
 import { EstadoPedido } from '@prisma/client'
 
 const TRANSICIONES_VALIDAS: Record<string, string[]> = {
@@ -61,6 +62,24 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       where: { id },
       data,
     })
+
+    // Logs de actividad
+    if (estado === 'EN_EJECUCION' && orden.estado === 'PENDIENTE') {
+      logActividad('ORDEN_ACEPTADA', session.user.id, { ordenId: id, pedidoId: orden.pedidoId })
+    }
+    if (estado === 'CANCELADO' && orden.estado === 'PENDIENTE') {
+      logActividad('ORDEN_RECHAZADA', session.user.id, { ordenId: id, pedidoId: orden.pedidoId })
+    }
+    if (data.estado === 'COMPLETADO') {
+      logActividad('ORDEN_COMPLETADA', session.user.id, { ordenId: id, pedidoId: orden.pedidoId })
+    }
+    if (progreso !== undefined && !estado) {
+      logActividad('PROGRESO_ACTUALIZADO', session.user.id, {
+        ordenId: id,
+        pedidoId: orden.pedidoId,
+        progreso: Number(data.progreso),
+      })
+    }
 
     // Recalcular estado del pedido padre
     const todasLasOrdenes = await prisma.ordenManufactura.findMany({

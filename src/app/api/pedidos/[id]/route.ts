@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { notificarTalleresCompatibles } from '@/compartido/lib/notificaciones'
+import { logActividad } from '@/compartido/lib/log'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -113,6 +114,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
             data: { estado: 'CANCELADO' },
           }),
         ])
+        logActividad('PEDIDO_CANCELADO', session.user.id, { pedidoId: id })
         return NextResponse.json(pedido)
       }
 
@@ -123,7 +125,12 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
       // Notificar talleres compatibles cuando se publica
       if (body.estado === 'PUBLICADO') {
+        logActividad('PEDIDO_PUBLICADO', session.user.id, { pedidoId: id })
         notificarTalleresCompatibles(id).catch(() => {})
+      }
+
+      if (body.estado === 'COMPLETADO') {
+        logActividad('PEDIDO_COMPLETADO', session.user.id, { pedidoId: id })
       }
 
       return NextResponse.json(pedido)
