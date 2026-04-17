@@ -1,5 +1,13 @@
 # Daily Log
 
+## 2026-04-17
+
+### Gerardo Breard
+- **12:09** `3ccbaf0` — fix: agregar acceso visible a notificaciones desde header y layout público (#28-#32)
+  - `src/app/(public)/layout.tsx`
+  - `src/compartido/componentes/layout/header.tsx`
+
+
 ## 2026-04-16
 
 ### Gerardo Breard
