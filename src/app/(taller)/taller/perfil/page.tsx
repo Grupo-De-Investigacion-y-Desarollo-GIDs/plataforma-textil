@@ -77,7 +77,7 @@ export default async function TallerPerfilPage() {
             <Button variant="secondary" size="sm">Editar datos básicos</Button>
           </Link>
           <Link href="/taller/perfil/completar">
-            <Button variant="ghost" size="sm">Perfil productivo</Button>
+            <Button variant="ghost" size="sm">{taller.sam ? 'Actualizar perfil productivo' : 'Completar perfil productivo'}</Button>
           </Link>
         </div>
       </div>

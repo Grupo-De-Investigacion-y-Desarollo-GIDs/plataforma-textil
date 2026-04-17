@@ -367,7 +367,7 @@ export default async function TallerDashboardPage() {
             className="flex flex-col items-center gap-2 bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-brand-blue transition-all text-center"
           >
             <span className="text-3xl">📝</span>
-            <span className="font-overpass font-semibold text-gray-700">Completar mi perfil</span>
+            <span className="font-overpass font-semibold text-gray-700">{taller?.sam ? 'Actualizar mi perfil' : 'Completar mi perfil'}</span>
             <span className="text-xs text-gray-400">Datos productivos y capacidad</span>
           </Link>
           <Link
