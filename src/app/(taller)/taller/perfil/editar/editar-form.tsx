@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/compartido/componentes/ui/button'
+import { UbicacionSelector } from '@/compartido/componentes/ubicacion-selector'
 import Link from 'next/link'
 
 interface Props {
@@ -10,7 +11,9 @@ interface Props {
     id: string
     nombre: string
     ubicacion: string | null
-    zona: string | null
+    provincia: string | null
+    partido: string | null
+    ubicacionDetalle: string | null
     descripcion: string | null
     fundado: number | null
     user: {
@@ -28,7 +31,9 @@ export function EditarPerfilForm({ taller }: Props) {
 
   const [nombre, setNombre] = useState(taller.nombre)
   const [ubicacion, setUbicacion] = useState(taller.ubicacion ?? '')
-  const [zona, setZona] = useState(taller.zona ?? '')
+  const [provincia, setProvincia] = useState(taller.provincia ?? '')
+  const [partido, setPartido] = useState(taller.partido ?? '')
+  const [ubicacionDetalle, setUbicacionDetalle] = useState(taller.ubicacionDetalle ?? '')
   const [descripcion, setDescripcion] = useState(taller.descripcion ?? '')
   const [fundado, setFundado] = useState(taller.fundado?.toString() ?? '')
   const [userName, setUserName] = useState(taller.user.name ?? '')
@@ -44,7 +49,9 @@ export function EditarPerfilForm({ taller }: Props) {
         body: JSON.stringify({
           nombre,
           ubicacion: ubicacion || null,
-          zona: zona || null,
+          provincia: provincia || null,
+          partido: partido || null,
+          ubicacionDetalle: ubicacionDetalle || null,
           descripcion: descripcion || null,
           fundado: fundado ? parseInt(fundado) : null,
           user: {
@@ -99,15 +106,16 @@ export function EditarPerfilForm({ taller }: Props) {
             className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
           />
         </div>
-        <div>
-          <label className="text-sm font-medium text-gray-700">Zona / Barrio</label>
-          <input
-            value={zona}
-            onChange={e => setZona(e.target.value)}
-            placeholder="Ej: La Matanza, Zona Oeste"
-            className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-          />
-        </div>
+        <UbicacionSelector
+          provincia={provincia}
+          partido={partido}
+          ubicacionDetalle={ubicacionDetalle}
+          onChange={v => {
+            setProvincia(v.provincia)
+            setPartido(v.partido)
+            setUbicacionDetalle(v.ubicacionDetalle)
+          }}
+        />
         <div>
           <label className="text-sm font-medium text-gray-700">Descripción del taller</label>
           <textarea

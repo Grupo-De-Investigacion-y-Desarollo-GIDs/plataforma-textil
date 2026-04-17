@@ -182,7 +182,9 @@ model Taller {
   puntaje               Int         @default(0)
   rating                Float       @default(0)
   ubicacion             String?
-  zona                  String?
+  provincia             String?
+  partido               String?
+  ubicacionDetalle      String?
   descripcion           String?     @db.Text
   capacidadMensual      Int         @default(0)
   trabajadoresRegistrados Int       @default(0)

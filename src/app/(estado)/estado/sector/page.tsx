@@ -100,10 +100,10 @@ export default async function DiagnosticoSectorPage() {
       where: { capacidadMensual: { gt: 0 } },
     }),
     prisma.taller.groupBy({
-      by: ['zona'],
-      _count: { _all: true },
-      where: { zona: { not: null } },
-      orderBy: { zona: 'asc' },
+      by: ['provincia'],
+      _count: true,
+      where: { provincia: { not: null } },
+      orderBy: { provincia: 'asc' },
     }),
     prisma.tallerProceso.groupBy({
       by: ['procesoId'],
@@ -242,13 +242,13 @@ export default async function DiagnosticoSectorPage() {
         </ul>
       </Card>
 
-      {/* Distribución por zona */}
-      <Card title="Distribución por zona">
+      {/* Distribución por provincia */}
+      <Card title="Distribución por provincia">
         <ul className="space-y-1 text-sm">
           {distribucionZona.map(z => (
-            <li key={z.zona ?? 'sin-zona'} className="flex justify-between">
-              <span>{z.zona ?? 'Sin zona'}</span>
-              <span className="text-gray-500">{z._count._all} talleres</span>
+            <li key={z.provincia ?? 'sin-provincia'} className="flex justify-between">
+              <span>{z.provincia ?? 'Sin provincia'}</span>
+              <span className="text-gray-500">{z._count} talleres</span>
             </li>
           ))}
         </ul>

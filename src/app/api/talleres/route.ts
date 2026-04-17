@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
     const nivel = searchParams.get('nivel')
     const proceso = searchParams.get('proceso')
     const prenda = searchParams.get('prenda')
-    const zona = searchParams.get('zona')
+    const provincia = searchParams.get('provincia')
     const q = searchParams.get('q')
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '10')
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     const where: Record<string, unknown> = {}
 
     if (nivel) where.nivel = nivel
-    if (zona) where.zona = { contains: zona, mode: 'insensitive' }
+    if (provincia) where.provincia = { contains: provincia, mode: 'insensitive' }
     if (q) where.nombre = { contains: q, mode: 'insensitive' }
     if (proceso) {
       where.procesos = { some: { proceso: { nombre: { contains: proceso, mode: 'insensitive' } } } }

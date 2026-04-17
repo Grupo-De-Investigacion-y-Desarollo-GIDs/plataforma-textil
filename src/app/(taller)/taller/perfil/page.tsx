@@ -47,7 +47,7 @@ export default async function TallerPerfilPage() {
     )
   }
 
-  const checks = ['nombre', 'cuit', 'ubicacion', 'descripcion', 'zona', 'fundado'] as const
+  const checks = ['nombre', 'cuit', 'ubicacion', 'descripcion', 'provincia', 'fundado'] as const
   const campos = checks.length + 4
   let completos = checks.filter(c => (taller as Record<string, unknown>)[c]).length
   if (taller.capacidadMensual > 0) completos++
@@ -67,7 +67,7 @@ export default async function TallerPerfilPage() {
           {taller.ubicacion && (
             <p className="flex items-center gap-1 text-gray-600">
               <MapPin className="w-4 h-4" /> {taller.ubicacion}
-              {taller.zona && <span className="text-gray-400"> · {taller.zona}</span>}
+              {taller.provincia && <span className="text-gray-400"> · {taller.provincia}{taller.partido ? `, ${taller.partido}` : ''}</span>}
             </p>
           )}
           <p className="text-sm text-gray-500 mt-1">{taller.user.email} {taller.user.phone && `· ${taller.user.phone}`}</p>

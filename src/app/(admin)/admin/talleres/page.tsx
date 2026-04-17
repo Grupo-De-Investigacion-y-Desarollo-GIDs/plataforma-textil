@@ -16,7 +16,8 @@ interface TallerRow {
   nombre: string
   cuit: string
   nivel: string
-  zona: string | null
+  provincia: string | null
+  partido: string | null
   createdAt: string
   user: { active: boolean; email: string; phone: string | null }
 }

@@ -1,0 +1,2264 @@
+{
+  "provincias": [
+    {
+      "id": "06",
+      "nombre": "Buenos Aires",
+      "partidos": [
+        {
+          "id": "06854",
+          "nombre": "25 de Mayo"
+        },
+        {
+          "id": "06588",
+          "nombre": "9 de Julio"
+        },
+        {
+          "id": "06007",
+          "nombre": "Adolfo Alsina"
+        },
+        {
+          "id": "06014",
+          "nombre": "Adolfo Gonzales Chaves"
+        },
+        {
+          "id": "06021",
+          "nombre": "Alberti"
+        },
+        {
+          "id": "06028",
+          "nombre": "Almirante Brown"
+        },
+        {
+          "id": "06077",
+          "nombre": "Arrecifes"
+        },
+        {
+          "id": "06035",
+          "nombre": "Avellaneda"
+        },
+        {
+          "id": "06042",
+          "nombre": "Ayacucho"
+        },
+        {
+          "id": "06049",
+          "nombre": "Azul"
+        },
+        {
+          "id": "06056",
+          "nombre": "Bahía Blanca"
+        },
+        {
+          "id": "06063",
+          "nombre": "Balcarce"
+        },
+        {
+          "id": "06070",
+          "nombre": "Baradero"
+        },
+        {
+          "id": "06084",
+          "nombre": "Benito Juárez"
+        },
+        {
+          "id": "06091",
+          "nombre": "Berazategui"
+        },
+        {
+          "id": "06098",
+          "nombre": "Berisso"
+        },
+        {
+          "id": "06105",
+          "nombre": "Bolívar"
+        },
+        {
+          "id": "06112",
+          "nombre": "Bragado"
+        },
+        {
+          "id": "06119",
+          "nombre": "Brandsen"
+        },
+        {
+          "id": "06126",
+          "nombre": "Campana"
+        },
+        {
+          "id": "06140",
+          "nombre": "Capitán Sarmiento"
+        },
+        {
+          "id": "06147",
+          "nombre": "Carlos Casares"
+        },
+        {
+          "id": "06154",
+          "nombre": "Carlos Tejedor"
+        },
+        {
+          "id": "06161",
+          "nombre": "Carmen de Areco"
+        },
+        {
+          "id": "06168",
+          "nombre": "Castelli"
+        },
+        {
+          "id": "06134",
+          "nombre": "Cañuelas"
+        },
+        {
+          "id": "06210",
+          "nombre": "Chacabuco"
+        },
+        {
+          "id": "06218",
+          "nombre": "Chascomús"
+        },
+        {
+          "id": "06224",
+          "nombre": "Chivilcoy"
+        },
+        {
+          "id": "06175",
+          "nombre": "Colón"
+        },
+        {
+          "id": "06189",
+          "nombre": "Coronel Dorrego"
+        },
+        {
+          "id": "06196",
+          "nombre": "Coronel Pringles"
+        },
+        {
+          "id": "06203",
+          "nombre": "Coronel Suárez"
+        },
+        {
+          "id": "06182",
+          "nombre": "Coronel de Marina Leonardo Rosales"
+        },
+        {
+          "id": "06231",
+          "nombre": "Daireaux"
+        },
+        {
+          "id": "06238",
+          "nombre": "Dolores"
+        },
+        {
+          "id": "06245",
+          "nombre": "Ensenada"
+        },
+        {
+          "id": "06252",
+          "nombre": "Escobar"
+        },
+        {
+          "id": "06260",
+          "nombre": "Esteban Echeverría"
+        },
+        {
+          "id": "06266",
+          "nombre": "Exaltación de la Cruz"
+        },
+        {
+          "id": "06270",
+          "nombre": "Ezeiza"
+        },
+        {
+          "id": "06274",
+          "nombre": "Florencio Varela"
+        },
+        {
+          "id": "06277",
+          "nombre": "Florentino Ameghino"
+        },
+        {
+          "id": "06280",
+          "nombre": "General Alvarado"
+        },
+        {
+          "id": "06287",
+          "nombre": "General Alvear"
+        },
+        {
+          "id": "06294",
+          "nombre": "General Arenales"
+        },
+        {
+          "id": "06301",
+          "nombre": "General Belgrano"
+        },
+        {
+          "id": "06308",
+          "nombre": "General Guido"
+        },
+        {
+          "id": "06315",
+          "nombre": "General Juan Madariaga"
+        },
+        {
+          "id": "06322",
+          "nombre": "General La Madrid"
+        },
+        {
+          "id": "06329",
+          "nombre": "General Las Heras"
+        },
+        {
+          "id": "06336",
+          "nombre": "General Lavalle"
+        },
+        {
+          "id": "06343",
+          "nombre": "General Paz"
+        },
+        {
+          "id": "06351",
+          "nombre": "General Pinto"
+        },
+        {
+          "id": "06357",
+          "nombre": "General Pueyrredón"
+        },
+        {
+          "id": "06364",
+          "nombre": "General Rodríguez"
+        },
+        {
+          "id": "06371",
+          "nombre": "General San Martín"
+        },
+        {
+          "id": "06385",
+          "nombre": "General Viamonte"
+        },
+        {
+          "id": "06392",
+          "nombre": "General Villegas"
+        },
+        {
+          "id": "06399",
+          "nombre": "Guaminí"
+        },
+        {
+          "id": "06406",
+          "nombre": "Hipólito Yrigoyen"
+        },
+        {
+          "id": "06408",
+          "nombre": "Hurlingham"
+        },
+        {
+          "id": "06410",
+          "nombre": "Ituzaingó"
+        },
+        {
+          "id": "06412",
+          "nombre": "José C. Paz"
+        },
+        {
+          "id": "06413",
+          "nombre": "Junín"
+        },
+        {
+          "id": "06420",
+          "nombre": "La Costa"
+        },
+        {
+          "id": "06427",
+          "nombre": "La Matanza"
+        },
+        {
+          "id": "06441",
+          "nombre": "La Plata"
+        },
+        {
+          "id": "06434",
+          "nombre": "Lanús"
+        },
+        {
+          "id": "06448",
+          "nombre": "Laprida"
+        },
+        {
+          "id": "06455",
+          "nombre": "Las Flores"
+        },
+        {
+          "id": "06462",
+          "nombre": "Leandro N. Alem"
+        },
+        {
+          "id": "06466",
+          "nombre": "Lezama"
+        },
+        {
+          "id": "06469",
+          "nombre": "Lincoln"
+        },
+        {
+          "id": "06476",
+          "nombre": "Lobería"
+        },
+        {
+          "id": "06483",
+          "nombre": "Lobos"
+        },
+        {
+          "id": "06490",
+          "nombre": "Lomas de Zamora"
+        },
+        {
+          "id": "06497",
+          "nombre": "Luján"
+        },
+        {
+          "id": "06505",
+          "nombre": "Magdalena"
+        },
+        {
+          "id": "06511",
+          "nombre": "Maipú"
+        },
+        {
+          "id": "06515",
+          "nombre": "Malvinas Argentinas"
+        },
+        {
+          "id": "06518",
+          "nombre": "Mar Chiquita"
+        },
+        {
+          "id": "06525",
+          "nombre": "Marcos Paz"
+        },
+        {
+          "id": "06532",
+          "nombre": "Mercedes"
+        },
+        {
+          "id": "06539",
+          "nombre": "Merlo"
+        },
+        {
+          "id": "06547",
+          "nombre": "Monte"
+        },
+        {
+          "id": "06553",
+          "nombre": "Monte Hermoso"
+        },
+        {
+          "id": "06560",
+          "nombre": "Moreno"
+        },
+        {
+          "id": "06568",
+          "nombre": "Morón"
+        },
+        {
+          "id": "06574",
+          "nombre": "Navarro"
+        },
+        {
+          "id": "06581",
+          "nombre": "Necochea"
+        },
+        {
+          "id": "06595",
+          "nombre": "Olavarría"
+        },
+        {
+          "id": "06602",
+          "nombre": "Patagones"
+        },
+        {
+          "id": "06609",
+          "nombre": "Pehuajó"
+        },
+        {
+          "id": "06616",
+          "nombre": "Pellegrini"
+        },
+        {
+          "id": "06623",
+          "nombre": "Pergamino"
+        },
+        {
+          "id": "06630",
+          "nombre": "Pila"
+        },
+        {
+          "id": "06638",
+          "nombre": "Pilar"
+        },
+        {
+          "id": "06644",
+          "nombre": "Pinamar"
+        },
+        {
+          "id": "06648",
+          "nombre": "Presidente Perón"
+        },
+        {
+          "id": "06655",
+          "nombre": "Punta Indio"
+        },
+        {
+          "id": "06651",
+          "nombre": "Puán"
+        },
+        {
+          "id": "06658",
+          "nombre": "Quilmes"
+        },
+        {
+          "id": "06665",
+          "nombre": "Ramallo"
+        },
+        {
+          "id": "06672",
+          "nombre": "Rauch"
+        },
+        {
+          "id": "06679",
+          "nombre": "Rivadavia"
+        },
+        {
+          "id": "06686",
+          "nombre": "Rojas"
+        },
+        {
+          "id": "06693",
+          "nombre": "Roque Pérez"
+        },
+        {
+          "id": "06700",
+          "nombre": "Saavedra"
+        },
+        {
+          "id": "06707",
+          "nombre": "Saladillo"
+        },
+        {
+          "id": "06721",
+          "nombre": "Salliqueló"
+        },
+        {
+          "id": "06714",
+          "nombre": "Salto"
+        },
+        {
+          "id": "06728",
+          "nombre": "San Andrés de Giles"
+        },
+        {
+          "id": "06735",
+          "nombre": "San Antonio de Areco"
+        },
+        {
+          "id": "06742",
+          "nombre": "San Cayetano"
+        },
+        {
+          "id": "06749",
+          "nombre": "San Fernando"
+        },
+        {
+          "id": "06756",
+          "nombre": "San Isidro"
+        },
+        {
+          "id": "06760",
+          "nombre": "San Miguel"
+        },
+        {
+          "id": "06763",
+          "nombre": "San Nicolás"
+        },
+        {
+          "id": "06770",
+          "nombre": "San Pedro"
+        },
+        {
+          "id": "06778",
+          "nombre": "San Vicente"
+        },
+        {
+          "id": "06784",
+          "nombre": "Suipacha"
+        },
+        {
+          "id": "06791",
+          "nombre": "Tandil"
+        },
+        {
+          "id": "06798",
+          "nombre": "Tapalqué"
+        },
+        {
+          "id": "06805",
+          "nombre": "Tigre"
+        },
+        {
+          "id": "06812",
+          "nombre": "Tordillo"
+        },
+        {
+          "id": "06819",
+          "nombre": "Tornquist"
+        },
+        {
+          "id": "06826",
+          "nombre": "Trenque Lauquen"
+        },
+        {
+          "id": "06833",
+          "nombre": "Tres Arroyos"
+        },
+        {
+          "id": "06847",
+          "nombre": "Tres Lomas"
+        },
+        {
+          "id": "06840",
+          "nombre": "Tres de Febrero"
+        },
+        {
+          "id": "06861",
+          "nombre": "Vicente López"
+        },
+        {
+          "id": "06868",
+          "nombre": "Villa Gesell"
+        },
+        {
+          "id": "06875",
+          "nombre": "Villarino"
+        },
+        {
+          "id": "06882",
+          "nombre": "Zárate"
+        }
+      ]
+    },
+    {
+      "id": "10",
+      "nombre": "Catamarca",
+      "partidos": [
+        {
+          "id": "10007",
+          "nombre": "Ambato"
+        },
+        {
+          "id": "10014",
+          "nombre": "Ancasti"
+        },
+        {
+          "id": "10021",
+          "nombre": "Andalgalá"
+        },
+        {
+          "id": "10028",
+          "nombre": "Antofagasta de la Sierra"
+        },
+        {
+          "id": "10035",
+          "nombre": "Belén"
+        },
+        {
+          "id": "10042",
+          "nombre": "Capayán"
+        },
+        {
+          "id": "10049",
+          "nombre": "Capital"
+        },
+        {
+          "id": "10056",
+          "nombre": "El Alto"
+        },
+        {
+          "id": "10063",
+          "nombre": "Fray Mamerto Esquiú"
+        },
+        {
+          "id": "10070",
+          "nombre": "La Paz"
+        },
+        {
+          "id": "10077",
+          "nombre": "Paclín"
+        },
+        {
+          "id": "10084",
+          "nombre": "Pomán"
+        },
+        {
+          "id": "10091",
+          "nombre": "Santa María"
+        },
+        {
+          "id": "10098",
+          "nombre": "Santa Rosa"
+        },
+        {
+          "id": "10105",
+          "nombre": "Tinogasta"
+        },
+        {
+          "id": "10112",
+          "nombre": "Valle Viejo"
+        }
+      ]
+    },
+    {
+      "id": "22",
+      "nombre": "Chaco",
+      "partidos": [
+        {
+          "id": "22036",
+          "nombre": "12 de Octubre"
+        },
+        {
+          "id": "22126",
+          "nombre": "1° de Mayo"
+        },
+        {
+          "id": "22039",
+          "nombre": "2 de Abril"
+        },
+        {
+          "id": "22168",
+          "nombre": "25 de Mayo"
+        },
+        {
+          "id": "22105",
+          "nombre": "9 de Julio"
+        },
+        {
+          "id": "22007",
+          "nombre": "Almirante Brown"
+        },
+        {
+          "id": "22014",
+          "nombre": "Bermejo"
+        },
+        {
+          "id": "22028",
+          "nombre": "Chacabuco"
+        },
+        {
+          "id": "22021",
+          "nombre": "Comandante Fernández"
+        },
+        {
+          "id": "22043",
+          "nombre": "Fray Justo Santa María de Oro"
+        },
+        {
+          "id": "22049",
+          "nombre": "General Belgrano"
+        },
+        {
+          "id": "22056",
+          "nombre": "General Donovan"
+        },
+        {
+          "id": "22063",
+          "nombre": "General Güemes"
+        },
+        {
+          "id": "22070",
+          "nombre": "Independencia"
+        },
+        {
+          "id": "22077",
+          "nombre": "Libertad"
+        },
+        {
+          "id": "22084",
+          "nombre": "Libertador General San Martín"
+        },
+        {
+          "id": "22091",
+          "nombre": "Maipú"
+        },
+        {
+          "id": "22098",
+          "nombre": "Mayor Luis J. Fontana"
+        },
+        {
+          "id": "22112",
+          "nombre": "O'Higgins"
+        },
+        {
+          "id": "22119",
+          "nombre": "Presidencia de la Plaza"
+        },
+        {
+          "id": "22133",
+          "nombre": "Quitilipi"
+        },
+        {
+          "id": "22140",
+          "nombre": "San Fernando"
+        },
+        {
+          "id": "22147",
+          "nombre": "San Lorenzo"
+        },
+        {
+          "id": "22154",
+          "nombre": "Sargento Cabral"
+        },
+        {
+          "id": "22161",
+          "nombre": "Tapenagá"
+        }
+      ]
+    },
+    {
+      "id": "26",
+      "nombre": "Chubut",
+      "partidos": [
+        {
+          "id": "26007",
+          "nombre": "Biedma"
+        },
+        {
+          "id": "26014",
+          "nombre": "Cushamen"
+        },
+        {
+          "id": "26021",
+          "nombre": "Escalante"
+        },
+        {
+          "id": "26028",
+          "nombre": "Florentino Ameghino"
+        },
+        {
+          "id": "26035",
+          "nombre": "Futaleufú"
+        },
+        {
+          "id": "26042",
+          "nombre": "Gaiman"
+        },
+        {
+          "id": "26049",
+          "nombre": "Gastre"
+        },
+        {
+          "id": "26056",
+          "nombre": "Languiñeo"
+        },
+        {
+          "id": "26063",
+          "nombre": "Mártires"
+        },
+        {
+          "id": "26070",
+          "nombre": "Paso de Indios"
+        },
+        {
+          "id": "26077",
+          "nombre": "Rawson"
+        },
+        {
+          "id": "26084",
+          "nombre": "Río Senguer"
+        },
+        {
+          "id": "26091",
+          "nombre": "Sarmiento"
+        },
+        {
+          "id": "26098",
+          "nombre": "Tehuelches"
+        },
+        {
+          "id": "26105",
+          "nombre": "Telsen"
+        }
+      ]
+    },
+    {
+      "id": "02",
+      "nombre": "Ciudad Autónoma de Buenos Aires",
+      "partidos": [
+        {
+          "id": "02007",
+          "nombre": "Comuna 1"
+        },
+        {
+          "id": "02070",
+          "nombre": "Comuna 10"
+        },
+        {
+          "id": "02077",
+          "nombre": "Comuna 11"
+        },
+        {
+          "id": "02084",
+          "nombre": "Comuna 12"
+        },
+        {
+          "id": "02091",
+          "nombre": "Comuna 13"
+        },
+        {
+          "id": "02098",
+          "nombre": "Comuna 14"
+        },
+        {
+          "id": "02105",
+          "nombre": "Comuna 15"
+        },
+        {
+          "id": "02014",
+          "nombre": "Comuna 2"
+        },
+        {
+          "id": "02021",
+          "nombre": "Comuna 3"
+        },
+        {
+          "id": "02028",
+          "nombre": "Comuna 4"
+        },
+        {
+          "id": "02035",
+          "nombre": "Comuna 5"
+        },
+        {
+          "id": "02042",
+          "nombre": "Comuna 6"
+        },
+        {
+          "id": "02049",
+          "nombre": "Comuna 7"
+        },
+        {
+          "id": "02056",
+          "nombre": "Comuna 8"
+        },
+        {
+          "id": "02063",
+          "nombre": "Comuna 9"
+        }
+      ]
+    },
+    {
+      "id": "18",
+      "nombre": "Corrientes",
+      "partidos": [
+        {
+          "id": "18007",
+          "nombre": "Bella Vista"
+        },
+        {
+          "id": "18014",
+          "nombre": "Berón de Astrada"
+        },
+        {
+          "id": "18021",
+          "nombre": "Capital"
+        },
+        {
+          "id": "18028",
+          "nombre": "Concepción"
+        },
+        {
+          "id": "18035",
+          "nombre": "Curuzú Cuatiá"
+        },
+        {
+          "id": "18042",
+          "nombre": "Empedrado"
+        },
+        {
+          "id": "18049",
+          "nombre": "Esquina"
+        },
+        {
+          "id": "18056",
+          "nombre": "General Alvear"
+        },
+        {
+          "id": "18063",
+          "nombre": "General Paz"
+        },
+        {
+          "id": "18070",
+          "nombre": "Goya"
+        },
+        {
+          "id": "18077",
+          "nombre": "Itatí"
+        },
+        {
+          "id": "18084",
+          "nombre": "Ituzaingó"
+        },
+        {
+          "id": "18091",
+          "nombre": "Lavalle"
+        },
+        {
+          "id": "18098",
+          "nombre": "Mburucuyá"
+        },
+        {
+          "id": "18105",
+          "nombre": "Mercedes"
+        },
+        {
+          "id": "18112",
+          "nombre": "Monte Caseros"
+        },
+        {
+          "id": "18119",
+          "nombre": "Paso de los Libres"
+        },
+        {
+          "id": "18126",
+          "nombre": "Saladas"
+        },
+        {
+          "id": "18133",
+          "nombre": "San Cosme"
+        },
+        {
+          "id": "18140",
+          "nombre": "San Luis del Palmar"
+        },
+        {
+          "id": "18147",
+          "nombre": "San Martín"
+        },
+        {
+          "id": "18154",
+          "nombre": "San Miguel"
+        },
+        {
+          "id": "18161",
+          "nombre": "San Roque"
+        },
+        {
+          "id": "18168",
+          "nombre": "Santo Tomé"
+        },
+        {
+          "id": "18175",
+          "nombre": "Sauce"
+        }
+      ]
+    },
+    {
+      "id": "14",
+      "nombre": "Córdoba",
+      "partidos": [
+        {
+          "id": "14007",
+          "nombre": "Calamuchita"
+        },
+        {
+          "id": "14014",
+          "nombre": "Capital"
+        },
+        {
+          "id": "14021",
+          "nombre": "Colón"
+        },
+        {
+          "id": "14028",
+          "nombre": "Cruz del Eje"
+        },
+        {
+          "id": "14035",
+          "nombre": "General Roca"
+        },
+        {
+          "id": "14042",
+          "nombre": "General San Martín"
+        },
+        {
+          "id": "14049",
+          "nombre": "Ischilín"
+        },
+        {
+          "id": "14056",
+          "nombre": "Juárez Celman"
+        },
+        {
+          "id": "14063",
+          "nombre": "Marcos Juárez"
+        },
+        {
+          "id": "14070",
+          "nombre": "Minas"
+        },
+        {
+          "id": "14077",
+          "nombre": "Pocho"
+        },
+        {
+          "id": "14084",
+          "nombre": "Presidente Roque Sáenz Peña"
+        },
+        {
+          "id": "14091",
+          "nombre": "Punilla"
+        },
+        {
+          "id": "14098",
+          "nombre": "Río Cuarto"
+        },
+        {
+          "id": "14105",
+          "nombre": "Río Primero"
+        },
+        {
+          "id": "14112",
+          "nombre": "Río Seco"
+        },
+        {
+          "id": "14119",
+          "nombre": "Río Segundo"
+        },
+        {
+          "id": "14126",
+          "nombre": "San Alberto"
+        },
+        {
+          "id": "14133",
+          "nombre": "San Javier"
+        },
+        {
+          "id": "14140",
+          "nombre": "San Justo"
+        },
+        {
+          "id": "14147",
+          "nombre": "Santa María"
+        },
+        {
+          "id": "14154",
+          "nombre": "Sobremonte"
+        },
+        {
+          "id": "14161",
+          "nombre": "Tercero Arriba"
+        },
+        {
+          "id": "14168",
+          "nombre": "Totoral"
+        },
+        {
+          "id": "14175",
+          "nombre": "Tulumba"
+        },
+        {
+          "id": "14182",
+          "nombre": "Unión"
+        }
+      ]
+    },
+    {
+      "id": "30",
+      "nombre": "Entre Ríos",
+      "partidos": [
+        {
+          "id": "30008",
+          "nombre": "Colón"
+        },
+        {
+          "id": "30015",
+          "nombre": "Concordia"
+        },
+        {
+          "id": "30021",
+          "nombre": "Diamante"
+        },
+        {
+          "id": "30028",
+          "nombre": "Federación"
+        },
+        {
+          "id": "30035",
+          "nombre": "Federal"
+        },
+        {
+          "id": "30042",
+          "nombre": "Feliciano"
+        },
+        {
+          "id": "30049",
+          "nombre": "Gualeguay"
+        },
+        {
+          "id": "30056",
+          "nombre": "Gualeguaychú"
+        },
+        {
+          "id": "30063",
+          "nombre": "Islas del Ibicuy"
+        },
+        {
+          "id": "30070",
+          "nombre": "La Paz"
+        },
+        {
+          "id": "30077",
+          "nombre": "Nogoyá"
+        },
+        {
+          "id": "30084",
+          "nombre": "Paraná"
+        },
+        {
+          "id": "30088",
+          "nombre": "San Salvador"
+        },
+        {
+          "id": "30091",
+          "nombre": "Tala"
+        },
+        {
+          "id": "30098",
+          "nombre": "Uruguay"
+        },
+        {
+          "id": "30105",
+          "nombre": "Victoria"
+        },
+        {
+          "id": "30113",
+          "nombre": "Villaguay"
+        }
+      ]
+    },
+    {
+      "id": "34",
+      "nombre": "Formosa",
+      "partidos": [
+        {
+          "id": "34007",
+          "nombre": "Bermejo"
+        },
+        {
+          "id": "34014",
+          "nombre": "Formosa"
+        },
+        {
+          "id": "34021",
+          "nombre": "Laishi"
+        },
+        {
+          "id": "34028",
+          "nombre": "Matacos"
+        },
+        {
+          "id": "34035",
+          "nombre": "Patiño"
+        },
+        {
+          "id": "34042",
+          "nombre": "Pilagás"
+        },
+        {
+          "id": "34049",
+          "nombre": "Pilcomayo"
+        },
+        {
+          "id": "34056",
+          "nombre": "Pirané"
+        },
+        {
+          "id": "34063",
+          "nombre": "Ramón Lista"
+        }
+      ]
+    },
+    {
+      "id": "38",
+      "nombre": "Jujuy",
+      "partidos": [
+        {
+          "id": "38007",
+          "nombre": "Cochinoca"
+        },
+        {
+          "id": "38021",
+          "nombre": "Dr. Manuel Belgrano"
+        },
+        {
+          "id": "38014",
+          "nombre": "El Carmen"
+        },
+        {
+          "id": "38028",
+          "nombre": "Humahuaca"
+        },
+        {
+          "id": "38035",
+          "nombre": "Ledesma"
+        },
+        {
+          "id": "38042",
+          "nombre": "Palpalá"
+        },
+        {
+          "id": "38049",
+          "nombre": "Rinconada"
+        },
+        {
+          "id": "38056",
+          "nombre": "San Antonio"
+        },
+        {
+          "id": "38063",
+          "nombre": "San Pedro"
+        },
+        {
+          "id": "38070",
+          "nombre": "Santa Bárbara"
+        },
+        {
+          "id": "38077",
+          "nombre": "Santa Catalina"
+        },
+        {
+          "id": "38084",
+          "nombre": "Susques"
+        },
+        {
+          "id": "38094",
+          "nombre": "Tilcara"
+        },
+        {
+          "id": "38098",
+          "nombre": "Tumbaya"
+        },
+        {
+          "id": "38105",
+          "nombre": "Valle Grande"
+        },
+        {
+          "id": "38112",
+          "nombre": "Yavi"
+        }
+      ]
+    },
+    {
+      "id": "42",
+      "nombre": "La Pampa",
+      "partidos": [
+        {
+          "id": "42007",
+          "nombre": "Atreucó"
+        },
+        {
+          "id": "42014",
+          "nombre": "Caleu Caleu"
+        },
+        {
+          "id": "42021",
+          "nombre": "Capital"
+        },
+        {
+          "id": "42028",
+          "nombre": "Catriló"
+        },
+        {
+          "id": "42049",
+          "nombre": "Chalileo"
+        },
+        {
+          "id": "42056",
+          "nombre": "Chapaleufú"
+        },
+        {
+          "id": "42063",
+          "nombre": "Chical Co"
+        },
+        {
+          "id": "42035",
+          "nombre": "Conhelo"
+        },
+        {
+          "id": "42042",
+          "nombre": "Curacó"
+        },
+        {
+          "id": "42070",
+          "nombre": "Guatraché"
+        },
+        {
+          "id": "42077",
+          "nombre": "Hucal"
+        },
+        {
+          "id": "42084",
+          "nombre": "Lihuel Calel"
+        },
+        {
+          "id": "42091",
+          "nombre": "Limay Mahuida"
+        },
+        {
+          "id": "42098",
+          "nombre": "Loventué"
+        },
+        {
+          "id": "42105",
+          "nombre": "Maracó"
+        },
+        {
+          "id": "42112",
+          "nombre": "Puelén"
+        },
+        {
+          "id": "42119",
+          "nombre": "Quemú Quemú"
+        },
+        {
+          "id": "42126",
+          "nombre": "Rancul"
+        },
+        {
+          "id": "42133",
+          "nombre": "Realicó"
+        },
+        {
+          "id": "42140",
+          "nombre": "Toay"
+        },
+        {
+          "id": "42147",
+          "nombre": "Trenel"
+        },
+        {
+          "id": "42154",
+          "nombre": "Utracán"
+        }
+      ]
+    },
+    {
+      "id": "46",
+      "nombre": "La Rioja",
+      "partidos": [
+        {
+          "id": "46007",
+          "nombre": "Arauco"
+        },
+        {
+          "id": "46014",
+          "nombre": "Capital"
+        },
+        {
+          "id": "46021",
+          "nombre": "Castro Barros"
+        },
+        {
+          "id": "46035",
+          "nombre": "Chamical"
+        },
+        {
+          "id": "46042",
+          "nombre": "Chilecito"
+        },
+        {
+          "id": "46049",
+          "nombre": "Famatina"
+        },
+        {
+          "id": "46063",
+          "nombre": "General Belgrano"
+        },
+        {
+          "id": "46028",
+          "nombre": "General Felipe Varela"
+        },
+        {
+          "id": "46070",
+          "nombre": "General Juan Facundo Quiroga"
+        },
+        {
+          "id": "46077",
+          "nombre": "General Lamadrid"
+        },
+        {
+          "id": "46084",
+          "nombre": "General Ortiz de Ocampo"
+        },
+        {
+          "id": "46091",
+          "nombre": "General San Martín"
+        },
+        {
+          "id": "46105",
+          "nombre": "Independencia"
+        },
+        {
+          "id": "46112",
+          "nombre": "Rosario Vera Peñaloza"
+        },
+        {
+          "id": "46119",
+          "nombre": "San Blas de Los Sauces"
+        },
+        {
+          "id": "46126",
+          "nombre": "Sanagasta"
+        },
+        {
+          "id": "46098",
+          "nombre": "Vinchina"
+        },
+        {
+          "id": "46056",
+          "nombre": "Ángel Vicente Peñaloza"
+        }
+      ]
+    },
+    {
+      "id": "50",
+      "nombre": "Mendoza",
+      "partidos": [
+        {
+          "id": "50007",
+          "nombre": "Capital"
+        },
+        {
+          "id": "50014",
+          "nombre": "General Alvear"
+        },
+        {
+          "id": "50021",
+          "nombre": "Godoy Cruz"
+        },
+        {
+          "id": "50028",
+          "nombre": "Guaymallén"
+        },
+        {
+          "id": "50035",
+          "nombre": "Junín"
+        },
+        {
+          "id": "50042",
+          "nombre": "La Paz"
+        },
+        {
+          "id": "50049",
+          "nombre": "Las Heras"
+        },
+        {
+          "id": "50056",
+          "nombre": "Lavalle"
+        },
+        {
+          "id": "50063",
+          "nombre": "Luján de Cuyo"
+        },
+        {
+          "id": "50070",
+          "nombre": "Maipú"
+        },
+        {
+          "id": "50077",
+          "nombre": "Malargüe"
+        },
+        {
+          "id": "50084",
+          "nombre": "Rivadavia"
+        },
+        {
+          "id": "50091",
+          "nombre": "San Carlos"
+        },
+        {
+          "id": "50098",
+          "nombre": "San Martín"
+        },
+        {
+          "id": "50105",
+          "nombre": "San Rafael"
+        },
+        {
+          "id": "50112",
+          "nombre": "Santa Rosa"
+        },
+        {
+          "id": "50119",
+          "nombre": "Tunuyán"
+        },
+        {
+          "id": "50126",
+          "nombre": "Tupungato"
+        }
+      ]
+    },
+    {
+      "id": "54",
+      "nombre": "Misiones",
+      "partidos": [
+        {
+          "id": "54119",
+          "nombre": "25 de Mayo"
+        },
+        {
+          "id": "54007",
+          "nombre": "Apóstoles"
+        },
+        {
+          "id": "54014",
+          "nombre": "Cainguás"
+        },
+        {
+          "id": "54021",
+          "nombre": "Candelaria"
+        },
+        {
+          "id": "54028",
+          "nombre": "Capital"
+        },
+        {
+          "id": "54035",
+          "nombre": "Concepción"
+        },
+        {
+          "id": "54042",
+          "nombre": "Eldorado"
+        },
+        {
+          "id": "54049",
+          "nombre": "General Manuel Belgrano"
+        },
+        {
+          "id": "54056",
+          "nombre": "Guaraní"
+        },
+        {
+          "id": "54063",
+          "nombre": "Iguazú"
+        },
+        {
+          "id": "54070",
+          "nombre": "Leandro N. Alem"
+        },
+        {
+          "id": "54077",
+          "nombre": "Libertador General San Martín"
+        },
+        {
+          "id": "54084",
+          "nombre": "Montecarlo"
+        },
+        {
+          "id": "54091",
+          "nombre": "Oberá"
+        },
+        {
+          "id": "54098",
+          "nombre": "San Ignacio"
+        },
+        {
+          "id": "54105",
+          "nombre": "San Javier"
+        },
+        {
+          "id": "54112",
+          "nombre": "San Pedro"
+        }
+      ]
+    },
+    {
+      "id": "58",
+      "nombre": "Neuquén",
+      "partidos": [
+        {
+          "id": "58007",
+          "nombre": "Aluminé"
+        },
+        {
+          "id": "58014",
+          "nombre": "Añelo"
+        },
+        {
+          "id": "58021",
+          "nombre": "Catán Lil"
+        },
+        {
+          "id": "58042",
+          "nombre": "Chos Malal"
+        },
+        {
+          "id": "58028",
+          "nombre": "Collón Curá"
+        },
+        {
+          "id": "58035",
+          "nombre": "Confluencia"
+        },
+        {
+          "id": "58049",
+          "nombre": "Huiliches"
+        },
+        {
+          "id": "58063",
+          "nombre": "Loncopué"
+        },
+        {
+          "id": "58070",
+          "nombre": "Los Lagos"
+        },
+        {
+          "id": "58056",
+          "nombre": "Lácar"
+        },
+        {
+          "id": "58077",
+          "nombre": "Minas"
+        },
+        {
+          "id": "58091",
+          "nombre": "Pehuenches"
+        },
+        {
+          "id": "58105",
+          "nombre": "Picunches"
+        },
+        {
+          "id": "58098",
+          "nombre": "Picún Leufú"
+        },
+        {
+          "id": "58112",
+          "nombre": "Zapala"
+        },
+        {
+          "id": "58084",
+          "nombre": "Ñorquín"
+        }
+      ]
+    },
+    {
+      "id": "62",
+      "nombre": "Río Negro",
+      "partidos": [
+        {
+          "id": "62091",
+          "nombre": "25 de Mayo"
+        },
+        {
+          "id": "62049",
+          "nombre": "9 de Julio"
+        },
+        {
+          "id": "62007",
+          "nombre": "Adolfo Alsina"
+        },
+        {
+          "id": "62014",
+          "nombre": "Avellaneda"
+        },
+        {
+          "id": "62021",
+          "nombre": "Bariloche"
+        },
+        {
+          "id": "62028",
+          "nombre": "Conesa"
+        },
+        {
+          "id": "62035",
+          "nombre": "El Cuy"
+        },
+        {
+          "id": "62042",
+          "nombre": "General Roca"
+        },
+        {
+          "id": "62063",
+          "nombre": "Pichi Mahuida"
+        },
+        {
+          "id": "62070",
+          "nombre": "Pilcaniyeu"
+        },
+        {
+          "id": "62077",
+          "nombre": "San Antonio"
+        },
+        {
+          "id": "62084",
+          "nombre": "Valcheta"
+        },
+        {
+          "id": "62056",
+          "nombre": "Ñorquinco"
+        }
+      ]
+    },
+    {
+      "id": "66",
+      "nombre": "Salta",
+      "partidos": [
+        {
+          "id": "66007",
+          "nombre": "Anta"
+        },
+        {
+          "id": "66014",
+          "nombre": "Cachi"
+        },
+        {
+          "id": "66021",
+          "nombre": "Cafayate"
+        },
+        {
+          "id": "66028",
+          "nombre": "Capital"
+        },
+        {
+          "id": "66035",
+          "nombre": "Cerrillos"
+        },
+        {
+          "id": "66042",
+          "nombre": "Chicoana"
+        },
+        {
+          "id": "66049",
+          "nombre": "General Güemes"
+        },
+        {
+          "id": "66056",
+          "nombre": "General José de San Martín"
+        },
+        {
+          "id": "66063",
+          "nombre": "Guachipas"
+        },
+        {
+          "id": "66070",
+          "nombre": "Iruya"
+        },
+        {
+          "id": "66077",
+          "nombre": "La Caldera"
+        },
+        {
+          "id": "66084",
+          "nombre": "La Candelaria"
+        },
+        {
+          "id": "66091",
+          "nombre": "La Poma"
+        },
+        {
+          "id": "66098",
+          "nombre": "La Viña"
+        },
+        {
+          "id": "66105",
+          "nombre": "Los Andes"
+        },
+        {
+          "id": "66112",
+          "nombre": "Metán"
+        },
+        {
+          "id": "66119",
+          "nombre": "Molinos"
+        },
+        {
+          "id": "66126",
+          "nombre": "Orán"
+        },
+        {
+          "id": "66133",
+          "nombre": "Rivadavia"
+        },
+        {
+          "id": "66147",
+          "nombre": "Rosario de Lerma"
+        },
+        {
+          "id": "66140",
+          "nombre": "Rosario de la Frontera"
+        },
+        {
+          "id": "66154",
+          "nombre": "San Carlos"
+        },
+        {
+          "id": "66161",
+          "nombre": "Santa Victoria"
+        }
+      ]
+    },
+    {
+      "id": "70",
+      "nombre": "San Juan",
+      "partidos": [
+        {
+          "id": "70126",
+          "nombre": "25 de Mayo"
+        },
+        {
+          "id": "70063",
+          "nombre": "9 de Julio"
+        },
+        {
+          "id": "70007",
+          "nombre": "Albardón"
+        },
+        {
+          "id": "70014",
+          "nombre": "Angaco"
+        },
+        {
+          "id": "70021",
+          "nombre": "Calingasta"
+        },
+        {
+          "id": "70028",
+          "nombre": "Capital"
+        },
+        {
+          "id": "70035",
+          "nombre": "Caucete"
+        },
+        {
+          "id": "70042",
+          "nombre": "Chimbas"
+        },
+        {
+          "id": "70049",
+          "nombre": "Iglesia"
+        },
+        {
+          "id": "70056",
+          "nombre": "Jáchal"
+        },
+        {
+          "id": "70070",
+          "nombre": "Pocito"
+        },
+        {
+          "id": "70077",
+          "nombre": "Rawson"
+        },
+        {
+          "id": "70084",
+          "nombre": "Rivadavia"
+        },
+        {
+          "id": "70091",
+          "nombre": "San Martín"
+        },
+        {
+          "id": "70098",
+          "nombre": "Santa Lucía"
+        },
+        {
+          "id": "70105",
+          "nombre": "Sarmiento"
+        },
+        {
+          "id": "70112",
+          "nombre": "Ullum"
+        },
+        {
+          "id": "70119",
+          "nombre": "Valle Fértil"
+        },
+        {
+          "id": "70133",
+          "nombre": "Zonda"
+        }
+      ]
+    },
+    {
+      "id": "74",
+      "nombre": "San Luis",
+      "partidos": [
+        {
+          "id": "74007",
+          "nombre": "Ayacucho"
+        },
+        {
+          "id": "74014",
+          "nombre": "Belgrano"
+        },
+        {
+          "id": "74028",
+          "nombre": "Chacabuco"
+        },
+        {
+          "id": "74021",
+          "nombre": "Coronel Pringles"
+        },
+        {
+          "id": "74035",
+          "nombre": "General Pedernera"
+        },
+        {
+          "id": "74042",
+          "nombre": "Gobernador Dupuy"
+        },
+        {
+          "id": "74056",
+          "nombre": "Juan Martín de Pueyrredón"
+        },
+        {
+          "id": "74049",
+          "nombre": "Junín"
+        },
+        {
+          "id": "74063",
+          "nombre": "Libertador General San Martín"
+        }
+      ]
+    },
+    {
+      "id": "78",
+      "nombre": "Santa Cruz",
+      "partidos": [
+        {
+          "id": "78007",
+          "nombre": "Corpen Aike"
+        },
+        {
+          "id": "78014",
+          "nombre": "Deseado"
+        },
+        {
+          "id": "78021",
+          "nombre": "Güer Aike"
+        },
+        {
+          "id": "78028",
+          "nombre": "Lago Argentino"
+        },
+        {
+          "id": "78035",
+          "nombre": "Lago Buenos Aires"
+        },
+        {
+          "id": "78042",
+          "nombre": "Magallanes"
+        },
+        {
+          "id": "78049",
+          "nombre": "Río Chico"
+        }
+      ]
+    },
+    {
+      "id": "82",
+      "nombre": "Santa Fe",
+      "partidos": [
+        {
+          "id": "82077",
+          "nombre": "9 de Julio"
+        },
+        {
+          "id": "82007",
+          "nombre": "Belgrano"
+        },
+        {
+          "id": "82014",
+          "nombre": "Caseros"
+        },
+        {
+          "id": "82021",
+          "nombre": "Castellanos"
+        },
+        {
+          "id": "82028",
+          "nombre": "Constitución"
+        },
+        {
+          "id": "82035",
+          "nombre": "Garay"
+        },
+        {
+          "id": "82042",
+          "nombre": "General López"
+        },
+        {
+          "id": "82049",
+          "nombre": "General Obligado"
+        },
+        {
+          "id": "82056",
+          "nombre": "Iriondo"
+        },
+        {
+          "id": "82063",
+          "nombre": "La Capital"
+        },
+        {
+          "id": "82070",
+          "nombre": "Las Colonias"
+        },
+        {
+          "id": "82084",
+          "nombre": "Rosario"
+        },
+        {
+          "id": "82091",
+          "nombre": "San Cristóbal"
+        },
+        {
+          "id": "82098",
+          "nombre": "San Javier"
+        },
+        {
+          "id": "82105",
+          "nombre": "San Jerónimo"
+        },
+        {
+          "id": "82112",
+          "nombre": "San Justo"
+        },
+        {
+          "id": "82119",
+          "nombre": "San Lorenzo"
+        },
+        {
+          "id": "82126",
+          "nombre": "San Martín"
+        },
+        {
+          "id": "82133",
+          "nombre": "Vera"
+        }
+      ]
+    },
+    {
+      "id": "86",
+      "nombre": "Santiago del Estero",
+      "partidos": [
+        {
+          "id": "86007",
+          "nombre": "Aguirre"
+        },
+        {
+          "id": "86014",
+          "nombre": "Alberdi"
+        },
+        {
+          "id": "86021",
+          "nombre": "Atamisqui"
+        },
+        {
+          "id": "86028",
+          "nombre": "Avellaneda"
+        },
+        {
+          "id": "86035",
+          "nombre": "Banda"
+        },
+        {
+          "id": "86042",
+          "nombre": "Belgrano"
+        },
+        {
+          "id": "86049",
+          "nombre": "Capital"
+        },
+        {
+          "id": "86063",
+          "nombre": "Choya"
+        },
+        {
+          "id": "86056",
+          "nombre": "Copo"
+        },
+        {
+          "id": "86070",
+          "nombre": "Figueroa"
+        },
+        {
+          "id": "86077",
+          "nombre": "General Taboada"
+        },
+        {
+          "id": "86084",
+          "nombre": "Guasayán"
+        },
+        {
+          "id": "86091",
+          "nombre": "Jiménez"
+        },
+        {
+          "id": "86098",
+          "nombre": "Juan Felipe Ibarra"
+        },
+        {
+          "id": "86105",
+          "nombre": "Loreto"
+        },
+        {
+          "id": "86112",
+          "nombre": "Mitre"
+        },
+        {
+          "id": "86119",
+          "nombre": "Moreno"
+        },
+        {
+          "id": "86126",
+          "nombre": "Ojo de Agua"
+        },
+        {
+          "id": "86133",
+          "nombre": "Pellegrini"
+        },
+        {
+          "id": "86140",
+          "nombre": "Quebrachos"
+        },
+        {
+          "id": "86154",
+          "nombre": "Rivadavia"
+        },
+        {
+          "id": "86161",
+          "nombre": "Robles"
+        },
+        {
+          "id": "86147",
+          "nombre": "Río Hondo"
+        },
+        {
+          "id": "86168",
+          "nombre": "Salavina"
+        },
+        {
+          "id": "86175",
+          "nombre": "San Martín"
+        },
+        {
+          "id": "86182",
+          "nombre": "Sarmiento"
+        },
+        {
+          "id": "86189",
+          "nombre": "Silípica"
+        }
+      ]
+    },
+    {
+      "id": "94",
+      "nombre": "Tierra del Fuego, Antártida e Islas del Atlántico Sur",
+      "partidos": [
+        {
+          "id": "94028",
+          "nombre": "Antártida Argentina"
+        },
+        {
+          "id": "94021",
+          "nombre": "Islas del Atlántico Sur"
+        },
+        {
+          "id": "94008",
+          "nombre": "Río Grande"
+        },
+        {
+          "id": "94011",
+          "nombre": "Tolhuin"
+        },
+        {
+          "id": "94015",
+          "nombre": "Ushuaia"
+        }
+      ]
+    },
+    {
+      "id": "90",
+      "nombre": "Tucumán",
+      "partidos": [
+        {
+          "id": "90007",
+          "nombre": "Burruyacú"
+        },
+        {
+          "id": "90084",
+          "nombre": "Capital"
+        },
+        {
+          "id": "90021",
+          "nombre": "Chicligasta"
+        },
+        {
+          "id": "90014",
+          "nombre": "Cruz Alta"
+        },
+        {
+          "id": "90028",
+          "nombre": "Famaillá"
+        },
+        {
+          "id": "90035",
+          "nombre": "Graneros"
+        },
+        {
+          "id": "90042",
+          "nombre": "Juan Bautista Alberdi"
+        },
+        {
+          "id": "90049",
+          "nombre": "La Cocha"
+        },
+        {
+          "id": "90056",
+          "nombre": "Leales"
+        },
+        {
+          "id": "90063",
+          "nombre": "Lules"
+        },
+        {
+          "id": "90070",
+          "nombre": "Monteros"
+        },
+        {
+          "id": "90077",
+          "nombre": "Río Chico"
+        },
+        {
+          "id": "90091",
+          "nombre": "Simoca"
+        },
+        {
+          "id": "90105",
+          "nombre": "Tafí Viejo"
+        },
+        {
+          "id": "90098",
+          "nombre": "Tafí del Valle"
+        },
+        {
+          "id": "90112",
+          "nombre": "Trancas"
+        },
+        {
+          "id": "90119",
+          "nombre": "Yerba Buena"
+        }
+      ]
+    }
+  ]
+}

@@ -43,6 +43,8 @@ export default async function DirectorioPage({
         ...(query ? { OR: [
           { nombre: { contains: query, mode: 'insensitive' as const } },
           { ubicacion: { contains: query, mode: 'insensitive' as const } },
+          { provincia: { contains: query, mode: 'insensitive' as const } },
+          { partido: { contains: query, mode: 'insensitive' as const } },
         ]} : {}),
         ...(nivel ? { nivel } : {}),
         ...(procesoId ? { procesos: { some: { procesoId } } } : {}),
@@ -148,9 +150,9 @@ export default async function DirectorioPage({
                   <Badge variant={nivelColor[taller.nivel]}>{taller.nivel}</Badge>
                 </div>
 
-                {taller.ubicacion && (
+                {(taller.provincia || taller.ubicacion) && (
                   <p className="flex items-center gap-1 text-sm text-gray-500 mb-2">
-                    <MapPin className="w-3.5 h-3.5" /> {taller.ubicacion}
+                    <MapPin className="w-3.5 h-3.5" /> {taller.provincia ? `${taller.provincia}${taller.partido ? `, ${taller.partido}` : ''}` : taller.ubicacion}
                   </p>
                 )}
 
