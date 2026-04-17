@@ -3,6 +3,9 @@
 ## 2026-04-17
 
 ### Gerardo Breard
+- **16:14** `d315a11` — docs: agregar QA spec v2-estandarizacion-ubicacion
+  - `.claude/auditorias/QA_v2-estandarizacion-ubicacion.md`
+
 - **16:05** `3734b17` — feat: estandarizar ubicación con provincias y partidos INDEC (#38)
   - `.claude/specs/v2-estandarizacion-ubicacion.md`
   - `prisma/migrations/20260417180000_estandarizar_ubicacion_taller/migration.sql`
