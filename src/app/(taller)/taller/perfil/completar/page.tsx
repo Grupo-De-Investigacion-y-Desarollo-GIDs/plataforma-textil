@@ -235,7 +235,7 @@ export default function WizardPage() {
         ))}
       </div>
 
-      {/* STEP 0: Bienvenida */}
+      {/* Paso 1: Bienvenida */}
       {step === 0 && (
         <div className="text-center">
           <div className="w-20 h-20 rounded-full bg-brand-blue/10 flex items-center justify-center mx-auto mb-4">
@@ -268,7 +268,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 1: Maquinaria */}
+      {/* Paso 2: Maquinaria */}
       {step === 1 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-2">¿Qué máquinas de confección tenés?</h2>
@@ -292,7 +292,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 2: Equipo */}
+      {/* Paso 3: Equipo */}
       {step === 2 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">Contanos sobre tu equipo de trabajo</h2>
@@ -319,7 +319,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 3: Experiencia */}
+      {/* Paso 4: Experiencia */}
       {step === 3 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">¿Cuánta experiencia tiene tu equipo?</h2>
@@ -342,7 +342,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 4: Organización */}
+      {/* Paso 5: Organización */}
       {step === 4 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">¿Cómo organizan el trabajo?</h2>
@@ -360,7 +360,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 5: Espacio */}
+      {/* Paso 6: Espacio */}
       {step === 5 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">¿Cómo es tu espacio de trabajo?</h2>
@@ -380,7 +380,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 6: SAM */}
+      {/* Paso 7: SAM */}
       {step === 6 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">¿Cuánto tardás en hacer una prenda?</h2>
@@ -407,7 +407,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 7: SAM Quiz */}
+      {/* Paso 8: SAM Quiz */}
       {step === 7 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">Verificamos que entendiste el concepto</h2>
@@ -432,7 +432,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 8: Eficiencia */}
+      {/* Paso 9: Eficiencia */}
       {step === 8 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">Calculemos tu eficiencia real</h2>
@@ -452,7 +452,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 9: Resultado Capacidad */}
+      {/* Paso 10: Resultado Capacidad */}
       {step === 9 && (
         <div className="text-center">
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">Tu Capacidad Calculada</h2>
@@ -481,7 +481,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 10: Gestión */}
+      {/* Paso 11: Gestión */}
       {step === 10 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">Gestión y Escalabilidad</h2>
@@ -509,7 +509,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 11: Procesos productivos */}
+      {/* Paso 12: Procesos productivos */}
       {step === 11 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-2">¿Qué procesos realizás?</h2>
@@ -543,7 +543,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 12: Tipos de prenda */}
+      {/* Paso 13: Tipos de prenda */}
       {step === 12 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-2">¿Qué prendas fabricás?</h2>
@@ -575,7 +575,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 13: Resumen */}
+      {/* Paso 14: Resumen */}
       {step === 13 && (
         <div className="text-center">
           <h2 className="font-overpass font-bold text-2xl text-brand-blue mb-4">¡Perfil productivo completado!</h2>
