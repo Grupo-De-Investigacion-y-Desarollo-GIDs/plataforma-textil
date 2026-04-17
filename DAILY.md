@@ -3,6 +3,10 @@
 ## 2026-04-17
 
 ### Gerardo Breard
+- **19:01** `0dc6544` — fix: texto condicional en botón del wizard — "Actualizar" si ya completó, "Completar" si no (#39)
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+
 - **18:52** `464d1eb` — feat: agregar campo website al modelo Taller (#42)
   - `prisma/migrations/20260417190000_add_website_taller/migration.sql`
   - `prisma/schema.prisma`
