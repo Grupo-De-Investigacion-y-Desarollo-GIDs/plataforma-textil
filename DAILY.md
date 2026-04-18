@@ -3,6 +3,9 @@
 ## 2026-04-18
 
 ### Gerardo Breard
+- **14:20** `9b2aec8` — perf: agregar paginación al directorio — 12 talleres por página
+  - `src/app/(public)/directorio/page.tsx`
+
 - **14:16** `1b9c8cf` — perf: paralelizar 5 queries secuenciales en dashboard taller
   - `src/app/(taller)/taller/page.tsx`
 
