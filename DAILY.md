@@ -3,6 +3,9 @@
 ## 2026-04-18
 
 ### Gerardo Breard
+- **14:31** `970ea08` — docs: documentar resultados de performance fixes en V3_BACKLOG
+  - `.claude/specs/V3_BACKLOG.md`
+
 - **14:29** `3dad7a2` — test: agregar script de performance checks (TTFB + paginación)
   - `tools/perf-check.js`
 
