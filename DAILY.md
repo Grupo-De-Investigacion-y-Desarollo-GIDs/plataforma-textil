@@ -3,6 +3,9 @@
 ## 2026-04-18
 
 ### Gerardo Breard
+- **14:34** `389f948` — docs: registrar P-03 auditoría performance completa en V3_BACKLOG
+  - `.claude/specs/V3_BACKLOG.md`
+
 - **14:31** `970ea08` — docs: documentar resultados de performance fixes en V3_BACKLOG
   - `.claude/specs/V3_BACKLOG.md`
 
