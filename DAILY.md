@@ -3,6 +3,9 @@
 ## 2026-04-18
 
 ### Gerardo Breard
+- **14:29** `3dad7a2` — test: agregar script de performance checks (TTFB + paginación)
+  - `tools/perf-check.js`
+
 - **14:22** `c8844b3` — docs: agregar P-02 Prisma Accelerate y registrar fixes V2 en backlog
   - `.claude/specs/V3_BACKLOG.md`
 
