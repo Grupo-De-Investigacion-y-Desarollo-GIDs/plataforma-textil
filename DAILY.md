@@ -3,6 +3,9 @@
 ## 2026-04-18
 
 ### Gerardo Breard
+- **14:16** `1b9c8cf` — perf: paralelizar 5 queries secuenciales en dashboard taller
+  - `src/app/(taller)/taller/page.tsx`
+
 - **14:14** `0c17f02` — perf: instalar Vercel Analytics y Speed Insights
   - `package-lock.json`
   - `package.json`
