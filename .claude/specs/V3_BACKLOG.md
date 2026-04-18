@@ -29,6 +29,11 @@ Base: validación interna V2 + QA de Sergio + análisis arquitectural
 - **Fixes V2 aplicados:** Vercel Analytics instalado (`0c17f02`), queries paralelas en /taller (`1b9c8cf`), paginación directorio (`9b2aec8`)
 - **Resultados medidos (warm):** `/taller` pasó de 2-4s a 330ms (~10x), `/directorio` de 4.8s a 236ms (~20x). Script: `node tools/perf-check.js`
 
+### P-03 — Auditoría de performance completa del sistema
+- **Problema:** Inventario de todas las rutas, clasificación por riesgo, medición automatizada con perf-check.js extendido, análisis de queries Prisma por página.
+- **Base:** Fixes aplicados en V2 (P-01) y latencia Supabase pendiente (P-02).
+- **Prioridad:** Media — ejecutar al inicio de V3 para priorizar optimizaciones
+
 ### P-02 — Prisma Accelerate o connection pooling
 - **Problema:** La latencia de Supabase sa-east-1 genera ~100-200ms por roundtrip. Con queries paralelas mejora, pero la causa raíz es la distancia a la DB.
 - **Próximo paso:** Evaluar Prisma Accelerate (connection pooling + edge caching) para V3.
