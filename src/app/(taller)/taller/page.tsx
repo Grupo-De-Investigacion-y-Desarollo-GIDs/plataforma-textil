@@ -37,18 +37,46 @@ export default async function TallerDashboardPage() {
 
   const certificadosActivos = taller?.certificados.length ?? 0
 
-  // Detectar cambio de nivel en las ultimas 24hs
+  // Queries paralelas: logs de nivel + datos para recomendaciones
   const hace24hs = new Date(Date.now() - 24 * 60 * 60 * 1000)
-  const logNivelReciente = taller
-    ? await prisma.logActividad.findFirst({
-        where: {
-          accion: { in: ['NIVEL_SUBIDO', 'NIVEL_BAJADO'] },
-          timestamp: { gte: hace24hs },
-          detalles: { path: ['tallerId'], equals: taller.id },
-        },
-        orderBy: { timestamp: 'desc' },
-      })
-    : null
+  const [logNivelReciente, historialNiveles, validacionesCompletadas, tiposRequeridos, procesosDelTaller] = await Promise.all([
+    taller
+      ? prisma.logActividad.findFirst({
+          where: {
+            accion: { in: ['NIVEL_SUBIDO', 'NIVEL_BAJADO'] },
+            timestamp: { gte: hace24hs },
+            detalles: { path: ['tallerId'], equals: taller.id },
+          },
+          orderBy: { timestamp: 'desc' },
+        })
+      : null,
+    taller
+      ? prisma.logActividad.findMany({
+          where: {
+            accion: { in: ['NIVEL_SUBIDO', 'NIVEL_BAJADO'] },
+            detalles: { path: ['tallerId'], equals: taller.id },
+          },
+          orderBy: { timestamp: 'desc' },
+          take: 10,
+        })
+      : [],
+    taller
+      ? prisma.validacion.findMany({
+          where: { tallerId: taller.id, estado: 'COMPLETADO' },
+          select: { tipo: true },
+        })
+      : [],
+    prisma.tipoDocumento.findMany({
+      where: { requerido: true, activo: true },
+      select: { nombre: true },
+    }),
+    taller
+      ? prisma.tallerProceso.findMany({
+          where: { tallerId: taller.id },
+          select: { procesoId: true },
+        })
+      : [],
+  ])
 
   const cambioNivel = logNivelReciente
     ? {
@@ -58,45 +86,14 @@ export default async function TallerDashboardPage() {
       }
     : null
 
-  // Ultimos 10 cambios de nivel para este taller
-  const historialNiveles = taller
-    ? await prisma.logActividad.findMany({
-        where: {
-          accion: { in: ['NIVEL_SUBIDO', 'NIVEL_BAJADO'] },
-          detalles: { path: ['tallerId'], equals: taller.id },
-        },
-        orderBy: { timestamp: 'desc' },
-        take: 10,
-      })
-    : []
-
   // Colecciones recomendadas — priorización por formalización → procesos → fallback
+  const completadasSet = new Set(validacionesCompletadas.map(v => v.tipo))
+  const tiposPendientes = tiposRequeridos.map(t => t.nombre).filter(t => !completadasSet.has(t))
+  const procesosTaller = procesosDelTaller.map(p => p.procesoId)
+
   type ColeccionConCount = Awaited<ReturnType<typeof prisma.coleccion.findMany<{ include: { _count: { select: { videos: true } } } }>>>[number]
   let coleccionesRecomendadas: ColeccionConCount[]
   if (taller) {
-    // 1. Tipos de validación completados
-    const completadasSet = new Set(
-      (await prisma.validacion.findMany({
-        where: { tallerId: taller.id, estado: 'COMPLETADO' },
-        select: { tipo: true },
-      })).map(v => v.tipo)
-    )
-
-    // 2. Todos los tipos requeridos → pendientes
-    const tiposRequeridos = await prisma.tipoDocumento.findMany({
-      where: { requerido: true, activo: true },
-      select: { nombre: true },
-    })
-    const tiposPendientes = tiposRequeridos.map(t => t.nombre).filter(t => !completadasSet.has(t))
-
-    // 3. Procesos del taller
-    const procesosTaller = (taller.progresoCapacitacion ? [] : []).length === 0
-      ? (await prisma.tallerProceso.findMany({
-          where: { tallerId: taller.id },
-          select: { procesoId: true },
-        })).map(p => p.procesoId)
-      : []
-
     // Query 1 — prioridad alta: por formalización pendiente
     const porFormalizacion = await prisma.coleccion.findMany({
       where: {
