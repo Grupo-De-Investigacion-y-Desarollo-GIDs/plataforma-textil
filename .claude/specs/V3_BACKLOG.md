@@ -41,6 +41,15 @@ Base: validación interna V2 + QA de Sergio + análisis arquitectural
 
 ---
 
+## Seguridad
+
+### S-01 — Auditoría de configuración de cookies de sesión (NextAuth)
+- **Problema:** Verificar que `httpOnly`, `secure` y `sameSite` están correctamente configurados para producción. Revisar expiración de sesión y rotación de tokens.
+- **Base:** NextAuth v5
+- **Prioridad:** Alta — requisito para piloto real
+
+---
+
 ## Funcionalidades nuevas
 
 ### F-01 — "Tu próximo nivel" (guía de formalización en dashboard del taller)
