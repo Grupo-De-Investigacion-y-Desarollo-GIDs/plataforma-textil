@@ -3,6 +3,9 @@
 ## 2026-04-18
 
 ### Gerardo Breard
+- **14:22** `c8844b3` — docs: agregar P-02 Prisma Accelerate y registrar fixes V2 en backlog
+  - `.claude/specs/V3_BACKLOG.md`
+
 - **14:20** `9b2aec8` — perf: agregar paginación al directorio — 12 talleres por página
   - `src/app/(public)/directorio/page.tsx`
 
