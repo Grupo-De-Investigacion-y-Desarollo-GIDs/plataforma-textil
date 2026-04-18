@@ -14,7 +14,7 @@ const allowedNiveles = ['BRONCE', 'PLATA', 'ORO'] as const
 export default async function DirectorioPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ q?: string; nivel?: string; proceso?: string; prenda?: string }> | { q?: string; nivel?: string; proceso?: string; prenda?: string }
+  searchParams?: Promise<{ q?: string; nivel?: string; proceso?: string; prenda?: string; page?: string }> | { q?: string; nivel?: string; proceso?: string; prenda?: string; page?: string }
 }) {
   if (!await getFeatureFlag('directorio_publico')) notFound()
 
@@ -26,8 +26,22 @@ export default async function DirectorioPage({
     : ''
   const procesoId = (params.proceso || '').trim()
   const prendaId = (params.prenda || '').trim()
+  const page = Math.max(1, parseInt(params.page || '1'))
+  const PAGE_SIZE = 12
 
-  const [procesos, prendas, talleres] = await Promise.all([
+  const tallerWhere = {
+    ...(query ? { OR: [
+      { nombre: { contains: query, mode: 'insensitive' as const } },
+      { ubicacion: { contains: query, mode: 'insensitive' as const } },
+      { provincia: { contains: query, mode: 'insensitive' as const } },
+      { partido: { contains: query, mode: 'insensitive' as const } },
+    ]} : {}),
+    ...(nivel ? { nivel } : {}),
+    ...(procesoId ? { procesos: { some: { procesoId } } } : {}),
+    ...(prendaId ? { prendas: { some: { prendaId } } } : {}),
+  }
+
+  const [procesos, prendas, talleres, totalTalleres] = await Promise.all([
     prisma.procesoProductivo.findMany({
       where: { activo: true },
       select: { id: true, nombre: true },
@@ -39,23 +53,16 @@ export default async function DirectorioPage({
       orderBy: { nombre: 'asc' },
     }),
     prisma.taller.findMany({
-      where: {
-        ...(query ? { OR: [
-          { nombre: { contains: query, mode: 'insensitive' as const } },
-          { ubicacion: { contains: query, mode: 'insensitive' as const } },
-          { provincia: { contains: query, mode: 'insensitive' as const } },
-          { partido: { contains: query, mode: 'insensitive' as const } },
-        ]} : {}),
-        ...(nivel ? { nivel } : {}),
-        ...(procesoId ? { procesos: { some: { procesoId } } } : {}),
-        ...(prendaId ? { prendas: { some: { prendaId } } } : {}),
-      },
+      where: tallerWhere,
       include: {
         procesos: { include: { proceso: true } },
         prendas: { include: { prenda: true } },
       },
       orderBy: { puntaje: 'desc' },
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
     }),
+    prisma.taller.count({ where: tallerWhere }),
   ])
 
   const hasFilters = query || nivel || procesoId || prendaId
@@ -112,8 +119,9 @@ export default async function DirectorioPage({
       </form>
 
       <p className="text-sm text-gray-500 mb-4">
-        {talleres.length} {talleres.length === 1 ? 'taller encontrado' : 'talleres encontrados'}
+        {totalTalleres} {totalTalleres === 1 ? 'taller encontrado' : 'talleres encontrados'}
         {hasFilters ? ' con los filtros aplicados' : ''}
+        {totalTalleres > PAGE_SIZE && ` — página ${page} de ${Math.ceil(totalTalleres / PAGE_SIZE)}`}
       </p>
 
       {talleres.length === 0 ? (
@@ -181,6 +189,39 @@ export default async function DirectorioPage({
               </Card>
             </Link>
           ))}
+        </div>
+      )}
+
+      {/* Paginación */}
+      {totalTalleres > PAGE_SIZE && (
+        <div className="flex items-center justify-center gap-2 mt-8">
+          {page > 1 && (
+            <Link
+              href={`/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(nivel ? { nivel } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), page: String(page - 1) }).toString()}`}
+              className="px-4 py-2 rounded-lg border border-gray-300 text-sm text-gray-600 hover:bg-gray-50"
+            >
+              ← Anterior
+            </Link>
+          )}
+          {Array.from({ length: Math.ceil(totalTalleres / PAGE_SIZE) }, (_, i) => i + 1).map(p => (
+            <Link
+              key={p}
+              href={`/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(nivel ? { nivel } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), page: String(p) }).toString()}`}
+              className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium ${
+                p === page ? 'bg-brand-blue text-white' : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              {p}
+            </Link>
+          ))}
+          {page < Math.ceil(totalTalleres / PAGE_SIZE) && (
+            <Link
+              href={`/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(nivel ? { nivel } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), page: String(page + 1) }).toString()}`}
+              className="px-4 py-2 rounded-lg border border-gray-300 text-sm text-gray-600 hover:bg-gray-50"
+            >
+              Siguiente →
+            </Link>
+          )}
         </div>
       )}
     </div>
