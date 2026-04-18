@@ -1,5 +1,14 @@
 # Daily Log
 
+## 2026-04-18
+
+### Gerardo Breard
+- **14:14** `0c17f02` — perf: instalar Vercel Analytics y Speed Insights
+  - `package-lock.json`
+  - `package.json`
+  - `src/app/layout.tsx`
+
+
 ## 2026-04-17
 
 ### Gerardo Breard
