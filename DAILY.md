@@ -3,6 +3,9 @@
 ## 2026-04-18
 
 ### Gerardo Breard
+- **14:36** `97a9b8c` — docs: registrar S-01 auditoría cookies NextAuth en V3_BACKLOG
+  - `.claude/specs/V3_BACKLOG.md`
+
 - **14:34** `389f948` — docs: registrar P-03 auditoría performance completa en V3_BACKLOG
   - `.claude/specs/V3_BACKLOG.md`
 
