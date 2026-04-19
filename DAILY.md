@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-04-19
+
+### Gerardo Breard
+- **17:59** `b1da3f3` — docs: registrar I-01 separación de ambientes en V3_BACKLOG
+  - `.claude/specs/V3_BACKLOG.md`
+
+
 ## 2026-04-18
 
 ### Gerardo Breard
