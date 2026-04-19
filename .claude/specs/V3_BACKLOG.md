@@ -140,6 +140,9 @@ Antes de salir al campo los 4 deben conocer el sistema completo. Necesitan un re
 ### T-04 — Feedback loop campo → desarrollo
 Canal estructurado para que los hallazgos del campo lleguen al equipo de desarrollo con contexto suficiente para actuar. Diferente al widget de feedback técnico — incluye contexto social, nivel de alfabetización digital del usuario, condiciones del dispositivo, etc.
 
+### T-05 — Protocolo de validación funcional para equipo interdisciplinario
+Estructura por flujo: (1) Contexto del dominio textil, (2) Pasos numerados simples para usuarios básicos, (3) Preguntas de reflexión al final. Cubre 7 flujos completos: registro taller, formalización, capacitación, directorio como marca, dashboard Estado, panel admin, panel contenido. Reportan con el widget de feedback existente. Diferencia con QA técnico: buscan problemas de usabilidad, lenguaje y lógica institucional, no bugs de código. Usuarios asumidos: profesionales del dominio textil con experiencia básica en plataformas digitales.
+
 ---
 
 ## Deuda técnica documentada de V2
