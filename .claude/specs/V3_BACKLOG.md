@@ -122,6 +122,26 @@ Base: validación interna V2 + QA de Sergio + análisis arquitectural
 
 ---
 
+## Testing y validación con equipo interdisciplinario
+
+### T-01 — QAs por perfil profesional
+El equipo de implementación (politólogo, economista, sociólogo, contador) necesita QAs adaptados a su mirada, no el checklist técnico de Sergio. Cada perfil audita la plataforma desde su expertise:
+- **Contador:** flujos de costos, facturación, formalización fiscal, cálculo de capacidad
+- **Sociólogo:** lenguaje, barreras de entrada, accesibilidad para talleres familiares, flujo de registro
+- **Politólogo:** flujo de formalización vs realidad del sector, relación con el Estado, incentivos
+- **Economista:** métricas del directorio, matching marca-taller, lógica de niveles y puntaje
+
+### T-02 — Sistema de reporte de campo
+Cuando el equipo sale con talleres y marcas reales necesita una herramienta liviana para reportar problemas en el momento — desde el celular, sin necesidad de abrir DevTools ni el HTML de auditoría. Formato simple: qué pasó, con quién, en qué parte de la plataforma, foto opcional.
+
+### T-03 — Protocolo de onboarding para el equipo implementador
+Antes de salir al campo los 4 deben conocer el sistema completo. Necesitan un recorrido guiado por todos los flujos desde la perspectiva de cada actor (taller, marca, estado). No es un QA técnico sino una capacitación estructurada con escenarios reales del sector textil argentino.
+
+### T-04 — Feedback loop campo → desarrollo
+Canal estructurado para que los hallazgos del campo lleguen al equipo de desarrollo con contexto suficiente para actuar. Diferente al widget de feedback técnico — incluye contexto social, nivel de alfabetización digital del usuario, condiciones del dispositivo, etc.
+
+---
+
 ## Deuda técnica documentada de V2
 
 *(Se agrega a medida que se identifica)*
