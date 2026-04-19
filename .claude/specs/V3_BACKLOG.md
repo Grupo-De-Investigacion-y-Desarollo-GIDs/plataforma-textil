@@ -50,6 +50,15 @@ Base: validación interna V2 + QA de Sergio + análisis arquitectural
 
 ---
 
+## Infraestructura
+
+### I-01 — Separar ambientes: dos Supabase (desarrollo y producción)
+- **Problema:** Hoy Preview y Producción comparten la misma DB — riesgo real para el piloto con OIT. Branch `main` debería deployar a producción automáticamente en Vercel, branch `develop` a Preview. Cada ambiente con su propia instancia de Supabase.
+- **Incluye:** Banner de ambiente en la plataforma para que el auditor sepa dónde está.
+- **Prioridad:** Alta — bloqueante para piloto real con datos de talleres reales
+
+---
+
 ## Funcionalidades nuevas
 
 ### F-01 — "Tu próximo nivel" (guía de formalización en dashboard del taller)
