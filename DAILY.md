@@ -3,6 +3,9 @@
 ## 2026-04-19
 
 ### Gerardo Breard
+- **19:11** `0c9ef18` — docs: registrar T-05 protocolo validación funcional equipo interdisciplinario
+  - `.claude/specs/V3_BACKLOG.md`
+
 - **18:41** `57163b2` — docs: registrar estrategia de testing interdisciplinario en V3_BACKLOG
   - `.claude/specs/V3_BACKLOG.md`
 
