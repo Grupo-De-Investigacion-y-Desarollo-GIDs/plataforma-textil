@@ -3,6 +3,9 @@
 ## 2026-04-20
 
 ### Gerardo Breard
+- **15:24** `47857f5` — fix: suppressHydrationWarning en timeAgo de activity-timeline (#74)
+  - `src/compartido/componentes/activity-timeline.tsx`
+
 - **14:43** `fdffc03` — docs: registrar F-05 demanda insatisfecha en V3_BACKLOG
   - `.claude/specs/V3_BACKLOG.md`
 
