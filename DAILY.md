@@ -3,6 +3,10 @@
 ## 2026-04-20
 
 ### Gerardo Breard
+- **13:58** `6cb986c` — fix: agregar botón revocar validación en admin + banner certificado faltante (#51 #52)
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(taller)/taller/page.tsx`
+
 - **13:23** `3ab9fa9` — fix: documentos requeridos NO_INICIADO se muestran como pendientes, no como opcionales (#49)
   - `src/app/(taller)/taller/formalizacion/page.tsx`
 
