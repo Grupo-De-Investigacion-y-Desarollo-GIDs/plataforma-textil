@@ -3,6 +3,9 @@
 ## 2026-04-20
 
 ### Gerardo Breard
+- **14:43** `fdffc03` — docs: registrar F-05 demanda insatisfecha en V3_BACKLOG
+  - `.claude/specs/V3_BACKLOG.md`
+
 - **13:58** `6cb986c` — fix: agregar botón revocar validación en admin + banner certificado faltante (#51 #52)
   - `src/app/(admin)/admin/talleres/[id]/page.tsx`
   - `src/app/(taller)/taller/page.tsx`
