@@ -3,6 +3,9 @@
 ## 2026-04-20
 
 ### Gerardo Breard
+- **17:55** `b094e73` — fix: KPIs de admin/notificaciones cuentan solo comunicaciones del admin (#88)
+  - `src/app/(admin)/admin/notificaciones/page.tsx`
+
 - **17:24** `2d953c6` — fix: middleware excluir archivos de fuentes woff2/woff/ttf/eot (#86)
   - `src/middleware.ts`
 
