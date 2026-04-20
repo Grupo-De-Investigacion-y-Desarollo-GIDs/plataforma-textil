@@ -11,6 +11,7 @@ import { ProgressRing } from '@/compartido/componentes/ui/progress-ring'
 import { Button } from '@/compartido/componentes/ui/button'
 import { FileText, ExternalLink } from 'lucide-react'
 import { UploadButton } from '@/taller/componentes/upload-button'
+import { VerDocumentoButton } from '@/taller/componentes/ver-documento-button'
 
 const estadoToStatus: Record<string, 'completed' | 'pending' | 'warning' | 'optional'> = {
   COMPLETADO: 'completed',
@@ -120,6 +121,14 @@ export default async function TallerFormalizacionPage() {
                   :                              td.descripcion ?? ''
                   }
                 />
+                {validacion?.documentoUrl && (
+                  <div className="mt-2 ml-8">
+                    <VerDocumentoButton
+                      validacionId={validacion.id}
+                      fileName={`Ver documento — ${td.label}`}
+                    />
+                  </div>
+                )}
                 {estado !== 'COMPLETADO' && (
                   <>
                     <div className="flex gap-2 mt-2 ml-8">

@@ -39,3 +39,11 @@ export async function deleteFile(path: string, bucket: Bucket = 'documentos'): P
   const { error } = await getSupabase().storage.from(BUCKETS[bucket]).remove([path])
   if (error) throw new Error(`Delete failed: ${error.message}`)
 }
+
+export async function getSignedUrl(path: string, expiresIn = 3600, bucket: Bucket = 'documentos'): Promise<string> {
+  const { data, error } = await getSupabase().storage
+    .from(BUCKETS[bucket])
+    .createSignedUrl(path, expiresIn)
+  if (error || !data?.signedUrl) throw new Error(`Signed URL failed: ${error?.message ?? 'unknown'}`)
+  return data.signedUrl
+}
