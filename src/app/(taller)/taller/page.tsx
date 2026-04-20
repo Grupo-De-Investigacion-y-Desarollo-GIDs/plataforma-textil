@@ -68,7 +68,7 @@ export default async function TallerDashboardPage() {
       : [],
     prisma.tipoDocumento.findMany({
       where: { requerido: true, activo: true },
-      select: { nombre: true },
+      select: { nombre: true, nivelMinimo: true },
     }),
     taller
       ? prisma.tallerProceso.findMany({
@@ -162,10 +162,19 @@ export default async function TallerDashboardPage() {
   const nivel = taller?.nivel ?? 'BRONCE'
   const nivelSiguiente = nivel === 'BRONCE' ? 'PLATA' : nivel === 'PLATA' ? 'ORO' : null
 
+  // Detectar si tiene todos los docs de PLATA pero falta certificado
+  const tiposPlata = tiposRequeridos.filter(t => t.nivelMinimo === 'PLATA').map(t => t.nombre)
+  const tieneDocsPlata = taller ? tiposPlata.every(t => completadasSet.has(t)) : false
+  const faltaCertificado = taller ? certificadosActivos === 0 : false
+
   // Banner contextual según estado
   let bannerMensaje = ''
+  let bannerLink = ''
   if (!taller) {
     bannerMensaje = 'Completá tu perfil para aparecer en el directorio de talleres.'
+  } else if (nivel === 'BRONCE' && tieneDocsPlata && faltaCertificado) {
+    bannerMensaje = 'Tenés los documentos para PLATA — solo te falta completar un curso de la academia y obtener tu certificado.'
+    bannerLink = '/taller/aprender'
   } else if (porcentajeFormal < 50) {
     bannerMensaje = `Subí tus documentos de formalización para avanzar hacia nivel ${nivelSiguiente ?? 'siguiente'}.`
   } else if (nivelSiguiente) {
@@ -353,6 +362,11 @@ export default async function TallerDashboardPage() {
       {/* Banner contextual */}
       <div className="bg-brand-bg-light rounded-xl p-5 border-l-4 border-brand-blue">
         <p className="text-brand-blue font-medium">🚀 {bannerMensaje}</p>
+        {bannerLink && (
+          <Link href={bannerLink} className="text-sm text-brand-blue font-semibold hover:underline mt-2 inline-block">
+            Ir a la academia →
+          </Link>
+        )}
       </div>
 
       {/* Acciones rápidas */}

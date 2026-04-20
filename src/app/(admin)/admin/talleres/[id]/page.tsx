@@ -124,6 +124,24 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
     redirect(`/admin/talleres/${id}?tab=formalizacion`)
   }
 
+  async function revocarValidacion(formData: FormData) {
+    'use server'
+    const validacionId = formData.get('validacionId') as string
+    await prisma.validacion.update({
+      where: { id: validacionId },
+      data: { estado: 'NO_INICIADO', documentoUrl: null, detalle: null },
+    })
+    await aplicarNivel(id, session!.user!.id)
+    await prisma.logActividad.create({
+      data: {
+        userId: session!.user!.id,
+        accion: 'VALIDACION_REVOCADA',
+        detalles: { tallerId: id, validacionId },
+      },
+    })
+    redirect(`/admin/talleres/${id}?tab=formalizacion`)
+  }
+
   async function guardarNota(formData: FormData) {
     'use server'
     const texto = formData.get('texto') as string
@@ -331,7 +349,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
                     </a>
                   </div>
                 )}
-                {/* Acciones solo para PENDIENTE */}
+                {/* Acciones para PENDIENTE */}
                 {v.estado === 'PENDIENTE' && v.documentoUrl && (
                   <div className="flex gap-2 mt-2 ml-8">
                     <form action={aprobarValidacion}>
@@ -348,6 +366,15 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
                         className="text-xs border border-gray-300 rounded px-2 py-1 w-48"
                       />
                       <Button size="sm" variant="secondary" type="submit">Rechazar</Button>
+                    </form>
+                  </div>
+                )}
+                {/* Acción para COMPLETADO: revocar */}
+                {v.estado === 'COMPLETADO' && (
+                  <div className="mt-2 ml-8">
+                    <form action={revocarValidacion}>
+                      <input type="hidden" name="validacionId" value={v.id} />
+                      <Button size="sm" variant="secondary" type="submit">Revocar validación</Button>
                     </form>
                   </div>
                 )}
