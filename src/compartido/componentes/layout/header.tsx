@@ -22,6 +22,7 @@ const tabsByRole: Record<string, Tab[]> = {
     { id: 'aprender', label: 'Academia', href: '/taller/aprender' },
   ],
   MARCA: [
+    { id: 'tablero', label: 'Tablero', href: '/marca' },
     { id: 'directorio', label: 'Directorio', href: '/marca/directorio' },
     { id: 'pedidos', label: 'Pedidos', href: '/marca/pedidos' },
     { id: 'perfil', label: 'Mi Perfil', href: '/marca/perfil' },
