@@ -3,6 +3,12 @@
 ## 2026-04-20
 
 ### Gerardo Breard
+- **17:07** `a2b9304` — fix: mostrar documento subido en checklist de formalización del taller (#85)
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+  - `src/app/api/validaciones/[id]/signed-url/route.ts`
+  - `src/compartido/lib/storage.ts`
+  - `src/taller/componentes/ver-documento-button.tsx`
+
 - **16:50** `50a01f9` — fix: página /unauthorized con header de la plataforma y link al panel (#84)
   - `src/app/unauthorized/page.tsx`
 
