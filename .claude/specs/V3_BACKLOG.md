@@ -104,6 +104,11 @@ Base: validación interna V2 + QA de Sergio + análisis arquitectural
 - **Problema:** Los botones CSV/Excel en `/admin/talleres` y `/estado/exportar` no tienen handler implementado o son parciales.
 - **Prioridad:** Media — el Estado necesita poder extraer datos para informes
 
+### F-05 — Dashboard de demanda insatisfecha para el Estado
+- **Problema:** Cuando un pedido no genera notificaciones por falta de talleres compatibles, no se registra el motivo (nivel insuficiente, capacidad insuficiente, proceso no disponible). El Estado no tiene visibilidad de la demanda que no se cubre.
+- **Propuesta:** El dashboard del Estado muestra: pedidos sin cotizaciones, motivos de no-match, talleres cerca de poder matchear. Permite al Estado identificar dónde intervenir para aumentar la oferta formal.
+- **Prioridad:** Media — valor institucional alto para OIT, no bloquea piloto técnico
+
 ---
 
 ## Calidad de código
