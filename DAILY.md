@@ -3,6 +3,9 @@
 ## 2026-04-20
 
 ### Gerardo Breard
+- **20:33** `8325856` — fix: agregar tab Tablero en navbar de marca para volver a /marca (#89)
+  - `src/compartido/componentes/layout/header.tsx`
+
 - **20:22** `b5b95bc` — fix: montoTotal, contactar taller, banner PENDIENTE, label visual y bug log MO (#90 #91)
   - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
   - `src/app/api/cotizaciones/[id]/route.ts`
