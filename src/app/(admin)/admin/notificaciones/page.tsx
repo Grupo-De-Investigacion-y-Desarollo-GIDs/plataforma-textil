@@ -20,9 +20,10 @@ export default async function AdminNotificacionesPage() {
   const role = (session.user as { role?: string }).role
   if (role !== 'ADMIN') redirect('/unauthorized')
 
+  const adminWhere = { createdById: { not: null } }
   const [total, sinLeer] = await Promise.all([
-    prisma.notificacion.count(),
-    prisma.notificacion.count({ where: { leida: false } }),
+    prisma.notificacion.count({ where: adminWhere }),
+    prisma.notificacion.count({ where: { ...adminWhere, leida: false } }),
   ])
 
   return (
