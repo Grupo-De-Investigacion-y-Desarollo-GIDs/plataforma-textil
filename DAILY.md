@@ -3,6 +3,9 @@
 ## 2026-04-20
 
 ### Gerardo Breard
+- **16:40** `65eef74` — docs: registrar F-06 RAG completo en V3_BACKLOG + desactivar flags en prod
+  - `.claude/specs/V3_BACKLOG.md`
+
 - **15:24** `47857f5` — fix: suppressHydrationWarning en timeAgo de activity-timeline (#74)
   - `src/compartido/componentes/activity-timeline.tsx`
 
