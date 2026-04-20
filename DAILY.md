@@ -3,6 +3,9 @@
 ## 2026-04-20
 
 ### Gerardo Breard
+- **13:23** `3ab9fa9` — fix: documentos requeridos NO_INICIADO se muestran como pendientes, no como opcionales (#49)
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+
 - **12:30** `7e7b867` — fix: FileUpload muestra mensajes de error para formato, tamaño y máximo (#46 #47 #48)
   - `src/compartido/componentes/ui/file-upload.tsx`
 
