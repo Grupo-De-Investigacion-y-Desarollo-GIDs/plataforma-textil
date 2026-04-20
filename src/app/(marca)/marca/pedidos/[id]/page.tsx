@@ -6,7 +6,7 @@ import { redirect, notFound } from 'next/navigation'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import Link from 'next/link'
-import { ArrowLeft, Package, Clock, DollarSign, TrendingUp, CheckCircle } from 'lucide-react'
+import { ArrowLeft, Package, Clock, DollarSign, TrendingUp, CheckCircle, MessageCircle } from 'lucide-react'
 import { GaleriaFotos } from '@/taller/componentes/galeria-fotos'
 import { CotizacionImagenes } from '@/marca/componentes/cotizacion-imagenes'
 import { CancelarPedido } from '@/marca/componentes/cancelar-pedido'
@@ -80,7 +80,7 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
     include: {
       ordenes: {
         include: {
-          taller: { select: { nombre: true, nivel: true } },
+          taller: { select: { nombre: true, nivel: true, user: { select: { phone: true } } } },
         },
         orderBy: { createdAt: 'desc' },
       },
@@ -114,6 +114,8 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
 
   const currentStep = getStepIndex(pedido.estado)
   const isCancelled = pedido.estado === 'CANCELADO'
+  const todasPendientes = pedido.ordenes.length > 0 && pedido.ordenes.every(o => o.estado === 'PENDIENTE')
+  const esperandoConfirmacion = pedido.estado === 'EN_EJECUCION' && todasPendientes
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -130,8 +132,8 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
             Creado: {new Date(pedido.createdAt).toLocaleDateString('es-AR')}
           </p>
         </div>
-        <Badge variant={statusVariant[pedido.estado] || 'default'}>
-          {statusLabel[pedido.estado] || pedido.estado}
+        <Badge variant={esperandoConfirmacion ? 'warning' : (statusVariant[pedido.estado] || 'default')}>
+          {esperandoConfirmacion ? 'Esperando confirmacion del taller' : (statusLabel[pedido.estado] || pedido.estado)}
         </Badge>
       </div>
 
@@ -294,6 +296,13 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
                 key={orden.id}
                 className="border border-gray-100 rounded-lg p-4 space-y-3"
               >
+                {orden.estado === 'PENDIENTE' && (
+                  <div className="rounded-lg bg-yellow-50 border border-yellow-200 px-4 py-3">
+                    <p className="text-sm text-yellow-800 font-medium">
+                      Esperando que el taller acepte esta orden de manufactura
+                    </p>
+                  </div>
+                )}
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                   <div className="space-y-1">
                     <p className="font-overpass font-semibold text-brand-blue">{orden.moId}</p>
@@ -302,7 +311,9 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
                     </p>
                   </div>
                   <Badge variant={ordenStatusVariant[orden.estado] || 'default'}>
-                    {ordenStatusLabel[orden.estado] || orden.estado}
+                    {orden.estado === 'PENDIENTE'
+                      ? 'Pendiente de aceptacion'
+                      : (ordenStatusLabel[orden.estado] || orden.estado)}
                   </Badge>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
@@ -342,6 +353,38 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
           </div>
         )}
       </Card>
+
+      {/* Contacto talleres asignados */}
+      {pedido.ordenes.length > 0 && (
+        <Card>
+          <h2 className="font-overpass font-semibold text-gray-700 text-sm uppercase mb-3">
+            Contacto talleres
+          </h2>
+          <div className="space-y-3">
+            {pedido.ordenes.map((orden) => (
+              <div key={orden.id} className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-800">{orden.taller.nombre}</p>
+                  <p className="text-xs text-gray-500">{orden.moId}</p>
+                </div>
+                {orden.taller.user.phone ? (
+                  <a
+                    href={`https://wa.me/${orden.taller.user.phone.replace(/\D/g, '')}?text=${encodeURIComponent(`Hola, te contacto por la orden ${orden.moId} del pedido ${pedido.omId}.`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    WhatsApp
+                  </a>
+                ) : (
+                  <span className="text-xs text-gray-400">Sin telefono registrado</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
 
       {actividad.length > 0 && (
         <Card>

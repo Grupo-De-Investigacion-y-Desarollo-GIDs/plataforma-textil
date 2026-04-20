@@ -43,21 +43,21 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       // Generar moId con formato existente
       const moId = `MO-${new Date().getFullYear()}-${crypto.randomUUID().replace(/-/g, '').slice(0, 8).toUpperCase()}`
 
-      // Transaccion atomica: 4 operaciones
-      await prisma.$transaction([
-        prisma.cotizacion.update({
+      // Transaccion interactiva: capturar cuid de la orden creada
+      const ordenCreada = await prisma.$transaction(async (tx) => {
+        await tx.cotizacion.update({
           where: { id },
           data: { estado: 'ACEPTADA' },
-        }),
-        prisma.cotizacion.updateMany({
+        })
+        await tx.cotizacion.updateMany({
           where: {
             pedidoId: cotizacion.pedidoId,
             id: { not: id },
             estado: 'ENVIADA',
           },
           data: { estado: 'RECHAZADA' },
-        }),
-        prisma.ordenManufactura.create({
+        })
+        const orden = await tx.ordenManufactura.create({
           data: {
             moId,
             pedidoId: cotizacion.pedidoId,
@@ -67,12 +67,16 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
             plazoDias: cotizacion.plazoDias,
             cotizacionId: cotizacion.id,
           },
-        }),
-        prisma.pedido.update({
+        })
+        await tx.pedido.update({
           where: { id: cotizacion.pedidoId },
-          data: { estado: 'EN_EJECUCION' },
-        }),
-      ])
+          data: {
+            estado: 'EN_EJECUCION',
+            montoTotal: { increment: cotizacion.precio },
+          },
+        })
+        return orden
+      })
 
       logActividad('COTIZACION_ACEPTADA', userId, {
         pedidoId: cotizacion.pedidoId,
@@ -81,7 +85,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       })
       logActividad('ORDEN_CREADA', userId, {
         pedidoId: cotizacion.pedidoId,
-        ordenId: moId,
+        ordenId: ordenCreada.id,
         tallerId: cotizacion.tallerId,
         tallerNombre: cotizacion.taller.nombre,
       })

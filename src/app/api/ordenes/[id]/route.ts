@@ -84,7 +84,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     // Recalcular estado del pedido padre
     const todasLasOrdenes = await prisma.ordenManufactura.findMany({
       where: { pedidoId: orden.pedidoId },
-      select: { estado: true, progreso: true },
+      select: { estado: true, progreso: true, precio: true },
     })
 
     const activas = todasLasOrdenes.filter((o) => o.estado !== 'CANCELADO')
@@ -94,6 +94,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       activas.length > 0
         ? Math.round(activas.reduce((sum, o) => sum + o.progreso, 0) / activas.length)
         : 0
+    const montoTotal = activas.reduce((sum, o) => sum + o.precio, 0)
 
     let estadoPedido: EstadoPedido | undefined
     if (todasCompletadas) estadoPedido = EstadoPedido.COMPLETADO
@@ -103,6 +104,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       where: { id: orden.pedidoId },
       data: {
         progresoTotal,
+        montoTotal,
         ...(estadoPedido ? { estado: estadoPedido } : {}),
       },
     })
