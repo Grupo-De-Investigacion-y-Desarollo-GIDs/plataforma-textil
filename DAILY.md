@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-04-20
+
+### Gerardo Breard
+- **12:30** `7e7b867` — fix: FileUpload muestra mensajes de error para formato, tamaño y máximo (#46 #47 #48)
+  - `src/compartido/componentes/ui/file-upload.tsx`
+
+
 ## 2026-04-19
 
 ### Gerardo Breard
