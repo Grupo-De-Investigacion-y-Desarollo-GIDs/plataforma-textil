@@ -3,6 +3,9 @@
 ## 2026-04-20
 
 ### Gerardo Breard
+- **16:50** `50a01f9` — fix: página /unauthorized con header de la plataforma y link al panel (#84)
+  - `src/app/unauthorized/page.tsx`
+
 - **16:40** `65eef74` — docs: registrar F-06 RAG completo en V3_BACKLOG + desactivar flags en prod
   - `.claude/specs/V3_BACKLOG.md`
 
