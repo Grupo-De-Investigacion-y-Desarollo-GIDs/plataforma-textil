@@ -104,6 +104,12 @@ Base: validación interna V2 + QA de Sergio + análisis arquitectural
 - **Problema:** Los botones CSV/Excel en `/admin/talleres` y `/estado/exportar` no tienen handler implementado o son parciales.
 - **Prioridad:** Media — el Estado necesita poder extraer datos para informes
 
+### F-06 — RAG completo con soporte PDF y corpus real
+- **Problema:** El RAG existe como código pero no tiene API keys configuradas (`ANTHROPIC_API_KEY`, `VOYAGE_API_KEY`), no soporta carga de PDFs, y no tiene corpus real de contenidos de formalización textil.
+- **Incluye:** Configuración de API keys, soporte PDF al endpoint de carga, corpus inicial con documentos de formalización del sector textil argentino (guías OIT, normativa ARCA, requisitos municipales).
+- **Prioridad:** Media — nice-to-have para el piloto, no bloqueante
+- **Nota V2:** Flags `asistente_rag` y `llm_enabled` desactivados en producción hasta que esto se resuelva.
+
 ### F-05 — Dashboard de demanda insatisfecha para el Estado
 - **Problema:** Cuando un pedido no genera notificaciones por falta de talleres compatibles, no se registra el motivo (nivel insuficiente, capacidad insuficiente, proceso no disponible). El Estado no tiene visibilidad de la demanda que no se cubre.
 - **Propuesta:** El dashboard del Estado muestra: pedidos sin cotizaciones, motivos de no-match, talleres cerca de poder matchear. Permite al Estado identificar dónde intervenir para aumentar la oferta formal.
