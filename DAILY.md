@@ -3,6 +3,11 @@
 ## 2026-04-20
 
 ### Gerardo Breard
+- **20:22** `b5b95bc` — fix: montoTotal, contactar taller, banner PENDIENTE, label visual y bug log MO (#90 #91)
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/api/cotizaciones/[id]/route.ts`
+  - `src/app/api/ordenes/[id]/route.ts`
+
 - **17:55** `b094e73` — fix: KPIs de admin/notificaciones cuentan solo comunicaciones del admin (#88)
   - `src/app/(admin)/admin/notificaciones/page.tsx`
 
