@@ -88,7 +88,7 @@ export function ActivityTimeline({ eventos, perspective = 'marca' }: ActivityTim
             </div>
             <div className={`pb-4 ${isLast ? '' : ''}`}>
               <p className="text-sm text-gray-800">{label}</p>
-              <p className="text-xs text-gray-400" title={date.toLocaleString('es-AR')}>
+              <p className="text-xs text-gray-400" title={date.toLocaleString('es-AR')} suppressHydrationWarning>
                 {timeAgo(date)}
               </p>
             </div>
