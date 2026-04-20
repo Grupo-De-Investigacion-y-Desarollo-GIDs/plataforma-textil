@@ -15,7 +15,6 @@ import { UploadButton } from '@/taller/componentes/upload-button'
 const estadoToStatus: Record<string, 'completed' | 'pending' | 'warning' | 'optional'> = {
   COMPLETADO: 'completed',
   PENDIENTE: 'pending',
-  NO_INICIADO: 'optional',
   VENCIDO: 'warning',
   RECHAZADO: 'warning',
 }
@@ -104,7 +103,9 @@ export default async function TallerFormalizacionPage() {
           {tiposDocumento.map(td => {
             const validacion = validacionesPorNombre[td.nombre]
             const estado = validacion?.estado ?? 'NO_INICIADO'
-            const status = estadoToStatus[estado] || 'optional'
+            const status = estado === 'NO_INICIADO'
+              ? (td.requerido ? 'pending' : 'optional')
+              : (estadoToStatus[estado] || 'optional')
 
             return (
               <div key={td.id} className="py-3 first:pt-0 last:pb-0">
