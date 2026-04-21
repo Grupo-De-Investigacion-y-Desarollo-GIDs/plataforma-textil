@@ -1,5 +1,14 @@
 # Daily Log
 
+## 2026-04-21
+
+### Gerardo Breard
+- **11:45** `19405a6` — fix: eliminar campo ubicacion legacy, usar solo provincia/partido en perfil (#92)
+  - `src/app/(public)/perfil/[id]/page.tsx`
+  - `src/app/(taller)/taller/perfil/editar/editar-form.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+
+
 ## 2026-04-20
 
 ### Gerardo Breard
