@@ -41,9 +41,10 @@ export default async function PerfilPublicoPage({ params }: { params: Promise<{ 
           <h1 className="font-overpass font-bold text-3xl text-brand-blue">{taller.nombre}</h1>
           <Badge variant={nivelColor[taller.nivel]}>{taller.nivel}</Badge>
         </div>
-        {taller.ubicacion && (
+        {taller.provincia && (
           <p className="flex items-center gap-1 text-gray-600">
-            <MapPin className="w-4 h-4" /> {taller.ubicacion}
+            <MapPin className="w-4 h-4" /> {taller.provincia}{taller.partido ? `, ${taller.partido}` : ''}
+            {taller.ubicacionDetalle && <span className="text-gray-400"> · {taller.ubicacionDetalle}</span>}
           </p>
         )}
         {taller.descripcion && (

@@ -47,7 +47,7 @@ export default async function TallerPerfilPage() {
     )
   }
 
-  const checks = ['nombre', 'cuit', 'ubicacion', 'descripcion', 'provincia', 'fundado'] as const
+  const checks = ['nombre', 'cuit', 'descripcion', 'provincia', 'fundado'] as const
   const campos = checks.length + 4
   let completos = checks.filter(c => (taller as Record<string, unknown>)[c]).length
   if (taller.capacidadMensual > 0) completos++
@@ -64,10 +64,10 @@ export default async function TallerPerfilPage() {
             <h1 className="font-overpass font-bold text-3xl text-brand-blue">{taller.nombre}</h1>
             <Badge variant={nivelColor[taller.nivel]}>{taller.nivel}</Badge>
           </div>
-          {taller.ubicacion && (
+          {taller.provincia && (
             <p className="flex items-center gap-1 text-gray-600">
-              <MapPin className="w-4 h-4" /> {taller.ubicacion}
-              {taller.provincia && <span className="text-gray-400"> · {taller.provincia}{taller.partido ? `, ${taller.partido}` : ''}</span>}
+              <MapPin className="w-4 h-4" /> {taller.provincia}{taller.partido ? `, ${taller.partido}` : ''}
+              {taller.ubicacionDetalle && <span className="text-gray-400"> · {taller.ubicacionDetalle}</span>}
             </p>
           )}
           <p className="text-sm text-gray-500 mt-1">{taller.user.email} {taller.user.phone && `· ${taller.user.phone}`}</p>

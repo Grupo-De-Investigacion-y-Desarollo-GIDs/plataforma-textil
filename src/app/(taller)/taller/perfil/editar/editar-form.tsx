@@ -10,7 +10,6 @@ interface Props {
   taller: {
     id: string
     nombre: string
-    ubicacion: string | null
     website: string | null
     provincia: string | null
     partido: string | null
@@ -32,7 +31,6 @@ export function EditarPerfilForm({ taller }: Props) {
 
   const [nombre, setNombre] = useState(taller.nombre)
   const [website, setWebsite] = useState(taller.website ?? '')
-  const [ubicacion, setUbicacion] = useState(taller.ubicacion ?? '')
   const [provincia, setProvincia] = useState(taller.provincia ?? '')
   const [partido, setPartido] = useState(taller.partido ?? '')
   const [ubicacionDetalle, setUbicacionDetalle] = useState(taller.ubicacionDetalle ?? '')
@@ -50,7 +48,6 @@ export function EditarPerfilForm({ taller }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nombre,
-          ubicacion: ubicacion || null,
           website: website || null,
           provincia: provincia || null,
           partido: partido || null,
@@ -97,15 +94,6 @@ export function EditarPerfilForm({ taller }: Props) {
           <input
             value={nombre}
             onChange={e => setNombre(e.target.value)}
-            className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-          />
-        </div>
-        <div>
-          <label className="text-sm font-medium text-gray-700">Ubicación</label>
-          <input
-            value={ubicacion}
-            onChange={e => setUbicacion(e.target.value)}
-            placeholder="Ej: Av. Corrientes 1234, CABA"
             className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
           />
         </div>
