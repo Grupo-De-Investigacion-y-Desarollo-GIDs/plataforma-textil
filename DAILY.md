@@ -3,6 +3,10 @@
 ## 2026-04-22
 
 ### Gerardo Breard
+- **15:05** `f316d50` — fix: SubmitButton con loading state en aprobar/rechazar/revocar validaciones (#107)
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/compartido/componentes/ui/button.tsx`
+
 - **14:47** `8b25a5f` — docs: actualizar V3_BACKLOG con issues cerrados de V2
   - `.claude/specs/V3_BACKLOG.md`
 
