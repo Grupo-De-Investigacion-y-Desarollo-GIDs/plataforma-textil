@@ -3,6 +3,9 @@
 ## 2026-04-22
 
 ### Gerardo Breard
+- **15:13** `ca6787d` — docs: registrar UX-04 tooltip badge formalización en V3_BACKLOG
+  - `.claude/specs/V3_BACKLOG.md`
+
 - **15:05** `f316d50` — fix: SubmitButton con loading state en aprobar/rechazar/revocar validaciones (#107)
   - `src/app/(admin)/admin/talleres/[id]/page.tsx`
   - `src/compartido/componentes/ui/button.tsx`
