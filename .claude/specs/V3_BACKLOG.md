@@ -202,6 +202,10 @@ Estructura por flujo: (1) Contexto del dominio textil, (2) Pasos numerados simpl
 - **Problema:** La página se llama "Comunicaciones" pero el tab en la nav dice "Notificaciones", y el botón dice "Nueva notificación". Sergio nota la confusión (#97).
 - **Decisión pendiente:** Unificar nomenclatura: o todo "comunicaciones" o todo "notificaciones".
 
+### UX-04 — Tooltip en badge de formalización (admin)
+- **Problema:** El badge en admin/talleres/[id] tab Formalización muestra documentos subidos pendientes de revisión (PENDIENTE + documentoUrl). Sergio lo interpreta como "todos los incompletos" (#108, #113).
+- **Fix V3:** Agregar tooltip explicando que muestra documentos subidos pendientes de revisión del admin, no documentos sin completar por el taller.
+
 ---
 
 ## Deuda técnica documentada de V2
