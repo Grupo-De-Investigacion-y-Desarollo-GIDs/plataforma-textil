@@ -61,6 +61,13 @@ Base: validación interna V2 + QA de Sergio + análisis arquitectural
 
 ---
 
+### I-04 — Configurar SendGrid con dominio propio
+- **Problema:** Emails de bienvenida y notificaciones por email no se envían en producción. Requiere dominio verificado y cuenta paga de SendGrid.
+- **Issues:** #105
+- **Requisito:** Configurar antes del piloto real con usuarios reales.
+
+---
+
 ## Seguridad
 
 ### S-01 — Auditoría de configuración de cookies de sesión (NextAuth)
@@ -109,6 +116,11 @@ Base: validación interna V2 + QA de Sergio + análisis arquitectural
 - **Incluye:** Configuración de API keys, soporte PDF al endpoint de carga, corpus inicial con documentos de formalización del sector textil argentino (guías OIT, normativa ARCA, requisitos municipales).
 - **Prioridad:** Media — nice-to-have para el piloto, no bloqueante
 - **Nota V2:** Flags `asistente_rag` y `llm_enabled` desactivados en producción hasta que esto se resuelva.
+
+### F-07 — Mensajes individuales a taller/marca desde admin
+- **Problema:** Hoy solo se pueden enviar comunicaciones masivas. No hay forma de enviar un mensaje individual a un taller o marca específica desde el panel admin.
+- **Issues:** #98
+- **Impacto:** Comunicación directa admin→usuario para seguimiento de casos puntuales.
 
 ### F-05 — Dashboard de demanda insatisfecha para el Estado
 - **Problema:** Cuando un pedido no genera notificaciones por falta de talleres compatibles, no se registra el motivo (nivel insuficiente, capacidad insuficiente, proceso no disponible). El Estado no tiene visibilidad de la demanda que no se cubre.
@@ -172,6 +184,23 @@ Estructura por flujo: (1) Contexto del dominio textil, (2) Pasos numerados simpl
 - **Soporte:** Contactado el 21/04/2026.
 - **Mitigación actual:** Fix defensivo en registro (3dc106d) — permite continuar sin verificación AFIP, taller entra con `verificadoAfip: false`.
 - **Para piloto real:** Contratar plan Pro y verificar endpoint correcto con soporte de AfipSDK.
+
+---
+
+## UX y diseño
+
+### UX-01 — Revisar tab Historial en /admin/notificaciones
+- **Problema:** Tab Historial fue eliminado por decisión de producto (#33). Sergio lo busca en QA repetidamente (#100, #102, #103, #104, #111, #112). Historial del sistema disponible en /admin/logs.
+- **Decisión pendiente:** ¿Debe volver como tab filtrado o /admin/logs es suficiente para el Estado?
+
+### UX-02 — Estandarizar criterios de confirmación en flujo comercial
+- **Problema:** Inconsistencia UX — invitar a cotizar usa botón directo, otras acciones abren modal. No hay criterio unificado.
+- **Issues:** #94
+- **Impacto:** Confusión del usuario sobre qué acciones son reversibles.
+
+### UX-03 — Mejorar nomenclatura de /admin/notificaciones
+- **Problema:** La página se llama "Comunicaciones" pero el tab en la nav dice "Notificaciones", y el botón dice "Nueva notificación". Sergio nota la confusión (#97).
+- **Decisión pendiente:** Unificar nomenclatura: o todo "comunicaciones" o todo "notificaciones".
 
 ---
 
