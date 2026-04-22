@@ -3,6 +3,11 @@
 ## 2026-04-22
 
 ### Gerardo Breard
+- **15:32** `31cae0a` — perf: paralelizar queries y paginar pedidos disponibles (#95 #96 #101)
+  - `src/app/(admin)/admin/notificaciones/page.tsx`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+
 - **15:13** `ca6787d` — docs: registrar UX-04 tooltip badge formalización en V3_BACKLOG
   - `.claude/specs/V3_BACKLOG.md`
 
