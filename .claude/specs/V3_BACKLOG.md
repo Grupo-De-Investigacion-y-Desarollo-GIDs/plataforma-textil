@@ -156,6 +156,18 @@ Estructura por flujo: (1) Contexto del dominio textil, (2) Pasos numerados simpl
 
 ---
 
+## Integraciones
+
+### INT-01 — Integración completa con ARCA/AFIP
+- **Hoy:** Solo verificamos que el CUIT existe (AfipSDK RegisterScopeTen). Plan Free con 1k requests/mes, token expirado al 21/04/2026.
+- **V3 debe:** Pre-cargar automáticamente al registrarse: nombre/razón social, tipo de inscripción (monotributista/RI), empleados registrados en SIPA, estado activo/inactivo.
+- **Visualización:** Los datos verificados por ARCA se muestran con badge en el perfil del taller, en el dashboard del Estado y en el admin — diferenciando datos autodeclarados vs datos verificados por el Estado.
+- **Impacto:** Formalización objetiva, no autodeclarada.
+- **Referencia:** AfipSDK RegisterScopeTen + SIPA
+- **Requisito:** Contratar plan Pro ($25/mes) o superior para soportar volumen de piloto.
+
+---
+
 ## Deuda técnica documentada de V2
 
 *(Se agrega a medida que se identifica)*
