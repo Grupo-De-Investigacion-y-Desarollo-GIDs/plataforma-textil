@@ -8,7 +8,7 @@ import { aplicarNivel } from '@/compartido/lib/nivel'
 import { sendEmail, buildDocAprobadoEmail, buildDocRechazadoEmail } from '@/compartido/lib/email'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
-import { Button } from '@/compartido/componentes/ui/button'
+import { Button, SubmitButton } from '@/compartido/componentes/ui/button'
 import { ChecklistItem } from '@/compartido/componentes/ui/checklist-item'
 import { ArrowLeft, MapPin, Mail, Phone, FileText, AlertTriangle, Calendar, Award } from 'lucide-react'
 
@@ -354,7 +354,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
                   <div className="flex gap-2 mt-2 ml-8">
                     <form action={aprobarValidacion}>
                       <input type="hidden" name="validacionId" value={v.id} />
-                      <Button size="sm" type="submit">Aprobar</Button>
+                      <SubmitButton size="sm" pendingText="Aprobando...">Aprobar</SubmitButton>
                     </form>
                     <form action={rechazarValidacion} className="flex gap-1">
                       <input type="hidden" name="validacionId" value={v.id} />
@@ -365,7 +365,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
                         required
                         className="text-xs border border-gray-300 rounded px-2 py-1 w-48"
                       />
-                      <Button size="sm" variant="secondary" type="submit">Rechazar</Button>
+                      <SubmitButton size="sm" variant="secondary" pendingText="Rechazando...">Rechazar</SubmitButton>
                     </form>
                   </div>
                 )}
@@ -374,7 +374,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
                   <div className="mt-2 ml-8">
                     <form action={revocarValidacion}>
                       <input type="hidden" name="validacionId" value={v.id} />
-                      <Button size="sm" variant="secondary" type="submit">Revocar validación</Button>
+                      <SubmitButton size="sm" variant="secondary" pendingText="Revocando...">Revocar validación</SubmitButton>
                     </form>
                   </div>
                 )}
