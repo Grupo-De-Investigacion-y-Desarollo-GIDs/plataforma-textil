@@ -3,6 +3,9 @@
 ## 2026-04-22
 
 ### Gerardo Breard
+- **14:47** `8b25a5f` — docs: actualizar V3_BACKLOG con issues cerrados de V2
+  - `.claude/specs/V3_BACKLOG.md`
+
 - **14:39** `e18f8c6` — docs: registrar INT-02 problema AfipSDK en V3_BACKLOG
   - `.claude/specs/V3_BACKLOG.md`
 
