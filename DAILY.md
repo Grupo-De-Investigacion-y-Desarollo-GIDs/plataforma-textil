@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-04-22
+
+### Gerardo Breard
+- **12:40** `eb7692a` — docs: registrar INT-01 integración completa ARCA en V3_BACKLOG
+  - `.claude/specs/V3_BACKLOG.md`
+
+
 ## 2026-04-21
 
 ### Gerardo Breard
