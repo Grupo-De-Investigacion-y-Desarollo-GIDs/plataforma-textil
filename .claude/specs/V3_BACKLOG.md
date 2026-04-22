@@ -166,6 +166,13 @@ Estructura por flujo: (1) Contexto del dominio textil, (2) Pasos numerados simpl
 - **Referencia:** AfipSDK RegisterScopeTen + SIPA
 - **Requisito:** Contratar plan Pro ($25/mes) o superior para soportar volumen de piloto.
 
+### INT-02 — Resolver conexión AfipSDK
+- **Problema:** La API REST no responde en app.afipsdk.com — devuelve HTML (SPA) en vez de JSON para cualquier endpoint y token. Token regenerado el 22/04/2026 pero no autentica.
+- **Hipótesis:** Migración de endpoint o restricción del plan Free. Todas las rutas probadas (`/api/v1/padron/cuit/`, `/api/v1/afip/padron-alcance-10`, RegisterScopeTen, RegisterInscriptionProof) devuelven HTML.
+- **Soporte:** Contactado el 21/04/2026.
+- **Mitigación actual:** Fix defensivo en registro (3dc106d) — permite continuar sin verificación AFIP, taller entra con `verificadoAfip: false`.
+- **Para piloto real:** Contratar plan Pro y verificar endpoint correcto con soporte de AfipSDK.
+
 ---
 
 ## Deuda técnica documentada de V2
