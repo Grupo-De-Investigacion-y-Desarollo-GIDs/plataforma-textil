@@ -3,6 +3,9 @@
 ## 2026-04-22
 
 ### Gerardo Breard
+- **14:32** `3dc106d` — fix: permitir registro cuando AFIP no responde, con warning pendiente de verificacion (#109)
+  - `src/app/(auth)/registro/page.tsx`
+
 - **12:40** `eb7692a` — docs: registrar INT-01 integración completa ARCA en V3_BACKLOG
   - `.claude/specs/V3_BACKLOG.md`
 
