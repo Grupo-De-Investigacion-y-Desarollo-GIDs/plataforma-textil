@@ -224,11 +224,15 @@ function StepEntidadInfo({
   })
 
   const [cuitVerificado, setCuitVerificado] = useState(false)
+  const [cuitPendiente, setCuitPendiente] = useState(false)
   const [cuitLoading, setCuitLoading] = useState(false)
   const [cuitData, setCuitData] = useState<{ razonSocial?: string } | null>(null)
   const [cuitError, setCuitError] = useState('')
 
   const cuitValue = watch('cuit')
+
+  // Errores que indican que el CUIT es realmente invalido (no que el servicio fallo)
+  const ERRORES_CUIT_INVALIDO = ['inexistente', 'inactivo', 'invalido']
 
   async function verificarCuitOnBlur() {
     const limpio = (cuitValue || '').replace(/-/g, '')
@@ -238,6 +242,7 @@ function StepEntidadInfo({
     setCuitError('')
     setCuitData(null)
     setCuitVerificado(false)
+    setCuitPendiente(false)
 
     try {
       const res = await fetch(`/api/auth/verificar-cuit?cuit=${limpio}`)
@@ -246,12 +251,18 @@ function StepEntidadInfo({
         setCuitVerificado(true)
         setCuitData({ razonSocial: data.razonSocial })
       } else {
-        setCuitError(data.error || 'CUIT invalido')
+        const errorMsg = (data.error || '').toLowerCase()
+        const esCuitInvalido = ERRORES_CUIT_INVALIDO.some(e => errorMsg.includes(e))
+        if (esCuitInvalido) {
+          setCuitError(data.error)
+        } else {
+          // Servicio no disponible — permitir continuar
+          setCuitPendiente(true)
+        }
       }
     } catch {
-      setCuitError('')
-      setCuitVerificado(true)
-      setCuitData(null)
+      // Error de red — permitir continuar
+      setCuitPendiente(true)
     } finally {
       setCuitLoading(false)
     }
@@ -295,8 +306,10 @@ function StepEntidadInfo({
               <span className="text-xs text-gray-500">— {cuitData.razonSocial}</span>
             </div>
           )}
-          {cuitVerificado && !cuitData?.razonSocial && (
-            <p className="text-xs text-amber-600 mt-1">No se pudo verificar en ARCA. Podes continuar igualmente.</p>
+          {cuitPendiente && (
+            <p className="text-xs text-amber-600 mt-1">
+              No pudimos verificar tu CUIT en este momento. Podes continuar pero tu perfil quedara pendiente de verificacion.
+            </p>
           )}
         </div>
 
@@ -304,7 +317,7 @@ function StepEntidadInfo({
           <Button type="button" variant="secondary" onClick={() => onBack(getValues())} icon={<ArrowLeft className="w-4 h-4" />} className="flex-1">
             Atras
           </Button>
-          <Button type="submit" loading={loading} disabled={!cuitVerificado && !cuitLoading} icon={<Check className="w-4 h-4" />} className="flex-1">
+          <Button type="submit" loading={loading} disabled={!cuitVerificado && !cuitPendiente && !cuitLoading} icon={<Check className="w-4 h-4" />} className="flex-1">
             Crear cuenta
           </Button>
         </div>
