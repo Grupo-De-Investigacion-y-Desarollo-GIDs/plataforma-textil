@@ -89,28 +89,29 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
 
   if (!pedido || pedido.marcaId !== marca.id) notFound()
 
-  const cotizaciones = await prisma.cotizacion.findMany({
-    where: { pedidoId: pedido.id },
-    include: { taller: { select: { nombre: true, nivel: true } } },
-    orderBy: { createdAt: 'desc' },
-  })
-
-  const actividad = await prisma.logActividad.findMany({
-    where: {
-      accion: {
-        in: [
-          'PEDIDO_PUBLICADO', 'COTIZACION_RECIBIDA', 'COTIZACION_ACEPTADA',
-          'COTIZACION_RECHAZADA', 'ORDEN_CREADA', 'PROGRESO_ACTUALIZADO',
-          'ORDEN_ACEPTADA', 'ORDEN_RECHAZADA', 'ORDEN_COMPLETADA',
-          'PEDIDO_COMPLETADO', 'PEDIDO_CANCELADO',
-        ],
+  const [cotizaciones, actividad] = await Promise.all([
+    prisma.cotizacion.findMany({
+      where: { pedidoId: pedido.id },
+      include: { taller: { select: { nombre: true, nivel: true } } },
+      orderBy: { createdAt: 'desc' },
+    }),
+    prisma.logActividad.findMany({
+      where: {
+        accion: {
+          in: [
+            'PEDIDO_PUBLICADO', 'COTIZACION_RECIBIDA', 'COTIZACION_ACEPTADA',
+            'COTIZACION_RECHAZADA', 'ORDEN_CREADA', 'PROGRESO_ACTUALIZADO',
+            'ORDEN_ACEPTADA', 'ORDEN_RECHAZADA', 'ORDEN_COMPLETADA',
+            'PEDIDO_COMPLETADO', 'PEDIDO_CANCELADO',
+          ],
+        },
+        detalles: { path: ['pedidoId'], equals: pedido.id },
       },
-      detalles: { path: ['pedidoId'], equals: pedido.id },
-    },
-    orderBy: { timestamp: 'desc' },
-    take: 50,
-    include: { user: { select: { name: true } } },
-  })
+      orderBy: { timestamp: 'desc' },
+      take: 50,
+      include: { user: { select: { name: true } } },
+    }),
+  ])
 
   const currentStep = getStepIndex(pedido.estado)
   const isCancelled = pedido.estado === 'CANCELADO'

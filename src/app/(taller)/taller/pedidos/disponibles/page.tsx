@@ -8,31 +8,44 @@ import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Package, MapPin, Calendar, ImageIcon, ArrowLeft } from 'lucide-react'
 
-export default async function PedidosDisponiblesPage() {
-  const session = await auth()
+const PAGE_SIZE = 20
+
+export default async function PedidosDisponiblesPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+  const [session, { page: pageParam }] = await Promise.all([auth(), searchParams])
   if (!session?.user) redirect('/login')
 
-  const taller = await prisma.taller.findFirst({ where: { userId: session.user.id } })
+  const page = Math.max(1, parseInt(pageParam || '1'))
 
-  const pedidosDisponibles = await prisma.pedido.findMany({
-    where: {
-      estado: 'PUBLICADO',
-      OR: [
-        { visibilidad: 'PUBLICO' },
-        ...(taller ? [{ invitaciones: { some: { tallerId: taller.id } } }] : []),
-      ],
-    },
-    include: {
-      marca: { select: { nombre: true, tipo: true, ubicacion: true } },
-      ...(taller ? {
-        invitaciones: {
-          where: { tallerId: taller.id },
-          select: { id: true },
-        },
-      } : {}),
-    },
-    orderBy: { createdAt: 'desc' },
-  })
+  const taller = await prisma.taller.findFirst({ where: { userId: session.user.id }, select: { id: true } })
+
+  const where = {
+    estado: 'PUBLICADO' as const,
+    OR: [
+      { visibilidad: 'PUBLICO' as const },
+      ...(taller ? [{ invitaciones: { some: { tallerId: taller.id } } }] : []),
+    ],
+  }
+
+  const [pedidosDisponibles, totalCount] = await Promise.all([
+    prisma.pedido.findMany({
+      where,
+      include: {
+        marca: { select: { nombre: true, tipo: true, ubicacion: true } },
+        ...(taller ? {
+          invitaciones: {
+            where: { tallerId: taller.id },
+            select: { id: true },
+          },
+        } : {}),
+      },
+      orderBy: { createdAt: 'desc' },
+      take: PAGE_SIZE,
+      skip: (page - 1) * PAGE_SIZE,
+    }),
+    prisma.pedido.count({ where }),
+  ])
+
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE)
 
   return (
     <div className="space-y-6">
@@ -108,6 +121,22 @@ export default async function PedidosDisponiblesPage() {
               </div>
             </Card>
           ))}
+
+          {totalPages > 1 && (
+            <div className="flex justify-center gap-2 pt-4">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                <Link
+                  key={p}
+                  href={`/taller/pedidos/disponibles?page=${p}`}
+                  className={`px-3 py-1.5 rounded text-sm font-medium ${
+                    p === page ? 'bg-brand-blue text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  {p}
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

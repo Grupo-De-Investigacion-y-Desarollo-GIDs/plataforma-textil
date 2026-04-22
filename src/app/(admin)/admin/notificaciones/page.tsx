@@ -21,9 +21,17 @@ export default async function AdminNotificacionesPage() {
   if (role !== 'ADMIN') redirect('/unauthorized')
 
   const adminWhere = { createdById: { not: null } }
-  const [total, sinLeer] = await Promise.all([
+  const [total, sinLeer, batches] = await Promise.all([
     prisma.notificacion.count({ where: adminWhere }),
     prisma.notificacion.count({ where: { ...adminWhere, leida: false } }),
+    prisma.notificacion.groupBy({
+      by: ['batchId'],
+      where: { createdById: { not: null }, batchId: { not: null } },
+      _count: true,
+      _max: { createdAt: true },
+      orderBy: { _max: { createdAt: 'desc' } },
+      take: 30,
+    }),
   ])
 
   return (
@@ -67,7 +75,7 @@ export default async function AdminNotificacionesPage() {
         </div>
       </div>
 
-      <ComunicacionesTab />
+      <ComunicacionesTab batches={batches} />
 
       <p className="text-xs text-gray-400 mt-6 text-center">
         Para ver la actividad del sistema, ir a{' '}
@@ -77,16 +85,7 @@ export default async function AdminNotificacionesPage() {
   )
 }
 
-async function ComunicacionesTab() {
-  const batches = await prisma.notificacion.groupBy({
-    by: ['batchId'],
-    where: { createdById: { not: null }, batchId: { not: null } },
-    _count: true,
-    _max: { createdAt: true },
-    orderBy: { _max: { createdAt: 'desc' } },
-    take: 30,
-  })
-
+async function ComunicacionesTab({ batches }: { batches: { batchId: string | null; _count: number; _max: { createdAt: Date | null } }[] }) {
   const batchIds = batches.map(b => b.batchId!).filter(Boolean)
   const ejemplos = batchIds.length > 0
     ? await prisma.notificacion.findMany({
