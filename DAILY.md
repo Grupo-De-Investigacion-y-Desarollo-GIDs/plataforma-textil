@@ -3,6 +3,9 @@
 ## 2026-04-22
 
 ### Gerardo Breard
+- **14:39** `e18f8c6` — docs: registrar INT-02 problema AfipSDK en V3_BACKLOG
+  - `.claude/specs/V3_BACKLOG.md`
+
 - **14:32** `3dc106d` — fix: permitir registro cuando AFIP no responde, con warning pendiente de verificacion (#109)
   - `src/app/(auth)/registro/page.tsx`
 
