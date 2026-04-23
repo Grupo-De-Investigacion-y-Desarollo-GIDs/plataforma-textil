@@ -3,6 +3,9 @@
 ## 2026-04-23
 
 ### Gerardo Breard
+- **12:30** `384edbf` — docs: agregar spec v3-cookies-seguridad con correcciones de factibilidad
+  - `.claude/specs/v3-cookies-seguridad.md`
+
 - **12:19** `282f854` — docs: marcar inicio oficial de V3
   - `.claude/specs/V3_INICIO.md`
 
