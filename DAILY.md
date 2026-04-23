@@ -3,6 +3,9 @@
 ## 2026-04-23
 
 ### Gerardo Breard
+- **11:33** `53b14d2` — perf: mover funciones Vercel a región gru1 (São Paulo) — reduce latencia DB
+  - `vercel.json`
+
 - **10:58** `b7ecf4b` — perf: paralelizar 5 queries en admin/talleres/[id] (#120)
   - `src/app/(admin)/admin/talleres/[id]/page.tsx`
 
