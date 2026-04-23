@@ -32,7 +32,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
   const { id } = await params
   const { tab = 'formalizacion' } = await searchParams
 
-  const [taller, tiposDocumento] = await Promise.all([
+  const [taller, tiposDocumento, notas, logs, historialLogs] = await Promise.all([
     prisma.taller.findUnique({
       where: { id },
       include: {
@@ -47,6 +47,26 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
       orderBy: { orden: 'asc' },
       select: { nombre: true, label: true, enlaceTramite: true },
     }),
+    prisma.notaInterna.findMany({
+      where: { tallerId: id },
+      include: { admin: { select: { name: true } } },
+      orderBy: { createdAt: 'desc' },
+    }),
+    prisma.logActividad.findMany({
+      where: { detalles: { path: ['tallerId'], equals: id } },
+      orderBy: { timestamp: 'desc' },
+      take: 20,
+      include: { user: { select: { name: true } } },
+    }),
+    prisma.logActividad.findMany({
+      where: {
+        accion: { in: ['VALIDACION_APROBADA', 'VALIDACION_RECHAZADA', 'NIVEL_SUBIDO', 'NIVEL_BAJADO'] },
+        detalles: { path: ['tallerId'], equals: id },
+      },
+      orderBy: { timestamp: 'desc' },
+      take: 30,
+      include: { user: { select: { name: true } } },
+    }),
   ])
 
   if (!taller) notFound()
@@ -57,29 +77,6 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
   const enlacePorNombre = Object.fromEntries(
     tiposDocumento.filter(td => td.enlaceTramite).map(td => [td.nombre, td.enlaceTramite])
   )
-
-  const notas = await prisma.notaInterna.findMany({
-    where: { tallerId: id },
-    include: { admin: { select: { name: true } } },
-    orderBy: { createdAt: 'desc' },
-  })
-
-  const logs = await prisma.logActividad.findMany({
-    where: { detalles: { path: ['tallerId'], equals: id } },
-    orderBy: { timestamp: 'desc' },
-    take: 20,
-    include: { user: { select: { name: true } } },
-  })
-
-  const historialLogs = await prisma.logActividad.findMany({
-    where: {
-      accion: { in: ['VALIDACION_APROBADA', 'VALIDACION_RECHAZADA', 'NIVEL_SUBIDO', 'NIVEL_BAJADO'] },
-      detalles: { path: ['tallerId'], equals: id },
-    },
-    orderBy: { timestamp: 'desc' },
-    take: 30,
-    include: { user: { select: { name: true } } },
-  })
 
   // Server actions
   async function aprobarValidacion(formData: FormData) {
