@@ -45,7 +45,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
     prisma.tipoDocumento.findMany({
       where: { activo: true },
       orderBy: { orden: 'asc' },
-      select: { nombre: true, label: true },
+      select: { nombre: true, label: true, enlaceTramite: true },
     }),
   ])
 
@@ -53,6 +53,9 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
 
   const labelPorNombre = Object.fromEntries(
     tiposDocumento.map(td => [td.nombre, td.label])
+  )
+  const enlacePorNombre = Object.fromEntries(
+    tiposDocumento.filter(td => td.enlaceTramite).map(td => [td.nombre, td.enlaceTramite])
   )
 
   const notas = await prisma.notaInterna.findMany({
@@ -329,12 +332,28 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
                   status={estadoToStatus[v.estado] || 'optional'}
                   description={
                     v.estado === 'COMPLETADO' ? 'Verificado'
+                    : v.estado === 'PENDIENTE' && !v.documentoUrl && enlacePorNombre[v.tipo]
+                      ? 'Tramite externo — verificar en ARCA/SIPA'
                     : v.estado === 'PENDIENTE' ? 'Pendiente de revisión'
                     : v.estado === 'RECHAZADO' ? `Rechazado: ${v.detalle || ''}`
                     : v.estado === 'VENCIDO' ? 'Documento vencido'
                     : 'No iniciado'
                   }
                 />
+                {/* Badge trámite externo para PENDIENTE sin documento */}
+                {v.estado === 'PENDIENTE' && !v.documentoUrl && enlacePorNombre[v.tipo] && (
+                  <div className="mt-2 ml-8 flex items-center gap-2">
+                    <Badge variant="warning">Tramite externo</Badge>
+                    <a
+                      href={enlacePorNombre[v.tipo]!}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-brand-blue underline text-xs"
+                    >
+                      Verificar en ARCA
+                    </a>
+                  </div>
+                )}
                 {/* Link del documento visible en cualquier estado si existe URL */}
                 {v.documentoUrl && (
                   <div className="mt-2 ml-8">
@@ -350,7 +369,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
                   </div>
                 )}
                 {/* Acciones para PENDIENTE */}
-                {v.estado === 'PENDIENTE' && v.documentoUrl && (
+                {v.estado === 'PENDIENTE' && (v.documentoUrl || enlacePorNombre[v.tipo]) && (
                   <div className="flex gap-2 mt-2 ml-8">
                     <form action={aprobarValidacion}>
                       <input type="hidden" name="validacionId" value={v.id} />

@@ -12,6 +12,7 @@ import { Button } from '@/compartido/componentes/ui/button'
 import { FileText, ExternalLink } from 'lucide-react'
 import { UploadButton } from '@/taller/componentes/upload-button'
 import { VerDocumentoButton } from '@/taller/componentes/ver-documento-button'
+import { MarcarRealizadoButton } from '@/taller/componentes/marcar-realizado-button'
 
 const estadoToStatus: Record<string, 'completed' | 'pending' | 'warning' | 'optional'> = {
   COMPLETADO: 'completed',
@@ -141,6 +142,9 @@ export default async function TallerFormalizacionPage() {
                             Ir al trámite
                           </Button>
                         </a>
+                      )}
+                      {td.enlaceTramite && estado === 'NO_INICIADO' && validacion && (
+                        <MarcarRealizadoButton validacionId={validacion.id} />
                       )}
                     </div>
                     {td.costoEstimado && (
