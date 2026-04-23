@@ -3,6 +3,9 @@
 ## 2026-04-23
 
 ### Gerardo Breard
+- **16:07** `9e620e6` — docs: agregar spec v3-qa-estado-issues con correcciones de factibilidad
+  - `.claude/specs/v3-qa-estado-issues.md`
+
 - **15:26** `5205187` — docs: agregar spec v3-qa-formato-ampliado con correcciones de factibilidad
   - `.claude/specs/v3-qa-formato-ampliado.md`
 
