@@ -130,16 +130,18 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
   async function revocarValidacion(formData: FormData) {
     'use server'
     const validacionId = formData.get('validacionId') as string
+    const motivo = formData.get('motivo') as string
+    if (!motivo?.trim()) return
     await prisma.validacion.update({
       where: { id: validacionId },
-      data: { estado: 'NO_INICIADO', documentoUrl: null, detalle: null },
+      data: { estado: 'NO_INICIADO', documentoUrl: null, detalle: `Revocado: ${motivo}` },
     })
     await aplicarNivel(id, session!.user!.id)
     await prisma.logActividad.create({
       data: {
         userId: session!.user!.id,
         accion: 'VALIDACION_REVOCADA',
-        detalles: { tallerId: id, validacionId },
+        detalles: { tallerId: id, validacionId, motivo },
       },
     })
     redirect(`/admin/talleres/${id}?tab=formalizacion`)
@@ -388,12 +390,19 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
                     </form>
                   </div>
                 )}
-                {/* Acción para COMPLETADO: revocar */}
+                {/* Acción para COMPLETADO: revocar con motivo obligatorio */}
                 {v.estado === 'COMPLETADO' && (
                   <div className="mt-2 ml-8">
-                    <form action={revocarValidacion}>
+                    <form action={revocarValidacion} className="flex gap-1">
                       <input type="hidden" name="validacionId" value={v.id} />
-                      <SubmitButton size="sm" variant="secondary" pendingText="Revocando...">Revocar validación</SubmitButton>
+                      <input
+                        type="text"
+                        name="motivo"
+                        placeholder="Motivo de la revocacion..."
+                        required
+                        className="text-xs border border-gray-300 rounded px-2 py-1 w-56"
+                      />
+                      <SubmitButton size="sm" variant="danger" pendingText="Revocando...">Revocar</SubmitButton>
                     </form>
                   </div>
                 )}
