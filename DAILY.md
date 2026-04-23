@@ -3,6 +3,9 @@
 ## 2026-04-23
 
 ### Gerardo Breard
+- **12:59** `02776d6` — docs: agregar spec v3-rate-limiting con correcciones de factibilidad
+  - `.claude/specs/v3-rate-limiting.md`
+
 - **12:30** `384edbf` — docs: agregar spec v3-cookies-seguridad con correcciones de factibilidad
   - `.claude/specs/v3-cookies-seguridad.md`
 
