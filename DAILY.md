@@ -3,6 +3,9 @@
 ## 2026-04-23
 
 ### Gerardo Breard
+- **14:07** `ea39474` — docs: agregar spec v3-validacion-archivos con correcciones de factibilidad
+  - `.claude/specs/v3-validacion-archivos.md`
+
 - **12:59** `02776d6` — docs: agregar spec v3-rate-limiting con correcciones de factibilidad
   - `.claude/specs/v3-rate-limiting.md`
 
