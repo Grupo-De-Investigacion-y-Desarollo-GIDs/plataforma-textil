@@ -3,6 +3,9 @@
 ## 2026-04-23
 
 ### Gerardo Breard
+- **10:58** `b7ecf4b` — perf: paralelizar 5 queries en admin/talleres/[id] (#120)
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+
 - **10:52** `93a691e` — fix: revocar validación requiere motivo obligatorio con log (#119)
   - `src/app/(admin)/admin/talleres/[id]/page.tsx`
 
