@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-04-23
+
+### Gerardo Breard
+- **01:18** `7a05013` — fix: alinear backend con frontend — solo rechazar CUIT si AFIP confirma invalido (#117)
+  - `src/app/api/auth/registro/route.ts`
+
+
 ## 2026-04-22
 
 ### Gerardo Breard
