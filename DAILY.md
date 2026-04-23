@@ -3,6 +3,9 @@
 ## 2026-04-23
 
 ### Gerardo Breard
+- **15:26** `5205187` — docs: agregar spec v3-qa-formato-ampliado con correcciones de factibilidad
+  - `.claude/specs/v3-qa-formato-ampliado.md`
+
 - **14:57** `a1aaf37` — docs: agregar spec v3-logs-admin-auditoria con correcciones de factibilidad
   - `.claude/specs/v3-logs-admin-auditoria.md`
 
