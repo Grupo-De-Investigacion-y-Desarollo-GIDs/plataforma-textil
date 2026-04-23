@@ -3,6 +3,12 @@
 ## 2026-04-23
 
 ### Gerardo Breard
+- **01:31** `2e30cf1` — fix: soporte trámites externos — botón 'Ya lo hice' y badge admin (#116)
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+  - `src/app/api/validaciones/[id]/route.ts`
+  - `src/taller/componentes/marcar-realizado-button.tsx`
+
 - **01:18** `7a05013` — fix: alinear backend con frontend — solo rechazar CUIT si AFIP confirma invalido (#117)
   - `src/app/api/auth/registro/route.ts`
 
