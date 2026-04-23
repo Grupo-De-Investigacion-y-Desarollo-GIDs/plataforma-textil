@@ -3,6 +3,9 @@
 ## 2026-04-23
 
 ### Gerardo Breard
+- **10:52** `93a691e` — fix: revocar validación requiere motivo obligatorio con log (#119)
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+
 - **01:31** `2e30cf1` — fix: soporte trámites externos — botón 'Ya lo hice' y badge admin (#116)
   - `src/app/(admin)/admin/talleres/[id]/page.tsx`
   - `src/app/(taller)/taller/formalizacion/page.tsx`
