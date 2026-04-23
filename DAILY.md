@@ -3,6 +3,9 @@
 ## 2026-04-23
 
 ### Gerardo Breard
+- **12:16** `10f0492` — docs: agregar spec v3-separar-ambientes con correcciones de factibilidad
+  - `.claude/specs/v3-separar-ambientes.md`
+
 - **11:33** `53b14d2` — perf: mover funciones Vercel a región gru1 (São Paulo) — reduce latencia DB
   - `vercel.json`
 
