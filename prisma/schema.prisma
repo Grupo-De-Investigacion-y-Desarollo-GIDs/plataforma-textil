@@ -78,6 +78,11 @@ enum CanalNotificacion {
   PLATAFORMA
 }
 
+enum VisibilidadPedido {
+  PUBLICO
+  INVITACION
+}
+
 enum EstadoAccionCorrectiva {
   PENDIENTE
   EN_PROCESO
@@ -114,7 +119,8 @@ model User {
   marca         Marca?
   accounts      Account[]
   sessions      Session[]
-  notificaciones Notificacion[]
+  notificacionesRecibidas Notificacion[] @relation("NotificacionDestinatario")
+  notificacionesEnviadas  Notificacion[] @relation("NotificacionCreador")
   logs          LogActividad[]
   auditorias    Auditoria[]    @relation("AuditoriaInspector")
   notasAdmin    NotaInterna[]  @relation("NotasAdmin")
@@ -176,7 +182,10 @@ model Taller {
   puntaje               Int         @default(0)
   rating                Float       @default(0)
   ubicacion             String?
-  zona                  String?
+  website               String?
+  provincia             String?
+  partido               String?
+  ubicacionDetalle      String?
   descripcion           String?     @db.Text
   capacidadMensual      Int         @default(0)
   trabajadoresRegistrados Int       @default(0)
@@ -217,6 +226,7 @@ model Taller {
   intentosEvaluacion    IntentoEvaluacion[]
   notasInternas         NotaInterna[]
   cotizaciones          Cotizacion[]
+  pedidosInvitado       PedidoInvitacion[]
 
   @@map("talleres")
 }
@@ -357,6 +367,7 @@ model Pedido {
   fechaCreacion DateTime     @default(now())
   fechaObjetivo DateTime?
   estado        EstadoPedido @default(BORRADOR)
+  visibilidad   VisibilidadPedido @default(PUBLICO)
   progresoTotal Float        @default(0)
   montoTotal    Float        @default(0)
   descripcion   String?      @db.Text
@@ -364,10 +375,14 @@ model Pedido {
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 
+  imagenes           String[]
+  procesosRequeridos String[]
+
   marca         Marca        @relation(fields: [marcaId], references: [id])
   tipoPrendaRel TipoPrenda?  @relation(fields: [tipoPrendaId], references: [id])
   ordenes       OrdenManufactura[]
   cotizaciones  Cotizacion[]
+  invitaciones  PedidoInvitacion[]
 
   @@map("pedidos")
 }
@@ -392,8 +407,11 @@ model Cotizacion {
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 
+  imagenes    String[]
+
   pedido      Pedido            @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
   taller      Taller            @relation(fields: [tallerId], references: [id], onDelete: Cascade)
+  ordenManufactura OrdenManufactura?
 
   @@unique([pedidoId, tallerId])
   @@map("cotizaciones")
@@ -413,15 +431,30 @@ model OrdenManufactura {
   diasTranscurridos Int                    @default(0)
   verificacionSst Boolean                  @default(false)
   alertaTiempo    String?
+  cotizacionId    String?                  @unique
   createdAt       DateTime                 @default(now())
   updatedAt       DateTime                 @updatedAt
 
   pedido          Pedido            @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
   taller          Taller            @relation(fields: [tallerId], references: [id])
   procesoRel      ProcesoProductivo? @relation(fields: [procesoId], references: [id])
+  cotizacion      Cotizacion?       @relation(fields: [cotizacionId], references: [id], onDelete: SetNull)
   escrowHitos     EscrowHito[]
 
   @@map("ordenes_manufactura")
+}
+
+model PedidoInvitacion {
+  id        String   @id @default(cuid())
+  pedidoId  String
+  tallerId  String
+  createdAt DateTime @default(now())
+
+  pedido Pedido @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+  taller Taller @relation(fields: [tallerId], references: [id], onDelete: Cascade)
+
+  @@unique([pedidoId, tallerId])
+  @@map("pedido_invitaciones")
 }
 
 // ============================================
@@ -432,7 +465,7 @@ model Validacion {
   id               String           @id @default(cuid())
   tallerId         String
   tipo             String
-  tipoDocumentoId  String?
+  tipoDocumentoId  String
   estado           EstadoValidacion @default(NO_INICIADO)
   detalle          String?
   documentoUrl     String?
@@ -441,7 +474,7 @@ model Validacion {
   updatedAt        DateTime         @updatedAt
 
   taller        Taller         @relation(fields: [tallerId], references: [id], onDelete: Cascade)
-  tipoDocumento TipoDocumento? @relation(fields: [tipoDocumentoId], references: [id])
+  tipoDocumento TipoDocumento @relation(fields: [tipoDocumentoId], references: [id])
 
   @@unique([tallerId, tipo])
   @@index([estado])
@@ -450,11 +483,16 @@ model Validacion {
 }
 
 model TipoDocumento {
-  id          String  @id @default(cuid())
-  nombre      String  @unique
-  descripcion String?
-  requerido   Boolean @default(true)
-  activo      Boolean @default(true)
+  id            String      @id @default(cuid())
+  nombre        String      @unique
+  label         String
+  descripcion   String?
+  enlaceTramite String?
+  costoEstimado String?
+  nivelMinimo   NivelTaller
+  requerido     Boolean     @default(true)
+  activo        Boolean     @default(true)
+  orden         Int         @default(0)
 
   validaciones Validacion[]
 
@@ -477,6 +515,9 @@ model Coleccion {
   activa       Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  procesosTarget      String[]
+  formalizacionTarget String[]
 
   videos             Video[]
   evaluacion         Evaluacion?
@@ -623,17 +664,22 @@ model Denuncia {
 // ============================================
 
 model Notificacion {
-  id      String             @id @default(cuid())
-  userId  String
-  tipo    String
-  titulo  String
-  mensaje String             @db.Text
-  leida   Boolean            @default(false)
-  canal   CanalNotificacion  @default(PLATAFORMA)
-  createdAt DateTime         @default(now())
+  id          String            @id @default(cuid())
+  userId      String
+  tipo        String
+  titulo      String
+  mensaje     String            @db.Text
+  leida       Boolean           @default(false)
+  canal       CanalNotificacion @default(PLATAFORMA)
+  createdById String?
+  batchId     String?
+  link        String?
+  createdAt   DateTime          @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User  @relation("NotificacionDestinatario", fields: [userId],      references: [id], onDelete: Cascade)
+  creadaPor User? @relation("NotificacionCreador",      fields: [createdById], references: [id], onDelete: SetNull)
 
+  @@index([batchId])
   @@map("notificaciones")
 }
 

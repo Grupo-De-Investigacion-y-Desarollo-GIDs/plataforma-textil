@@ -6,6 +6,8 @@ import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Download } from 'lucide-react'
 import { OrdenActions } from '@/taller/componentes/orden-actions'
+import { Card } from '@/compartido/componentes/ui/card'
+import { ActivityTimeline } from '@/compartido/componentes/activity-timeline'
 
 const estadoLabel: Record<string, string> = {
   PENDIENTE: 'Pendiente de aceptación',
@@ -49,6 +51,22 @@ export default async function TallerOrdenDetallePage({
   })
 
   if (!orden || orden.tallerId !== taller.id) notFound()
+
+  const actividad = await prisma.logActividad.findMany({
+    where: {
+      accion: {
+        in: [
+          'ORDEN_CREADA', 'ORDEN_ACEPTADA', 'ORDEN_RECHAZADA',
+          'PROGRESO_ACTUALIZADO', 'ORDEN_COMPLETADA',
+          'COTIZACION_ACEPTADA', 'COTIZACION_RECHAZADA',
+        ],
+      },
+      detalles: { path: ['ordenId'], equals: id },
+    },
+    orderBy: { timestamp: 'desc' },
+    take: 20,
+    include: { user: { select: { name: true } } },
+  })
 
   const pedido = orden.pedido
 
@@ -198,6 +216,13 @@ export default async function TallerOrdenDetallePage({
             Completada el {new Date(orden.updatedAt).toLocaleDateString('es-AR')}
           </p>
         </div>
+      )}
+
+      {actividad.length > 0 && (
+        <Card>
+          <h2 className="font-overpass font-bold text-brand-blue mb-3">Actividad de tu orden</h2>
+          <ActivityTimeline eventos={actividad} perspective="taller" />
+        </Card>
       )}
     </div>
   )

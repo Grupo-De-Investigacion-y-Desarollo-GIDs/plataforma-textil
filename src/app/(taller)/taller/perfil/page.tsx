@@ -8,7 +8,8 @@ import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
 import { ProgressRing } from '@/compartido/componentes/ui/progress-ring'
-import { Star, MapPin, Users, TrendingUp, Clock, Award, Edit } from 'lucide-react'
+import { Star, MapPin, Users, TrendingUp, Clock, Award, Download } from 'lucide-react'
+import { PortfolioManager } from '@/taller/componentes/portfolio-manager'
 
 const nivelColor: Record<string, 'warning' | 'default' | 'success'> = { BRONCE: 'warning', PLATA: 'default', ORO: 'success' }
 
@@ -24,6 +25,11 @@ export default async function TallerPerfilPage() {
       prendas: { include: { prenda: true } },
       maquinaria: true,
       certificaciones: { where: { activa: true } },
+      certificados: {
+        where: { revocado: false },
+        include: { coleccion: { select: { titulo: true } } },
+        orderBy: { fecha: 'desc' },
+      },
     },
   })
 
@@ -41,7 +47,7 @@ export default async function TallerPerfilPage() {
     )
   }
 
-  const checks = ['nombre', 'cuit', 'ubicacion', 'descripcion', 'zona', 'fundado'] as const
+  const checks = ['nombre', 'cuit', 'descripcion', 'provincia', 'fundado'] as const
   const campos = checks.length + 4
   let completos = checks.filter(c => (taller as Record<string, unknown>)[c]).length
   if (taller.capacidadMensual > 0) completos++
@@ -58,17 +64,22 @@ export default async function TallerPerfilPage() {
             <h1 className="font-overpass font-bold text-3xl text-brand-blue">{taller.nombre}</h1>
             <Badge variant={nivelColor[taller.nivel]}>{taller.nivel}</Badge>
           </div>
-          {taller.ubicacion && (
+          {taller.provincia && (
             <p className="flex items-center gap-1 text-gray-600">
-              <MapPin className="w-4 h-4" /> {taller.ubicacion}
-              {taller.zona && <span className="text-gray-400"> · {taller.zona}</span>}
+              <MapPin className="w-4 h-4" /> {taller.provincia}{taller.partido ? `, ${taller.partido}` : ''}
+              {taller.ubicacionDetalle && <span className="text-gray-400"> · {taller.ubicacionDetalle}</span>}
             </p>
           )}
           <p className="text-sm text-gray-500 mt-1">{taller.user.email} {taller.user.phone && `· ${taller.user.phone}`}</p>
         </div>
-        <Link href="/taller/perfil/completar">
-          <Button variant="secondary" size="sm" icon={<Edit className="w-4 h-4" />}>Editar</Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/taller/perfil/editar">
+            <Button variant="secondary" size="sm">Editar datos básicos</Button>
+          </Link>
+          <Link href="/taller/perfil/completar">
+            <Button variant="ghost" size="sm">{taller.sam ? 'Actualizar perfil productivo' : 'Completar perfil productivo'}</Button>
+          </Link>
+        </div>
       </div>
 
       <Card>
@@ -157,6 +168,83 @@ export default async function TallerPerfilPage() {
         </Card>
       )}
 
+      <Card title="Mi portfolio">
+        <PortfolioManager tallerId={taller.id} fotosActuales={taller.portfolioFotos} />
+      </Card>
+
+      {taller.organizacion && (
+        <Card title="Perfil productivo">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-gray-500 text-xs mb-1">Organización</p>
+              <p className="font-medium text-gray-800">
+                {taller.organizacion === 'linea' ? 'En línea'
+                 : taller.organizacion === 'modular' ? 'Modular'
+                 : 'Prenda completa'}
+              </p>
+            </div>
+
+            {(taller.metrosCuadrados ?? 0) > 0 && (
+              <div className="bg-gray-50 rounded-lg p-3">
+                <p className="text-gray-500 text-xs mb-1">Espacio</p>
+                <p className="font-medium text-gray-800">{taller.metrosCuadrados} m²</p>
+              </div>
+            )}
+
+            {taller.experienciaPromedio && (
+              <div className="bg-gray-50 rounded-lg p-3">
+                <p className="text-gray-500 text-xs mb-1">Experiencia del equipo</p>
+                <p className="font-medium text-gray-800">
+                  {taller.experienciaPromedio === '5+' ? 'Más de 5 años'
+                   : taller.experienciaPromedio === '3-5' ? '3 a 5 años'
+                   : taller.experienciaPromedio === '1-3' ? '1 a 3 años'
+                   : 'Menos de 1 año'}
+                </p>
+              </div>
+            )}
+
+            {taller.registroProduccion && (
+              <div className="bg-gray-50 rounded-lg p-3">
+                <p className="text-gray-500 text-xs mb-1">Registro de producción</p>
+                <p className="font-medium text-gray-800">
+                  {taller.registroProduccion === 'software' ? 'Software'
+                   : taller.registroProduccion === 'excel' ? 'Excel/planilla'
+                   : taller.registroProduccion === 'papel' ? 'Papel'
+                   : 'Sin registro'}
+                </p>
+              </div>
+            )}
+
+            {taller.escalabilidad && (
+              <div className="bg-gray-50 rounded-lg p-3">
+                <p className="text-gray-500 text-xs mb-1">Puede escalar</p>
+                <p className="font-medium text-gray-800">
+                  {taller.escalabilidad === 'turno' ? 'Segundo turno'
+                   : taller.escalabilidad === 'tercerizar' ? 'Tercerización'
+                   : taller.escalabilidad === 'contratar' ? 'Contratando personal'
+                   : taller.escalabilidad === 'horas-extra' ? 'Horas extra'
+                   : 'Sin capacidad de escalar'}
+                </p>
+              </div>
+            )}
+
+            {(taller.sam ?? 0) > 0 && (
+              <div className="bg-gray-50 rounded-lg p-3">
+                <p className="text-gray-500 text-xs mb-1">SAM ({taller.prendaPrincipal})</p>
+                <p className="font-medium text-gray-800">{taller.sam} min</p>
+              </div>
+            )}
+
+          </div>
+
+          <p className="text-xs text-gray-400 mt-4">
+            Esta información es visible para el equipo de la plataforma y organismos del Estado.
+            No afecta tu nivel de formalización.
+          </p>
+        </Card>
+      )}
+
       {taller.maquinaria.length > 0 && (
         <Card title="Maquinaria">
           <ul className="space-y-1 text-sm">
@@ -177,6 +265,31 @@ export default async function TallerPerfilPage() {
               <Badge key={c.id} variant="success">
                 <Award className="w-3 h-3 mr-1" />{c.nombre}
               </Badge>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      {taller.certificados.length > 0 && (
+        <Card title="Certificados de Academia">
+          <div className="space-y-2">
+            {taller.certificados.map((c) => (
+              <div key={c.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                <div className="flex items-center gap-2">
+                  <Award className="w-4 h-4 text-green-600" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-800">{c.coleccion.titulo}</p>
+                    <p className="text-xs text-gray-500">Código: {c.codigo} · Calificación: {c.calificacion}%</p>
+                  </div>
+                </div>
+                <a
+                  href={`/api/certificados/${c.id}/pdf`}
+                  download
+                  className="inline-flex items-center gap-1 text-xs text-brand-blue hover:underline"
+                >
+                  <Download className="w-3 h-3" /> PDF
+                </a>
+              </div>
             ))}
           </div>
         </Card>

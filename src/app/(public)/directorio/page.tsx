@@ -6,7 +6,7 @@ import { prisma } from '@/compartido/lib/prisma'
 import { getFeatureFlag } from '@/compartido/lib/features'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
-import { Star, MapPin, Users, ArrowRight } from 'lucide-react'
+import { Star, MapPin, Users, ArrowRight, Factory } from 'lucide-react'
 
 const nivelColor: Record<string, 'warning' | 'default' | 'success'> = { BRONCE: 'warning', PLATA: 'default', ORO: 'success' }
 const allowedNiveles = ['BRONCE', 'PLATA', 'ORO'] as const
@@ -14,7 +14,7 @@ const allowedNiveles = ['BRONCE', 'PLATA', 'ORO'] as const
 export default async function DirectorioPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ q?: string; nivel?: string; proceso?: string; prenda?: string }> | { q?: string; nivel?: string; proceso?: string; prenda?: string }
+  searchParams?: Promise<{ q?: string; nivel?: string; proceso?: string; prenda?: string; page?: string }> | { q?: string; nivel?: string; proceso?: string; prenda?: string; page?: string }
 }) {
   if (!await getFeatureFlag('directorio_publico')) notFound()
 
@@ -26,8 +26,22 @@ export default async function DirectorioPage({
     : ''
   const procesoId = (params.proceso || '').trim()
   const prendaId = (params.prenda || '').trim()
+  const page = Math.max(1, parseInt(params.page || '1'))
+  const PAGE_SIZE = 12
 
-  const [procesos, prendas, talleres] = await Promise.all([
+  const tallerWhere = {
+    ...(query ? { OR: [
+      { nombre: { contains: query, mode: 'insensitive' as const } },
+      { ubicacion: { contains: query, mode: 'insensitive' as const } },
+      { provincia: { contains: query, mode: 'insensitive' as const } },
+      { partido: { contains: query, mode: 'insensitive' as const } },
+    ]} : {}),
+    ...(nivel ? { nivel } : {}),
+    ...(procesoId ? { procesos: { some: { procesoId } } } : {}),
+    ...(prendaId ? { prendas: { some: { prendaId } } } : {}),
+  }
+
+  const [procesos, prendas, talleres, totalTalleres] = await Promise.all([
     prisma.procesoProductivo.findMany({
       where: { activo: true },
       select: { id: true, nombre: true },
@@ -39,21 +53,16 @@ export default async function DirectorioPage({
       orderBy: { nombre: 'asc' },
     }),
     prisma.taller.findMany({
-      where: {
-        ...(query ? { OR: [
-          { nombre: { contains: query, mode: 'insensitive' as const } },
-          { ubicacion: { contains: query, mode: 'insensitive' as const } },
-        ]} : {}),
-        ...(nivel ? { nivel } : {}),
-        ...(procesoId ? { procesos: { some: { procesoId } } } : {}),
-        ...(prendaId ? { prendas: { some: { prendaId } } } : {}),
-      },
+      where: tallerWhere,
       include: {
         procesos: { include: { proceso: true } },
         prendas: { include: { prenda: true } },
       },
       orderBy: { puntaje: 'desc' },
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
     }),
+    prisma.taller.count({ where: tallerWhere }),
   ])
 
   const hasFilters = query || nivel || procesoId || prendaId
@@ -110,8 +119,9 @@ export default async function DirectorioPage({
       </form>
 
       <p className="text-sm text-gray-500 mb-4">
-        {talleres.length} {talleres.length === 1 ? 'taller encontrado' : 'talleres encontrados'}
+        {totalTalleres} {totalTalleres === 1 ? 'taller encontrado' : 'talleres encontrados'}
         {hasFilters ? ' con los filtros aplicados' : ''}
+        {totalTalleres > PAGE_SIZE && ` — página ${page} de ${Math.ceil(totalTalleres / PAGE_SIZE)}`}
       </p>
 
       {talleres.length === 0 ? (
@@ -127,15 +137,30 @@ export default async function DirectorioPage({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {talleres.map((taller) => (
             <Link key={taller.id} href={`/perfil/${taller.id}`}>
-              <Card className="h-full hover:shadow-card-hover transition-shadow">
+              <Card className="h-full hover:shadow-card-hover transition-shadow p-0 overflow-hidden">
+                <div className="aspect-video bg-gray-100 overflow-hidden">
+                  {taller.portfolioFotos?.[0] ? (
+                    <img
+                      src={taller.portfolioFotos[0]}
+                      alt={taller.nombre}
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Factory className="w-8 h-8 text-gray-300" />
+                    </div>
+                  )}
+                </div>
+                <div className="p-4">
                 <div className="flex items-start justify-between mb-3">
                   <h2 className="font-overpass font-bold text-lg text-brand-blue">{taller.nombre}</h2>
                   <Badge variant={nivelColor[taller.nivel]}>{taller.nivel}</Badge>
                 </div>
 
-                {taller.ubicacion && (
+                {(taller.provincia || taller.ubicacion) && (
                   <p className="flex items-center gap-1 text-sm text-gray-500 mb-2">
-                    <MapPin className="w-3.5 h-3.5" /> {taller.ubicacion}
+                    <MapPin className="w-3.5 h-3.5" /> {taller.provincia ? `${taller.provincia}${taller.partido ? `, ${taller.partido}` : ''}` : taller.ubicacion}
                   </p>
                 )}
 
@@ -160,9 +185,43 @@ export default async function DirectorioPage({
                 <span className="inline-flex items-center gap-1 text-sm text-brand-blue font-semibold">
                   Ver perfil <ArrowRight className="w-3.5 h-3.5" />
                 </span>
+                </div>
               </Card>
             </Link>
           ))}
+        </div>
+      )}
+
+      {/* Paginación */}
+      {totalTalleres > PAGE_SIZE && (
+        <div className="flex items-center justify-center gap-2 mt-8">
+          {page > 1 && (
+            <Link
+              href={`/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(nivel ? { nivel } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), page: String(page - 1) }).toString()}`}
+              className="px-4 py-2 rounded-lg border border-gray-300 text-sm text-gray-600 hover:bg-gray-50"
+            >
+              ← Anterior
+            </Link>
+          )}
+          {Array.from({ length: Math.ceil(totalTalleres / PAGE_SIZE) }, (_, i) => i + 1).map(p => (
+            <Link
+              key={p}
+              href={`/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(nivel ? { nivel } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), page: String(p) }).toString()}`}
+              className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium ${
+                p === page ? 'bg-brand-blue text-white' : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              {p}
+            </Link>
+          ))}
+          {page < Math.ceil(totalTalleres / PAGE_SIZE) && (
+            <Link
+              href={`/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(nivel ? { nivel } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), page: String(page + 1) }).toString()}`}
+              className="px-4 py-2 rounded-lg border border-gray-300 text-sm text-gray-600 hover:bg-gray-50"
+            >
+              Siguiente →
+            </Link>
+          )}
         </div>
       )}
     </div>

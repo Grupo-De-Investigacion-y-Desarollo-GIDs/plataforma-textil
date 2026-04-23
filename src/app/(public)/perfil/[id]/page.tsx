@@ -5,6 +5,7 @@ import { prisma } from '@/compartido/lib/prisma'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Star, MapPin, Users, TrendingUp, Clock, Award } from 'lucide-react'
+import { GaleriaFotos } from '@/taller/componentes/galeria-fotos'
 
 const nivelColor: Record<string, 'warning' | 'default' | 'success'> = { BRONCE: 'warning', PLATA: 'default', ORO: 'success' }
 
@@ -40,9 +41,10 @@ export default async function PerfilPublicoPage({ params }: { params: Promise<{ 
           <h1 className="font-overpass font-bold text-3xl text-brand-blue">{taller.nombre}</h1>
           <Badge variant={nivelColor[taller.nivel]}>{taller.nivel}</Badge>
         </div>
-        {taller.ubicacion && (
+        {taller.provincia && (
           <p className="flex items-center gap-1 text-gray-600">
-            <MapPin className="w-4 h-4" /> {taller.ubicacion}
+            <MapPin className="w-4 h-4" /> {taller.provincia}{taller.partido ? `, ${taller.partido}` : ''}
+            {taller.ubicacionDetalle && <span className="text-gray-400"> · {taller.ubicacionDetalle}</span>}
           </p>
         )}
         {taller.descripcion && (
@@ -90,6 +92,12 @@ export default async function PerfilPublicoPage({ params }: { params: Promise<{ 
               <Badge key={tp.id} variant="outline">{tp.prenda.nombre}</Badge>
             ))}
           </div>
+        </Card>
+      )}
+
+      {taller.portfolioFotos.length > 0 && (
+        <Card title="Trabajos realizados" className="mb-4">
+          <GaleriaFotos fotos={taller.portfolioFotos} />
         </Card>
       )}
 

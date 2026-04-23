@@ -7,7 +7,7 @@ interface NotificacionData {
   cotizacion: { id: string; precio: number; plazoDias: number; proceso: string }
   taller: { nombre: string; userId?: string }
   marca: { nombre: string; userId?: string }
-  pedido: { omId: string }
+  pedido: { omId: string; id: string }
 }
 
 export function notificarCotizacion(
@@ -37,6 +37,13 @@ export function notificarCotizacion(
       titulo: titulos[tipo],
       mensaje: mensajes[tipo],
       canal: 'PLATAFORMA',
+      link: tipo === 'RECIBIDA'
+        ? `/marca/pedidos/${data.pedido.id}`
+        : tipo === 'ACEPTADA'
+          ? `/taller/pedidos`
+          : tipo === 'RECHAZADA'
+            ? `/taller/pedidos`
+            : null,
     },
   }).catch((err) => console.error('Error creando notificacion:', err))
 
@@ -106,6 +113,7 @@ export async function notificarTalleresCompatibles(pedidoId: string): Promise<vo
         titulo: `Nuevo pedido disponible: ${pedido.tipoPrenda}`,
         mensaje: `${pedido.marca.nombre} publico un pedido de ${pedido.cantidad} unidades de ${pedido.tipoPrenda}. Podes cotizar!`,
         canal: 'PLATAFORMA',
+        link: `/taller/pedidos/disponibles/${pedidoId}`,
       },
     }).catch(() => {})
 

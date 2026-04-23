@@ -1,78 +1,66 @@
 export const dynamic = 'force-dynamic'
 
 import { redirect } from 'next/navigation'
-import { revalidatePath } from 'next/cache'
 import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
-import { Bell, CheckCircle2 } from 'lucide-react'
+import Link from 'next/link'
+import { NotificacionesLista } from './notificaciones-lista'
 
-async function markAllAsRead() {
-  'use server'
+type Tab = 'comunicaciones' | 'historial'
 
+export default async function NotificacionesPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ tab?: string }> | { tab?: string }
+}) {
   const session = await auth()
-  if (!session?.user?.id) {
-    redirect('/login?callbackUrl=%2Fcuenta%2Fnotificaciones')
-  }
+  if (!session?.user?.id) redirect('/login?callbackUrl=%2Fcuenta%2Fnotificaciones')
 
-  await prisma.notificacion.updateMany({
-    where: { userId: session.user.id, leida: false },
-    data: { leida: true },
-  })
+  const params = await Promise.resolve(searchParams ?? {})
+  const tab: Tab = params.tab === 'historial' ? 'historial' : 'comunicaciones'
 
-  revalidatePath('/cuenta/notificaciones')
-}
-
-export default async function NotificacionesPage() {
-  const session = await auth()
-
-  if (!session?.user?.id) {
-    redirect('/login?callbackUrl=%2Fcuenta%2Fnotificaciones')
+  const where: Record<string, unknown> = { userId: session.user.id }
+  if (tab === 'comunicaciones') {
+    where.createdById = { not: null }
+  } else {
+    where.createdById = null
   }
 
   const notificaciones = await prisma.notificacion.findMany({
-    where: { userId: session.user.id },
+    where,
     orderBy: { createdAt: 'desc' },
     take: 50,
   })
 
-  const sinLeer = notificaciones.filter((n) => !n.leida).length
-
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between gap-3">
-        <h1 className="font-overpass font-bold text-3xl text-brand-blue">Notificaciones</h1>
-        <form action={markAllAsRead}>
-          <button
-            type="submit"
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-overpass font-semibold text-brand-blue hover:bg-gray-50 transition-colors"
-          >
-            <CheckCircle2 className="w-4 h-4" />
-            Marcar todas como leidas
-          </button>
-        </form>
+      <div className="flex gap-2">
+        <Link
+          href="?tab=comunicaciones"
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            tab === 'comunicaciones' ? 'bg-brand-blue text-white' : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
+          }`}
+        >
+          Comunicaciones
+        </Link>
+        <Link
+          href="?tab=historial"
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            tab === 'historial' ? 'bg-brand-blue text-white' : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
+          }`}
+        >
+          Historial del sistema
+        </Link>
       </div>
 
-      <p className="text-sm text-gray-600">Total: {notificaciones.length} | Sin leer: {sinLeer}</p>
-
-      {notificaciones.length === 0 ? (
-        <div className="rounded-xl border border-gray-200 bg-white p-8 text-center">
-          <Bell className="w-8 h-8 text-gray-400 mx-auto mb-3" />
-          <p className="text-gray-600">No tenes notificaciones por ahora.</p>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {notificaciones.map((n) => (
-            <article key={n.id} className={`rounded-xl border p-4 bg-white ${n.leida ? 'border-gray-200' : 'border-brand-blue/30 bg-brand-bg-light/30'}`}>
-              <div className="flex items-center justify-between gap-2 mb-1">
-                <h2 className="font-overpass font-semibold text-brand-blue">{n.titulo}</h2>
-                {!n.leida && <span className="text-xs font-overpass font-semibold text-brand-red">NUEVA</span>}
-              </div>
-              <p className="text-sm text-gray-700 mb-2">{n.mensaje}</p>
-              <p className="text-xs text-gray-500">{new Date(n.createdAt).toLocaleString('es-AR')}</p>
-            </article>
-          ))}
-        </div>
-      )}
+      <NotificacionesLista
+        notificaciones={notificaciones}
+        emptyMessage={
+          tab === 'comunicaciones'
+            ? 'No recibiste comunicaciones todavia.'
+            : 'El sistema no genero notificaciones para vos todavia.'
+        }
+      />
     </div>
   )
 }

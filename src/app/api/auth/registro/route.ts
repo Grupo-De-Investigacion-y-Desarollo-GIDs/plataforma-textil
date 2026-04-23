@@ -55,7 +55,9 @@ export async function POST(req: NextRequest) {
     const data = parsed.data
 
     // Verificar CUIT con AfipSDK server-side
-    // Si AFIP no responde, permite continuar (verificadoAfip queda false)
+    // Solo rechazar si AFIP confirma que el CUIT es invalido/inexistente/inactivo
+    // Cualquier otro error (servicio caido, timeout, error generico) permite continuar
+    const ERRORES_CUIT_INVALIDO = ['inexistente', 'inactivo', 'invalido']
     let cuitVerificado = false
     const cuitToVerify = data.tallerData?.cuit || data.marcaData?.cuit
     if (cuitToVerify) {
@@ -63,12 +65,16 @@ export async function POST(req: NextRequest) {
         const afipResult = await verificarCuit(cuitToVerify)
         if (afipResult.valid) {
           cuitVerificado = true
-        } else if (afipResult.error && !afipResult.error.includes('no responde') && !afipResult.error.includes('timeout')) {
-          // Solo rechazar si AFIP confirmo que el CUIT es invalido (no por timeout)
-          return NextResponse.json(
-            { error: afipResult.error || 'CUIT invalido o inactivo en ARCA' },
-            { status: 400 }
-          )
+        } else if (afipResult.error) {
+          const errorLower = afipResult.error.toLowerCase()
+          const esCuitInvalido = ERRORES_CUIT_INVALIDO.some(e => errorLower.includes(e))
+          if (esCuitInvalido) {
+            return NextResponse.json(
+              { error: afipResult.error },
+              { status: 400 }
+            )
+          }
+          // Servicio no disponible — permitir registro sin verificacion
         }
       } catch {
         // AFIP no disponible — permitir registro sin verificacion
@@ -121,6 +127,25 @@ export async function POST(req: NextRequest) {
     })
 
     logActividad('AUTH_REGISTRO', user.id, { email: data.email, role: data.role })
+
+    // Crear validaciones iniciales para talleres nuevos
+    if (data.role === 'TALLER') {
+      const nuevoTaller = await prisma.taller.findUnique({ where: { userId: user.id }, select: { id: true } })
+      if (nuevoTaller) {
+        const tiposDoc = await prisma.tipoDocumento.findMany({
+          where: { activo: true },
+          select: { id: true, nombre: true },
+        })
+        await prisma.validacion.createMany({
+          data: tiposDoc.map(td => ({
+            tallerId: nuevoTaller.id,
+            tipo: td.nombre,
+            tipoDocumentoId: td.id,
+            estado: 'NO_INICIADO' as const,
+          })),
+        })
+      }
+    }
 
     // Email bienvenida (fire-and-forget, no bloquea la respuesta)
     const nombre = data.name || data.nombre || data.email

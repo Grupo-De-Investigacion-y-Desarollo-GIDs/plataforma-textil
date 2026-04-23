@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { notificarCotizacion } from '@/compartido/lib/notificaciones'
+import { logActividad } from '@/compartido/lib/log'
 import { z } from 'zod'
 
 const cotizacionSchema = z.object({
@@ -95,15 +96,33 @@ export async function POST(req: NextRequest) {
     // Verificar que el pedido existe y esta PUBLICADO
     const pedido = await prisma.pedido.findUnique({
       where: { id: data.pedidoId },
-      include: { marca: { select: { userId: true, nombre: true } } },
+      select: { id: true, estado: true, visibilidad: true, marca: { select: { userId: true, nombre: true } }, omId: true, tipoPrenda: true, cantidad: true, marcaId: true },
     })
     if (!pedido) return NextResponse.json({ error: 'Pedido no encontrado' }, { status: 404 })
     if (pedido.estado !== 'PUBLICADO') {
       return NextResponse.json({ error: 'El pedido no esta disponible para cotizar' }, { status: 400 })
     }
 
+    // Si el pedido es INVITACION, validar que este taller fue invitado
+    if (pedido.visibilidad === 'INVITACION') {
+      const invitacion = await prisma.pedidoInvitacion.findUnique({
+        where: { pedidoId_tallerId: { pedidoId: data.pedidoId, tallerId: taller.id } },
+      })
+      if (!invitacion) {
+        return NextResponse.json(
+          { error: 'No fuiste invitado a cotizar este pedido' },
+          { status: 403 }
+        )
+      }
+    }
+
     // Calcular vencimiento: 7 dias desde ahora
     const venceEn = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+
+    // Imagenes opcionales (no validadas por zod, vienen como URLs ya subidas)
+    const imagenes = Array.isArray(body.imagenes)
+      ? body.imagenes.filter((u: unknown) => typeof u === 'string')
+      : []
 
     try {
       const cotizacion = await prisma.cotizacion.create({
@@ -115,7 +134,15 @@ export async function POST(req: NextRequest) {
           proceso: data.proceso,
           mensaje: data.mensaje ?? null,
           venceEn,
+          imagenes,
         },
+      })
+
+      logActividad('COTIZACION_RECIBIDA', session.user.id, {
+        pedidoId: data.pedidoId,
+        cotizacionId: cotizacion.id,
+        tallerId: taller.id,
+        tallerNombre: taller.nombre,
       })
 
       // Notificar a la marca (fire-and-forget)
@@ -123,7 +150,7 @@ export async function POST(req: NextRequest) {
         cotizacion,
         taller: { nombre: taller.nombre },
         marca: { userId: pedido.marca.userId, nombre: pedido.marca.nombre },
-        pedido: { omId: pedido.omId },
+        pedido: { omId: pedido.omId, id: pedido.id },
       })
 
       return NextResponse.json(cotizacion, { status: 201 })

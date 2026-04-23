@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { MessageSquarePlus, X, Send, Loader2, CheckCircle } from 'lucide-react'
 import { usePathname } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 
 const TIPOS = [
   { value: 'bug', label: '🐛 Algo no funciona', color: 'text-red-600' },
@@ -28,11 +29,25 @@ function parsearEntidad(pathname: string): { entidad: string; id: string } | nul
   return null
 }
 
+const ROLES_AUDITOR = [
+  { value: 'TALLER_BRONCE', label: 'Taller Bronce' },
+  { value: 'TALLER_PLATA', label: 'Taller Plata' },
+  { value: 'TALLER_ORO', label: 'Taller Oro' },
+  { value: 'MARCA', label: 'Marca' },
+  { value: 'ADMIN', label: 'Admin' },
+  { value: 'ESTADO', label: 'Estado' },
+  { value: 'SIN_LOGIN', label: 'Sin login / visitante' },
+]
+
 export function FeedbackWidget() {
   const pathname = usePathname()
+  const { data: session } = useSession()
+  const autenticado = !!session?.user
   const [abierto, setAbierto] = useState(false)
   const [tipo, setTipo] = useState('')
   const [mensaje, setMensaje] = useState('')
+  const [auditorNombre, setAuditorNombre] = useState('')
+  const [auditorRol, setAuditorRol] = useState('SIN_LOGIN')
   const [enviando, setEnviando] = useState(false)
   const [enviado, setEnviado] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -44,19 +59,28 @@ export function FeedbackWidget() {
       setError('Elegi un tipo y escribi al menos 10 caracteres')
       return
     }
+    if (!autenticado && auditorNombre.trim().length < 2) {
+      setError('Ingresa tu nombre (al menos 2 caracteres)')
+      return
+    }
     setEnviando(true)
     setError(null)
     try {
+      const body: Record<string, unknown> = {
+        tipo,
+        mensaje,
+        pagina: pathname,
+        entidad: entidadParseada?.entidad ?? null,
+        entidadId: entidadParseada?.id ?? null,
+      }
+      if (!autenticado) {
+        body.auditorNombre = auditorNombre.trim()
+        body.auditorRol = auditorRol
+      }
       const res = await fetch('/api/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          tipo,
-          mensaje,
-          pagina: pathname,
-          entidad: entidadParseada?.entidad ?? null,
-          entidadId: entidadParseada?.id ?? null,
-        }),
+        body: JSON.stringify(body),
       })
       if (!res.ok) throw new Error()
       setEnviado(true)
@@ -65,6 +89,8 @@ export function FeedbackWidget() {
         setEnviado(false)
         setTipo('')
         setMensaje('')
+        setAuditorNombre('')
+        setAuditorRol('SIN_LOGIN')
       }, 2000)
     } catch {
       setError('Error al enviar. Intenta de nuevo.')
@@ -92,6 +118,31 @@ export function FeedbackWidget() {
             </div>
           ) : (
             <div className="p-4 space-y-3">
+              {!autenticado && (
+                <div className="space-y-2 pb-3 border-b border-gray-100">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Tu nombre *</label>
+                    <input
+                      value={auditorNombre}
+                      onChange={e => setAuditorNombre(e.target.value)}
+                      placeholder="Nombre y apellido"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/30"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Rol que estás probando</label>
+                    <select
+                      value={auditorRol}
+                      onChange={e => setAuditorRol(e.target.value)}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/30"
+                    >
+                      {ROLES_AUDITOR.map(r => (
+                        <option key={r.value} value={r.value}>{r.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
               <div className="grid grid-cols-2 gap-2">
                 {TIPOS.map(t => (
                   <button key={t.value} onClick={() => setTipo(t.value)}

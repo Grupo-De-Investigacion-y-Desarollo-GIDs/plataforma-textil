@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Providers } from "./providers";
 import { FeedbackWidgetWrapper } from "@/compartido/componentes/feedback-widget-wrapper";
 import "./globals.css";
@@ -27,6 +29,8 @@ export default function RootLayout({
         <Providers>
           {children}
           <FeedbackWidgetWrapper />
+          <Analytics />
+          <SpeedInsights />
         </Providers>
       </body>
     </html>

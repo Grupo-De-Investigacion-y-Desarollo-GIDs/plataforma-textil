@@ -6,12 +6,15 @@ import { redirect, notFound } from 'next/navigation'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import Link from 'next/link'
-import { ArrowLeft, Package, Clock, DollarSign, TrendingUp, CheckCircle, Download } from 'lucide-react'
-import { AsignarTaller } from '@/marca/componentes/asignar-taller'
+import { ArrowLeft, Package, Clock, DollarSign, TrendingUp, CheckCircle, MessageCircle } from 'lucide-react'
+import { GaleriaFotos } from '@/taller/componentes/galeria-fotos'
+import { CotizacionImagenes } from '@/marca/componentes/cotizacion-imagenes'
 import { CancelarPedido } from '@/marca/componentes/cancelar-pedido'
 import { PublicarPedido } from '@/marca/componentes/publicar-pedido'
+import { InvitarACotizar } from '@/marca/componentes/invitar-a-cotizar'
 import { AceptarCotizacion } from '@/marca/componentes/aceptar-cotizacion'
 import { RechazarCotizacion } from '@/marca/componentes/rechazar-cotizacion'
+import { ActivityTimeline } from '@/compartido/componentes/activity-timeline'
 
 const statusVariant: Record<string, 'default' | 'success' | 'warning' | 'error' | 'muted'> = {
   BORRADOR: 'muted',
@@ -77,7 +80,7 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
     include: {
       ordenes: {
         include: {
-          taller: { select: { nombre: true, nivel: true } },
+          taller: { select: { nombre: true, nivel: true, user: { select: { phone: true } } } },
         },
         orderBy: { createdAt: 'desc' },
       },
@@ -86,16 +89,34 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
 
   if (!pedido || pedido.marcaId !== marca.id) notFound()
 
-  const cotizaciones = pedido.estado === 'PUBLICADO'
-    ? await prisma.cotizacion.findMany({
-        where: { pedidoId: pedido.id },
-        include: { taller: { select: { nombre: true, nivel: true } } },
-        orderBy: { createdAt: 'desc' },
-      })
-    : []
+  const [cotizaciones, actividad] = await Promise.all([
+    prisma.cotizacion.findMany({
+      where: { pedidoId: pedido.id },
+      include: { taller: { select: { nombre: true, nivel: true } } },
+      orderBy: { createdAt: 'desc' },
+    }),
+    prisma.logActividad.findMany({
+      where: {
+        accion: {
+          in: [
+            'PEDIDO_PUBLICADO', 'COTIZACION_RECIBIDA', 'COTIZACION_ACEPTADA',
+            'COTIZACION_RECHAZADA', 'ORDEN_CREADA', 'PROGRESO_ACTUALIZADO',
+            'ORDEN_ACEPTADA', 'ORDEN_RECHAZADA', 'ORDEN_COMPLETADA',
+            'PEDIDO_COMPLETADO', 'PEDIDO_CANCELADO',
+          ],
+        },
+        detalles: { path: ['pedidoId'], equals: pedido.id },
+      },
+      orderBy: { timestamp: 'desc' },
+      take: 50,
+      include: { user: { select: { name: true } } },
+    }),
+  ])
 
   const currentStep = getStepIndex(pedido.estado)
   const isCancelled = pedido.estado === 'CANCELADO'
+  const todasPendientes = pedido.ordenes.length > 0 && pedido.ordenes.every(o => o.estado === 'PENDIENTE')
+  const esperandoConfirmacion = pedido.estado === 'EN_EJECUCION' && todasPendientes
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -112,8 +133,8 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
             Creado: {new Date(pedido.createdAt).toLocaleDateString('es-AR')}
           </p>
         </div>
-        <Badge variant={statusVariant[pedido.estado] || 'default'}>
-          {statusLabel[pedido.estado] || pedido.estado}
+        <Badge variant={esperandoConfirmacion ? 'warning' : (statusVariant[pedido.estado] || 'default')}>
+          {esperandoConfirmacion ? 'Esperando confirmacion del taller' : (statusLabel[pedido.estado] || pedido.estado)}
         </Badge>
       </div>
 
@@ -190,59 +211,72 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
         </Card>
       </div>
 
+      {/* Imagenes del pedido */}
+      {pedido.imagenes.length > 0 && (
+        <Card title="Imagenes de referencia">
+          <GaleriaFotos fotos={pedido.imagenes} />
+        </Card>
+      )}
+
       {/* Acciones */}
       <div className="flex flex-wrap items-center gap-3">
         {pedido.estado === 'BORRADOR' && (
           <PublicarPedido pedidoId={pedido.id} />
         )}
-        {(pedido.estado === 'BORRADOR' || pedido.estado === 'PUBLICADO') && (
-          <AsignarTaller pedidoId={pedido.id} />
+        {pedido.estado === 'BORRADOR' && (
+          <InvitarACotizar pedidoId={pedido.id} />
         )}
         {['BORRADOR', 'PUBLICADO', 'EN_EJECUCION'].includes(pedido.estado) && (
           <CancelarPedido pedidoId={pedido.id} />
         )}
       </div>
 
-      {/* Cotizaciones recibidas */}
-      {pedido.estado === 'PUBLICADO' && (
-        <Card title={`Cotizaciones recibidas (${cotizaciones.length})`}>
-          {cotizaciones.length === 0 ? (
-            <p className="text-gray-500 text-sm py-4">
-              Todavia no recibiste cotizaciones. Los talleres compatibles fueron notificados.
-            </p>
-          ) : (
-            <div className="space-y-3">
-              {cotizaciones.map(cot => (
-                <div key={cot.id} className="border border-gray-100 rounded-lg p-4">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-1">
-                      <p className="font-medium text-gray-800">{cot.taller.nombre}</p>
-                      <Badge variant={cot.taller.nivel === 'ORO' ? 'success' : cot.taller.nivel === 'PLATA' ? 'default' : 'warning'}>
-                        {cot.taller.nivel}
-                      </Badge>
-                    </div>
-                    <Badge variant={
-                      cot.estado === 'ENVIADA' ? 'default' :
-                      cot.estado === 'ACEPTADA' ? 'success' :
-                      cot.estado === 'RECHAZADA' ? 'error' : 'muted'
-                    }>{cot.estado}</Badge>
+      {/* Cotizaciones */}
+      {cotizaciones.length > 0 && (
+        <Card title={`Cotizaciones (${cotizaciones.length})`}>
+          <div className="space-y-3">
+            {cotizaciones.map(cot => (
+              <div
+                key={cot.id}
+                className={`border rounded-lg p-4 ${
+                  cot.estado === 'ACEPTADA'
+                    ? 'border-green-300 bg-green-50'
+                    : 'border-gray-100'
+                }`}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="space-y-1">
+                    <p className="font-medium text-gray-800">{cot.taller.nombre}</p>
+                    <Badge variant={cot.taller.nivel === 'ORO' ? 'success' : cot.taller.nivel === 'PLATA' ? 'default' : 'warning'}>
+                      {cot.taller.nivel}
+                    </Badge>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3 text-sm">
-                    <div><span className="text-gray-500">Proceso:</span> <span className="font-medium">{cot.proceso}</span></div>
-                    <div><span className="text-gray-500">Precio:</span> <span className="font-medium">$ {cot.precio.toLocaleString('es-AR')}</span></div>
-                    <div><span className="text-gray-500">Plazo:</span> <span className="font-medium">{cot.plazoDias} dias</span></div>
-                  </div>
-                  {cot.mensaje && <p className="text-sm text-gray-600 mt-2 italic">{cot.mensaje}</p>}
-                  {cot.estado === 'ENVIADA' && (
-                    <div className="flex gap-2 mt-3">
-                      <AceptarCotizacion cotizacionId={cot.id} />
-                      <RechazarCotizacion cotizacionId={cot.id} />
-                    </div>
-                  )}
+                  <Badge variant={
+                    cot.estado === 'ENVIADA' ? 'default' :
+                    cot.estado === 'ACEPTADA' ? 'success' :
+                    cot.estado === 'RECHAZADA' ? 'error' : 'muted'
+                  }>
+                    {cot.estado}
+                  </Badge>
                 </div>
-              ))}
-            </div>
-          )}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3 text-sm">
+                  <div><span className="text-gray-500">Proceso:</span> <span className="font-medium">{cot.proceso}</span></div>
+                  <div><span className="text-gray-500">Precio:</span> <span className="font-medium">$ {cot.precio.toLocaleString('es-AR')}</span></div>
+                  <div><span className="text-gray-500">Plazo:</span> <span className="font-medium">{cot.plazoDias} dias</span></div>
+                </div>
+                {cot.mensaje && <p className="text-sm text-gray-600 mt-2 italic">{cot.mensaje}</p>}
+                {cot.imagenes && cot.imagenes.length > 0 && (
+                  <CotizacionImagenes imagenes={cot.imagenes} />
+                )}
+                {cot.estado === 'ENVIADA' && pedido.estado === 'PUBLICADO' && (
+                  <div className="flex gap-2 mt-3">
+                    <AceptarCotizacion cotizacionId={cot.id} />
+                    <RechazarCotizacion cotizacionId={cot.id} />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </Card>
       )}
 
@@ -261,43 +295,104 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
             {pedido.ordenes.map((orden) => (
               <div
                 key={orden.id}
-                className="border border-gray-100 rounded-lg p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3"
+                className="border border-gray-100 rounded-lg p-4 space-y-3"
               >
-                <div className="space-y-1">
-                  <p className="font-overpass font-semibold text-brand-blue">{orden.moId}</p>
-                  <p className="text-sm text-gray-600">
-                    Taller: {orden.taller.nombre} ({orden.taller.nivel})
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Proceso: {orden.proceso} - ${orden.precio.toLocaleString()}
-                  </p>
+                {orden.estado === 'PENDIENTE' && (
+                  <div className="rounded-lg bg-yellow-50 border border-yellow-200 px-4 py-3">
+                    <p className="text-sm text-yellow-800 font-medium">
+                      Esperando que el taller acepte esta orden de manufactura
+                    </p>
+                  </div>
+                )}
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                  <div className="space-y-1">
+                    <p className="font-overpass font-semibold text-brand-blue">{orden.moId}</p>
+                    <p className="text-sm text-gray-600">
+                      Taller: {orden.taller.nombre} ({orden.taller.nivel})
+                    </p>
+                  </div>
+                  <Badge variant={ordenStatusVariant[orden.estado] || 'default'}>
+                    {orden.estado === 'PENDIENTE'
+                      ? 'Pendiente de aceptacion'
+                      : (ordenStatusLabel[orden.estado] || orden.estado)}
+                  </Badge>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+                  <div>
+                    <span className="text-gray-500">Proceso:</span>
+                    <p className="font-medium">{orden.proceso}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Precio:</span>
+                    <p className="font-medium">$ {orden.precio.toLocaleString('es-AR')}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Plazo:</span>
+                    <p className="font-medium">{orden.plazoDias} dias</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Creada:</span>
+                    <p className="font-medium">{new Date(orden.createdAt).toLocaleDateString('es-AR')}</p>
+                  </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="text-right">
-                    <p className="text-sm font-medium">{orden.progreso}%</p>
-                    <div className="w-20 h-2 bg-gray-200 rounded-full mt-1">
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                      <span>Progreso</span>
+                      <span className="font-medium">{orden.progreso}%</span>
+                    </div>
+                    <div className="w-full h-2 bg-gray-200 rounded-full">
                       <div
-                        className="h-2 bg-brand-blue rounded-full"
+                        className="h-2 bg-brand-blue rounded-full transition-all"
                         style={{ width: `${Math.min(orden.progreso, 100)}%` }}
                       />
                     </div>
                   </div>
-                  <Badge variant={ordenStatusVariant[orden.estado] || 'default'}>
-                    {ordenStatusLabel[orden.estado] || orden.estado}
-                  </Badge>
-                  {(orden.estado === 'EN_EJECUCION' || orden.estado === 'COMPLETADO') && (
-                    <a href={`/api/ordenes/${orden.id}/pdf`} download
-                      className="text-xs font-semibold text-brand-blue hover:underline">
-                      <Download className="w-3.5 h-3.5 inline mr-1" />
-                      Acuerdo PDF
-                    </a>
-                  )}
                 </div>
               </div>
             ))}
           </div>
         )}
       </Card>
+
+      {/* Contacto talleres asignados */}
+      {pedido.ordenes.length > 0 && (
+        <Card>
+          <h2 className="font-overpass font-semibold text-gray-700 text-sm uppercase mb-3">
+            Contacto talleres
+          </h2>
+          <div className="space-y-3">
+            {pedido.ordenes.map((orden) => (
+              <div key={orden.id} className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-800">{orden.taller.nombre}</p>
+                  <p className="text-xs text-gray-500">{orden.moId}</p>
+                </div>
+                {orden.taller.user.phone ? (
+                  <a
+                    href={`https://wa.me/${orden.taller.user.phone.replace(/\D/g, '')}?text=${encodeURIComponent(`Hola, te contacto por la orden ${orden.moId} del pedido ${pedido.omId}.`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    WhatsApp
+                  </a>
+                ) : (
+                  <span className="text-xs text-gray-400">Sin telefono registrado</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      {actividad.length > 0 && (
+        <Card>
+          <h2 className="font-overpass font-bold text-brand-blue mb-3">Actividad del pedido</h2>
+          <ActivityTimeline eventos={actividad} perspective="marca" />
+        </Card>
+      )}
     </div>
   )
 }

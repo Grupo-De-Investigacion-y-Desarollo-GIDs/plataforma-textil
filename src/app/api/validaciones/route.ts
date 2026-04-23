@@ -46,10 +46,22 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json()
+
+    // Resolver tipoDocumentoId desde el nombre del tipo
+    let tipoDocumentoId = body.tipoDocumentoId
+    if (!tipoDocumentoId && body.tipo) {
+      const tipoDoc = await prisma.tipoDocumento.findUnique({ where: { nombre: body.tipo } })
+      if (!tipoDoc) {
+        return NextResponse.json({ error: `Tipo de documento '${body.tipo}' no encontrado` }, { status: 400 })
+      }
+      tipoDocumentoId = tipoDoc.id
+    }
+
     const validacion = await prisma.validacion.create({
       data: {
         tallerId: body.tallerId,
         tipo: body.tipo,
+        tipoDocumentoId,
         estado: body.estado,
         detalle: body.detalle,
         documentoUrl: body.documentoUrl,

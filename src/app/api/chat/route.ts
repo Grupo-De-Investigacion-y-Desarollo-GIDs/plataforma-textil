@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/compartido/lib/auth'
+import { prisma } from '@/compartido/lib/prisma'
 import { buscarContexto, generarRespuesta } from '@/compartido/lib/rag'
 import { z } from 'zod'
 
@@ -15,7 +16,20 @@ export async function POST(req: NextRequest) {
     }
 
     if (!process.env.ANTHROPIC_API_KEY || !process.env.VOYAGE_API_KEY) {
+      console.error('[chat] ANTHROPIC_API_KEY o VOYAGE_API_KEY no configuradas en las variables de entorno')
       return NextResponse.json({ error: 'Asistente no disponible' }, { status: 503 })
+    }
+
+    // Check de llm_enabled — antes de buscarContexto para no consumir
+    // creditos de Voyage AI innecesariamente si el asistente esta deshabilitado
+    const llmEnabledConfig = await prisma.configuracionSistema.findFirst({
+      where: { clave: 'llm_enabled', grupo: 'llm' },
+    })
+    if (llmEnabledConfig?.valor === 'false') {
+      return NextResponse.json(
+        { error: 'El asistente está deshabilitado temporalmente' },
+        { status: 503 }
+      )
     }
 
     const body = await req.json()

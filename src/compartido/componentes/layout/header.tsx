@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Globe, Search, Menu, X, User } from 'lucide-react'
+import { Globe, Search, Menu, X, User, Bell } from 'lucide-react'
 import { cn } from '@/compartido/lib/utils'
 import { UserSidebar } from './user-sidebar'
 
@@ -22,12 +22,14 @@ const tabsByRole: Record<string, Tab[]> = {
     { id: 'aprender', label: 'Academia', href: '/taller/aprender' },
   ],
   MARCA: [
+    { id: 'tablero', label: 'Tablero', href: '/marca' },
     { id: 'directorio', label: 'Directorio', href: '/marca/directorio' },
     { id: 'pedidos', label: 'Pedidos', href: '/marca/pedidos' },
     { id: 'perfil', label: 'Mi Perfil', href: '/marca/perfil' },
   ],
   ESTADO: [
     { id: 'dashboard', label: 'Dashboard', href: '/estado' },
+    { id: 'sector', label: 'Diagnóstico del sector', href: '/estado/sector' },
     { id: 'exportar', label: 'Exportar', href: '/estado/exportar' },
   ],
   ADMIN: [
@@ -95,6 +97,13 @@ export function Header({
                 </button>
                 <nav className="hidden md:flex items-center gap-6">
                   <span className="text-green-400 font-semibold">V2.0</span>
+                  <Link
+                    href="/cuenta/notificaciones"
+                    className="hover:text-blue-200 transition-colors relative"
+                    aria-label="Notificaciones"
+                  >
+                    <Bell className="w-4 h-4" />
+                  </Link>
                   <button
                     onClick={() => setSidebarOpen(true)}
                     className="hover:text-blue-200 transition-colors flex items-center gap-2"
@@ -161,6 +170,13 @@ export function Header({
                 {tab.label}
               </Link>
             ))}
+            <Link
+              href="/cuenta/notificaciones"
+              className="flex items-center gap-2 px-4 py-3 font-overpass font-medium rounded-lg text-white hover:bg-white/10"
+            >
+              <Bell className="w-4 h-4" />
+              Notificaciones
+            </Link>
           </nav>
         </div>
       )}

@@ -26,13 +26,20 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json()
     if (!body.nombre?.trim()) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 })
+    if (!body.label?.trim()) return NextResponse.json({ error: 'Label requerido' }, { status: 400 })
+    if (!body.nivelMinimo) return NextResponse.json({ error: 'Nivel mínimo requerido' }, { status: 400 })
 
     const tipo = await prisma.tipoDocumento.create({
       data: {
         nombre: body.nombre.trim(),
+        label: body.label.trim(),
         descripcion: body.descripcion?.trim() || null,
+        enlaceTramite: body.enlaceTramite?.trim() || null,
+        costoEstimado: body.costoEstimado?.trim() || null,
+        nivelMinimo: body.nivelMinimo,
         requerido: body.requerido ?? true,
         activo: body.activo ?? true,
+        orden: body.orden ?? 0,
       },
     })
 

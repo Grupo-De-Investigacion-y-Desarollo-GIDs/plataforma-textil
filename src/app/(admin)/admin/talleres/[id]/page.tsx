@@ -8,9 +8,9 @@ import { aplicarNivel } from '@/compartido/lib/nivel'
 import { sendEmail, buildDocAprobadoEmail, buildDocRechazadoEmail } from '@/compartido/lib/email'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
-import { Button } from '@/compartido/componentes/ui/button'
+import { Button, SubmitButton } from '@/compartido/componentes/ui/button'
 import { ChecklistItem } from '@/compartido/componentes/ui/checklist-item'
-import { ArrowLeft, MapPin, Mail, Phone } from 'lucide-react'
+import { ArrowLeft, MapPin, Mail, Phone, FileText, AlertTriangle, Calendar, Award } from 'lucide-react'
 
 const estadoToStatus: Record<string, 'completed' | 'pending' | 'warning' | 'optional'> = {
   COMPLETADO: 'completed',
@@ -32,30 +32,51 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
   const { id } = await params
   const { tab = 'formalizacion' } = await searchParams
 
-  const taller = await prisma.taller.findUnique({
-    where: { id },
-    include: {
-      user: { select: { email: true, phone: true, name: true, active: true } },
-      validaciones: { orderBy: { createdAt: 'asc' } },
-      maquinaria: true,
-      certificados: { include: { coleccion: { select: { titulo: true } } } },
-    },
-  })
+  const [taller, tiposDocumento, notas, logs, historialLogs] = await Promise.all([
+    prisma.taller.findUnique({
+      where: { id },
+      include: {
+        user: { select: { email: true, phone: true, name: true, active: true, createdAt: true } },
+        validaciones: { orderBy: { createdAt: 'asc' } },
+        maquinaria: true,
+        certificados: { include: { coleccion: { select: { titulo: true } } } },
+      },
+    }),
+    prisma.tipoDocumento.findMany({
+      where: { activo: true },
+      orderBy: { orden: 'asc' },
+      select: { nombre: true, label: true, enlaceTramite: true },
+    }),
+    prisma.notaInterna.findMany({
+      where: { tallerId: id },
+      include: { admin: { select: { name: true } } },
+      orderBy: { createdAt: 'desc' },
+    }),
+    prisma.logActividad.findMany({
+      where: { detalles: { path: ['tallerId'], equals: id } },
+      orderBy: { timestamp: 'desc' },
+      take: 20,
+      include: { user: { select: { name: true } } },
+    }),
+    prisma.logActividad.findMany({
+      where: {
+        accion: { in: ['VALIDACION_APROBADA', 'VALIDACION_RECHAZADA', 'NIVEL_SUBIDO', 'NIVEL_BAJADO'] },
+        detalles: { path: ['tallerId'], equals: id },
+      },
+      orderBy: { timestamp: 'desc' },
+      take: 30,
+      include: { user: { select: { name: true } } },
+    }),
+  ])
 
   if (!taller) notFound()
 
-  const notas = await prisma.notaInterna.findMany({
-    where: { tallerId: id },
-    include: { admin: { select: { name: true } } },
-    orderBy: { createdAt: 'desc' },
-  })
-
-  const logs = await prisma.logActividad.findMany({
-    where: { detalles: { path: ['tallerId'], equals: id } },
-    orderBy: { timestamp: 'desc' },
-    take: 20,
-    include: { user: { select: { name: true } } },
-  })
+  const labelPorNombre = Object.fromEntries(
+    tiposDocumento.map(td => [td.nombre, td.label])
+  )
+  const enlacePorNombre = Object.fromEntries(
+    tiposDocumento.filter(td => td.enlaceTramite).map(td => [td.nombre, td.enlaceTramite])
+  )
 
   // Server actions
   async function aprobarValidacion(formData: FormData) {
@@ -103,6 +124,26 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
     redirect(`/admin/talleres/${id}?tab=formalizacion`)
   }
 
+  async function revocarValidacion(formData: FormData) {
+    'use server'
+    const validacionId = formData.get('validacionId') as string
+    const motivo = formData.get('motivo') as string
+    if (!motivo?.trim()) return
+    await prisma.validacion.update({
+      where: { id: validacionId },
+      data: { estado: 'NO_INICIADO', documentoUrl: null, detalle: `Revocado: ${motivo}` },
+    })
+    await aplicarNivel(id, session!.user!.id)
+    await prisma.logActividad.create({
+      data: {
+        userId: session!.user!.id,
+        accion: 'VALIDACION_REVOCADA',
+        detalles: { tallerId: id, validacionId, motivo },
+      },
+    })
+    redirect(`/admin/talleres/${id}?tab=formalizacion`)
+  }
+
   async function guardarNota(formData: FormData) {
     'use server'
     const texto = formData.get('texto') as string
@@ -118,7 +159,9 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
   }
 
   const nivelVariant = taller.nivel === 'ORO' ? 'success' : taller.nivel === 'PLATA' ? 'default' : 'warning'
-  const docsConUrl = taller.validaciones.filter(v => v.documentoUrl && v.estado === 'PENDIENTE')
+  const docsConUrlPendientes = taller.validaciones.filter(
+    v => v.estado === 'PENDIENTE' && v.documentoUrl
+  ).length
 
   return (
     <div className="max-w-4xl mx-auto py-6 px-4">
@@ -136,7 +179,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
             <h1 className="font-overpass font-bold text-xl text-brand-blue">{taller.nombre}</h1>
             <p className="text-sm text-gray-500">CUIT: {taller.cuit} {taller.verificadoAfip && <span className="text-green-500">✓</span>}</p>
             <div className="flex flex-wrap gap-3 mt-2 text-sm text-gray-500">
-              {taller.zona && <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {taller.zona}</span>}
+              {taller.provincia && <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {taller.provincia}{taller.partido ? `, ${taller.partido}` : ''}</span>}
               {taller.user.email && <span className="flex items-center gap-1"><Mail className="w-3.5 h-3.5" /> {taller.user.email}</span>}
               {taller.user.phone && <span className="flex items-center gap-1"><Phone className="w-3.5 h-3.5" /> {taller.user.phone}</span>}
             </div>
@@ -157,9 +200,109 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
         )}
       </Card>
 
+      {/* Responsable / Contacto */}
+      <Card title="Responsable / Contacto" className="mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+          <div>
+            <p className="text-gray-500">Responsable</p>
+            <p className="font-medium text-gray-800">
+              {taller.user.name ?? (
+                <span className="text-gray-400 italic">Sin nombre registrado</span>
+              )}
+            </p>
+          </div>
+          <div>
+            <p className="text-gray-500">Fecha de registro</p>
+            <p className="font-medium text-gray-800">
+              {new Date(taller.user.createdAt).toLocaleDateString('es-AR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              })}
+            </p>
+          </div>
+          <div>
+            <p className="text-gray-500">Email</p>
+            <a
+              href={`mailto:${taller.user.email}`}
+              className="text-brand-blue hover:underline font-medium break-all"
+            >
+              {taller.user.email}
+            </a>
+          </div>
+          <div>
+            <p className="text-gray-500">Teléfono</p>
+            {taller.user.phone ? (
+              <a
+                href={`tel:${taller.user.phone}`}
+                className="text-brand-blue hover:underline font-medium"
+              >
+                {taller.user.phone}
+              </a>
+            ) : (
+              <span className="text-gray-400 italic">Sin teléfono</span>
+            )}
+          </div>
+          {taller.website && (
+            <div>
+              <p className="text-gray-500">Web</p>
+              <a
+                href={taller.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand-blue hover:underline font-medium break-all"
+              >
+                {taller.website.replace(/^https?:\/\//, '')}
+              </a>
+            </div>
+          )}
+        </div>
+
+        {(!taller.user.name || !taller.user.phone || !taller.ubicacion) && (
+          <div className="mt-3 flex items-center gap-2 text-amber-600 text-xs bg-amber-50 px-3 py-2 rounded-lg">
+            <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
+            Datos de contacto incompletos — el taller puede completarlos desde su perfil
+          </div>
+        )}
+      </Card>
+
+      {/* Desglose de puntaje */}
+      <Card title="Desglose de puntaje" className="mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+          <div className="bg-gray-50 rounded-lg p-3 text-center">
+            <p className="text-2xl font-overpass font-bold text-brand-blue">{taller.puntaje}</p>
+            <p className="text-xs text-gray-500">Total</p>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-3 text-center">
+            <p className="text-2xl font-overpass font-bold text-gray-700">{taller.verificadoAfip ? 10 : 0}</p>
+            <p className="text-xs text-gray-500">AFIP verificado</p>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-3 text-center">
+            <p className="text-2xl font-overpass font-bold text-gray-700">{taller.validaciones.filter(v => v.estado === 'COMPLETADO').length * 10}</p>
+            <p className="text-xs text-gray-500">Validaciones ({taller.validaciones.filter(v => v.estado === 'COMPLETADO').length} x 10)</p>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-3 text-center">
+            <p className="text-2xl font-overpass font-bold text-gray-700">{taller.certificados.filter(c => !c.revocado).length * 15}</p>
+            <p className="text-xs text-gray-500">Certificados ({taller.certificados.filter(c => !c.revocado).length} x 15)</p>
+          </div>
+        </div>
+        {taller.certificados.length > 0 && (
+          <div className="mt-4 pt-3 border-t border-gray-100">
+            <p className="text-xs text-gray-500 mb-2">Certificados de academia:</p>
+            <div className="flex flex-wrap gap-2">
+              {taller.certificados.map(c => (
+                <Badge key={c.id} variant={c.revocado ? 'warning' : 'success'}>
+                  <Award className="w-3 h-3 mr-1" />{c.coleccion.titulo}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
+      </Card>
+
       {/* Tabs */}
       <div className="flex gap-2 mb-4">
-        {(['formalizacion', 'documentos', 'actividad'] as const).map(t => (
+        {(['formalizacion', 'historial', 'actividad'] as const).map(t => (
           <Link
             key={t}
             href={`/admin/talleres/${id}?tab=${t}`}
@@ -167,7 +310,11 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
               tab === t ? 'bg-brand-blue text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            {t === 'formalizacion' ? 'Formalización' : t === 'documentos' ? `Documentos (${docsConUrl.length})` : 'Actividad'}
+            {t === 'formalizacion'
+              ? `Formalización${docsConUrlPendientes > 0 ? ` (${docsConUrlPendientes})` : ''}`
+              : t === 'historial'
+                ? 'Historial'
+                : 'Actividad'}
           </Link>
         ))}
       </div>
@@ -180,29 +327,79 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
             {taller.validaciones.map(v => (
               <div key={v.id} className="py-3 first:pt-0 last:pb-0">
                 <ChecklistItem
-                  title={v.tipo.replace(/_/g, ' ')}
+                  title={labelPorNombre[v.tipo] ?? v.tipo}
                   status={estadoToStatus[v.estado] || 'optional'}
                   description={
                     v.estado === 'COMPLETADO' ? 'Verificado'
+                    : v.estado === 'PENDIENTE' && !v.documentoUrl && enlacePorNombre[v.tipo]
+                      ? 'Tramite externo — verificar en ARCA/SIPA'
                     : v.estado === 'PENDIENTE' ? 'Pendiente de revisión'
                     : v.estado === 'RECHAZADO' ? `Rechazado: ${v.detalle || ''}`
                     : v.estado === 'VENCIDO' ? 'Documento vencido'
                     : 'No iniciado'
                   }
                 />
-                {v.estado === 'PENDIENTE' && v.documentoUrl && (
-                  <div className="flex gap-2 mt-2 ml-8">
-                    <a href={v.documentoUrl} target="_blank" rel="noopener noreferrer">
-                      <Button size="sm" variant="secondary">Ver documento</Button>
+                {/* Badge trámite externo para PENDIENTE sin documento */}
+                {v.estado === 'PENDIENTE' && !v.documentoUrl && enlacePorNombre[v.tipo] && (
+                  <div className="mt-2 ml-8 flex items-center gap-2">
+                    <Badge variant="warning">Tramite externo</Badge>
+                    <a
+                      href={enlacePorNombre[v.tipo]!}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-brand-blue underline text-xs"
+                    >
+                      Verificar en ARCA
                     </a>
+                  </div>
+                )}
+                {/* Link del documento visible en cualquier estado si existe URL */}
+                {v.documentoUrl && (
+                  <div className="mt-2 ml-8">
+                    <a
+                      href={v.documentoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-brand-blue underline text-sm inline-flex items-center gap-1"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      Ver documento
+                    </a>
+                  </div>
+                )}
+                {/* Acciones para PENDIENTE */}
+                {v.estado === 'PENDIENTE' && (v.documentoUrl || enlacePorNombre[v.tipo]) && (
+                  <div className="flex gap-2 mt-2 ml-8">
                     <form action={aprobarValidacion}>
                       <input type="hidden" name="validacionId" value={v.id} />
-                      <Button size="sm" type="submit">Aprobar</Button>
+                      <SubmitButton size="sm" pendingText="Aprobando...">Aprobar</SubmitButton>
                     </form>
                     <form action={rechazarValidacion} className="flex gap-1">
                       <input type="hidden" name="validacionId" value={v.id} />
-                      <input type="text" name="motivo" placeholder="Motivo..." className="text-xs border rounded px-2 py-1 w-40" />
-                      <Button size="sm" variant="secondary" type="submit">Rechazar</Button>
+                      <input
+                        type="text"
+                        name="motivo"
+                        placeholder="Motivo del rechazo..."
+                        required
+                        className="text-xs border border-gray-300 rounded px-2 py-1 w-48"
+                      />
+                      <SubmitButton size="sm" variant="secondary" pendingText="Rechazando...">Rechazar</SubmitButton>
+                    </form>
+                  </div>
+                )}
+                {/* Acción para COMPLETADO: revocar con motivo obligatorio */}
+                {v.estado === 'COMPLETADO' && (
+                  <div className="mt-2 ml-8">
+                    <form action={revocarValidacion} className="flex gap-1">
+                      <input type="hidden" name="validacionId" value={v.id} />
+                      <input
+                        type="text"
+                        name="motivo"
+                        placeholder="Motivo de la revocacion..."
+                        required
+                        className="text-xs border border-gray-300 rounded px-2 py-1 w-56"
+                      />
+                      <SubmitButton size="sm" variant="danger" pendingText="Revocando...">Revocar</SubmitButton>
                     </form>
                   </div>
                 )}
@@ -212,36 +409,35 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
         </Card>
       )}
 
-      {/* Tab: Documentos */}
-      {tab === 'documentos' && (
+      {/* Tab: Historial */}
+      {tab === 'historial' && (
         <Card>
-          <h2 className="font-overpass font-bold text-brand-blue mb-3">Documentos Pendientes de Revisión</h2>
-          {docsConUrl.length === 0 ? (
-            <p className="text-sm text-gray-500">No hay documentos pendientes de revisión.</p>
+          <h2 className="font-overpass font-bold text-brand-blue mb-3">Historial del taller</h2>
+          {historialLogs.length === 0 ? (
+            <p className="text-sm text-gray-500">Sin actividad registrada.</p>
           ) : (
-            <div className="space-y-3">
-              {docsConUrl.map(v => (
-                <div key={v.id} className="flex items-center justify-between border rounded-lg p-3">
-                  <div>
-                    <p className="text-sm font-semibold">{v.tipo.replace(/_/g, ' ')}</p>
-                    <p className="text-xs text-gray-500">Subido: {v.updatedAt.toLocaleDateString('es-AR')}</p>
+            <div className="space-y-2">
+              {historialLogs.map(log => {
+                const detalles = log.detalles as {
+                  nivelAnterior?: string
+                  nivelNuevo?: string
+                  motivo?: string
+                }
+                const descripcion =
+                  log.accion === 'VALIDACION_APROBADA' ? `${log.user?.name ?? 'Admin'} aprobó una validación`
+                : log.accion === 'VALIDACION_RECHAZADA' ? `${log.user?.name ?? 'Admin'} rechazó una validación${detalles.motivo ? ` — ${detalles.motivo}` : ''}`
+                : log.accion === 'NIVEL_SUBIDO' ? `Subió de nivel: ${detalles.nivelAnterior} → ${detalles.nivelNuevo}`
+                : log.accion === 'NIVEL_BAJADO' ? `Bajó de nivel: ${detalles.nivelAnterior} → ${detalles.nivelNuevo}`
+                : log.accion
+                return (
+                  <div key={log.id} className="text-sm border-b border-gray-50 pb-2">
+                    <span className="text-gray-400">
+                      {log.timestamp.toLocaleDateString('es-AR')}
+                    </span>
+                    <p className="text-gray-700">{descripcion}</p>
                   </div>
-                  <div className="flex gap-2">
-                    <a href={v.documentoUrl!} target="_blank" rel="noopener noreferrer">
-                      <Button size="sm" variant="secondary">Ver</Button>
-                    </a>
-                    <form action={aprobarValidacion}>
-                      <input type="hidden" name="validacionId" value={v.id} />
-                      <Button size="sm" type="submit">Aprobar</Button>
-                    </form>
-                    <form action={rechazarValidacion}>
-                      <input type="hidden" name="validacionId" value={v.id} />
-                      <input type="hidden" name="motivo" value="Documento ilegible o incorrecto" />
-                      <Button size="sm" variant="secondary" type="submit">Rechazar</Button>
-                    </form>
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </Card>

@@ -10,7 +10,7 @@ const usuarios = [
   {
     email: 'lucia.fernandez@pdt.org.ar',
     password: 'pdt2026',
-    nombre: 'Lucia Fernandez',
+    nombre: 'Lucía Fernández',
     rol: 'ADMIN',
     descripcion: 'Acceso completo al panel de administracion',
     redirect: '/admin',
@@ -20,7 +20,7 @@ const usuarios = [
   {
     email: 'roberto.gimenez@pdt.org.ar',
     password: 'pdt2026',
-    nombre: 'Roberto Gimenez',
+    nombre: 'Roberto Giménez',
     rol: 'TALLER BRONCE',
     descripcion: 'Taller La Aguja — Florencio Varela',
     redirect: '/taller',
@@ -50,7 +50,7 @@ const usuarios = [
   {
     email: 'martin.echevarria@pdt.org.ar',
     password: 'pdt2026',
-    nombre: 'Martin Echevarria',
+    nombre: 'Martín Echevarría',
     rol: 'MARCA',
     descripcion: 'Moda Urbana BA — Marca mediana',
     redirect: '/marca',
@@ -60,7 +60,7 @@ const usuarios = [
   {
     email: 'anabelen.torres@pdt.org.ar',
     password: 'pdt2026',
-    nombre: 'Ana Belen Torres',
+    nombre: 'Ana Belén Torres',
     rol: 'ESTADO',
     descripcion: 'Organismo publico — Dashboard del sector',
     redirect: '/estado',
@@ -70,7 +70,7 @@ const usuarios = [
   {
     email: 'sofia.martinez@pdt.org.ar',
     password: 'pdt2026',
-    nombre: 'Sofia Martinez',
+    nombre: 'Sofía Martínez',
     rol: 'CONTENIDO',
     descripcion: 'Gestion de colecciones, evaluaciones y notificaciones',
     redirect: '/contenido/colecciones',

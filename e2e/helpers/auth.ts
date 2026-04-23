@@ -1,12 +1,13 @@
 import { Page, expect } from '@playwright/test'
 
-export async function loginAs(page: Page, role: 'admin' | 'taller_bronce' | 'taller_oro' | 'marca' | 'estado') {
+export async function loginAs(page: Page, role: 'admin' | 'taller_bronce' | 'taller_oro' | 'marca' | 'estado' | 'contenido') {
   const credentials = {
     admin: { email: 'lucia.fernandez@pdt.org.ar', password: 'pdt2026' },
     taller_bronce: { email: 'roberto.gimenez@pdt.org.ar', password: 'pdt2026' },
     taller_oro: { email: 'carlos.mendoza@pdt.org.ar', password: 'pdt2026' },
     marca: { email: 'martin.echevarria@pdt.org.ar', password: 'pdt2026' },
     estado: { email: 'anabelen.torres@pdt.org.ar', password: 'pdt2026' },
+    contenido: { email: 'sofia.martinez@pdt.org.ar', password: 'pdt2026' },
   }
   const { email, password } = credentials[role]
 
@@ -31,4 +32,15 @@ export async function loginAs(page: Page, role: 'admin' | 'taller_bronce' | 'tal
       `BASE_URL=https://plataforma-textil.vercel.app npx playwright test`
     )
   }
+}
+
+export function assertAccesoBloqueado(url: string, body: string | null): boolean {
+  const bodyLower = body?.toLowerCase() ?? ''
+  return (
+    url.includes('/login') ||
+    url.includes('/unauthorized') ||
+    bodyLower.includes('no autorizado') ||
+    bodyLower.includes('no tienes permiso') ||
+    bodyLower.includes('acceso denegado')
+  )
 }

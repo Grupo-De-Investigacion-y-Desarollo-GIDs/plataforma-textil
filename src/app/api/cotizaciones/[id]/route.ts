@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { notificarCotizacion } from '@/compartido/lib/notificaciones'
+import { logActividad } from '@/compartido/lib/log'
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -42,21 +43,21 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       // Generar moId con formato existente
       const moId = `MO-${new Date().getFullYear()}-${crypto.randomUUID().replace(/-/g, '').slice(0, 8).toUpperCase()}`
 
-      // Transaccion atomica: 4 operaciones
-      await prisma.$transaction([
-        prisma.cotizacion.update({
+      // Transaccion interactiva: capturar cuid de la orden creada
+      const ordenCreada = await prisma.$transaction(async (tx) => {
+        await tx.cotizacion.update({
           where: { id },
           data: { estado: 'ACEPTADA' },
-        }),
-        prisma.cotizacion.updateMany({
+        })
+        await tx.cotizacion.updateMany({
           where: {
             pedidoId: cotizacion.pedidoId,
             id: { not: id },
             estado: 'ENVIADA',
           },
           data: { estado: 'RECHAZADA' },
-        }),
-        prisma.ordenManufactura.create({
+        })
+        const orden = await tx.ordenManufactura.create({
           data: {
             moId,
             pedidoId: cotizacion.pedidoId,
@@ -64,20 +65,37 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
             proceso: cotizacion.proceso,
             precio: cotizacion.precio,
             plazoDias: cotizacion.plazoDias,
+            cotizacionId: cotizacion.id,
           },
-        }),
-        prisma.pedido.update({
+        })
+        await tx.pedido.update({
           where: { id: cotizacion.pedidoId },
-          data: { estado: 'EN_EJECUCION' },
-        }),
-      ])
+          data: {
+            estado: 'EN_EJECUCION',
+            montoTotal: { increment: cotizacion.precio },
+          },
+        })
+        return orden
+      })
+
+      logActividad('COTIZACION_ACEPTADA', userId, {
+        pedidoId: cotizacion.pedidoId,
+        cotizacionId: id,
+        tallerNombre: cotizacion.taller.nombre,
+      })
+      logActividad('ORDEN_CREADA', userId, {
+        pedidoId: cotizacion.pedidoId,
+        ordenId: ordenCreada.id,
+        tallerId: cotizacion.tallerId,
+        tallerNombre: cotizacion.taller.nombre,
+      })
 
       // Despues del commit: notificaciones fire-and-forget
       notificarCotizacion('ACEPTADA', {
         cotizacion,
         taller: { nombre: cotizacion.taller.nombre, userId: cotizacion.taller.userId },
         marca: { nombre: cotizacion.pedido.marca.nombre },
-        pedido: { omId: cotizacion.pedido.omId },
+        pedido: { omId: cotizacion.pedido.omId, id: cotizacion.pedidoId },
       })
 
       // Notificar a talleres rechazados
@@ -96,7 +114,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
           cotizacion: cot,
           taller: { nombre: cot.taller.nombre, userId: cot.taller.userId },
           marca: { nombre: cotizacion.pedido.marca.nombre },
-          pedido: { omId: cotizacion.pedido.omId },
+          pedido: { omId: cotizacion.pedido.omId, id: cotizacion.pedidoId },
         })
       }
 
@@ -115,11 +133,17 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
       await prisma.cotizacion.update({ where: { id }, data: { estado: 'RECHAZADA' } })
 
+      logActividad('COTIZACION_RECHAZADA', userId, {
+        pedidoId: cotizacion.pedidoId,
+        cotizacionId: id,
+        tallerNombre: cotizacion.taller.nombre,
+      })
+
       notificarCotizacion('RECHAZADA', {
         cotizacion,
         taller: { nombre: cotizacion.taller.nombre, userId: cotizacion.taller.userId },
         marca: { nombre: cotizacion.pedido.marca.nombre },
-        pedido: { omId: cotizacion.pedido.omId },
+        pedido: { omId: cotizacion.pedido.omId, id: cotizacion.pedidoId },
       })
 
       return NextResponse.json({ ok: true })

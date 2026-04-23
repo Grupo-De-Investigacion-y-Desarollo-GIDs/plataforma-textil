@@ -45,6 +45,17 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       data.estado = body.estado
     }
 
+    // Talleres pueden marcar trámite externo como realizado (NO_INICIADO → PENDIENTE)
+    if (isOwner && body.marcarRealizado && existing.estado === 'NO_INICIADO') {
+      const tipoDoc = await prisma.tipoDocumento.findFirst({
+        where: { nombre: existing.tipo, activo: true },
+        select: { enlaceTramite: true },
+      })
+      if (tipoDoc?.enlaceTramite) {
+        data.estado = 'PENDIENTE'
+      }
+    }
+
     const validacion = await prisma.validacion.update({
       where: { id },
       data,

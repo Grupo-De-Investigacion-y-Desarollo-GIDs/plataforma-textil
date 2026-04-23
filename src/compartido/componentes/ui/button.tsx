@@ -1,4 +1,7 @@
+'use client'
+
 import { forwardRef } from 'react'
+import { useFormStatus } from 'react-dom'
 import { cn } from '@/compartido/lib/utils'
 import { Loader2 } from 'lucide-react'
 
@@ -48,3 +51,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 )
 
 Button.displayName = 'Button'
+
+/** Button that shows loading spinner while a server action form is pending */
+export function SubmitButton({
+  children,
+  pendingText,
+  ...props
+}: ButtonProps & { pendingText?: string }) {
+  const { pending } = useFormStatus()
+  return (
+    <Button type="submit" loading={pending} disabled={pending} {...props}>
+      {pending ? (pendingText ?? children) : children}
+    </Button>
+  )
+}

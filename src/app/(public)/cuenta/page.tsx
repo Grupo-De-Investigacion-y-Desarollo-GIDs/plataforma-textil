@@ -22,7 +22,7 @@ export default async function CuentaPage() {
       phone: true,
       role: true,
       createdAt: true,
-      notificaciones: { where: { leida: false }, select: { id: true } },
+      notificacionesRecibidas: { where: { leida: false }, select: { id: true } },
     },
   })
 
@@ -42,7 +42,7 @@ export default async function CuentaPage() {
           <p><span className="text-gray-500">Telefono:</span> <span className="font-medium text-gray-800">{user.phone || '-'}</span></p>
           <p><span className="text-gray-500">Rol:</span> <span className="font-medium text-gray-800">{user.role}</span></p>
           <p><span className="text-gray-500">Alta:</span> <span className="font-medium text-gray-800">{new Date(user.createdAt).toLocaleDateString('es-AR')}</span></p>
-          <p><span className="text-gray-500">No leidas:</span> <span className="font-medium text-gray-800">{user.notificaciones.length}</span></p>
+          <p><span className="text-gray-500">No leidas:</span> <span className="font-medium text-gray-800">{user.notificacionesRecibidas.length}</span></p>
         </div>
       </section>
 

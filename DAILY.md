@@ -1,8 +1,555 @@
 # Daily Log
 
+## 2026-04-23
+
+### Gerardo Breard
+- **10:58** `b7ecf4b` — perf: paralelizar 5 queries en admin/talleres/[id] (#120)
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+
+- **10:52** `93a691e` — fix: revocar validación requiere motivo obligatorio con log (#119)
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+
+- **01:31** `2e30cf1` — fix: soporte trámites externos — botón 'Ya lo hice' y badge admin (#116)
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+  - `src/app/api/validaciones/[id]/route.ts`
+  - `src/taller/componentes/marcar-realizado-button.tsx`
+
+- **01:18** `7a05013` — fix: alinear backend con frontend — solo rechazar CUIT si AFIP confirma invalido (#117)
+  - `src/app/api/auth/registro/route.ts`
+
+
+## 2026-04-22
+
+### Gerardo Breard
+- **15:32** `31cae0a` — perf: paralelizar queries y paginar pedidos disponibles (#95 #96 #101)
+  - `src/app/(admin)/admin/notificaciones/page.tsx`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+
+- **15:13** `ca6787d` — docs: registrar UX-04 tooltip badge formalización en V3_BACKLOG
+  - `.claude/specs/V3_BACKLOG.md`
+
+- **15:05** `f316d50` — fix: SubmitButton con loading state en aprobar/rechazar/revocar validaciones (#107)
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/compartido/componentes/ui/button.tsx`
+
+- **14:47** `8b25a5f` — docs: actualizar V3_BACKLOG con issues cerrados de V2
+  - `.claude/specs/V3_BACKLOG.md`
+
+- **14:39** `e18f8c6` — docs: registrar INT-02 problema AfipSDK en V3_BACKLOG
+  - `.claude/specs/V3_BACKLOG.md`
+
+- **14:32** `3dc106d` — fix: permitir registro cuando AFIP no responde, con warning pendiente de verificacion (#109)
+  - `src/app/(auth)/registro/page.tsx`
+
+- **12:40** `eb7692a` — docs: registrar INT-01 integración completa ARCA en V3_BACKLOG
+  - `.claude/specs/V3_BACKLOG.md`
+
+
+## 2026-04-21
+
+### Gerardo Breard
+- **11:45** `19405a6` — fix: eliminar campo ubicacion legacy, usar solo provincia/partido en perfil (#92)
+  - `src/app/(public)/perfil/[id]/page.tsx`
+  - `src/app/(taller)/taller/perfil/editar/editar-form.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+
+
+## 2026-04-20
+
+### Gerardo Breard
+- **20:33** `8325856` — fix: agregar tab Tablero en navbar de marca para volver a /marca (#89)
+  - `src/compartido/componentes/layout/header.tsx`
+
+- **20:22** `b5b95bc` — fix: montoTotal, contactar taller, banner PENDIENTE, label visual y bug log MO (#90 #91)
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/api/cotizaciones/[id]/route.ts`
+  - `src/app/api/ordenes/[id]/route.ts`
+
+- **17:55** `b094e73` — fix: KPIs de admin/notificaciones cuentan solo comunicaciones del admin (#88)
+  - `src/app/(admin)/admin/notificaciones/page.tsx`
+
+- **17:24** `2d953c6` — fix: middleware excluir archivos de fuentes woff2/woff/ttf/eot (#86)
+  - `src/middleware.ts`
+
+- **17:07** `a2b9304` — fix: mostrar documento subido en checklist de formalización del taller (#85)
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+  - `src/app/api/validaciones/[id]/signed-url/route.ts`
+  - `src/compartido/lib/storage.ts`
+  - `src/taller/componentes/ver-documento-button.tsx`
+
+- **16:50** `50a01f9` — fix: página /unauthorized con header de la plataforma y link al panel (#84)
+  - `src/app/unauthorized/page.tsx`
+
+- **16:40** `65eef74` — docs: registrar F-06 RAG completo en V3_BACKLOG + desactivar flags en prod
+  - `.claude/specs/V3_BACKLOG.md`
+
+- **15:24** `47857f5` — fix: suppressHydrationWarning en timeAgo de activity-timeline (#74)
+  - `src/compartido/componentes/activity-timeline.tsx`
+
+- **14:43** `fdffc03` — docs: registrar F-05 demanda insatisfecha en V3_BACKLOG
+  - `.claude/specs/V3_BACKLOG.md`
+
+- **13:58** `6cb986c` — fix: agregar botón revocar validación en admin + banner certificado faltante (#51 #52)
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(taller)/taller/page.tsx`
+
+- **13:23** `3ab9fa9` — fix: documentos requeridos NO_INICIADO se muestran como pendientes, no como opcionales (#49)
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+
+- **12:30** `7e7b867` — fix: FileUpload muestra mensajes de error para formato, tamaño y máximo (#46 #47 #48)
+  - `src/compartido/componentes/ui/file-upload.tsx`
+
+
+## 2026-04-19
+
+### Gerardo Breard
+- **19:11** `0c9ef18` — docs: registrar T-05 protocolo validación funcional equipo interdisciplinario
+  - `.claude/specs/V3_BACKLOG.md`
+
+- **18:41** `57163b2` — docs: registrar estrategia de testing interdisciplinario en V3_BACKLOG
+  - `.claude/specs/V3_BACKLOG.md`
+
+- **18:14** `ab177b1` — docs: completar V3_BACKLOG con análisis completo de estándares de industria
+  - `.claude/specs/V3_BACKLOG.md`
+
+- **17:59** `b1da3f3` — docs: registrar I-01 separación de ambientes en V3_BACKLOG
+  - `.claude/specs/V3_BACKLOG.md`
+
+
+## 2026-04-18
+
+### Gerardo Breard
+- **14:36** `97a9b8c` — docs: registrar S-01 auditoría cookies NextAuth en V3_BACKLOG
+  - `.claude/specs/V3_BACKLOG.md`
+
+- **14:34** `389f948` — docs: registrar P-03 auditoría performance completa en V3_BACKLOG
+  - `.claude/specs/V3_BACKLOG.md`
+
+- **14:31** `970ea08` — docs: documentar resultados de performance fixes en V3_BACKLOG
+  - `.claude/specs/V3_BACKLOG.md`
+
+- **14:29** `3dad7a2` — test: agregar script de performance checks (TTFB + paginación)
+  - `tools/perf-check.js`
+
+- **14:22** `c8844b3` — docs: agregar P-02 Prisma Accelerate y registrar fixes V2 en backlog
+  - `.claude/specs/V3_BACKLOG.md`
+
+- **14:20** `9b2aec8` — perf: agregar paginación al directorio — 12 talleres por página
+  - `src/app/(public)/directorio/page.tsx`
+
+- **14:16** `1b9c8cf` — perf: paralelizar 5 queries secuenciales en dashboard taller
+  - `src/app/(taller)/taller/page.tsx`
+
+- **14:14** `0c17f02` — perf: instalar Vercel Analytics y Speed Insights
+  - `package-lock.json`
+  - `package.json`
+  - `src/app/layout.tsx`
+
+
+## 2026-04-17
+
+### Gerardo Breard
+- **19:50** `c94c889` — docs: mover proximo-nivel a V3 y registrar en backlog
+  - `.claude/specs/V3_BACKLOG.md`
+  - `.claude/specs/v3-proximo-nivel-dashboard.md`
+
+- **19:41** `2e74fd1` — docs: iniciar backlog V3 con aprendizajes de V2
+  - `.claude/specs/V3_BACKLOG.md`
+
+- **19:01** `0dc6544` — fix: texto condicional en botón del wizard — "Actualizar" si ya completó, "Completar" si no (#39)
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+
+- **18:52** `464d1eb` — feat: agregar campo website al modelo Taller (#42)
+  - `prisma/migrations/20260417190000_add_website_taller/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(taller)/taller/perfil/editar/editar-form.tsx`
+  - `src/app/api/talleres/[id]/route.ts`
+
+- **18:33** `6176090` — fix: cards de contacto responsive en mobile — grid 1col en mobile, 2col en desktop (#41)
+  - `src/app/(admin)/admin/marcas/[id]/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+
+- **16:14** `d315a11` — docs: agregar QA spec v2-estandarizacion-ubicacion
+  - `.claude/auditorias/QA_v2-estandarizacion-ubicacion.md`
+
+- **16:05** `3734b17` — feat: estandarizar ubicación con provincias y partidos INDEC (#38)
+  - `.claude/specs/v2-estandarizacion-ubicacion.md`
+  - `prisma/migrations/20260417180000_estandarizar_ubicacion_taller/migration.sql`
+  - `prisma/schema.prisma`
+  - `prisma/seed.ts`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(admin)/admin/talleres/page.tsx`
+  - `src/app/(estado)/estado/sector/page.tsx`
+  - `src/app/(public)/directorio/page.tsx`
+  - `src/app/(taller)/taller/perfil/editar/editar-form.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/app/api/talleres/[id]/route.ts`
+  - `src/app/api/talleres/route.ts`
+  - `src/compartido/componentes/ubicacion-selector.tsx`
+  - `src/compartido/data/ubicaciones-ar.json`
+
+- **15:01** `0e0bbfe` — fix: agregar boton de issue en Eje 4 y Eje 5 del generador QA
+  - `tools/generate-qa.js`
+
+- **14:53** `1c0607e` — docs: documentar flujo QA interactivo en CLAUDE.md
+  - `CLAUDE.md`
+
+- **14:34** `ded020c` — docs: agregar QA spec v2-actividad-contextual-pedidos
+  - `.claude/auditorias/QA_v2-actividad-contextual-pedidos.md`
+
+- **14:25** `2cd0a0f` — fix: corregir numeración de pasos en comentarios del wizard (#35)
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+
+- **14:18** `d08bb0a` — feat: actividad contextual en pedidos — timeline por entidad (#33)
+  - `src/app/(admin)/admin/notificaciones/page.tsx`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/[id]/page.tsx`
+  - `src/app/api/cotizaciones/[id]/route.ts`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/app/api/ordenes/[id]/route.ts`
+  - `src/app/api/pedidos/[id]/route.ts`
+  - `src/compartido/componentes/activity-timeline.tsx`
+
+- **12:50** `6f8c158` — fix: notificaciones sin link ahora son clickeables con expand/collapse (#27)
+  - `src/app/(public)/cuenta/notificaciones/notificaciones-lista.tsx`
+
+- **12:42** `d39162a` — fix: agregar tabs Comunicaciones/Historial en /cuenta/notificaciones (#34)
+  - `src/app/(public)/cuenta/notificaciones/notificaciones-lista.tsx`
+  - `src/app/(public)/cuenta/notificaciones/page.tsx`
+
+- **12:09** `3ccbaf0` — fix: agregar acceso visible a notificaciones desde header y layout público (#28-#32)
+  - `src/app/(public)/layout.tsx`
+  - `src/compartido/componentes/layout/header.tsx`
+
+
+## 2026-04-16
+
+### Gerardo Breard
+- **12:49** `b0ecb97` — docs: agregar etiqueta DEV y nota de cambio de usuario en TEMPLATE_QA
+  - `.claude/auditorias/TEMPLATE_QA.md`
+
+- **12:42** `e51ad40` — fix: validar que fechaObjetivo no sea pasada en backend y frontend (#26)
+  - `src/app/(marca)/marca/pedidos/nuevo/nuevo-pedido-form.tsx`
+  - `src/app/api/pedidos/route.ts`
+
+- **12:08** `49977b5` — fix: KPIs de marca/pedidos contaban sobre resultados filtrados (#24)
+  - `src/app/(marca)/marca/pedidos/page.tsx`
+
+- **11:54** `397c2c7` — fix: expandir card de orden y eliminar link PDF roto en marca (#23)
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+
+- **11:45** `1c01218` — fix: agregar navegación entre pedidos recibidos y disponibles (#21)
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+  - `src/app/(taller)/taller/pedidos/page.tsx`
+
+- **11:32** `90ee763` — fix: agregar desglose de puntaje por certificación en admin (#12)
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+
+- **11:27** `a2f0c36` — fix: mostrar certificados de academia en taller/perfil (#11)
+  - `src/app/(taller)/taller/perfil/page.tsx`
+
+- **11:19** `4c2760a` — fix: quiz mostraba opciones sin enunciado — campo pregunta vs texto (#10)
+  - `src/app/(taller)/taller/aprender/[id]/page.tsx`
+
+- **11:11** `0b74e72` — fix: .vercelignore excluía ruta /api/upload/imagenes del deploy (#22)
+  - `.vercelignore`
+
+
+## 2026-04-15
+
+### Gerardo Breard
+- **17:26** `c725c8d` — fix: mostrar nombre de usuario en header admin (#7)
+  - `src/app/(admin)/layout.tsx`
+
+- **17:26** `65ae5f7` — fix: toast de confirmación al subir documento (#6)
+  - `src/taller/componentes/upload-button.tsx`
+
+- **17:25** `06f15c2` — fix: agregar portfolioFotos al seed e imágenes placeholder (#3)
+  - `prisma/seed.ts`
+  - `public/images/portfolio/taller-aguja-1.svg`
+  - `public/images/portfolio/taller-aguja-2.svg`
+  - `public/images/portfolio/taller-cortesur-1.svg`
+  - `public/images/portfolio/taller-cortesur-2.svg`
+  - `public/images/portfolio/taller-cortesur-3.svg`
+  - `public/images/portfolio/taller-cortesur-4.svg`
+  - `public/images/portfolio/taller-hilos-1.svg`
+  - `public/images/portfolio/taller-hilos-2.svg`
+  - `public/images/portfolio/taller-hilos-3.svg`
+
+- **15:43** `bcda56a` — fix: CORS preflight 500 en /api/feedback
+  - `src/app/api/feedback/route.ts`
+
+- **15:09** `7f25a29` — feat: GitHub Pages + botón crear issue para QA interactivos
+  - `.claude/specs/v2-generador-qa-issues.md`
+  - `.github/workflows/qa-pages.yml`
+  - `src/app/api/feedback/route.ts`
+  - `tools/generate-qa.js`
+  - `tools/generate-qa.test.js`
+
+- **14:42** `29e4c35` — feat: agregar comando --index al generador QA
+  - `tools/generate-qa.js`
+  - `tools/generate-qa.test.js`
+
+- **14:33** `49ee518` — feat: generador QA .md → .html interactivo (tools/generate-qa.js)
+  - `.gitignore`
+  - `tools/generate-qa.js`
+  - `tools/generate-qa.test.js`
+
+- **14:23** `a7d0e95` — docs: spec v2-generador-qa-html con correcciones de formato real
+  - `.claude/specs/v2-generador-qa-html.md`
+
+- **13:22** `a494abf` — fix: await fetch a GitHub en endpoint de feedback
+  - `src/app/api/feedback/route.ts`
+
+- **10:58** `b98f4f8` — docs: agregar QA v2-impl-contenido-visual
+  - `.claude/auditorias/QA_v2-impl-contenido-visual.md`
+
+
+## 2026-04-14
+
+### Gerardo Breard
+- **18:12** `ca54c06` — feat: v2-impl-contenido-visual — portfolio, imagenes en pedidos y cotizaciones
+  - `.gitignore`
+  - `prisma/migrations/20260414220000_contenido_visual_imagenes/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/app/(marca)/marca/directorio/page.tsx`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(marca)/marca/pedidos/nuevo/nuevo-pedido-form.tsx`
+  - `src/app/(marca)/marca/pedidos/nuevo/page.tsx`
+  - `src/app/(public)/directorio/page.tsx`
+  - `src/app/(public)/perfil/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/app/api/pedidos/route.ts`
+  - `src/app/api/talleres/[id]/route.ts`
+  - `src/app/api/upload/imagenes/route.ts`
+  - `src/compartido/componentes/ui/file-upload.tsx`
+  - `src/compartido/componentes/ui/image-lightbox.tsx`
+  - `src/compartido/lib/storage.ts`
+  - `src/compartido/lib/upload-imagen.ts`
+  - `src/marca/componentes/cotizacion-imagenes.tsx`
+  - `src/taller/componentes/cotizar-form.tsx`
+  - `src/taller/componentes/galeria-fotos.tsx`
+  - `src/taller/componentes/portfolio-manager.tsx`
+
+- **17:38** `469654b` — docs: agregar QA v2-seguridad-tests-e2e
+  - `.claude/auditorias/QA_v2-seguridad-tests-e2e.md`
+
+- **17:35** `2f7407b` — feat: v2-seguridad-tests-e2e — fix falsos positivos, helper assertAccesoBloqueado, 10 tests nuevos
+  - `e2e/checklist-sec7-8.spec.ts`
+  - `e2e/helpers/auth.ts`
+  - `e2e/seguridad-roles.spec.ts`
+
+- **17:24** `2cada9d` — docs: agregar QA v2-epica-academia
+  - `.claude/auditorias/QA_v2-epica-academia.md`
+
+- **17:15** `ac76919` — feat: v2-epica-academia — gate real de videos, fix puntaje bypass, manejo 403
+  - `src/app/api/colecciones/[id]/evaluacion/route.ts`
+  - `src/app/api/colecciones/[id]/progreso/route.ts`
+  - `src/taller/componentes/academia-cliente.tsx`
+
+- **17:01** `fbc3323` — docs: agregar QA v2-epica-perfil-productivo
+  - `.claude/auditorias/QA_v2-epica-perfil-productivo.md`
+
+- **16:57** `1f8d531` — feat: v2-epica-perfil-productivo — fix puntaje wizard, perfil productivo, recomendaciones, dashboard sector
+  - `prisma/migrations/20260414200000_add_coleccion_recomendacion_targets/migration.sql`
+  - `prisma/schema.prisma`
+  - `prisma/seed.ts`
+  - `src/app/(estado)/estado/sector/page.tsx`
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/compartido/componentes/layout/header.tsx`
+
+- **16:30** `b9698e2` — docs: agregar QA v2-epica-perfiles-contacto
+  - `.claude/auditorias/QA_v2-epica-perfiles-contacto.md`
+
+- **16:22** `89bce8b` — feat: v2-epica-perfiles-contacto — edición básica taller, contacto en admin, fix puntaje
+  - `src/app/(admin)/admin/marcas/[id]/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(taller)/taller/perfil/editar/editar-form.tsx`
+  - `src/app/(taller)/taller/perfil/editar/page.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/app/api/talleres/[id]/route.ts`
+
+- **15:42** `75cef2d` — docs: agregar QA v2-notificaciones-accionables
+  - `.claude/auditorias/QA_v2-notificaciones-accionables.md`
+
+- **15:40** `e687d5a` — feat: v2-notificaciones-accionables — deep links + mark-as-read al click
+  - `prisma/migrations/20260414180000_add_notificacion_link/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/app/(admin)/admin/notificaciones/notificaciones-client.tsx`
+  - `src/app/(public)/cuenta/notificaciones/notificaciones-lista.tsx`
+  - `src/app/(public)/cuenta/notificaciones/page.tsx`
+  - `src/app/api/admin/notificaciones/route.ts`
+  - `src/app/api/cotizaciones/[id]/route.ts`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/app/api/pedidos/[id]/invitaciones/route.ts`
+  - `src/compartido/lib/notificaciones.ts`
+
+- **15:22** `b0bf4e9` — docs: agregar QA v2-epica-notificaciones
+  - `.claude/auditorias/QA_v2-epica-notificaciones.md`
+
+- **15:19** `871ffcd` — feat: v2-epica-notificaciones — centro de comunicaciones + historial
+  - `prisma/migrations/20260414170000_notificacion_created_by_batch/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/app/(admin)/admin/notificaciones/notificaciones-client.tsx`
+  - `src/app/(admin)/admin/notificaciones/page.tsx`
+  - `src/app/(public)/cuenta/page.tsx`
+  - `src/app/api/admin/notificaciones/route.ts`
+  - `src/compartido/lib/email.ts`
+
+- **14:18** `e6c28b4` — docs: agregar QA v2-rag-corpus-real
+  - `.claude/auditorias/QA_v2-rag-corpus-real.md`
+
+- **14:18** `1d6d7cb` — feat: v2-rag-corpus-real — limpiar corpus falso, conectar config admin, fallback visual
+  - `package-lock.json`
+  - `package.json`
+  - `scripts/indexar-corpus.ts`
+  - `src/app/(taller)/taller/aprender/[id]/page.tsx`
+  - `src/app/api/chat/route.ts`
+  - `src/app/globals.css`
+  - `src/compartido/lib/rag.ts`
+  - `src/taller/componentes/asistente-chat.tsx`
+
+- **13:05** `f48d1b8` — fix: actualizar commit hash en QA v2-log-niveles-bidireccional
+  - `.claude/auditorias/QA_v2-log-niveles-bidireccional.md`
+
+- **13:05** `1221239` — docs: agregar QA v2-log-niveles-bidireccional
+  - `.claude/auditorias/QA_v2-log-niveles-bidireccional.md`
+  - `src/app/(estado)/estado/page.tsx`
+  - `src/app/(taller)/taller/page.tsx`
+
+- **12:21** `74c20f8` — fix: actualizar commit hash en QA v2-epica-flujo-comercial-unificado
+  - `.claude/auditorias/QA_v2-epica-flujo-comercial-unificado.md`
+
+- **12:21** `74ee26f` — docs: agregar QA v2-epica-flujo-comercial-unificado
+  - `.claude/auditorias/QA_v2-epica-flujo-comercial-unificado.md`
+  - `prisma/migrations/20260414160000_flujo_comercial_unificado/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+  - `src/app/api/cotizaciones/[id]/route.ts`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/app/api/pedidos/[id]/invitaciones/route.ts`
+  - `src/app/api/pedidos/[id]/ordenes/route.ts`
+  - `src/compartido/lib/email.ts`
+  - `src/marca/componentes/asignar-taller.tsx`
+  - `src/marca/componentes/invitar-a-cotizar.tsx`
+
+
+## 2026-04-13
+
+### Gerardo Breard
+- **17:04** `6b94016` — fix: actualizar commit hash en QA v2-epica-storage-documentos
+  - `.claude/auditorias/QA_v2-epica-storage-documentos.md`
+
+- **16:37** `fed7a93` — docs: agregar QA v2-epica-storage-documentos
+  - `.claude/auditorias/QA_v2-epica-storage-documentos.md`
+  - `prisma/migrations/20260413160000_storage_documentos_v2/migration.sql`
+  - `prisma/schema.prisma`
+  - `prisma/seed.ts`
+  - `src/__tests__/nivel.test.ts`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+  - `src/app/api/auth/registro/route.ts`
+  - `src/app/api/tipos-documento/route.ts`
+  - `src/app/api/validaciones/route.ts`
+  - `src/compartido/lib/nivel.ts`
+
+- **15:44** `6ccc569` — docs: agregar QA v2-config-piloto-pre-deploy con instructivo de uso
+  - `.claude/auditorias/QA_v2-config-piloto-pre-deploy.md`
+
+- **15:16** `ccf8643` — fix: corregir tildes en nombres de usuarios seed en acceso-rapido
+  - `src/app/(auth)/acceso-rapido/page.tsx`
+
+- **14:27** `8642713` — docs: agregar template QA con credenciales correctas
+  - `.claude/auditorias/TEMPLATE_QA.md`
+
+- **14:07** `be81aed` — feat: feedback widget funciona sin autenticación para auditorías QA
+  - `src/app/api/feedback/route.ts`
+  - `src/compartido/componentes/feedback-widget-wrapper.tsx`
+  - `src/compartido/componentes/feedback-widget.tsx`
+
+- **13:41** `4ce51cc` — docs: actualizar ORDEN_IMPLEMENTACION para modalidad v2 Gerardo-solo
+  - `.claude/specs/ORDEN_IMPLEMENTACION.md`
+
+- **13:27** `acde86d` — specs: agregar v2-impl-contenido-visual
+  - `.claude/specs/v2-impl-contenido-visual.md`
+
+- **12:51** `13c0ad8` — specs: agregar v2-rag-corpus-real
+  - `.claude/specs/v2-rag-corpus-real.md`
+
+- **08:43** `592de2d` — specs: agregar v2-notificaciones-accionables
+  - `.claude/specs/v2-notificaciones-accionables.md`
+
+
+## 2026-04-12
+
+### Gerardo Breard
+- **08:59** `8c8a36d` — specs: agregar v2-epica-perfiles-contacto
+  - `.claude/specs/v2-epica-perfiles-contacto.md`
+
+
+## 2026-04-11
+
+### Gerardo Breard
+- **18:32** `efe59c4` — specs: agregar v2-epica-storage-documentos
+  - `.claude/specs/v2-epica-storage-documentos.md`
+
+- **17:23** `d21386b` — specs: agregar v2-log-niveles-bidireccional
+  - `.claude/specs/v2-log-niveles-bidireccional.md`
+
+- **16:56** `cdcd130` — specs: agregar v2-epica-flujo-comercial-unificado
+  - `.claude/specs/v2-epica-flujo-comercial-unificado.md`
+
+- **16:12** `90cea52` — specs: agregar v2-seguridad-tests-e2e
+  - `.claude/specs/v2-seguridad-tests-e2e.md`
+
+- **15:41** `5bc0950` — specs: agregar v2-config-piloto-pre-deploy
+  - `.claude/specs/v2-config-piloto-pre-deploy.md`
+
+- **12:55** `c33f0c4` — specs: agregar v2-epica-notificaciones
+  - `.claude/specs/v2-epica-notificaciones.md`
+
+- **11:07** `6a1b695` — specs: agregar v2-epica-academia
+  - `.claude/specs/v2-epica-academia.md`
+
+- **10:36** `455b73c` — specs: actualizar v2-epica-perfil-productivo con ajustes de factibilidad
+  - `.claude/specs/v2-epica-perfil-productivo.md`
+
+
+## 2026-04-07
+
+### Gerardo Breard
+- **18:36** `cb8851b` — docs: actualizar epica contenido visual — wireframes, eliminar presupuesto de pedido
+  - `.claude/specs/v2-epica-contenido-visual.md`
+
+- **18:15** `483dcca` — docs: validacion v2 — 24 hallazgos, propuesta soluciones, flujo comercial unificado, contenido visual
+  - `.claude/specs/v2-decision-flujo-comercial-unificado.md`
+  - `.claude/specs/v2-epica-contenido-visual.md`
+  - `.claude/specs/v2-hallazgos-validacion.md`
+  - `.claude/specs/v2-propuesta-soluciones.md`
+  - `e2e/checklist-sec1-2.spec.ts`
+  - `e2e/checklist-sec3-4.spec.ts`
+  - `e2e/checklist-sec5-6.spec.ts`
+  - `e2e/checklist-sec7-8.spec.ts`
+  - `e2e/checklist-sec9-10.spec.ts`
+
+
 ## 2026-04-05
 
 ### Gerardo Breard
+- **19:56** `abec3b1` — fix: aria-label en indicadores de notificacion sin leer
+  - `src/app/(admin)/admin/notificaciones/page.tsx`
+  - `src/app/(contenido)/contenido/notificaciones/page.tsx`
+
 - **19:53** `fb99d9b` — fix: estados de carga y vacios en 5 paginas admin — usuarios, talleres, marcas, pedidos, dashboard
   - `src/app/(admin)/admin/dashboard/page.tsx`
   - `src/app/(admin)/admin/marcas/page.tsx`

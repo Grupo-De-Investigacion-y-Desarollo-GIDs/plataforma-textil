@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { AcademiaCliente } from '@/taller/componentes/academia-cliente'
 import { AsistenteChat } from '@/taller/componentes/asistente-chat'
+import { getFeatureFlag } from '@/compartido/lib/features'
 
 export default async function AcademiaDetallePage({
   params,
@@ -37,6 +38,8 @@ export default async function AcademiaDetallePage({
   const progreso = await prisma.progresoCapacitacion.findUnique({
     where: { tallerId_coleccionId: { tallerId: taller.id, coleccionId: id } },
   })
+
+  const ragHabilitado = await getFeatureFlag('asistente_rag')
 
   // Certificado vigente
   const certificado = await prisma.certificado.findFirst({
@@ -70,11 +73,16 @@ export default async function AcademiaDetallePage({
         evaluacion={
           coleccion.evaluacion
             ? {
-                preguntas: coleccion.evaluacion.preguntas as Array<{
-                  texto: string
+                preguntas: (coleccion.evaluacion.preguntas as Array<{
+                  pregunta?: string
+                  texto?: string
                   opciones: string[]
                   correcta: number
-                }>,
+                }>).map(p => ({
+                  texto: p.texto ?? p.pregunta ?? '',
+                  opciones: p.opciones,
+                  correcta: p.correcta,
+                })),
                 puntajeMinimo: coleccion.evaluacion.puntajeMinimo,
               }
             : null
@@ -83,7 +91,7 @@ export default async function AcademiaDetallePage({
         certificadoId={certificado?.id ?? null}
       />
 
-      <AsistenteChat />
+      {ragHabilitado && <AsistenteChat />}
     </div>
   )
 }

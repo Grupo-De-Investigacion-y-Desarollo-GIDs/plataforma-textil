@@ -3,7 +3,8 @@ export const dynamic = 'force-dynamic'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { redirect } from 'next/navigation'
-import { Mail, Bell, BellOff, Send } from 'lucide-react'
+import Link from 'next/link'
+import { Mail, Bell, BellOff, Send, Users } from 'lucide-react'
 import NotificacionesClient from './notificaciones-client'
 
 const canalLabels: Record<string, string> = {
@@ -16,20 +17,20 @@ const canalLabels: Record<string, string> = {
 export default async function AdminNotificacionesPage() {
   const session = await auth()
   if (!session?.user) redirect('/login')
+  const role = (session.user as { role?: string }).role
+  if (role !== 'ADMIN') redirect('/unauthorized')
 
-  const [notificaciones, total, sinLeer, porTipo] = await Promise.all([
-    prisma.notificacion.findMany({
-      include: { user: { select: { name: true, role: true } } },
-      orderBy: { createdAt: 'desc' },
-      take: 30,
-    }),
-    prisma.notificacion.count(),
-    prisma.notificacion.count({ where: { leida: false } }),
+  const adminWhere = { createdById: { not: null } }
+  const [total, sinLeer, batches] = await Promise.all([
+    prisma.notificacion.count({ where: adminWhere }),
+    prisma.notificacion.count({ where: { ...adminWhere, leida: false } }),
     prisma.notificacion.groupBy({
-      by: ['tipo'],
+      by: ['batchId'],
+      where: { createdById: { not: null }, batchId: { not: null } },
       _count: true,
-      orderBy: { _count: { tipo: 'desc' } },
-      take: 5,
+      _max: { createdAt: true },
+      orderBy: { _max: { createdAt: 'desc' } },
+      take: 30,
     }),
   ])
 
@@ -37,7 +38,7 @@ export default async function AdminNotificacionesPage() {
     <div className="max-w-4xl mx-auto py-6 px-4">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Centro de Notificaciones</h1>
+          <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Comunicaciones</h1>
           <p className="text-gray-500 text-sm">Envio de comunicaciones a usuarios</p>
         </div>
         <NotificacionesClient />
@@ -74,52 +75,77 @@ export default async function AdminNotificacionesPage() {
         </div>
       </div>
 
-      {/* Por tipo */}
-      {porTipo.length > 0 && (
-        <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100 mb-6">
-          <h3 className="font-overpass font-semibold text-gray-700 text-sm uppercase mb-3">Por tipo</h3>
-          <div className="flex flex-wrap gap-2">
-            {porTipo.map(g => (
-              <span key={g.tipo} className="text-xs bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full font-medium">
-                {g.tipo}: {g._count}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
+      <ComunicacionesTab batches={batches} />
 
-      {/* Historial real */}
-      <h2 className="font-overpass font-bold text-lg text-brand-blue mb-3">Notificaciones Recientes</h2>
-      {notificaciones.length === 0 ? (
-        <div className="bg-white rounded-xl shadow-sm p-8 border border-gray-100 text-center">
-          <Mail className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-          <p className="text-sm text-gray-500">No hay notificaciones enviadas todavia</p>
-        </div>
-      ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 divide-y divide-gray-100">
-          {notificaciones.map(n => (
-            <div key={n.id} className="px-5 py-4 flex items-start justify-between gap-4">
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <p className="font-semibold text-sm text-gray-800 truncate">{n.titulo}</p>
-                  {!n.leida && (
-                    <span className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" aria-label="Sin leer" />
-                  )}
-                </div>
-                <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{n.mensaje}</p>
-                <p className="text-xs text-gray-400 mt-1">
-                  Para: {n.user.name ?? 'Usuario'} ({n.user.role})
-                  {' | '}{canalLabels[n.canal] ?? n.canal}
-                  {' | '}{n.createdAt.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: '2-digit' })}
-                </p>
-              </div>
-              <span className={`text-xs font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${n.leida ? 'bg-gray-100 text-gray-500' : 'bg-blue-100 text-blue-700'}`}>
-                {n.leida ? 'Leida' : 'Sin leer'}
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
+      <p className="text-xs text-gray-400 mt-6 text-center">
+        Para ver la actividad del sistema, ir a{' '}
+        <Link href="/admin/logs" className="text-brand-blue hover:underline">Logs del sistema</Link>
+      </p>
     </div>
   )
 }
+
+async function ComunicacionesTab({ batches }: { batches: { batchId: string | null; _count: number; _max: { createdAt: Date | null } }[] }) {
+  const batchIds = batches.map(b => b.batchId!).filter(Boolean)
+  const ejemplos = batchIds.length > 0
+    ? await prisma.notificacion.findMany({
+        where: { batchId: { in: batchIds } },
+        distinct: ['batchId'],
+        select: {
+          batchId: true,
+          titulo: true,
+          mensaje: true,
+          canal: true,
+          createdAt: true,
+          creadaPor: { select: { name: true } },
+        },
+      })
+    : []
+
+  const comunicaciones = batches.map(b => {
+    const ej = ejemplos.find(e => e.batchId === b.batchId)
+    return {
+      batchId: b.batchId!,
+      destinatarios: b._count,
+      titulo: ej?.titulo ?? '(sin titulo)',
+      mensaje: ej?.mensaje ?? '',
+      canal: ej?.canal ?? 'PLATAFORMA',
+      createdAt: ej?.createdAt ?? new Date(),
+      enviadoPor: ej?.creadaPor?.name ?? 'Sistema',
+    }
+  })
+
+  if (comunicaciones.length === 0) {
+    return (
+      <div className="bg-white rounded-xl shadow-sm p-8 border border-gray-100 text-center">
+        <Mail className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+        <p className="text-sm text-gray-500">Todavia no enviaste ninguna comunicacion</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 divide-y divide-gray-100">
+      {comunicaciones.map(c => (
+        <div key={c.batchId} className="px-5 py-4">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <p className="font-semibold text-sm text-gray-800">{c.titulo}</p>
+              <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{c.mensaje}</p>
+              <div className="flex items-center gap-3 mt-2 text-xs text-gray-400">
+                <span>Enviado por: {c.enviadoPor}</span>
+                <span className="flex items-center gap-1">
+                  <Users className="w-3 h-3" />
+                  {c.destinatarios} destinatarios
+                </span>
+                <span>{canalLabels[c.canal] ?? c.canal}</span>
+                <span>{c.createdAt.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: '2-digit' })}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+

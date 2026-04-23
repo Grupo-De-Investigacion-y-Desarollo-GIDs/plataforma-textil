@@ -5,24 +5,58 @@ import { prisma } from '@/compartido/lib/prisma'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card } from '@/compartido/componentes/ui/card'
-import { Package, MapPin, Calendar } from 'lucide-react'
+import { Badge } from '@/compartido/componentes/ui/badge'
+import { Package, MapPin, Calendar, ImageIcon, ArrowLeft } from 'lucide-react'
 
-export default async function PedidosDisponiblesPage() {
-  const session = await auth()
+const PAGE_SIZE = 20
+
+export default async function PedidosDisponiblesPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+  const [session, { page: pageParam }] = await Promise.all([auth(), searchParams])
   if (!session?.user) redirect('/login')
 
-  const pedidosDisponibles = await prisma.pedido.findMany({
-    where: { estado: 'PUBLICADO' },
-    include: {
-      marca: { select: { nombre: true, tipo: true, ubicacion: true } },
-    },
-    orderBy: { createdAt: 'desc' },
-  })
+  const page = Math.max(1, parseInt(pageParam || '1'))
+
+  const taller = await prisma.taller.findFirst({ where: { userId: session.user.id }, select: { id: true } })
+
+  const where = {
+    estado: 'PUBLICADO' as const,
+    OR: [
+      { visibilidad: 'PUBLICO' as const },
+      ...(taller ? [{ invitaciones: { some: { tallerId: taller.id } } }] : []),
+    ],
+  }
+
+  const [pedidosDisponibles, totalCount] = await Promise.all([
+    prisma.pedido.findMany({
+      where,
+      include: {
+        marca: { select: { nombre: true, tipo: true, ubicacion: true } },
+        ...(taller ? {
+          invitaciones: {
+            where: { tallerId: taller.id },
+            select: { id: true },
+          },
+        } : {}),
+      },
+      orderBy: { createdAt: 'desc' },
+      take: PAGE_SIZE,
+      skip: (page - 1) * PAGE_SIZE,
+    }),
+    prisma.pedido.count({ where }),
+  ])
+
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE)
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-overpass font-bold text-3xl text-brand-blue">Pedidos disponibles</h1>
+        <Link
+          href="/taller/pedidos"
+          className="inline-flex items-center gap-1 text-sm text-brand-blue hover:underline"
+        >
+          <ArrowLeft className="w-4 h-4" /> Volver a mis pedidos
+        </Link>
+        <h1 className="font-overpass font-bold text-3xl text-brand-blue mt-2">Pedidos disponibles</h1>
         <p className="text-gray-500 mt-1">Pedidos publicados por marcas que buscan talleres</p>
       </div>
 
@@ -34,9 +68,24 @@ export default async function PedidosDisponiblesPage() {
         <div className="space-y-4">
           {pedidosDisponibles.map((pedido) => (
             <Card key={pedido.id}>
+              {pedido.imagenes?.[0] && (
+                <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden mb-3">
+                  <img
+                    src={pedido.imagenes[0]}
+                    alt={pedido.tipoPrenda}
+                    loading="lazy"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                 <div className="space-y-1">
-                  <p className="font-overpass font-bold text-gray-800">{pedido.tipoPrenda}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-overpass font-bold text-gray-800">{pedido.tipoPrenda}</p>
+                    {'invitaciones' in pedido && Array.isArray(pedido.invitaciones) && pedido.invitaciones.length > 0 && (
+                      <Badge variant="default">Te invitaron</Badge>
+                    )}
+                  </div>
                   <p className="text-sm text-gray-500">
                     {pedido.marca.nombre}
                     {pedido.marca.ubicacion && (
@@ -72,6 +121,22 @@ export default async function PedidosDisponiblesPage() {
               </div>
             </Card>
           ))}
+
+          {totalPages > 1 && (
+            <div className="flex justify-center gap-2 pt-4">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                <Link
+                  key={p}
+                  href={`/taller/pedidos/disponibles?page=${p}`}
+                  className={`px-3 py-1.5 rounded text-sm font-medium ${
+                    p === page ? 'bg-brand-blue text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  {p}
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

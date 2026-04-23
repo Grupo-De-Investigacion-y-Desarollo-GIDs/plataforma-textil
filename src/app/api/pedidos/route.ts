@@ -75,6 +75,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Datos inválidos' }, { status: 400 })
     }
 
+    if (body.fechaObjetivo) {
+      const fecha = new Date(body.fechaObjetivo)
+      const hoy = new Date()
+      hoy.setHours(0, 0, 0, 0)
+      if (fecha < hoy) {
+        return NextResponse.json({ error: 'La fecha objetivo no puede ser anterior a hoy' }, { status: 400 })
+      }
+    }
+
     let resolvedMarcaId = ''
     if (role === 'MARCA') {
       const marca = await prisma.marca.findUnique({
@@ -103,6 +112,9 @@ export async function POST(req: NextRequest) {
         fechaObjetivo: body.fechaObjetivo ? new Date(body.fechaObjetivo) : undefined,
         estado: role === 'ADMIN' ? body.estado : 'BORRADOR',
         montoTotal: Number.isFinite(montoTotal) && montoTotal >= 0 ? montoTotal : 0,
+        descripcion: typeof body.descripcion === 'string' ? body.descripcion.trim() || null : undefined,
+        imagenes: Array.isArray(body.imagenes) ? body.imagenes.filter((u: unknown) => typeof u === 'string') : undefined,
+        procesosRequeridos: Array.isArray(body.procesosRequeridos) ? body.procesosRequeridos.filter((u: unknown) => typeof u === 'string') : undefined,
       },
     })
 

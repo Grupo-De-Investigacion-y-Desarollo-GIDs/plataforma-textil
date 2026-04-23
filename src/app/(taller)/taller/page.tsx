@@ -5,6 +5,12 @@ import { prisma } from '@/compartido/lib/prisma'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ProgressRing } from '@/compartido/componentes/ui/progress-ring'
+import {
+  PTS_VERIFICADO_AFIP,
+  PTS_POR_VALIDACION,
+  PTS_POR_CERTIFICADO,
+  PUNTAJE_MAX,
+} from '@/compartido/lib/nivel'
 
 const TOTAL_VALIDACIONES = 8
 
@@ -16,10 +22,10 @@ export default async function TallerDashboardPage() {
     where: { userId: session.user.id },
     include: {
       validaciones: true,
+      certificados: { where: { revocado: false } },
       progresoCapacitacion: {
         include: { coleccion: { select: { titulo: true } } },
       },
-      certificados: true,
       ordenesManufactura: {
         where: { estado: { in: ['PENDIENTE', 'EN_EJECUCION'] } },
         include: { pedido: { select: { omId: true, tipoPrenda: true } } },
@@ -29,38 +35,120 @@ export default async function TallerDashboardPage() {
     },
   })
 
-  // Detectar si subio de nivel en las ultimas 24hs
+  const certificadosActivos = taller?.certificados.length ?? 0
+
+  // Queries paralelas: logs de nivel + datos para recomendaciones
   const hace24hs = new Date(Date.now() - 24 * 60 * 60 * 1000)
-  const logNivelReciente = taller
-    ? await prisma.logActividad.findFirst({
-        where: {
-          accion: 'NIVEL_SUBIDO',
-          timestamp: { gte: hace24hs },
-          detalles: { path: ['tallerId'], equals: taller.id },
-        },
-        orderBy: { timestamp: 'desc' },
-      })
-    : null
-  const nivelNuevo = logNivelReciente
-    ? (logNivelReciente.detalles as { nivelNuevo?: string })?.nivelNuevo
+  const [logNivelReciente, historialNiveles, validacionesCompletadas, tiposRequeridos, procesosDelTaller] = await Promise.all([
+    taller
+      ? prisma.logActividad.findFirst({
+          where: {
+            accion: { in: ['NIVEL_SUBIDO', 'NIVEL_BAJADO'] },
+            timestamp: { gte: hace24hs },
+            detalles: { path: ['tallerId'], equals: taller.id },
+          },
+          orderBy: { timestamp: 'desc' },
+        })
+      : null,
+    taller
+      ? prisma.logActividad.findMany({
+          where: {
+            accion: { in: ['NIVEL_SUBIDO', 'NIVEL_BAJADO'] },
+            detalles: { path: ['tallerId'], equals: taller.id },
+          },
+          orderBy: { timestamp: 'desc' },
+          take: 10,
+        })
+      : [],
+    taller
+      ? prisma.validacion.findMany({
+          where: { tallerId: taller.id, estado: 'COMPLETADO' },
+          select: { tipo: true },
+        })
+      : [],
+    prisma.tipoDocumento.findMany({
+      where: { requerido: true, activo: true },
+      select: { nombre: true, nivelMinimo: true },
+    }),
+    taller
+      ? prisma.tallerProceso.findMany({
+          where: { tallerId: taller.id },
+          select: { procesoId: true },
+        })
+      : [],
+  ])
+
+  const cambioNivel = logNivelReciente
+    ? {
+        accion: logNivelReciente.accion as 'NIVEL_SUBIDO' | 'NIVEL_BAJADO',
+        nivelNuevo: (logNivelReciente.detalles as { nivelNuevo?: string })?.nivelNuevo,
+        nivelAnterior: (logNivelReciente.detalles as { nivelAnterior?: string })?.nivelAnterior,
+      }
     : null
 
-  // Colecciones recomendadas (las que no tienen progreso o están incompletas)
-  const coleccionesRecomendadas = await prisma.coleccion.findMany({
-    where: {
-      activa: true,
-      ...(taller
-        ? {
-            NOT: {
-              certificados: { some: { tallerId: taller.id, revocado: false } },
+  // Colecciones recomendadas — priorización por formalización → procesos → fallback
+  const completadasSet = new Set(validacionesCompletadas.map(v => v.tipo))
+  const tiposPendientes = tiposRequeridos.map(t => t.nombre).filter(t => !completadasSet.has(t))
+  const procesosTaller = procesosDelTaller.map(p => p.procesoId)
+
+  type ColeccionConCount = Awaited<ReturnType<typeof prisma.coleccion.findMany<{ include: { _count: { select: { videos: true } } } }>>>[number]
+  let coleccionesRecomendadas: ColeccionConCount[]
+  if (taller) {
+    // Query 1 — prioridad alta: por formalización pendiente
+    const porFormalizacion = await prisma.coleccion.findMany({
+      where: {
+        activa: true,
+        formalizacionTarget: { hasSome: tiposPendientes.length > 0 ? tiposPendientes : ['__none__'] },
+        NOT: { certificados: { some: { tallerId: taller.id, revocado: false } } },
+      },
+      include: { _count: { select: { videos: true } } },
+      orderBy: { orden: 'asc' },
+      take: 3,
+    })
+
+    // Query 2 — prioridad media: por procesos del taller
+    const restantes = 3 - porFormalizacion.length
+    const idsYaIncluidos = porFormalizacion.map(c => c.id)
+    const porProcesos = restantes > 0 && procesosTaller.length > 0
+      ? await prisma.coleccion.findMany({
+          where: {
+            activa: true,
+            id: { notIn: idsYaIncluidos },
+            procesosTarget: { hasSome: procesosTaller },
+            NOT: { certificados: { some: { tallerId: taller.id, revocado: false } } },
+          },
+          include: { _count: { select: { videos: true } } },
+          orderBy: { orden: 'asc' },
+          take: restantes,
+        })
+      : []
+
+    // Query 3 — fallback: cualquier colección no completada
+    const totalEncontradas = [...porFormalizacion, ...porProcesos]
+    coleccionesRecomendadas = totalEncontradas.length < 3
+      ? [
+          ...totalEncontradas,
+          ...(await prisma.coleccion.findMany({
+            where: {
+              activa: true,
+              id: { notIn: totalEncontradas.map(c => c.id) },
+              NOT: { certificados: { some: { tallerId: taller.id, revocado: false } } },
             },
-          }
-        : {}),
-    },
-    include: { _count: { select: { videos: true } } },
-    orderBy: { orden: 'asc' },
-    take: 3,
-  })
+            include: { _count: { select: { videos: true } } },
+            orderBy: { orden: 'asc' },
+            take: 3 - totalEncontradas.length,
+          })),
+        ]
+      : totalEncontradas
+  } else {
+    // Sin taller — query simple
+    coleccionesRecomendadas = await prisma.coleccion.findMany({
+      where: { activa: true },
+      include: { _count: { select: { videos: true } } },
+      orderBy: { orden: 'asc' },
+      take: 3,
+    })
+  }
 
   // Calcular progreso de formalización
   const validaciones = taller?.validaciones ?? []
@@ -74,10 +162,19 @@ export default async function TallerDashboardPage() {
   const nivel = taller?.nivel ?? 'BRONCE'
   const nivelSiguiente = nivel === 'BRONCE' ? 'PLATA' : nivel === 'PLATA' ? 'ORO' : null
 
+  // Detectar si tiene todos los docs de PLATA pero falta certificado
+  const tiposPlata = tiposRequeridos.filter(t => t.nivelMinimo === 'PLATA').map(t => t.nombre)
+  const tieneDocsPlata = taller ? tiposPlata.every(t => completadasSet.has(t)) : false
+  const faltaCertificado = taller ? certificadosActivos === 0 : false
+
   // Banner contextual según estado
   let bannerMensaje = ''
+  let bannerLink = ''
   if (!taller) {
     bannerMensaje = 'Completá tu perfil para aparecer en el directorio de talleres.'
+  } else if (nivel === 'BRONCE' && tieneDocsPlata && faltaCertificado) {
+    bannerMensaje = 'Tenés los documentos para PLATA — solo te falta completar un curso de la academia y obtener tu certificado.'
+    bannerLink = '/taller/aprender'
   } else if (porcentajeFormal < 50) {
     bannerMensaje = `Subí tus documentos de formalización para avanzar hacia nivel ${nivelSiguiente ?? 'siguiente'}.`
   } else if (nivelSiguiente) {
@@ -101,19 +198,35 @@ export default async function TallerDashboardPage() {
         </p>
       </div>
 
-      {/* Banner de logro al subir de nivel */}
-      {nivelNuevo && (
-        <div className="p-4 bg-green-50 border-2 border-green-400 rounded-xl text-center">
-          <p className="text-2xl mb-1">
-            {nivelNuevo === 'ORO' ? '🥇' : '🥈'}
-          </p>
-          <p className="font-overpass font-bold text-green-800 text-lg">
-            Subiste a nivel {nivelNuevo}!
-          </p>
-          <p className="text-green-600 text-sm mt-1">
-            Tu taller ahora tiene mas visibilidad en el directorio
-          </p>
-        </div>
+      {/* Banner de cambio de nivel */}
+      {cambioNivel && cambioNivel.nivelNuevo && (
+        cambioNivel.accion === 'NIVEL_SUBIDO' ? (
+          <div className="border-l-4 border-l-green-500 bg-green-50 rounded-xl p-4 flex items-center gap-3">
+            <span className="text-2xl">
+              {cambioNivel.nivelNuevo === 'ORO' ? '🥇' : '🥈'}
+            </span>
+            <div>
+              <p className="font-overpass font-bold text-green-800">
+                Subiste a nivel {cambioNivel.nivelNuevo}!
+              </p>
+              <p className="text-sm text-green-600">
+                Ahora tenes mas visibilidad en el directorio.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="border-l-4 border-l-amber-500 bg-amber-50 rounded-xl p-4 flex items-center gap-3">
+            <span className="text-2xl">⚠️</span>
+            <div>
+              <p className="font-overpass font-bold text-amber-800">
+                Tu nivel bajo a {cambioNivel.nivelNuevo}
+              </p>
+              <p className="text-sm text-amber-600">
+                Revisa tus documentos en Formalizacion para volver a subir.
+              </p>
+            </div>
+          </div>
+        )
       )}
 
       {/* Progreso principal */}
@@ -182,6 +295,22 @@ export default async function TallerDashboardPage() {
           <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
             <p className="text-xs uppercase text-gray-500 font-semibold mb-1">Puntaje</p>
             <p className="text-3xl font-bold text-brand-red">{taller?.puntaje ?? 0}</p>
+            <div className="text-xs text-gray-400 space-y-0.5 mt-1">
+              {taller?.verificadoAfip && (
+                <p>+ {PTS_VERIFICADO_AFIP} pts CUIT verificado</p>
+              )}
+              {completadas > 0 && (
+                <p>+ {completadas * PTS_POR_VALIDACION} pts documentos ({completadas})</p>
+              )}
+              {certificadosActivos > 0 && (
+                <p>+ {certificadosActivos * PTS_POR_CERTIFICADO} pts capacitaciones ({certificadosActivos})</p>
+              )}
+              {(taller?.puntaje ?? 0) >= PUNTAJE_MAX && (
+                <p className="text-gray-500 font-medium mt-1">
+                  Puntaje maximo alcanzado ({PUNTAJE_MAX} pts)
+                </p>
+              )}
+            </div>
           </div>
           <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
             <p className="text-xs uppercase text-gray-500 font-semibold mb-1">Capacidad</p>
@@ -199,9 +328,45 @@ export default async function TallerDashboardPage() {
         </div>
       </div>
 
+      {/* Historial de nivel */}
+      {historialNiveles.length > 1 && (
+        <div className="bg-white rounded-xl border border-gray-100 p-6">
+          <h2 className="font-overpass font-bold text-gray-800 mb-4">Historial de nivel</h2>
+          <div className="space-y-2">
+            {historialNiveles.map(log => {
+              const detalles = log.detalles as { nivelAnterior?: string; nivelNuevo?: string }
+              const subio = log.accion === 'NIVEL_SUBIDO'
+              return (
+                <div
+                  key={log.id}
+                  className="flex items-center justify-between text-sm py-2 border-b border-gray-50 last:border-0"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className={subio ? 'text-green-600' : 'text-amber-600'}>
+                      {subio ? '↑' : '↓'}
+                    </span>
+                    <span className="text-gray-600">
+                      {detalles.nivelAnterior} → {detalles.nivelNuevo}
+                    </span>
+                  </div>
+                  <span className="text-gray-400 text-xs">
+                    {new Date(log.timestamp).toLocaleDateString('es-AR')}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Banner contextual */}
       <div className="bg-brand-bg-light rounded-xl p-5 border-l-4 border-brand-blue">
         <p className="text-brand-blue font-medium">🚀 {bannerMensaje}</p>
+        {bannerLink && (
+          <Link href={bannerLink} className="text-sm text-brand-blue font-semibold hover:underline mt-2 inline-block">
+            Ir a la academia →
+          </Link>
+        )}
       </div>
 
       {/* Acciones rápidas */}
@@ -213,7 +378,7 @@ export default async function TallerDashboardPage() {
             className="flex flex-col items-center gap-2 bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-brand-blue transition-all text-center"
           >
             <span className="text-3xl">📝</span>
-            <span className="font-overpass font-semibold text-gray-700">Completar mi perfil</span>
+            <span className="font-overpass font-semibold text-gray-700">{taller?.sam ? 'Actualizar mi perfil' : 'Completar mi perfil'}</span>
             <span className="text-xs text-gray-400">Datos productivos y capacidad</span>
           </Link>
           <Link

@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import Link from 'next/link'
+import { Package } from 'lucide-react'
 
 const statusLabel: Record<string, string> = {
   PENDIENTE: 'Pendiente',
@@ -32,6 +33,16 @@ export default async function TallerPedidosPage() {
 
   if (!taller) redirect('/login')
 
+  const disponiblesCount = await prisma.pedido.count({
+    where: {
+      estado: 'PUBLICADO',
+      OR: [
+        { visibilidad: 'PUBLICO' },
+        { invitaciones: { some: { tallerId: taller.id } } },
+      ],
+    },
+  })
+
   const ordenes = await prisma.ordenManufactura.findMany({
     where: { tallerId: taller.id },
     include: {
@@ -54,9 +65,21 @@ export default async function TallerPedidosPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-overpass font-bold text-3xl text-brand-blue">Pedidos Recibidos</h1>
-        <p className="text-gray-600 mt-2">Ordenes de manufactura asignadas a {taller.nombre}</p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="font-overpass font-bold text-3xl text-brand-blue">Pedidos Recibidos</h1>
+          <p className="text-gray-600 mt-2">Ordenes de manufactura asignadas a {taller.nombre}</p>
+        </div>
+        <Link
+          href="/taller/pedidos/disponibles"
+          className="inline-flex items-center gap-2 bg-brand-blue text-white px-4 py-2.5 rounded-lg text-sm font-overpass font-semibold hover:bg-brand-blue-hover transition-colors"
+        >
+          <Package className="w-4 h-4" />
+          Pedidos disponibles
+          {disponiblesCount > 0 && (
+            <span className="bg-white text-brand-blue text-xs font-bold px-1.5 py-0.5 rounded-full">{disponiblesCount}</span>
+          )}
+        </Link>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

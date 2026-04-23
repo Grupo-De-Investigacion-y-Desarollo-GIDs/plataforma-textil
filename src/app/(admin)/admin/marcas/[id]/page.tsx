@@ -8,7 +8,7 @@ import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { StatCard } from '@/compartido/componentes/ui/stat-card'
 import { Button } from '@/compartido/componentes/ui/button'
-import { ArrowLeft, MapPin, Mail, Phone, Globe, Calendar } from 'lucide-react'
+import { ArrowLeft, MapPin, Mail, Phone, Globe, Calendar, AlertTriangle } from 'lucide-react'
 
 export default async function AdminDetalleMarcaPage({ params }: {
   params: Promise<{ id: string }>
@@ -131,6 +131,74 @@ export default async function AdminDetalleMarcaPage({ params }: {
             </div>
           </div>
         </div>
+      </Card>
+
+      {/* Responsable / Contacto */}
+      <Card title="Responsable / Contacto" className="mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+          <div>
+            <p className="text-gray-500">Responsable</p>
+            <p className="font-medium text-gray-800">
+              {marca.user.name ?? (
+                <span className="text-gray-400 italic">Sin nombre registrado</span>
+              )}
+            </p>
+          </div>
+          <div>
+            <p className="text-gray-500">Fecha de registro</p>
+            <p className="font-medium text-gray-800">
+              {new Date(marca.user.createdAt).toLocaleDateString('es-AR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              })}
+            </p>
+          </div>
+          <div>
+            <p className="text-gray-500">Email</p>
+            <a
+              href={`mailto:${marca.user.email}`}
+              className="text-brand-blue hover:underline font-medium break-all"
+            >
+              {marca.user.email}
+            </a>
+          </div>
+          <div>
+            <p className="text-gray-500">Teléfono</p>
+            {marca.user.phone ? (
+              <a
+                href={`tel:${marca.user.phone}`}
+                className="text-brand-blue hover:underline font-medium"
+              >
+                {marca.user.phone}
+              </a>
+            ) : (
+              <span className="text-gray-400 italic">Sin teléfono</span>
+            )}
+          </div>
+
+          {marca.website && (
+            <div>
+              <p className="text-gray-500">Website</p>
+              <a
+                href={marca.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand-blue hover:underline font-medium inline-flex items-center gap-1"
+              >
+                <Globe className="w-3.5 h-3.5" />
+                {marca.website.replace(/^https?:\/\//, '')}
+              </a>
+            </div>
+          )}
+        </div>
+
+        {(!marca.user.name || !marca.user.phone) && (
+          <div className="mt-3 flex items-center gap-2 text-amber-600 text-xs bg-amber-50 px-3 py-2 rounded-lg">
+            <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
+            Datos de contacto incompletos
+          </div>
+        )}
       </Card>
 
       {/* Stats */}

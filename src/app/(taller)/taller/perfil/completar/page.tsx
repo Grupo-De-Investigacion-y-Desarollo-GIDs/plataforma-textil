@@ -179,7 +179,7 @@ export default function WizardPage() {
       const res = await fetch(`/api/talleres/${tallerId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...buildPayload(), puntaje: scoreGeneral }),
+        body: JSON.stringify(buildPayload()),
       })
       if (!res.ok) throw new Error('Error del servidor')
       router.push(redirectTo)
@@ -235,7 +235,7 @@ export default function WizardPage() {
         ))}
       </div>
 
-      {/* STEP 0: Bienvenida */}
+      {/* Paso 1: Bienvenida */}
       {step === 0 && (
         <div className="text-center">
           <div className="w-20 h-20 rounded-full bg-brand-blue/10 flex items-center justify-center mx-auto mb-4">
@@ -268,7 +268,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 1: Maquinaria */}
+      {/* Paso 2: Maquinaria */}
       {step === 1 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-2">¿Qué máquinas de confección tenés?</h2>
@@ -292,7 +292,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 2: Equipo */}
+      {/* Paso 3: Equipo */}
       {step === 2 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">Contanos sobre tu equipo de trabajo</h2>
@@ -319,7 +319,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 3: Experiencia */}
+      {/* Paso 4: Experiencia */}
       {step === 3 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">¿Cuánta experiencia tiene tu equipo?</h2>
@@ -342,7 +342,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 4: Organización */}
+      {/* Paso 5: Organización */}
       {step === 4 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">¿Cómo organizan el trabajo?</h2>
@@ -360,7 +360,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 5: Espacio */}
+      {/* Paso 6: Espacio */}
       {step === 5 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">¿Cómo es tu espacio de trabajo?</h2>
@@ -380,7 +380,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 6: SAM */}
+      {/* Paso 7: SAM */}
       {step === 6 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">¿Cuánto tardás en hacer una prenda?</h2>
@@ -407,7 +407,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 7: SAM Quiz */}
+      {/* Paso 8: SAM Quiz */}
       {step === 7 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">Verificamos que entendiste el concepto</h2>
@@ -432,7 +432,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 8: Eficiencia */}
+      {/* Paso 9: Eficiencia */}
       {step === 8 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">Calculemos tu eficiencia real</h2>
@@ -452,7 +452,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 9: Resultado Capacidad */}
+      {/* Paso 10: Resultado Capacidad */}
       {step === 9 && (
         <div className="text-center">
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">Tu Capacidad Calculada</h2>
@@ -481,7 +481,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 10: Gestión */}
+      {/* Paso 11: Gestión */}
       {step === 10 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">Gestión y Escalabilidad</h2>
@@ -509,7 +509,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 11: Procesos productivos */}
+      {/* Paso 12: Procesos productivos */}
       {step === 11 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-2">¿Qué procesos realizás?</h2>
@@ -543,7 +543,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 12: Tipos de prenda */}
+      {/* Paso 13: Tipos de prenda */}
       {step === 12 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-2">¿Qué prendas fabricás?</h2>
@@ -575,27 +575,20 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* STEP 13: Resumen */}
+      {/* Paso 14: Resumen */}
       {step === 13 && (
         <div className="text-center">
-          <h2 className="font-overpass font-bold text-2xl text-brand-blue mb-4">¡Perfil Completado!</h2>
+          <h2 className="font-overpass font-bold text-2xl text-brand-blue mb-4">¡Perfil productivo completado!</h2>
+          <p className="text-gray-600 mb-1">Las marcas pueden ver tu capacidad, maquinaria y procesos</p>
+          <p className="text-xs text-gray-400 mb-6">Este diagnóstico ayuda al equipo de la plataforma a entender el sector textil</p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <Card>
-              <div className="text-center">
-                <p className="font-overpass font-bold text-5xl text-brand-blue">{scoreGeneral}%</p>
-                <p className="text-sm text-gray-500 mt-1">Score General</p>
-                <p className="text-xs text-gray-400">Top {100 - scoreGeneral}% de talleres</p>
-              </div>
-            </Card>
-            <Card>
-              <p className="font-semibold text-sm mb-2">Capacidad</p>
-              <p className="text-sm">Diaria: {capacidadDiaria} prendas</p>
-              <p className="text-sm">Mensual: {capacidadMensual.toLocaleString()} prendas</p>
-              <p className="text-sm mt-2 font-semibold">Especialidad</p>
-              <p className="text-sm">{prendaPrincipal} — Confección {organizacion}</p>
-            </Card>
-          </div>
+          <Card className="mb-6">
+            <p className="font-semibold text-sm mb-2">Capacidad</p>
+            <p className="text-sm">Diaria: {capacidadDiaria} prendas</p>
+            <p className="text-sm">Mensual: {capacidadMensual.toLocaleString()} prendas</p>
+            <p className="text-sm mt-2 font-semibold">Especialidad</p>
+            <p className="text-sm">{prendaPrincipal} — Confección {organizacion}</p>
+          </Card>
 
           {procesosSeleccionados.length > 0 && (
             <Card title="Procesos seleccionados" className="mb-4 text-left">
@@ -616,16 +609,6 @@ export default function WizardPage() {
               </div>
             </Card>
           )}
-
-          <Card title="Indicadores de Madurez" className="mb-6 text-left">
-            {[{ label: 'Equipo', pct: scoreEquipo }, { label: 'Organización', pct: scoreOrg }, { label: 'Maquinaria', pct: scoreMaq }, { label: 'Gestión', pct: scoreGestion }, { label: 'Escalabilidad', pct: scoreEscalabilidad }].map(i => (
-              <div key={i.label} className="flex items-center gap-3 mb-2">
-                <span className="w-24 text-xs font-semibold">{i.label}</span>
-                <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden"><div className="h-full bg-brand-blue rounded-full" style={{ width: `${i.pct}%` }} /></div>
-                <span className="w-10 text-xs text-gray-500">{i.pct}%</span>
-              </div>
-            ))}
-          </Card>
 
           <Card title="Badges Desbloqueados" className="mb-6">
             <div className="flex flex-wrap gap-3 justify-center">

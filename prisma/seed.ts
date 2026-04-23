@@ -115,22 +115,94 @@ async function main() {
   console.log('  ✓ 5 tipos de prenda')
 
   // ============================================
-  // TIPOS DE DOCUMENTO (8)
+  // TIPOS DE DOCUMENTO (7)
   // ============================================
-  const tiposDoc = await Promise.all([
-    prisma.tipoDocumento.create({ data: { nombre: 'CUIT/Monotributo', descripcion: 'Constancia de inscripción en AFIP/ARCA', requerido: true } }),
-    prisma.tipoDocumento.create({ data: { nombre: 'Habilitación municipal', descripcion: 'Habilitación comercial del municipio correspondiente', requerido: true } }),
-    prisma.tipoDocumento.create({ data: { nombre: 'ART', descripcion: 'Póliza de Aseguradora de Riesgos del Trabajo vigente', requerido: true } }),
-    prisma.tipoDocumento.create({ data: { nombre: 'Empleados registrados', descripcion: 'Constancia de alta temprana de empleados en AFIP', requerido: true } }),
-    prisma.tipoDocumento.create({ data: { nombre: 'Habilitación bomberos', descripcion: 'Certificado de prevención contra incendios', requerido: true } }),
-    prisma.tipoDocumento.create({ data: { nombre: 'Plan de seguridad e higiene', descripcion: 'Plan firmado por profesional de SyH matriculado', requerido: true } }),
-    prisma.tipoDocumento.create({ data: { nombre: 'Nómina digital', descripcion: 'Libro de sueldos digital (LSD) o recibos digitales', requerido: true } }),
-    prisma.tipoDocumento.create({ data: { nombre: 'Certificado ambiental', descripcion: 'Aptitud ambiental para establecimientos industriales (opcional)', requerido: false } }),
-  ])
+  const tiposDocData = [
+    {
+      nombre: 'CUIT/Monotributo',
+      label: 'Registrate en ARCA',
+      descripcion: 'Inscripción en ARCA (ex-AFIP) como Monotributista o Responsable Inscripto',
+      enlaceTramite: 'https://www.afip.gob.ar',
+      costoEstimado: 'Gratuito',
+      nivelMinimo: 'PLATA' as const,
+      requerido: true,
+      orden: 1,
+    },
+    {
+      nombre: 'Habilitación municipal',
+      label: 'Habilita tu local',
+      descripcion: 'Permiso de funcionamiento del municipio correspondiente',
+      enlaceTramite: null,
+      costoEstimado: 'Variable según municipio',
+      nivelMinimo: 'PLATA' as const,
+      requerido: true,
+      orden: 2,
+    },
+    {
+      nombre: 'ART',
+      label: 'Asegura a tu equipo',
+      descripcion: 'Póliza de Aseguradora de Riesgos del Trabajo vigente',
+      enlaceTramite: null,
+      costoEstimado: 'Variable según aseguradora',
+      nivelMinimo: 'PLATA' as const,
+      requerido: true,
+      orden: 3,
+    },
+    {
+      nombre: 'Empleados registrados',
+      label: 'Registra tus empleados',
+      descripcion: 'Constancia de alta temprana de empleados en ARCA',
+      enlaceTramite: 'https://www.afip.gob.ar',
+      costoEstimado: 'Gratuito',
+      nivelMinimo: 'ORO' as const,
+      requerido: true,
+      orden: 4,
+    },
+    {
+      nombre: 'Habilitación bomberos',
+      label: 'Habilitación de bomberos',
+      descripcion: 'Certificado de prevención contra incendios',
+      enlaceTramite: null,
+      costoEstimado: 'Variable',
+      nivelMinimo: 'ORO' as const,
+      requerido: true,
+      orden: 5,
+    },
+    {
+      nombre: 'Plan de seguridad e higiene',
+      label: 'Plan de seguridad',
+      descripcion: 'Plan firmado por profesional de SyH matriculado',
+      enlaceTramite: null,
+      costoEstimado: 'Variable según profesional',
+      nivelMinimo: 'ORO' as const,
+      requerido: true,
+      orden: 6,
+    },
+    {
+      nombre: 'Nómina digital',
+      label: 'Libro de sueldos digital',
+      descripcion: 'Libro de sueldos digital (LSD) o recibos digitales',
+      enlaceTramite: null,
+      costoEstimado: 'Gratuito',
+      nivelMinimo: 'ORO' as const,
+      requerido: true,
+      orden: 7,
+    },
+  ]
+
+  const tiposDoc = await Promise.all(
+    tiposDocData.map(td =>
+      prisma.tipoDocumento.upsert({
+        where: { nombre: td.nombre },
+        update: td,
+        create: td,
+      })
+    )
+  )
   const tdMap: Record<string, string> = {}
   tiposDoc.forEach(t => { tdMap[t.nombre] = t.id })
 
-  console.log('  ✓ 8 tipos de documento')
+  console.log('  ✓ 7 tipos de documento')
 
   // ============================================
   // TALLER BRONCE — "Taller La Aguja" (Florencio Varela)
@@ -145,7 +217,8 @@ async function main() {
       puntaje: 15,
       rating: 3.2,
       ubicacion: 'Florencio Varela, Buenos Aires',
-      zona: 'Florencio Varela',
+      provincia: 'Buenos Aires',
+      partido: 'Florencio Varela',
       descripcion: 'Taller familiar de confección básica. Trabajamos con marcas chicas del sur del conurbano.',
       capacidadMensual: 800,
       trabajadoresRegistrados: 3,
@@ -154,6 +227,10 @@ async function main() {
       pedidosCompletados: 4,
       ontimeRate: 75,
       retrabajoRate: 8,
+      portfolioFotos: [
+        '/images/portfolio/taller-aguja-1.svg',
+        '/images/portfolio/taller-aguja-2.svg',
+      ],
     },
   })
 
@@ -192,7 +269,8 @@ async function main() {
       puntaje: 58,
       rating: 4.4,
       ubicacion: 'González Catán, La Matanza',
-      zona: 'La Matanza',
+      provincia: 'Buenos Aires',
+      partido: 'La Matanza',
       descripcion: 'Cooperativa de trabajo textil formada por 6 costureras. Especialidad en confección de jeans y pantalones. Participamos del programa Marca Registrada.',
       capacidadMensual: 3000,
       trabajadoresRegistrados: 6,
@@ -201,6 +279,11 @@ async function main() {
       pedidosCompletados: 18,
       ontimeRate: 88,
       retrabajoRate: 4,
+      portfolioFotos: [
+        '/images/portfolio/taller-hilos-1.svg',
+        '/images/portfolio/taller-hilos-2.svg',
+        '/images/portfolio/taller-hilos-3.svg',
+      ],
       // Wizard completo
       sam: 18,
       prendaPrincipal: 'Jean/Vaquero',
@@ -265,7 +348,8 @@ async function main() {
       puntaje: 92,
       rating: 4.9,
       ubicacion: 'Av. Mitre 1847, Avellaneda, Buenos Aires',
-      zona: 'Avellaneda',
+      provincia: 'Buenos Aires',
+      partido: 'Avellaneda',
       descripcion: 'Taller de corte y confección con 12 años de trayectoria. Proveedor habitual de marcas nacionales. Certificados en SST y calidad. Capacidad para lotes grandes.',
       capacidadMensual: 10000,
       trabajadoresRegistrados: 14,
@@ -274,6 +358,12 @@ async function main() {
       pedidosCompletados: 47,
       ontimeRate: 96,
       retrabajoRate: 2,
+      portfolioFotos: [
+        '/images/portfolio/taller-cortesur-1.svg',
+        '/images/portfolio/taller-cortesur-2.svg',
+        '/images/portfolio/taller-cortesur-3.svg',
+        '/images/portfolio/taller-cortesur-4.svg',
+      ],
       // Wizard completo
       sam: 12,
       prendaPrincipal: 'Jean/Vaquero',
@@ -327,7 +417,6 @@ async function main() {
       { tallerId: tallerOro.id, tipo: 'Habilitación bomberos', tipoDocumentoId: tdMap['Habilitación bomberos'], estado: 'COMPLETADO', detalle: 'Inspección aprobada 10/2025' },
       { tallerId: tallerOro.id, tipo: 'Plan de seguridad e higiene', tipoDocumentoId: tdMap['Plan de seguridad e higiene'], estado: 'COMPLETADO', detalle: 'Plan firmado por Ing. Martínez (mat. 4521)' },
       { tallerId: tallerOro.id, tipo: 'Nómina digital', tipoDocumentoId: tdMap['Nómina digital'], estado: 'COMPLETADO', detalle: 'Libro de sueldos digital activo' },
-      { tallerId: tallerOro.id, tipo: 'Certificado ambiental', tipoDocumentoId: tdMap['Certificado ambiental'], estado: 'COMPLETADO', detalle: 'Aptitud ambiental OPDS vigente' },
     ],
   })
 
@@ -337,6 +426,29 @@ async function main() {
   })
 
   console.log('  ✓ Taller ORO: Corte Sur SRL (Avellaneda)')
+
+  // Post-seed: garantizar que cada taller tenga las 7 validaciones.
+  for (const taller of [tallerBronce, tallerPlata, tallerOro]) {
+    const existentes = await prisma.validacion.findMany({
+      where: { tallerId: taller.id },
+      select: { tipo: true },
+    })
+    const nombresExistentes = new Set(existentes.map(v => v.tipo))
+    const faltantes = tiposDoc.filter(td => !nombresExistentes.has(td.nombre))
+
+    if (faltantes.length > 0) {
+      await prisma.validacion.createMany({
+        data: faltantes.map(td => ({
+          tallerId: taller.id,
+          tipo: td.nombre,
+          tipoDocumentoId: td.id,
+          estado: 'NO_INICIADO' as const,
+        })),
+      })
+    }
+  }
+
+  console.log('  ✓ Post-seed: cada taller tiene 7 validaciones')
 
   // ============================================
   // MARCAS
@@ -481,6 +593,8 @@ async function main() {
       duracion: '2h 30min',
       institucion: 'OIT Argentina',
       orden: 1,
+      procesosTarget: [],
+      formalizacionTarget: ['Habilitación bomberos', 'Plan de seguridad e higiene', 'Empleados registrados'],
     },
   })
 
@@ -513,6 +627,8 @@ async function main() {
       duracion: '3h',
       institucion: 'INTI Textiles',
       orden: 2,
+      procesosTarget: [pConfeccion.id, pCorte.id],
+      formalizacionTarget: ['Nómina digital'],
     },
   })
 
@@ -546,6 +662,8 @@ async function main() {
       duracion: '1h 45min',
       institucion: 'UNTREF',
       orden: 3,
+      procesosTarget: [],
+      formalizacionTarget: ['CUIT/Monotributo', 'Habilitación municipal', 'ART'],
     },
   })
 

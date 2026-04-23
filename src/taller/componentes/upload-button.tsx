@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react'
 import { Upload, Loader2 } from 'lucide-react'
 import { Button } from '@/compartido/componentes/ui/button'
+import { useToast } from '@/compartido/componentes/ui/toast'
 
 interface UploadButtonProps {
   validacionId: string
@@ -10,6 +11,7 @@ interface UploadButtonProps {
 }
 
 export function UploadButton({ validacionId, onSuccess }: UploadButtonProps) {
+  const { toast } = useToast()
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
@@ -33,9 +35,10 @@ export function UploadButton({ validacionId, onSuccess }: UploadButtonProps) {
       if (!res.ok) {
         setError(json.error || 'Error al subir')
       } else {
+        toast('Documento subido correctamente. Queda pendiente de revisión.')
         onSuccess?.()
-        // Force page refresh to show updated state
-        window.location.reload()
+        setTimeout(() => window.location.reload(), 1200)
+        return
       }
     } catch {
       setError('Error de conexión')

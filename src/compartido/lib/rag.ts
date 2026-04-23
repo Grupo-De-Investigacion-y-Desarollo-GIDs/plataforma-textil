@@ -57,17 +57,28 @@ export async function generarRespuesta(
     throw new Error('ANTHROPIC_API_KEY no configurada')
   }
 
+  // Leer config del admin desde DB
+  const configs = await prisma.configuracionSistema.findMany({
+    where: { grupo: 'llm' },
+  })
+  const configMap = Object.fromEntries(configs.map(c => [c.clave, c.valor]))
+
+  const model = configMap['llm_model'] ?? 'claude-haiku-4-5-20251001'
+  const maxTokens = parseInt(configMap['llm_max_tokens'] ?? '500')
+  const systemPrompt = configMap['llm_system_prompt'] ?? `Sos un asistente de la Plataforma Digital Textil (PDT) de OIT Argentina y UNTREF.
+Ayudas a talleres textiles con preguntas sobre formalizacion, tramites y uso de la plataforma.
+Responde siempre en espanol, de forma clara y concisa.
+Si en el contexto hay links en formato markdown, incluílos en tu respuesta para que el usuario pueda navegar directamente.
+Solo responde basandote en el contexto provisto. Si no sabes, deci que no tenes esa informacion y sugeri contactar soporte@plataformatextil.ar.`
+
   const contextoTexto = contexto
     .map((d) => `## ${d.titulo}\n${d.contenido}`)
     .join('\n\n')
 
   const response = await anthropic.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 500,
-    system: `Sos un asistente de la Plataforma Digital Textil (PDT) de OIT Argentina y UNTREF.
-Ayudas a talleres textiles con preguntas sobre formalizacion, tramites y uso de la plataforma.
-Responde siempre en espanol, de forma clara y concisa.
-Solo responde basandote en el contexto provisto. Si no sabes, deci que no tenes esa informacion y sugeri contactar soporte@plataformatextil.ar.`,
+    model,
+    max_tokens: maxTokens,
+    system: systemPrompt,
     messages: [
       {
         role: 'user',
