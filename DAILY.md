@@ -3,6 +3,9 @@
 ## 2026-04-23
 
 ### Gerardo Breard
+- **14:57** `a1aaf37` — docs: agregar spec v3-logs-admin-auditoria con correcciones de factibilidad
+  - `.claude/specs/v3-logs-admin-auditoria.md`
+
 - **14:07** `ea39474` — docs: agregar spec v3-validacion-archivos con correcciones de factibilidad
   - `.claude/specs/v3-validacion-archivos.md`
 
