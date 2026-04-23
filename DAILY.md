@@ -3,6 +3,9 @@
 ## 2026-04-23
 
 ### Gerardo Breard
+- **12:19** `282f854` — docs: marcar inicio oficial de V3
+  - `.claude/specs/V3_INICIO.md`
+
 - **12:16** `10f0492` — docs: agregar spec v3-separar-ambientes con correcciones de factibilidad
   - `.claude/specs/v3-separar-ambientes.md`
 
