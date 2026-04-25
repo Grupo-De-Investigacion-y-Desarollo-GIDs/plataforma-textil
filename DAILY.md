@@ -3,6 +3,9 @@
 ## 2026-04-25
 
 ### Gerardo Breard
+- **13:24** `9c5b45c` — docs: agregar spec v3-tipos-documento-db con correcciones de factibilidad
+  - `.claude/specs/v3-tipos-documento-db.md`
+
 - **12:41** `df56f50` — docs: agregar spec v3-redefinicion-roles-estado con correcciones de factibilidad
   - `.claude/specs/v3-redefinicion-roles-estado.md`
 
