@@ -3,6 +3,9 @@
 ## 2026-04-25
 
 ### Gerardo Breard
+- **18:08** `a56560d` — docs: agregar spec v3-error-boundaries con correcciones de factibilidad
+  - `.claude/specs/v3-error-boundaries.md`
+
 - **17:52** `2c4ab62` — docs: agregar spec v3-tests-e2e con correcciones de factibilidad
   - `.claude/specs/v3-tests-e2e.md`
 
