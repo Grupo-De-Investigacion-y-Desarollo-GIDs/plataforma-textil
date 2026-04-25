@@ -43,7 +43,7 @@
 - **Secciones:** S-04 §4.2 (nombre del wrapper) vs D-01 §2 (ESTADO valida documentos)
 - **Conflicto:** El wrapper se llama `logAccionAdmin` pero post-D-01 las acciones de validación las ejecuta ESTADO, no ADMIN. S-04 §6 reconoce "Acción ejecutada por ESTADO — el log se guarda igual" pero el nombre del helper es confuso.
 - **Severidad:** BAJA
-- **Resolución:** Renombrar a `logAccionSensible` o dejar `logAccionAdmin` con un comentario en el código. No bloqueante.
+- **Resolución:** ~~Renombrar a `logAccionSensible` o dejar `logAccionAdmin` con un comentario en el código.~~ **RESUELTO:** nota agregada en S-04 §4.2 explicando que el nombre se mantiene por compatibilidad, considerar rename a V4.
 
 ---
 
@@ -75,28 +75,28 @@
 - **Secciones:** T-03 §5.3 ("¿Mensaje recordatorio?" usa F-07) y §13 (referencias: "F-07 — los mensajes individuales se usan para los recordatorios")
 - **Conflicto:** T-03 referencia F-07 en §13 pero NO lo lista en ANTES DE ARRANCAR. Las acciones del dashboard de onboarding ("¿Reenviar invitación?", "¿Mensaje recordatorio?") dependen de F-07 para funcionar.
 - **Severidad:** MEDIA
-- **Resolución:** Agregar `- [ ] V3_BACKLOG F-07 mergeado (mensajes individuales para recordatorios)` al ANTES DE ARRANCAR de T-03, o marcar esas acciones como "disponibles solo si F-07 está mergeado".
+- **Resolución:** ~~Agregar F-07 al ANTES DE ARRANCAR de T-03.~~ **RESUELTO:** F-07 agregado al ANTES DE ARRANCAR de T-03.
 
 ### D-05 — T-03 endpoint de reenvío debería usar Q-03
 - **Specs:** `v3-protocolos-onboarding.md` (T-03)
 - **Secciones:** T-03 §5.3 (nuevo endpoint `POST /api/admin/onboarding/reenviar-invitacion`)
 - **Conflicto:** T-03 crea un endpoint nuevo de V3 pero no declara Q-03 como dependencia. Según Q-03 §8.2, todos los endpoints nuevos de V3 deben usar `apiHandler`.
 - **Severidad:** MEDIA
-- **Resolución:** Agregar Q-03 al ANTES DE ARRANCAR de T-03 o prescribir explícitamente que el endpoint use `apiHandler`.
+- **Resolución:** ~~Agregar Q-03 al ANTES DE ARRANCAR de T-03 o prescribir explícitamente que el endpoint use `apiHandler`.~~ **RESUELTO:** Q-03 agregado al ANTES DE ARRANCAR + `apiHandler` prescrito en §5.3.
 
 ### D-06 — F-05 endpoints deberían usar Q-03
 - **Specs:** `v3-demanda-insatisfecha.md` (F-05)
 - **Secciones:** F-05 §7.1-7.3 (3 endpoints nuevos)
 - **Conflicto:** F-05 crea 3 endpoints nuevos (`GET /api/estado/demanda-insatisfecha`, `GET .../detalle`, `GET .../exportar`). Q-03 §8.2 lista el primero como API que debe usar formato nuevo. F-05 ANTES DE ARRANCAR no lista Q-03.
 - **Severidad:** MEDIA
-- **Resolución:** Agregar Q-03 al ANTES DE ARRANCAR de F-05 o prescribir `apiHandler` en los endpoints.
+- **Resolución:** ~~Agregar Q-03 al ANTES DE ARRANCAR de F-05 o prescribir `apiHandler` en los endpoints.~~ **RESUELTO:** Q-03 agregado al ANTES DE ARRANCAR + nota en §7.
 
 ### D-07 — QA estado issues debería depender de QA formato (parcialmente declarado)
 - **Specs:** `v3-qa-estado-issues.md`
 - **Secciones:** ANTES DE ARRANCAR
 - **Conflicto:** El spec dice "V3_BACKLOG QA formato ampliado implementado" pero el spec del QA formato se llama `v3-qa-formato-ampliado.md` y no tiene ID de V3_BACKLOG. La referencia es textual pero no formal.
 - **Severidad:** BAJA
-- **Resolución:** La dependencia está implícitamente declarada. Solo formalizar con nombre exacto del spec.
+- **Resolución:** ~~Formalizar con nombre exacto del spec.~~ **RESUELTO:** referencia actualizada a `v3-qa-formato-ampliado.md`.
 
 ---
 
@@ -138,14 +138,14 @@ T-02 ──→ (depende de T-03, F-04, F-05)
 - **Secciones:** T-03 §6.1 ("banner contextual se desactiva") vs F-01 §5.4 ("Remover el banner contextual inline de V2")
 - **Conflicto:** T-03 dice "Mientras el checklist esté visible, el banner contextual se desactiva". F-01 dice "Remover el banner contextual inline de V2" permanentemente. Si F-01 lo elimina, T-03 no puede "desactivarlo" condicionalmente — ya no existe. El orden de implementación determina quién gana, pero el resultado es incoherente.
 - **Severidad:** MEDIA
-- **Resolución:** F-01 reemplaza el banner contextual de V2 con ProximoNivelCard. T-03 debería decir: "Mientras el checklist esté visible, ProximoNivelCard no se muestra" (no "banner contextual"). Actualizar T-03 §6.1.
+- **Resolución:** ~~F-01 reemplaza el banner contextual de V2 con ProximoNivelCard. T-03 debería decir: "Mientras el checklist esté visible, ProximoNivelCard no se muestra" (no "banner contextual"). Actualizar T-03 §6.1.~~ **RESUELTO** en commit anterior (C-04): T-03 §6.1 ahora referencia ProximoNivelCard, no el banner contextual de V2.
 
 ### U-03 — F-01 y D-02 ambos quieren actualizar constantes en taller/page.tsx
 - **Specs:** `v3-proximo-nivel-dashboard.md` (F-01) y `v3-tipos-documento-db.md` (D-02)
 - **Secciones:** F-01 §5.4 ("constantes PTS_* se eliminan como parte de D-02") y D-02 §4.1 ("constantes hardcodeadas")
 - **Conflicto:** F-01 reconoce que las constantes se eliminan en D-02, pero el card de "Puntaje" (líneas 296-314 de taller/page.tsx) que las usa "se actualiza en D-02, no en este spec". Esto es correcto pero requiere que D-02 se implemente ANTES de F-01.
 - **Severidad:** BAJA
-- **Resolución:** Ya correctamente declarado en F-01 ANTES DE ARRANCAR. Solo verificar que el orden se respete.
+- **Resolución:** Ya correctamente declarado en F-01 ANTES DE ARRANCAR. **RESUELTO:** D-02 está en ANTES DE ARRANCAR de F-01, orden correcto.
 
 ---
 
@@ -156,7 +156,7 @@ T-02 ──→ (depende de T-03, F-04, F-05)
 - **Secciones:** T-03 §8.3 (notasSeguimiento*), T-02 §3 (observaciones*), F-02 §3.1-3.2 (mensajesWhatsapp, magicLinks)
 - **Conflicto:** No es un conflicto de incompatibilidad — todos son aditivos. Pero si se implementan en paralelo, las migraciones pueden colisionar (cada branch modifica `schema.prisma` en la misma zona del modelo User).
 - **Severidad:** MEDIA
-- **Resolución:** Implementar secuencialmente, no en paralelo. O agrupar todas las adiciones al modelo User en una sola migración si los specs se implementan en la misma ventana temporal.
+- **Resolución:** ~~Implementar secuencialmente, no en paralelo.~~ **RESUELTO:** nota de coordinación de migraciones agregada al ANTES DE ARRANCAR de T-02, T-03 y F-02.
 
 ### M-02 — INT-01 agrega 9 campos + 2 enums al modelo Taller
 - **Specs:** `v3-arca-completo.md` (INT-01)
@@ -181,7 +181,7 @@ T-02 ──→ (depende de T-03, F-04, F-05)
 - **Secciones:** Q-03 §6.3 (ejemplo de uso con `session.user.role !== 'ADMIN'`)
 - **Conflicto:** Q-03 muestra un ejemplo genérico con `errorForbidden('ADMIN')`. Post-D-01, algunos de esos endpoints requieren ESTADO, no ADMIN. El ejemplo no es incorrecto (es genérico), pero puede confundir al implementador.
 - **Severidad:** BAJA
-- **Resolución:** Agregar nota en Q-03 §6.3: "El rol requerido depende del endpoint — consultar D-01 para la definición de permisos por rol."
+- **Resolución:** ~~Agregar nota en Q-03 §6.3.~~ **RESUELTO:** comentario inline agregado en Q-03 §6.3 sobre consultar D-01.
 
 ### R-02 — S-02 exime admin de rate limit, pero F-07 necesita rate limit para admin
 - **Specs:** `v3-rate-limiting.md` (S-02) y `v3-mensajes-individuales.md` (F-07)
@@ -195,7 +195,7 @@ T-02 ──→ (depende de T-03, F-04, F-05)
 - **Secciones:** F-06 §4.2 (auth: `ADMIN | ESTADO | CONTENIDO`)
 - **Conflicto:** D-01 no menciona explícitamente quién gestiona el RAG. F-06 amplía el acceso a ESTADO para carga de documentos. No es contradictorio, pero D-01 no contempla esta decisión.
 - **Severidad:** BAJA
-- **Resolución:** Agregar en D-01 §1 (tabla de responsabilidades): "Gestión de corpus RAG: ADMIN + ESTADO + CONTENIDO".
+- **Resolución:** ~~Agregar en D-01 §1 (tabla de responsabilidades).~~ **RESUELTO:** fila "Gestión de corpus RAG: ADMIN + ESTADO + CONTENIDO" agregada a la tabla.
 
 ---
 
@@ -212,28 +212,28 @@ T-02 ──→ (depende de T-03, F-04, F-05)
 - **Secciones:** T-03 §5.3 (endpoint `POST /api/admin/onboarding/reenviar-invitacion`)
 - **Conflicto:** No muestra código de error handling. No prescribe Q-03.
 - **Severidad:** MEDIA
-- **Resolución:** Prescribir `apiHandler` explícitamente en §5.3.
+- **Resolución:** ~~Prescribir `apiHandler` explícitamente en §5.3.~~ **RESUELTO:** `apiHandler` prescrito en §5.3 + Q-03 en ANTES DE ARRANCAR.
 
 ### E-04 — F-05 endpoints sin prescripción de formato
 - **Specs:** `v3-demanda-insatisfecha.md` (F-05)
 - **Secciones:** F-05 §7.1-7.3 (3 endpoints)
 - **Conflicto:** Define response shapes pero no muestra error handling ni prescribe Q-03.
 - **Severidad:** MEDIA
-- **Resolución:** Agregar nota en §7: "Todos los endpoints usan `apiHandler` de Q-03."
+- **Resolución:** ~~Agregar nota en §7.~~ **RESUELTO:** nota de `apiHandler` agregada en §7 + Q-03 en ANTES DE ARRANCAR.
 
 ### E-05 — S-02 rate limit response vs Q-03 `errorRateLimited()`
 - **Specs:** `v3-rate-limiting.md` (S-02) y `v3-errores-consistentes-apis.md` (Q-03)
 - **Secciones:** S-02 §5.3 (helper rateLimit retorna 429) vs Q-03 §5.1 (`errorRateLimited()`)
 - **Conflicto:** S-02 tiene su propio formato de 429 response. Q-03 define `errorRateLimited()` con el formato estándar. Si S-02 se implementa primero, usa formato viejo. Q-03 luego lo debería migrar, pero no lo menciona explícitamente en §8.3 (APIs viejas).
 - **Severidad:** MEDIA
-- **Resolución:** En S-02 §5.3, importar y usar `errorRateLimited()` de Q-03. O si S-02 se implementa antes de Q-03, marcar en §5.3: "Post Q-03, migrar esta response al formato estándar."
+- **Resolución:** ~~Marcar en S-02 §5.3 que post-Q-03 debe migrar.~~ **RESUELTO:** comentario TODO agregado en S-02 §5.3 indicando migrar a `errorRateLimited()` post-Q-03.
 
 ### E-06 — QA estado issues usa formato distinto (justificado)
 - **Specs:** `v3-qa-estado-issues.md`
 - **Secciones:** §4.2 (endpoint público sin auth)
 - **Conflicto:** Retorna `{ issues: [], error: '...' }` — no usa Q-03. Esto es un endpoint público para QA HTMLs en GitHub Pages, no una API user-facing.
 - **Severidad:** BAJA
-- **Resolución:** Aceptable como excepción documentada. Agregar comentario en el spec.
+- **Resolución:** ~~Aceptable como excepción documentada. Agregar comentario en el spec.~~ **RESUELTO:** nota de excepción documentada agregada en §4.2.
 
 ---
 

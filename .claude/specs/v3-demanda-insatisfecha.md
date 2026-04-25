@@ -11,6 +11,7 @@
 
 - [ ] V3_BACKLOG D-01 mergeado (rol ESTADO con `/estado/talleres`)
 - [ ] V3_BACKLOG D-02 mergeado (`ReglaNivel` con `puntosMinimos`, `calcularProximoNivel()` disponible)
+- [ ] V3_BACKLOG Q-03 mergeado (formato de errores — los 3 endpoints de este spec deben usarlo)
 - [ ] El sistema de matching de pedidos ya esta funcionando (V2)
 
 ---
@@ -468,6 +469,8 @@ const impactoUnidades = motivosPorNivel.reduce((sum, m) => sum + m.pedido.cantid
 ---
 
 ## 7. Endpoints
+
+> **Formato de errores:** Todos los endpoints de esta sección usan `apiHandler` de Q-03. Los errores de auth, validación y 500 se manejan con los helpers estándar (`errorForbidden`, `errorResponse`, `errorInternal`).
 
 ### 7.1 — `GET /api/estado/demanda-insatisfecha`
 

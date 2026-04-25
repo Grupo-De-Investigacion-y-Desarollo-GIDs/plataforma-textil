@@ -104,6 +104,8 @@ Una acción es "sensible" si cumple al menos uno de estos criterios:
 
 ### 4.2 — Formato del log
 
+> **Nota sobre el nombre:** Aunque se llama `logAccionAdmin`, post-D-01 también lo usa el rol ESTADO (para acciones de validación de documentos, configuración de niveles, etc.). El nombre se mantiene por compatibilidad con los 18 callers existentes de `logActividad` y para evitar un rename masivo. Considerar renombrar a `logAccionSensible` en V4.
+
 ```typescript
 logAccionAdmin(
   'ACCION_EN_MAYUSCULAS',     // string único por tipo de acción

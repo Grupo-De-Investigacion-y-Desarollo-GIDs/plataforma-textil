@@ -328,6 +328,8 @@ export const POST = apiHandler(async (req) => {
   const session = await auth()
 
   if (!session?.user) return errorAuthRequired()
+  // Nota: el rol requerido depende del endpoint. Consultar D-01 para la
+  // definición de permisos por rol post-V3 (ej: validaciones → ESTADO, no ADMIN)
   if (session.user.role !== 'ADMIN') return errorForbidden('ADMIN')
 
   const body = await req.json()

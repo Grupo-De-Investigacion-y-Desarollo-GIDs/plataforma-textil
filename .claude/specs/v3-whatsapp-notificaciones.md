@@ -12,6 +12,8 @@
 - [ ] V3_BACKLOG I-01 mergeado (ambientes separados)
 - [ ] Modelo `Notificacion` ya existe en DB (de V2)
 
+> **Nota sobre migraciones:** Este spec agrega arrays al modelo User (`mensajesWhatsapp`, `magicLinks`). T-02 y T-03 también agregan arrays a User. Si se implementan en paralelo, las migraciones pueden colisionar en la misma zona del schema. Recomendación: implementar secuencialmente, no en paralelo.
+
 ---
 
 ## 1. Contexto

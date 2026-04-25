@@ -12,6 +12,10 @@
 - [ ] V3_BACKLOG D-01 mergeado (rol ESTADO definido)
 - [ ] V3_BACKLOG INT-01 mergeado (verificación ARCA funcionando)
 - [ ] V3_BACKLOG F-02 mergeado (WhatsApp como canal de notificación)
+- [ ] V3_BACKLOG Q-03 mergeado (formato de errores — endpoint de reenvío debe usarlo)
+- [ ] V3_BACKLOG F-07 mergeado (mensajes individuales para recordatorios)
+
+> **Nota sobre migraciones:** Este spec agrega arrays al modelo User (`notasSeguimientoRecibidas`, `notasSeguimientoCreadas`). T-02 y F-02 también agregan arrays a User. Si se implementan en paralelo, las migraciones pueden colisionar en la misma zona del schema. Recomendación: implementar secuencialmente, no en paralelo.
 
 ---
 
@@ -351,6 +355,7 @@ Cada sugerencia es un botón directo para enviar el mensaje correspondiente.
    - Body: `{ userId: string }`
    - Auth: solo ADMIN o ESTADO
    - Busca el email del usuario, envía `buildInvitacionRegistroEmail()`, registra en LogActividad
+   - **Usar `apiHandler` de Q-03** — este es un endpoint nuevo de V3, debe seguir el formato estándar de errores
 
 ---
 

@@ -13,6 +13,8 @@
 - [ ] V3_BACKLOG F-04 mergeado (exportes Estado — el reporte usa `generarXlsx` y `HojaExportable` creados por F-04)
 - [ ] V3_BACKLOG F-05 mergeado (demanda insatisfecha — input de hoja específica del reporte mensual)
 
+> **Nota sobre migraciones:** Este spec agrega arrays al modelo User (`observacionesCreadas`, `observacionesRecibidas`). T-03 y F-02 también agregan arrays a User. Si se implementan en paralelo, las migraciones pueden colisionar en la misma zona del schema. Recomendación: implementar secuencialmente, no en paralelo.
+
 ---
 
 ## 1. Contexto

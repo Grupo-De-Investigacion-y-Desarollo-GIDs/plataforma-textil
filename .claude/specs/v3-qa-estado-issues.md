@@ -9,7 +9,7 @@
 
 ## ANTES DE ARRANCAR
 
-- [ ] V3_BACKLOG QA formato ampliado implementado (specs V3 generan QAs con formato nuevo)
+- [ ] V3_BACKLOG `v3-qa-formato-ampliado.md` mergeado (specs V3 generan QAs con formato nuevo)
 - [ ] `GITHUB_TOKEN` y `GITHUB_REPO` configurados en Vercel
 - [ ] `src/app/api/feedback/route.ts` existente y funcionando
 
@@ -135,6 +135,8 @@ Cambios:
 - Actualizar `/api/feedback/route.ts` para importar de `@/compartido/lib/cors` en vez de tener la función inline
 
 ### 4.2 — Endpoint `/api/feedback/by-qa/[qaSlug]`
+
+> **Nota sobre formato de errores:** Este endpoint público para QA HTMLs en GitHub Pages no usa el formato Q-03 (`apiHandler`). Es un endpoint público de bajo riesgo que no requiere auth y sirve a HTMLs estáticos — no es una API user-facing de la plataforma. Excepción documentada en la revisión cruzada (E-06).
 
 Archivo nuevo: `src/app/api/feedback/by-qa/[qaSlug]/route.ts`
 

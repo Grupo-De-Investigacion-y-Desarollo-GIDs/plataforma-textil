@@ -222,6 +222,9 @@ export async function rateLimit(
         resetAt: new Date(reset).toISOString(),
       })
 
+      // Post-Q-03 mergeado: migrar esta response al formato estándar usando
+      // errorRateLimited(retryAfter) de @/compartido/lib/api-errors
+      // que retorna { error: { code: 'RATE_LIMITED', message, digest } }
       return NextResponse.json(
         {
           error: 'Demasiadas solicitudes',

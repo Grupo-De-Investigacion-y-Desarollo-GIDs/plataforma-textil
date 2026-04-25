@@ -50,6 +50,7 @@ Esto es un error arquitectural grave para el piloto con OIT:
 | Configuración de archivos permitidos | ADMIN | ADMIN |
 | Logs del sistema | ADMIN | ADMIN (con acceso ESTADO en su propio scope) |
 | Gestión de talleres/marcas (datos básicos) | ADMIN | ADMIN (pero sin decisión sobre niveles) |
+| Gestión de corpus RAG | ADMIN | ADMIN + ESTADO + CONTENIDO |
 
 **ESTADO se convierte en el actor institucional** que regula la formalización. ADMIN se convierte en el operador técnico que mantiene la plataforma funcionando. Esta separación refleja la realidad institucional.
 
