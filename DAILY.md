@@ -3,6 +3,9 @@
 ## 2026-04-25
 
 ### Gerardo Breard
+- **16:22** `b242dc9` — docs: agregar spec v3-demanda-insatisfecha con correcciones de factibilidad
+  - `.claude/specs/v3-demanda-insatisfecha.md`
+
 - **16:03** `a3a9014` — docs: agregar spec v3-arca-completo con correcciones de factibilidad
   - `.claude/specs/v3-arca-completo.md`
 
