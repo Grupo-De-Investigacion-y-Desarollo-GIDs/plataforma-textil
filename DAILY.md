@@ -3,6 +3,9 @@
 ## 2026-04-25
 
 ### Gerardo Breard
+- **13:45** `14813b2` — docs: actualizar v3-proximo-nivel-dashboard con spec ejecutable
+  - `.claude/specs/v3-proximo-nivel-dashboard.md`
+
 - **13:24** `9c5b45c` — docs: agregar spec v3-tipos-documento-db con correcciones de factibilidad
   - `.claude/specs/v3-tipos-documento-db.md`
 
