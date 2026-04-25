@@ -3,6 +3,9 @@
 ## 2026-04-25
 
 ### Gerardo Breard
+- **15:06** `399c9a3` — docs: agregar spec v3-whatsapp-notificaciones con correcciones de factibilidad
+  - `.claude/specs/v3-whatsapp-notificaciones.md`
+
 - **13:49** `ae1b6c7` — docs: ampliar interface ProximoNivelInfo en v3-tipos-documento-db por dependencia con F-01
   - `.claude/specs/v3-tipos-documento-db.md`
 
