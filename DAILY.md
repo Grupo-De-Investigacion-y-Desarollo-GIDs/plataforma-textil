@@ -3,6 +3,9 @@
 ## 2026-04-25
 
 ### Gerardo Breard
+- **17:07** `6f3f70c` — docs: agregar spec v3-rag-completo con correcciones de factibilidad
+  - `.claude/specs/v3-rag-completo.md`
+
 - **16:44** `ac43abc` — docs: agregar spec v3-exportes-estado con correcciones de factibilidad
   - `.claude/specs/v3-exportes-estado.md`
 
