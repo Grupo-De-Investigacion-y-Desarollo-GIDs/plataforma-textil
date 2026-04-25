@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-04-25
+
+### Gerardo Breard
+- **12:41** `df56f50` — docs: agregar spec v3-redefinicion-roles-estado con correcciones de factibilidad
+  - `.claude/specs/v3-redefinicion-roles-estado.md`
+
+
 ## 2026-04-23
 
 ### Gerardo Breard
