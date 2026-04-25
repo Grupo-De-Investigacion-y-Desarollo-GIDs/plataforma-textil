@@ -3,6 +3,9 @@
 ## 2026-04-25
 
 ### Gerardo Breard
+- **16:03** `a3a9014` — docs: agregar spec v3-arca-completo con correcciones de factibilidad
+  - `.claude/specs/v3-arca-completo.md`
+
 - **15:06** `399c9a3` — docs: agregar spec v3-whatsapp-notificaciones con correcciones de factibilidad
   - `.claude/specs/v3-whatsapp-notificaciones.md`
 
