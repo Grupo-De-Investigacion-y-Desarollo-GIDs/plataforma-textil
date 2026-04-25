@@ -3,6 +3,9 @@
 ## 2026-04-25
 
 ### Gerardo Breard
+- **19:03** `0f49926` — docs: agregar spec v3-protocolos-onboarding con correcciones de factibilidad
+  - `.claude/specs/v3-protocolos-onboarding.md`
+
 - **18:43** `68a05c7` — docs: agregar spec v3-ux-mejoras con correcciones de factibilidad
   - `.claude/specs/v3-ux-mejoras.md`
 
