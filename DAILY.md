@@ -3,6 +3,9 @@
 ## 2026-04-25
 
 ### Gerardo Breard
+- **18:43** `68a05c7` — docs: agregar spec v3-ux-mejoras con correcciones de factibilidad
+  - `.claude/specs/v3-ux-mejoras.md`
+
 - **18:25** `c75998c` — docs: agregar spec v3-errores-consistentes-apis con correcciones de factibilidad
   - `.claude/specs/v3-errores-consistentes-apis.md`
 
