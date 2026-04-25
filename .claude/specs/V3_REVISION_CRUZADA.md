@@ -22,21 +22,21 @@
 - **Secciones:** F-07 §4 (todo el endpoint) vs Q-03 §8.2 (lista de APIs nuevas V3)
 - **Conflicto:** F-07 usa `NextResponse.json({ error: 'No autorizado' }, { status: 403 })` y `NextResponse.json({ error: 'Datos invalidos', detalles: ... })` en todo el endpoint. Q-03 §8.2 lista explícitamente `POST /api/admin/mensajes-individuales (F-07)` como API que debe usar `apiHandler` + `errorResponse` desde el día 1.
 - **Severidad:** ALTA
-- **Resolución:** Reescribir el endpoint de F-07 §4 usando `apiHandler`, `errorForbidden()`, `errorInvalidInput()`, `errorNotFound()` de Q-03.
+- **Resolución:** ~~Reescribir el endpoint de F-07 §4 usando `apiHandler`, `errorForbidden()`, `errorInvalidInput()`, `errorNotFound()` de Q-03.~~ **RESUELTO:** endpoint reescrito con `apiHandler` + helpers Q-03, dependencia Q-03 agregada al ANTES DE ARRANCAR.
 
 ### C-03 — F-04 usa formato de error viejo
 - **Specs:** `v3-exportes-estado.md` (F-04) y `v3-errores-consistentes-apis.md` (Q-03)
 - **Secciones:** F-04 §4.3 vs Q-03 §8.2
 - **Conflicto:** F-04 usa `NextResponse.json({ error: 'Solo ESTADO' }, { status: 403 })` y `NextResponse.json({ error: 'Faltan parámetros' }, { status: 400 })`. Q-03 §8.2 lista `GET /api/estado/exportar (F-04)` como API V3 que debe usar el formato nuevo.
 - **Severidad:** ALTA
-- **Resolución:** Reescribir error handling de F-04 §4.3 usando `errorForbidden('ESTADO')`, `errorResponse({ code: 'INVALID_INPUT', ... })`.
+- **Resolución:** ~~Reescribir error handling de F-04 §4.3 usando `errorForbidden('ESTADO')`, `errorResponse({ code: 'INVALID_INPUT', ... })`.~~ **RESUELTO:** endpoint reescrito con `apiHandler` + helpers Q-03, dependencias Q-03 y S-04 agregadas al ANTES DE ARRANCAR.
 
 ### C-04 — F-01 y T-03 definen elementos en la misma posición del dashboard taller
 - **Specs:** `v3-proximo-nivel-dashboard.md` (F-01) y `v3-protocolos-onboarding.md` (T-03)
 - **Secciones:** F-01 §5.4 vs T-03 §6.1
 - **Conflicto:** F-01 dice "Posicionar ProximoNivelCard entre el header de bienvenida y el grid de progreso principal". T-03 dice "Banner de checklist: DESPUÉS del header, ANTES del grid de progreso". Misma posición exacta. T-03 tiene una nota vaga: "Nota futura (F-01): definir prioridad", pero no la define. F-01 dice "Remover el banner contextual inline de V2" sin mencionar el checklist de T-03.
 - **Severidad:** ALTA
-- **Resolución:** Definir regla explícita: si `calcularPasosTaller()` tiene pasos ⬜ pendientes, mostrar checklist T-03 y ocultar ProximoNivelCard. Cuando todos los pasos son ✅, ocultar checklist y mostrar ProximoNivelCard. Documentar en ambos specs.
+- **Resolución:** ~~Definir regla explícita: si `calcularPasosTaller()` tiene pasos ⬜ pendientes, mostrar checklist T-03 y ocultar ProximoNivelCard. Cuando todos los pasos son ✅, ocultar checklist y mostrar ProximoNivelCard. Documentar en ambos specs.~~ **RESUELTO:** regla de convivencia documentada simétricamente en F-01 §5.4 y T-03 §6.1 con condición exacta `pasos.every(p => p.completado)`.
 
 ### C-05 — S-04 nombra `logAccionAdmin` pero ESTADO también lo usa
 - **Specs:** `v3-logs-admin-auditoria.md` (S-04) y `v3-redefinicion-roles-estado.md` (D-01)
@@ -61,14 +61,14 @@
 - **Secciones:** F-04 §6.2 (usa `logAccionAdmin`)
 - **Conflicto:** F-04 usa `logAccionAdmin('EXPORTE_GENERADO', ...)` que es creado por S-04. F-04 ANTES DE ARRANCAR no lista S-04.
 - **Severidad:** ALTA
-- **Resolución:** Agregar `- [ ] V3_BACKLOG S-04 mergeado (logAccionAdmin disponible)` al ANTES DE ARRANCAR de F-04.
+- **Resolución:** ~~Agregar `- [ ] V3_BACKLOG S-04 mergeado (logAccionAdmin disponible)` al ANTES DE ARRANCAR de F-04.~~ **RESUELTO:** S-04 agregado al ANTES DE ARRANCAR de F-04.
 
 ### D-03 — F-07 debería depender de Q-03 para formato de errores
 - **Specs:** `v3-mensajes-individuales.md` (F-07)
 - **Secciones:** F-07 §4 (endpoint) y ANTES DE ARRANCAR
 - **Conflicto:** F-07 es un endpoint nuevo de V3 que Q-03 lista como obligatorio de usar el formato nuevo. F-07 ANTES DE ARRANCAR lista D-01, F-02 y S-02, pero no Q-03.
 - **Severidad:** ALTA
-- **Resolución:** Agregar `- [ ] V3_BACKLOG Q-03 mergeado (formato de errores — este endpoint DEBE usarlo)` al ANTES DE ARRANCAR de F-07.
+- **Resolución:** ~~Agregar `- [ ] V3_BACKLOG Q-03 mergeado (formato de errores — este endpoint DEBE usarlo)` al ANTES DE ARRANCAR de F-07.~~ **RESUELTO:** Q-03 agregado al ANTES DE ARRANCAR de F-07.
 
 ### D-04 — T-03 usa F-07 para mensajes recordatorio pero no lo declara
 - **Specs:** `v3-protocolos-onboarding.md` (T-03)
@@ -186,9 +186,9 @@ T-02 ──→ (depende de T-03, F-04, F-05)
 ### R-02 — S-02 exime admin de rate limit, pero F-07 necesita rate limit para admin
 - **Specs:** `v3-rate-limiting.md` (S-02) y `v3-mensajes-individuales.md` (F-07)
 - **Secciones:** S-02 §3 ("Endpoints internos del admin — ya requieren rol ADMIN/ESTADO") vs F-07 §9.2
-- **Conflicto:** S-02 dice que endpoints admin no necesitan rate limit. F-07 §9.2 reconoce este conflicto y dice: "Este spec necesita una excepción: 50 mensajes/hora por admin. Se actualizará S-02 en un PR aparte." Pero S-02 NO fue actualizado con esta excepción.
+- **Conflicto:** S-02 dice que endpoints admin no necesitan rate limit. F-07 §9.2 reconoce este conflicto y dice: "Este spec necesita una excepción: 50 mensajes/hora por admin. Se actualizar�� S-02 en un PR aparte." Pero S-02 NO fue actualizado con esta excepción.
 - **Severidad:** ALTA
-- **Resolución:** Actualizar S-02 agregando `mensajesIndividuales` al mapa de limiters (50 requests, 1 hora, por session.user.id).
+- **Resolución:** ~~Actualizar S-02 agregando `mensajesIndividuales` al mapa de limiters (50 requests, 1 hora, por session.user.id).~~ **RESUELTO:** limiter `mensajesIndividuales` agregado a §5.3, endpoint agregado a tabla §3, excepción documentada en "Endpoints sin rate limiting".
 
 ### R-03 — RAG access post-D-01
 - **Specs:** `v3-rag-completo.md` (F-06) y `v3-redefinicion-roles-estado.md` (D-01)
@@ -254,12 +254,12 @@ T-02 ──→ (depende de T-03, F-04, F-05)
 
 ### ALTA (resolver antes de implementar el spec afectado)
 
-1. **C-02** — F-07 usa formato viejo (contradice Q-03)
-2. **C-03** — F-04 usa formato viejo (contradice Q-03)
-3. **C-04/U-01** — F-01 y T-03 en misma posición del dashboard
-4. **D-02** — F-04 depende de S-04 sin declararlo
-5. **D-03** — F-07 no declara dependencia de Q-03
-6. **R-02** — S-02 no tiene la excepción de rate limit para F-07
+1. **C-02** — F-07 usa formato viejo (contradice Q-03) — **RESUELTO:** endpoint reescrito con apiHandler
+2. **C-03** — F-04 usa formato viejo (contradice Q-03) — **RESUELTO:** endpoint reescrito con apiHandler
+3. **C-04/U-01** — F-01 y T-03 en misma posición del dashboard — **RESUELTO:** regla de convivencia documentada simétricamente
+4. **D-02** — F-04 depende de S-04 sin declararlo — **RESUELTO:** S-04 agregado al ANTES DE ARRANCAR de F-04
+5. **D-03** — F-07 no declara dependencia de Q-03 — **RESUELTO:** Q-03 agregado al ANTES DE ARRANCAR de F-07
+6. **R-02** — S-02 no tiene la excepción de rate limit para F-07 — **RESUELTO:** limiter mensajesIndividuales + excepción documentada
 
 ---
 

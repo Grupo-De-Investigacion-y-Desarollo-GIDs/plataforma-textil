@@ -54,13 +54,14 @@ Este spec agrega rate limiting granular por endpoint crítico, con respuestas cl
 | `POST /api/validaciones/[id]/upload` | 20 requests | 1 hora | `session.user.id` | Spam de uploads |
 | `POST /api/auth/registro` | 5 requests | 1 hora | IP | Spam de cuentas |
 | `POST /api/chat` (RAG) | 30 requests | 1 hora | `session.user.id` | Consumo de LLM |
+| `POST /api/admin/mensajes-individuales` | 50 requests | 1 hora | `session.user.id` | Spam de mensajes individuales (F-07) |
 
 **Nota sobre login:** El identificador es solo IP (no IP+email) porque el endpoint `/api/auth/callback/credentials` es manejado internamente por NextAuth. Leer el body del POST para extraer el email consumiría el stream y NextAuth no podría re-leerlo para procesar el login. IP solo es suficiente para brute force protection en un piloto de 25-50 usuarios.
 
 **Endpoints sin rate limiting (intencional):**
 - GETs públicos (directorio, perfiles) — se cachean en CDN
 - `/api/notificaciones` — queries de lectura del usuario propio
-- Endpoints internos del admin — ya requieren rol ADMIN/ESTADO
+- Endpoints internos del admin — ya requieren rol ADMIN/ESTADO, **excepto** `/api/admin/mensajes-individuales` que tiene rate limit explícito (50/hora) por riesgo de spam (F-07 §9.2)
 
 ---
 
@@ -173,6 +174,13 @@ const limiters = {
     limiter: Ratelimit.slidingWindow(30, '1 h'),
     analytics: false,
     prefix: `rl:${env}:chat`,
+  }),
+  // Excepción: endpoint admin con rate limit por riesgo de spam (F-07 §9.2)
+  mensajesIndividuales: new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(50, '1 h'),
+    analytics: false,
+    prefix: `rl:${env}:msg`,
   }),
 } as const
 

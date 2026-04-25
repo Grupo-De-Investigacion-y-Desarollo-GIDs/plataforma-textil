@@ -360,9 +360,7 @@ Cada sugerencia es un botón directo para enviar el mensaje correspondiente.
 
 **Posición:** DESPUÉS del header (bienvenida + nivel actual), ANTES del grid de progreso (ProgressRing + stat cards).
 
-**Competencia con banner contextual:** El dashboard de taller ya tiene un banner contextual ("Te faltan X documentos...", "Estás en ORO", etc.). Mientras el checklist de onboarding esté visible, **el banner contextual se desactiva** — no pueden competir por espacio. Cuando todos los pasos del checklist estén ✅, el banner desaparece y el banner contextual vuelve a mostrarse.
-
-**Nota futura (F-01):** Cuando ProximoNivelCard se implemente, definir prioridad: si el taller está en pasos de onboarding (perfil incompleto, sin documentos), checklist tiene prioridad. Una vez completado el onboarding, ProximoNivelCard toma el lugar.
+**Convivencia con F-01 (ProximoNivelCard):** El checklist de onboarding y `ProximoNivelCard` (F-01) ocupan la misma posición en el dashboard. **Mientras el checklist esté visible (hay pasos ⬜ pendientes), `ProximoNivelCard` NO se muestra.** Cuando todos los pasos del checklist son ✅, el checklist se oculta automáticamente y `ProximoNivelCard` toma el lugar. La condición en el dashboard es: `const onboardingCompleto = pasos.every(p => p.completado)` — si es `true`, renderizar `<ProximoNivelCard>`, si es `false`, renderizar `<ChecklistOnboarding>`. Esta regla está documentada simétricamente en F-01 §5.4.
 
 Banner sticky, solo visible mientras hay pasos pendientes:
 

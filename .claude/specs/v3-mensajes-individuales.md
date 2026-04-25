@@ -11,6 +11,7 @@
 
 - [ ] V3_BACKLOG D-01 mergeado (definicion clara de roles ADMIN vs ESTADO)
 - [ ] V3_BACKLOG F-02 mergeado (templates de WhatsApp con `mensaje_admin`)
+- [ ] V3_BACKLOG Q-03 mergeado (formato de errores — este endpoint DEBE usarlo)
 - [ ] S-02 actualizado con rate limit para `/api/admin/mensajes-individuales` (50/hora por admin) — ver seccion 9.2
 
 ---
@@ -79,6 +80,7 @@ No se agrega `esMensajeIndividual: Boolean`. Filtrar por `tipo: 'mensaje_individ
 
 ```typescript
 import { NextRequest, NextResponse } from 'next/server'
+import { apiHandler, errorAuthRequired, errorForbidden, errorInvalidInput, errorNotFound } from '@/compartido/lib/api-errors'
 import { auth } from '@/compartido/lib/auth'
 import { z } from 'zod'
 import { prisma } from '@/compartido/lib/prisma'
@@ -93,12 +95,13 @@ const SchemaCrearMensaje = z.object({
   enviarPorWhatsapp: z.boolean().default(false),
 })
 
-export async function POST(req: NextRequest) {
+export const POST = apiHandler(async (req) => {
   const session = await auth()
 
   // ADMIN o ESTADO pueden enviar mensajes individuales
-  if (!session?.user || !['ADMIN', 'ESTADO'].includes(session.user.role)) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
+  if (!session?.user) return errorAuthRequired()
+  if (!['ADMIN', 'ESTADO'].includes(session.user.role)) {
+    return errorForbidden('ADMIN o ESTADO')
   }
 
   // Rate limit: 50 mensajes/hora por admin
@@ -108,12 +111,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json()
   const parsed = SchemaCrearMensaje.safeParse(body)
 
-  if (!parsed.success) {
-    return NextResponse.json({
-      error: 'Datos invalidos',
-      detalles: parsed.error.format()
-    }, { status: 400 })
-  }
+  if (!parsed.success) return errorInvalidInput(parsed.error)
 
   const { destinatarioId, titulo, mensaje, link, enviarPorWhatsapp } = parsed.data
 
@@ -124,9 +122,7 @@ export async function POST(req: NextRequest) {
   })
 
   if (!destinatario || !destinatario.active) {
-    return NextResponse.json({
-      error: 'Destinatario no existe o esta inactivo'
-    }, { status: 404 })
+    return errorNotFound('destinatario')
   }
 
   // Crear la notificacion
@@ -173,7 +169,7 @@ export async function POST(req: NextRequest) {
     success: true,
     notificacionId: notificacion.id
   })
-}
+})
 ```
 
 **Dependencia F-02:** el template `mensaje_admin` y la funcion `generarMensajeWhatsapp` son introducidos por el spec F-02 (`v3-whatsapp-notificaciones.md`). Si F-02 no esta mergeado, la opcion WhatsApp no esta disponible — el checkbox no debe mostrarse en la UI.

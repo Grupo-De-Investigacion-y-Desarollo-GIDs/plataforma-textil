@@ -12,6 +12,8 @@
 - [ ] V3_BACKLOG D-01 mergeado (ESTADO con sus rutas)
 - [ ] V3_BACKLOG INT-01 mergeado (datos ARCA disponibles para incluir en exportes)
 - [ ] V3_BACKLOG F-05 mergeado (tabla MotivoNoMatch para exporte demanda-insatisfecha)
+- [ ] V3_BACKLOG Q-03 mergeado (formato de errores consistente)
+- [ ] V3_BACKLOG S-04 mergeado (logAccionAdmin disponible)
 
 ---
 
@@ -258,14 +260,15 @@ Archivo destino: `src/app/api/estado/exportar/route.ts` (mover desde `/api/expor
 
 ```typescript
 import { NextRequest, NextResponse } from 'next/server'
+import { apiHandler, errorForbidden, errorResponse } from '@/compartido/lib/api-errors'
 import { auth } from '@/compartido/lib/auth'
 import { obtenerDataExporte } from './data'
 import { generarXlsx, toCsv } from '@/compartido/lib/exportes'
 
-export async function GET(req: NextRequest) {
+export const GET = apiHandler(async (req) => {
   const session = await auth()
   if (!session?.user || session.user.role !== 'ESTADO') {
-    return NextResponse.json({ error: 'Solo ESTADO' }, { status: 403 })
+    return errorForbidden('ESTADO')
   }
 
   const { searchParams } = new URL(req.url)
@@ -277,7 +280,11 @@ export async function GET(req: NextRequest) {
   const nivel = searchParams.get('nivel')
 
   if (!tipo || !formato) {
-    return NextResponse.json({ error: 'Faltan parámetros tipo y formato' }, { status: 400 })
+    return errorResponse({
+      code: 'INVALID_INPUT',
+      message: 'Faltan parámetros tipo y formato',
+      status: 400,
+    })
   }
 
   // Rate limit (de S-02)
@@ -305,8 +312,12 @@ export async function GET(req: NextRequest) {
     })
   }
 
-  return NextResponse.json({ error: 'Formato inválido' }, { status: 400 })
-}
+  return errorResponse({
+    code: 'INVALID_INPUT',
+    message: 'Formato inválido. Usar csv o xlsx',
+    status: 400,
+  })
+})
 ```
 
 ### 4.4 — Función `obtenerDataExporte`

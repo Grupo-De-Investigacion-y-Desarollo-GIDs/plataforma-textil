@@ -293,6 +293,8 @@ Reemplazar con:
 
 Posicionar **entre el header de bienvenida** (lineas 192-199) **y el grid de progreso principal** (linea 233). Es el bloque mas importante despues de las stats de puntaje.
 
+> **Convivencia con T-03 (checklist onboarding):** Si el checklist de onboarding de T-03 esta visible (hay pasos ⬜ pendientes), `ProximoNivelCard` **NO se muestra**. El checklist de onboarding tiene prioridad porque cubre los primeros pasos basicos (crear perfil, subir primer documento) que son prerequisito de todo lo demas. Cuando todos los pasos del checklist son ✅, T-03 se oculta automaticamente y `ProximoNivelCard` toma el lugar. La condicion en el dashboard es: `const onboardingCompleto = pasos.every(p => p.completado)` — si es `true`, renderizar `<ProximoNivelCard>`, si es `false`, renderizar `<ChecklistOnboarding>`.
+
 > **Nota:** las constantes `PTS_VERIFICADO_AFIP`, `PTS_POR_VALIDACION`, `PTS_POR_CERTIFICADO`, `PUNTAJE_MAX` importadas en lineas 9-13 tambien se eliminan como parte de D-02. El card de "Puntaje" (lineas 296-314) que las usa se actualiza en D-02, no en este spec.
 
 ### 5.5 — Estado especial ORO
