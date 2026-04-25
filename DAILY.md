@@ -3,6 +3,9 @@
 ## 2026-04-25
 
 ### Gerardo Breard
+- **18:25** `c75998c` — docs: agregar spec v3-errores-consistentes-apis con correcciones de factibilidad
+  - `.claude/specs/v3-errores-consistentes-apis.md`
+
 - **18:08** `a56560d` — docs: agregar spec v3-error-boundaries con correcciones de factibilidad
   - `.claude/specs/v3-error-boundaries.md`
 
