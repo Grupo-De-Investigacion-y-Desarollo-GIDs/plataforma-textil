@@ -3,6 +3,9 @@
 ## 2026-04-25
 
 ### Gerardo Breard
+- **20:14** `6dec7a6` — docs: agregar ORDEN_IMPLEMENTACION_V3 con grafo de dependencias y orden secuencial
+  - `ORDEN_IMPLEMENTACION_V3.md`
+
 - **20:07** `ff23d62` — docs: resolver hallazgos MEDIA y BAJA de revisión cruzada
   - `.claude/specs/V3_REVISION_CRUZADA.md`
   - `.claude/specs/v3-demanda-insatisfecha.md`
