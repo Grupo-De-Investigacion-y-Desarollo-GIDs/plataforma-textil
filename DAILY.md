@@ -3,6 +3,9 @@
 ## 2026-04-25
 
 ### Gerardo Breard
+- **19:19** `adbc6c7` — docs: agregar spec v3-reporte-campo con correcciones de factibilidad
+  - `.claude/specs/v3-reporte-campo.md`
+
 - **19:03** `0f49926` — docs: agregar spec v3-protocolos-onboarding con correcciones de factibilidad
   - `.claude/specs/v3-protocolos-onboarding.md`
 
