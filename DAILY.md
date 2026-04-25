@@ -3,6 +3,9 @@
 ## 2026-04-25
 
 ### Gerardo Breard
+- **17:52** `2c4ab62` — docs: agregar spec v3-tests-e2e con correcciones de factibilidad
+  - `.claude/specs/v3-tests-e2e.md`
+
 - **17:23** `8a5f74b` — docs: agregar spec v3-mensajes-individuales con correcciones de factibilidad
   - `.claude/specs/v3-mensajes-individuales.md`
 
