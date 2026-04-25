@@ -3,6 +3,9 @@
 ## 2026-04-25
 
 ### Gerardo Breard
+- **13:49** `ae1b6c7` — docs: ampliar interface ProximoNivelInfo en v3-tipos-documento-db por dependencia con F-01
+  - `.claude/specs/v3-tipos-documento-db.md`
+
 - **13:45** `14813b2` — docs: actualizar v3-proximo-nivel-dashboard con spec ejecutable
   - `.claude/specs/v3-proximo-nivel-dashboard.md`
 
