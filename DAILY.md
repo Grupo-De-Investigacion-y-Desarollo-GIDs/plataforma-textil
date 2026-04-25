@@ -3,6 +3,18 @@
 ## 2026-04-25
 
 ### Gerardo Breard
+- **20:07** `ff23d62` — docs: resolver hallazgos MEDIA y BAJA de revisión cruzada
+  - `.claude/specs/V3_REVISION_CRUZADA.md`
+  - `.claude/specs/v3-demanda-insatisfecha.md`
+  - `.claude/specs/v3-errores-consistentes-apis.md`
+  - `.claude/specs/v3-logs-admin-auditoria.md`
+  - `.claude/specs/v3-protocolos-onboarding.md`
+  - `.claude/specs/v3-qa-estado-issues.md`
+  - `.claude/specs/v3-rate-limiting.md`
+  - `.claude/specs/v3-redefinicion-roles-estado.md`
+  - `.claude/specs/v3-reporte-campo.md`
+  - `.claude/specs/v3-whatsapp-notificaciones.md`
+
 - **20:02** `60619f9` — docs: resolver hallazgos ALTA de revisión cruzada (C-02, C-03, C-04/U-01/U-02, D-02, D-03, R-02)
   - `.claude/specs/V3_REVISION_CRUZADA.md`
   - `.claude/specs/v3-exportes-estado.md`
