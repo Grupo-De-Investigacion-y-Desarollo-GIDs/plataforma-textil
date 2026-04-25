@@ -3,6 +3,9 @@
 ## 2026-04-25
 
 ### Gerardo Breard
+- **17:23** `8a5f74b` — docs: agregar spec v3-mensajes-individuales con correcciones de factibilidad
+  - `.claude/specs/v3-mensajes-individuales.md`
+
 - **17:07** `6f3f70c` — docs: agregar spec v3-rag-completo con correcciones de factibilidad
   - `.claude/specs/v3-rag-completo.md`
 
