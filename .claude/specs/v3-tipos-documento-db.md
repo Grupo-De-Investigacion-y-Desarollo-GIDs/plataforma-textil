@@ -303,8 +303,16 @@ Función nueva en el mismo archivo:
 export interface ProximoNivelInfo {
   nivelActual: NivelTaller
   nivelProximo: NivelTaller | null  // null si ya es ORO
-  puntosFaltantes: number
-  documentosFaltantes: { id: string; nombre: string; nivelMinimo: NivelTaller; puntos: number }[]
+  puntosActuales: number            // puntaje actual del taller
+  puntosObjetivo: number            // puntosMinimos de la ReglaNivel del próximo nivel
+  puntosFaltantes: number           // puntosObjetivo - puntosActuales
+  documentosFaltantes: {
+    id: string
+    nombre: string
+    nivelMinimo: NivelTaller
+    puntos: number
+    requerido: boolean              // true = requerido para el nivel, false = opcional (solo suma puntos)
+  }[]
   requiereAfip: boolean
   certificadosFaltantes: number
   beneficiosProximoNivel: string[]
@@ -315,6 +323,8 @@ export async function calcularProximoNivel(tallerId: string): Promise<ProximoNiv
   // Esta función la consume el banner contextual del dashboard (F-01)
 }
 ```
+
+> **Nota F-01:** los campos `puntosActuales`, `puntosObjetivo` y `documentosFaltantes[].requerido` fueron agregados por dependencia con F-01 (proximo-nivel-dashboard). F-01 los consume para la barra de progreso y para distinguir documentos requeridos de opcionales en la UI. Confirmado en commit 14813b2.
 
 ---
 
