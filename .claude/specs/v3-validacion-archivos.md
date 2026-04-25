@@ -16,7 +16,7 @@
 
 ## 1. Contexto
 
-Hoy los tipos de archivo aceptados (PDF, imágenes) y el tamaño máximo (5 MB) están hardcodeados en el código. Si el Estado decide aceptar videos cortos para mostrar proceso productivo, hay que:
+Hoy los tipos de archivo aceptados (PDF, imágenes) y el tamaño máximo (5 MB) están hardcodeados en el código. Si el Estado decide aceptar Excel para nómina digital, o videos cortos para mostrar proceso productivo, hay que:
 
 1. Modificar el código
 2. Ensayar en Preview
@@ -29,8 +29,6 @@ Este spec hace dos cosas simultáneamente:
 1. **Validación real de archivos** (server-side, por magic bytes) — lo que evita malware disfrazado
 2. **Configuración desde admin** — el admin define por tipo de contexto qué tipos de archivo acepta y qué tamaño máximo
 
-> **Nota sobre runtime:** Next.js 16.1.6 usa Node.js como runtime default para API routes — no requiere declarar `export const runtime = 'nodejs'` explícitamente. Los 2 endpoints de upload existentes ya usan `Buffer.from()` sin declaración de runtime y funcionan correctamente.
-
 ---
 
 ## 2. Qué construir
@@ -39,7 +37,7 @@ Este spec hace dos cosas simultáneamente:
 2. **Seed inicial con los valores actuales hardcodeados** — migración sin sorpresas
 3. **UI en `/admin/configuracion`** — nueva pestaña "Archivos" con CRUD de configuraciones
 4. **Helper de validación que lee de DB** — con cache en memoria (1 minuto) para evitar query en cada upload
-5. **Aplicación en los 2 endpoints de upload existentes (con 4 contextos)**
+5. **Aplicación en los 3 endpoints de upload existentes**
 6. **Logs de intentos bloqueados** — para `/admin/logs`
 
 ---
@@ -100,13 +98,6 @@ await prisma.configuracionUpload.createMany({
       tiposPermitidos: ['jpeg', 'png', 'webp'],
       tamanoMaximoMB: 5,
     },
-    {
-      contexto: 'imagenes-cotizacion',
-      nombre: 'Imágenes de referencia de cotizaciones',
-      descripcion: 'Fotos que el taller adjunta al enviar una cotización',
-      tiposPermitidos: ['jpeg', 'png', 'webp'],
-      tamanoMaximoMB: 5,
-    },
   ],
   skipDuplicates: true,
 })
@@ -116,7 +107,7 @@ await prisma.configuracionUpload.createMany({
 
 ## 4. Tipos de archivo soportados por la plataforma
 
-La plataforma soporta 6 tipos de archivo con validación por magic bytes:
+Aunque el admin puede agregar cualquier tipo a la configuración, la plataforma tiene una lista fija de tipos que sabe validar con magic bytes:
 
 | ID | Extensión | Magic bytes | Descripción |
 |----|-----------|-------------|-------------|
@@ -124,14 +115,16 @@ La plataforma soporta 6 tipos de archivo con validación por magic bytes:
 | `jpeg` | `.jpg`, `.jpeg` | `FF D8 FF` | Imagen JPEG |
 | `png` | `.png` | `89 50 4E 47 0D 0A 1A 0A` | Imagen PNG |
 | `webp` | `.webp` | `52 49 46 46 ... 57 45 42 50` | Imagen WebP |
+| `xlsx` | `.xlsx` | `50 4B 03 04` | Excel moderno (es un ZIP) |
+| `docx` | `.docx` | `50 4B 03 04` | Word moderno (es un ZIP) |
 | `mp4` | `.mp4` | `66 74 79 70` offset 4 | Video MP4 |
 | `mov` | `.mov` | `66 74 79 70` / `6D 6F 6F 76` offset 4 | Video QuickTime |
 
-**Nota sobre XLSX/DOCX:** No están soportados en V3. Ambos formatos comparten magic bytes con ZIP genérico (`50 4B 03 04`). Validar que un archivo con esos bytes es realmente un Excel o Word (y no un ZIP renombrado, JAR o APK) requiere inspección del contenido interno — verificar que existe el archivo `[Content_Types].xml` dentro del ZIP, que es obligatorio en Office Open XML. Esto se implementa en V4 con `jszip`. Por ahora, la plataforma soporta 6 tipos: pdf, jpeg, png, webp, mp4, mov.
+**Nota sobre XLSX/DOCX:** tienen los mismos magic bytes que ZIP. Para diferenciar requiere inspeccionar el contenido interno (archivo `[Content_Types].xml`). Para V3 aceptamos el riesgo de que un ZIP renombrado pase como XLSX/DOCX — el admin puede mitigarlo no activando estos tipos hasta V4.
 
 **Nota sobre videos:** MP4 y MOV tienen múltiples variantes. La detección verifica los primeros 8-12 bytes típicos. Archivos con encoders raros pueden dar falso rechazo.
 
-En la UI de admin, el select de tipos muestra solo esta lista fija de 6 — el admin no puede inventar tipos nuevos. Si en el futuro OIT necesita aceptar Excel, Word, u otros formatos, se agrega al código como nueva entrada con su validación correspondiente.
+En la UI de admin, el select de tipos muestra solo esta lista fija — el admin no puede inventar tipos nuevos. Si en el futuro OIT necesita aceptar, por ejemplo, archivos CAD o DWG, se agrega al código como nueva entrada.
 
 ---
 
@@ -153,7 +146,7 @@ import type { ConfiguracionUpload } from '@prisma/client'
 
 export type TipoArchivoSoportado =
   | 'pdf' | 'jpeg' | 'png' | 'webp'
-  | 'mp4' | 'mov'
+  | 'xlsx' | 'docx' | 'mp4' | 'mov'
 
 const MAGIC_BYTES: Record<TipoArchivoSoportado, (buffer: Buffer) => boolean> = {
   pdf: (b) => b.slice(0, 4).toString('hex') === '25504446',
@@ -162,6 +155,8 @@ const MAGIC_BYTES: Record<TipoArchivoSoportado, (buffer: Buffer) => boolean> = {
   webp: (b) =>
     b.slice(0, 4).toString('ascii') === 'RIFF' &&
     b.slice(8, 12).toString('ascii') === 'WEBP',
+  xlsx: (b) => b.slice(0, 4).toString('hex') === '504b0304',
+  docx: (b) => b.slice(0, 4).toString('hex') === '504b0304',
   mp4: (b) => b.slice(4, 8).toString('ascii') === 'ftyp',
   mov: (b) => {
     const type = b.slice(4, 8).toString('ascii')
@@ -297,7 +292,7 @@ Tab nuevo dentro de `/admin/configuracion` llamado **"Archivos"**.
 - Sin botón "Crear nuevo" — los contextos son fijos, definidos por el código
 
 **Vista de edición (modal):**
-- Select múltiple de tipos permitidos (lista fija de 6 opciones con iconos)
+- Select múltiple de tipos permitidos (lista fija de 8 opciones con iconos)
 - Input numérico de tamaño máximo en MB (1 a 100)
 - Toggle de activo/inactivo
 - Al guardar, invalida cache y muestra toast de confirmación
@@ -313,15 +308,6 @@ Ambos requieren rol ADMIN. El PUT dispara `invalidarCacheConfigs()` después del
 
 ### 5.5 — Integración en endpoints de upload
 
-Existen 2 endpoints de upload con 4 contextos:
-
-| Endpoint | Contextos |
-|----------|-----------|
-| `POST /api/upload/imagenes` | `imagenes-portfolio`, `imagenes-pedido`, `imagenes-cotizacion` (según parámetro `contexto` del FormData) |
-| `POST /api/validaciones/[id]/upload` | `documentos-formalizacion` (fijo) |
-
-Ejemplo de integración:
-
 ```typescript
 // src/app/api/validaciones/[id]/upload/route.ts
 import { validarArchivo, sanitizarNombreArchivo } from '@/compartido/lib/file-validation'
@@ -330,7 +316,7 @@ import { logActividad } from '@/compartido/lib/log'
 const validacion = await validarArchivo(file, 'documentos-formalizacion')
 
 if (!validacion.valid) {
-  logActividad('UPLOAD_REJECTED', session.user.id, {
+  await logActividad('UPLOAD_REJECTED', session.user.id, {
     contexto: 'documentos-formalizacion',
     motivo: validacion.error,
     nombreArchivo: file.name,
@@ -343,16 +329,7 @@ const nombreSeguro = sanitizarNombreArchivo(file.name)
 // ... resto del upload
 ```
 
-Para `/api/upload/imagenes`, el contexto se lee del FormData y se mapea:
-
-```typescript
-// src/app/api/upload/imagenes/route.ts
-const contexto = formData.get('contexto') as string  // 'portfolio', 'pedido', 'cotizacion'
-const configContexto = `imagenes-${contexto}`         // 'imagenes-portfolio', etc.
-
-const validacion = await validarArchivo(file, configContexto)
-// ... mismo patrón
-```
+Aplicar el mismo patrón en los 3 endpoints de upload existentes con su `contexto` correspondiente.
 
 ---
 
@@ -368,22 +345,22 @@ const validacion = await validarArchivo(file, configContexto)
 
 - **Tamaño 0 o negativo** — la UI valida mínimo 1 MB, máximo 100 MB.
 
-- **PDFs con contenido malicioso (JS embebido)** — Magic bytes solo verifican formato, no contenido. Riesgo residual aceptable para V3 por la siguiente razón: los PDFs se sirven desde el origin de Supabase (`xxx.supabase.co`), no desde el origin de la aplicación. Cualquier JS embebido en un PDF corre en el contexto de Supabase, sin acceso a las cookies de sesión de la plataforma ni al DOM de la aplicación. El peor caso es redirección o phishing visual dentro de la pestaña del PDF, no exfiltración de sesión. Para V4 evaluar `Content-Disposition: attachment` en signed URLs para forzar descarga en vez de render inline.
+- **PDFs con contenido malicioso (JS embebido)** — magic bytes solo verifican formato, no contenido. Riesgo residual aceptable para V3. Para V4 evaluar sandboxing de preview.
 
-- **Videos con encoders raros** — MP4 y MOV tienen múltiples variantes de header. La detección por magic bytes cubre los encoders más comunes, pero archivos con variantes inusuales pueden dar falso rechazo. El usuario puede reintentar con un archivo re-encodado.
+- **ZIP renombrado como XLSX/DOCX** — magic bytes son iguales. Hasta V4, si se acepta xlsx/docx se acepta cualquier ZIP renombrado.
 
 ---
 
 ## 7. Criterios de aceptación
 
 - [ ] Migración `agregar_configuracion_upload` corre sin errores
-- [ ] Seed crea 4 configuraciones iniciales (documentos-formalizacion, imagenes-portfolio, imagenes-pedido, imagenes-cotizacion)
+- [ ] Seed crea 3 configuraciones iniciales
 - [ ] UI `/admin/configuracion/archivos` existe con tabla de configuraciones
-- [ ] Admin puede editar tipos permitidos (6 opciones: pdf, jpeg, png, webp, mp4, mov) y tamaño máximo
+- [ ] Admin puede editar tipos permitidos y tamaño máximo
 - [ ] Admin puede activar/desactivar un contexto
 - [ ] Cambios se reflejan en uploads siguientes (dentro de 1 minuto)
 - [ ] Helper `validarArchivo()` lee de DB con cache de 1 minuto
-- [ ] 2 endpoints de upload (4 contextos) usan el helper
+- [ ] 3 endpoints de upload usan el helper con su contexto correspondiente
 - [ ] Archivos con magic bytes inválidos son rechazados con 400
 - [ ] Nombres con path traversal son sanitizados o rechazados
 - [ ] Intentos bloqueados aparecen en `/admin/logs`
@@ -400,12 +377,12 @@ const validacion = await validarArchivo(file, configContexto)
 | 2 | Ejecutable renombrado .pdf es rechazado | Renombrar .exe a .pdf y subir | DEV |
 | 3 | Archivo >5 MB es rechazado | Subir archivo grande | QA |
 | 4 | Admin cambia límite a 10 MB — archivo de 8 MB pasa | Editar config desde admin, reintentar | QA |
-| 5 | Admin desactiva contexto — upload es rechazado | Desactivar toggle, intentar subir | QA |
-| 6 | Contexto inexistente en DB = upload rechazado | Borrar record en DB, reintentar | DEV |
-| 7 | Cache se invalida al guardar | Editar config, subir archivo, verificar valores nuevos | DEV |
-| 8 | Logs de rechazo aparecen en /admin/logs | Después de test 2, verificar log | QA |
-| 9 | UI no permite lista vacía de tipos | Intentar guardar sin tipos | QA |
-| 10 | Imagen válida pasa en contexto cotizacion | Subir JPEG como TALLER en cotización | QA |
+| 5 | Admin agrega xlsx a tipos permitidos — Excel pasa | Agregar xlsx, subir Excel real | QA |
+| 6 | Admin desactiva contexto — upload es rechazado | Desactivar toggle, intentar subir | QA |
+| 7 | Contexto inexistente en DB = upload rechazado | Borrar record en DB, reintentar | DEV |
+| 8 | Cache se invalida al guardar | Editar config, subir archivo, verificar valores nuevos | DEV |
+| 9 | Logs de rechazo aparecen en /admin/logs | Después de test 2, verificar log | QA |
+| 10 | UI no permite lista vacía de tipos | Intentar guardar sin tipos | QA |
 
 ---
 

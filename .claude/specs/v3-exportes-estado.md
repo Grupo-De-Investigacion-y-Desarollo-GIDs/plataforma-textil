@@ -11,6 +11,7 @@
 
 - [ ] V3_BACKLOG D-01 mergeado (ESTADO con sus rutas)
 - [ ] V3_BACKLOG INT-01 mergeado (datos ARCA disponibles para incluir en exportes)
+- [ ] V3_BACKLOG F-05 mergeado (tabla MotivoNoMatch para exporte demanda-insatisfecha)
 
 ---
 
