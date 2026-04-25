@@ -3,6 +3,14 @@
 ## 2026-04-25
 
 ### Gerardo Breard
+- **20:02** `60619f9` — docs: resolver hallazgos ALTA de revisión cruzada (C-02, C-03, C-04/U-01/U-02, D-02, D-03, R-02)
+  - `.claude/specs/V3_REVISION_CRUZADA.md`
+  - `.claude/specs/v3-exportes-estado.md`
+  - `.claude/specs/v3-mensajes-individuales.md`
+  - `.claude/specs/v3-protocolos-onboarding.md`
+  - `.claude/specs/v3-proximo-nivel-dashboard.md`
+  - `.claude/specs/v3-rate-limiting.md`
+
 - **19:55** `4ac8569` — docs: resolver hallazgos bloqueantes de revisión cruzada (C-01, D-01)
   - `.claude/specs/V3_REVISION_CRUZADA.md`
   - `.claude/specs/v3-exportes-estado.md`
