@@ -3,6 +3,11 @@
 ## 2026-04-25
 
 ### Gerardo Breard
+- **19:55** `4ac8569` — docs: resolver hallazgos bloqueantes de revisión cruzada (C-01, D-01)
+  - `.claude/specs/V3_REVISION_CRUZADA.md`
+  - `.claude/specs/v3-exportes-estado.md`
+  - `.claude/specs/v3-validacion-archivos.md`
+
 - **19:19** `adbc6c7` — docs: agregar spec v3-reporte-campo con correcciones de factibilidad
   - `.claude/specs/v3-reporte-campo.md`
 
