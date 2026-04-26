@@ -3,6 +3,10 @@
 ## 2026-04-26
 
 ### Gerardo Breard
+- **13:46** `7cf48d0` — fix: seed safety — protección contra ejecución en producción
+  - `package.json`
+  - `prisma/seed.ts`
+
 - **01:27** `43bdc25` — feat: v3-separar-ambientes (I-01) — build script, seed safety, banner de ambiente
   - `.claude/auditorias/QA_v3-separar-ambientes.md`
   - `package.json`
