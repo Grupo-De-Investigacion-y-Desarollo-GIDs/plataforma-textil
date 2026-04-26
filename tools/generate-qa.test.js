@@ -867,6 +867,74 @@ console.log('\n📋 Test 19: Index generator incluye QA_v3')
 }
 
 // ============================================
+// Test 20: Index separa V2 y V3 en secciones
+// ============================================
+console.log('\n📋 Test 20: Index separa V2 y V3 en secciones')
+{
+  const auditoriaDir = path.resolve(__dirname, '..', '.claude', 'auditorias')
+
+  // Generar todos los HTMLs
+  const allMdFiles = fs.readdirSync(auditoriaDir)
+    .filter(f => (f.startsWith('QA_v2-') || f.startsWith('QA_v3-')) && f.endsWith('.md'))
+  for (const f of allMdFiles) {
+    generarHtml(path.join(auditoriaDir, f))
+  }
+
+  generarIndex(auditoriaDir)
+  const indexPath = path.join(auditoriaDir, 'index.html')
+  const html = fs.readFileSync(indexPath, 'utf-8')
+
+  // Secciones separadas
+  assert(html.includes('id="section-v3"'), 'index tiene seccion V3')
+  assert(html.includes('id="section-v2"'), 'index tiene seccion V2')
+  assert(html.includes('V3 — En curso'), 'seccion V3 tiene titulo correcto')
+  assert(html.includes('V2 — Historico'), 'seccion V2 tiene titulo correcto')
+
+  // Descripciones
+  assert(html.includes('specs V3 que se estan implementando ahora'), 'V3 tiene descripcion')
+  assert(html.includes('specs V2 ya cerrados'), 'V2 tiene descripcion')
+
+  // V2 esta dentro de <details> (colapsable)
+  const v2SectionStart = html.indexOf('id="section-v2"')
+  const v2Chunk = html.substring(v2SectionStart, v2SectionStart + 500)
+  assert(v2Chunk.includes('<details>'), 'V2 usa <details> (colapsable)')
+  assert(v2Chunk.includes('<summary>'), 'V2 tiene <summary>')
+
+  // Filtros
+  assert(html.includes('filtrarIndex'), 'index tiene funcion filtrarIndex')
+  assert(html.includes('data-filter="todos"'), 'index tiene boton Todos')
+  assert(html.includes('data-filter="v3"'), 'index tiene boton Solo V3')
+  assert(html.includes('data-filter="v2"'), 'index tiene boton Solo V2')
+
+  // Cards tienen data-version
+  assert(html.includes('data-version="v3"'), 'cards V3 tienen data-version')
+  assert(html.includes('data-version="v2"'), 'cards V2 tienen data-version')
+
+  // V3 section aparece ANTES que V2 en el HTML
+  const v3Pos = html.indexOf('id="section-v3"')
+  const v2Pos = html.indexOf('id="section-v2"')
+  assert(v3Pos < v2Pos, 'V3 aparece antes que V2 en el HTML')
+
+  // Perfiles chips se muestran si el QA los tiene
+  const v3Files = allMdFiles.filter(f => f.startsWith('QA_v3-'))
+  let hayPerfiles = false
+  for (const f of v3Files) {
+    const mdContent = fs.readFileSync(path.join(auditoriaDir, f), 'utf-8')
+    if (mdContent.includes('**Perfiles aplicables:**')) hayPerfiles = true
+  }
+  if (hayPerfiles) {
+    assert(html.includes('perfil-chip'), 'index muestra chips de perfiles')
+  }
+
+  // Limpiar
+  fs.unlinkSync(indexPath)
+  for (const f of allMdFiles) {
+    const hp = path.join(auditoriaDir, f.replace('.md', '.html'))
+    if (fs.existsSync(hp)) fs.unlinkSync(hp)
+  }
+}
+
+// ============================================
 // RESUMEN
 // ============================================
 console.log('\n' + '='.repeat(50))
