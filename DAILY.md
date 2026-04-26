@@ -3,6 +3,24 @@
 ## 2026-04-26
 
 ### Gerardo Breard
+- **14:34** `8423747` — feat: v3-logs-admin-auditoria (S-04) — logging sistematico, UI mejorada, export CSV
+  - `.claude/auditorias/QA_v3-logs-admin-auditoria.md`
+  - `src/app/(admin)/admin/logs/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/api/admin/logs/route.ts`
+  - `src/app/api/admin/notas/route.ts`
+  - `src/app/api/admin/rag/[id]/route.ts`
+  - `src/app/api/admin/rag/route.ts`
+  - `src/app/api/admin/usuarios/[id]/route.ts`
+  - `src/app/api/admin/usuarios/route.ts`
+  - `src/app/api/certificados/route.ts`
+  - `src/app/api/colecciones/[id]/route.ts`
+  - `src/app/api/exportar/route.ts`
+  - `src/app/api/talleres/[id]/route.ts`
+  - `src/app/api/validaciones/[id]/route.ts`
+  - `src/compartido/lib/csv.ts`
+  - `src/compartido/lib/log.ts`
+
 - **13:46** `7cf48d0` — fix: seed safety — protección contra ejecución en producción
   - `package.json`
   - `prisma/seed.ts`
