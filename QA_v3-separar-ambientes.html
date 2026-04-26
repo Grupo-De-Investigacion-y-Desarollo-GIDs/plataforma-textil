@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QA: Fix de tests E2E de seguridad + ampliación de cobertura</title>
+  <title>QA: Separar ambientes — Supabase desarrollo y produccion</title>
   <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -304,16 +304,16 @@
   }
 </style>
 </head>
-<body data-spec="v2-seguridad-tests-e2e.md" data-url="https://plataforma-textil.vercel.app" data-api-url="https://plataforma-textil.vercel.app/api/feedback">
+<body data-spec="v3-separar-ambientes.md" data-url="https://plataforma-textil.vercel.app" data-api-url="https://plataforma-textil.vercel.app/api/feedback">
   <div class="container">
     
     <div class="header">
-      <h1>Fix de tests E2E de seguridad + ampliación de cobertura</h1>
+      <h1>Separar ambientes — Supabase desarrollo y produccion</h1>
       <div class="meta-grid">
-        <div class="meta-item"><span class="meta-label">Spec:</span> <code>v2-seguridad-tests-e2e.md</code></div>
-        <div class="meta-item"><span class="meta-label">Commit:</span> <code>2f7407b</code></div>
+        <div class="meta-item"><span class="meta-label">Spec:</span> <code>v3-separar-ambientes.md</code></div>
+        <div class="meta-item"><span class="meta-label">Commit:</span> <code>pendiente</code></div>
         <div class="meta-item"><span class="meta-label">URL:</span> <a href="https://plataforma-textil.vercel.app" target="_blank">https://plataforma-textil.vercel.app</a></div>
-        <div class="meta-item"><span class="meta-label">Fecha:</span> 2026-04-14</div>
+        <div class="meta-item"><span class="meta-label">Fecha:</span> 2026-04-26</div>
         <div class="meta-item"><span class="meta-label">Auditor:</span> Sergio</div>
       </div>
     </div><div class="filter-bar" id="filter-bar">
@@ -322,61 +322,7 @@
     <button class="filter-btn" data-filter="QA" onclick="filtrarPor('QA')">QA tecnico</button>
     <button class="filter-btn" data-filter="DEV" onclick="filtrarPor('DEV')">DEV</button>
     
-  </div><div class="section collapsible collapsed" onclick="toggleCollapse(this)">
-    <h2>Como trabajar con este documento <span class="collapse-icon">&#9654;</span></h2>
-    <div class="collapse-content"><div class="readonly-block">1. Abrí este archivo y la plataforma en paralelo
-2. Seguí los pasos en orden — cada paso depende del anterior
-3. Marcá cada resultado con ✅ (ok), 🐛 (bug menor) o ❌ (bloqueante)
-4. Si el resultado no es ✅ → abrí el widget azul &quot;Feedback&quot; en esa página → tipo [bug/falta] → describí qué pasó
-5. Quedate en la página donde encontraste el problema antes de abrir el widget (captura la URL automáticamente)
-6. Al terminar, completá el resultado global y commiteá este archivo actualizado
-
-**Regla de oro:** un issue por hallazgo, desde la página donde ocurre.
-
-&gt; **IMPORTANTE — Este spec es de seguridad.** Es tan importante verificar que los accesos bloqueados funcionan como que los accesos permitidos funcionan. Reportá como **bug crítico** cualquier caso donde un rol accede a una ruta que no debería. Si un rol puede ver contenido de admin, estado o de otro rol sin autorización, es un issue bloqueante.
-
-&gt; **Nota:** si los hallazgos no aparecen en GitHub Issues, verificar que `GITHUB_TOKEN` y `GITHUB_REPO` están configurados en Vercel. Los hallazgos siempre quedan registrados en la DB aunque el token no esté configurado — se pueden ver en `/admin` desde `LogActividad`.
-
----</div></div>
-  </div><div class="section collapsible collapsed" onclick="toggleCollapse(this)">
-    <h2>Credenciales de prueba <span class="collapse-icon">&#9654;</span></h2>
-    <div class="collapse-content">
-    <table class="cred-table"><thead><tr><th>Rol</th><th>Email</th><th>Password</th><th>URL</th></tr></thead><tbody><tr>
-      <td>ADMIN</td>
-      <td><code>`lucia.fernandez@pdt.org.ar`</code></td>
-      <td><code>`pdt2026`</code></td>
-      <td><code>`/admin`</code></td>
-    </tr><tr>
-      <td>TALLER Bronce</td>
-      <td><code>`roberto.gimenez@pdt.org.ar`</code></td>
-      <td><code>`pdt2026`</code></td>
-      <td><code>`/taller`</code></td>
-    </tr><tr>
-      <td>TALLER Oro</td>
-      <td><code>`carlos.mendoza@pdt.org.ar`</code></td>
-      <td><code>`pdt2026`</code></td>
-      <td><code>`/taller`</code></td>
-    </tr><tr>
-      <td>MARCA</td>
-      <td><code>`martin.echevarria@pdt.org.ar`</code></td>
-      <td><code>`pdt2026`</code></td>
-      <td><code>`/marca`</code></td>
-    </tr><tr>
-      <td>ESTADO</td>
-      <td><code>`anabelen.torres@pdt.org.ar`</code></td>
-      <td><code>`pdt2026`</code></td>
-      <td><code>`/estado`</code></td>
-    </tr><tr>
-      <td>CONTENIDO</td>
-      <td><code>`sofia.martinez@pdt.org.ar`</code></td>
-      <td><code>`pdt2026`</code></td>
-      <td><code>`/contenido`</code></td>
-    </tr><tr>
-      <td>Sin login</td>
-      <td><code>—</code></td>
-      <td><code>—</code></td>
-      <td><code>`/`</code></td>
-    </tr></tbody></table></div></div><div class="section" id="resultado-global"><h2>Resultado global</h2><div class="radio-group"><label class="radio-btn" data-value="aprobado">
+  </div><div class="section" id="resultado-global"><h2>Resultado global</h2><div class="radio-group"><label class="radio-btn" data-value="aprobado">
       <input type="radio" name="resultado-global" value="aprobado">
       <span class="radio-label">✅ Aprobado</span>
     </label><label class="radio-btn" data-value="aprobado-fixes">
@@ -394,11 +340,11 @@
       <label>Issues abiertos:</label>
       <input type="text" id="issues-global" placeholder="#" class="text-input">
     </div>
-  </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="QA">
+  </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="DEV">
       <div class="item-header">
         <span class="item-num">#1</span>
-        <span class="item-text">Helper `assertAccesoBloqueado` agregado a `e2e/helpers/auth.ts`</span>
-        <span class="badge-qa">QA</span>
+        <span class="item-text">Nueva Supabase `plataforma-textil-dev` existe con el mismo schema que prod</span>
+        <span class="badge-dev">DEV</span>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -409,11 +355,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="2" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="2" data-verificador="DEV">
       <div class="item-header">
         <span class="item-num">#2</span>
-        <span class="item-text">Union type de `loginAs` extendido con `&#39;contenido&#39;`</span>
-        <span class="badge-qa">QA</span>
+        <span class="item-text">Las 17 migraciones aparecen en `_prisma_migrations` de la nueva DB</span>
+        <span class="badge-dev">DEV</span>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -424,11 +370,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="3" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="3" data-verificador="DEV">
       <div class="item-header">
         <span class="item-num">#3</span>
-        <span class="item-text">Credencial `contenido` agregada al record (sin duplicar `estado`)</span>
-        <span class="badge-qa">QA</span>
+        <span class="item-text">Seed corre limpio en la nueva instancia sin errores</span>
+        <span class="badge-dev">DEV</span>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -439,11 +385,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="4" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="4" data-verificador="DEV">
       <div class="item-header">
         <span class="item-num">#4</span>
-        <span class="item-text">Tests 8.1, 8.2, 8.3 de `e2e/checklist-sec7-8.spec.ts` reescritos usando el helper</span>
-        <span class="badge-qa">QA</span>
+        <span class="item-text">Variables de entorno en Vercel: 4 vars DB con scope diferenciado (Preview vs Production)</span>
+        <span class="badge-dev">DEV</span>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -454,11 +400,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="5" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="5" data-verificador="DEV">
       <div class="item-header">
         <span class="item-num">#5</span>
-        <span class="item-text">Archivo nuevo `e2e/seguridad-roles.spec.ts` con 10 tests de ampliación</span>
-        <span class="badge-qa">QA</span>
+        <span class="item-text">Variables de entorno en Vercel: vars compartidas con scope &quot;All Environments&quot;</span>
+        <span class="badge-dev">DEV</span>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -469,11 +415,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="6" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="6" data-verificador="DEV">
       <div class="item-header">
         <span class="item-num">#6</span>
-        <span class="item-text">Las 3 rutas asumidas (`/admin/auditorias`, `/admin/usuarios`, `/admin/colecciones`) existen como páginas</span>
-        <span class="badge-qa">QA</span>
+        <span class="item-text">Branch `main` configurada como Production Branch en Vercel</span>
+        <span class="badge-dev">DEV</span>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -487,8 +433,83 @@
     </div><div class="item-card" data-eje="1" data-num="7" data-verificador="QA">
       <div class="item-header">
         <span class="item-num">#7</span>
-        <span class="item-text">Build de TypeScript pasa sin errores</span>
+        <span class="item-text">Push a `develop` genera Preview con Supabase dev</span>
         <span class="badge-qa">QA</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="8" data-verificador="DEV">
+      <div class="item-header">
+        <span class="item-num">#8</span>
+        <span class="item-text">Push a `main` genera deploy automatico a produccion con Supabase prod</span>
+        <span class="badge-dev">DEV</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="9" data-verificador="QA">
+      <div class="item-header">
+        <span class="item-num">#9</span>
+        <span class="item-text">Banner de ambiente visible en Preview</span>
+        <span class="badge-qa">QA</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="10" data-verificador="QA">
+      <div class="item-header">
+        <span class="item-num">#10</span>
+        <span class="item-text">Banner de ambiente invisible en Production</span>
+        <span class="badge-qa">QA</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="11" data-verificador="DEV">
+      <div class="item-header">
+        <span class="item-num">#11</span>
+        <span class="item-text">Build corre `prisma migrate deploy` automaticamente en cada deploy</span>
+        <span class="badge-dev">DEV</span>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="12" data-verificador="DEV">
+      <div class="item-header">
+        <span class="item-num">#12</span>
+        <span class="item-text">Seed no se ejecuta en produccion</span>
+        <span class="badge-dev">DEV</span>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -501,7 +522,7 @@
       </div>
     </div></div><div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2><div class="paso-card" data-eje="2" data-num="1">
       <div class="paso-header" onclick="togglePaso(this)">
-        <span class="paso-title">Paso 1 — ESTADO bloqueado en /admin/usuarios</span>
+        <span class="paso-title">Paso 1 — Verificar banner en Preview</span>
         <div class="paso-header-right">
           <span class="paso-status-indicator"></span>
           <span class="collapse-icon">&#9654;</span>
@@ -509,12 +530,10 @@
       </div>
       <div class="paso-body">
         <div class="paso-fields">
-          <div class="paso-field"><span class="paso-label">Rol:</span> ESTADO (anabelen.torres@pdt.org.ar / pdt2026)</div>
-          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/admin/usuarios`</code></div>
-          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Login como Ana Belén Torres (ESTADO)
-2. Escribir directamente en la barra de direcciones: `/admin/usuarios`
-3. Presionar Enter</div></div>
-          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">El sistema redirige a `/unauthorized` o muestra una página con texto **&quot;Acceso No Autorizado&quot;** y **&quot;No tienes permiso para acceder a esta sección&quot;**. NO se ve la lista de usuarios del admin</div></div>
+          <div class="paso-field"><span class="paso-label">Rol:</span> Cualquiera (sin login)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>URL de Preview de develop (generada por Vercel)</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">Abrir la URL de Preview</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Banner amarillo en la parte superior: &quot;AMBIENTE DE PRUEBAS — este no es el ambiente de produccion&quot;</div></div>
         </div>
         <div class="item-controls">
           <div class="status-btns">
@@ -522,13 +541,13 @@
             <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
             <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
           </div>
-          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">Si se muestra la lista de usuarios, es un bug de seguridad BLOQUEANTE — el middleware no bloquea ESTADO de /admin/usuarios</textarea>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
     </div><div class="paso-card" data-eje="2" data-num="2">
       <div class="paso-header" onclick="togglePaso(this)">
-        <span class="paso-title">Paso 2 — CONTENIDO bloqueado en /admin/usuarios</span>
+        <span class="paso-title">Paso 2 — Verificar que no hay banner en Production</span>
         <div class="paso-header-right">
           <span class="paso-status-indicator"></span>
           <span class="collapse-icon">&#9654;</span>
@@ -536,11 +555,10 @@
       </div>
       <div class="paso-body">
         <div class="paso-fields">
-          <div class="paso-field"><span class="paso-label">Rol:</span> CONTENIDO (sofia.martinez@pdt.org.ar / pdt2026)</div>
-          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/admin/usuarios`</code></div>
-          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Cerrar sesión, login como Sofía Martínez (CONTENIDO)
-2. Navegar a `/admin/usuarios`</div></div>
-          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Redirige a `/unauthorized` o muestra &quot;Acceso No Autorizado&quot;. NO se ve la lista de usuarios</div></div>
+          <div class="paso-field"><span class="paso-label">Rol:</span> Cualquiera (sin login)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>https://plataforma-textil.vercel.app</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">Abrir la URL de produccion</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">No debe haber ningun banner de ambiente</div></div>
         </div>
         <div class="item-controls">
           <div class="status-btns">
@@ -554,7 +572,7 @@
       </div>
     </div><div class="paso-card" data-eje="2" data-num="3">
       <div class="paso-header" onclick="togglePaso(this)">
-        <span class="paso-title">Paso 3 — CONTENIDO bloqueado en /taller</span>
+        <span class="paso-title">Paso 3 — Verificar aislamiento de datos (Preview)</span>
         <div class="paso-header-right">
           <span class="paso-status-indicator"></span>
           <span class="collapse-icon">&#9654;</span>
@@ -562,11 +580,10 @@
       </div>
       <div class="paso-body">
         <div class="paso-fields">
-          <div class="paso-field"><span class="paso-label">Rol:</span> CONTENIDO (sofia.martinez@pdt.org.ar / pdt2026)</div>
-          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller`</code></div>
-          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Sin cerrar sesión (sigue como CONTENIDO)
-2. Navegar a `/taller`</div></div>
-          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Redirige a `/unauthorized` o muestra &quot;Acceso No Autorizado&quot;. NO se ve el dashboard de taller</div></div>
+          <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>URL de Preview / admin</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">Loguearse como admin en Preview, crear un usuario de prueba</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">El usuario de prueba NO aparece en produccion</div></div>
         </div>
         <div class="item-controls">
           <div class="status-btns">
@@ -580,7 +597,7 @@
       </div>
     </div><div class="paso-card" data-eje="2" data-num="4">
       <div class="paso-header" onclick="togglePaso(this)">
-        <span class="paso-title">Paso 4 — MARCA bloqueado en /estado</span>
+        <span class="paso-title">Paso 4 — Verificar datos de produccion intactos</span>
         <div class="paso-header-right">
           <span class="paso-status-indicator"></span>
           <span class="collapse-icon">&#9654;</span>
@@ -588,11 +605,10 @@
       </div>
       <div class="paso-body">
         <div class="paso-fields">
-          <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
-          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/estado`</code></div>
-          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Cerrar sesión, login como Martín Echevarría (MARCA)
-2. Navegar a `/estado`</div></div>
-          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Redirige a `/unauthorized` o muestra &quot;Acceso No Autorizado&quot;. NO se ve el dashboard del Estado</div></div>
+          <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>https://plataforma-textil.vercel.app/admin</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">Loguearse como admin en produccion, verificar que los datos existentes siguen intactos</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Todos los datos de produccion estan presentes y sin modificaciones</div></div>
         </div>
         <div class="item-controls">
           <div class="status-btns">
@@ -606,7 +622,7 @@
       </div>
     </div><div class="paso-card" data-eje="2" data-num="5">
       <div class="paso-header" onclick="togglePaso(this)">
-        <span class="paso-title">Paso 5 — MARCA bloqueado en /admin</span>
+        <span class="paso-title">Paso 5 — Verificar credenciales de seed en Preview</span>
         <div class="paso-header-right">
           <span class="paso-status-indicator"></span>
           <span class="collapse-icon">&#9654;</span>
@@ -614,11 +630,10 @@
       </div>
       <div class="paso-body">
         <div class="paso-fields">
-          <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
-          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/admin`</code></div>
-          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Sin cerrar sesión (sigue como MARCA)
-2. Navegar a `/admin`</div></div>
-          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Redirige a `/unauthorized` o muestra &quot;Acceso No Autorizado&quot;. NO se ve el panel de admin</div></div>
+          <div class="paso-field"><span class="paso-label">Rol:</span> Cualquier rol de prueba</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>URL de Preview / login</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">Loguearse con las credenciales de seed (lucia.fernandez@pdt.org.ar / pdt2026)</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Login exitoso en Preview con datos de seed poblados</div></div>
         </div>
         <div class="item-controls">
           <div class="status-btns">
@@ -626,181 +641,19 @@
             <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
             <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
           </div>
-          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">---</textarea>
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="6">
-      <div class="paso-header" onclick="togglePaso(this)">
-        <span class="paso-title">Paso 6 — TALLER bloqueado en /marca</span>
-        <div class="paso-header-right">
-          <span class="paso-status-indicator"></span>
-          <span class="collapse-icon">&#9654;</span>
-        </div>
-      </div>
-      <div class="paso-body">
-        <div class="paso-fields">
-          <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Bronce (roberto.gimenez@pdt.org.ar / pdt2026)</div>
-          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/marca`</code></div>
-          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Cerrar sesión, login como Roberto Giménez (TALLER Bronce)
-2. Navegar a `/marca`</div></div>
-          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Redirige a `/unauthorized` o muestra &quot;Acceso No Autorizado&quot;. NO se ve el panel de marca</div></div>
-        </div>
-        <div class="item-controls">
-          <div class="status-btns">
-            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-          </div>
-          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
-          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-        </div>
-      </div>
-    </div><div class="paso-card" data-eje="2" data-num="7">
-      <div class="paso-header" onclick="togglePaso(this)">
-        <span class="paso-title">Paso 7 — ESTADO SÍ accede a /admin/auditorias</span>
-        <div class="paso-header-right">
-          <span class="paso-status-indicator"></span>
-          <span class="collapse-icon">&#9654;</span>
-        </div>
-      </div>
-      <div class="paso-body">
-        <div class="paso-fields">
-          <div class="paso-field"><span class="paso-label">Rol:</span> ESTADO (anabelen.torres@pdt.org.ar / pdt2026)</div>
-          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/admin/auditorias`</code></div>
-          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Cerrar sesión, login como Ana Belén Torres (ESTADO)
-2. Navegar a `/admin/auditorias`</div></div>
-          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">La página carga normalmente. Se ve el contenido de auditorías (puede ser una tabla, un listado o al menos el layout del admin). La URL sigue siendo `/admin/auditorias`, NO redirige a `/unauthorized`</div></div>
-        </div>
-        <div class="item-controls">
-          <div class="status-btns">
-            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-          </div>
-          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">ESTADO tiene permiso especial para acceder a rutas específicas de /admin como auditorías</textarea>
-          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-        </div>
-      </div>
-    </div><div class="paso-card" data-eje="2" data-num="8">
-      <div class="paso-header" onclick="togglePaso(this)">
-        <span class="paso-title">Paso 8 — CONTENIDO SÍ accede a /admin/colecciones</span>
-        <div class="paso-header-right">
-          <span class="paso-status-indicator"></span>
-          <span class="collapse-icon">&#9654;</span>
-        </div>
-      </div>
-      <div class="paso-body">
-        <div class="paso-fields">
-          <div class="paso-field"><span class="paso-label">Rol:</span> CONTENIDO (sofia.martinez@pdt.org.ar / pdt2026)</div>
-          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/admin/colecciones`</code></div>
-          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Cerrar sesión, login como Sofía Martínez (CONTENIDO)
-2. Navegar a `/admin/colecciones`</div></div>
-          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">La página carga normalmente. Se ve el contenido de colecciones. La URL sigue siendo `/admin/colecciones`, NO redirige a `/unauthorized`</div></div>
-        </div>
-        <div class="item-controls">
-          <div class="status-btns">
-            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-          </div>
-          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">CONTENIDO tiene permiso para gestionar colecciones dentro de /admin</textarea>
-          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-        </div>
-      </div>
-    </div><div class="paso-card" data-eje="2" data-num="9">
-      <div class="paso-header" onclick="togglePaso(this)">
-        <span class="paso-title">Paso 9 — ADMIN SÍ accede a /estado</span>
-        <div class="paso-header-right">
-          <span class="paso-status-indicator"></span>
-          <span class="collapse-icon">&#9654;</span>
-        </div>
-      </div>
-      <div class="paso-body">
-        <div class="paso-fields">
-          <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN (lucia.fernandez@pdt.org.ar / pdt2026)</div>
-          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/estado`</code></div>
-          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Cerrar sesión, login como Lucía Fernández (ADMIN)
-2. Navegar a `/estado`</div></div>
-          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">La página carga normalmente. Se ve el dashboard del Estado. La URL contiene `/estado`, NO redirige a `/unauthorized`</div></div>
-        </div>
-        <div class="item-controls">
-          <div class="status-btns">
-            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-          </div>
-          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">ADMIN tiene acceso universal a todas las secciones</textarea>
-          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-        </div>
-      </div>
-    </div><div class="paso-card" data-eje="2" data-num="10">
-      <div class="paso-header" onclick="togglePaso(this)">
-        <span class="paso-title">Paso 10 — ADMIN SÍ accede a /contenido</span>
-        <div class="paso-header-right">
-          <span class="paso-status-indicator"></span>
-          <span class="collapse-icon">&#9654;</span>
-        </div>
-      </div>
-      <div class="paso-body">
-        <div class="paso-fields">
-          <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN (lucia.fernandez@pdt.org.ar / pdt2026)</div>
-          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/contenido`</code></div>
-          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Sin cerrar sesión (sigue como ADMIN)
-2. Navegar a `/contenido`</div></div>
-          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">La página carga normalmente. Se ve el panel de contenido. La URL contiene `/contenido`, NO redirige a `/unauthorized`</div></div>
-        </div>
-        <div class="item-controls">
-          <div class="status-btns">
-            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-          </div>
-          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
-          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-        </div>
-      </div>
-    </div><div class="paso-card" data-eje="2" data-num="11">
-      <div class="paso-header" onclick="togglePaso(this)">
-        <span class="paso-title">Paso 11 — Sin login: todas las rutas protegidas redirigen a /login</span>
-        <div class="paso-header-right">
-          <span class="paso-status-indicator"></span>
-          <span class="collapse-icon">&#9654;</span>
-        </div>
-      </div>
-      <div class="paso-body">
-        <div class="paso-fields">
-          <div class="paso-field"><span class="paso-label">Rol:</span> Sin login (ventana de incógnito o cerrar sesión)</div>
-          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller`, `/marca`, `/admin`, `/estado`</code></div>
-          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">1. Cerrar sesión completamente (o abrir ventana de incógnito)
-2. Intentar acceder a cada una de estas URLs:
-- `/taller`
-- `/marca`
-- `/admin`
-- `/estado`
-3. Verificar adónde redirige cada una</div></div>
-          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Las 4 URLs redirigen a `/login` (posiblemente con un `callbackUrl` en el query string). NO se ve contenido de ninguna sección protegida</div></div>
-        </div>
-        <div class="item-controls">
-          <div class="status-btns">
-            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-          </div>
-          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">Si alguna ruta carga contenido sin login, es un bug de seguridad BLOQUEANTE
----</textarea>
-          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-        </div>
-      </div>
-    </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1" data-verificador="QA">
+    </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1" data-verificador="DEV">
       <div class="item-header">
         <span class="item-num">#1</span>
-        <span class="item-text">Página `/unauthorized` muestra texto correcto</span>
-        <span class="badge-qa">QA</span>
+        <span class="item-text">Seed en produccion</span>
+        <span class="badge-dev">DEV</span>
       </div>
       <div class="item-details">
-        <div class="detail-row"><span class="detail-label">Accion:</span> Provocar un bloqueo (ej: TALLER → /admin) y leer la página</div>
-        <div class="detail-row"><span class="detail-label">Esperado:</span> Título: &quot;Acceso No Autorizado&quot;, párrafo: &quot;No tienes permiso para acceder a esta sección de la plataforma&quot;</div>
+        <div class="detail-row"><span class="detail-label">Accion:</span> Verificar logs de build de produccion en Vercel</div>
+        <div class="detail-row"><span class="detail-label">Esperado:</span> No debe aparecer `prisma db seed` en los logs</div>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -811,15 +664,15 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="2" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="2" data-verificador="DEV">
       <div class="item-header">
         <span class="item-num">#2</span>
-        <span class="item-text">URL se mantiene en `/unauthorized`</span>
-        <span class="badge-qa">QA</span>
+        <span class="item-text">Migraciones automaticas</span>
+        <span class="badge-dev">DEV</span>
       </div>
       <div class="item-details">
-        <div class="detail-row"><span class="detail-label">Accion:</span> Verificar la barra de direcciones cuando se bloquea un acceso</div>
-        <div class="detail-row"><span class="detail-label">Esperado:</span> La URL final es `/unauthorized`, no la ruta original ni `/login`</div>
+        <div class="detail-row"><span class="detail-label">Accion:</span> Verificar logs de build en Vercel</div>
+        <div class="detail-row"><span class="detail-label">Esperado:</span> `prisma migrate deploy` aparece en los logs de build</div>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -833,12 +686,12 @@
     </div><div class="item-card" data-eje="3" data-num="3" data-verificador="QA">
       <div class="item-header">
         <span class="item-num">#3</span>
-        <span class="item-text">Acceso bloqueado no muestra flash de contenido</span>
+        <span class="item-text">NEXTAUTH_URL en Preview</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-details">
-        <div class="detail-row"><span class="detail-label">Accion:</span> Al navegar a una ruta prohibida, observar si se ve brevemente el contenido antes del redirect</div>
-        <div class="detail-row"><span class="detail-label">Esperado:</span> No debe haber flash — la redirección ocurre antes de renderizar contenido</div>
+        <div class="detail-row"><span class="detail-label">Accion:</span> Loguearse en Preview</div>
+        <div class="detail-row"><span class="detail-label">Esperado:</span> Login funciona sin error de callback URL</div>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -849,15 +702,34 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="4" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="4" data-verificador="DEV">
       <div class="item-header">
         <span class="item-num">#4</span>
-        <span class="item-text">Doble navegación no bypasea</span>
+        <span class="item-text">Banner en desarrollo local</span>
+        <span class="badge-dev">DEV</span>
+      </div>
+      <div class="item-details">
+        <div class="detail-row"><span class="detail-label">Accion:</span> Correr `npm run dev` localmente</div>
+        <div class="detail-row"><span class="detail-label">Esperado:</span> No debe aparecer banner (VERCEL_ENV no existe localmente)</div>
+      </div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="3" data-num="5" data-verificador="QA">
+      <div class="item-header">
+        <span class="item-num">#5</span>
+        <span class="item-text">Modificar datos en Preview no afecta prod</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-details">
-        <div class="detail-row"><span class="detail-label">Accion:</span> Desde `/unauthorized`, presionar &quot;Atrás&quot; y volver a la ruta prohibida</div>
-        <div class="detail-row"><span class="detail-label">Esperado:</span> Vuelve a redirigir a `/unauthorized` — no se queda en la ruta prohibida</div>
+        <div class="detail-row"><span class="detail-label">Accion:</span> Crear/editar datos desde Preview</div>
+        <div class="detail-row"><span class="detail-label">Esperado:</span> Verificar que los mismos datos en produccion no cambiaron</div>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -870,10 +742,10 @@
       </div>
     </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1" data-verificador="QA">
       <div class="item-header">
-        <span class="item-text">Redirección a `/unauthorized` ocurre en &lt; 2s</span>
+        <span class="item-text">Preview carga en menos de 3 segundos</span>
         <span class="badge-qa">QA</span>
       </div>
-      <div class="item-details"><span class="detail-label">Metodo:</span> Navegar a ruta bloqueada → medir tiempo hasta la página de error</div>
+      <div class="item-details"><span class="detail-label">Metodo:</span> Abrir DevTools -&gt; Network -&gt; recargar</div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -884,10 +756,10 @@
       </div>
     </div><div class="item-card compact" data-eje="4" data-num="2" data-verificador="QA">
       <div class="item-header">
-        <span class="item-text">Redirección a `/login` (sin sesión) ocurre en &lt; 2s</span>
+        <span class="item-text">Production carga en menos de 3 segundos</span>
         <span class="badge-qa">QA</span>
       </div>
-      <div class="item-details"><span class="detail-label">Metodo:</span> Sin login → navegar a ruta protegida → medir tiempo hasta /login</div>
+      <div class="item-details"><span class="detail-label">Metodo:</span> Abrir DevTools -&gt; Network -&gt; recargar</div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -898,10 +770,10 @@
       </div>
     </div><div class="item-card compact" data-eje="4" data-num="3" data-verificador="QA">
       <div class="item-header">
-        <span class="item-text">Sin errores en consola del browser</span>
+        <span class="item-text">Sin errores en consola del browser (Preview)</span>
         <span class="badge-qa">QA</span>
       </div>
-      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Console → revisar durante las navegaciones bloqueadas</div>
+      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools -&gt; Console -&gt; revisar</div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -912,10 +784,10 @@
       </div>
     </div><div class="item-card compact" data-eje="4" data-num="4" data-verificador="QA">
       <div class="item-header">
-        <span class="item-text">`/unauthorized` carga sin errores</span>
+        <span class="item-text">Sin errores en consola del browser (Production)</span>
         <span class="badge-qa">QA</span>
       </div>
-      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Console → verificar que la página de error no tiene errores JS</div>
+      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools -&gt; Console -&gt; revisar</div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -926,7 +798,7 @@
       </div>
     </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1">
       <div class="item-header">
-        <span class="item-text">Página `/unauthorized` tiene el layout de la plataforma (header, etc.)</span>
+        <span class="item-text">Banner de Preview es amarillo (bg-amber-500) y legible</span>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -938,7 +810,7 @@
       </div>
     </div><div class="item-card compact" data-eje="5" data-num="2">
       <div class="item-header">
-        <span class="item-text">Texto &quot;Acceso No Autorizado&quot; en tipografía consistente</span>
+        <span class="item-text">Banner no interfiere con el layout del resto de la pagina</span>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -950,7 +822,7 @@
       </div>
     </div><div class="item-card compact" data-eje="5" data-num="3">
       <div class="item-header">
-        <span class="item-text">No hay botones o links rotos en la página de error</span>
+        <span class="item-text">Banner tiene texto centrado y tamano apropiado (text-xs)</span>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -962,7 +834,7 @@
       </div>
     </div><div class="item-card compact" data-eje="5" data-num="4">
       <div class="item-header">
-        <span class="item-text">La página de login muestra los campos de email y password correctamente</span>
+        <span class="item-text">Production se ve identica a como se veia antes del cambio</span>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -980,24 +852,21 @@
     <textarea class="large-textarea" id="textarea-notas" placeholder="Observaciones generales, sugerencias de UX, contexto adicional..." rows="6"></textarea>
   </div><div class="section" id="checklist"><h2>Checklist de cierre</h2><div class="checklist-items"><label class="checklist-item">
       <input type="checkbox" data-checklist="0">
-      <span>7 criterios de aceptación del spec verificados</span>
+      <span>Todos los criterios de aceptacion del spec verificados</span>
     </label><label class="checklist-item">
       <input type="checkbox" data-checklist="1">
-      <span>11 pasos de navegación probados (6 bloqueos + 4 accesos permitidos + 1 sin login)</span>
+      <span>Casos borde probados</span>
     </label><label class="checklist-item">
       <input type="checkbox" data-checklist="2">
-      <span>4 casos borde probados</span>
+      <span>Performance revisada en desktop y movil</span>
     </label><label class="checklist-item">
       <input type="checkbox" data-checklist="3">
-      <span>Performance revisada</span>
-    </label><label class="checklist-item">
-      <input type="checkbox" data-checklist="4">
       <span>Issues abiertos en GitHub con labels correctos</span>
     </label><label class="checklist-item">
-      <input type="checkbox" data-checklist="5">
+      <input type="checkbox" data-checklist="4">
       <span>Resultado global definido</span>
     </label><label class="checklist-item">
-      <input type="checkbox" data-checklist="6">
+      <input type="checkbox" data-checklist="5">
       <span>Documento commiteado a develop</span>
     </label></div></div>
   </div>

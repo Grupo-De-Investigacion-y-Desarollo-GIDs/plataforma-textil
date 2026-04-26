@@ -235,12 +235,72 @@
   .btn-issue.enviado { border-color: #27ae60; color: #27ae60; cursor: default; }
   .btn-issue.error { border-color: #e74c3c; color: #e74c3c; }
   .btn-issue:disabled { opacity: 0.6; cursor: not-allowed; }
+  .badge-qa {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+    background: #e3f2fd;
+    color: #1565c0;
+    margin-left: 8px;
+    flex-shrink: 0;
+  }
+  .badge-dev {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+    background: #f3e5f5;
+    color: #7b1fa2;
+    margin-left: 8px;
+    flex-shrink: 0;
+  }
+  .badge-perfil {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+    background: #fff3e0;
+    color: #e65100;
+    margin-left: 8px;
+    flex-shrink: 0;
+    text-transform: capitalize;
+  }
+  .filter-bar {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    background: white;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .filter-label { font-size: 13px; font-weight: 600; color: #555; margin-right: 4px; }
+  .filter-btn {
+    padding: 5px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    transition: all 0.15s;
+  }
+  .filter-btn:hover { border-color: #1e3a5f; color: #1e3a5f; }
+  .filter-btn.active { background: #1e3a5f; color: white; border-color: #1e3a5f; }
   @media (max-width: 600px) {
     body { padding: 10px; padding-bottom: 80px; }
     .meta-grid { grid-template-columns: 1fr; }
     .item-controls { flex-direction: column; }
     .obs-input { min-width: 100%; }
     .radio-group { flex-direction: column; }
+    .filter-bar { flex-direction: column; align-items: flex-start; }
   }
 </style>
 </head>
@@ -256,7 +316,13 @@
         <div class="meta-item"><span class="meta-label">Fecha:</span> 2026-04-13</div>
         <div class="meta-item"><span class="meta-label">Auditor:</span> Sergio</div>
       </div>
-    </div><div class="section collapsible collapsed" onclick="toggleCollapse(this)">
+    </div><div class="filter-bar" id="filter-bar">
+    <span class="filter-label">Filtrar:</span>
+    <button class="filter-btn active" data-filter="todos" onclick="filtrarPor('todos')">Todos</button>
+    <button class="filter-btn" data-filter="QA" onclick="filtrarPor('QA')">QA tecnico</button>
+    <button class="filter-btn" data-filter="DEV" onclick="filtrarPor('DEV')">DEV</button>
+    
+  </div><div class="section collapsible collapsed" onclick="toggleCollapse(this)">
     <h2>Como trabajar con este documento <span class="collapse-icon">&#9654;</span></h2>
     <div class="collapse-content"><div class="readonly-block">Este documento es tu guia de navegacion para auditar el spec implementado.
 
@@ -346,10 +412,11 @@
       <td><code>—</code></td>
       <td><code>—</code></td>
       <td><code>`/`</code></td>
-    </tr></tbody></table></div></div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1">
+    </tr></tbody></table></div></div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="QA">
       <div class="item-header">
         <span class="item-num">#1</span>
         <span class="item-text">Los 5 nombres en `/acceso-rapido` muestran tildes correctas</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -360,10 +427,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="2">
+    </div><div class="item-card" data-eje="1" data-num="2" data-verificador="QA">
       <div class="item-header">
         <span class="item-num">#2</span>
         <span class="item-text">Bucket `documentos` existe en Supabase (privado)</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -374,10 +442,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="3">
+    </div><div class="item-card" data-eje="1" data-num="3" data-verificador="QA">
       <div class="item-header">
         <span class="item-num">#3</span>
         <span class="item-text">Feature flag `academia` activo en `/admin/configuracion?tab=features`</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -388,10 +457,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="4">
+    </div><div class="item-card" data-eje="1" data-num="4" data-verificador="QA">
       <div class="item-header">
         <span class="item-num">#4</span>
         <span class="item-text">`ANTHROPIC_API_KEY` y `VOYAGE_API_KEY` configuradas en Vercel (pendiente Gerardo)</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -402,10 +472,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="5">
+    </div><div class="item-card" data-eje="1" data-num="5" data-verificador="QA">
       <div class="item-header">
         <span class="item-num">#5</span>
         <span class="item-text">Widget de feedback funciona sin sesion activa</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -416,10 +487,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="6">
+    </div><div class="item-card" data-eje="1" data-num="6" data-verificador="QA">
       <div class="item-header">
         <span class="item-num">#6</span>
         <span class="item-text">Widget de feedback funciona con sesion activa</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -788,10 +860,11 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1">
+    </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1" data-verificador="QA">
       <div class="item-header">
         <span class="item-num">#1</span>
         <span class="item-text">Feedback sin nombre (sin login)</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Abrir widget sin login, dejar nombre vacio, intentar enviar</div>
@@ -806,10 +879,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="2">
+    </div><div class="item-card" data-eje="3" data-num="2" data-verificador="QA">
       <div class="item-header">
         <span class="item-num">#2</span>
         <span class="item-text">Feedback con mensaje corto</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Seleccionar un tipo, escribir menos de 10 caracteres, enviar</div>
@@ -824,10 +898,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="3">
+    </div><div class="item-card" data-eje="3" data-num="3" data-verificador="QA">
       <div class="item-header">
         <span class="item-num">#3</span>
         <span class="item-text">Feedback sin tipo seleccionado</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Escribir mensaje largo pero no seleccionar tipo, enviar</div>
@@ -842,10 +917,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="4">
+    </div><div class="item-card" data-eje="3" data-num="4" data-verificador="QA">
       <div class="item-header">
         <span class="item-num">#4</span>
         <span class="item-text">Login con credenciales incorrectas</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Ir a `/login`, usar email correcto pero password incorrecto</div>
@@ -860,9 +936,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1">
+    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1" data-verificador="QA">
       <div class="item-header">
         <span class="item-text">`/acceso-rapido` carga en menos de 3 segundos</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-details"><span class="detail-label">Metodo:</span> Abrir DevTools → Network → recargar</div>
       <div class="item-controls">
@@ -873,9 +950,10 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="2">
+    </div><div class="item-card compact" data-eje="4" data-num="2" data-verificador="QA">
       <div class="item-header">
         <span class="item-text">Widget de feedback abre sin delay visible</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-details"><span class="detail-label">Metodo:</span> Click en boton azul, medir tiempo de apertura</div>
       <div class="item-controls">
@@ -886,9 +964,10 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="3">
+    </div><div class="item-card compact" data-eje="4" data-num="3" data-verificador="QA">
       <div class="item-header">
         <span class="item-text">Sin errores en consola del browser</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Console → revisar en `/acceso-rapido` y `/taller`</div>
       <div class="item-controls">
@@ -899,9 +978,10 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="4">
+    </div><div class="item-card compact" data-eje="4" data-num="4" data-verificador="QA">
       <div class="item-header">
         <span class="item-text">Funciona en movil (responsive)</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Toggle device toolbar → verificar `/acceso-rapido`</div>
       <div class="item-controls">
@@ -1021,6 +1101,34 @@
     <button class="btn-copiar" id="btn-copiar" onclick="copiarResultados()">Copiar resultados como markdown</button>
   </div>
   <script>
+  function filtrarPor(tipo) {
+    // Reset todos los botones de filtro
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.filter-btn[data-filter="' + tipo + '"]').classList.add('active');
+
+    document.querySelectorAll('.item-card, .paso-card').forEach(c => {
+      if (tipo === 'todos') { c.style.display = ''; return; }
+      const verif = c.dataset.verificador || 'QA';
+      const perfil = c.dataset.perfil || '';
+      if (tipo === 'QA' || tipo === 'DEV') {
+        c.style.display = verif === tipo ? '' : 'none';
+      } else {
+        // Filtro por perfil interdisciplinario
+        c.style.display = perfil === tipo ? '' : 'none';
+      }
+    });
+    // Ocultar/mostrar secciones de ejes vacias
+    document.querySelectorAll('.section[id^="eje"]').forEach(s => {
+      const visible = s.querySelectorAll('.item-card:not([style*="none"]), .paso-card:not([style*="none"])');
+      s.style.display = visible.length === 0 ? 'none' : '';
+    });
+    // Secciones dentro de eje6 (colapsables de perfil)
+    document.querySelectorAll('#eje6 .collapsible').forEach(s => {
+      const visible = s.querySelectorAll('.item-card:not([style*="none"])');
+      s.style.display = visible.length === 0 ? 'none' : '';
+    });
+  }
+
   function toggleCollapse(el) {
     if (el.querySelector('.collapse-content')) {
       el.classList.toggle('collapsed');
@@ -1186,6 +1294,23 @@
       md += '\n';
     }
 
+    // Eje 6
+    const eje6Cards = document.querySelectorAll('#eje6 .item-card');
+    if (eje6Cards.length > 0) {
+      md += '### Eje 6 — Validacion de dominio\n';
+      md += '| # | Pregunta | Perfil | Resultado | Notas |\n';
+      md += '|---|----------|--------|-----------|-------|\n';
+      eje6Cards.forEach(c => {
+        const num = c.dataset.num;
+        const pregunta = c.querySelector('.item-text')?.textContent.trim() || '';
+        const perfil = c.dataset.perfil || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + num + ' | ' + pregunta + ' | ' + perfil + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
     // Resumen issues
     const resumenIssues = document.getElementById('textarea-resumen-issues')?.value.trim();
     if (resumenIssues) {
@@ -1193,11 +1318,19 @@
       md += resumenIssues + '\n\n';
     }
 
-    // Notas
+    // Notas (V2: textarea-notas, V3: textarea-notas-tecnico + textarea-notas-perfiles)
     const notas = document.getElementById('textarea-notas')?.value.trim();
     if (notas) {
       md += '### Notas del auditor\n';
       md += notas + '\n\n';
+    }
+    const notasTecnico = document.getElementById('textarea-notas-tecnico')?.value.trim();
+    const notasPerfiles = document.getElementById('textarea-notas-perfiles')?.value.trim();
+    if (notasTecnico || notasPerfiles) {
+      md += '### Notas de los auditores\n';
+      if (notasTecnico) md += '**Sergio (tecnico):** ' + notasTecnico + '\n';
+      if (notasPerfiles) md += '**Perfiles interdisciplinarios:** ' + notasPerfiles + '\n';
+      md += '\n';
     }
 
     // Checklist
