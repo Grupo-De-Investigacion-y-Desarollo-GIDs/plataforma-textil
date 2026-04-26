@@ -307,12 +307,13 @@ function renderEje1(contenido) {
     const criterio = f.criterio || ''
     const verificador = f.verificador || 'QA'
     const dataVerif = verificador.includes('DEV') ? 'DEV' : 'QA'
-    html += `<div class="item-card" data-eje="1" data-num="${num}" data-verificador="${dataVerif}">
+    html += `<div class="item-card" data-eje="1" data-num="${num}" data-verificador="${dataVerif}" data-item-selector="eje-1-item-${num}">
       <div class="item-header">
         <span class="item-num">#${escapeHtml(String(num))}</span>
         <span class="item-text">${escapeHtml(criterio)}</span>
         ${badgeVerificador(verificador)}
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -333,7 +334,7 @@ function renderEje2(contenido) {
   let html = `<div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2>`
 
   for (const p of pasos) {
-    html += `<div class="paso-card" data-eje="2" data-num="${p.numero}">
+    html += `<div class="paso-card" data-eje="2" data-num="${p.numero}" data-item-selector="eje-2-paso-${p.numero}">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso ${p.numero} — ${escapeHtml(p.titulo)}</span>
         <div class="paso-header-right">
@@ -342,6 +343,7 @@ function renderEje2(contenido) {
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           ${p.rol ? `<div class="paso-field"><span class="paso-label">Rol:</span> ${escapeHtml(p.rol)}</div>` : ''}
           ${p.url ? `<div class="paso-field"><span class="paso-label">URL:</span> <code>${escapeHtml(p.url)}</code></div>` : ''}
@@ -373,12 +375,13 @@ function renderEje3(contenido) {
     const num = f['#'] || (i + 1)
     const verificador3 = f.verificador || 'QA'
     const dataVerif3 = verificador3.includes('DEV') ? 'DEV' : 'QA'
-    html += `<div class="item-card" data-eje="3" data-num="${num}" data-verificador="${dataVerif3}">
+    html += `<div class="item-card" data-eje="3" data-num="${num}" data-verificador="${dataVerif3}" data-item-selector="eje-3-caso-${num}">
       <div class="item-header">
         <span class="item-num">#${escapeHtml(String(num))}</span>
         <span class="item-text">${escapeHtml(f.caso || '')}</span>
         ${badgeVerificador(verificador3)}
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         ${f.accion ? `<div class="detail-row"><span class="detail-label">Accion:</span> ${escapeHtml(f.accion)}</div>` : ''}
         ${f.esperado ? `<div class="detail-row"><span class="detail-label">Esperado:</span> ${escapeHtml(f.esperado)}</div>` : ''}
@@ -406,11 +409,12 @@ function renderEje4(contenido) {
     const f = filas[i]
     const verificador4 = f.verificador || 'QA'
     const dataVerif4 = verificador4.includes('DEV') ? 'DEV' : 'QA'
-    html += `<div class="item-card compact" data-eje="4" data-num="${i + 1}" data-verificador="${dataVerif4}">
+    html += `<div class="item-card compact" data-eje="4" data-num="${i + 1}" data-verificador="${dataVerif4}" data-item-selector="eje-4-item-${i + 1}">
       <div class="item-header">
         <span class="item-text">${escapeHtml(f.verificacion || '')}</span>
         ${badgeVerificador(verificador4)}
       </div>
+      <div class="item-badges"></div>
       ${f.metodo ? `<div class="item-details"><span class="detail-label">Metodo:</span> ${escapeHtml(f.metodo)}</div>` : ''}
       <div class="item-controls">
         <div class="status-btns">
@@ -432,10 +436,11 @@ function renderEje5(contenido) {
 
   for (let i = 0; i < filas.length; i++) {
     const f = filas[i]
-    html += `<div class="item-card compact" data-eje="5" data-num="${i + 1}">
+    html += `<div class="item-card compact" data-eje="5" data-num="${i + 1}" data-item-selector="eje-5-item-${i + 1}">
       <div class="item-header">
         <span class="item-text">${escapeHtml(f.verificacion || '')}</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -489,12 +494,13 @@ function renderEje6(contenido) {
       const f = filas[i]
       const num = f['#'] || (i + 1)
       const pregunta = f.pregunta || ''
-      html += `<div class="item-card" data-eje="6" data-num="${num}" data-verificador="perfil" data-perfil="${escapeHtml(perfil)}">
+      html += `<div class="item-card" data-eje="6" data-num="${num}" data-verificador="perfil" data-perfil="${escapeHtml(perfil)}" data-item-selector="eje-6-${escapeHtml(perfil)}-${num}">
         <div class="item-header">
           <span class="item-num">#${escapeHtml(String(num))}</span>
           <span class="item-text">${escapeHtml(pregunta)}</span>
           <span class="badge-perfil">${escapeHtml(perfil)}</span>
         </div>
+        <div class="item-badges"></div>
         <div class="item-controls">
           <div class="status-btns">
             <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -882,6 +888,30 @@ const CSS = `
   }
   .filter-btn:hover { border-color: #1e3a5f; color: #1e3a5f; }
   .filter-btn.active { background: #1e3a5f; color: white; border-color: #1e3a5f; }
+  .item-badges { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 4px; }
+  .issue-badge {
+    display: inline-block; font-size: 11px; padding: 2px 8px;
+    border-radius: 4px; font-weight: 600; text-decoration: none;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .issue-badge:hover { opacity: 0.8; }
+  .issue-open { background: #fce4e4; color: #c0392b; }
+  .issue-resolved { background: #e8f5e9; color: #2e7d32; }
+  .issue-discarded { background: #f0f0f0; color: #888; }
+  .issue-stats { display: flex; gap: 12px; margin: 8px 0 12px; }
+  .issue-stat {
+    font-size: 13px; font-weight: 600; padding: 4px 12px;
+    border-radius: 6px;
+  }
+  .stat-open { background: #fce4e4; color: #c0392b; }
+  .stat-resolved { background: #e8f5e9; color: #2e7d32; }
+  .stat-discarded { background: #f0f0f0; color: #888; }
+  .issues-list { margin-top: 8px; }
+  .issue-row { padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+  .issue-link { color: #1e3a5f; font-weight: 600; text-decoration: none; }
+  .issue-link:hover { text-decoration: underline; }
+  .issue-title { flex: 1; color: #555; }
+  .issue-badge-small { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; }
   @media (max-width: 600px) {
     body { padding: 10px; padding-bottom: 80px; }
     .meta-grid { grid-template-columns: 1fr; }
@@ -889,6 +919,7 @@ const CSS = `
     .obs-input { min-width: 100%; }
     .radio-group { flex-direction: column; }
     .filter-bar { flex-direction: column; align-items: flex-start; }
+    .issue-stats { flex-direction: column; gap: 4px; }
   }
 `
 
@@ -1168,6 +1199,8 @@ const JS = `
     const num = card.dataset.num || '';
     const spec = document.body.dataset.spec || '';
     const pagina = document.body.dataset.url || '';
+    const slugMeta = document.querySelector('meta[name="qa-slug"]');
+    const qaSlug = slugMeta ? slugMeta.content : '';
 
     btn.disabled = true;
     btn.textContent = 'Enviando...';
@@ -1187,7 +1220,11 @@ const JS = `
           spec: spec,
           eje: eje,
           item: '#' + num + ' ' + itemText,
-          resultado: status
+          resultado: status,
+          qaSlug: qaSlug,
+          itemSelector: card.dataset.itemSelector || '',
+          verificador: card.dataset.verificador || 'QA',
+          perfil: card.dataset.perfil || 'tecnico'
         }
       })
     }).then(r => {
@@ -1216,6 +1253,96 @@ const JS = `
   });
 
   updateProgress();
+`
+
+// ============================================
+// ISSUES JS (polling + badges)
+// ============================================
+
+const ISSUES_JS = `
+  (function() {
+    var apiBase = document.body.dataset.apiUrl;
+    if (!apiBase) return;
+    // apiUrl apunta a .../api/feedback — by-qa es relativo a eso
+    var feedbackBase = apiBase.replace('/api/feedback', '/api/feedback/by-qa/');
+    var slugMeta = document.querySelector('meta[name="qa-slug"]');
+    if (!slugMeta) return;
+    var qaSlug = slugMeta.content;
+
+    function crearBadgeIssue(issue) {
+      var a = document.createElement('a');
+      a.href = issue.url;
+      a.target = '_blank';
+      a.className = 'issue-badge issue-' + (
+        issue.state === 'open' ? 'open' :
+        issue.stateReason === 'completed' ? 'resolved' : 'discarded'
+      );
+      a.textContent = '#' + issue.number + ' — ' + (
+        issue.state === 'open' ? 'Abierto' :
+        issue.stateReason === 'completed' ? 'Resuelto' : 'Descartado'
+      );
+      return a;
+    }
+
+    function actualizarResumen(issues) {
+      var open = 0, resolved = 0, discarded = 0;
+      issues.forEach(function(i) {
+        if (i.state === 'open') open++;
+        else if (i.stateReason === 'completed') resolved++;
+        else discarded++;
+      });
+      var el;
+      el = document.getElementById('stat-abiertos'); if (el) el.textContent = open + ' abiertos';
+      el = document.getElementById('stat-resueltos'); if (el) el.textContent = resolved + ' resueltos';
+      el = document.getElementById('stat-descartados'); if (el) el.textContent = discarded + ' descartados';
+
+      var list = document.getElementById('issues-list');
+      if (list) {
+        list.innerHTML = '';
+        if (issues.length === 0) {
+          list.innerHTML = '<p class="text-muted">Sin issues reportados</p>';
+        } else {
+          issues.forEach(function(issue) {
+            var row = document.createElement('div');
+            row.className = 'issue-row';
+            row.innerHTML = '<a href="' + issue.url + '" target="_blank" class="issue-link">#' + issue.number + '</a> ' +
+              '<span class="issue-title">' + (issue.title || '') + '</span> ' +
+              '<span class="issue-badge-small issue-' + (issue.state === 'open' ? 'open' : issue.stateReason === 'completed' ? 'resolved' : 'discarded') + '">' +
+              (issue.state === 'open' ? 'Abierto' : issue.stateReason === 'completed' ? 'Resuelto' : 'Descartado') + '</span>';
+            list.appendChild(row);
+          });
+        }
+      }
+    }
+
+    function cargarIssues() {
+      fetch(feedbackBase + qaSlug)
+        .then(function(res) { if (!res.ok) throw new Error(); return res.json(); })
+        .then(function(data) {
+          document.querySelectorAll('.issue-badge').forEach(function(b) { b.remove(); });
+
+          data.issues.forEach(function(issue) {
+            if (!issue.itemSelector) return;
+            var item = document.querySelector('[data-item-selector="' + issue.itemSelector + '"]');
+            if (!item) return;
+            var container = item.querySelector('.item-badges');
+            if (container) container.appendChild(crearBadgeIssue(issue));
+          });
+
+          actualizarResumen(data.issues);
+
+          var status = document.getElementById('github-status');
+          if (status) status.textContent = 'Actualizado: ' + new Date(data.lastUpdated).toLocaleString('es-AR');
+        })
+        .catch(function() {
+          var status = document.getElementById('github-status');
+          if (status) status.textContent = 'No se pudo cargar estado de issues';
+        });
+    }
+
+    cargarIssues();
+    setInterval(cargarIssues, 2 * 60 * 1000);
+  })();
 `
 
 // ============================================
@@ -1256,11 +1383,15 @@ function generarHtml(mdPath) {
     }
   }
 
+  // Derivar qaSlug del nombre del archivo .md (sin extension ni path)
+  const qaSlug = path.basename(mdPath, '.md')
+
   const html = `<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="qa-slug" content="${escapeHtml(qaSlug)}">
   <title>QA: ${escapeHtml(meta.titulo)}</title>
   <style>${CSS}</style>
 </head>
@@ -1268,11 +1399,23 @@ function generarHtml(mdPath) {
   <div class="container">
     ${bodyHtml}
   </div>
+  <div class="section" id="panel-resumen">
+    <h2>Resumen de issues</h2>
+    <div id="github-status" class="text-muted"></div>
+    <div class="issue-stats">
+      <span class="issue-stat stat-open" id="stat-abiertos">0 abiertos</span>
+      <span class="issue-stat stat-resolved" id="stat-resueltos">0 resueltos</span>
+      <span class="issue-stat stat-discarded" id="stat-descartados">0 descartados</span>
+    </div>
+    <div id="issues-list" class="issues-list"></div>
+  </div>
+  </div>
   <div class="sticky-bar">
     <span class="progress-summary" id="progress-text"></span>
     <button class="btn-copiar" id="btn-copiar" onclick="copiarResultados()">Copiar resultados como markdown</button>
   </div>
   <script>${JS}</script>
+  <script>${ISSUES_JS}</script>
 </body>
 </html>`
 

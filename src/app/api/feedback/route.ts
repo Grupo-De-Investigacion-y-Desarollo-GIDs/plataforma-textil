@@ -1,24 +1,11 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/compartido/lib/auth'
 import { logActividad } from '@/compartido/lib/log'
-
-const ALLOWED_ORIGINS = [
-  'https://grupo-de-investigacion-y-desarollo-gids.github.io',
-]
-
-function corsHeaders(request: Request) {
-  const origin = request.headers.get('origin') ?? ''
-  const headers: Record<string, string> = {}
-  if (ALLOWED_ORIGINS.includes(origin)) {
-    headers['Access-Control-Allow-Origin'] = origin
-    headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
-    headers['Access-Control-Allow-Headers'] = 'Content-Type'
-  }
-  return headers
-}
+import { corsHeaders, handleOptions } from '@/compartido/lib/cors'
+import { buildIssueLabels, buildIssueBody } from '@/compartido/lib/feedback'
 
 export async function OPTIONS(request: Request) {
-  return new NextResponse(null, { status: 204, headers: corsHeaders(request) })
+  return handleOptions(request)
 }
 
 export async function POST(request: Request) {
@@ -52,22 +39,19 @@ export async function POST(request: Request) {
   })
 
   if (process.env.GITHUB_TOKEN && process.env.GITHUB_REPO) {
-    const labels: Record<string, string[]> = {
-      bug: ['bug', 'piloto'],
-      bloqueante: ['bug', 'critical', 'piloto'],
-      mejora: ['enhancement', 'piloto'],
-      falta: ['feature-request', 'piloto'],
-      confusion: ['ux', 'piloto'],
-    }
-
     const rolDisplay = session?.user ? role : `${auditorRol ?? 'SIN_LOGIN'} (auditor: ${nombre})`
 
-    // Armar body del issue con contexto QA opcional
-    let issueBody = `**Tipo:** ${tipo}\n**Rol:** ${rolDisplay}\n**Pagina:** ${pagina}\n${entidad ? `**Entidad:** ${entidad} ${entidadId}\n` : ''}\n**Descripcion:**\n${mensaje}`
+    const issueBody = buildIssueBody({
+      tipo,
+      rolDisplay: rolDisplay ?? 'SIN_LOGIN',
+      pagina,
+      entidad,
+      entidadId,
+      mensaje,
+      contextoQA,
+    })
 
-    if (contextoQA) {
-      issueBody += `\n\n## Contexto QA\n- **Spec:** ${contextoQA.spec ?? '—'}\n- **Eje:** ${contextoQA.eje ?? '—'}\n- **Item:** ${contextoQA.item ?? '—'}\n- **Resultado:** ${contextoQA.resultado ?? '—'}`
-    }
+    const issueLabels = buildIssueLabels(tipo, contextoQA)
 
     try {
       await fetch(`https://api.github.com/repos/${process.env.GITHUB_REPO}/issues`, {
@@ -80,7 +64,7 @@ export async function POST(request: Request) {
         body: JSON.stringify({
           title: `[${tipo.toUpperCase()}] ${mensaje.slice(0, 60)}${mensaje.length > 60 ? '...' : ''}`,
           body: issueBody,
-          labels: labels[tipo] ?? ['piloto'],
+          labels: issueLabels,
         }),
       })
     } catch { /* GitHub failure should not block feedback response */ }

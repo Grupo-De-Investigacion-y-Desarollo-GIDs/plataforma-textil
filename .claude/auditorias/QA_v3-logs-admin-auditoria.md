@@ -1,10 +1,45 @@
 # QA: Logs de auditoria para acciones sensibles del admin
 
 **Spec:** `v3-logs-admin-auditoria.md` (S-04)
-**Commit de implementacion:** pendiente
+**Commit de implementacion:** `8423747`
 **URL de prueba:** https://plataforma-textil-dev.vercel.app
 **Fecha:** 2026-04-26
-**Auditor:** Sergio
+**Auditor(es):** Sergio (tecnico)
+**Incluye Eje 6 de validacion de dominio:** no
+
+---
+
+## Contexto institucional
+
+Este spec agrega trazabilidad completa a las acciones del admin y del Estado sobre la plataforma. Para el piloto con OIT, es critico que cada decision (aprobar un documento, revocar un certificado, editar datos de un taller) quede registrada con quien la ejecuto, cuando y por que. Esto habilita accountability institucional y auditorias externas.
+
+---
+
+## Objetivo de este QA
+
+Verificar que las 14 acciones sensibles generan logs consistentes con entidad/entidadId, que la UI de /admin/logs tiene filtros funcionales, y que el export CSV funciona correctamente.
+
+---
+
+## Como trabajar con este documento
+
+1. Abri este archivo y la plataforma en paralelo
+2. Identifica que items te corresponden segun tu perfil (columna Verificador)
+3. Segui los pasos en orden — cada paso depende del anterior
+4. Marca cada resultado con ok, bug o bloqueante
+5. Si el resultado no es ok → abri el widget azul "Feedback" → describí que paso
+6. Al terminar, completa el resultado global y commitea este archivo actualizado
+
+---
+
+## Credenciales de prueba
+
+| Rol | Email | Password | URL de entrada |
+|-----|-------|----------|----------------|
+| ADMIN | `lucia.fernandez@pdt.org.ar` | `pdt2026` | `/admin` |
+| TALLER Bronce | `roberto.gimenez@pdt.org.ar` | `pdt2026` | `/taller` |
+| MARCA | `martin.echevarria@pdt.org.ar` | `pdt2026` | `/marca` |
+| ESTADO | `anabelen.torres@pdt.org.ar` | `pdt2026` | `/estado` |
 
 ---
 
@@ -29,7 +64,7 @@
 | 2 | `logActividad` existente NO se modifica — los callers existentes siguen funcionando | DEV | | |
 | 3 | Aprobar validacion genera log con entidad/entidadId | QA | | |
 | 4 | Rechazar validacion genera log con motivo | QA | | |
-| 5 | Revocar validacion sin motivo retorna error | QA | | |
+| 5 | Revocar validacion sin motivo retorna error (campo required en UI) | QA | | |
 | 6 | Revocar validacion con motivo genera log con motivo | QA | | |
 | 7 | Revocar certificado genera log con motivo | QA | | |
 | 8 | Emitir certificado genera log | QA | | |
@@ -39,8 +74,8 @@
 | 12 | Editar taller (como admin) genera log | QA | | |
 | 13 | Editar/borrar coleccion genera log | QA | | |
 | 14 | Crear nota interna genera log | QA | | |
-| 15 | Crear/desactivar documento RAG genera log | QA | | |
-| 16 | Exportar datos genera log | QA | | |
+| 15 | Crear/desactivar documento RAG genera log | DEV | | |
+| 16 | Exportar datos genera log DATOS_EXPORTADOS | QA | | |
 | 17 | UI `/admin/logs` tiene filtros por usuario, accion, entidad y fecha | QA | | |
 | 18 | UI muestra badges de sensibilidad (critica/alta/media/baja) | QA | | |
 | 19 | `toCsv` extraido a `src/compartido/lib/csv.ts` y usado en ambos endpoints | DEV | | |
@@ -56,6 +91,7 @@
 
 - **Rol:** ADMIN (`lucia.fernandez@pdt.org.ar`)
 - **URL de inicio:** `/admin/talleres`
+- **Verificador:** QA
 - **Accion:** Entrar a un taller con validacion PENDIENTE. Aprobar la validacion. Ir a `/admin/logs`.
 - **Esperado:** El log aparece con accion VALIDACION_APROBADA, entidad "validacion", sensibilidad "Alta"
 - **Resultado:** [ ]
@@ -65,6 +101,7 @@
 
 - **Rol:** ADMIN
 - **URL de inicio:** `/admin/logs`
+- **Verificador:** QA
 - **Accion:** Filtrar por entidad "validacion". Filtrar por usuario. Filtrar por rango de fechas.
 - **Esperado:** La tabla se actualiza mostrando solo los logs que coinciden con el filtro
 - **Resultado:** [ ]
@@ -74,6 +111,7 @@
 
 - **Rol:** ADMIN
 - **URL de inicio:** `/admin/logs`
+- **Verificador:** QA
 - **Accion:** Aplicar algun filtro. Click en "Exportar CSV".
 - **Esperado:** Se descarga un archivo CSV con headers: fecha, usuario_email, usuario_rol, accion, entidad, entidad_id, motivo, detalles
 - **Resultado:** [ ]
@@ -83,6 +121,7 @@
 
 - **Rol:** ADMIN o ESTADO
 - **URL de inicio:** `/admin` o `/estado`
+- **Verificador:** QA
 - **Accion:** Ir a exportar datos (talleres, marcas, etc). Exportar. Ir a `/admin/logs`.
 - **Esperado:** Aparece log DATOS_EXPORTADOS con entidad "exportacion"
 - **Resultado:** [ ]
@@ -92,6 +131,7 @@
 
 - **Rol:** ADMIN
 - **URL de inicio:** `/admin/logs`
+- **Verificador:** QA
 - **Accion:** Click en el chevron de un log que tenga detalles.
 - **Esperado:** Se expande mostrando el JSON completo de detalles
 - **Resultado:** [ ]
@@ -113,12 +153,12 @@
 
 ## Eje 4 — Performance
 
-| Verificacion | Metodo | Resultado |
-|-------------|--------|-----------|
-| `/admin/logs` carga en menos de 3 segundos | Abrir DevTools > Network > recargar | |
-| Filtros responden rapido | Cambiar filtro y medir tiempo de respuesta | |
-| Sin errores en consola del browser | DevTools > Console > revisar | |
-| Export CSV descarga en tiempo razonable | Click exportar, medir descarga | |
+| Verificacion | Metodo | Verificador | Resultado |
+|-------------|--------|-------------|-----------|
+| `/admin/logs` carga en menos de 3 segundos | Abrir DevTools > Network > recargar | QA | |
+| Filtros responden rapido | Cambiar filtro y medir tiempo de respuesta | QA | |
+| Sin errores en consola del browser | DevTools > Console > revisar | QA | |
+| Export CSV descarga en tiempo razonable | Click exportar, medir descarga | QA | |
 
 ---
 
@@ -137,14 +177,18 @@
 
 ## Resumen de issues abiertos
 
-| Issue | Tipo | Descripcion | Prioridad sugerida |
-|-------|------|-------------|-------------------|
+| Issue | Tipo | Descripcion | Perfil que lo encontro | Prioridad |
+|-------|------|-------------|------------------------|-----------|
 
 ---
 
-## Notas del auditor
+## Notas de los auditores
 
+**Sergio (tecnico):**
+[observaciones tecnicas sobre implementacion, seguridad, performance]
 
+**Perfiles interdisciplinarios:**
+No aplica — spec puramente tecnico.
 
 ---
 

@@ -935,6 +935,133 @@ console.log('\n📋 Test 20: Index separa V2 y V3 en secciones')
 }
 
 // ============================================
+// Test 21: HTML tiene meta qa-slug y data-item-selector
+// ============================================
+console.log('\n📋 Test 21: meta qa-slug y data-item-selector')
+{
+  const fixture = `# QA: Test Item Selectors
+
+**Spec:** \`v3-test.md\`
+**Fecha:** 2026-04-26
+**Auditor(es):** Sergio
+
+## Eje 1 — Funcionalidad
+| # | Criterio | Verificador | Resultado | Issue |
+|---|----------|-------------|-----------|-------|
+| 1 | Login funciona | QA | | |
+| 2 | Registro ok | DEV | | |
+
+## Eje 2 — Navegabilidad
+### Paso 1 — Login como admin
+- **Rol:** ADMIN
+- **URL de inicio:** /admin
+- **Accion:** Login
+- **Esperado:** Dashboard
+- **Resultado:**
+
+### Paso 2 — Ver logs
+- **Rol:** ADMIN
+- **URL de inicio:** /admin/logs
+- **Accion:** Abrir
+- **Esperado:** Tabla de logs
+- **Resultado:**
+
+## Eje 3 — Casos borde
+| # | Caso | Accion | Esperado | Verificador | Resultado |
+|---|------|--------|----------|-------------|-----------|
+| 1 | Input vacio | Enviar | Error | QA | |
+
+## Eje 5 — Consistencia visual
+| Verificacion | Resultado | Notas |
+|-------------|-----------|-------|
+| Tipografias | | |
+`
+  const tmpPath = path.join(__dirname, '_test_selectors.md')
+  fs.writeFileSync(tmpPath, fixture)
+  generarHtml(tmpPath)
+  const htmlPath = tmpPath.replace('.md', '.html')
+  const html = fs.readFileSync(htmlPath, 'utf-8')
+
+  // meta qa-slug derivado del nombre del archivo
+  assert(html.includes('name="qa-slug"'), 'HTML tiene meta qa-slug')
+  assert(html.includes('content="_test_selectors"'), 'qa-slug es el nombre del archivo sin .md')
+
+  // data-item-selector en Eje 1
+  assert(html.includes('data-item-selector="eje-1-item-1"'), 'Eje 1 item 1 tiene selector')
+  assert(html.includes('data-item-selector="eje-1-item-2"'), 'Eje 1 item 2 tiene selector')
+
+  // data-item-selector en Eje 2
+  assert(html.includes('data-item-selector="eje-2-paso-1"'), 'Eje 2 paso 1 tiene selector')
+  assert(html.includes('data-item-selector="eje-2-paso-2"'), 'Eje 2 paso 2 tiene selector')
+
+  // data-item-selector en Eje 3
+  assert(html.includes('data-item-selector="eje-3-caso-1"'), 'Eje 3 caso 1 tiene selector')
+
+  // data-item-selector en Eje 5
+  assert(html.includes('data-item-selector="eje-5-item-1"'), 'Eje 5 item 1 tiene selector')
+
+  // .item-badges container en cada item
+  const badgesCount = (html.match(/class="item-badges"/g) || []).length
+  assert(badgesCount >= 6, `item-badges containers presentes (${badgesCount} >= 6)`)
+
+  fs.unlinkSync(htmlPath)
+  fs.unlinkSync(tmpPath)
+}
+
+// ============================================
+// Test 22: Script de polling de issues embebido
+// ============================================
+console.log('\n📋 Test 22: Script de polling de issues')
+{
+  const fixture = `# QA: Test Polling
+
+**Spec:** \`v3-test.md\`
+**Fecha:** 2026-04-26
+**Auditor(es):** Sergio
+
+## Eje 1 — Funcionalidad
+| # | Criterio | Verificador | Resultado | Issue |
+|---|----------|-------------|-----------|-------|
+| 1 | Test | QA | | |
+
+## Checklist de cierre
+- [ ] Done
+`
+  const tmpPath = path.join(__dirname, '_test_polling.md')
+  fs.writeFileSync(tmpPath, fixture)
+  generarHtml(tmpPath)
+  const htmlPath = tmpPath.replace('.md', '.html')
+  const html = fs.readFileSync(htmlPath, 'utf-8')
+
+  // Script de carga de issues
+  assert(html.includes('function cargarIssues()'), 'HTML contiene cargarIssues')
+  assert(html.includes('setInterval(cargarIssues'), 'HTML contiene polling con setInterval')
+  assert(html.includes('crearBadgeIssue'), 'HTML contiene crearBadgeIssue')
+  assert(html.includes('actualizarResumen'), 'HTML contiene actualizarResumen')
+  assert(html.includes('/by-qa/'), 'HTML hace fetch a /by-qa/')
+
+  // crearIssue envia qaSlug e itemSelector
+  assert(html.includes('qaSlug: qaSlug'), 'crearIssue envia qaSlug')
+  assert(html.includes('itemSelector: card.dataset.itemSelector'), 'crearIssue envia itemSelector')
+  assert(html.includes('verificador: card.dataset.verificador'), 'crearIssue envia verificador')
+  assert(html.includes('perfil: card.dataset.perfil'), 'crearIssue envia perfil')
+
+  // Panel de resumen
+  assert(html.includes('id="panel-resumen"'), 'HTML tiene panel de resumen')
+  assert(html.includes('id="stat-abiertos"'), 'panel tiene stat abiertos')
+  assert(html.includes('id="stat-resueltos"'), 'panel tiene stat resueltos')
+  assert(html.includes('id="issues-list"'), 'panel tiene lista de issues')
+
+  // CSS de badges de issues
+  assert(html.includes('.issue-open'), 'CSS tiene clase issue-open')
+  assert(html.includes('.issue-resolved'), 'CSS tiene clase issue-resolved')
+  assert(html.includes('.issue-discarded'), 'CSS tiene clase issue-discarded')
+
+  fs.unlinkSync(htmlPath)
+  fs.unlinkSync(tmpPath)
+}
+
+// ============================================
 // RESUMEN
 // ============================================
 console.log('\n' + '='.repeat(50))

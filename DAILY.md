@@ -3,6 +3,23 @@
 ## 2026-04-26
 
 ### Gerardo Breard
+- **17:37** `ee8cb25` — feat: QA-iss (Bloque 0) — estado de issues en interfaz de QA
+  - `.claude/auditorias/QA_v3-qa-estado-issues.md`
+  - `src/__tests__/cors.test.ts`
+  - `src/__tests__/feedback-labels.test.ts`
+  - `src/__tests__/github-issue-parser.test.ts`
+  - `src/app/api/feedback/by-qa/[qaSlug]/route.ts`
+  - `src/app/api/feedback/route.ts`
+  - `src/compartido/lib/cors.ts`
+  - `src/compartido/lib/feedback.ts`
+  - `tests/e2e/v3-qa-issues-api.spec.ts`
+  - `tests/fixtures/github-issue-response.json`
+  - `tools/generate-qa.js`
+  - `tools/generate-qa.test.js`
+
+- **16:55** `32cf6ba` — docs: regenerar QA S-04 con formato V3
+  - `.claude/auditorias/QA_v3-logs-admin-auditoria.md`
+
 - **16:48** `df28fae` — feat: index QA mejorado — secciones V3/V2, filtros, perfiles chips
   - `tools/generate-qa.js`
   - `tools/generate-qa.test.js`
