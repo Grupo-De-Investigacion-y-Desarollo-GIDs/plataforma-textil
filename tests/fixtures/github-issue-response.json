@@ -1,0 +1,50 @@
+[
+  {
+    "_comment": "Snapshot de un issue real al 2026-04-26. Si la estructura de GitHub Issues API cambia, este fixture queda obsoleto y los tests fallan correctamente.",
+    "number": 120,
+    "title": "[BUG] 4,5 segundos",
+    "state": "closed",
+    "state_reason": "completed",
+    "html_url": "https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil/issues/120",
+    "created_at": "2026-04-22T22:37:53Z",
+    "updated_at": "2026-04-23T13:58:50Z",
+    "closed_at": "2026-04-23T13:58:49Z",
+    "labels": [
+      { "name": "bug" },
+      { "name": "piloto" },
+      { "name": "QA_v3-logs-admin-auditoria" }
+    ],
+    "body": "**Tipo:** bug\n**Rol:** QA (auditor: Sergio)\n**Pagina:** https://plataforma-textil.vercel.app\n\n**Descripcion:**\n4,5 segundos\n\n## Contexto QA\n- **Spec:** v2-epica-storage-documentos.md\n- **Eje:** Eje 4 — Performance\n- **Item:** #2 `/admin/talleres/[id]` carga en menos de 3 segundos\n- **Resultado:** \ud83d\udc1b\n\n---\n<!-- item: eje-4-item-2 -->\n<!-- verificador: QA -->\n<!-- perfil: tecnico -->\n<!-- url: https://plataforma-textil.vercel.app -->"
+  },
+  {
+    "number": 115,
+    "title": "[FALTA] Filtro por fecha no funciona",
+    "state": "open",
+    "state_reason": null,
+    "html_url": "https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil/issues/115",
+    "created_at": "2026-04-21T10:00:00Z",
+    "updated_at": "2026-04-21T10:00:00Z",
+    "closed_at": null,
+    "labels": [
+      { "name": "feature-request" },
+      { "name": "piloto" },
+      { "name": "QA_v3-logs-admin-auditoria" }
+    ],
+    "body": "**Tipo:** falta\n**Rol:** QA (auditor: Sergio)\n\n**Descripcion:**\nEl filtro por fecha no funciona correctamente\n\n---\n<!-- item: eje-1-item-17 -->\n<!-- verificador: QA -->\n<!-- perfil: tecnico -->\n<!-- url: https://plataforma-textil-dev.vercel.app/admin/logs -->"
+  },
+  {
+    "number": 100,
+    "title": "[BUG] Issue viejo sin metadata",
+    "state": "closed",
+    "state_reason": "not_planned",
+    "html_url": "https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil/issues/100",
+    "created_at": "2026-04-10T08:00:00Z",
+    "updated_at": "2026-04-12T14:00:00Z",
+    "closed_at": "2026-04-12T14:00:00Z",
+    "labels": [
+      { "name": "bug" },
+      { "name": "piloto" }
+    ],
+    "body": "**Tipo:** bug\n**Rol:** QA\n\n**Descripcion:**\nAlgun bug viejo sin metadata HTML comments"
+  }
+]
