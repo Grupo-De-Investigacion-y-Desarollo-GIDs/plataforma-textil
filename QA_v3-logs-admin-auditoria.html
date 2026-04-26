@@ -311,10 +311,10 @@
       <h1>Logs de auditoria para acciones sensibles del admin</h1>
       <div class="meta-grid">
         <div class="meta-item"><span class="meta-label">Spec:</span> <code>v3-logs-admin-auditoria.md</code></div>
-        
+        <div class="meta-item"><span class="meta-label">Commit:</span> <code>8423747</code></div>
         <div class="meta-item"><span class="meta-label">URL:</span> <a href="https://plataforma-textil-dev.vercel.app" target="_blank">https://plataforma-textil-dev.vercel.app</a></div>
         <div class="meta-item"><span class="meta-label">Fecha:</span> 2026-04-26</div>
-        <div class="meta-item"><span class="meta-label">Auditor:</span> Sergio</div>
+        <div class="meta-item"><span class="meta-label">Auditor:</span> Sergio (tecnico)</div>
       </div>
     </div><div class="filter-bar" id="filter-bar">
     <span class="filter-label">Filtrar:</span>
@@ -322,7 +322,50 @@
     <button class="filter-btn" data-filter="QA" onclick="filtrarPor('QA')">QA tecnico</button>
     <button class="filter-btn" data-filter="DEV" onclick="filtrarPor('DEV')">DEV</button>
     
-  </div><div class="section" id="resultado-global"><h2>Resultado global</h2><div class="radio-group"><label class="radio-btn" data-value="aprobado">
+  </div><div class="section" id="contexto-institucional">
+    <h2>Contexto institucional</h2>
+    <div class="readonly-block">Este spec agrega trazabilidad completa a las acciones del admin y del Estado sobre la plataforma. Para el piloto con OIT, es critico que cada decision (aprobar un documento, revocar un certificado, editar datos de un taller) quede registrada con quien la ejecuto, cuando y por que. Esto habilita accountability institucional y auditorias externas.
+
+---</div>
+  </div><div class="section" id="objetivo-qa">
+    <h2>Objetivo de este QA</h2>
+    <div class="readonly-block">Verificar que las 14 acciones sensibles generan logs consistentes con entidad/entidadId, que la UI de /admin/logs tiene filtros funcionales, y que el export CSV funciona correctamente.
+
+---</div>
+  </div><div class="section collapsible collapsed" onclick="toggleCollapse(this)">
+    <h2>Como trabajar con este documento <span class="collapse-icon">&#9654;</span></h2>
+    <div class="collapse-content"><div class="readonly-block">1. Abri este archivo y la plataforma en paralelo
+2. Identifica que items te corresponden segun tu perfil (columna Verificador)
+3. Segui los pasos en orden — cada paso depende del anterior
+4. Marca cada resultado con ok, bug o bloqueante
+5. Si el resultado no es ok → abri el widget azul &quot;Feedback&quot; → describí que paso
+6. Al terminar, completa el resultado global y commitea este archivo actualizado
+
+---</div></div>
+  </div><div class="section collapsible collapsed" onclick="toggleCollapse(this)">
+    <h2>Credenciales de prueba <span class="collapse-icon">&#9654;</span></h2>
+    <div class="collapse-content">
+    <table class="cred-table"><thead><tr><th>Rol</th><th>Email</th><th>Password</th><th>URL</th></tr></thead><tbody><tr>
+      <td>ADMIN</td>
+      <td><code>`lucia.fernandez@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/admin`</code></td>
+    </tr><tr>
+      <td>TALLER Bronce</td>
+      <td><code>`roberto.gimenez@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/taller`</code></td>
+    </tr><tr>
+      <td>MARCA</td>
+      <td><code>`martin.echevarria@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/marca`</code></td>
+    </tr><tr>
+      <td>ESTADO</td>
+      <td><code>`anabelen.torres@pdt.org.ar`</code></td>
+      <td><code>`pdt2026`</code></td>
+      <td><code>`/estado`</code></td>
+    </tr></tbody></table></div></div><div class="section" id="resultado-global"><h2>Resultado global</h2><div class="radio-group"><label class="radio-btn" data-value="aprobado">
       <input type="radio" name="resultado-global" value="aprobado">
       <span class="radio-label">✅ Aprobado</span>
     </label><label class="radio-btn" data-value="aprobado-fixes">
@@ -403,7 +446,7 @@
     </div><div class="item-card" data-eje="1" data-num="5" data-verificador="QA">
       <div class="item-header">
         <span class="item-num">#5</span>
-        <span class="item-text">Revocar validacion sin motivo retorna error</span>
+        <span class="item-text">Revocar validacion sin motivo retorna error (campo required en UI)</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-controls">
@@ -550,11 +593,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="15" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="15" data-verificador="DEV">
       <div class="item-header">
         <span class="item-num">#15</span>
         <span class="item-text">Crear/desactivar documento RAG genera log</span>
-        <span class="badge-qa">QA</span>
+        <span class="badge-dev">DEV</span>
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -568,7 +611,7 @@
     </div><div class="item-card" data-eje="1" data-num="16" data-verificador="QA">
       <div class="item-header">
         <span class="item-num">#16</span>
-        <span class="item-text">Exportar datos genera log</span>
+        <span class="item-text">Exportar datos genera log DATOS_EXPORTADOS</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-controls">
@@ -1021,9 +1064,16 @@
     </div></div><div class="section" id="resumen-issues">
     <h2>Resumen de issues abiertos</h2>
     <textarea class="large-textarea" id="textarea-resumen-issues" placeholder="Listar issues abiertos con # y descripcion breve" rows="4"></textarea>
-  </div><div class="section" id="notas-auditor">
-    <h2>Notas del auditor</h2>
-    <textarea class="large-textarea" id="textarea-notas" placeholder="Observaciones generales, sugerencias de UX, contexto adicional..." rows="6"></textarea>
+  </div><div class="section" id="notas-auditores">
+    <h2>Notas de los auditores</h2>
+    <div class="field-group">
+      <label>Sergio (tecnico):</label>
+      <textarea class="large-textarea" id="textarea-notas-tecnico" placeholder="Observaciones tecnicas..." rows="4"></textarea>
+    </div>
+    <div class="field-group">
+      <label>Perfiles interdisciplinarios:</label>
+      <textarea class="large-textarea" id="textarea-notas-perfiles" placeholder="Observaciones de dominio..." rows="4"></textarea>
+    </div>
   </div><div class="section" id="checklist"><h2>Checklist de cierre</h2><div class="checklist-items"><label class="checklist-item">
       <input type="checkbox" data-checklist="0">
       <span>Todos los criterios de aceptacion del spec verificados</span>
