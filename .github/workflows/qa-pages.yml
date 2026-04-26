@@ -5,6 +5,7 @@ on:
     branches: [develop]
     paths:
       - '.claude/auditorias/QA_v2-*.md'
+      - '.claude/auditorias/QA_v3-*.md'
       - 'tools/generate-qa.js'
 
 jobs:
@@ -24,8 +25,8 @@ jobs:
 
       - name: Generar HTMLs
         run: |
-          for f in .claude/auditorias/QA_v2-*.md; do
-            node tools/generate-qa.js "$f"
+          for f in .claude/auditorias/QA_v2-*.md .claude/auditorias/QA_v3-*.md; do
+            [ -f "$f" ] && node tools/generate-qa.js "$f"
           done
           node tools/generate-qa.js --index .claude/auditorias/
 
