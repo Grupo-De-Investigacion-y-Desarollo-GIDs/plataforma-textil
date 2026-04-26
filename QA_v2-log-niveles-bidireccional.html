@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="qa-slug" content="QA_v2-log-niveles-bidireccional">
   <title>QA: Log de niveles bidireccional + panel transparente</title>
   <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -294,6 +295,30 @@
   }
   .filter-btn:hover { border-color: #1e3a5f; color: #1e3a5f; }
   .filter-btn.active { background: #1e3a5f; color: white; border-color: #1e3a5f; }
+  .item-badges { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 4px; }
+  .issue-badge {
+    display: inline-block; font-size: 11px; padding: 2px 8px;
+    border-radius: 4px; font-weight: 600; text-decoration: none;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .issue-badge:hover { opacity: 0.8; }
+  .issue-open { background: #fce4e4; color: #c0392b; }
+  .issue-resolved { background: #e8f5e9; color: #2e7d32; }
+  .issue-discarded { background: #f0f0f0; color: #888; }
+  .issue-stats { display: flex; gap: 12px; margin: 8px 0 12px; }
+  .issue-stat {
+    font-size: 13px; font-weight: 600; padding: 4px 12px;
+    border-radius: 6px;
+  }
+  .stat-open { background: #fce4e4; color: #c0392b; }
+  .stat-resolved { background: #e8f5e9; color: #2e7d32; }
+  .stat-discarded { background: #f0f0f0; color: #888; }
+  .issues-list { margin-top: 8px; }
+  .issue-row { padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+  .issue-link { color: #1e3a5f; font-weight: 600; text-decoration: none; }
+  .issue-link:hover { text-decoration: underline; }
+  .issue-title { flex: 1; color: #555; }
+  .issue-badge-small { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; }
   @media (max-width: 600px) {
     body { padding: 10px; padding-bottom: 80px; }
     .meta-grid { grid-template-columns: 1fr; }
@@ -301,6 +326,7 @@
     .obs-input { min-width: 100%; }
     .radio-group { flex-direction: column; }
     .filter-bar { flex-direction: column; align-items: flex-start; }
+    .issue-stats { flex-direction: column; gap: 4px; }
   }
 </style>
 </head>
@@ -382,12 +408,13 @@
       <label>Issues abiertos:</label>
       <input type="text" id="issues-global" placeholder="#" class="text-input">
     </div>
-  </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="QA">
+  </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="QA" data-item-selector="eje-1-item-1">
       <div class="item-header">
         <span class="item-num">#1</span>
         <span class="item-text">Taller que baja de nivel → `logActividad` crea fila con `accion: &#39;NIVEL_BAJADO&#39;`</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -397,12 +424,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="2" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="2" data-verificador="QA" data-item-selector="eje-1-item-2">
       <div class="item-header">
         <span class="item-num">#2</span>
         <span class="item-text">Taller que sube de nivel → sigue creando `accion: &#39;NIVEL_SUBIDO&#39;` (sin regresión)</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -412,12 +440,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="3" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="3" data-verificador="QA" data-item-selector="eje-1-item-3">
       <div class="item-header">
         <span class="item-num">#3</span>
         <span class="item-text">Dashboard taller muestra banner amarillo con ⚠️ al bajar de nivel</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -427,12 +456,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="4" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="4" data-verificador="QA" data-item-selector="eje-1-item-4">
       <div class="item-header">
         <span class="item-num">#4</span>
         <span class="item-text">Dashboard taller muestra banner verde con 🥈/🥇 al subir de nivel</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -442,12 +472,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="5" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="5" data-verificador="QA" data-item-selector="eje-1-item-5">
       <div class="item-header">
         <span class="item-num">#5</span>
         <span class="item-text">Dashboard Estado muestra &quot;bajo de nivel&quot; con ícono TrendingDown amarillo</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -457,12 +488,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="6" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="6" data-verificador="QA" data-item-selector="eje-1-item-6">
       <div class="item-header">
         <span class="item-num">#6</span>
         <span class="item-text">Dashboard Estado muestra &quot;subio de nivel&quot; con ícono TrendingUp azul</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -472,12 +504,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="7" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="7" data-verificador="QA" data-item-selector="eje-1-item-7">
       <div class="item-header">
         <span class="item-num">#7</span>
         <span class="item-text">Dashboard Estado muestra &quot;aprobo una validacion&quot; con ícono FileCheck verde</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -487,12 +520,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="8" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="8" data-verificador="QA" data-item-selector="eje-1-item-8">
       <div class="item-header">
         <span class="item-num">#8</span>
         <span class="item-text">Historial de nivel aparece si tuvo mas de 1 cambio</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -502,12 +536,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="9" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="9" data-verificador="QA" data-item-selector="eje-1-item-9">
       <div class="item-header">
         <span class="item-num">#9</span>
         <span class="item-text">Desglose del puntaje visible debajo del número grande</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -517,12 +552,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="10" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="10" data-verificador="QA" data-item-selector="eje-1-item-10">
       <div class="item-header">
         <span class="item-num">#10</span>
         <span class="item-text">Cuando puntaje esta capped en 100, aparece &quot;Puntaje maximo alcanzado&quot;</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -532,12 +568,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="11" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="11" data-verificador="QA" data-item-selector="eje-1-item-11">
       <div class="item-header">
         <span class="item-num">#11</span>
         <span class="item-text">Build de TypeScript pasa sin errores</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -547,7 +584,7 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2><div class="paso-card" data-eje="2" data-num="1">
+    </div></div><div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2><div class="paso-card" data-eje="2" data-num="1" data-item-selector="eje-2-paso-1">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 1 — ADMIN aprueba validaciones PLATA de Roberto para subirlo de nivel</span>
         <div class="paso-header-right">
@@ -556,6 +593,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN (lucia.fernandez@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/admin/talleres`</code></div>
@@ -579,7 +617,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="2">
+    </div><div class="paso-card" data-eje="2" data-num="2" data-item-selector="eje-2-paso-2">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 2 — Roberto ve banner VERDE de subida</span>
         <div class="paso-header-right">
@@ -588,6 +626,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Bronce (roberto.gimenez@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller`</code></div>
@@ -605,7 +644,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="3">
+    </div><div class="paso-card" data-eje="2" data-num="3" data-item-selector="eje-2-paso-3">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 3 — ADMIN revoca una validación para bajar a Roberto</span>
         <div class="paso-header-right">
@@ -614,6 +653,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN (lucia.fernandez@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/admin/talleres`</code></div>
@@ -633,7 +673,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="4">
+    </div><div class="paso-card" data-eje="2" data-num="4" data-item-selector="eje-2-paso-4">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 4 — Roberto ve banner AMARILLO de bajada</span>
         <div class="paso-header-right">
@@ -642,6 +682,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> TALLER (roberto.gimenez@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller`</code></div>
@@ -659,7 +700,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="5">
+    </div><div class="paso-card" data-eje="2" data-num="5" data-item-selector="eje-2-paso-5">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 5 — Roberto ve desglose del puntaje</span>
         <div class="paso-header-right">
@@ -668,6 +709,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> TALLER (roberto.gimenez@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller`</code></div>
@@ -688,7 +730,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="6">
+    </div><div class="paso-card" data-eje="2" data-num="6" data-item-selector="eje-2-paso-6">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 6 — Roberto ve historial de nivel</span>
         <div class="paso-header-right">
@@ -697,6 +739,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> TALLER (roberto.gimenez@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller`</code></div>
@@ -717,7 +760,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="7">
+    </div><div class="paso-card" data-eje="2" data-num="7" data-item-selector="eje-2-paso-7">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 7 — Carlos (ORO) ve &quot;Puntaje máximo alcanzado&quot;</span>
         <div class="paso-header-right">
@@ -726,6 +769,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Oro (carlos.mendoza@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller`</code></div>
@@ -743,7 +787,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="8">
+    </div><div class="paso-card" data-eje="2" data-num="8" data-item-selector="eje-2-paso-8">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 8 — Dashboard Estado muestra subidas y bajadas con textos distintos</span>
         <div class="paso-header-right">
@@ -752,6 +796,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> ESTADO (anabelen.torres@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/estado`</code></div>
@@ -773,7 +818,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="9">
+    </div><div class="paso-card" data-eje="2" data-num="9" data-item-selector="eje-2-paso-9">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 9 — Verificar íconos y colores distintivos en Estado</span>
         <div class="paso-header-right">
@@ -782,6 +827,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> ESTADO (anabelen.torres@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/estado`</code></div>
@@ -804,12 +850,13 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1" data-verificador="QA">
+    </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1" data-verificador="QA" data-item-selector="eje-3-caso-1">
       <div class="item-header">
         <span class="item-num">#1</span>
         <span class="item-text">Taller sin ningún cambio de nivel</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Login como un taller que nunca cambió de nivel → ir a /taller</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> Sección &quot;Historial de nivel&quot; NO aparece</div>
@@ -823,12 +870,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="2" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="2" data-verificador="QA" data-item-selector="eje-3-caso-2">
       <div class="item-header">
         <span class="item-num">#2</span>
         <span class="item-text">Primer cambio de nivel (1 sola entrada)</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Si un taller solo tuvo 1 cambio → ir a /taller</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> Sección &quot;Historial de nivel&quot; NO aparece (se necesitan &gt;1)</div>
@@ -842,12 +890,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="3" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="3" data-verificador="QA" data-item-selector="eje-3-caso-3">
       <div class="item-header">
         <span class="item-num">#3</span>
         <span class="item-text">Taller sin AFIP verificado</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Login como taller sin AFIP → revisar desglose</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> La línea &quot;+ N pts CUIT verificado&quot; NO aparece</div>
@@ -861,12 +910,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="4" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="4" data-verificador="QA" data-item-selector="eje-3-caso-4">
       <div class="item-header">
         <span class="item-num">#4</span>
         <span class="item-text">Taller sin validaciones completadas</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Login como taller sin completadas → revisar desglose</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> La línea &quot;+ N pts documentos&quot; NO aparece</div>
@@ -880,12 +930,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="5" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="5" data-verificador="QA" data-item-selector="eje-3-caso-5">
       <div class="item-header">
         <span class="item-num">#5</span>
         <span class="item-text">Taller sin certificados</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Login como taller sin certificados → revisar desglose</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> La línea &quot;+ N pts capacitaciones&quot; NO aparece</div>
@@ -899,12 +950,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="6" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="6" data-verificador="QA" data-item-selector="eje-3-caso-6">
       <div class="item-header">
         <span class="item-num">#6</span>
         <span class="item-text">Banner desaparece después de 24hs</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Esperar 24hs desde el cambio de nivel (o verificar la lógica con la fecha)</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> Banner de subida/bajada no aparece pasadas las 24hs</div>
@@ -918,11 +970,12 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1" data-verificador="QA">
+    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1" data-verificador="QA" data-item-selector="eje-4-item-1">
       <div class="item-header">
         <span class="item-text">Dashboard taller carga en &lt; 3s</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Network → recargar `/taller`</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -932,11 +985,12 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="2" data-verificador="QA">
+    </div><div class="item-card compact" data-eje="4" data-num="2" data-verificador="QA" data-item-selector="eje-4-item-2">
       <div class="item-header">
         <span class="item-text">Dashboard estado carga en &lt; 3s</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Network → recargar `/estado`</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -946,11 +1000,12 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="3" data-verificador="QA">
+    </div><div class="item-card compact" data-eje="4" data-num="3" data-verificador="QA" data-item-selector="eje-4-item-3">
       <div class="item-header">
         <span class="item-text">Sin errores en consola del browser</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Console → revisar en `/taller` y `/estado`</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -960,11 +1015,12 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="4" data-verificador="QA">
+    </div><div class="item-card compact" data-eje="4" data-num="4" data-verificador="QA" data-item-selector="eje-4-item-4">
       <div class="item-header">
         <span class="item-text">Funciona en móvil (responsive)</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Toggle device toolbar → probar ambos dashboards</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -974,10 +1030,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1">
+    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1" data-item-selector="eje-5-item-1">
       <div class="item-header">
         <span class="item-text">Banner verde de subida tiene borde-izquierdo verde + fondo green-50</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -986,10 +1043,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="2">
+    </div><div class="item-card compact" data-eje="5" data-num="2" data-item-selector="eje-5-item-2">
       <div class="item-header">
         <span class="item-text">Banner amarillo de bajada tiene borde-izquierdo amber + fondo amber-50</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -998,10 +1056,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="3">
+    </div><div class="item-card compact" data-eje="5" data-num="3" data-item-selector="eje-5-item-3">
       <div class="item-header">
         <span class="item-text">Desglose del puntaje usa texto gris pequeño (text-xs text-gray-400)</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1010,10 +1069,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="4">
+    </div><div class="item-card compact" data-eje="5" data-num="4" data-item-selector="eje-5-item-4">
       <div class="item-header">
         <span class="item-text">Historial de nivel usa flechas ↑↓ con colores correctos</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1022,10 +1082,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="5">
+    </div><div class="item-card compact" data-eje="5" data-num="5" data-item-selector="eje-5-item-5">
       <div class="item-header">
         <span class="item-text">Íconos en Estado son coherentes (verde/azul/amarillo)</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1034,10 +1095,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="6">
+    </div><div class="item-card compact" data-eje="5" data-num="6" data-item-selector="eje-5-item-6">
       <div class="item-header">
         <span class="item-text">Tipografías consistentes (Overpass para títulos)</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1046,10 +1108,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="7">
+    </div><div class="item-card compact" data-eje="5" data-num="7" data-item-selector="eje-5-item-7">
       <div class="item-header">
         <span class="item-text">Textos en español argentino</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1058,10 +1121,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="8">
+    </div><div class="item-card compact" data-eje="5" data-num="8" data-item-selector="eje-5-item-8">
       <div class="item-header">
         <span class="item-text">Sin texto en inglés visible al usuario</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1098,6 +1162,17 @@
       <input type="checkbox" data-checklist="6">
       <span>Documento commiteado a develop</span>
     </label></div></div>
+  </div>
+  <div class="section" id="panel-resumen">
+    <h2>Resumen de issues</h2>
+    <div id="github-status" class="text-muted"></div>
+    <div class="issue-stats">
+      <span class="issue-stat stat-open" id="stat-abiertos">0 abiertos</span>
+      <span class="issue-stat stat-resolved" id="stat-resueltos">0 resueltos</span>
+      <span class="issue-stat stat-discarded" id="stat-descartados">0 descartados</span>
+    </div>
+    <div id="issues-list" class="issues-list"></div>
+  </div>
   </div>
   <div class="sticky-bar">
     <span class="progress-summary" id="progress-text"></span>
@@ -1375,6 +1450,8 @@
     const num = card.dataset.num || '';
     const spec = document.body.dataset.spec || '';
     const pagina = document.body.dataset.url || '';
+    const slugMeta = document.querySelector('meta[name="qa-slug"]');
+    const qaSlug = slugMeta ? slugMeta.content : '';
 
     btn.disabled = true;
     btn.textContent = 'Enviando...';
@@ -1394,7 +1471,11 @@
           spec: spec,
           eje: eje,
           item: '#' + num + ' ' + itemText,
-          resultado: status
+          resultado: status,
+          qaSlug: qaSlug,
+          itemSelector: card.dataset.itemSelector || '',
+          verificador: card.dataset.verificador || 'QA',
+          perfil: card.dataset.perfil || 'tecnico'
         }
       })
     }).then(r => {
@@ -1423,6 +1504,91 @@
   });
 
   updateProgress();
+</script>
+  <script>
+  (function() {
+    var apiBase = document.body.dataset.apiUrl;
+    if (!apiBase) return;
+    // apiUrl apunta a .../api/feedback — by-qa es relativo a eso
+    var feedbackBase = apiBase.replace('/api/feedback', '/api/feedback/by-qa/');
+    var slugMeta = document.querySelector('meta[name="qa-slug"]');
+    if (!slugMeta) return;
+    var qaSlug = slugMeta.content;
+
+    function crearBadgeIssue(issue) {
+      var a = document.createElement('a');
+      a.href = issue.url;
+      a.target = '_blank';
+      a.className = 'issue-badge issue-' + (
+        issue.state === 'open' ? 'open' :
+        issue.stateReason === 'completed' ? 'resolved' : 'discarded'
+      );
+      a.textContent = '#' + issue.number + ' — ' + (
+        issue.state === 'open' ? 'Abierto' :
+        issue.stateReason === 'completed' ? 'Resuelto' : 'Descartado'
+      );
+      return a;
+    }
+
+    function actualizarResumen(issues) {
+      var open = 0, resolved = 0, discarded = 0;
+      issues.forEach(function(i) {
+        if (i.state === 'open') open++;
+        else if (i.stateReason === 'completed') resolved++;
+        else discarded++;
+      });
+      var el;
+      el = document.getElementById('stat-abiertos'); if (el) el.textContent = open + ' abiertos';
+      el = document.getElementById('stat-resueltos'); if (el) el.textContent = resolved + ' resueltos';
+      el = document.getElementById('stat-descartados'); if (el) el.textContent = discarded + ' descartados';
+
+      var list = document.getElementById('issues-list');
+      if (list) {
+        list.innerHTML = '';
+        if (issues.length === 0) {
+          list.innerHTML = '<p class="text-muted">Sin issues reportados</p>';
+        } else {
+          issues.forEach(function(issue) {
+            var row = document.createElement('div');
+            row.className = 'issue-row';
+            row.innerHTML = '<a href="' + issue.url + '" target="_blank" class="issue-link">#' + issue.number + '</a> ' +
+              '<span class="issue-title">' + (issue.title || '') + '</span> ' +
+              '<span class="issue-badge-small issue-' + (issue.state === 'open' ? 'open' : issue.stateReason === 'completed' ? 'resolved' : 'discarded') + '">' +
+              (issue.state === 'open' ? 'Abierto' : issue.stateReason === 'completed' ? 'Resuelto' : 'Descartado') + '</span>';
+            list.appendChild(row);
+          });
+        }
+      }
+    }
+
+    function cargarIssues() {
+      fetch(feedbackBase + qaSlug)
+        .then(function(res) { if (!res.ok) throw new Error(); return res.json(); })
+        .then(function(data) {
+          document.querySelectorAll('.issue-badge').forEach(function(b) { b.remove(); });
+
+          data.issues.forEach(function(issue) {
+            if (!issue.itemSelector) return;
+            var item = document.querySelector('[data-item-selector="' + issue.itemSelector + '"]');
+            if (!item) return;
+            var container = item.querySelector('.item-badges');
+            if (container) container.appendChild(crearBadgeIssue(issue));
+          });
+
+          actualizarResumen(data.issues);
+
+          var status = document.getElementById('github-status');
+          if (status) status.textContent = 'Actualizado: ' + new Date(data.lastUpdated).toLocaleString('es-AR');
+        })
+        .catch(function() {
+          var status = document.getElementById('github-status');
+          if (status) status.textContent = 'No se pudo cargar estado de issues';
+        });
+    }
+
+    cargarIssues();
+    setInterval(cargarIssues, 2 * 60 * 1000);
+  })();
 </script>
 </body>
 </html>

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="qa-slug" content="QA_v3-logs-admin-auditoria">
   <title>QA: Logs de auditoria para acciones sensibles del admin</title>
   <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -294,6 +295,30 @@
   }
   .filter-btn:hover { border-color: #1e3a5f; color: #1e3a5f; }
   .filter-btn.active { background: #1e3a5f; color: white; border-color: #1e3a5f; }
+  .item-badges { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 4px; }
+  .issue-badge {
+    display: inline-block; font-size: 11px; padding: 2px 8px;
+    border-radius: 4px; font-weight: 600; text-decoration: none;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .issue-badge:hover { opacity: 0.8; }
+  .issue-open { background: #fce4e4; color: #c0392b; }
+  .issue-resolved { background: #e8f5e9; color: #2e7d32; }
+  .issue-discarded { background: #f0f0f0; color: #888; }
+  .issue-stats { display: flex; gap: 12px; margin: 8px 0 12px; }
+  .issue-stat {
+    font-size: 13px; font-weight: 600; padding: 4px 12px;
+    border-radius: 6px;
+  }
+  .stat-open { background: #fce4e4; color: #c0392b; }
+  .stat-resolved { background: #e8f5e9; color: #2e7d32; }
+  .stat-discarded { background: #f0f0f0; color: #888; }
+  .issues-list { margin-top: 8px; }
+  .issue-row { padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+  .issue-link { color: #1e3a5f; font-weight: 600; text-decoration: none; }
+  .issue-link:hover { text-decoration: underline; }
+  .issue-title { flex: 1; color: #555; }
+  .issue-badge-small { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; }
   @media (max-width: 600px) {
     body { padding: 10px; padding-bottom: 80px; }
     .meta-grid { grid-template-columns: 1fr; }
@@ -301,6 +326,7 @@
     .obs-input { min-width: 100%; }
     .radio-group { flex-direction: column; }
     .filter-bar { flex-direction: column; align-items: flex-start; }
+    .issue-stats { flex-direction: column; gap: 4px; }
   }
 </style>
 </head>
@@ -383,12 +409,13 @@
       <label>Issues abiertos:</label>
       <input type="text" id="issues-global" placeholder="#" class="text-input">
     </div>
-  </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="DEV">
+  </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="DEV" data-item-selector="eje-1-item-1">
       <div class="item-header">
         <span class="item-num">#1</span>
         <span class="item-text">Wrapper `logAccionAdmin` agregado a `src/compartido/lib/log.ts` con tipado estricto</span>
         <span class="badge-dev">DEV</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -398,12 +425,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="2" data-verificador="DEV">
+    </div><div class="item-card" data-eje="1" data-num="2" data-verificador="DEV" data-item-selector="eje-1-item-2">
       <div class="item-header">
         <span class="item-num">#2</span>
         <span class="item-text">`logActividad` existente NO se modifica — los callers existentes siguen funcionando</span>
         <span class="badge-dev">DEV</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -413,12 +441,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="3" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="3" data-verificador="QA" data-item-selector="eje-1-item-3">
       <div class="item-header">
         <span class="item-num">#3</span>
         <span class="item-text">Aprobar validacion genera log con entidad/entidadId</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -428,12 +457,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="4" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="4" data-verificador="QA" data-item-selector="eje-1-item-4">
       <div class="item-header">
         <span class="item-num">#4</span>
         <span class="item-text">Rechazar validacion genera log con motivo</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -443,12 +473,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="5" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="5" data-verificador="QA" data-item-selector="eje-1-item-5">
       <div class="item-header">
         <span class="item-num">#5</span>
         <span class="item-text">Revocar validacion sin motivo retorna error (campo required en UI)</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -458,12 +489,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="6" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="6" data-verificador="QA" data-item-selector="eje-1-item-6">
       <div class="item-header">
         <span class="item-num">#6</span>
         <span class="item-text">Revocar validacion con motivo genera log con motivo</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -473,12 +505,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="7" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="7" data-verificador="QA" data-item-selector="eje-1-item-7">
       <div class="item-header">
         <span class="item-num">#7</span>
         <span class="item-text">Revocar certificado genera log con motivo</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -488,12 +521,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="8" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="8" data-verificador="QA" data-item-selector="eje-1-item-8">
       <div class="item-header">
         <span class="item-num">#8</span>
         <span class="item-text">Emitir certificado genera log</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -503,12 +537,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="9" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="9" data-verificador="QA" data-item-selector="eje-1-item-9">
       <div class="item-header">
         <span class="item-num">#9</span>
         <span class="item-text">Crear usuario genera log</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -518,12 +553,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="10" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="10" data-verificador="QA" data-item-selector="eje-1-item-10">
       <div class="item-header">
         <span class="item-num">#10</span>
         <span class="item-text">Editar usuario genera log</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -533,12 +569,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="11" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="11" data-verificador="QA" data-item-selector="eje-1-item-11">
       <div class="item-header">
         <span class="item-num">#11</span>
         <span class="item-text">Desactivar usuario genera log</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -548,12 +585,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="12" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="12" data-verificador="QA" data-item-selector="eje-1-item-12">
       <div class="item-header">
         <span class="item-num">#12</span>
         <span class="item-text">Editar taller (como admin) genera log</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -563,12 +601,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="13" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="13" data-verificador="QA" data-item-selector="eje-1-item-13">
       <div class="item-header">
         <span class="item-num">#13</span>
         <span class="item-text">Editar/borrar coleccion genera log</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -578,12 +617,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="14" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="14" data-verificador="QA" data-item-selector="eje-1-item-14">
       <div class="item-header">
         <span class="item-num">#14</span>
         <span class="item-text">Crear nota interna genera log</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -593,12 +633,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="15" data-verificador="DEV">
+    </div><div class="item-card" data-eje="1" data-num="15" data-verificador="DEV" data-item-selector="eje-1-item-15">
       <div class="item-header">
         <span class="item-num">#15</span>
         <span class="item-text">Crear/desactivar documento RAG genera log</span>
         <span class="badge-dev">DEV</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -608,12 +649,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="16" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="16" data-verificador="QA" data-item-selector="eje-1-item-16">
       <div class="item-header">
         <span class="item-num">#16</span>
         <span class="item-text">Exportar datos genera log DATOS_EXPORTADOS</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -623,12 +665,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="17" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="17" data-verificador="QA" data-item-selector="eje-1-item-17">
       <div class="item-header">
         <span class="item-num">#17</span>
         <span class="item-text">UI `/admin/logs` tiene filtros por usuario, accion, entidad y fecha</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -638,12 +681,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="18" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="18" data-verificador="QA" data-item-selector="eje-1-item-18">
       <div class="item-header">
         <span class="item-num">#18</span>
         <span class="item-text">UI muestra badges de sensibilidad (critica/alta/media/baja)</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -653,12 +697,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="19" data-verificador="DEV">
+    </div><div class="item-card" data-eje="1" data-num="19" data-verificador="DEV" data-item-selector="eje-1-item-19">
       <div class="item-header">
         <span class="item-num">#19</span>
         <span class="item-text">`toCsv` extraido a `src/compartido/lib/csv.ts` y usado en ambos endpoints</span>
         <span class="badge-dev">DEV</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -668,12 +713,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="20" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="20" data-verificador="QA" data-item-selector="eje-1-item-20">
       <div class="item-header">
         <span class="item-num">#20</span>
         <span class="item-text">`GET /api/admin/logs?export=csv` retorna CSV valido</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -683,12 +729,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="21" data-verificador="DEV">
+    </div><div class="item-card" data-eje="1" data-num="21" data-verificador="DEV" data-item-selector="eje-1-item-21">
       <div class="item-header">
         <span class="item-num">#21</span>
         <span class="item-text">Build sin errores de TypeScript</span>
         <span class="badge-dev">DEV</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -698,12 +745,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="22" data-verificador="DEV">
+    </div><div class="item-card" data-eje="1" data-num="22" data-verificador="DEV" data-item-selector="eje-1-item-22">
       <div class="item-header">
         <span class="item-num">#22</span>
         <span class="item-text">Logs existentes siguen siendo compatibles (el cambio es aditivo)</span>
         <span class="badge-dev">DEV</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -713,7 +761,7 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2><div class="paso-card" data-eje="2" data-num="1">
+    </div></div><div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2><div class="paso-card" data-eje="2" data-num="1" data-item-selector="eje-2-paso-1">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 1 — Verificar logs de validacion</span>
         <div class="paso-header-right">
@@ -722,6 +770,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN (`lucia.fernandez@pdt.org.ar`)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/admin/talleres`</code></div>
@@ -738,7 +787,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="2">
+    </div><div class="paso-card" data-eje="2" data-num="2" data-item-selector="eje-2-paso-2">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 2 — Verificar filtros de logs</span>
         <div class="paso-header-right">
@@ -747,6 +796,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/admin/logs`</code></div>
@@ -763,7 +813,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="3">
+    </div><div class="paso-card" data-eje="2" data-num="3" data-item-selector="eje-2-paso-3">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 3 — Verificar export CSV</span>
         <div class="paso-header-right">
@@ -772,6 +822,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/admin/logs`</code></div>
@@ -788,7 +839,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="4">
+    </div><div class="paso-card" data-eje="2" data-num="4" data-item-selector="eje-2-paso-4">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 4 — Verificar log de exportacion de datos</span>
         <div class="paso-header-right">
@@ -797,6 +848,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN o ESTADO</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/admin` o `/estado`</code></div>
@@ -813,7 +865,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="5">
+    </div><div class="paso-card" data-eje="2" data-num="5" data-item-selector="eje-2-paso-5">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 5 — Verificar detalle expandible</span>
         <div class="paso-header-right">
@@ -822,6 +874,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/admin/logs`</code></div>
@@ -838,12 +891,13 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1" data-verificador="QA">
+    </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1" data-verificador="QA" data-item-selector="eje-3-caso-1">
       <div class="item-header">
         <span class="item-num">#1</span>
         <span class="item-text">Logs antiguos sin entidad/entidadId</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Ver logs previos a esta implementacion en `/admin/logs`</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> Muestran &quot;—&quot; en columnas entidad y motivo</div>
@@ -857,12 +911,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="2" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="2" data-verificador="QA" data-item-selector="eje-3-caso-2">
       <div class="item-header">
         <span class="item-num">#2</span>
         <span class="item-text">Filtrar sin resultados</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Aplicar filtros que no matchean ningun log</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> Mensaje &quot;No hay logs para mostrar&quot;</div>
@@ -876,12 +931,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="3" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="3" data-verificador="QA" data-item-selector="eje-3-caso-3">
       <div class="item-header">
         <span class="item-num">#3</span>
         <span class="item-text">CSV con filtros vacios</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Exportar CSV sin filtros</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> Se exportan todos los logs (hasta 10000)</div>
@@ -895,12 +951,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="4" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="4" data-verificador="QA" data-item-selector="eje-3-caso-4">
       <div class="item-header">
         <span class="item-num">#4</span>
         <span class="item-text">Paginacion funciona</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Navegar paginas en una lista larga de logs</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> Navegacion fluida, contadores correctos</div>
@@ -914,12 +971,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="5" data-verificador="DEV">
+    </div><div class="item-card" data-eje="3" data-num="5" data-verificador="DEV" data-item-selector="eje-3-caso-5">
       <div class="item-header">
         <span class="item-num">#5</span>
         <span class="item-text">logActividad generico sigue funcionando</span>
         <span class="badge-dev">DEV</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Verificar que acciones como COTIZACION_RECIBIDA, LOGIN_SUCCESS siguen generando logs</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> Logs genericos aparecen en la lista</div>
@@ -933,11 +991,12 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1" data-verificador="QA">
+    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1" data-verificador="QA" data-item-selector="eje-4-item-1">
       <div class="item-header">
         <span class="item-text">`/admin/logs` carga en menos de 3 segundos</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> Abrir DevTools &gt; Network &gt; recargar</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -947,11 +1006,12 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="2" data-verificador="QA">
+    </div><div class="item-card compact" data-eje="4" data-num="2" data-verificador="QA" data-item-selector="eje-4-item-2">
       <div class="item-header">
         <span class="item-text">Filtros responden rapido</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> Cambiar filtro y medir tiempo de respuesta</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -961,11 +1021,12 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="3" data-verificador="QA">
+    </div><div class="item-card compact" data-eje="4" data-num="3" data-verificador="QA" data-item-selector="eje-4-item-3">
       <div class="item-header">
         <span class="item-text">Sin errores en consola del browser</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> DevTools &gt; Console &gt; revisar</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -975,11 +1036,12 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="4" data-verificador="QA">
+    </div><div class="item-card compact" data-eje="4" data-num="4" data-verificador="QA" data-item-selector="eje-4-item-4">
       <div class="item-header">
         <span class="item-text">Export CSV descarga en tiempo razonable</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> Click exportar, medir descarga</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -989,10 +1051,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1">
+    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1" data-item-selector="eje-5-item-1">
       <div class="item-header">
         <span class="item-text">Tipografias consistentes (Overpass para titulos)</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1001,10 +1064,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="2">
+    </div><div class="item-card compact" data-eje="5" data-num="2" data-item-selector="eje-5-item-2">
       <div class="item-header">
         <span class="item-text">Colores del design system (brand-blue, brand-red)</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1013,10 +1077,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="3">
+    </div><div class="item-card compact" data-eje="5" data-num="3" data-item-selector="eje-5-item-3">
       <div class="item-header">
         <span class="item-text">Badges de sensibilidad tienen colores distinguibles</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1025,10 +1090,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="4">
+    </div><div class="item-card compact" data-eje="5" data-num="4" data-item-selector="eje-5-item-4">
       <div class="item-header">
         <span class="item-text">Estados vacios tienen mensaje descriptivo</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1037,10 +1103,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="5">
+    </div><div class="item-card compact" data-eje="5" data-num="5" data-item-selector="eje-5-item-5">
       <div class="item-header">
         <span class="item-text">Textos en espanol argentino</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1049,10 +1116,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="6">
+    </div><div class="item-card compact" data-eje="5" data-num="6" data-item-selector="eje-5-item-6">
       <div class="item-header">
         <span class="item-text">Sin texto en ingles visible al usuario</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1093,6 +1161,17 @@
       <input type="checkbox" data-checklist="5">
       <span>Documento commiteado a develop</span>
     </label></div></div>
+  </div>
+  <div class="section" id="panel-resumen">
+    <h2>Resumen de issues</h2>
+    <div id="github-status" class="text-muted"></div>
+    <div class="issue-stats">
+      <span class="issue-stat stat-open" id="stat-abiertos">0 abiertos</span>
+      <span class="issue-stat stat-resolved" id="stat-resueltos">0 resueltos</span>
+      <span class="issue-stat stat-discarded" id="stat-descartados">0 descartados</span>
+    </div>
+    <div id="issues-list" class="issues-list"></div>
+  </div>
   </div>
   <div class="sticky-bar">
     <span class="progress-summary" id="progress-text"></span>
@@ -1370,6 +1449,8 @@
     const num = card.dataset.num || '';
     const spec = document.body.dataset.spec || '';
     const pagina = document.body.dataset.url || '';
+    const slugMeta = document.querySelector('meta[name="qa-slug"]');
+    const qaSlug = slugMeta ? slugMeta.content : '';
 
     btn.disabled = true;
     btn.textContent = 'Enviando...';
@@ -1389,7 +1470,11 @@
           spec: spec,
           eje: eje,
           item: '#' + num + ' ' + itemText,
-          resultado: status
+          resultado: status,
+          qaSlug: qaSlug,
+          itemSelector: card.dataset.itemSelector || '',
+          verificador: card.dataset.verificador || 'QA',
+          perfil: card.dataset.perfil || 'tecnico'
         }
       })
     }).then(r => {
@@ -1418,6 +1503,91 @@
   });
 
   updateProgress();
+</script>
+  <script>
+  (function() {
+    var apiBase = document.body.dataset.apiUrl;
+    if (!apiBase) return;
+    // apiUrl apunta a .../api/feedback — by-qa es relativo a eso
+    var feedbackBase = apiBase.replace('/api/feedback', '/api/feedback/by-qa/');
+    var slugMeta = document.querySelector('meta[name="qa-slug"]');
+    if (!slugMeta) return;
+    var qaSlug = slugMeta.content;
+
+    function crearBadgeIssue(issue) {
+      var a = document.createElement('a');
+      a.href = issue.url;
+      a.target = '_blank';
+      a.className = 'issue-badge issue-' + (
+        issue.state === 'open' ? 'open' :
+        issue.stateReason === 'completed' ? 'resolved' : 'discarded'
+      );
+      a.textContent = '#' + issue.number + ' — ' + (
+        issue.state === 'open' ? 'Abierto' :
+        issue.stateReason === 'completed' ? 'Resuelto' : 'Descartado'
+      );
+      return a;
+    }
+
+    function actualizarResumen(issues) {
+      var open = 0, resolved = 0, discarded = 0;
+      issues.forEach(function(i) {
+        if (i.state === 'open') open++;
+        else if (i.stateReason === 'completed') resolved++;
+        else discarded++;
+      });
+      var el;
+      el = document.getElementById('stat-abiertos'); if (el) el.textContent = open + ' abiertos';
+      el = document.getElementById('stat-resueltos'); if (el) el.textContent = resolved + ' resueltos';
+      el = document.getElementById('stat-descartados'); if (el) el.textContent = discarded + ' descartados';
+
+      var list = document.getElementById('issues-list');
+      if (list) {
+        list.innerHTML = '';
+        if (issues.length === 0) {
+          list.innerHTML = '<p class="text-muted">Sin issues reportados</p>';
+        } else {
+          issues.forEach(function(issue) {
+            var row = document.createElement('div');
+            row.className = 'issue-row';
+            row.innerHTML = '<a href="' + issue.url + '" target="_blank" class="issue-link">#' + issue.number + '</a> ' +
+              '<span class="issue-title">' + (issue.title || '') + '</span> ' +
+              '<span class="issue-badge-small issue-' + (issue.state === 'open' ? 'open' : issue.stateReason === 'completed' ? 'resolved' : 'discarded') + '">' +
+              (issue.state === 'open' ? 'Abierto' : issue.stateReason === 'completed' ? 'Resuelto' : 'Descartado') + '</span>';
+            list.appendChild(row);
+          });
+        }
+      }
+    }
+
+    function cargarIssues() {
+      fetch(feedbackBase + qaSlug)
+        .then(function(res) { if (!res.ok) throw new Error(); return res.json(); })
+        .then(function(data) {
+          document.querySelectorAll('.issue-badge').forEach(function(b) { b.remove(); });
+
+          data.issues.forEach(function(issue) {
+            if (!issue.itemSelector) return;
+            var item = document.querySelector('[data-item-selector="' + issue.itemSelector + '"]');
+            if (!item) return;
+            var container = item.querySelector('.item-badges');
+            if (container) container.appendChild(crearBadgeIssue(issue));
+          });
+
+          actualizarResumen(data.issues);
+
+          var status = document.getElementById('github-status');
+          if (status) status.textContent = 'Actualizado: ' + new Date(data.lastUpdated).toLocaleString('es-AR');
+        })
+        .catch(function() {
+          var status = document.getElementById('github-status');
+          if (status) status.textContent = 'No se pudo cargar estado de issues';
+        });
+    }
+
+    cargarIssues();
+    setInterval(cargarIssues, 2 * 60 * 1000);
+  })();
 </script>
 </body>
 </html>

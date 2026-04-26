@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="qa-slug" content="QA_v2-epica-flujo-comercial-unificado">
   <title>QA: Épica Flujo Comercial Unificado</title>
   <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -294,6 +295,30 @@
   }
   .filter-btn:hover { border-color: #1e3a5f; color: #1e3a5f; }
   .filter-btn.active { background: #1e3a5f; color: white; border-color: #1e3a5f; }
+  .item-badges { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 4px; }
+  .issue-badge {
+    display: inline-block; font-size: 11px; padding: 2px 8px;
+    border-radius: 4px; font-weight: 600; text-decoration: none;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .issue-badge:hover { opacity: 0.8; }
+  .issue-open { background: #fce4e4; color: #c0392b; }
+  .issue-resolved { background: #e8f5e9; color: #2e7d32; }
+  .issue-discarded { background: #f0f0f0; color: #888; }
+  .issue-stats { display: flex; gap: 12px; margin: 8px 0 12px; }
+  .issue-stat {
+    font-size: 13px; font-weight: 600; padding: 4px 12px;
+    border-radius: 6px;
+  }
+  .stat-open { background: #fce4e4; color: #c0392b; }
+  .stat-resolved { background: #e8f5e9; color: #2e7d32; }
+  .stat-discarded { background: #f0f0f0; color: #888; }
+  .issues-list { margin-top: 8px; }
+  .issue-row { padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+  .issue-link { color: #1e3a5f; font-weight: 600; text-decoration: none; }
+  .issue-link:hover { text-decoration: underline; }
+  .issue-title { flex: 1; color: #555; }
+  .issue-badge-small { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; }
   @media (max-width: 600px) {
     body { padding: 10px; padding-bottom: 80px; }
     .meta-grid { grid-template-columns: 1fr; }
@@ -301,6 +326,7 @@
     .obs-input { min-width: 100%; }
     .radio-group { flex-direction: column; }
     .filter-bar { flex-direction: column; align-items: flex-start; }
+    .issue-stats { flex-direction: column; gap: 4px; }
   }
 </style>
 </head>
@@ -387,12 +413,13 @@
       <label>Issues abiertos:</label>
       <input type="text" id="issues-global" placeholder="#" class="text-input">
     </div>
-  </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="QA">
+  </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="QA" data-item-selector="eje-1-item-1">
       <div class="item-header">
         <span class="item-num">#1</span>
         <span class="item-text">No existe el archivo `src/marca/componentes/asignar-taller.tsx`</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -402,12 +429,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="2" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="2" data-verificador="QA" data-item-selector="eje-1-item-2">
       <div class="item-header">
         <span class="item-num">#2</span>
         <span class="item-text">No existe el botón &quot;Asignar taller&quot; en ninguna pantalla</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -417,12 +445,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="3" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="3" data-verificador="QA" data-item-selector="eje-1-item-3">
       <div class="item-header">
         <span class="item-num">#3</span>
         <span class="item-text">`POST /api/pedidos/[id]/ordenes` no responde (handler removido)</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -432,12 +461,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="4" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="4" data-verificador="QA" data-item-selector="eje-1-item-4">
       <div class="item-header">
         <span class="item-num">#4</span>
         <span class="item-text">Botón &quot;Invitar a cotizar&quot; aparece en pedidos en estado BORRADOR</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -447,12 +477,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="5" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="5" data-verificador="QA" data-item-selector="eje-1-item-5">
       <div class="item-header">
         <span class="item-num">#5</span>
         <span class="item-text">Al invitar: pedido pasa a PUBLICADO con visibilidad INVITACION</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -462,12 +493,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="6" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="6" data-verificador="QA" data-item-selector="eje-1-item-6">
       <div class="item-header">
         <span class="item-num">#6</span>
         <span class="item-text">Talleres invitados reciben notificación in-app</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -477,12 +509,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="7" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="7" data-verificador="QA" data-item-selector="eje-1-item-7">
       <div class="item-header">
         <span class="item-num">#7</span>
         <span class="item-text">Talleres invitados ven el pedido con badge &quot;Te invitaron&quot;</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -492,12 +525,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="8" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="8" data-verificador="QA" data-item-selector="eje-1-item-8">
       <div class="item-header">
         <span class="item-num">#8</span>
         <span class="item-text">Talleres NO invitados no ven el pedido si visibilidad es INVITACION</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -507,12 +541,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="9" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="9" data-verificador="QA" data-item-selector="eje-1-item-9">
       <div class="item-header">
         <span class="item-num">#9</span>
         <span class="item-text">Taller no invitado que intenta cotizar via API recibe 403</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -522,12 +557,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="10" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="10" data-verificador="QA" data-item-selector="eje-1-item-10">
       <div class="item-header">
         <span class="item-num">#10</span>
         <span class="item-text">Cotizaciones se muestran en TODOS los estados del pedido (fix H-08)</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -537,12 +573,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="11" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="11" data-verificador="QA" data-item-selector="eje-1-item-11">
       <div class="item-header">
         <span class="item-num">#11</span>
         <span class="item-text">Cotización ACEPTADA se destaca visualmente en verde</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -552,12 +589,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="12" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="12" data-verificador="QA" data-item-selector="eje-1-item-12">
       <div class="item-header">
         <span class="item-num">#12</span>
         <span class="item-text">Al aceptar cotización, OrdenManufactura.cotizacionId queda seteado</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -567,12 +605,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="13" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="13" data-verificador="QA" data-item-selector="eje-1-item-13">
       <div class="item-header">
         <span class="item-num">#13</span>
         <span class="item-text">Órdenes históricas mantienen cotizacionId = null sin romper nada</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -582,12 +621,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="14" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="14" data-verificador="QA" data-item-selector="eje-1-item-14">
       <div class="item-header">
         <span class="item-num">#14</span>
         <span class="item-text">Build de TypeScript pasa sin errores</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -597,7 +637,7 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2><div class="paso-card" data-eje="2" data-num="1">
+    </div></div><div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2><div class="paso-card" data-eje="2" data-num="1" data-item-selector="eje-2-paso-1">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 1 — Verificar que NO aparece botón &quot;Asignar taller&quot;</span>
         <div class="paso-header-right">
@@ -606,6 +646,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/marca/pedidos`</code></div>
@@ -624,7 +665,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="2">
+    </div><div class="paso-card" data-eje="2" data-num="2" data-item-selector="eje-2-paso-2">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 2 — Verificar botones &quot;Publicar al mercado&quot; e &quot;Invitar a cotizar&quot;</span>
         <div class="paso-header-right">
@@ -633,6 +674,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>Detalle de un pedido en BORRADOR</code></div>
@@ -652,7 +694,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="3">
+    </div><div class="paso-card" data-eje="2" data-num="3" data-item-selector="eje-2-paso-3">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 3 — Flujo completo de invitación</span>
         <div class="paso-header-right">
@@ -661,6 +703,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>Detalle de un pedido en BORRADOR</code></div>
@@ -687,7 +730,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="4">
+    </div><div class="paso-card" data-eje="2" data-num="4" data-item-selector="eje-2-paso-4">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 4 — Badge &quot;Te invitaron&quot; para taller invitado</span>
         <div class="paso-header-right">
@@ -696,6 +739,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Oro (carlos.mendoza@pdt.org.ar / pdt2026) — es el user de Corte Sur SRL</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller/pedidos/disponibles`</code></div>
@@ -714,7 +758,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="5">
+    </div><div class="paso-card" data-eje="2" data-num="5" data-item-selector="eje-2-paso-5">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 5 — Taller NO invitado no ve el pedido</span>
         <div class="paso-header-right">
@@ -723,6 +767,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Bronce (roberto.gimenez@pdt.org.ar / pdt2026) — NO fue invitado</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller/pedidos/disponibles`</code></div>
@@ -741,7 +786,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="6">
+    </div><div class="paso-card" data-eje="2" data-num="6" data-item-selector="eje-2-paso-6">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 6 — Taller invitado cotiza el pedido</span>
         <div class="paso-header-right">
@@ -750,6 +795,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Oro (carlos.mendoza@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller/pedidos/disponibles`</code></div>
@@ -769,7 +815,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="7">
+    </div><div class="paso-card" data-eje="2" data-num="7" data-item-selector="eje-2-paso-7">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 7 — MARCA ve la cotización recibida</span>
         <div class="paso-header-right">
@@ -778,6 +824,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/marca/pedidos`</code></div>
@@ -796,7 +843,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="8">
+    </div><div class="paso-card" data-eje="2" data-num="8" data-item-selector="eje-2-paso-8">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 8 — MARCA acepta la cotización</span>
         <div class="paso-header-right">
@@ -805,6 +852,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>Detalle del pedido PUBLICADO</code></div>
@@ -823,7 +871,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="9">
+    </div><div class="paso-card" data-eje="2" data-num="9" data-item-selector="eje-2-paso-9">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 9 — Cotización ACEPTADA en verde</span>
         <div class="paso-header-right">
@@ -832,6 +880,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>Detalle del pedido (ahora EN_EJECUCION)</code></div>
@@ -848,7 +897,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="10">
+    </div><div class="paso-card" data-eje="2" data-num="10" data-item-selector="eje-2-paso-10">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 10 — Cotizaciones visibles en EN_EJECUCION (fix H-08)</span>
         <div class="paso-header-right">
@@ -857,6 +906,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>Detalle del pedido en EN_EJECUCION</code></div>
@@ -873,7 +923,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="11">
+    </div><div class="paso-card" data-eje="2" data-num="11" data-item-selector="eje-2-paso-11">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 11 — Publicar pedido al mercado (flujo público)</span>
         <div class="paso-header-right">
@@ -882,6 +932,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/marca/pedidos`</code></div>
@@ -900,7 +951,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="12">
+    </div><div class="paso-card" data-eje="2" data-num="12" data-item-selector="eje-2-paso-12">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 12 — Taller NO invitado no puede cotizar via API (seguridad)</span>
         <div class="paso-header-right">
@@ -909,6 +960,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Bronce (roberto.gimenez@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>Cualquier página logueado como TALLER Bronce</code></div>
@@ -935,7 +987,7 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="13">
+    </div><div class="paso-card" data-eje="2" data-num="13" data-item-selector="eje-2-paso-13">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 13 — Verificar cotizacionId en OrdenManufactura (DB)</span>
         <div class="paso-header-right">
@@ -944,6 +996,7 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN o acceso a Supabase</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>Supabase Dashboard → Table Editor → `ordenes_manufactura`</code></div>
@@ -962,12 +1015,13 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1" data-verificador="QA">
+    </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1" data-verificador="QA" data-item-selector="eje-3-caso-1">
       <div class="item-header">
         <span class="item-num">#1</span>
         <span class="item-text">Pedido ya PUBLICADO no permite invitar</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Desde un pedido PUBLICADO, verificar que NO aparece el botón &quot;Invitar a cotizar&quot;</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> Botón solo aparece en BORRADOR</div>
@@ -981,12 +1035,13 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="2" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="2" data-verificador="QA" data-item-selector="eje-3-caso-2">
       <div class="item-header">
         <span class="item-num">#2</span>
         <span class="item-text">Taller ya invitado (duplicado)</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Invitar al mismo taller dos veces al mismo pedido</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> `skipDuplicates` ignora silenciosamente, no falla</div>
@@ -1000,12 +1055,13 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="3" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="3" data-verificador="QA" data-item-selector="eje-3-caso-3">
       <div class="item-header">
         <span class="item-num">#3</span>
         <span class="item-text">tallerIds con IDs inválidos</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Enviar POST a invitaciones con IDs que no existen</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> Los válidos se crean, los inválidos se ignoran. Si todos son inválidos → 400</div>
@@ -1019,12 +1075,13 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="4" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="4" data-verificador="QA" data-item-selector="eje-3-caso-4">
       <div class="item-header">
         <span class="item-num">#4</span>
         <span class="item-text">Cotización vencida no se puede aceptar</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Si existe una cotización con venceEn en el pasado, intentar aceptarla</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> Retorna error &quot;La cotizacion vencio&quot;</div>
@@ -1038,12 +1095,13 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="5" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="5" data-verificador="QA" data-item-selector="eje-3-caso-5">
       <div class="item-header">
         <span class="item-num">#5</span>
         <span class="item-text">montoTotal y presupuesto deprecados</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Verificar que no se usan en código nuevo ni en UI nueva</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> Campos siguen en schema pero no aparecen en flujos nuevos</div>
@@ -1057,11 +1115,12 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1" data-verificador="QA">
+    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1" data-verificador="QA" data-item-selector="eje-4-item-1">
       <div class="item-header">
         <span class="item-text">Detalle pedido marca carga en &lt; 3s</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Network → recargar `/marca/pedidos/[id]`</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -1071,11 +1130,12 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="2" data-verificador="QA">
+    </div><div class="item-card compact" data-eje="4" data-num="2" data-verificador="QA" data-item-selector="eje-4-item-2">
       <div class="item-header">
         <span class="item-text">Pedidos disponibles taller carga en &lt; 3s</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Network → recargar `/taller/pedidos/disponibles`</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -1085,11 +1145,12 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="3" data-verificador="QA">
+    </div><div class="item-card compact" data-eje="4" data-num="3" data-verificador="QA" data-item-selector="eje-4-item-3">
       <div class="item-header">
         <span class="item-text">Modal &quot;Invitar a cotizar&quot; responde en &lt; 500ms</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> Click en botón → medir tiempo hasta que aparece el modal</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -1099,11 +1160,12 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="4" data-verificador="QA">
+    </div><div class="item-card compact" data-eje="4" data-num="4" data-verificador="QA" data-item-selector="eje-4-item-4">
       <div class="item-header">
         <span class="item-text">Búsqueda de talleres responde en &lt; 1s</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> Escribir &quot;Corte&quot; → medir tiempo hasta resultados</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -1113,11 +1175,12 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="5" data-verificador="QA">
+    </div><div class="item-card compact" data-eje="4" data-num="5" data-verificador="QA" data-item-selector="eje-4-item-5">
       <div class="item-header">
         <span class="item-text">Sin errores en consola del browser</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Console → revisar en todas las páginas</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -1127,11 +1190,12 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="6" data-verificador="QA">
+    </div><div class="item-card compact" data-eje="4" data-num="6" data-verificador="QA" data-item-selector="eje-4-item-6">
       <div class="item-header">
         <span class="item-text">Funciona en móvil (responsive)</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Toggle device toolbar → probar flujo completo</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -1141,10 +1205,11 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1">
+    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1" data-item-selector="eje-5-item-1">
       <div class="item-header">
         <span class="item-text">Tipografías consistentes (Overpass para títulos)</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1153,10 +1218,11 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="2">
+    </div><div class="item-card compact" data-eje="5" data-num="2" data-item-selector="eje-5-item-2">
       <div class="item-header">
         <span class="item-text">Colores del design system (brand-blue, brand-red)</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1165,10 +1231,11 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="3">
+    </div><div class="item-card compact" data-eje="5" data-num="3" data-item-selector="eje-5-item-3">
       <div class="item-header">
         <span class="item-text">Botón &quot;Invitar a cotizar&quot; coherente con otros botones outline</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1177,10 +1244,11 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="4">
+    </div><div class="item-card compact" data-eje="5" data-num="4" data-item-selector="eje-5-item-4">
       <div class="item-header">
         <span class="item-text">Modal de invitación tiene estilo consistente con otros modales</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1189,10 +1257,11 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="5">
+    </div><div class="item-card compact" data-eje="5" data-num="5" data-item-selector="eje-5-item-5">
       <div class="item-header">
         <span class="item-text">Badge &quot;Te invitaron&quot; usa variant default (azul)</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1201,10 +1270,11 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="6">
+    </div><div class="item-card compact" data-eje="5" data-num="6" data-item-selector="eje-5-item-6">
       <div class="item-header">
         <span class="item-text">Cotización ACEPTADA en verde es claramente distinguible</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1213,10 +1283,11 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="7">
+    </div><div class="item-card compact" data-eje="5" data-num="7" data-item-selector="eje-5-item-7">
       <div class="item-header">
         <span class="item-text">Estados vacíos tienen mensaje descriptivo</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1225,10 +1296,11 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="8">
+    </div><div class="item-card compact" data-eje="5" data-num="8" data-item-selector="eje-5-item-8">
       <div class="item-header">
         <span class="item-text">Textos en español argentino (vos/tenés)</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1237,10 +1309,11 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="9">
+    </div><div class="item-card compact" data-eje="5" data-num="9" data-item-selector="eje-5-item-9">
       <div class="item-header">
         <span class="item-text">Sin texto en inglés visible al usuario</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1277,6 +1350,17 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
       <input type="checkbox" data-checklist="6">
       <span>Documento commiteado a develop</span>
     </label></div></div>
+  </div>
+  <div class="section" id="panel-resumen">
+    <h2>Resumen de issues</h2>
+    <div id="github-status" class="text-muted"></div>
+    <div class="issue-stats">
+      <span class="issue-stat stat-open" id="stat-abiertos">0 abiertos</span>
+      <span class="issue-stat stat-resolved" id="stat-resueltos">0 resueltos</span>
+      <span class="issue-stat stat-discarded" id="stat-descartados">0 descartados</span>
+    </div>
+    <div id="issues-list" class="issues-list"></div>
+  </div>
   </div>
   <div class="sticky-bar">
     <span class="progress-summary" id="progress-text"></span>
@@ -1554,6 +1638,8 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
     const num = card.dataset.num || '';
     const spec = document.body.dataset.spec || '';
     const pagina = document.body.dataset.url || '';
+    const slugMeta = document.querySelector('meta[name="qa-slug"]');
+    const qaSlug = slugMeta ? slugMeta.content : '';
 
     btn.disabled = true;
     btn.textContent = 'Enviando...';
@@ -1573,7 +1659,11 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
           spec: spec,
           eje: eje,
           item: '#' + num + ' ' + itemText,
-          resultado: status
+          resultado: status,
+          qaSlug: qaSlug,
+          itemSelector: card.dataset.itemSelector || '',
+          verificador: card.dataset.verificador || 'QA',
+          perfil: card.dataset.perfil || 'tecnico'
         }
       })
     }).then(r => {
@@ -1602,6 +1692,91 @@ body: JSON.stringify({ pedidoId: &#39;&lt;ID_DEL_PEDIDO_INVITACION&gt;&#39;, pre
   });
 
   updateProgress();
+</script>
+  <script>
+  (function() {
+    var apiBase = document.body.dataset.apiUrl;
+    if (!apiBase) return;
+    // apiUrl apunta a .../api/feedback — by-qa es relativo a eso
+    var feedbackBase = apiBase.replace('/api/feedback', '/api/feedback/by-qa/');
+    var slugMeta = document.querySelector('meta[name="qa-slug"]');
+    if (!slugMeta) return;
+    var qaSlug = slugMeta.content;
+
+    function crearBadgeIssue(issue) {
+      var a = document.createElement('a');
+      a.href = issue.url;
+      a.target = '_blank';
+      a.className = 'issue-badge issue-' + (
+        issue.state === 'open' ? 'open' :
+        issue.stateReason === 'completed' ? 'resolved' : 'discarded'
+      );
+      a.textContent = '#' + issue.number + ' — ' + (
+        issue.state === 'open' ? 'Abierto' :
+        issue.stateReason === 'completed' ? 'Resuelto' : 'Descartado'
+      );
+      return a;
+    }
+
+    function actualizarResumen(issues) {
+      var open = 0, resolved = 0, discarded = 0;
+      issues.forEach(function(i) {
+        if (i.state === 'open') open++;
+        else if (i.stateReason === 'completed') resolved++;
+        else discarded++;
+      });
+      var el;
+      el = document.getElementById('stat-abiertos'); if (el) el.textContent = open + ' abiertos';
+      el = document.getElementById('stat-resueltos'); if (el) el.textContent = resolved + ' resueltos';
+      el = document.getElementById('stat-descartados'); if (el) el.textContent = discarded + ' descartados';
+
+      var list = document.getElementById('issues-list');
+      if (list) {
+        list.innerHTML = '';
+        if (issues.length === 0) {
+          list.innerHTML = '<p class="text-muted">Sin issues reportados</p>';
+        } else {
+          issues.forEach(function(issue) {
+            var row = document.createElement('div');
+            row.className = 'issue-row';
+            row.innerHTML = '<a href="' + issue.url + '" target="_blank" class="issue-link">#' + issue.number + '</a> ' +
+              '<span class="issue-title">' + (issue.title || '') + '</span> ' +
+              '<span class="issue-badge-small issue-' + (issue.state === 'open' ? 'open' : issue.stateReason === 'completed' ? 'resolved' : 'discarded') + '">' +
+              (issue.state === 'open' ? 'Abierto' : issue.stateReason === 'completed' ? 'Resuelto' : 'Descartado') + '</span>';
+            list.appendChild(row);
+          });
+        }
+      }
+    }
+
+    function cargarIssues() {
+      fetch(feedbackBase + qaSlug)
+        .then(function(res) { if (!res.ok) throw new Error(); return res.json(); })
+        .then(function(data) {
+          document.querySelectorAll('.issue-badge').forEach(function(b) { b.remove(); });
+
+          data.issues.forEach(function(issue) {
+            if (!issue.itemSelector) return;
+            var item = document.querySelector('[data-item-selector="' + issue.itemSelector + '"]');
+            if (!item) return;
+            var container = item.querySelector('.item-badges');
+            if (container) container.appendChild(crearBadgeIssue(issue));
+          });
+
+          actualizarResumen(data.issues);
+
+          var status = document.getElementById('github-status');
+          if (status) status.textContent = 'Actualizado: ' + new Date(data.lastUpdated).toLocaleString('es-AR');
+        })
+        .catch(function() {
+          var status = document.getElementById('github-status');
+          if (status) status.textContent = 'No se pudo cargar estado de issues';
+        });
+    }
+
+    cargarIssues();
+    setInterval(cargarIssues, 2 * 60 * 1000);
+  })();
 </script>
 </body>
 </html>

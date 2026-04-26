@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="qa-slug" content="QA_v2-notificaciones-accionables">
   <title>QA: Notificaciones accionables con deep links</title>
   <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -294,6 +295,30 @@
   }
   .filter-btn:hover { border-color: #1e3a5f; color: #1e3a5f; }
   .filter-btn.active { background: #1e3a5f; color: white; border-color: #1e3a5f; }
+  .item-badges { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 4px; }
+  .issue-badge {
+    display: inline-block; font-size: 11px; padding: 2px 8px;
+    border-radius: 4px; font-weight: 600; text-decoration: none;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .issue-badge:hover { opacity: 0.8; }
+  .issue-open { background: #fce4e4; color: #c0392b; }
+  .issue-resolved { background: #e8f5e9; color: #2e7d32; }
+  .issue-discarded { background: #f0f0f0; color: #888; }
+  .issue-stats { display: flex; gap: 12px; margin: 8px 0 12px; }
+  .issue-stat {
+    font-size: 13px; font-weight: 600; padding: 4px 12px;
+    border-radius: 6px;
+  }
+  .stat-open { background: #fce4e4; color: #c0392b; }
+  .stat-resolved { background: #e8f5e9; color: #2e7d32; }
+  .stat-discarded { background: #f0f0f0; color: #888; }
+  .issues-list { margin-top: 8px; }
+  .issue-row { padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+  .issue-link { color: #1e3a5f; font-weight: 600; text-decoration: none; }
+  .issue-link:hover { text-decoration: underline; }
+  .issue-title { flex: 1; color: #555; }
+  .issue-badge-small { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; }
   @media (max-width: 600px) {
     body { padding: 10px; padding-bottom: 80px; }
     .meta-grid { grid-template-columns: 1fr; }
@@ -301,6 +326,7 @@
     .obs-input { min-width: 100%; }
     .radio-group { flex-direction: column; }
     .filter-bar { flex-direction: column; align-items: flex-start; }
+    .issue-stats { flex-direction: column; gap: 4px; }
   }
 </style>
 </head>
@@ -382,12 +408,13 @@
       <label>Issues abiertos:</label>
       <input type="text" id="issues-global" placeholder="#" class="text-input">
     </div>
-  </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="QA">
+  </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="QA" data-item-selector="eje-1-item-1">
       <div class="item-header">
         <span class="item-num">#1</span>
         <span class="item-text">Campo `link String?` agregado al modelo `Notificacion` y migracion aplicada</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -397,12 +424,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="2" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="2" data-verificador="QA" data-item-selector="eje-1-item-2">
       <div class="item-header">
         <span class="item-num">#2</span>
         <span class="item-text">`NotificacionData.pedido` incluye `id` ademas de `omId`</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -412,12 +440,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="3" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="3" data-verificador="QA" data-item-selector="eje-1-item-3">
       <div class="item-header">
         <span class="item-num">#3</span>
         <span class="item-text">Notificaciones de cotizacion `RECIBIDA` tienen link a `/marca/pedidos/{pedidoId}`</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -427,12 +456,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="4" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="4" data-verificador="QA" data-item-selector="eje-1-item-4">
       <div class="item-header">
         <span class="item-num">#4</span>
         <span class="item-text">Notificaciones `ACEPTADA` y `RECHAZADA` tienen link a `/taller/pedidos`</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -442,12 +472,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="5" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="5" data-verificador="QA" data-item-selector="eje-1-item-5">
       <div class="item-header">
         <span class="item-num">#5</span>
         <span class="item-text">Notificaciones `PEDIDO_DISPONIBLE` tienen link a `/taller/pedidos/disponibles/{pedidoId}`</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -457,12 +488,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="6" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="6" data-verificador="QA" data-item-selector="eje-1-item-6">
       <div class="item-header">
         <span class="item-num">#6</span>
         <span class="item-text">Click en notificacion con link navega al destino</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -472,12 +504,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="7" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="7" data-verificador="QA" data-item-selector="eje-1-item-7">
       <div class="item-header">
         <span class="item-num">#7</span>
         <span class="item-text">Al hacer click, la notificacion se marca como leida (optimistic + fetch)</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -487,12 +520,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="8" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="8" data-verificador="QA" data-item-selector="eje-1-item-8">
       <div class="item-header">
         <span class="item-num">#8</span>
         <span class="item-text">Notificaciones sin link se muestran sin interaccion ni cursor pointer</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -502,12 +536,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="9" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="9" data-verificador="QA" data-item-selector="eje-1-item-9">
       <div class="item-header">
         <span class="item-num">#9</span>
         <span class="item-text">Links internos usan `&lt;Link&gt;` (client-side navigation), externos usan `&lt;a target=&quot;_blank&quot;&gt;`</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -517,12 +552,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="10" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="10" data-verificador="QA" data-item-selector="eje-1-item-10">
       <div class="item-header">
         <span class="item-num">#10</span>
         <span class="item-text">Label textual muestra tipo (*&quot;Ver pedido →&quot;*), no cuids de la URL</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -532,12 +568,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="11" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="11" data-verificador="QA" data-item-selector="eje-1-item-11">
       <div class="item-header">
         <span class="item-num">#11</span>
         <span class="item-text">Admin puede incluir link opcional al enviar notificaciones masivas</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -547,12 +584,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="12" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="12" data-verificador="QA" data-item-selector="eje-1-item-12">
       <div class="item-header">
         <span class="item-num">#12</span>
         <span class="item-text">Build de TypeScript pasa sin errores</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -562,7 +600,7 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2><div class="paso-card" data-eje="2" data-num="1">
+    </div></div><div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2><div class="paso-card" data-eje="2" data-num="1" data-item-selector="eje-2-paso-1">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 1 — MARCA publica un pedido al mercado</span>
         <div class="paso-header-right">
@@ -571,6 +609,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/marca/pedidos`</code></div>
@@ -590,7 +629,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="2">
+    </div><div class="paso-card" data-eje="2" data-num="2" data-item-selector="eje-2-paso-2">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 2 — TALLER Plata ve notificacion con link</span>
         <div class="paso-header-right">
@@ -599,6 +638,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Plata (graciela.sosa@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/cuenta/notificaciones`</code></div>
@@ -622,7 +662,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="3">
+    </div><div class="paso-card" data-eje="2" data-num="3" data-item-selector="eje-2-paso-3">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 3 — Click navega al pedido correcto</span>
         <div class="paso-header-right">
@@ -631,6 +671,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Plata (graciela.sosa@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/cuenta/notificaciones`</code></div>
@@ -648,7 +689,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="4">
+    </div><div class="paso-card" data-eje="2" data-num="4" data-item-selector="eje-2-paso-4">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 4 — Notificacion queda marcada como leida</span>
         <div class="paso-header-right">
@@ -657,6 +698,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Plata (graciela.sosa@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/cuenta/notificaciones`</code></div>
@@ -674,7 +716,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="5">
+    </div><div class="paso-card" data-eje="2" data-num="5" data-item-selector="eje-2-paso-5">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 5 — TALLER cotiza el pedido</span>
         <div class="paso-header-right">
@@ -683,6 +725,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Plata (graciela.sosa@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller/pedidos/disponibles`</code></div>
@@ -701,7 +744,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="6">
+    </div><div class="paso-card" data-eje="2" data-num="6" data-item-selector="eje-2-paso-6">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 6 — MARCA ve notificacion de cotizacion con link</span>
         <div class="paso-header-right">
@@ -710,6 +753,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/cuenta/notificaciones`</code></div>
@@ -732,7 +776,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="7">
+    </div><div class="paso-card" data-eje="2" data-num="7" data-item-selector="eje-2-paso-7">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 7 — MARCA navega al detalle del pedido via link</span>
         <div class="paso-header-right">
@@ -741,6 +785,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/cuenta/notificaciones`</code></div>
@@ -758,7 +803,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="8">
+    </div><div class="paso-card" data-eje="2" data-num="8" data-item-selector="eje-2-paso-8">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 8 — MARCA acepta la cotizacion</span>
         <div class="paso-header-right">
@@ -767,6 +812,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/marca/pedidos/[id]`</code></div>
@@ -784,7 +830,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="9">
+    </div><div class="paso-card" data-eje="2" data-num="9" data-item-selector="eje-2-paso-9">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 9 — TALLER ve notificacion de cotizacion aceptada con link</span>
         <div class="paso-header-right">
@@ -793,6 +839,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Plata (graciela.sosa@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/cuenta/notificaciones`</code></div>
@@ -814,7 +861,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="10">
+    </div><div class="paso-card" data-eje="2" data-num="10" data-item-selector="eje-2-paso-10">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 10 — ADMIN envia notificacion con link personalizado</span>
         <div class="paso-header-right">
@@ -823,6 +870,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN (lucia.fernandez@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/admin/notificaciones`</code></div>
@@ -846,7 +894,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="11">
+    </div><div class="paso-card" data-eje="2" data-num="11" data-item-selector="eje-2-paso-11">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 11 — TALLER recibe notificacion masiva con link</span>
         <div class="paso-header-right">
@@ -855,6 +903,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Plata (graciela.sosa@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/cuenta/notificaciones`</code></div>
@@ -876,7 +925,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="12">
+    </div><div class="paso-card" data-eje="2" data-num="12" data-item-selector="eje-2-paso-12">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 12 — Notificaciones sin link se muestran sin interaccion</span>
         <div class="paso-header-right">
@@ -885,6 +934,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> TALLER (cualquiera)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/cuenta/notificaciones`</code></div>
@@ -907,12 +957,13 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1" data-verificador="QA">
+    </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1" data-verificador="QA" data-item-selector="eje-3-caso-1">
       <div class="item-header">
         <span class="item-num">#1</span>
         <span class="item-text">Notificacion historica (link null)</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Ver notificacion anterior a este spec</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> Se muestra sin link, sin cursor, sin &quot;→&quot;</div>
@@ -926,12 +977,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="2" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="2" data-verificador="QA" data-item-selector="eje-3-caso-2">
       <div class="item-header">
         <span class="item-num">#2</span>
         <span class="item-text">Admin envia sin link</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Nueva notificacion → dejar link vacio → enviar</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> Notificacion se crea con link null, sin interaccion</div>
@@ -945,12 +997,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="3" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="3" data-verificador="QA" data-item-selector="eje-3-caso-3">
       <div class="item-header">
         <span class="item-num">#3</span>
         <span class="item-text">Link a pedido eliminado</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Click en link de pedido que fue borrado</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> Navega a la URL → pagina 404 (aceptable)</div>
@@ -964,12 +1017,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="4" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="4" data-verificador="QA" data-item-selector="eje-3-caso-4">
       <div class="item-header">
         <span class="item-num">#4</span>
         <span class="item-text">Mark-as-read al click</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Click en notificacion con link → volver → verificar</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> Aparece como leida (optimistic update)</div>
@@ -983,12 +1037,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="5" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="5" data-verificador="QA" data-item-selector="eje-3-caso-5">
       <div class="item-header">
         <span class="item-num">#5</span>
         <span class="item-text">Boton &quot;Marcar todas como leidas&quot;</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Tener varias no leidas → click en el boton</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> Todas pasan a leidas, badge &quot;NUEVA&quot; desaparece, contador baja a 0</div>
@@ -1002,11 +1057,12 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1" data-verificador="QA">
+    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1" data-verificador="QA" data-item-selector="eje-4-item-1">
       <div class="item-header">
         <span class="item-text">/cuenta/notificaciones carga en &lt; 3s</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Network → recargar</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -1016,11 +1072,12 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="2" data-verificador="QA">
+    </div><div class="item-card compact" data-eje="4" data-num="2" data-verificador="QA" data-item-selector="eje-4-item-2">
       <div class="item-header">
         <span class="item-text">Click en link navega sin full reload</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> Observar que la pagina no hace refresh completo</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -1030,11 +1087,12 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="3" data-verificador="QA">
+    </div><div class="item-card compact" data-eje="4" data-num="3" data-verificador="QA" data-item-selector="eje-4-item-3">
       <div class="item-header">
         <span class="item-text">Mark-as-read es instantaneo (optimistic)</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> Click → verificar que cambia inmediatamente sin espera</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -1044,11 +1102,12 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="4" data-verificador="QA">
+    </div><div class="item-card compact" data-eje="4" data-num="4" data-verificador="QA" data-item-selector="eje-4-item-4">
       <div class="item-header">
         <span class="item-text">Sin errores en consola del browser</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Console → revisar</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -1058,11 +1117,12 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="5" data-verificador="QA">
+    </div><div class="item-card compact" data-eje="4" data-num="5" data-verificador="QA" data-item-selector="eje-4-item-5">
       <div class="item-header">
         <span class="item-text">Funciona en movil (responsive)</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Toggle device toolbar</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -1072,10 +1132,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1">
+    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1" data-item-selector="eje-5-item-1">
       <div class="item-header">
         <span class="item-text">Notificacion no leida: borde brand-blue/30, fondo brand-blue/5</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1084,10 +1145,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="2">
+    </div><div class="item-card compact" data-eje="5" data-num="2" data-item-selector="eje-5-item-2">
       <div class="item-header">
         <span class="item-text">Notificacion leida: borde gray-200, fondo white</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1096,10 +1158,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="3">
+    </div><div class="item-card compact" data-eje="5" data-num="3" data-item-selector="eje-5-item-3">
       <div class="item-header">
         <span class="item-text">Badge &quot;NUEVA&quot; en rojo (text-brand-red) solo en no leidas</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1108,10 +1171,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="4">
+    </div><div class="item-card compact" data-eje="5" data-num="4" data-item-selector="eje-5-item-4">
       <div class="item-header">
         <span class="item-text">Texto del link en brand-blue con font-medium</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1120,10 +1184,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="5">
+    </div><div class="item-card compact" data-eje="5" data-num="5" data-item-selector="eje-5-item-5">
       <div class="item-header">
         <span class="item-text">Labels correctos por tipo: &quot;Ver pedido →&quot;, &quot;Ver pedido disponible →&quot;, &quot;Ir al enlace →&quot;</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1132,10 +1197,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="6">
+    </div><div class="item-card compact" data-eje="5" data-num="6" data-item-selector="eje-5-item-6">
       <div class="item-header">
         <span class="item-text">Cursor pointer solo en notificaciones con link</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1144,10 +1210,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="7">
+    </div><div class="item-card compact" data-eje="5" data-num="7" data-item-selector="eje-5-item-7">
       <div class="item-header">
         <span class="item-text">Hover en notificacion con link cambia fondo a gray-50</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1156,10 +1223,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="8">
+    </div><div class="item-card compact" data-eje="5" data-num="8" data-item-selector="eje-5-item-8">
       <div class="item-header">
         <span class="item-text">Estado vacio tiene icono Bell gris + mensaje descriptivo</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1168,10 +1236,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="9">
+    </div><div class="item-card compact" data-eje="5" data-num="9" data-item-selector="eje-5-item-9">
       <div class="item-header">
         <span class="item-text">Tipografias consistentes (Overpass para titulos)</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1180,10 +1249,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="10">
+    </div><div class="item-card compact" data-eje="5" data-num="10" data-item-selector="eje-5-item-10">
       <div class="item-header">
         <span class="item-text">Textos en espanol argentino</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1220,6 +1290,17 @@
       <input type="checkbox" data-checklist="6">
       <span>Documento commiteado a develop</span>
     </label></div></div>
+  </div>
+  <div class="section" id="panel-resumen">
+    <h2>Resumen de issues</h2>
+    <div id="github-status" class="text-muted"></div>
+    <div class="issue-stats">
+      <span class="issue-stat stat-open" id="stat-abiertos">0 abiertos</span>
+      <span class="issue-stat stat-resolved" id="stat-resueltos">0 resueltos</span>
+      <span class="issue-stat stat-discarded" id="stat-descartados">0 descartados</span>
+    </div>
+    <div id="issues-list" class="issues-list"></div>
+  </div>
   </div>
   <div class="sticky-bar">
     <span class="progress-summary" id="progress-text"></span>
@@ -1497,6 +1578,8 @@
     const num = card.dataset.num || '';
     const spec = document.body.dataset.spec || '';
     const pagina = document.body.dataset.url || '';
+    const slugMeta = document.querySelector('meta[name="qa-slug"]');
+    const qaSlug = slugMeta ? slugMeta.content : '';
 
     btn.disabled = true;
     btn.textContent = 'Enviando...';
@@ -1516,7 +1599,11 @@
           spec: spec,
           eje: eje,
           item: '#' + num + ' ' + itemText,
-          resultado: status
+          resultado: status,
+          qaSlug: qaSlug,
+          itemSelector: card.dataset.itemSelector || '',
+          verificador: card.dataset.verificador || 'QA',
+          perfil: card.dataset.perfil || 'tecnico'
         }
       })
     }).then(r => {
@@ -1545,6 +1632,91 @@
   });
 
   updateProgress();
+</script>
+  <script>
+  (function() {
+    var apiBase = document.body.dataset.apiUrl;
+    if (!apiBase) return;
+    // apiUrl apunta a .../api/feedback — by-qa es relativo a eso
+    var feedbackBase = apiBase.replace('/api/feedback', '/api/feedback/by-qa/');
+    var slugMeta = document.querySelector('meta[name="qa-slug"]');
+    if (!slugMeta) return;
+    var qaSlug = slugMeta.content;
+
+    function crearBadgeIssue(issue) {
+      var a = document.createElement('a');
+      a.href = issue.url;
+      a.target = '_blank';
+      a.className = 'issue-badge issue-' + (
+        issue.state === 'open' ? 'open' :
+        issue.stateReason === 'completed' ? 'resolved' : 'discarded'
+      );
+      a.textContent = '#' + issue.number + ' — ' + (
+        issue.state === 'open' ? 'Abierto' :
+        issue.stateReason === 'completed' ? 'Resuelto' : 'Descartado'
+      );
+      return a;
+    }
+
+    function actualizarResumen(issues) {
+      var open = 0, resolved = 0, discarded = 0;
+      issues.forEach(function(i) {
+        if (i.state === 'open') open++;
+        else if (i.stateReason === 'completed') resolved++;
+        else discarded++;
+      });
+      var el;
+      el = document.getElementById('stat-abiertos'); if (el) el.textContent = open + ' abiertos';
+      el = document.getElementById('stat-resueltos'); if (el) el.textContent = resolved + ' resueltos';
+      el = document.getElementById('stat-descartados'); if (el) el.textContent = discarded + ' descartados';
+
+      var list = document.getElementById('issues-list');
+      if (list) {
+        list.innerHTML = '';
+        if (issues.length === 0) {
+          list.innerHTML = '<p class="text-muted">Sin issues reportados</p>';
+        } else {
+          issues.forEach(function(issue) {
+            var row = document.createElement('div');
+            row.className = 'issue-row';
+            row.innerHTML = '<a href="' + issue.url + '" target="_blank" class="issue-link">#' + issue.number + '</a> ' +
+              '<span class="issue-title">' + (issue.title || '') + '</span> ' +
+              '<span class="issue-badge-small issue-' + (issue.state === 'open' ? 'open' : issue.stateReason === 'completed' ? 'resolved' : 'discarded') + '">' +
+              (issue.state === 'open' ? 'Abierto' : issue.stateReason === 'completed' ? 'Resuelto' : 'Descartado') + '</span>';
+            list.appendChild(row);
+          });
+        }
+      }
+    }
+
+    function cargarIssues() {
+      fetch(feedbackBase + qaSlug)
+        .then(function(res) { if (!res.ok) throw new Error(); return res.json(); })
+        .then(function(data) {
+          document.querySelectorAll('.issue-badge').forEach(function(b) { b.remove(); });
+
+          data.issues.forEach(function(issue) {
+            if (!issue.itemSelector) return;
+            var item = document.querySelector('[data-item-selector="' + issue.itemSelector + '"]');
+            if (!item) return;
+            var container = item.querySelector('.item-badges');
+            if (container) container.appendChild(crearBadgeIssue(issue));
+          });
+
+          actualizarResumen(data.issues);
+
+          var status = document.getElementById('github-status');
+          if (status) status.textContent = 'Actualizado: ' + new Date(data.lastUpdated).toLocaleString('es-AR');
+        })
+        .catch(function() {
+          var status = document.getElementById('github-status');
+          if (status) status.textContent = 'No se pudo cargar estado de issues';
+        });
+    }
+
+    cargarIssues();
+    setInterval(cargarIssues, 2 * 60 * 1000);
+  })();
 </script>
 </body>
 </html>

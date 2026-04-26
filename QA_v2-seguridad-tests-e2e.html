@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="qa-slug" content="QA_v2-seguridad-tests-e2e">
   <title>QA: Fix de tests E2E de seguridad + ampliación de cobertura</title>
   <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -294,6 +295,30 @@
   }
   .filter-btn:hover { border-color: #1e3a5f; color: #1e3a5f; }
   .filter-btn.active { background: #1e3a5f; color: white; border-color: #1e3a5f; }
+  .item-badges { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 4px; }
+  .issue-badge {
+    display: inline-block; font-size: 11px; padding: 2px 8px;
+    border-radius: 4px; font-weight: 600; text-decoration: none;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .issue-badge:hover { opacity: 0.8; }
+  .issue-open { background: #fce4e4; color: #c0392b; }
+  .issue-resolved { background: #e8f5e9; color: #2e7d32; }
+  .issue-discarded { background: #f0f0f0; color: #888; }
+  .issue-stats { display: flex; gap: 12px; margin: 8px 0 12px; }
+  .issue-stat {
+    font-size: 13px; font-weight: 600; padding: 4px 12px;
+    border-radius: 6px;
+  }
+  .stat-open { background: #fce4e4; color: #c0392b; }
+  .stat-resolved { background: #e8f5e9; color: #2e7d32; }
+  .stat-discarded { background: #f0f0f0; color: #888; }
+  .issues-list { margin-top: 8px; }
+  .issue-row { padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+  .issue-link { color: #1e3a5f; font-weight: 600; text-decoration: none; }
+  .issue-link:hover { text-decoration: underline; }
+  .issue-title { flex: 1; color: #555; }
+  .issue-badge-small { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; }
   @media (max-width: 600px) {
     body { padding: 10px; padding-bottom: 80px; }
     .meta-grid { grid-template-columns: 1fr; }
@@ -301,6 +326,7 @@
     .obs-input { min-width: 100%; }
     .radio-group { flex-direction: column; }
     .filter-bar { flex-direction: column; align-items: flex-start; }
+    .issue-stats { flex-direction: column; gap: 4px; }
   }
 </style>
 </head>
@@ -394,12 +420,13 @@
       <label>Issues abiertos:</label>
       <input type="text" id="issues-global" placeholder="#" class="text-input">
     </div>
-  </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="QA">
+  </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="QA" data-item-selector="eje-1-item-1">
       <div class="item-header">
         <span class="item-num">#1</span>
         <span class="item-text">Helper `assertAccesoBloqueado` agregado a `e2e/helpers/auth.ts`</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -409,12 +436,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="2" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="2" data-verificador="QA" data-item-selector="eje-1-item-2">
       <div class="item-header">
         <span class="item-num">#2</span>
         <span class="item-text">Union type de `loginAs` extendido con `&#39;contenido&#39;`</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -424,12 +452,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="3" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="3" data-verificador="QA" data-item-selector="eje-1-item-3">
       <div class="item-header">
         <span class="item-num">#3</span>
         <span class="item-text">Credencial `contenido` agregada al record (sin duplicar `estado`)</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -439,12 +468,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="4" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="4" data-verificador="QA" data-item-selector="eje-1-item-4">
       <div class="item-header">
         <span class="item-num">#4</span>
         <span class="item-text">Tests 8.1, 8.2, 8.3 de `e2e/checklist-sec7-8.spec.ts` reescritos usando el helper</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -454,12 +484,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="5" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="5" data-verificador="QA" data-item-selector="eje-1-item-5">
       <div class="item-header">
         <span class="item-num">#5</span>
         <span class="item-text">Archivo nuevo `e2e/seguridad-roles.spec.ts` con 10 tests de ampliación</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -469,12 +500,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="6" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="6" data-verificador="QA" data-item-selector="eje-1-item-6">
       <div class="item-header">
         <span class="item-num">#6</span>
         <span class="item-text">Las 3 rutas asumidas (`/admin/auditorias`, `/admin/usuarios`, `/admin/colecciones`) existen como páginas</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -484,12 +516,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="7" data-verificador="QA">
+    </div><div class="item-card" data-eje="1" data-num="7" data-verificador="QA" data-item-selector="eje-1-item-7">
       <div class="item-header">
         <span class="item-num">#7</span>
         <span class="item-text">Build de TypeScript pasa sin errores</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -499,7 +532,7 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2><div class="paso-card" data-eje="2" data-num="1">
+    </div></div><div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2><div class="paso-card" data-eje="2" data-num="1" data-item-selector="eje-2-paso-1">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 1 — ESTADO bloqueado en /admin/usuarios</span>
         <div class="paso-header-right">
@@ -508,6 +541,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> ESTADO (anabelen.torres@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/admin/usuarios`</code></div>
@@ -526,7 +560,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="2">
+    </div><div class="paso-card" data-eje="2" data-num="2" data-item-selector="eje-2-paso-2">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 2 — CONTENIDO bloqueado en /admin/usuarios</span>
         <div class="paso-header-right">
@@ -535,6 +569,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> CONTENIDO (sofia.martinez@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/admin/usuarios`</code></div>
@@ -552,7 +587,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="3">
+    </div><div class="paso-card" data-eje="2" data-num="3" data-item-selector="eje-2-paso-3">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 3 — CONTENIDO bloqueado en /taller</span>
         <div class="paso-header-right">
@@ -561,6 +596,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> CONTENIDO (sofia.martinez@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller`</code></div>
@@ -578,7 +614,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="4">
+    </div><div class="paso-card" data-eje="2" data-num="4" data-item-selector="eje-2-paso-4">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 4 — MARCA bloqueado en /estado</span>
         <div class="paso-header-right">
@@ -587,6 +623,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/estado`</code></div>
@@ -604,7 +641,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="5">
+    </div><div class="paso-card" data-eje="2" data-num="5" data-item-selector="eje-2-paso-5">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 5 — MARCA bloqueado en /admin</span>
         <div class="paso-header-right">
@@ -613,6 +650,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> MARCA (martin.echevarria@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/admin`</code></div>
@@ -630,7 +668,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="6">
+    </div><div class="paso-card" data-eje="2" data-num="6" data-item-selector="eje-2-paso-6">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 6 — TALLER bloqueado en /marca</span>
         <div class="paso-header-right">
@@ -639,6 +677,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> TALLER Bronce (roberto.gimenez@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/marca`</code></div>
@@ -656,7 +695,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="7">
+    </div><div class="paso-card" data-eje="2" data-num="7" data-item-selector="eje-2-paso-7">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 7 — ESTADO SÍ accede a /admin/auditorias</span>
         <div class="paso-header-right">
@@ -665,6 +704,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> ESTADO (anabelen.torres@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/admin/auditorias`</code></div>
@@ -682,7 +722,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="8">
+    </div><div class="paso-card" data-eje="2" data-num="8" data-item-selector="eje-2-paso-8">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 8 — CONTENIDO SÍ accede a /admin/colecciones</span>
         <div class="paso-header-right">
@@ -691,6 +731,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> CONTENIDO (sofia.martinez@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/admin/colecciones`</code></div>
@@ -708,7 +749,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="9">
+    </div><div class="paso-card" data-eje="2" data-num="9" data-item-selector="eje-2-paso-9">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 9 — ADMIN SÍ accede a /estado</span>
         <div class="paso-header-right">
@@ -717,6 +758,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN (lucia.fernandez@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/estado`</code></div>
@@ -734,7 +776,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="10">
+    </div><div class="paso-card" data-eje="2" data-num="10" data-item-selector="eje-2-paso-10">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 10 — ADMIN SÍ accede a /contenido</span>
         <div class="paso-header-right">
@@ -743,6 +785,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> ADMIN (lucia.fernandez@pdt.org.ar / pdt2026)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/contenido`</code></div>
@@ -760,7 +803,7 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div><div class="paso-card" data-eje="2" data-num="11">
+    </div><div class="paso-card" data-eje="2" data-num="11" data-item-selector="eje-2-paso-11">
       <div class="paso-header" onclick="togglePaso(this)">
         <span class="paso-title">Paso 11 — Sin login: todas las rutas protegidas redirigen a /login</span>
         <div class="paso-header-right">
@@ -769,6 +812,7 @@
         </div>
       </div>
       <div class="paso-body">
+        <div class="item-badges"></div>
         <div class="paso-fields">
           <div class="paso-field"><span class="paso-label">Rol:</span> Sin login (ventana de incógnito o cerrar sesión)</div>
           <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller`, `/marca`, `/admin`, `/estado`</code></div>
@@ -792,12 +836,13 @@
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
-    </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1" data-verificador="QA">
+    </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1" data-verificador="QA" data-item-selector="eje-3-caso-1">
       <div class="item-header">
         <span class="item-num">#1</span>
         <span class="item-text">Página `/unauthorized` muestra texto correcto</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Provocar un bloqueo (ej: TALLER → /admin) y leer la página</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> Título: &quot;Acceso No Autorizado&quot;, párrafo: &quot;No tienes permiso para acceder a esta sección de la plataforma&quot;</div>
@@ -811,12 +856,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="2" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="2" data-verificador="QA" data-item-selector="eje-3-caso-2">
       <div class="item-header">
         <span class="item-num">#2</span>
         <span class="item-text">URL se mantiene en `/unauthorized`</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Verificar la barra de direcciones cuando se bloquea un acceso</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> La URL final es `/unauthorized`, no la ruta original ni `/login`</div>
@@ -830,12 +876,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="3" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="3" data-verificador="QA" data-item-selector="eje-3-caso-3">
       <div class="item-header">
         <span class="item-num">#3</span>
         <span class="item-text">Acceso bloqueado no muestra flash de contenido</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Al navegar a una ruta prohibida, observar si se ve brevemente el contenido antes del redirect</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> No debe haber flash — la redirección ocurre antes de renderizar contenido</div>
@@ -849,12 +896,13 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="4" data-verificador="QA">
+    </div><div class="item-card" data-eje="3" data-num="4" data-verificador="QA" data-item-selector="eje-3-caso-4">
       <div class="item-header">
         <span class="item-num">#4</span>
         <span class="item-text">Doble navegación no bypasea</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details">
         <div class="detail-row"><span class="detail-label">Accion:</span> Desde `/unauthorized`, presionar &quot;Atrás&quot; y volver a la ruta prohibida</div>
         <div class="detail-row"><span class="detail-label">Esperado:</span> Vuelve a redirigir a `/unauthorized` — no se queda en la ruta prohibida</div>
@@ -868,11 +916,12 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1" data-verificador="QA">
+    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1" data-verificador="QA" data-item-selector="eje-4-item-1">
       <div class="item-header">
         <span class="item-text">Redirección a `/unauthorized` ocurre en &lt; 2s</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> Navegar a ruta bloqueada → medir tiempo hasta la página de error</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -882,11 +931,12 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="2" data-verificador="QA">
+    </div><div class="item-card compact" data-eje="4" data-num="2" data-verificador="QA" data-item-selector="eje-4-item-2">
       <div class="item-header">
         <span class="item-text">Redirección a `/login` (sin sesión) ocurre en &lt; 2s</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> Sin login → navegar a ruta protegida → medir tiempo hasta /login</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -896,11 +946,12 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="3" data-verificador="QA">
+    </div><div class="item-card compact" data-eje="4" data-num="3" data-verificador="QA" data-item-selector="eje-4-item-3">
       <div class="item-header">
         <span class="item-text">Sin errores en consola del browser</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Console → revisar durante las navegaciones bloqueadas</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -910,11 +961,12 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="4" data-num="4" data-verificador="QA">
+    </div><div class="item-card compact" data-eje="4" data-num="4" data-verificador="QA" data-item-selector="eje-4-item-4">
       <div class="item-header">
         <span class="item-text">`/unauthorized` carga sin errores</span>
         <span class="badge-qa">QA</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Console → verificar que la página de error no tiene errores JS</div>
       <div class="item-controls">
         <div class="status-btns">
@@ -924,10 +976,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1">
+    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1" data-item-selector="eje-5-item-1">
       <div class="item-header">
         <span class="item-text">Página `/unauthorized` tiene el layout de la plataforma (header, etc.)</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -936,10 +989,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="2">
+    </div><div class="item-card compact" data-eje="5" data-num="2" data-item-selector="eje-5-item-2">
       <div class="item-header">
         <span class="item-text">Texto &quot;Acceso No Autorizado&quot; en tipografía consistente</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -948,10 +1002,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="3">
+    </div><div class="item-card compact" data-eje="5" data-num="3" data-item-selector="eje-5-item-3">
       <div class="item-header">
         <span class="item-text">No hay botones o links rotos en la página de error</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -960,10 +1015,11 @@
         <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card compact" data-eje="5" data-num="4">
+    </div><div class="item-card compact" data-eje="5" data-num="4" data-item-selector="eje-5-item-4">
       <div class="item-header">
         <span class="item-text">La página de login muestra los campos de email y password correctamente</span>
       </div>
+      <div class="item-badges"></div>
       <div class="item-controls">
         <div class="status-btns">
           <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
@@ -1000,6 +1056,17 @@
       <input type="checkbox" data-checklist="6">
       <span>Documento commiteado a develop</span>
     </label></div></div>
+  </div>
+  <div class="section" id="panel-resumen">
+    <h2>Resumen de issues</h2>
+    <div id="github-status" class="text-muted"></div>
+    <div class="issue-stats">
+      <span class="issue-stat stat-open" id="stat-abiertos">0 abiertos</span>
+      <span class="issue-stat stat-resolved" id="stat-resueltos">0 resueltos</span>
+      <span class="issue-stat stat-discarded" id="stat-descartados">0 descartados</span>
+    </div>
+    <div id="issues-list" class="issues-list"></div>
+  </div>
   </div>
   <div class="sticky-bar">
     <span class="progress-summary" id="progress-text"></span>
@@ -1277,6 +1344,8 @@
     const num = card.dataset.num || '';
     const spec = document.body.dataset.spec || '';
     const pagina = document.body.dataset.url || '';
+    const slugMeta = document.querySelector('meta[name="qa-slug"]');
+    const qaSlug = slugMeta ? slugMeta.content : '';
 
     btn.disabled = true;
     btn.textContent = 'Enviando...';
@@ -1296,7 +1365,11 @@
           spec: spec,
           eje: eje,
           item: '#' + num + ' ' + itemText,
-          resultado: status
+          resultado: status,
+          qaSlug: qaSlug,
+          itemSelector: card.dataset.itemSelector || '',
+          verificador: card.dataset.verificador || 'QA',
+          perfil: card.dataset.perfil || 'tecnico'
         }
       })
     }).then(r => {
@@ -1325,6 +1398,91 @@
   });
 
   updateProgress();
+</script>
+  <script>
+  (function() {
+    var apiBase = document.body.dataset.apiUrl;
+    if (!apiBase) return;
+    // apiUrl apunta a .../api/feedback — by-qa es relativo a eso
+    var feedbackBase = apiBase.replace('/api/feedback', '/api/feedback/by-qa/');
+    var slugMeta = document.querySelector('meta[name="qa-slug"]');
+    if (!slugMeta) return;
+    var qaSlug = slugMeta.content;
+
+    function crearBadgeIssue(issue) {
+      var a = document.createElement('a');
+      a.href = issue.url;
+      a.target = '_blank';
+      a.className = 'issue-badge issue-' + (
+        issue.state === 'open' ? 'open' :
+        issue.stateReason === 'completed' ? 'resolved' : 'discarded'
+      );
+      a.textContent = '#' + issue.number + ' — ' + (
+        issue.state === 'open' ? 'Abierto' :
+        issue.stateReason === 'completed' ? 'Resuelto' : 'Descartado'
+      );
+      return a;
+    }
+
+    function actualizarResumen(issues) {
+      var open = 0, resolved = 0, discarded = 0;
+      issues.forEach(function(i) {
+        if (i.state === 'open') open++;
+        else if (i.stateReason === 'completed') resolved++;
+        else discarded++;
+      });
+      var el;
+      el = document.getElementById('stat-abiertos'); if (el) el.textContent = open + ' abiertos';
+      el = document.getElementById('stat-resueltos'); if (el) el.textContent = resolved + ' resueltos';
+      el = document.getElementById('stat-descartados'); if (el) el.textContent = discarded + ' descartados';
+
+      var list = document.getElementById('issues-list');
+      if (list) {
+        list.innerHTML = '';
+        if (issues.length === 0) {
+          list.innerHTML = '<p class="text-muted">Sin issues reportados</p>';
+        } else {
+          issues.forEach(function(issue) {
+            var row = document.createElement('div');
+            row.className = 'issue-row';
+            row.innerHTML = '<a href="' + issue.url + '" target="_blank" class="issue-link">#' + issue.number + '</a> ' +
+              '<span class="issue-title">' + (issue.title || '') + '</span> ' +
+              '<span class="issue-badge-small issue-' + (issue.state === 'open' ? 'open' : issue.stateReason === 'completed' ? 'resolved' : 'discarded') + '">' +
+              (issue.state === 'open' ? 'Abierto' : issue.stateReason === 'completed' ? 'Resuelto' : 'Descartado') + '</span>';
+            list.appendChild(row);
+          });
+        }
+      }
+    }
+
+    function cargarIssues() {
+      fetch(feedbackBase + qaSlug)
+        .then(function(res) { if (!res.ok) throw new Error(); return res.json(); })
+        .then(function(data) {
+          document.querySelectorAll('.issue-badge').forEach(function(b) { b.remove(); });
+
+          data.issues.forEach(function(issue) {
+            if (!issue.itemSelector) return;
+            var item = document.querySelector('[data-item-selector="' + issue.itemSelector + '"]');
+            if (!item) return;
+            var container = item.querySelector('.item-badges');
+            if (container) container.appendChild(crearBadgeIssue(issue));
+          });
+
+          actualizarResumen(data.issues);
+
+          var status = document.getElementById('github-status');
+          if (status) status.textContent = 'Actualizado: ' + new Date(data.lastUpdated).toLocaleString('es-AR');
+        })
+        .catch(function() {
+          var status = document.getElementById('github-status');
+          if (status) status.textContent = 'No se pudo cargar estado de issues';
+        });
+    }
+
+    cargarIssues();
+    setInterval(cargarIssues, 2 * 60 * 1000);
+  })();
 </script>
 </body>
 </html>
