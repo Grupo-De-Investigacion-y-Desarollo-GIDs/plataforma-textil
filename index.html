@@ -19,20 +19,32 @@
       color: white;
       padding: 24px 28px;
       border-radius: 12px;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
     .index-header h1 { font-size: 22px; margin-bottom: 4px; }
     .index-header p { font-size: 14px; opacity: 0.8; }
+    .index-filter-bar {
+      display: flex; gap: 6px; align-items: center;
+      background: white; border-radius: 10px;
+      padding: 10px 16px; margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .index-filter-label { font-size: 13px; font-weight: 600; color: #555; margin-right: 4px; }
+    .index-filter-btn {
+      padding: 5px 14px; border: 1px solid #ddd; border-radius: 6px;
+      background: white; cursor: pointer; font-size: 12px; font-weight: 600;
+      color: #555; transition: all 0.15s;
+    }
+    .index-filter-btn:hover { border-color: #1e3a5f; color: #1e3a5f; }
+    .index-filter-btn.active { background: #1e3a5f; color: white; border-color: #1e3a5f; }
+    .qa-section { margin-bottom: 24px; }
+    .qa-section-title { font-size: 17px; font-weight: 700; color: #1e3a5f; margin-bottom: 4px; }
+    .qa-section-desc { font-size: 13px; color: #888; margin-bottom: 12px; }
     .qa-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
     .qa-card {
-      background: white;
-      border: 1px solid #e8ecf1;
-      border-radius: 10px;
-      padding: 18px 22px;
-      text-decoration: none;
-      color: inherit;
-      transition: all 0.15s;
-      display: block;
+      background: white; border: 1px solid #e8ecf1; border-radius: 10px;
+      padding: 18px 22px; text-decoration: none; color: inherit;
+      transition: all 0.15s; display: block;
       box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
     .qa-card:hover { border-color: #1e3a5f; box-shadow: 0 2px 8px rgba(30,58,95,0.15); transform: translateY(-1px); }
@@ -42,17 +54,24 @@
     .qa-meta-item { display: flex; align-items: center; gap: 4px; }
     .qa-meta-label { font-weight: 600; color: #888; }
     .qa-badge {
-      display: inline-block;
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-weight: 600;
+      display: inline-block; font-size: 11px; padding: 2px 8px;
+      border-radius: 4px; font-weight: 600;
     }
     .badge-ready { background: #e8f5e9; color: #2e7d32; }
     .badge-pending { background: #fff3e0; color: #e65100; }
+    .qa-perfiles { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+    .perfil-chip {
+      font-size: 10px; padding: 2px 8px; border-radius: 10px;
+      background: #fff3e0; color: #e65100; font-weight: 600; text-transform: capitalize;
+    }
+    details summary { cursor: pointer; list-style: none; }
+    details summary::-webkit-details-marker { display: none; }
+    details summary::before { content: '\25B6  '; font-size: 10px; color: #999; }
+    details[open] summary::before { content: '\25BC  '; }
     @media (max-width: 600px) {
       body { padding: 10px; }
       .qa-meta { flex-direction: column; gap: 4px; }
+      .index-filter-bar { flex-wrap: wrap; }
     }
   </style>
 </head>
@@ -60,139 +79,190 @@
   <div class="container">
     <div class="index-header">
       <h1>Auditorias QA</h1>
-      <p>16 documentos de auditoria</p>
+      <p>16 documentos de auditoria (2 V3 + 14 V2)</p>
     </div>
-    <div class="qa-grid">
-      
-      <a href="QA_v2-actividad-contextual-pedidos.html" class="qa-card">
-        <div class="qa-title">Actividad contextual en pedidos — timeline por entidad</div>
-        <div class="qa-meta">
-          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-actividad-contextual-pedidos.md</code></div>
-          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-17</div>
-          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
-        </div>
-      </a>
-      <a href="QA_v2-config-piloto-pre-deploy.html" class="qa-card">
-        <div class="qa-title">Config Piloto Pre-Deploy</div>
-        <div class="qa-meta">
-          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-config-piloto-pre-deploy.md</code></div>
-          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-13</div>
-          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
-        </div>
-      </a>
-      <a href="QA_v2-epica-academia.html" class="qa-card">
-        <div class="qa-title">Épica Academia — Quiz obligatorio y certificación</div>
-        <div class="qa-meta">
-          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-epica-academia.md</code></div>
-          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-14</div>
-          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
-        </div>
-      </a>
-      <a href="QA_v2-epica-flujo-comercial-unificado.html" class="qa-card">
-        <div class="qa-title">Épica Flujo Comercial Unificado</div>
-        <div class="qa-meta">
-          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-epica-flujo-comercial-unificado.md</code></div>
-          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-14</div>
-          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
-        </div>
-      </a>
-      <a href="QA_v2-epica-notificaciones.html" class="qa-card">
-        <div class="qa-title">Épica Notificaciones — Centro de comunicaciones + Historial</div>
-        <div class="qa-meta">
-          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-epica-notificaciones.md</code></div>
-          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-14</div>
-          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
-        </div>
-      </a>
-      <a href="QA_v2-epica-perfil-productivo.html" class="qa-card">
-        <div class="qa-title">Épica Perfil Productivo — Wizard, Perfil Taller y Dashboard Sectorial</div>
-        <div class="qa-meta">
-          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-epica-perfil-productivo.md</code></div>
-          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-14</div>
-          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
-        </div>
-      </a>
-      <a href="QA_v2-epica-perfiles-contacto.html" class="qa-card">
-        <div class="qa-title">Épica Perfiles y Contacto</div>
-        <div class="qa-meta">
-          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-epica-perfiles-contacto.md</code></div>
-          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-14</div>
-          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
-        </div>
-      </a>
-      <a href="QA_v2-epica-storage-documentos.html" class="qa-card">
-        <div class="qa-title">Epica Storage y Documentos</div>
-        <div class="qa-meta">
-          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-epica-storage-documentos.md</code></div>
-          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-13</div>
-          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
-        </div>
-      </a>
-      <a href="QA_v2-estandarizacion-ubicacion.html" class="qa-card">
-        <div class="qa-title">Estandarización de ubicación — provincias y partidos INDEC</div>
-        <div class="qa-meta">
-          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-estandarizacion-ubicacion.md</code></div>
-          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-17</div>
-          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
-        </div>
-      </a>
-      <a href="QA_v2-impl-contenido-visual.html" class="qa-card">
-        <div class="qa-title">Implementación de Contenido Visual</div>
-        <div class="qa-meta">
-          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-impl-contenido-visual.md</code></div>
-          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-15</div>
-          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
-        </div>
-      </a>
-      <a href="QA_v2-log-niveles-bidireccional.html" class="qa-card">
-        <div class="qa-title">Log de niveles bidireccional + panel transparente</div>
-        <div class="qa-meta">
-          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-log-niveles-bidireccional.md</code></div>
-          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-14</div>
-          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
-        </div>
-      </a>
-      <a href="QA_v2-notificaciones-accionables.html" class="qa-card">
-        <div class="qa-title">Notificaciones accionables con deep links</div>
-        <div class="qa-meta">
-          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-notificaciones-accionables.md</code></div>
-          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-14</div>
-          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
-        </div>
-      </a>
-      <a href="QA_v2-rag-corpus-real.html" class="qa-card">
-        <div class="qa-title">RAG — Limpiar corpus falso y preparar para contenido real</div>
-        <div class="qa-meta">
-          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-rag-corpus-real.md</code></div>
-          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-14</div>
-          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
-        </div>
-      </a>
-      <a href="QA_v2-seguridad-tests-e2e.html" class="qa-card">
-        <div class="qa-title">Fix de tests E2E de seguridad + ampliación de cobertura</div>
-        <div class="qa-meta">
-          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-seguridad-tests-e2e.md</code></div>
-          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-14</div>
-          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
-        </div>
-      </a>
-      <a href="QA_v3-logs-admin-auditoria.html" class="qa-card">
+
+    <div class="index-filter-bar">
+      <span class="index-filter-label">Filtrar:</span>
+      <button class="index-filter-btn active" data-filter="todos" onclick="filtrarIndex('todos')">Todos</button>
+      <button class="index-filter-btn" data-filter="v3" onclick="filtrarIndex('v3')">Solo V3</button>
+      <button class="index-filter-btn" data-filter="v2" onclick="filtrarIndex('v2')">Solo V2</button>
+    </div>
+
+    <div class="qa-section" id="section-v3">
+      <div class="qa-section-title">V3 — En curso</div>
+      <div class="qa-section-desc">Auditorias de specs V3 que se estan implementando ahora</div>
+      <div class="qa-grid">
+        
+      <a href="QA_v3-logs-admin-auditoria.html" class="qa-card" data-version="v3">
         <div class="qa-title">Logs de auditoria para acciones sensibles del admin</div>
         <div class="qa-meta">
           <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v3-logs-admin-auditoria.md</code></div>
           <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-26</div>
           <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
         </div>
+        
       </a>
-      <a href="QA_v3-separar-ambientes.html" class="qa-card">
+      <a href="QA_v3-separar-ambientes.html" class="qa-card" data-version="v3">
         <div class="qa-title">Separar ambientes — Supabase desarrollo y produccion</div>
         <div class="qa-meta">
           <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v3-separar-ambientes.md</code></div>
           <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-26</div>
           <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
         </div>
+        
       </a>
+      </div>
+    </div>
+
+    <div class="qa-section" id="section-v2">
+      <details>
+        <summary>
+          <span class="qa-section-title">V2 — Historico</span>
+          <span class="qa-section-desc" style="display:inline;margin-left:8px">Auditorias de specs V2 ya cerrados (referencia historica)</span>
+        </summary>
+        <div class="qa-grid" style="margin-top:12px">
+          
+      <a href="QA_v2-actividad-contextual-pedidos.html" class="qa-card" data-version="v2">
+        <div class="qa-title">Actividad contextual en pedidos — timeline por entidad</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-actividad-contextual-pedidos.md</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-17</div>
+          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
+        </div>
+        
+      </a>
+      <a href="QA_v2-estandarizacion-ubicacion.html" class="qa-card" data-version="v2">
+        <div class="qa-title">Estandarización de ubicación — provincias y partidos INDEC</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-estandarizacion-ubicacion.md</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-17</div>
+          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
+        </div>
+        
+      </a>
+      <a href="QA_v2-impl-contenido-visual.html" class="qa-card" data-version="v2">
+        <div class="qa-title">Implementación de Contenido Visual</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-impl-contenido-visual.md</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-15</div>
+          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
+        </div>
+        
+      </a>
+      <a href="QA_v2-epica-academia.html" class="qa-card" data-version="v2">
+        <div class="qa-title">Épica Academia — Quiz obligatorio y certificación</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-epica-academia.md</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-14</div>
+          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
+        </div>
+        
+      </a>
+      <a href="QA_v2-epica-flujo-comercial-unificado.html" class="qa-card" data-version="v2">
+        <div class="qa-title">Épica Flujo Comercial Unificado</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-epica-flujo-comercial-unificado.md</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-14</div>
+          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
+        </div>
+        
+      </a>
+      <a href="QA_v2-epica-notificaciones.html" class="qa-card" data-version="v2">
+        <div class="qa-title">Épica Notificaciones — Centro de comunicaciones + Historial</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-epica-notificaciones.md</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-14</div>
+          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
+        </div>
+        
+      </a>
+      <a href="QA_v2-epica-perfil-productivo.html" class="qa-card" data-version="v2">
+        <div class="qa-title">Épica Perfil Productivo — Wizard, Perfil Taller y Dashboard Sectorial</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-epica-perfil-productivo.md</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-14</div>
+          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
+        </div>
+        
+      </a>
+      <a href="QA_v2-epica-perfiles-contacto.html" class="qa-card" data-version="v2">
+        <div class="qa-title">Épica Perfiles y Contacto</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-epica-perfiles-contacto.md</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-14</div>
+          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
+        </div>
+        
+      </a>
+      <a href="QA_v2-log-niveles-bidireccional.html" class="qa-card" data-version="v2">
+        <div class="qa-title">Log de niveles bidireccional + panel transparente</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-log-niveles-bidireccional.md</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-14</div>
+          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
+        </div>
+        
+      </a>
+      <a href="QA_v2-notificaciones-accionables.html" class="qa-card" data-version="v2">
+        <div class="qa-title">Notificaciones accionables con deep links</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-notificaciones-accionables.md</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-14</div>
+          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
+        </div>
+        
+      </a>
+      <a href="QA_v2-rag-corpus-real.html" class="qa-card" data-version="v2">
+        <div class="qa-title">RAG — Limpiar corpus falso y preparar para contenido real</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-rag-corpus-real.md</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-14</div>
+          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
+        </div>
+        
+      </a>
+      <a href="QA_v2-seguridad-tests-e2e.html" class="qa-card" data-version="v2">
+        <div class="qa-title">Fix de tests E2E de seguridad + ampliación de cobertura</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-seguridad-tests-e2e.md</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-14</div>
+          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
+        </div>
+        
+      </a>
+      <a href="QA_v2-config-piloto-pre-deploy.html" class="qa-card" data-version="v2">
+        <div class="qa-title">Config Piloto Pre-Deploy</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-config-piloto-pre-deploy.md</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-13</div>
+          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
+        </div>
+        
+      </a>
+      <a href="QA_v2-epica-storage-documentos.html" class="qa-card" data-version="v2">
+        <div class="qa-title">Epica Storage y Documentos</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v2-epica-storage-documentos.md</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-13</div>
+          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
+        </div>
+        
+      </a>
+        </div>
+      </details>
     </div>
   </div>
+  <script>
+    function filtrarIndex(tipo) {
+      document.querySelectorAll('.index-filter-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.index-filter-btn[data-filter="' + tipo + '"]').classList.add('active');
+      const v3Section = document.getElementById('section-v3');
+      const v2Section = document.getElementById('section-v2');
+      if (tipo === 'todos') { v3Section.style.display = ''; v2Section.style.display = ''; }
+      else if (tipo === 'v3') { v3Section.style.display = ''; v2Section.style.display = 'none'; }
+      else if (tipo === 'v2') { v3Section.style.display = 'none'; v2Section.style.display = ''; }
+    }
+  </script>
 </body>
 </html>
