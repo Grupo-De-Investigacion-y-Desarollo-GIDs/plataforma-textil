@@ -3,6 +3,18 @@
 ## 2026-04-26
 
 ### Gerardo Breard
+- **15:11** `979cf73` — test: setup parcial de Q-01 — infraestructura Playwright + smoke test
+  - `.env.test.example`
+  - `.github/workflows/e2e.yml`
+  - `.gitignore`
+  - `playwright.config.ts`
+  - `tests/e2e/README.md`
+  - `tests/e2e/_helpers/auth.ts`
+  - `tests/e2e/_helpers/cleanup.ts`
+  - `tests/e2e/_helpers/safety.ts`
+  - `tests/e2e/smoke.spec.ts`
+  - `vitest.config.ts`
+
 - **14:57** `79d8526` — test: agregar tests automatizados de S-04 (logs admin auditoria)
   - `src/__tests__/admin-logs-api.test.ts`
   - `src/__tests__/csv.test.ts`
