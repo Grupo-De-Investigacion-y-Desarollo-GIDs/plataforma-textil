@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "prisma migrate deploy && prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
     "db:seed": "npx tsx prisma/seed.ts",
@@ -15,7 +15,7 @@
     "test:e2e:headed": "playwright test --headed"
   },
   "prisma": {
-    "seed": "npx tsx prisma/seed.ts"
+    "seed": "if [ \"$VERCEL_ENV\" != \"production\" ]; then npx tsx prisma/seed.ts; else echo 'Seed skipped in production'; fi"
   },
   "dependencies": {
     "@afipsdk/afip.js": "^1.2.3",
