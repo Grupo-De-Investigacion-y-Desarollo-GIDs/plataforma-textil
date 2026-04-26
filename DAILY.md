@@ -1,5 +1,15 @@
 # Daily Log
 
+## 2026-04-26
+
+### Gerardo Breard
+- **01:27** `43bdc25` — feat: v3-separar-ambientes (I-01) — build script, seed safety, banner de ambiente
+  - `.claude/auditorias/QA_v3-separar-ambientes.md`
+  - `package.json`
+  - `src/app/layout.tsx`
+  - `src/compartido/componentes/ambiente-banner.tsx`
+
+
 ## 2026-04-25
 
 ### Gerardo Breard
