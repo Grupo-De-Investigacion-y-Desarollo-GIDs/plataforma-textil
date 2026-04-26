@@ -15,7 +15,7 @@
     "test:e2e:headed": "playwright test --headed"
   },
   "prisma": {
-    "seed": "if [ \"$VERCEL_ENV\" != \"production\" ]; then npx tsx prisma/seed.ts; else echo 'Seed skipped in production'; fi"
+    "seed": "npx tsx prisma/seed.ts"
   },
   "dependencies": {
     "@afipsdk/afip.js": "^1.2.3",
