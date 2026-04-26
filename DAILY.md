@@ -3,6 +3,11 @@
 ## 2026-04-26
 
 ### Gerardo Breard
+- **15:39** `86dbd17` — fix: resolver 3 issues de smoke tests E2E (selector login, banner ambiente, mobile-safari)
+  - `playwright.config.ts`
+  - `src/compartido/componentes/ambiente-banner.tsx`
+  - `tests/e2e/_helpers/auth.ts`
+
 - **15:11** `979cf73` — test: setup parcial de Q-01 — infraestructura Playwright + smoke test
   - `.env.test.example`
   - `.github/workflows/e2e.yml`
