@@ -39,3 +39,29 @@ test.describe('API /api/feedback/by-qa — endpoints reales', () => {
     }
   })
 })
+
+test.describe('API /api/feedback/all-qa-v3 — endpoint agregado', () => {
+  test('GET retorna 200 con estructura { counts, global, lastUpdated }', async ({ page, request }) => {
+    await ensureNotProduction(page)
+    const res = await request.get('/api/feedback/all-qa-v3')
+    expect(res.status()).toBe(200)
+    const data = await res.json()
+    expect(data).toHaveProperty('counts')
+    expect(data).toHaveProperty('global')
+    expect(data).toHaveProperty('lastUpdated')
+    expect(typeof data.counts).toBe('object')
+    expect(data.global).toHaveProperty('open')
+    expect(data.global).toHaveProperty('closed')
+    expect(data.global).toHaveProperty('total')
+    expect(data.global).toHaveProperty('porVerificador')
+    expect(data.global).toHaveProperty('porPerfil')
+  })
+
+  test('OPTIONS preflight retorna 204 con CORS', async ({ page, request }) => {
+    await ensureNotProduction(page)
+    const res = await request.fetch('/api/feedback/all-qa-v3', {
+      method: 'OPTIONS',
+    })
+    expect(res.status()).toBe(204)
+  })
+})

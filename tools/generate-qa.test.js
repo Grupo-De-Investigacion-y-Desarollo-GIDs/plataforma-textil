@@ -5,6 +5,7 @@
  */
 
 const fs = require('fs')
+const os = require('os')
 const path = require('path')
 const {
   normalizar,
@@ -1059,6 +1060,105 @@ console.log('\n📋 Test 22: Script de polling de issues')
 
   fs.unlinkSync(htmlPath)
   fs.unlinkSync(tmpPath)
+}
+
+// Test 23: Index contiene cargarEstadoIndex con polling 5min
+// ============================================
+console.log('\n📋 Test 23: Index tiene cargarEstadoIndex con polling 5min')
+{
+  // Crear un QA V3 dummy para que el index tenga algo
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'qa-test-index-estado-'))
+  const v3File = path.join(tmpDir, 'QA_v3-test-estado.md')
+  fs.writeFileSync(v3File, `# QA: Test Estado Index
+
+**Spec:** \`v3-test.md\`
+**Fecha:** 2026-04-26
+**Auditor(es):** Sergio
+
+## Eje 1 — Funcionalidad
+| # | Criterio | Verificador | Resultado | Issue |
+|---|----------|-------------|-----------|-------|
+| 1 | Test | QA | | |
+
+## Checklist de cierre
+- [ ] Done
+`)
+
+  const indexPath = generarIndex(tmpDir)
+  const html = fs.readFileSync(indexPath, 'utf-8')
+
+  // Script de estado con polling
+  assert(html.includes('function cargarEstadoIndex()'), 'Index contiene cargarEstadoIndex')
+  assert(html.includes('setInterval(cargarEstadoIndex, 5 * 60 * 1000)'), 'Index tiene polling cada 5 minutos')
+  assert(html.includes('/api/feedback/all-qa-v3'), 'Index apunta al endpoint all-qa-v3')
+  assert(html.includes('window.cargarEstadoIndex = cargarEstadoIndex'), 'cargarEstadoIndex es global para boton refrescar')
+
+  // Panel global
+  assert(html.includes('id="estado-global"'), 'Index tiene panel global de estado')
+  assert(html.includes('Estado de auditorias V3'), 'Panel global tiene titulo')
+  assert(html.includes('estado-refresh-btn'), 'CSS tiene clase estado-refresh-btn')
+
+  // CSS de badges de estado
+  assert(html.includes('.estado-badge-verde'), 'CSS tiene badge verde')
+  assert(html.includes('.estado-badge-amarillo'), 'CSS tiene badge amarillo')
+  assert(html.includes('.estado-badge-rojo'), 'CSS tiene badge rojo')
+  assert(html.includes('.estado-global-panel'), 'CSS tiene estado-global-panel')
+
+  // Cleanup
+  fs.rmSync(tmpDir, { recursive: true })
+}
+
+// ============================================
+// Test 24: Cards V3 tienen estado-resumen y estado-detalle
+// ============================================
+console.log('\n📋 Test 24: Cards V3 tienen .estado-resumen y .estado-detalle')
+{
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'qa-test-cards-estado-'))
+
+  // Un V3 y un V2
+  const v3File = path.join(tmpDir, 'QA_v3-test-cards.md')
+  fs.writeFileSync(v3File, `# QA: Test Cards V3
+
+**Spec:** \`v3-cards.md\`
+**Fecha:** 2026-04-26
+**Auditor(es):** Sergio
+
+## Eje 1 — Funcionalidad
+| # | Criterio | Verificador | Resultado | Issue |
+|---|----------|-------------|-----------|-------|
+| 1 | Test | QA | | |
+
+## Checklist de cierre
+- [ ] Done
+`)
+
+  const v2File = path.join(tmpDir, 'QA_v2-test-cards.md')
+  fs.writeFileSync(v2File, `# QA: Test Cards V2
+
+**Spec:** \`v2-cards.md\`
+**Fecha:** 2026-04-20
+
+## Checklist
+- [x] Done
+`)
+
+  const indexPath = generarIndex(tmpDir)
+  const html = fs.readFileSync(indexPath, 'utf-8')
+
+  // V3 cards tienen contenedores de estado
+  assert(html.includes('data-qa-slug="QA_v3-test-cards"'), 'Card V3 tiene data-qa-slug')
+  assert(html.includes('class="estado-resumen"'), 'Card V3 tiene .estado-resumen')
+  assert(html.includes('class="estado-detalle"'), 'Card V3 tiene .estado-detalle')
+
+  // V2 cards NO tienen contenedores de estado (solo mirar entre section-v2 y el script)
+  const v2Start = html.indexOf('id="section-v2"')
+  const v2End = html.indexOf('<script>', v2Start)
+  const v2Cards = html.substring(v2Start, v2End)
+  assert(!v2Cards.includes('estado-resumen'), 'Card V2 NO tiene .estado-resumen')
+  assert(!v2Cards.includes('data-qa-slug'), 'Card V2 NO tiene data-qa-slug')
+
+  // Cleanup
+  fs.rmSync(tmpDir, { recursive: true })
 }
 
 // ============================================
