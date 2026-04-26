@@ -41,9 +41,12 @@ export async function loginAs(page: Page, rol: Rol) {
   const password = process.env[env.passwordVar] || def.password
 
   await page.goto('/login')
-  await page.fill('input[name="email"]', email)
-  await page.fill('input[name="password"]', password)
-  await page.click('button[type="submit"]')
+  // El form usa react-hook-form con register('email') y register('password')
+  // que agrega name="email" y name="password". Pero hay un segundo form (magic link)
+  // con otro input email. Usamos selectores mas especificos.
+  await page.locator('form:has(button:has-text("Ingresar")) input[name="email"]').fill(email)
+  await page.locator('form:has(button:has-text("Ingresar")) input[name="password"]').fill(password)
+  await page.getByRole('button', { name: 'Ingresar' }).click()
   await page.waitForURL(def.rutaEsperada, { timeout: 15000 })
 }
 

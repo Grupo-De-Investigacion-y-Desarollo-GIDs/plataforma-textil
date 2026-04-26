@@ -25,10 +25,7 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-    {
-      name: 'mobile-safari',
-      use: { ...devices['iPhone 13'] },
-    },
+    // Mobile testing se agrega en V4 (UX-04)
   ],
 
   webServer: process.env.CI ? undefined : {
