@@ -1,15 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
-
-function toCsv(headers: string[], rows: string[][]): string {
-  const escape = (v: string) => `"${String(v ?? '').replace(/"/g, '""')}"`
-  const lines = [headers.map(escape).join(',')]
-  for (const row of rows) {
-    lines.push(row.map(escape).join(','))
-  }
-  return lines.join('\n')
-}
+import { logAccionAdmin } from '@/compartido/lib/log'
+import { toCsv } from '@/compartido/lib/csv'
 
 export async function GET(req: NextRequest) {
   try {
@@ -168,6 +161,12 @@ export async function GET(req: NextRequest) {
       )
       filename = 'denuncias.csv'
     }
+
+    logAccionAdmin('DATOS_EXPORTADOS', session.user.id, {
+      entidad: 'exportacion',
+      entidadId: tipo,
+      metadata: { formato: 'csv' },
+    })
 
     return new NextResponse(csv, {
       headers: {

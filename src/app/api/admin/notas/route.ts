@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { logAccionAdmin } from '@/compartido/lib/log'
 
 export async function GET(req: NextRequest) {
   try {
@@ -58,6 +59,11 @@ export async function POST(req: NextRequest) {
         ...(marcaId ? { marcaId } : {}),
       },
       include: { admin: { select: { name: true } } },
+    })
+    logAccionAdmin('NOTA_INTERNA_CREADA', session.user.id, {
+      entidad: 'nota',
+      entidadId: nota.id,
+      metadata: { tallerId: tallerId || null, marcaId: marcaId || null },
     })
 
     return NextResponse.json(nota, { status: 201 })

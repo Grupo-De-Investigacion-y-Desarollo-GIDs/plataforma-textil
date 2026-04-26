@@ -1,113 +1,297 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
-import { SearchInput } from '@/compartido/componentes/ui/search-input'
 import { Select } from '@/compartido/componentes/ui/select'
 import { Badge } from '@/compartido/componentes/ui/badge'
+import { Download, ChevronDown, ChevronUp } from 'lucide-react'
 
 interface LogEntry {
   id: string
   accion: string
   detalles: Record<string, unknown> | null
-  ip: string | null
   timestamp: string
-  user: { name: string | null; email: string } | null
+  user: { name: string | null; email: string; role: string } | null
 }
 
-const tipoColors: Record<string, 'success' | 'warning' | 'default'> = {
-  AUTH: 'success',
-  CRUD: 'default',
-  ADMIN: 'warning',
-  ERROR: 'warning',
-  SYSTEM: 'default',
+interface FilterUser {
+  id: string
+  name: string | null
+  email: string
+  role: string
 }
+
+// Sensibilidad por accion
+const sensibilidad: Record<string, { nivel: string; variant: 'error' | 'warning' | 'default' | 'muted' }> = {
+  VALIDACION_REVOCADA: { nivel: 'Critica', variant: 'error' },
+  CERTIFICADO_REVOCADO: { nivel: 'Critica', variant: 'error' },
+  ADMIN_USUARIO_CREADO: { nivel: 'Alta', variant: 'warning' },
+  ADMIN_USUARIO_EDITADO: { nivel: 'Alta', variant: 'warning' },
+  ADMIN_USUARIO_DESACTIVADO: { nivel: 'Alta', variant: 'warning' },
+  VALIDACION_APROBADA: { nivel: 'Alta', variant: 'warning' },
+  VALIDACION_RECHAZADA: { nivel: 'Alta', variant: 'warning' },
+  CERTIFICADO_EMITIDO: { nivel: 'Alta', variant: 'warning' },
+  DATOS_EXPORTADOS: { nivel: 'Alta', variant: 'warning' },
+  ADMIN_VALIDACION_COMPLETADO: { nivel: 'Alta', variant: 'warning' },
+  ADMIN_VALIDACION_RECHAZADO: { nivel: 'Alta', variant: 'warning' },
+  ADMIN_TALLER_EDITADO: { nivel: 'Media', variant: 'default' },
+  COLECCION_EDITADA: { nivel: 'Media', variant: 'default' },
+  COLECCION_ELIMINADA: { nivel: 'Media', variant: 'default' },
+  NOTA_INTERNA_CREADA: { nivel: 'Media', variant: 'default' },
+  RAG_DOCUMENTO_CREADO: { nivel: 'Media', variant: 'default' },
+  RAG_DOCUMENTO_DESACTIVADO: { nivel: 'Media', variant: 'default' },
+}
+
+const entidades = [
+  { value: '', label: 'Todas las entidades' },
+  { value: 'usuario', label: 'Usuario' },
+  { value: 'taller', label: 'Taller' },
+  { value: 'validacion', label: 'Validacion' },
+  { value: 'certificado', label: 'Certificado' },
+  { value: 'coleccion', label: 'Coleccion' },
+  { value: 'nota', label: 'Nota' },
+  { value: 'rag', label: 'Documento RAG' },
+  { value: 'exportacion', label: 'Exportacion' },
+]
 
 export default function AdminLogsPage() {
   const [logs, setLogs] = useState<LogEntry[]>([])
-  const [search, setSearch] = useState('')
-  const [filtroTipo, setFiltroTipo] = useState('')
-  const [page, setPage] = useState(0)
+  const [total, setTotal] = useState(0)
+  const [page, setPage] = useState(1)
+  const [loading, setLoading] = useState(true)
+
+  // Filtros
+  const [filtroUsuario, setFiltroUsuario] = useState('')
+  const [filtroAccion, setFiltroAccion] = useState('')
+  const [filtroEntidad, setFiltroEntidad] = useState('')
+  const [desde, setDesde] = useState('')
+  const [hasta, setHasta] = useState('')
+
+  // Datos para dropdowns
+  const [acciones, setAcciones] = useState<string[]>([])
+  const [usuarios, setUsuarios] = useState<FilterUser[]>([])
+
+  // Detalle expandido
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+
+  const pageSize = 50
+  const totalPages = Math.ceil(total / pageSize)
+
+  const fetchLogs = useCallback(async () => {
+    setLoading(true)
+    const params = new URLSearchParams()
+    params.set('page', String(page))
+    params.set('limit', String(pageSize))
+    if (filtroUsuario) params.set('userId', filtroUsuario)
+    if (filtroAccion) params.set('accion', filtroAccion)
+    if (filtroEntidad) params.set('entidad', filtroEntidad)
+    if (desde) params.set('desde', desde)
+    if (hasta) params.set('hasta', hasta)
+
+    try {
+      const res = await fetch(`/api/admin/logs?${params}`)
+      const data = await res.json()
+      setLogs(data.logs || [])
+      setTotal(data.total || 0)
+      if (data.acciones) setAcciones(data.acciones)
+      if (data.usuarios) setUsuarios(data.usuarios)
+    } catch {
+      // silencioso
+    } finally {
+      setLoading(false)
+    }
+  }, [page, filtroUsuario, filtroAccion, filtroEntidad, desde, hasta])
 
   useEffect(() => {
-    fetch('/api/admin/logs').then(r => r.json()).then((d: { logs?: LogEntry[] }) => setLogs(d.logs || [])).catch(() => {})
-  }, [])
+    fetchLogs()
+  }, [fetchLogs])
 
-  const filtered = logs.filter(l => {
-    const matchSearch = l.accion.toLowerCase().includes(search.toLowerCase()) ||
-      (l.user?.name || '').toLowerCase().includes(search.toLowerCase()) ||
-      (l.user?.email || '').toLowerCase().includes(search.toLowerCase())
-    const matchTipo = !filtroTipo || l.accion.startsWith(filtroTipo)
-    return matchSearch && matchTipo
-  })
+  function resetFiltros() {
+    setFiltroUsuario('')
+    setFiltroAccion('')
+    setFiltroEntidad('')
+    setDesde('')
+    setHasta('')
+    setPage(1)
+  }
 
-  const pageSize = 20
-  const totalPages = Math.ceil(filtered.length / pageSize)
-  const paged = filtered.slice(page * pageSize, (page + 1) * pageSize)
+  function exportCsv() {
+    const params = new URLSearchParams()
+    params.set('export', 'csv')
+    if (filtroUsuario) params.set('userId', filtroUsuario)
+    if (filtroAccion) params.set('accion', filtroAccion)
+    if (filtroEntidad) params.set('entidad', filtroEntidad)
+    if (desde) params.set('desde', desde)
+    if (hasta) params.set('hasta', hasta)
+    window.open(`/api/admin/logs?${params}`, '_blank')
+  }
+
+  function getSensibilidad(accion: string) {
+    return sensibilidad[accion] || { nivel: 'Baja', variant: 'muted' as const }
+  }
+
+  const hayFiltros = filtroUsuario || filtroAccion || filtroEntidad || desde || hasta
 
   return (
-    <div className="max-w-5xl mx-auto py-6 px-4">
-      <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Logs de Actividad</h1>
-      <p className="text-gray-500 text-sm mb-6">Registro de acciones en la plataforma</p>
-
-      <SearchInput onChange={setSearch} placeholder="Buscar en logs..." className="mb-4" />
-
-      <div className="flex gap-3 mb-4">
-        <Select value={filtroTipo} onChange={e => setFiltroTipo(e.target.value)}
-          options={[
-            { value: '', label: 'Todos los tipos' },
-            { value: 'AUTH', label: 'Auth' },
-            { value: 'CRUD', label: 'CRUD' },
-            { value: 'ADMIN', label: 'Admin' },
-            { value: 'ERROR', label: 'Errores' },
-          ]}
-        />
-        <Button size="sm" variant="secondary">Exportar CSV</Button>
-        <Button size="sm" variant="secondary">Exportar JSON</Button>
+    <div className="max-w-6xl mx-auto py-6 px-4">
+      <div className="flex items-center justify-between mb-1">
+        <h1 className="font-overpass font-bold text-2xl text-brand-blue">Logs de Actividad</h1>
+        <Button size="sm" variant="secondary" onClick={exportCsv}>
+          <Download className="w-4 h-4 mr-1" /> Exportar CSV
+        </Button>
       </div>
+      <p className="text-gray-500 text-sm mb-6">Registro de acciones sensibles en la plataforma</p>
 
+      {/* Filtros */}
+      <Card className="mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+          <Select
+            value={filtroUsuario}
+            onChange={e => { setFiltroUsuario(e.target.value); setPage(1) }}
+            options={[
+              { value: '', label: 'Todos los usuarios' },
+              ...usuarios.map(u => ({ value: u.id, label: `${u.name || u.email} (${u.role})` })),
+            ]}
+          />
+          <Select
+            value={filtroAccion}
+            onChange={e => { setFiltroAccion(e.target.value); setPage(1) }}
+            options={[
+              { value: '', label: 'Todas las acciones' },
+              ...acciones.map(a => ({ value: a, label: a.replace(/_/g, ' ') })),
+            ]}
+          />
+          <Select
+            value={filtroEntidad}
+            onChange={e => { setFiltroEntidad(e.target.value); setPage(1) }}
+            options={entidades}
+          />
+          <div>
+            <input
+              type="date"
+              value={desde}
+              onChange={e => { setDesde(e.target.value); setPage(1) }}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue"
+              placeholder="Desde"
+            />
+          </div>
+          <div>
+            <input
+              type="date"
+              value={hasta}
+              onChange={e => { setHasta(e.target.value); setPage(1) }}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue"
+              placeholder="Hasta"
+            />
+          </div>
+        </div>
+        {hayFiltros && (
+          <button onClick={resetFiltros} className="mt-2 text-xs text-brand-blue hover:underline">
+            Limpiar filtros
+          </button>
+        )}
+      </Card>
+
+      {/* Tabla */}
       <Card>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-200">
-                <th className="text-left px-4 py-3 text-sm font-overpass font-semibold text-gray-600">Timestamp</th>
-                <th className="text-left px-4 py-3 text-sm font-overpass font-semibold text-gray-600">Tipo</th>
+                <th className="text-left px-4 py-3 text-sm font-overpass font-semibold text-gray-600">Fecha</th>
                 <th className="text-left px-4 py-3 text-sm font-overpass font-semibold text-gray-600">Usuario</th>
-                <th className="text-left px-4 py-3 text-sm font-overpass font-semibold text-gray-600">Acción</th>
+                <th className="text-left px-4 py-3 text-sm font-overpass font-semibold text-gray-600">Accion</th>
+                <th className="text-left px-4 py-3 text-sm font-overpass font-semibold text-gray-600">Sensibilidad</th>
+                <th className="text-left px-4 py-3 text-sm font-overpass font-semibold text-gray-600">Entidad</th>
+                <th className="text-left px-4 py-3 text-sm font-overpass font-semibold text-gray-600">Motivo</th>
+                <th className="text-left px-4 py-3 text-sm font-overpass font-semibold text-gray-600 w-10"></th>
               </tr>
             </thead>
             <tbody>
-              {paged.map(log => {
-                const tipo = log.accion.split(':')[0] || 'SYSTEM'
+              {loading ? (
+                <tr><td colSpan={7} className="text-center py-8 text-gray-500">Cargando...</td></tr>
+              ) : logs.length === 0 ? (
+                <tr><td colSpan={7} className="text-center py-8 text-gray-500">No hay logs para mostrar</td></tr>
+              ) : logs.map(log => {
+                const detalles = log.detalles as Record<string, unknown> | null
+                const sens = getSensibilidad(log.accion)
+                const entidad = detalles?.entidad as string | undefined
+                const motivo = detalles?.motivo as string | undefined
+                const isExpanded = expandedId === log.id
                 return (
-                  <tr key={log.id} className="border-b border-gray-100 hover:bg-gray-50">
+                  <tr key={log.id} className="border-b border-gray-100 hover:bg-gray-50 align-top">
                     <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">
                       {new Date(log.timestamp).toLocaleString('es-AR')}
-                      {log.ip && <div className="text-gray-400">IP: {log.ip}</div>}
                     </td>
-                    <td className="px-4 py-3"><Badge variant={tipoColors[tipo] || 'default'}>{tipo}</Badge></td>
-                    <td className="px-4 py-3 text-sm">{log.user?.name || log.user?.email || 'Sistema'}</td>
                     <td className="px-4 py-3 text-sm">
+                      {log.user?.name || log.user?.email || 'Sistema'}
+                      {log.user?.role && (
+                        <span className="text-xs text-gray-400 ml-1">({log.user.role})</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-sm font-mono text-xs">
                       {log.accion}
-                      {log.detalles && <div className="text-xs text-gray-400">{JSON.stringify(log.detalles)}</div>}
+                    </td>
+                    <td className="px-4 py-3">
+                      <Badge variant={sens.variant} className="text-xs px-2 py-0.5">
+                        {sens.nivel}
+                      </Badge>
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      {entidad || <span className="text-gray-300">&mdash;</span>}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-600 max-w-48 truncate">
+                      {motivo || <span className="text-gray-300">&mdash;</span>}
+                    </td>
+                    <td className="px-4 py-3">
+                      {detalles && (
+                        <button
+                          onClick={() => setExpandedId(isExpanded ? null : log.id)}
+                          className="text-gray-400 hover:text-gray-600"
+                        >
+                          {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                        </button>
+                      )}
                     </td>
                   </tr>
                 )
               })}
-              {paged.length === 0 && (
-                <tr><td colSpan={4} className="text-center py-8 text-gray-500">No hay logs para mostrar</td></tr>
-              )}
             </tbody>
           </table>
+
+          {/* Detalles expandidos */}
+          {expandedId && logs.find(l => l.id === expandedId)?.detalles && (
+            <div className="border-t border-gray-200 bg-gray-50 px-4 py-3">
+              <p className="text-xs font-semibold text-gray-500 mb-1">Detalles completos:</p>
+              <pre className="text-xs text-gray-600 whitespace-pre-wrap break-all">
+                {JSON.stringify(logs.find(l => l.id === expandedId)!.detalles, null, 2)}
+              </pre>
+            </div>
+          )}
         </div>
+
+        {/* Paginacion */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between mt-4 px-4 pb-2">
-            <span className="text-sm text-gray-500">{page * pageSize + 1}-{Math.min((page + 1) * pageSize, filtered.length)} de {filtered.length}</span>
+            <span className="text-sm text-gray-500">
+              {(page - 1) * pageSize + 1}-{Math.min(page * pageSize, total)} de {total}
+            </span>
             <div className="flex gap-1">
-              <button disabled={page === 0} onClick={() => setPage(page - 1)} className="px-3 py-1 rounded text-sm disabled:opacity-50 hover:bg-gray-100">Anterior</button>
-              <button disabled={page >= totalPages - 1} onClick={() => setPage(page + 1)} className="px-3 py-1 rounded text-sm disabled:opacity-50 hover:bg-gray-100">Siguiente</button>
+              <button
+                disabled={page === 1}
+                onClick={() => setPage(page - 1)}
+                className="px-3 py-1 rounded text-sm disabled:opacity-50 hover:bg-gray-100"
+              >
+                Anterior
+              </button>
+              <button
+                disabled={page >= totalPages}
+                onClick={() => setPage(page + 1)}
+                className="px-3 py-1 rounded text-sm disabled:opacity-50 hover:bg-gray-100"
+              >
+                Siguiente
+              </button>
             </div>
           </div>
         )}

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { logAccionAdmin } from '@/compartido/lib/log'
 import { generarEmbedding } from '@/compartido/lib/rag'
 import { z } from 'zod'
 
@@ -69,6 +70,12 @@ export async function POST(req: NextRequest) {
         NOW()
       )
     `
+
+    logAccionAdmin('RAG_DOCUMENTO_CREADO', session.user.id, {
+      entidad: 'rag',
+      entidadId: id,
+      metadata: { titulo: data.titulo, categoria: data.categoria },
+    })
 
     return NextResponse.json({ id, titulo: data.titulo, categoria: data.categoria }, { status: 201 })
   } catch (error) {

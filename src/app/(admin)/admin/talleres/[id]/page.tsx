@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { aplicarNivel } from '@/compartido/lib/nivel'
+import { logAccionAdmin } from '@/compartido/lib/log'
 import { sendEmail, buildDocAprobadoEmail, buildDocRechazadoEmail } from '@/compartido/lib/email'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
@@ -87,12 +88,10 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
       data: { estado: 'COMPLETADO' },
     })
     await aplicarNivel(id, session!.user!.id)
-    await prisma.logActividad.create({
-      data: {
-        userId: session!.user!.id,
-        accion: 'VALIDACION_APROBADA',
-        detalles: { tallerId: id, validacionId },
-      },
+    logAccionAdmin('VALIDACION_APROBADA', session!.user!.id, {
+      entidad: 'validacion',
+      entidadId: validacionId,
+      metadata: { tallerId: id, tipoDocumento: validacion.tipo },
     })
     sendEmail({
       to: taller!.user.email,
@@ -110,12 +109,11 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
       data: { estado: 'RECHAZADO', detalle: motivo || 'Documentación insuficiente' },
     })
     await aplicarNivel(id, session!.user!.id)
-    await prisma.logActividad.create({
-      data: {
-        userId: session!.user!.id,
-        accion: 'VALIDACION_RECHAZADA',
-        detalles: { tallerId: id, validacionId, motivo },
-      },
+    logAccionAdmin('VALIDACION_RECHAZADA', session!.user!.id, {
+      entidad: 'validacion',
+      entidadId: validacionId,
+      motivo: motivo || 'Documentacion insuficiente',
+      metadata: { tallerId: id, tipoDocumento: validacion.tipo },
     })
     sendEmail({
       to: taller!.user.email,
@@ -134,12 +132,11 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
       data: { estado: 'NO_INICIADO', documentoUrl: null, detalle: `Revocado: ${motivo}` },
     })
     await aplicarNivel(id, session!.user!.id)
-    await prisma.logActividad.create({
-      data: {
-        userId: session!.user!.id,
-        accion: 'VALIDACION_REVOCADA',
-        detalles: { tallerId: id, validacionId, motivo },
-      },
+    logAccionAdmin('VALIDACION_REVOCADA', session!.user!.id, {
+      entidad: 'validacion',
+      entidadId: validacionId,
+      motivo,
+      metadata: { tallerId: id },
     })
     redirect(`/admin/talleres/${id}?tab=formalizacion`)
   }
@@ -148,12 +145,17 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
     'use server'
     const texto = formData.get('texto') as string
     if (!texto?.trim()) return
-    await prisma.notaInterna.create({
+    const nota = await prisma.notaInterna.create({
       data: {
         texto: texto.trim(),
         adminId: session!.user!.id,
         tallerId: id,
       },
+    })
+    logAccionAdmin('NOTA_INTERNA_CREADA', session!.user!.id, {
+      entidad: 'nota',
+      entidadId: nota.id,
+      metadata: { tallerId: id },
     })
     redirect(`/admin/talleres/${id}?tab=${tab}`)
   }

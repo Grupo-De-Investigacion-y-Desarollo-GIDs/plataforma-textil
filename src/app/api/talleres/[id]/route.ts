@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { logAccionAdmin } from '@/compartido/lib/log'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -121,6 +122,15 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         }
       }
     })
+
+    // Log solo si es ADMIN editando taller de otro
+    if (role === 'ADMIN' && existing.userId !== session.user.id) {
+      logAccionAdmin('ADMIN_TALLER_EDITADO', session.user.id, {
+        entidad: 'taller',
+        entidadId: id,
+        cambios: data,
+      })
+    }
 
     // Re-fetch con includes para el response
     const taller = await prisma.taller.findUnique({

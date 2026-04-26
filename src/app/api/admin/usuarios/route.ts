@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { logAccionAdmin } from '@/compartido/lib/log'
 import bcrypt from 'bcryptjs'
 
 export async function GET(req: NextRequest) {
@@ -63,6 +64,11 @@ export async function POST(req: NextRequest) {
     const user = await prisma.user.create({
       data: { email: body.email, password: hashedPassword, name: body.name, role: body.role, phone: body.phone },
       select: { id: true, email: true, name: true, role: true, active: true },
+    })
+    logAccionAdmin('ADMIN_USUARIO_CREADO', session.user.id, {
+      entidad: 'usuario',
+      entidadId: user.id,
+      metadata: { role: body.role, email: body.email },
     })
     return NextResponse.json(user, { status: 201 })
   } catch (error) {
