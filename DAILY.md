@@ -1,8 +1,129 @@
 # Daily Log
 
+## 2026-04-26
+
+### Gerardo Breard
+- **13:46** `7cf48d0` — fix: seed safety — protección contra ejecución en producción
+  - `package.json`
+  - `prisma/seed.ts`
+
+- **01:27** `43bdc25` — feat: v3-separar-ambientes (I-01) — build script, seed safety, banner de ambiente
+  - `.claude/auditorias/QA_v3-separar-ambientes.md`
+  - `package.json`
+  - `src/app/layout.tsx`
+  - `src/compartido/componentes/ambiente-banner.tsx`
+
+
+## 2026-04-25
+
+### Gerardo Breard
+- **20:14** `6dec7a6` — docs: agregar ORDEN_IMPLEMENTACION_V3 con grafo de dependencias y orden secuencial
+  - `ORDEN_IMPLEMENTACION_V3.md`
+
+- **20:07** `ff23d62` — docs: resolver hallazgos MEDIA y BAJA de revisión cruzada
+  - `.claude/specs/V3_REVISION_CRUZADA.md`
+  - `.claude/specs/v3-demanda-insatisfecha.md`
+  - `.claude/specs/v3-errores-consistentes-apis.md`
+  - `.claude/specs/v3-logs-admin-auditoria.md`
+  - `.claude/specs/v3-protocolos-onboarding.md`
+  - `.claude/specs/v3-qa-estado-issues.md`
+  - `.claude/specs/v3-rate-limiting.md`
+  - `.claude/specs/v3-redefinicion-roles-estado.md`
+  - `.claude/specs/v3-reporte-campo.md`
+  - `.claude/specs/v3-whatsapp-notificaciones.md`
+
+- **20:02** `60619f9` — docs: resolver hallazgos ALTA de revisión cruzada (C-02, C-03, C-04/U-01/U-02, D-02, D-03, R-02)
+  - `.claude/specs/V3_REVISION_CRUZADA.md`
+  - `.claude/specs/v3-exportes-estado.md`
+  - `.claude/specs/v3-mensajes-individuales.md`
+  - `.claude/specs/v3-protocolos-onboarding.md`
+  - `.claude/specs/v3-proximo-nivel-dashboard.md`
+  - `.claude/specs/v3-rate-limiting.md`
+
+- **19:55** `4ac8569` — docs: resolver hallazgos bloqueantes de revisión cruzada (C-01, D-01)
+  - `.claude/specs/V3_REVISION_CRUZADA.md`
+  - `.claude/specs/v3-exportes-estado.md`
+  - `.claude/specs/v3-validacion-archivos.md`
+
+- **19:19** `adbc6c7` — docs: agregar spec v3-reporte-campo con correcciones de factibilidad
+  - `.claude/specs/v3-reporte-campo.md`
+
+- **19:03** `0f49926` — docs: agregar spec v3-protocolos-onboarding con correcciones de factibilidad
+  - `.claude/specs/v3-protocolos-onboarding.md`
+
+- **18:43** `68a05c7` — docs: agregar spec v3-ux-mejoras con correcciones de factibilidad
+  - `.claude/specs/v3-ux-mejoras.md`
+
+- **18:25** `c75998c` — docs: agregar spec v3-errores-consistentes-apis con correcciones de factibilidad
+  - `.claude/specs/v3-errores-consistentes-apis.md`
+
+- **18:08** `a56560d` — docs: agregar spec v3-error-boundaries con correcciones de factibilidad
+  - `.claude/specs/v3-error-boundaries.md`
+
+- **17:52** `2c4ab62` — docs: agregar spec v3-tests-e2e con correcciones de factibilidad
+  - `.claude/specs/v3-tests-e2e.md`
+
+- **17:23** `8a5f74b` — docs: agregar spec v3-mensajes-individuales con correcciones de factibilidad
+  - `.claude/specs/v3-mensajes-individuales.md`
+
+- **17:07** `6f3f70c` — docs: agregar spec v3-rag-completo con correcciones de factibilidad
+  - `.claude/specs/v3-rag-completo.md`
+
+- **16:44** `ac43abc` — docs: agregar spec v3-exportes-estado con correcciones de factibilidad
+  - `.claude/specs/v3-exportes-estado.md`
+
+- **16:22** `b242dc9` — docs: agregar spec v3-demanda-insatisfecha con correcciones de factibilidad
+  - `.claude/specs/v3-demanda-insatisfecha.md`
+
+- **16:03** `a3a9014` — docs: agregar spec v3-arca-completo con correcciones de factibilidad
+  - `.claude/specs/v3-arca-completo.md`
+
+- **15:06** `399c9a3` — docs: agregar spec v3-whatsapp-notificaciones con correcciones de factibilidad
+  - `.claude/specs/v3-whatsapp-notificaciones.md`
+
+- **13:49** `ae1b6c7` — docs: ampliar interface ProximoNivelInfo en v3-tipos-documento-db por dependencia con F-01
+  - `.claude/specs/v3-tipos-documento-db.md`
+
+- **13:45** `14813b2` — docs: actualizar v3-proximo-nivel-dashboard con spec ejecutable
+  - `.claude/specs/v3-proximo-nivel-dashboard.md`
+
+- **13:24** `9c5b45c` — docs: agregar spec v3-tipos-documento-db con correcciones de factibilidad
+  - `.claude/specs/v3-tipos-documento-db.md`
+
+- **12:41** `df56f50` — docs: agregar spec v3-redefinicion-roles-estado con correcciones de factibilidad
+  - `.claude/specs/v3-redefinicion-roles-estado.md`
+
+
 ## 2026-04-23
 
 ### Gerardo Breard
+- **16:07** `9e620e6` — docs: agregar spec v3-qa-estado-issues con correcciones de factibilidad
+  - `.claude/specs/v3-qa-estado-issues.md`
+
+- **15:26** `5205187` — docs: agregar spec v3-qa-formato-ampliado con correcciones de factibilidad
+  - `.claude/specs/v3-qa-formato-ampliado.md`
+
+- **14:57** `a1aaf37` — docs: agregar spec v3-logs-admin-auditoria con correcciones de factibilidad
+  - `.claude/specs/v3-logs-admin-auditoria.md`
+
+- **14:07** `ea39474` — docs: agregar spec v3-validacion-archivos con correcciones de factibilidad
+  - `.claude/specs/v3-validacion-archivos.md`
+
+- **12:59** `02776d6` — docs: agregar spec v3-rate-limiting con correcciones de factibilidad
+  - `.claude/specs/v3-rate-limiting.md`
+
+- **12:30** `384edbf` — docs: agregar spec v3-cookies-seguridad con correcciones de factibilidad
+  - `.claude/specs/v3-cookies-seguridad.md`
+
+- **12:19** `282f854` — docs: marcar inicio oficial de V3
+  - `.claude/specs/V3_INICIO.md`
+
+- **12:16** `10f0492` — docs: agregar spec v3-separar-ambientes con correcciones de factibilidad
+  - `.claude/specs/v3-separar-ambientes.md`
+
+- **11:33** `53b14d2` — perf: mover funciones Vercel a región gru1 (São Paulo) — reduce latencia DB
+  - `vercel.json`
+
 - **10:58** `b7ecf4b` — perf: paralelizar 5 queries en admin/talleres/[id] (#120)
   - `src/app/(admin)/admin/talleres/[id]/page.tsx`
 

@@ -4,6 +4,11 @@ import bcrypt from 'bcryptjs'
 const prisma = new PrismaClient()
 
 async function main() {
+  if (process.env.VERCEL_ENV === 'production') {
+    console.log('Seed skipped in production')
+    return
+  }
+
   console.log('🌱 Seeding database...')
 
   // ============================================
