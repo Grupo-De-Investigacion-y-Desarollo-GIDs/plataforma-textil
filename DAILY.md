@@ -3,6 +3,48 @@
 ## 2026-04-26
 
 ### Gerardo Breard
+- **15:39** `86dbd17` — fix: resolver 3 issues de smoke tests E2E (selector login, banner ambiente, mobile-safari)
+  - `playwright.config.ts`
+  - `src/compartido/componentes/ambiente-banner.tsx`
+  - `tests/e2e/_helpers/auth.ts`
+
+- **15:11** `979cf73` — test: setup parcial de Q-01 — infraestructura Playwright + smoke test
+  - `.env.test.example`
+  - `.github/workflows/e2e.yml`
+  - `.gitignore`
+  - `playwright.config.ts`
+  - `tests/e2e/README.md`
+  - `tests/e2e/_helpers/auth.ts`
+  - `tests/e2e/_helpers/cleanup.ts`
+  - `tests/e2e/_helpers/safety.ts`
+  - `tests/e2e/smoke.spec.ts`
+  - `vitest.config.ts`
+
+- **14:57** `79d8526` — test: agregar tests automatizados de S-04 (logs admin auditoria)
+  - `src/__tests__/admin-logs-api.test.ts`
+  - `src/__tests__/csv.test.ts`
+  - `src/__tests__/log.test.ts`
+  - `src/__tests__/revocar-validacion.test.ts`
+  - `vitest.config.ts`
+
+- **14:34** `8423747` — feat: v3-logs-admin-auditoria (S-04) — logging sistematico, UI mejorada, export CSV
+  - `.claude/auditorias/QA_v3-logs-admin-auditoria.md`
+  - `src/app/(admin)/admin/logs/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/api/admin/logs/route.ts`
+  - `src/app/api/admin/notas/route.ts`
+  - `src/app/api/admin/rag/[id]/route.ts`
+  - `src/app/api/admin/rag/route.ts`
+  - `src/app/api/admin/usuarios/[id]/route.ts`
+  - `src/app/api/admin/usuarios/route.ts`
+  - `src/app/api/certificados/route.ts`
+  - `src/app/api/colecciones/[id]/route.ts`
+  - `src/app/api/exportar/route.ts`
+  - `src/app/api/talleres/[id]/route.ts`
+  - `src/app/api/validaciones/[id]/route.ts`
+  - `src/compartido/lib/csv.ts`
+  - `src/compartido/lib/log.ts`
+
 - **13:46** `7cf48d0` — fix: seed safety — protección contra ejecución en producción
   - `package.json`
   - `prisma/seed.ts`

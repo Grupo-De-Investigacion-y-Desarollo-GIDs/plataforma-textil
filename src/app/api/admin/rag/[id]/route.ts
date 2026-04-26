@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { logAccionAdmin } from '@/compartido/lib/log'
 
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -17,6 +18,10 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     await prisma.documentoRAG.update({
       where: { id },
       data: { activo: false },
+    })
+    logAccionAdmin('RAG_DOCUMENTO_DESACTIVADO', session.user.id, {
+      entidad: 'rag',
+      entidadId: id,
     })
 
     return NextResponse.json({ ok: true })

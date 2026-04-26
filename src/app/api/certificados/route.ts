@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { aplicarNivel } from '@/compartido/lib/nivel'
-import { logActividad } from '@/compartido/lib/log'
+import { logAccionAdmin } from '@/compartido/lib/log'
 
 export async function GET(req: NextRequest) {
   try {
@@ -60,12 +60,11 @@ export async function PATCH(req: NextRequest) {
 
     await aplicarNivel(cert.taller.id, session.user.id)
 
-    await prisma.logActividad.create({
-      data: {
-        userId: session.user.id,
-        accion: 'CERTIFICADO_REVOCADO',
-        detalles: { certificadoId: id, motivo: motivo || 'Sin motivo' },
-      },
+    logAccionAdmin('CERTIFICADO_REVOCADO', session.user.id, {
+      entidad: 'certificado',
+      entidadId: id,
+      motivo: motivo || 'Sin motivo',
+      metadata: { tallerId: cert.taller.id },
     })
 
     return NextResponse.json(cert)
@@ -97,7 +96,11 @@ export async function POST(req: NextRequest) {
     // Recalculate taller level after new certificate
     await aplicarNivel(body.tallerId, session.user.id)
 
-    logActividad('CERTIFICADO_EMITIDO', session.user.id, { certificadoId: certificado.id, tallerId: body.tallerId, codigo: body.codigo })
+    logAccionAdmin('CERTIFICADO_EMITIDO', session.user.id, {
+      entidad: 'certificado',
+      entidadId: certificado.id,
+      metadata: { tallerId: body.tallerId, codigo: body.codigo },
+    })
 
     return NextResponse.json(certificado, { status: 201 })
   } catch (error) {

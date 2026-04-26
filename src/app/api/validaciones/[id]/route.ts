@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
-import { logActividad } from '@/compartido/lib/log'
+import { logAccionAdmin } from '@/compartido/lib/log'
 import { aplicarNivel } from '@/compartido/lib/nivel'
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -62,7 +62,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     })
 
     if (role === 'ADMIN' && body.estado) {
-      logActividad('ADMIN_VALIDACION_' + body.estado, session.user.id, { validacionId: id, tallerId: existing.taller.userId })
+      logAccionAdmin('ADMIN_VALIDACION_' + body.estado, session.user.id, {
+        entidad: 'validacion',
+        entidadId: id,
+        metadata: { tallerId: existing.tallerId, tipoDocumento: existing.tipo },
+      })
       // Recalcular nivel del taller cuando se aprueba o cambia una validacion
       aplicarNivel(existing.tallerId, session.user.id)
     }

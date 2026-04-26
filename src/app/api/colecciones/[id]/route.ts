@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { logAccionAdmin } from '@/compartido/lib/log'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -47,6 +48,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         activa: body.activa,
       },
     })
+    logAccionAdmin('COLECCION_EDITADA', session.user.id, {
+      entidad: 'coleccion',
+      entidadId: id,
+      cambios: { titulo: body.titulo, activa: body.activa },
+    })
 
     return NextResponse.json(coleccion)
   } catch (error) {
@@ -66,6 +72,10 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
 
     const { id } = await params
     await prisma.coleccion.delete({ where: { id } })
+    logAccionAdmin('COLECCION_ELIMINADA', session.user.id, {
+      entidad: 'coleccion',
+      entidadId: id,
+    })
     return NextResponse.json({ message: 'Coleccion eliminada' })
   } catch (error) {
     console.error('Error en DELETE /api/colecciones/[id]:', error)
