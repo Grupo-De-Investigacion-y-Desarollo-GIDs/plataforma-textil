@@ -3,6 +3,13 @@
 ## 2026-04-26
 
 ### Gerardo Breard
+- **14:57** `79d8526` — test: agregar tests automatizados de S-04 (logs admin auditoria)
+  - `src/__tests__/admin-logs-api.test.ts`
+  - `src/__tests__/csv.test.ts`
+  - `src/__tests__/log.test.ts`
+  - `src/__tests__/revocar-validacion.test.ts`
+  - `vitest.config.ts`
+
 - **14:34** `8423747` — feat: v3-logs-admin-auditoria (S-04) — logging sistematico, UI mejorada, export CSV
   - `.claude/auditorias/QA_v3-logs-admin-auditoria.md`
   - `src/app/(admin)/admin/logs/page.tsx`
