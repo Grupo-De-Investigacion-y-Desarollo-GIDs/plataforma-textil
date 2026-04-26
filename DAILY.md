@@ -3,6 +3,14 @@
 ## 2026-04-26
 
 ### Gerardo Breard
+- **18:06** `6d728b3` — feat: resumen de estado de issues en index QA V3
+  - `src/__tests__/qa-aggregate.test.ts`
+  - `src/app/api/feedback/all-qa-v3/route.ts`
+  - `src/compartido/lib/qa-aggregate.ts`
+  - `tests/e2e/v3-qa-issues-api.spec.ts`
+  - `tools/generate-qa.js`
+  - `tools/generate-qa.test.js`
+
 - **17:37** `ee8cb25` — feat: QA-iss (Bloque 0) — estado de issues en interfaz de QA
   - `.claude/auditorias/QA_v3-qa-estado-issues.md`
   - `src/__tests__/cors.test.ts`
