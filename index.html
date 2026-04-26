@@ -68,10 +68,65 @@
     details summary::-webkit-details-marker { display: none; }
     details summary::before { content: '\25B6  '; font-size: 10px; color: #999; }
     details[open] summary::before { content: '\25BC  '; }
+    /* Panel global de estado */
+    .estado-global-panel {
+      background: white; border: 1px solid #e8ecf1; border-radius: 10px;
+      padding: 18px 22px; margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .estado-global-panel h3 { font-size: 15px; font-weight: 700; color: #1e3a5f; margin-bottom: 10px; }
+    .estado-global-stats {
+      display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin-bottom: 8px;
+    }
+    .estado-stat {
+      font-size: 14px; font-weight: 600; padding: 3px 10px; border-radius: 6px;
+    }
+    .estado-stat-open { background: #ffeaea; color: #c62828; }
+    .estado-stat-closed { background: #e8f5e9; color: #2e7d32; }
+    .estado-stat-total { background: #f5f5f5; color: #555; }
+    .estado-global-detail { font-size: 13px; color: #666; margin-top: 6px; line-height: 1.6; }
+    .estado-global-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 10px; font-size: 12px; color: #999;
+    }
+    .estado-refresh-btn {
+      padding: 4px 12px; border: 1px solid #ddd; border-radius: 5px;
+      background: white; cursor: pointer; font-size: 12px; color: #555;
+    }
+    .estado-refresh-btn:hover { border-color: #1e3a5f; color: #1e3a5f; }
+    .estado-disabled-msg { font-size: 13px; color: #999; font-style: italic; }
+    /* Badges en cards V3 */
+    .estado-resumen {
+      margin-top: 8px;
+    }
+    .estado-badge-resumen {
+      display: inline-block; font-size: 12px; font-weight: 600;
+      padding: 3px 10px; border-radius: 6px; cursor: pointer;
+      user-select: none; transition: all 0.15s;
+    }
+    .estado-badge-verde { background: #e8f5e9; color: #2e7d32; }
+    .estado-badge-amarillo { background: #fff8e1; color: #f57f17; }
+    .estado-badge-rojo { background: #ffeaea; color: #c62828; }
+    .estado-badge-resumen:hover { opacity: 0.8; }
+    .estado-detalle {
+      margin-top: 8px; padding: 10px 14px; background: #f9fafb;
+      border-radius: 8px; border: 1px solid #e8ecf1; font-size: 13px;
+    }
+    .estado-detalle-line { margin-bottom: 4px; color: #555; }
+    .estado-detalle-issues { margin-top: 8px; }
+    .estado-issue-row { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+    .estado-issue-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .estado-issue-dot-open { background: #c62828; }
+    .estado-issue-dot-closed { background: #2e7d32; }
+    .estado-issue-link { font-size: 12px; color: #1e3a5f; text-decoration: none; font-weight: 600; }
+    .estado-issue-link:hover { text-decoration: underline; }
+    .estado-issue-title { font-size: 12px; color: #555; }
+    .estado-issue-ver { font-size: 12px; color: #1e3a5f; text-decoration: none; margin-left: auto; }
     @media (max-width: 600px) {
       body { padding: 10px; }
       .qa-meta { flex-direction: column; gap: 4px; }
       .index-filter-bar { flex-wrap: wrap; }
+      .estado-global-stats { flex-direction: column; gap: 6px; }
     }
   </style>
 </head>
@@ -89,12 +144,17 @@
       <button class="index-filter-btn" data-filter="v2" onclick="filtrarIndex('v2')">Solo V2</button>
     </div>
 
+    <div class="estado-global-panel" id="estado-global">
+      <h3>Estado de auditorias V3</h3>
+      <p class="estado-disabled-msg">Cargando...</p>
+    </div>
+
     <div class="qa-section" id="section-v3">
       <div class="qa-section-title">V3 — En curso</div>
       <div class="qa-section-desc">Auditorias de specs V3 que se estan implementando ahora</div>
       <div class="qa-grid">
         
-      <a href="QA_v3-logs-admin-auditoria.html" class="qa-card" data-version="v3">
+      <a href="QA_v3-logs-admin-auditoria.html" class="qa-card" data-version="v3" data-qa-slug="QA_v3-logs-admin-auditoria">
         <div class="qa-title">Logs de auditoria para acciones sensibles del admin</div>
         <div class="qa-meta">
           <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v3-logs-admin-auditoria.md</code></div>
@@ -102,8 +162,10 @@
           <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
         </div>
         
+        <div class="estado-resumen"></div>
+        <div class="estado-detalle" style="display:none"></div>
       </a>
-      <a href="QA_v3-qa-estado-issues.html" class="qa-card" data-version="v3">
+      <a href="QA_v3-qa-estado-issues.html" class="qa-card" data-version="v3" data-qa-slug="QA_v3-qa-estado-issues">
         <div class="qa-title">Estado de issues en interfaz de QA</div>
         <div class="qa-meta">
           <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v3-qa-estado-issues.md</code></div>
@@ -111,8 +173,10 @@
           <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
         </div>
         
+        <div class="estado-resumen"></div>
+        <div class="estado-detalle" style="display:none"></div>
       </a>
-      <a href="QA_v3-separar-ambientes.html" class="qa-card" data-version="v3">
+      <a href="QA_v3-separar-ambientes.html" class="qa-card" data-version="v3" data-qa-slug="QA_v3-separar-ambientes">
         <div class="qa-title">Separar ambientes — Supabase desarrollo y produccion</div>
         <div class="qa-meta">
           <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v3-separar-ambientes.md</code></div>
@@ -120,6 +184,8 @@
           <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
         </div>
         
+        <div class="estado-resumen"></div>
+        <div class="estado-detalle" style="display:none"></div>
       </a>
       </div>
     </div>
@@ -266,12 +332,126 @@
     function filtrarIndex(tipo) {
       document.querySelectorAll('.index-filter-btn').forEach(b => b.classList.remove('active'));
       document.querySelector('.index-filter-btn[data-filter="' + tipo + '"]').classList.add('active');
-      const v3Section = document.getElementById('section-v3');
-      const v2Section = document.getElementById('section-v2');
+      var v3Section = document.getElementById('section-v3');
+      var v2Section = document.getElementById('section-v2');
       if (tipo === 'todos') { v3Section.style.display = ''; v2Section.style.display = ''; }
       else if (tipo === 'v3') { v3Section.style.display = ''; v2Section.style.display = 'none'; }
       else if (tipo === 'v2') { v3Section.style.display = 'none'; v2Section.style.display = ''; }
     }
+
+    (function() {
+      var API_URL = 'https://plataforma-textil.vercel.app/api/feedback/all-qa-v3';
+
+      function formatearDetalle(label, pairs) {
+        var parts = [];
+        for (var key in pairs) {
+          var p = pairs[key];
+          var txt = key.charAt(0).toUpperCase() + key.slice(1) + ': ';
+          var items = [];
+          if (p.open > 0) items.push(p.open + ' abierto' + (p.open > 1 ? 's' : ''));
+          if (p.closed > 0) items.push(p.closed + ' cerrado' + (p.closed > 1 ? 's' : ''));
+          if (items.length > 0) parts.push(txt + items.join(' \u00B7 '));
+        }
+        return parts.length > 0 ? '<div class="estado-detalle-line"><strong>' + label + ':</strong> ' + parts.join(' | ') + '</div>' : '';
+      }
+
+      function badgeClass(open) {
+        if (open === 0) return 'estado-badge-verde';
+        if (open <= 3) return 'estado-badge-amarillo';
+        return 'estado-badge-rojo';
+      }
+
+      function dotIcon(open) {
+        return open === 0 ? '\u2705' : '\uD83D\uDD34';
+      }
+
+      function renderGlobal(data) {
+        var panel = document.getElementById('estado-global');
+        if (!panel) return;
+        if (data.error === 'GitHub no configurado') {
+          panel.innerHTML = '<p class="estado-disabled-msg">Sincronizacion con GitHub deshabilitada</p>';
+          return;
+        }
+        var g = data.global;
+        var html = '<div class="estado-global-stats">';
+        html += '<span class="estado-stat estado-stat-open">\uD83D\uDD34 ' + g.open + ' abierto' + (g.open !== 1 ? 's' : '') + '</span>';
+        html += '<span class="estado-stat estado-stat-closed">\u2713 ' + g.closed + ' cerrado' + (g.closed !== 1 ? 's' : '') + '</span>';
+        html += '<span class="estado-stat estado-stat-total">\u25EF ' + g.total + ' total</span>';
+        html += '</div>';
+        html += formatearDetalle('Por verificador', g.porVerificador);
+        html += formatearDetalle('Por perfil', g.porPerfil);
+        html += '<div class="estado-global-footer">';
+        html += '<span id="estado-global-ts">Ultima actualizacion: ' + new Date(data.lastUpdated).toLocaleString('es-AR') + '</span>';
+        html += '<button class="estado-refresh-btn" onclick="cargarEstadoIndex()">Refrescar</button>';
+        html += '</div>';
+        panel.innerHTML = html;
+      }
+
+      function renderCardEstado(card, qa) {
+        var resumen = card.querySelector('.estado-resumen');
+        var detalle = card.querySelector('.estado-detalle');
+        if (!resumen || !detalle) return;
+
+        var cls = badgeClass(qa.open);
+        var icon = qa.open === 0 ? '\u2705' : qa.open <= 3 ? '\uD83D\uDFE1' : '\uD83D\uDD34';
+        resumen.innerHTML = '<span class="estado-badge-resumen ' + cls + '">' +
+          icon + ' ' + qa.open + ' abierto' + (qa.open !== 1 ? 's' : '') +
+          ' \u00B7 ' + qa.closed + ' cerrado' + (qa.closed !== 1 ? 's' : '') + '</span>';
+
+        var dhtml = '';
+        dhtml += formatearDetalle('Verificador', qa.porVerificador);
+        dhtml += formatearDetalle('Perfil', qa.porPerfil);
+        if (qa.issues && qa.issues.length > 0) {
+          dhtml += '<div class="estado-detalle-issues">';
+          dhtml += '<strong>Issues:</strong>';
+          qa.issues.forEach(function(issue) {
+            var dotCls = issue.state === 'open' ? 'estado-issue-dot-open' : 'estado-issue-dot-closed';
+            dhtml += '<div class="estado-issue-row">';
+            dhtml += '<span class="estado-issue-dot ' + dotCls + '"></span>';
+            dhtml += '<a class="estado-issue-link" href="' + issue.url + '" target="_blank">#' + issue.number + '</a>';
+            dhtml += '<span class="estado-issue-title">' + (issue.title || '').substring(0, 60) + '</span>';
+            dhtml += '<a class="estado-issue-ver" href="' + issue.url + '" target="_blank">\u2192 ver</a>';
+            dhtml += '</div>';
+          });
+          dhtml += '</div>';
+        }
+        detalle.innerHTML = dhtml;
+
+        resumen.onclick = function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          detalle.style.display = detalle.style.display === 'none' ? '' : 'none';
+        };
+      }
+
+      function cargarEstadoIndex() {
+        fetch(API_URL)
+          .then(function(res) { return res.json(); })
+          .then(function(data) {
+            renderGlobal(data);
+            var cards = document.querySelectorAll('.qa-card[data-qa-slug]');
+            cards.forEach(function(card) {
+              var slug = card.dataset.qaSlug;
+              if (data.counts && data.counts[slug]) {
+                renderCardEstado(card, data.counts[slug]);
+              } else {
+                var resumen = card.querySelector('.estado-resumen');
+                if (resumen) resumen.innerHTML = '<span class="estado-badge-resumen estado-badge-verde">\u2705 Sin issues</span>';
+              }
+            });
+          })
+          .catch(function() {
+            var panel = document.getElementById('estado-global');
+            if (panel) panel.innerHTML = '<p class="estado-disabled-msg">No se pudo cargar estado de issues</p>';
+          });
+      }
+
+      // Exponer para boton refrescar
+      window.cargarEstadoIndex = cargarEstadoIndex;
+
+      cargarEstadoIndex();
+      setInterval(cargarEstadoIndex, 5 * 60 * 1000);
+    })();
   </script>
 </body>
 </html>
