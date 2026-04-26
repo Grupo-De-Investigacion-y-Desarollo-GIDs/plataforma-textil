@@ -3,6 +3,16 @@
 ## 2026-04-26
 
 ### Gerardo Breard
+- **16:48** `df28fae` — feat: index QA mejorado — secciones V3/V2, filtros, perfiles chips
+  - `tools/generate-qa.js`
+  - `tools/generate-qa.test.js`
+
+- **16:23** `d07ac3f` — feat: QA-fmt (Bloque 0) — formato ampliado V3 del generador QA
+  - `.claude/auditorias/TEMPLATE_QA.md`
+  - `.github/workflows/qa-pages.yml`
+  - `tools/generate-qa.js`
+  - `tools/generate-qa.test.js`
+
 - **15:39** `86dbd17` — fix: resolver 3 issues de smoke tests E2E (selector login, banner ambiente, mobile-safari)
   - `playwright.config.ts`
   - `src/compartido/componentes/ambiente-banner.tsx`

@@ -26,7 +26,7 @@ function normalizar(text) {
  * Parsea metadata del header del .md (líneas antes del primer ##)
  */
 function parsearMetadata(header) {
-  const meta = { titulo: '', spec: '', commit: '', url: '', fecha: '', auditor: '' }
+  const meta = { titulo: '', spec: '', commit: '', url: '', fecha: '', auditor: '', incluyeEje6: false, perfiles: [] }
 
   const tituloMatch = header.match(/^#\s+QA:\s*(.+)$/m)
   if (tituloMatch) meta.titulo = tituloMatch[1].trim()
@@ -43,8 +43,17 @@ function parsearMetadata(header) {
   const fechaMatch = header.match(/\*\*Fecha:\*\*\s*(.+)$/m)
   if (fechaMatch) meta.fecha = fechaMatch[1].trim()
 
-  const auditorMatch = header.match(/\*\*Auditor:\*\*\s*(.+)$/m)
+  // V3: Auditor(es) o Auditor
+  const auditorMatch = header.match(/\*\*Auditor(?:\(es\))?:\*\*\s*(.+)$/m)
   if (auditorMatch) meta.auditor = auditorMatch[1].trim()
+
+  // V3: Flag Eje 6
+  const eje6Match = header.match(/\*\*Incluye Eje 6.*?:\*\*\s*(.+)$/m)
+  if (eje6Match) meta.incluyeEje6 = normalizar(eje6Match[1]) === 'si'
+
+  // V3: Perfiles aplicables
+  const perfilesMatch = header.match(/\*\*Perfiles aplicables:\*\*\s*(.+)$/m)
+  if (perfilesMatch) meta.perfiles = perfilesMatch[1].split(',').map(p => p.trim())
 
   return meta
 }
@@ -282,6 +291,12 @@ function renderResultadoGlobal(contenido) {
   return html
 }
 
+function badgeVerificador(verificador) {
+  const v = (verificador || 'QA').trim()
+  const cls = v.includes('DEV') ? 'badge-dev' : 'badge-qa'
+  return `<span class="${cls}">${escapeHtml(v)}</span>`
+}
+
 function renderEje1(contenido) {
   const filas = parsearTabla(contenido)
   let html = `<div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2>`
@@ -290,10 +305,13 @@ function renderEje1(contenido) {
     const f = filas[i]
     const num = f['#'] || (i + 1)
     const criterio = f.criterio || ''
-    html += `<div class="item-card" data-eje="1" data-num="${num}">
+    const verificador = f.verificador || 'QA'
+    const dataVerif = verificador.includes('DEV') ? 'DEV' : 'QA'
+    html += `<div class="item-card" data-eje="1" data-num="${num}" data-verificador="${dataVerif}">
       <div class="item-header">
         <span class="item-num">#${escapeHtml(String(num))}</span>
         <span class="item-text">${escapeHtml(criterio)}</span>
+        ${badgeVerificador(verificador)}
       </div>
       <div class="item-controls">
         <div class="status-btns">
@@ -353,10 +371,13 @@ function renderEje3(contenido) {
   for (let i = 0; i < filas.length; i++) {
     const f = filas[i]
     const num = f['#'] || (i + 1)
-    html += `<div class="item-card" data-eje="3" data-num="${num}">
+    const verificador3 = f.verificador || 'QA'
+    const dataVerif3 = verificador3.includes('DEV') ? 'DEV' : 'QA'
+    html += `<div class="item-card" data-eje="3" data-num="${num}" data-verificador="${dataVerif3}">
       <div class="item-header">
         <span class="item-num">#${escapeHtml(String(num))}</span>
         <span class="item-text">${escapeHtml(f.caso || '')}</span>
+        ${badgeVerificador(verificador3)}
       </div>
       <div class="item-details">
         ${f.accion ? `<div class="detail-row"><span class="detail-label">Accion:</span> ${escapeHtml(f.accion)}</div>` : ''}
@@ -383,9 +404,12 @@ function renderEje4(contenido) {
 
   for (let i = 0; i < filas.length; i++) {
     const f = filas[i]
-    html += `<div class="item-card compact" data-eje="4" data-num="${i + 1}">
+    const verificador4 = f.verificador || 'QA'
+    const dataVerif4 = verificador4.includes('DEV') ? 'DEV' : 'QA'
+    html += `<div class="item-card compact" data-eje="4" data-num="${i + 1}" data-verificador="${dataVerif4}">
       <div class="item-header">
         <span class="item-text">${escapeHtml(f.verificacion || '')}</span>
+        ${badgeVerificador(verificador4)}
       </div>
       ${f.metodo ? `<div class="item-details"><span class="detail-label">Metodo:</span> ${escapeHtml(f.metodo)}</div>` : ''}
       <div class="item-controls">
@@ -424,6 +448,81 @@ function renderEje5(contenido) {
   }
   html += `</div>`
   return html
+}
+
+function renderContextoInstitucional(contenido) {
+  return `<div class="section" id="contexto-institucional">
+    <h2>Contexto institucional</h2>
+    <div class="readonly-block">${escapeHtml(contenido.trim())}</div>
+  </div>`
+}
+
+function renderObjetivo(contenido) {
+  return `<div class="section" id="objetivo-qa">
+    <h2>Objetivo de este QA</h2>
+    <div class="readonly-block">${escapeHtml(contenido.trim())}</div>
+  </div>`
+}
+
+/**
+ * Parsea subsecciones ### dentro del Eje 6 por perfil.
+ * Cada ### es un perfil (Politologo, Economista, Sociologo, Contador).
+ */
+function renderEje6(contenido) {
+  const bloques = contenido.split(/^### /m).filter(Boolean)
+  let html = `<div class="section" id="eje6"><h2>Eje 6 — Validacion de dominio</h2>`
+
+  for (const bloque of bloques) {
+    const lineas = bloque.split('\n')
+    const titulo = lineas[0].trim()
+    // Extraer nombre del perfil (primera palabra antes del —)
+    const perfilMatch = titulo.match(/^(\w+)/)
+    const perfil = perfilMatch ? normalizar(perfilMatch[1]) : 'todos'
+    const restContent = lineas.slice(1).join('\n')
+    const filas = parsearTabla(restContent)
+
+    html += `<div class="section collapsible collapsed" onclick="toggleCollapse(this)" data-perfil="${escapeHtml(perfil)}">
+      <h2>${escapeHtml(titulo)} <span class="collapse-icon">&#9654;</span></h2>
+      <div class="collapse-content">`
+
+    for (let i = 0; i < filas.length; i++) {
+      const f = filas[i]
+      const num = f['#'] || (i + 1)
+      const pregunta = f.pregunta || ''
+      html += `<div class="item-card" data-eje="6" data-num="${num}" data-verificador="perfil" data-perfil="${escapeHtml(perfil)}">
+        <div class="item-header">
+          <span class="item-num">#${escapeHtml(String(num))}</span>
+          <span class="item-text">${escapeHtml(pregunta)}</span>
+          <span class="badge-perfil">${escapeHtml(perfil)}</span>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>`
+    }
+    html += `</div></div>`
+  }
+  html += `</div>`
+  return html
+}
+
+function renderNotasAuditores() {
+  return `<div class="section" id="notas-auditores">
+    <h2>Notas de los auditores</h2>
+    <div class="field-group">
+      <label>Sergio (tecnico):</label>
+      <textarea class="large-textarea" id="textarea-notas-tecnico" placeholder="Observaciones tecnicas..." rows="4"></textarea>
+    </div>
+    <div class="field-group">
+      <label>Perfiles interdisciplinarios:</label>
+      <textarea class="large-textarea" id="textarea-notas-perfiles" placeholder="Observaciones de dominio..." rows="4"></textarea>
+    </div>
+  </div>`
 }
 
 function renderResumenIssues() {
@@ -466,6 +565,8 @@ function renderSeccionDesconocida(nombre, contenido) {
 
 const SECCION_MAP = {
   'como trabajar con este documento': renderComoTrabajar,
+  'contexto institucional': renderContextoInstitucional,
+  'objetivo de este qa': renderObjetivo,
   'credenciales de prueba': renderCredenciales,
   'resultado global': renderResultadoGlobal,
   'eje 1': renderEje1,
@@ -473,8 +574,10 @@ const SECCION_MAP = {
   'eje 3': renderEje3,
   'eje 4': renderEje4,
   'eje 5': renderEje5,
+  'eje 6': renderEje6,
   'resumen de issues abiertos': renderResumenIssues,
   'notas del auditor': renderNotasAuditor,
+  'notas de los auditores': renderNotasAuditores,
   'checklist de cierre': renderChecklist,
 }
 
@@ -720,12 +823,72 @@ const CSS = `
   .btn-issue.enviado { border-color: #27ae60; color: #27ae60; cursor: default; }
   .btn-issue.error { border-color: #e74c3c; color: #e74c3c; }
   .btn-issue:disabled { opacity: 0.6; cursor: not-allowed; }
+  .badge-qa {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+    background: #e3f2fd;
+    color: #1565c0;
+    margin-left: 8px;
+    flex-shrink: 0;
+  }
+  .badge-dev {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+    background: #f3e5f5;
+    color: #7b1fa2;
+    margin-left: 8px;
+    flex-shrink: 0;
+  }
+  .badge-perfil {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+    background: #fff3e0;
+    color: #e65100;
+    margin-left: 8px;
+    flex-shrink: 0;
+    text-transform: capitalize;
+  }
+  .filter-bar {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    background: white;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .filter-label { font-size: 13px; font-weight: 600; color: #555; margin-right: 4px; }
+  .filter-btn {
+    padding: 5px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    transition: all 0.15s;
+  }
+  .filter-btn:hover { border-color: #1e3a5f; color: #1e3a5f; }
+  .filter-btn.active { background: #1e3a5f; color: white; border-color: #1e3a5f; }
   @media (max-width: 600px) {
     body { padding: 10px; padding-bottom: 80px; }
     .meta-grid { grid-template-columns: 1fr; }
     .item-controls { flex-direction: column; }
     .obs-input { min-width: 100%; }
     .radio-group { flex-direction: column; }
+    .filter-bar { flex-direction: column; align-items: flex-start; }
   }
 `
 
@@ -734,6 +897,34 @@ const CSS = `
 // ============================================
 
 const JS = `
+  function filtrarPor(tipo) {
+    // Reset todos los botones de filtro
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.filter-btn[data-filter="' + tipo + '"]').classList.add('active');
+
+    document.querySelectorAll('.item-card, .paso-card').forEach(c => {
+      if (tipo === 'todos') { c.style.display = ''; return; }
+      const verif = c.dataset.verificador || 'QA';
+      const perfil = c.dataset.perfil || '';
+      if (tipo === 'QA' || tipo === 'DEV') {
+        c.style.display = verif === tipo ? '' : 'none';
+      } else {
+        // Filtro por perfil interdisciplinario
+        c.style.display = perfil === tipo ? '' : 'none';
+      }
+    });
+    // Ocultar/mostrar secciones de ejes vacias
+    document.querySelectorAll('.section[id^="eje"]').forEach(s => {
+      const visible = s.querySelectorAll('.item-card:not([style*="none"]), .paso-card:not([style*="none"])');
+      s.style.display = visible.length === 0 ? 'none' : '';
+    });
+    // Secciones dentro de eje6 (colapsables de perfil)
+    document.querySelectorAll('#eje6 .collapsible').forEach(s => {
+      const visible = s.querySelectorAll('.item-card:not([style*="none"])');
+      s.style.display = visible.length === 0 ? 'none' : '';
+    });
+  }
+
   function toggleCollapse(el) {
     if (el.querySelector('.collapse-content')) {
       el.classList.toggle('collapsed');
@@ -899,6 +1090,23 @@ const JS = `
       md += '\\n';
     }
 
+    // Eje 6
+    const eje6Cards = document.querySelectorAll('#eje6 .item-card');
+    if (eje6Cards.length > 0) {
+      md += '### Eje 6 — Validacion de dominio\\n';
+      md += '| # | Pregunta | Perfil | Resultado | Notas |\\n';
+      md += '|---|----------|--------|-----------|-------|\\n';
+      eje6Cards.forEach(c => {
+        const num = c.dataset.num;
+        const pregunta = c.querySelector('.item-text')?.textContent.trim() || '';
+        const perfil = c.dataset.perfil || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + num + ' | ' + pregunta + ' | ' + perfil + ' | ' + status + ' | ' + obs + ' |\\n';
+      });
+      md += '\\n';
+    }
+
     // Resumen issues
     const resumenIssues = document.getElementById('textarea-resumen-issues')?.value.trim();
     if (resumenIssues) {
@@ -906,11 +1114,19 @@ const JS = `
       md += resumenIssues + '\\n\\n';
     }
 
-    // Notas
+    // Notas (V2: textarea-notas, V3: textarea-notas-tecnico + textarea-notas-perfiles)
     const notas = document.getElementById('textarea-notas')?.value.trim();
     if (notas) {
       md += '### Notas del auditor\\n';
       md += notas + '\\n\\n';
+    }
+    const notasTecnico = document.getElementById('textarea-notas-tecnico')?.value.trim();
+    const notasPerfiles = document.getElementById('textarea-notas-perfiles')?.value.trim();
+    if (notasTecnico || notasPerfiles) {
+      md += '### Notas de los auditores\\n';
+      if (notasTecnico) md += '**Sergio (tecnico):** ' + notasTecnico + '\\n';
+      if (notasPerfiles) md += '**Perfiles interdisciplinarios:** ' + notasPerfiles + '\\n';
+      md += '\\n';
     }
 
     // Checklist
@@ -1015,11 +1231,22 @@ function generarHtml(mdPath) {
 
   let bodyHtml = renderMetaHeader(meta)
 
+  // V3: filtros por verificador/perfil
+  bodyHtml += `<div class="filter-bar" id="filter-bar">
+    <span class="filter-label">Filtrar:</span>
+    <button class="filter-btn active" data-filter="todos" onclick="filtrarPor('todos')">Todos</button>
+    <button class="filter-btn" data-filter="QA" onclick="filtrarPor('QA')">QA tecnico</button>
+    <button class="filter-btn" data-filter="DEV" onclick="filtrarPor('DEV')">DEV</button>
+    ${meta.incluyeEje6 && meta.perfiles.length > 0 ? meta.perfiles.map(p =>
+      `<button class="filter-btn" data-filter="${escapeHtml(normalizar(p))}" onclick="filtrarPor('${escapeHtml(normalizar(p))}')">${escapeHtml(p)}</button>`
+    ).join('') : ''}
+  </div>`
+
   for (const seccion of secciones) {
     const renderer = encontrarRenderer(seccion.nombreNorm)
     if (renderer) {
-      // renderResumenIssues y renderNotasAuditor no need content arg
-      if (renderer === renderResumenIssues || renderer === renderNotasAuditor) {
+      // renderers sin argumentos de contenido
+      if (renderer === renderResumenIssues || renderer === renderNotasAuditor || renderer === renderNotasAuditores) {
         bodyHtml += renderer()
       } else {
         bodyHtml += renderer(seccion.contenido)
@@ -1059,12 +1286,12 @@ function generarHtml(mdPath) {
 // ============================================
 
 /**
- * Genera un index.html con cards para cada QA_v2-*.md en el directorio.
- * Lee metadata de cada .md para mostrar título, fecha y spec.
+ * Genera un index.html con cards para cada QA_v2/v3-*.md en el directorio.
+ * V3 arriba (en curso), V2 abajo (historico, colapsado).
  */
 function generarIndex(dirPath) {
   const archivos = fs.readdirSync(dirPath)
-    .filter(f => f.startsWith('QA_v2-') && f.endsWith('.md'))
+    .filter(f => (f.startsWith('QA_v2-') || f.startsWith('QA_v3-')) && f.endsWith('.md'))
     .sort()
 
   const qas = archivos.map(archivo => {
@@ -1074,8 +1301,42 @@ function generarIndex(dirPath) {
     const meta = parsearMetadata(headerText)
     const htmlFile = archivo.replace('.md', '.html')
     const htmlExists = fs.existsSync(path.join(dirPath, htmlFile))
-    return { archivo, htmlFile, htmlExists, meta }
+    const version = archivo.startsWith('QA_v3-') ? 'v3' : 'v2'
+    return { archivo, htmlFile, htmlExists, meta, version }
   })
+
+  // Separar y ordenar por fecha (mas reciente primero)
+  const sortByFecha = (a, b) => (b.meta.fecha || '').localeCompare(a.meta.fecha || '')
+  const v3Qas = qas.filter(q => q.version === 'v3').sort(sortByFecha)
+  const v2Qas = qas.filter(q => q.version === 'v2').sort(sortByFecha)
+
+  function renderCard(qa) {
+    const tag = qa.htmlExists
+      ? '<span class="qa-badge badge-ready">HTML listo</span>'
+      : '<span class="qa-badge badge-pending">Sin generar</span>'
+    const cardTag = qa.htmlExists ? 'a' : 'div'
+    const href = qa.htmlExists ? ` href="${escapeHtml(qa.htmlFile)}"` : ''
+    const disabledClass = qa.htmlExists ? '' : ' disabled'
+
+    // Chips de perfiles si tiene Eje 6
+    let perfilesHtml = ''
+    if (qa.meta.perfiles && qa.meta.perfiles.length > 0) {
+      perfilesHtml = `<div class="qa-perfiles">${qa.meta.perfiles.map(p =>
+        `<span class="perfil-chip">${escapeHtml(p)}</span>`
+      ).join('')}</div>`
+    }
+
+    return `
+      <${cardTag}${href} class="qa-card${disabledClass}" data-version="${qa.version}">
+        <div class="qa-title">${escapeHtml(qa.meta.titulo || qa.archivo)}</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>${escapeHtml(qa.meta.spec || '—')}</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> ${escapeHtml(qa.meta.fecha || '—')}</div>
+          <div class="qa-meta-item">${tag}</div>
+        </div>
+        ${perfilesHtml}
+      </${cardTag}>`
+  }
 
   const INDEX_CSS = `
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -1092,20 +1353,32 @@ function generarIndex(dirPath) {
       color: white;
       padding: 24px 28px;
       border-radius: 12px;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
     .index-header h1 { font-size: 22px; margin-bottom: 4px; }
     .index-header p { font-size: 14px; opacity: 0.8; }
+    .index-filter-bar {
+      display: flex; gap: 6px; align-items: center;
+      background: white; border-radius: 10px;
+      padding: 10px 16px; margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .index-filter-label { font-size: 13px; font-weight: 600; color: #555; margin-right: 4px; }
+    .index-filter-btn {
+      padding: 5px 14px; border: 1px solid #ddd; border-radius: 6px;
+      background: white; cursor: pointer; font-size: 12px; font-weight: 600;
+      color: #555; transition: all 0.15s;
+    }
+    .index-filter-btn:hover { border-color: #1e3a5f; color: #1e3a5f; }
+    .index-filter-btn.active { background: #1e3a5f; color: white; border-color: #1e3a5f; }
+    .qa-section { margin-bottom: 24px; }
+    .qa-section-title { font-size: 17px; font-weight: 700; color: #1e3a5f; margin-bottom: 4px; }
+    .qa-section-desc { font-size: 13px; color: #888; margin-bottom: 12px; }
     .qa-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
     .qa-card {
-      background: white;
-      border: 1px solid #e8ecf1;
-      border-radius: 10px;
-      padding: 18px 22px;
-      text-decoration: none;
-      color: inherit;
-      transition: all 0.15s;
-      display: block;
+      background: white; border: 1px solid #e8ecf1; border-radius: 10px;
+      padding: 18px 22px; text-decoration: none; color: inherit;
+      transition: all 0.15s; display: block;
       box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
     .qa-card:hover { border-color: #1e3a5f; box-shadow: 0 2px 8px rgba(30,58,95,0.15); transform: translateY(-1px); }
@@ -1115,39 +1388,38 @@ function generarIndex(dirPath) {
     .qa-meta-item { display: flex; align-items: center; gap: 4px; }
     .qa-meta-label { font-weight: 600; color: #888; }
     .qa-badge {
-      display: inline-block;
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-weight: 600;
+      display: inline-block; font-size: 11px; padding: 2px 8px;
+      border-radius: 4px; font-weight: 600;
     }
     .badge-ready { background: #e8f5e9; color: #2e7d32; }
     .badge-pending { background: #fff3e0; color: #e65100; }
+    .qa-perfiles { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+    .perfil-chip {
+      font-size: 10px; padding: 2px 8px; border-radius: 10px;
+      background: #fff3e0; color: #e65100; font-weight: 600; text-transform: capitalize;
+    }
+    details summary { cursor: pointer; list-style: none; }
+    details summary::-webkit-details-marker { display: none; }
+    details summary::before { content: '\\25B6  '; font-size: 10px; color: #999; }
+    details[open] summary::before { content: '\\25BC  '; }
     @media (max-width: 600px) {
       body { padding: 10px; }
       .qa-meta { flex-direction: column; gap: 4px; }
+      .index-filter-bar { flex-wrap: wrap; }
     }
   `
 
-  let cardsHtml = ''
-  for (const qa of qas) {
-    const tag = qa.htmlExists
-      ? '<span class="qa-badge badge-ready">HTML listo</span>'
-      : '<span class="qa-badge badge-pending">Sin generar</span>'
-    const cardTag = qa.htmlExists ? 'a' : 'div'
-    const href = qa.htmlExists ? ` href="${escapeHtml(qa.htmlFile)}"` : ''
-    const disabledClass = qa.htmlExists ? '' : ' disabled'
-
-    cardsHtml += `
-      <${cardTag}${href} class="qa-card${disabledClass}">
-        <div class="qa-title">${escapeHtml(qa.meta.titulo || qa.archivo)}</div>
-        <div class="qa-meta">
-          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>${escapeHtml(qa.meta.spec || '—')}</code></div>
-          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> ${escapeHtml(qa.meta.fecha || '—')}</div>
-          <div class="qa-meta-item">${tag}</div>
-        </div>
-      </${cardTag}>`
-  }
+  const INDEX_JS = `
+    function filtrarIndex(tipo) {
+      document.querySelectorAll('.index-filter-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.index-filter-btn[data-filter="' + tipo + '"]').classList.add('active');
+      const v3Section = document.getElementById('section-v3');
+      const v2Section = document.getElementById('section-v2');
+      if (tipo === 'todos') { v3Section.style.display = ''; v2Section.style.display = ''; }
+      else if (tipo === 'v3') { v3Section.style.display = ''; v2Section.style.display = 'none'; }
+      else if (tipo === 'v2') { v3Section.style.display = 'none'; v2Section.style.display = ''; }
+    }
+  `
 
   const html = `<!DOCTYPE html>
 <html lang="es">
@@ -1161,12 +1433,37 @@ function generarIndex(dirPath) {
   <div class="container">
     <div class="index-header">
       <h1>Auditorias QA</h1>
-      <p>${qas.length} documentos de auditoria</p>
+      <p>${qas.length} documentos de auditoria (${v3Qas.length} V3 + ${v2Qas.length} V2)</p>
     </div>
-    <div class="qa-grid">
-      ${cardsHtml}
+
+    <div class="index-filter-bar">
+      <span class="index-filter-label">Filtrar:</span>
+      <button class="index-filter-btn active" data-filter="todos" onclick="filtrarIndex('todos')">Todos</button>
+      <button class="index-filter-btn" data-filter="v3" onclick="filtrarIndex('v3')">Solo V3</button>
+      <button class="index-filter-btn" data-filter="v2" onclick="filtrarIndex('v2')">Solo V2</button>
+    </div>
+
+    <div class="qa-section" id="section-v3">
+      <div class="qa-section-title">V3 — En curso</div>
+      <div class="qa-section-desc">Auditorias de specs V3 que se estan implementando ahora</div>
+      <div class="qa-grid">
+        ${v3Qas.length > 0 ? v3Qas.map(renderCard).join('') : '<p style="color:#999;font-size:13px;padding:8px">Sin QAs V3 todavia</p>'}
+      </div>
+    </div>
+
+    <div class="qa-section" id="section-v2">
+      <details>
+        <summary>
+          <span class="qa-section-title">V2 — Historico</span>
+          <span class="qa-section-desc" style="display:inline;margin-left:8px">Auditorias de specs V2 ya cerrados (referencia historica)</span>
+        </summary>
+        <div class="qa-grid" style="margin-top:12px">
+          ${v2Qas.map(renderCard).join('')}
+        </div>
+      </details>
     </div>
   </div>
+  <script>${INDEX_JS}</script>
 </body>
 </html>`
 
