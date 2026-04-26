@@ -3,6 +3,9 @@
 ## 2026-04-26
 
 ### Gerardo Breard
+- **16:55** `32cf6ba` — docs: regenerar QA S-04 con formato V3
+  - `.claude/auditorias/QA_v3-logs-admin-auditoria.md`
+
 - **16:48** `df28fae` — feat: index QA mejorado — secciones V3/V2, filtros, perfiles chips
   - `tools/generate-qa.js`
   - `tools/generate-qa.test.js`
