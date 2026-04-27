@@ -3,6 +3,9 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **18:44** `e832bc3` — docs: actualizar REVIEW S-02 con decisiones de CI/deploy
+  - `.claude/auditorias/REVIEW_v3-rate-limiting.md`
+
 - **18:40** `d9e0619` — fix: type error en redis-cleanup + excluir tests del build Next.js
   - `tests/e2e/_helpers/redis-cleanup.ts`
   - `tsconfig.json`
