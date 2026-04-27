@@ -3,6 +3,10 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **19:18** `a0aafb9` — docs: marcar items DEV verificados en QAs de S-01 y S-02
+  - `.claude/auditorias/QA_v3-cookies-seguridad.md`
+  - `.claude/auditorias/QA_v3-rate-limiting.md`
+
 - **19:00** `f35ad70` — docs: review S-02 completado — 21/25 verificados, CORS OK
   - `.claude/auditorias/REVIEW_v3-rate-limiting.md`
 
