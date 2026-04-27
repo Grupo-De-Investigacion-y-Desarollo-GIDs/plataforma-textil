@@ -7,8 +7,5 @@ import { limpiarRateLimit } from './_helpers/redis-cleanup'
  */
 export default async function globalSetup() {
   if (!process.env.UPSTASH_REDIS_REST_URL) return
-
-  await limpiarRateLimit('rl:*:login:*')
-  await limpiarRateLimit('rl:*:fb:*')
-  await limpiarRateLimit('rl:*:magic:*')
+  await limpiarRateLimit('rl:*')
 }

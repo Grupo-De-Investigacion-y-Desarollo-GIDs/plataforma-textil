@@ -3,28 +3,13 @@ import { ensureNotProduction } from './_helpers/safety'
 import { loginAs } from './_helpers/auth'
 import { limpiarRateLimit } from './_helpers/redis-cleanup'
 
-// Limpiar todos los ambientes para evitar contaminacion entre tests
-const FB_CLEANUP = 'rl:*:fb:*'
-const LOGIN_CLEANUP = 'rl:*:login:*'
-const MAGIC_CLEANUP = 'rl:*:magic:*'
-
-test.describe.serial('Rate limiting — S-02', () => {
-  // Limpiar antes de la suite para que el login no este rate-limited
-  test.beforeAll(async () => {
-    if (!process.env.UPSTASH_REDIS_REST_URL) return
-    await limpiarRateLimit(LOGIN_CLEANUP)
-    await limpiarRateLimit(FB_CLEANUP)
-    await limpiarRateLimit(MAGIC_CLEANUP)
-  })
-
-  test.afterAll(async () => {
-    if (!process.env.UPSTASH_REDIS_REST_URL) return
-    await limpiarRateLimit(FB_CLEANUP)
-    await limpiarRateLimit(MAGIC_CLEANUP)
-  })
-
+test.describe('Rate limiting — S-02', () => {
   test('login funciona despues del wrapper de rate limit', async ({ page }) => {
     await ensureNotProduction(page)
+    // Limpiar rate limit de login por si runs anteriores lo contaminaron
+    if (process.env.UPSTASH_REDIS_REST_URL) {
+      await limpiarRateLimit('rl:*:login:*')
+    }
     await loginAs(page, 'admin')
     expect(page.url()).toContain('/admin')
   })
@@ -33,11 +18,8 @@ test.describe.serial('Rate limiting — S-02', () => {
     await ensureNotProduction(page)
     test.skip(!process.env.UPSTASH_REDIS_REST_URL, 'Requiere UPSTASH_REDIS_REST_URL')
 
-    // Limpiar rate limit previo
-    await limpiarRateLimit(FB_CLEANUP)
+    await limpiarRateLimit('rl:*:fb:*')
 
-    // Enviar 11 requests con body invalido (no crea issues reales)
-    // Rate limit se evalua ANTES de validar body
     let lastStatus = 0
     let retryAfter = ''
     let bodyText = ''
@@ -59,18 +41,15 @@ test.describe.serial('Rate limiting — S-02', () => {
     expect(parseInt(retryAfter)).toBeGreaterThan(0)
     expect(bodyText).toContain('Demasiadas solicitudes')
 
-    // Cleanup inmediato
-    await limpiarRateLimit(FB_CLEANUP)
+    await limpiarRateLimit('rl:*:fb:*')
   })
 
   test('6 POSTs a /api/auth/signin/email retorna 429 (magic link spam)', async ({ page, request }) => {
     await ensureNotProduction(page)
     test.skip(!process.env.UPSTASH_REDIS_REST_URL, 'Requiere UPSTASH_REDIS_REST_URL')
 
-    await limpiarRateLimit(MAGIC_CLEANUP)
+    await limpiarRateLimit('rl:*:magic:*')
 
-    // Enviar 6 requests (limite es 5/hora)
-    // NextAuth procesa el body internamente pero el rate limit se evalua antes
     let lastStatus = 0
     let retryAfter = ''
 
@@ -88,6 +67,6 @@ test.describe.serial('Rate limiting — S-02', () => {
     expect(lastStatus).toBe(429)
     expect(retryAfter).toBeTruthy()
 
-    await limpiarRateLimit(MAGIC_CLEANUP)
+    await limpiarRateLimit('rl:*:magic:*')
   })
 })
