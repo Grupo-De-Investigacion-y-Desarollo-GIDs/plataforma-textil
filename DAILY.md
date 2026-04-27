@@ -1,8 +1,25 @@
 # Daily Log
 
+## 2026-04-27
+
+### Gerardo Breard
+- **13:01** `28a77af` — docs: review S-01 completado, crear PRUEBAS_PENDIENTES.md
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/REVIEW_v3-cookies-seguridad.md`
+
+
 ## 2026-04-26
 
 ### Gerardo Breard
+- **19:00** `dffca1f` — feat: v3-cookies-seguridad (S-01) — hardening de cookies NextAuth
+  - `.claude/auditorias/QA_v3-cookies-seguridad.md`
+  - `.claude/auditorias/REVIEW_v3-cookies-seguridad.md`
+  - `docs/seguridad/cookies.md`
+  - `src/__tests__/cookie-config.test.ts`
+  - `src/compartido/lib/auth.config.ts`
+  - `src/compartido/lib/auth.ts`
+  - `tests/e2e/cookies.spec.ts`
+
 - **18:06** `6d728b3` — feat: resumen de estado de issues en index QA V3
   - `src/__tests__/qa-aggregate.test.ts`
   - `src/app/api/feedback/all-qa-v3/route.ts`

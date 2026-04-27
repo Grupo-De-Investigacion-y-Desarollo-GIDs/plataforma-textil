@@ -26,7 +26,7 @@ const adapter = {
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   adapter,
-  session: { strategy: 'jwt' },
+  // session hereda de authConfig (strategy: jwt, maxAge: 7d, updateAge: 24h)
   providers: [
     Credentials({
       name: 'credentials',

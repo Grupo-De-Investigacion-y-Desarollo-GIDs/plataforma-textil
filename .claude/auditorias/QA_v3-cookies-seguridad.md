@@ -1,0 +1,157 @@
+# QA: Auditoria de configuracion de cookies NextAuth
+
+**Spec:** `v3-cookies-seguridad.md`
+**Commit de implementacion:** `pendiente`
+**URL de prueba:** https://plataforma-textil-dev.vercel.app
+**Fecha:** 2026-04-26
+**Auditor(es):** Sergio (tecnico)
+**Incluye Eje 6 de validacion de dominio:** no
+**Perfiles aplicables:**
+
+---
+
+## Contexto institucional
+
+La plataforma maneja datos sensibles: validaciones de talleres, certificados de formalizacion, informacion del Estado. Las cookies de sesion son el mecanismo que identifica a cada usuario logueado. Si una cookie se roba o se configura mal, un atacante podria operar como un ADMIN o un auditor del ESTADO. Este spec hardenea la configuracion de cookies para cumplir con estandares OWASP antes del piloto real con OIT.
+
+---
+
+## Objetivo de este QA
+
+Verificar que las cookies de sesion de la plataforma tienen los flags de seguridad correctos (httpOnly, secure, sameSite) y que el login/logout funcionan correctamente despues del cambio de configuracion.
+
+---
+
+## Como trabajar con este documento
+
+1. Abri este archivo y la plataforma en paralelo
+2. Los items marcados **DEV** los verifica Gerardo desde el codigo o DevTools — no son verificables solo desde el browser
+3. Los items marcados **QA** los verifica Sergio desde el browser
+4. Segui los pasos en orden
+5. Marca cada resultado con ok, bug o bloqueante
+6. Si el resultado no es ok → abri el widget azul "Feedback" → describi que paso
+
+---
+
+## Resultado global
+
+- [ ] Aprobado — todo funciona
+- [ ] Aprobado con fixes — funciona pero hay bugs menores
+- [ ] Rechazado — falta funcionalidad o hay bugs bloqueantes
+
+**Decision:** [ cerrar v3 / fix inmediato / abrir item v4 ]
+**Issues abiertos:** # (links a GitHub)
+
+---
+
+## Eje 1 — Funcionalidad
+
+| # | Criterio | Verificador | Resultado | Issue |
+|---|----------|-------------|-----------|-------|
+| 1 | Configuracion explicita de `session` y `cookies` en `auth.config.ts` (no en `auth.ts`) | DEV | | |
+| 2 | `auth.ts` hereda la config via `...authConfig` sin duplicar `session` | DEV | | |
+| 3 | Prefijos `__Secure-` y `__Host-` aplicados solo en production | DEV | | |
+| 4 | `httpOnly: true` en cookie de sesion | DEV | | |
+| 5 | `httpOnly: true` en cookie CSRF | DEV | | |
+| 6 | `secure: true` solo en production | DEV | | |
+| 7 | `sameSite: 'lax'` en ambas cookies | DEV | | |
+| 8 | `maxAge: 7 dias` con `updateAge: 24h` | DEV | | |
+| 9 | Test E2E `cookies.spec.ts` pasa con credenciales de seed | DEV | | |
+| 10 | Documentacion en `docs/seguridad/cookies.md` con justificacion | DEV | | |
+
+---
+
+## Eje 2 — Navegabilidad
+
+### Paso 1 — Login con credenciales
+
+- **Rol:** ADMIN (lucia.fernandez@pdt.org.ar / pdt2026)
+- **URL de inicio:** /login
+- **Verificador:** QA
+- **Accion:** Ingresar email y contrasena en el formulario de credenciales, click "Ingresar"
+- **Esperado:** Redirige a /admin/dashboard. El usuario ve su panel de administracion.
+- **Resultado:** [ ]
+- **Notas:**
+
+### Paso 2 — Verificar cookie en DevTools
+
+- **Rol:** ADMIN (ya logueado del paso 1)
+- **URL de inicio:** /admin (ya redirigido)
+- **Verificador:** DEV
+- **Accion:** Abrir DevTools > Application > Cookies > seleccionar el dominio. Buscar la cookie que contiene "session-token".
+- **Esperado:** Cookie con HttpOnly=true, SameSite=Lax, Path=/. Si es HTTPS: Secure=true y nombre empieza con `__Secure-`.
+- **Resultado:** [ ]
+- **Notas:**
+
+### Paso 3 — Login con otro rol
+
+- **Rol:** TALLER Bronce (roberto.gimenez@pdt.org.ar / pdt2026)
+- **URL de inicio:** /login
+- **Verificador:** QA
+- **Accion:** Cerrar sesion del admin. Loguearse como taller.
+- **Esperado:** Redirige a /taller. La sesion funciona normalmente.
+- **Resultado:** [ ]
+- **Notas:**
+
+### Paso 4 — Sesion persiste al recargar
+
+- **Rol:** Cualquiera (ya logueado)
+- **URL de inicio:** pagina actual
+- **Verificador:** QA
+- **Accion:** Recargar la pagina (F5)
+- **Esperado:** Sigue logueado, no redirige a /login
+- **Resultado:** [ ]
+- **Notas:**
+
+---
+
+## Eje 3 — Casos borde
+
+| # | Caso | Accion | Esperado | Verificador | Resultado |
+|---|------|--------|----------|-------------|-----------|
+| 1 | Cookie no accesible desde JS | En consola del browser ejecutar `document.cookie` | La cookie de sesion NO aparece en el resultado (httpOnly la oculta) | DEV | |
+| 2 | Logout limpia la cookie de sesion | Cerrar sesion y verificar cookies en DevTools | La cookie de sesion ya no esta presente | QA | |
+| 3 | Login despues de logout | Cerrar sesion y volver a loguearse | Login funciona, nueva cookie de sesion creada | QA | |
+| 4 | Acceso sin cookie a ruta protegida | En ventana de incognito, ir a /admin | Redirige a /login | QA | |
+
+---
+
+## Eje 4 — Performance
+
+| # | Verificacion | Metodo | Verificador | Resultado |
+|---|-------------|--------|-------------|-----------|
+| 1 | Login carga en menos de 3 segundos | DevTools > Network > recargar /login | QA | |
+| 2 | Sin errores en consola del browser | DevTools > Console > revisar despues del login | QA | |
+
+---
+
+## Eje 5 — Consistencia visual
+
+| Verificacion | Resultado | Notas |
+|-------------|-----------|-------|
+| Pagina de login se ve igual que antes del cambio | | |
+| No hay mensajes de error nuevos o inesperados | | |
+
+---
+
+## Resumen de issues abiertos
+
+| Issue | Tipo | Descripcion | Prioridad |
+|-------|------|-------------|-----------|
+
+---
+
+## Notas de los auditores
+
+**Sergio (tecnico):**
+
+---
+
+## Checklist de cierre
+
+- [ ] Todos los criterios de aceptacion del spec verificados
+- [ ] Casos borde probados
+- [ ] Performance revisada
+- [ ] Issues abiertos en GitHub con labels correctos
+- [ ] Resultado global definido
+- [ ] Documento commiteado a develop
