@@ -3,6 +3,10 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **18:40** `d9e0619` — fix: type error en redis-cleanup + excluir tests del build Next.js
+  - `tests/e2e/_helpers/redis-cleanup.ts`
+  - `tsconfig.json`
+
 - **18:30** `a195e8f` — fix: esperar deploy de Vercel antes de correr E2E en CI
   - `.github/workflows/e2e.yml`
   - `src/app/api/health/version/route.ts`
