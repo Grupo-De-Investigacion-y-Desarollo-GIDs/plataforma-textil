@@ -21,6 +21,8 @@ jobs:
       TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
       TEST_ESTADO_EMAIL: ${{ secrets.TEST_ESTADO_EMAIL }}
       TEST_ESTADO_PASSWORD: ${{ secrets.TEST_ESTADO_PASSWORD }}
+      UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL_TEST }}
+      UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN_TEST }}
 
     steps:
       - uses: actions/checkout@v4
@@ -30,6 +32,21 @@ jobs:
           node-version: '20'
 
       - run: npm ci
+
+      - name: Wait for Vercel deployment
+        run: |
+          EXPECTED_SHA="${{ github.sha }}"
+          echo "Waiting for deploy with SHA: $EXPECTED_SHA"
+          for i in {1..30}; do
+            ACTUAL_SHA=$(curl -s "${{ secrets.TEST_BASE_URL }}/api/health/version" 2>/dev/null | jq -r '.sha // empty' || echo "")
+            if [ "$ACTUAL_SHA" = "$EXPECTED_SHA" ]; then
+              echo "Deploy ready (attempt $i)"
+              exit 0
+            fi
+            echo "Attempt $i/30: not ready (got: ${ACTUAL_SHA:0:12}, want: ${EXPECTED_SHA:0:12})"
+            sleep 10
+          done
+          echo "::warning::Timeout waiting for Vercel deploy — running tests against current deploy"
 
       - run: npx playwright install --with-deps chromium
 

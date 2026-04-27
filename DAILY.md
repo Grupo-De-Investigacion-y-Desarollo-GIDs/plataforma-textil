@@ -3,6 +3,85 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **19:00** `f35ad70` — docs: review S-02 completado — 21/25 verificados, CORS OK
+  - `.claude/auditorias/REVIEW_v3-rate-limiting.md`
+
+- **18:52** `b450a3d` — fix: ampliar exclusiones en tsconfig.json para tests y tools
+  - `tsconfig.json`
+
+- **18:44** `e832bc3` — docs: actualizar REVIEW S-02 con decisiones de CI/deploy
+  - `.claude/auditorias/REVIEW_v3-rate-limiting.md`
+
+- **18:40** `d9e0619` — fix: type error en redis-cleanup + excluir tests del build Next.js
+  - `tests/e2e/_helpers/redis-cleanup.ts`
+  - `tsconfig.json`
+
+- **18:30** `a195e8f` — fix: esperar deploy de Vercel antes de correr E2E en CI
+  - `.github/workflows/e2e.yml`
+  - `src/app/api/health/version/route.ts`
+
+- **18:11** `5972b66` — fix: timeout 5s en Redis cleanup, limpiar login keys en cada test
+  - `tests/e2e/_helpers/redis-cleanup.ts`
+  - `tests/e2e/ratelimit.spec.ts`
+
+- **17:55** `53f66f8` — fix: revertir skip de tests Redis en CI
+  - `tests/e2e/ratelimit.spec.ts`
+
+- **17:43** `973de84` — fix: remover globalSetup que colgaba CI conectando a Redis
+  - `playwright.config.ts`
+  - `tests/e2e/global-setup.ts`
+  - `tests/e2e/ratelimit.spec.ts`
+
+- **17:34** `9029de5` — fix: skip tests de Redis en CI, correr solo manualmente
+  - `tests/e2e/ratelimit.spec.ts`
+
+- **17:21** `e50663e` — fix: remover serial de tests rate limit, evitar timeout de 30min
+  - `tests/e2e/global-setup.ts`
+  - `tests/e2e/ratelimit.spec.ts`
+
+- **16:40** `2174930` — fix: globalSetup limpia rate limit keys antes de todos los E2E
+  - `playwright.config.ts`
+  - `tests/e2e/global-setup.ts`
+
+- **16:34** `ae90646` — fix: remover test fragil de cleanup, migrar KEYS a SCAN
+  - `tests/e2e/_helpers/redis-cleanup.ts`
+  - `tests/e2e/ratelimit.spec.ts`
+
+- **16:31** `f82d9ff` — test: E2E para magic link rate limit + actualizar REVIEW y PRUEBAS
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/REVIEW_v3-rate-limiting.md`
+  - `tests/e2e/ratelimit.spec.ts`
+
+- **16:15** `9117015` — fix: rate limit en /api/auth/signin/email (magic links)
+  - `src/app/api/auth/[...nextauth]/route.ts`
+  - `src/compartido/lib/ratelimit.ts`
+
+- **15:11** `127d648` — fix: cleanup de rate limit en E2E usa wildcard de ambiente
+  - `tests/e2e/ratelimit.spec.ts`
+
+- **14:59** `261d6ec` — ci: agregar env vars de Upstash al workflow E2E
+  - `.github/workflows/e2e.yml`
+
+- **14:47** `a121869` — feat: v3-rate-limiting (S-02) — rate limiting en 9 endpoints criticos
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-rate-limiting.md`
+  - `.claude/auditorias/REVIEW_v3-rate-limiting.md`
+  - `package-lock.json`
+  - `package.json`
+  - `src/__tests__/ratelimit.test.ts`
+  - `src/app/api/auth/[...nextauth]/route.ts`
+  - `src/app/api/auth/registro/route.ts`
+  - `src/app/api/auth/verificar-cuit/route.ts`
+  - `src/app/api/chat/route.ts`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/app/api/denuncias/route.ts`
+  - `src/app/api/feedback/route.ts`
+  - `src/app/api/pedidos/route.ts`
+  - `src/app/api/validaciones/[id]/upload/route.ts`
+  - `src/compartido/lib/ratelimit.ts`
+  - `tests/e2e/_helpers/redis-cleanup.ts`
+  - `tests/e2e/ratelimit.spec.ts`
+
 - **13:01** `28a77af` — docs: review S-01 completado, crear PRUEBAS_PENDIENTES.md
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `.claude/auditorias/REVIEW_v3-cookies-seguridad.md`

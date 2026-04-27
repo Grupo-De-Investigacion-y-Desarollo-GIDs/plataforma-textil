@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { uploadFile } from '@/compartido/lib/storage'
+import { rateLimit } from '@/compartido/lib/ratelimit'
 
 const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp']
 const MAX_SIZE = 5 * 1024 * 1024 // 5MB
@@ -10,6 +11,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   try {
     const session = await auth()
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+
+    const userRole = (session.user as { role?: string }).role
+    if (userRole !== 'ADMIN' && userRole !== 'ESTADO') {
+      const blocked = await rateLimit(req, 'upload', session.user.id!)
+      if (blocked) return blocked
+    }
 
     const { id } = await params
 

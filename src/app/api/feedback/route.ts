@@ -1,14 +1,19 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/compartido/lib/auth'
 import { logActividad } from '@/compartido/lib/log'
 import { corsHeaders, handleOptions } from '@/compartido/lib/cors'
 import { buildIssueLabels, buildIssueBody } from '@/compartido/lib/feedback'
+import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
 
 export async function OPTIONS(request: Request) {
   return handleOptions(request)
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  // Rate limiting ANTES de validar body
+  const ip = getClientIp(request)
+  const blocked = await rateLimit(request, 'feedback', ip)
+  if (blocked) return blocked
   const session = await auth()
 
   const body = await request.json()
