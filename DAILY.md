@@ -3,6 +3,10 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **19:31** `02ba56d` — feat: progreso de verificacion DEV/QA en index de auditorias
+  - `tools/generate-qa.js`
+  - `tools/generate-qa.test.js`
+
 - **19:18** `a0aafb9` — docs: marcar items DEV verificados en QAs de S-01 y S-02
   - `.claude/auditorias/QA_v3-cookies-seguridad.md`
   - `.claude/auditorias/QA_v3-rate-limiting.md`
