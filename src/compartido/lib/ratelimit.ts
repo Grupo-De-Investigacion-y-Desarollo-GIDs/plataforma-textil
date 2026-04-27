@@ -98,11 +98,30 @@ export function getClientIp(req: NextRequest): string {
 }
 
 /**
+ * Verifica si la request tiene un bypass token valido para CI.
+ * Solo aplica en ambientes no-produccion para que los E2E tests
+ * no se bloqueen por rate limit (runners de GitHub comparten IPs).
+ */
+export function isCiBypass(req: NextRequest): boolean {
+  const bypassToken = process.env.CI_BYPASS_TOKEN
+  if (!bypassToken) return false
+
+  const currentEnv = process.env.VERCEL_ENV ?? 'development'
+  if (currentEnv === 'production') return false
+
+  const headerValue = req.headers.get('x-ci-bypass')
+  return headerValue === bypassToken
+}
+
+/**
  * Aplica rate limiting a una request.
  * Retorna NextResponse con 429 si se excede el limite, null si pasa.
  *
  * Si Redis no esta configurado o esta caido, falla abierto (permite la
  * request) para no romper la plataforma.
+ *
+ * Si la request tiene un bypass token valido de CI (solo en preview/dev),
+ * se salta el rate limit para evitar que runners de GitHub se bloqueen.
  */
 export async function rateLimit(
   req: NextRequest,
@@ -110,6 +129,7 @@ export async function rateLimit(
   identifier: string
 ): Promise<NextResponse | null> {
   if (!limiters) return null
+  if (isCiBypass(req)) return null
 
   try {
     const limiter = limiters[limiterKey]

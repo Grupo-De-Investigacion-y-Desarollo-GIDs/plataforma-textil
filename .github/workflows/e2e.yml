@@ -23,6 +23,7 @@ jobs:
       TEST_ESTADO_PASSWORD: ${{ secrets.TEST_ESTADO_PASSWORD }}
       UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL_TEST }}
       UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN_TEST }}
+      CI_BYPASS_TOKEN: ${{ secrets.CI_BYPASS_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4

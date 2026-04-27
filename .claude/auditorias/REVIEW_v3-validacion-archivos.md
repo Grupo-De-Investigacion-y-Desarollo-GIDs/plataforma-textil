@@ -78,3 +78,4 @@
 - El endpoint `/api/colecciones/[id]/evaluacion` usa `uploadFile` pero genera QR server-side (no recibe archivos del usuario), no requiere validacion S-03.
 - Cotizaciones usan config `imagenes-pedido` porque comparten los mismos tipos de imagen.
 - Rate limit ahora cubre los 2 endpoints de upload del usuario (estaba faltando en imagenes).
+- **Bug CI E2E #36**: los 7 tests fallidos no eran de S-03 sino del rate limit de S-02 — los runners de GitHub Actions comparten IPs y acumulaban rate limit entre runs, bloqueando todos los logins con 429. Resuelto con bypass token (ver REVIEW_v3-rate-limiting.md).

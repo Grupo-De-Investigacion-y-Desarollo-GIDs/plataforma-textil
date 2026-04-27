@@ -24,6 +24,7 @@
 - [x] **verificar-cuit es GET, no POST** — el spec decia POST pero el endpoint real es GET. Rate limit aplicado al GET.
 - [x] **Deploy wait en CI** — el workflow E2E ahora pollea `/api/health/version` hasta que el SHA del deploy coincida con el commit. Esto resuelve la race condition donde Playwright corria contra un deploy viejo. Endpoint nuevo: `src/app/api/health/version/route.ts`.
 - [x] **tsconfig.json excluye tests/** — Next.js compilaba `tests/e2e/**/*.ts` en el build. Un type error en redis-cleanup.ts rompia todos los deploys de Preview. Con `"exclude": ["node_modules", "tests", "src/__tests__", "tools"]` el build no toca archivos de test.
+- [x] **CI bypass token para rate limit** — los runners de GitHub Actions comparten pool de IPs y acumulan rate limit entre runs. Esto bloqueaba TODOS los logins del CI con 429 → "Error inesperado". Solucion: `isCiBypass()` en rateLimit.ts chequea header `x-ci-bypass` contra `CI_BYPASS_TOKEN`. Solo aplica si: (1) CI_BYPASS_TOKEN esta configurado, (2) VERCEL_ENV no es 'production'. Playwright envia el header via `extraHTTPHeaders` en la config. 6 tests Vitest cubren todos los edge cases (token correcto, incorrecto, ausente, env production).
 
 ### Riesgos no cubiertos por tests automatizados
 
