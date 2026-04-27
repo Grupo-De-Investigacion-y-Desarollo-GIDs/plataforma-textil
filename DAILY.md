@@ -3,6 +3,10 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **18:11** `5972b66` — fix: timeout 5s en Redis cleanup, limpiar login keys en cada test
+  - `tests/e2e/_helpers/redis-cleanup.ts`
+  - `tests/e2e/ratelimit.spec.ts`
+
 - **17:55** `53f66f8` — fix: revertir skip de tests Redis en CI
   - `tests/e2e/ratelimit.spec.ts`
 
