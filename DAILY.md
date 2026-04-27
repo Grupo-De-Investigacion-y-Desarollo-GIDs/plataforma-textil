@@ -3,6 +3,9 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **18:52** `b450a3d` — fix: ampliar exclusiones en tsconfig.json para tests y tools
+  - `tsconfig.json`
+
 - **18:44** `e832bc3` — docs: actualizar REVIEW S-02 con decisiones de CI/deploy
   - `.claude/auditorias/REVIEW_v3-rate-limiting.md`
 
