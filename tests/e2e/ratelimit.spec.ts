@@ -6,10 +6,6 @@ import { limpiarRateLimit } from './_helpers/redis-cleanup'
 test.describe('Rate limiting — S-02', () => {
   test('login funciona despues del wrapper de rate limit', async ({ page }) => {
     await ensureNotProduction(page)
-    // Limpiar rate limit de login por si runs anteriores lo contaminaron
-    if (process.env.UPSTASH_REDIS_REST_URL) {
-      await limpiarRateLimit('rl:*:login:*')
-    }
     await loginAs(page, 'admin')
     expect(page.url()).toContain('/admin')
   })
