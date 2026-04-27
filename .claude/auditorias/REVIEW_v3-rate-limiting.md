@@ -22,6 +22,8 @@
 - [ ] **Magic link rate limit agregado post-spec** — el spec original no cubria `/api/auth/signin/email`. Gerardo lo detecto en review: sin limite, un atacante puede consumir la cuota de SendGrid. Mismo patron que login: intercepta en el catch-all de NextAuth, 5/hora por IP.
 - [ ] **`admin/mensajes-individuales` omitido** — el endpoint no existe todavia. Se agrega cuando se implemente F-07.
 - [ ] **verificar-cuit es GET, no POST** — el spec decia POST pero el endpoint real es GET. Rate limit aplicado al GET.
+- [ ] **Deploy wait en CI** — el workflow E2E ahora pollea `/api/health/version` hasta que el SHA del deploy coincida con el commit. Esto resuelve la race condition donde Playwright corria contra un deploy viejo. Endpoint nuevo: `src/app/api/health/version/route.ts`.
+- [ ] **tsconfig.json excluye tests/** — Next.js compilaba `tests/e2e/**/*.ts` en el build. Un type error en redis-cleanup.ts rompia todos los deploys de Preview. Con `"exclude": ["node_modules", "tests"]` el build no toca archivos de test.
 
 ### Riesgos no cubiertos por tests automatizados
 
