@@ -3,6 +3,26 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **14:47** `a121869` — feat: v3-rate-limiting (S-02) — rate limiting en 9 endpoints criticos
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-rate-limiting.md`
+  - `.claude/auditorias/REVIEW_v3-rate-limiting.md`
+  - `package-lock.json`
+  - `package.json`
+  - `src/__tests__/ratelimit.test.ts`
+  - `src/app/api/auth/[...nextauth]/route.ts`
+  - `src/app/api/auth/registro/route.ts`
+  - `src/app/api/auth/verificar-cuit/route.ts`
+  - `src/app/api/chat/route.ts`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/app/api/denuncias/route.ts`
+  - `src/app/api/feedback/route.ts`
+  - `src/app/api/pedidos/route.ts`
+  - `src/app/api/validaciones/[id]/upload/route.ts`
+  - `src/compartido/lib/ratelimit.ts`
+  - `tests/e2e/_helpers/redis-cleanup.ts`
+  - `tests/e2e/ratelimit.spec.ts`
+
 - **13:01** `28a77af` — docs: review S-01 completado, crear PRUEBAS_PENDIENTES.md
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `.claude/auditorias/REVIEW_v3-cookies-seguridad.md`
