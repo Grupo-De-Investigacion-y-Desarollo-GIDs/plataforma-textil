@@ -3,6 +3,9 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **15:11** `127d648` — fix: cleanup de rate limit en E2E usa wildcard de ambiente
+  - `tests/e2e/ratelimit.spec.ts`
+
 - **14:59** `261d6ec` — ci: agregar env vars de Upstash al workflow E2E
   - `.github/workflows/e2e.yml`
 
