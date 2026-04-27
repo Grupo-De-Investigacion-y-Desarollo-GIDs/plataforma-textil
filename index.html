@@ -68,6 +68,40 @@
     details summary::-webkit-details-marker { display: none; }
     details summary::before { content: '\25B6  '; font-size: 10px; color: #999; }
     details[open] summary::before { content: '\25BC  '; }
+    /* Progreso de verificacion */
+    .progreso-global-panel {
+      background: white; border: 1px solid #e8ecf1; border-radius: 10px;
+      padding: 18px 22px; margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .progreso-global-panel h3 { font-size: 15px; font-weight: 700; color: #1e3a5f; margin-bottom: 10px; }
+    .prog-bar-container {
+      background: #e8ecf1; border-radius: 6px; height: 8px; overflow: hidden; margin-bottom: 6px;
+    }
+    .prog-bar-lg { height: 12px; }
+    .prog-bar {
+      background: linear-gradient(90deg, #2e7d32, #43a047); height: 100%; border-radius: 6px;
+      transition: width 0.3s;
+    }
+    .prog-info {
+      display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+      font-size: 12px; color: #666; margin-top: 4px;
+    }
+    .prog-info-global { font-size: 13px; }
+    .prog-pct { font-weight: 600; color: #333; }
+    .prog-complete {
+      color: #2e7d32; font-weight: 600; padding: 1px 8px;
+      background: #e8f5e9; border-radius: 4px;
+    }
+    .prog-pending {
+      color: #e65100; font-weight: 600; padding: 1px 8px;
+      background: #fff3e0; border-radius: 4px;
+    }
+    .prog-bugs {
+      color: #c62828; font-weight: 600; padding: 1px 8px;
+      background: #ffeaea; border-radius: 4px;
+    }
+    .qa-progreso { margin-top: 10px; }
     /* Panel global de estado */
     .estado-global-panel {
       background: white; border: 1px solid #e8ecf1; border-radius: 10px;
@@ -144,8 +178,19 @@
       <button class="index-filter-btn" data-filter="v2" onclick="filtrarIndex('v2')">Solo V2</button>
     </div>
 
+    <div class="progreso-global-panel">
+      <h3>Progreso de verificacion V3</h3>
+      <div class="prog-bar-container prog-bar-lg">
+        <div class="prog-bar" style="width:19%"></div>
+      </div>
+      <div class="prog-info prog-info-global">
+        <span class="prog-pct">25/130 verificados (19%)</span>
+        <span class="prog-pending">DEV: 25/59</span> <span class="prog-pending">QA: 0/71 pendiente</span> 
+      </div>
+    </div>
+
     <div class="estado-global-panel" id="estado-global">
-      <h3>Estado de auditorias V3</h3>
+      <h3>Issues reportados V3</h3>
       <p class="estado-disabled-msg">Cargando...</p>
     </div>
 
@@ -162,6 +207,15 @@
           <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
         </div>
         <div class="qa-perfiles"><span class="perfil-chip">---</span></div>
+        <div class="qa-progreso">
+          <div class="prog-bar-container">
+            <div class="prog-bar" style="width:59%"></div>
+          </div>
+          <div class="prog-info">
+            <span class="prog-pct">13/22 verificados (59%)</span>
+            <span class="prog-complete">DEV: 13/13</span> <span class="prog-pending">QA: 0/9</span>
+          </div>
+        </div>
         <div class="estado-resumen"></div>
         <div class="estado-detalle" style="display:none"></div>
       </a>
@@ -173,6 +227,15 @@
           <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
         </div>
         <div class="qa-perfiles"><span class="perfil-chip">---</span></div>
+        <div class="qa-progreso">
+          <div class="prog-bar-container">
+            <div class="prog-bar" style="width:55%"></div>
+          </div>
+          <div class="prog-info">
+            <span class="prog-pct">12/22 verificados (55%)</span>
+            <span class="prog-complete">DEV: 12/12</span> <span class="prog-pending">QA: 0/10</span>
+          </div>
+        </div>
         <div class="estado-resumen"></div>
         <div class="estado-detalle" style="display:none"></div>
       </a>
@@ -184,6 +247,15 @@
           <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
         </div>
         
+        <div class="qa-progreso">
+          <div class="prog-bar-container">
+            <div class="prog-bar" style="width:0%"></div>
+          </div>
+          <div class="prog-info">
+            <span class="prog-pct">0/38 verificados (0%)</span>
+            <span class="prog-pending">DEV: 0/7</span> <span class="prog-pending">QA: 0/31</span>
+          </div>
+        </div>
         <div class="estado-resumen"></div>
         <div class="estado-detalle" style="display:none"></div>
       </a>
@@ -195,6 +267,15 @@
           <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
         </div>
         
+        <div class="qa-progreso">
+          <div class="prog-bar-container">
+            <div class="prog-bar" style="width:0%"></div>
+          </div>
+          <div class="prog-info">
+            <span class="prog-pct">0/27 verificados (0%)</span>
+            <span class="prog-pending">DEV: 0/15</span> <span class="prog-pending">QA: 0/12</span>
+          </div>
+        </div>
         <div class="estado-resumen"></div>
         <div class="estado-detalle" style="display:none"></div>
       </a>
@@ -206,6 +287,15 @@
           <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
         </div>
         
+        <div class="qa-progreso">
+          <div class="prog-bar-container">
+            <div class="prog-bar" style="width:0%"></div>
+          </div>
+          <div class="prog-info">
+            <span class="prog-pct">0/21 verificados (0%)</span>
+            <span class="prog-pending">DEV: 0/12</span> <span class="prog-pending">QA: 0/9</span>
+          </div>
+        </div>
         <div class="estado-resumen"></div>
         <div class="estado-detalle" style="display:none"></div>
       </a>
