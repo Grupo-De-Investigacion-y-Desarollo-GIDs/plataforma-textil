@@ -3,9 +3,8 @@ import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { uploadFile } from '@/compartido/lib/storage'
 import { rateLimit } from '@/compartido/lib/ratelimit'
-
-const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp']
-const MAX_SIZE = 5 * 1024 * 1024 // 5MB
+import { validarArchivo, sanitizarNombreArchivo } from '@/compartido/lib/file-validation'
+import { logActividad } from '@/compartido/lib/log'
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -39,15 +38,21 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const file = formData.get('file') as File | null
     if (!file) return NextResponse.json({ error: 'Archivo requerido' }, { status: 400 })
 
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      return NextResponse.json({ error: 'Tipo de archivo no permitido. Usá PDF, JPG o PNG.' }, { status: 400 })
-    }
-    if (file.size > MAX_SIZE) {
-      return NextResponse.json({ error: 'Archivo demasiado grande (máx 5MB)' }, { status: 400 })
+    // Validacion server-side por magic bytes y config de DB
+    const resultado = await validarArchivo(file, 'documentos-formalizacion')
+    if (!resultado.valid) {
+      logActividad('UPLOAD_REJECTED', session.user.id, {
+        contexto: 'documentos-formalizacion',
+        motivo: resultado.error,
+        nombreArchivo: file.name,
+        tamano: file.size,
+      })
+      return NextResponse.json({ error: resultado.error }, { status: 400 })
     }
 
+    const nombreSeguro = sanitizarNombreArchivo(file.name)
+    const ext = nombreSeguro.split('.').pop() || 'pdf'
     const buffer = Buffer.from(await file.arrayBuffer())
-    const ext = file.name.split('.').pop() || 'pdf'
     const path = `validaciones/${validacion.tallerId}/${id}.${ext}`
 
     let url: string

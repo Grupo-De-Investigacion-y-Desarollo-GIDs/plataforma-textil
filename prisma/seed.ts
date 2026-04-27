@@ -37,6 +37,7 @@ async function main() {
   await prisma.prendaProceso.deleteMany()
   await prisma.tipoPrenda.deleteMany()
   await prisma.procesoProductivo.deleteMany()
+  await prisma.configuracionUpload.deleteMany()
   await prisma.configuracionSistema.deleteMany()
   await prisma.taller.deleteMany()
   await prisma.marca.deleteMany()
@@ -777,6 +778,38 @@ async function main() {
   })
 
   console.log('  ✓ Configuración del sistema y feature flags')
+
+  // ============================================
+  // CONFIGURACIÓN DE UPLOAD
+  // ============================================
+  await prisma.configuracionUpload.createMany({
+    data: [
+      {
+        contexto: 'documentos-formalizacion',
+        nombre: 'Documentos de formalización',
+        descripcion: 'Documentos que el taller sube para validar su nivel (ART, monotributo, habilitaciones)',
+        tiposPermitidos: ['pdf', 'jpeg', 'png'],
+        tamanoMaximoMB: 5,
+      },
+      {
+        contexto: 'imagenes-portfolio',
+        nombre: 'Imágenes de portfolio del taller',
+        descripcion: 'Fotos de trabajo y producción del taller',
+        tiposPermitidos: ['jpeg', 'png', 'webp'],
+        tamanoMaximoMB: 5,
+      },
+      {
+        contexto: 'imagenes-pedido',
+        nombre: 'Imágenes de referencia de pedidos',
+        descripcion: 'Fotos que la marca adjunta al crear un pedido',
+        tiposPermitidos: ['jpeg', 'png', 'webp'],
+        tamanoMaximoMB: 5,
+      },
+    ],
+    skipDuplicates: true,
+  })
+
+  console.log('  ✓ Configuración de upload')
 
   // ============================================
   // PEDIDOS PUBLICADOS (marketplace)

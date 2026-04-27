@@ -1,16 +1,29 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { uploadFile } from '@/compartido/lib/storage'
+import { rateLimit } from '@/compartido/lib/ratelimit'
+import { validarArchivo, sanitizarNombreArchivo } from '@/compartido/lib/file-validation'
+import { logActividad } from '@/compartido/lib/log'
 
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
-const MAX_SIZE = 5 * 1024 * 1024 // 5MB
+// Mapeo de contexto del form al contexto de ConfiguracionUpload
+const CONTEXTO_CONFIG: Record<string, string> = {
+  portfolio: 'imagenes-portfolio',
+  pedido: 'imagenes-pedido',
+  cotizacion: 'imagenes-pedido', // cotizaciones usan la misma config de imagenes
+}
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const session = await auth()
     if (!session?.user) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    }
+
+    const userRole = (session.user as { role?: string }).role
+    if (userRole !== 'ADMIN' && userRole !== 'ESTADO') {
+      const blocked = await rateLimit(request, 'upload', session.user.id!)
+      if (blocked) return blocked
     }
 
     const formData = await request.formData()
@@ -22,18 +35,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Faltan datos' }, { status: 400 })
     }
 
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      return NextResponse.json(
-        { error: 'Formato no soportado. Usa JPG, PNG o WebP.' },
-        { status: 400 }
-      )
+    const contextoConfig = CONTEXTO_CONFIG[contexto]
+    if (!contextoConfig) {
+      return NextResponse.json({ error: 'Contexto invalido' }, { status: 400 })
     }
 
-    if (file.size > MAX_SIZE) {
-      return NextResponse.json(
-        { error: 'La imagen no puede superar 5MB' },
-        { status: 400 }
-      )
+    // Validacion server-side por magic bytes y config de DB
+    const resultado = await validarArchivo(file, contextoConfig)
+    if (!resultado.valid) {
+      logActividad('UPLOAD_REJECTED', session.user.id, {
+        contexto: contextoConfig,
+        motivo: resultado.error,
+        nombreArchivo: file.name,
+        tamano: file.size,
+      })
+      return NextResponse.json({ error: resultado.error }, { status: 400 })
     }
 
     // Validar ownership segun contexto
@@ -50,7 +66,6 @@ export async function POST(request: Request) {
         include: { marca: { select: { userId: true } } },
       })
       if (!pedido || pedido.marca.userId !== session.user.id) {
-        // Also allow if entityId is a marcaId (for new pedidos that don't exist yet)
         const marca = await prisma.marca.findFirst({
           where: { id: entityId, userId: session.user.id },
         })
@@ -65,12 +80,11 @@ export async function POST(request: Request) {
       if (!taller) {
         return NextResponse.json({ error: 'Sin acceso' }, { status: 403 })
       }
-    } else {
-      return NextResponse.json({ error: 'Contexto invalido' }, { status: 400 })
     }
 
     // Construir path seguro server-side
-    const ext = file.name.split('.').pop() ?? 'jpg'
+    const nombreSeguro = sanitizarNombreArchivo(file.name)
+    const ext = nombreSeguro.split('.').pop() ?? 'jpg'
     const timestamp = Date.now()
     const path = `${contexto}/${entityId}/${timestamp}.${ext}`
 
