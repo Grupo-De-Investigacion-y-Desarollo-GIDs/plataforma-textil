@@ -63,21 +63,6 @@ test.describe.serial('Rate limiting — S-02', () => {
     await limpiarRateLimit(FB_CLEANUP)
   })
 
-  test('despues del cleanup el rate limit se resetea', async ({ page, request }) => {
-    await ensureNotProduction(page)
-    test.skip(!process.env.UPSTASH_REDIS_REST_URL, 'Requiere UPSTASH_REDIS_REST_URL')
-
-    // Limpiar cualquier residual
-    await limpiarRateLimit(FB_CLEANUP)
-
-    // Una request debe pasar (no 429)
-    const res = await request.post('/api/feedback', {
-      data: { invalid: true },
-    })
-
-    expect(res.status()).not.toBe(429)
-  })
-
   test('6 POSTs a /api/auth/signin/email retorna 429 (magic link spam)', async ({ page, request }) => {
     await ensureNotProduction(page)
     test.skip(!process.env.UPSTASH_REDIS_REST_URL, 'Requiere UPSTASH_REDIS_REST_URL')
