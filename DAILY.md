@@ -3,6 +3,9 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **17:34** `9029de5` — fix: skip tests de Redis en CI, correr solo manualmente
+  - `tests/e2e/ratelimit.spec.ts`
+
 - **17:21** `e50663e` — fix: remover serial de tests rate limit, evitar timeout de 30min
   - `tests/e2e/global-setup.ts`
   - `tests/e2e/ratelimit.spec.ts`
