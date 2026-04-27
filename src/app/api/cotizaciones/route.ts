@@ -4,6 +4,7 @@ import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { notificarCotizacion } from '@/compartido/lib/notificaciones'
 import { logActividad } from '@/compartido/lib/log'
+import { rateLimit } from '@/compartido/lib/ratelimit'
 import { z } from 'zod'
 
 const cotizacionSchema = z.object({
@@ -75,6 +76,11 @@ export async function POST(req: NextRequest) {
     const session = await auth()
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     const role = (session.user as { role?: string }).role
+
+    if (role !== 'ADMIN' && role !== 'ESTADO') {
+      const blocked = await rateLimit(req, 'cotizaciones', session.user.id!)
+      if (blocked) return blocked
+    }
 
     if (role !== 'TALLER') {
       return NextResponse.json({ error: 'Solo talleres pueden cotizar' }, { status: 403 })

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { getFeatureFlag } from '@/compartido/lib/features'
+import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
 
 export async function GET(req: NextRequest) {
   try {
@@ -39,6 +40,10 @@ export async function GET(req: NextRequest) {
 
 // POST queda publico para denuncias anonimas
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req)
+  const blocked = await rateLimit(req, 'denuncias', ip)
+  if (blocked) return blocked
+
   try {
     if (!await getFeatureFlag('denuncias')) {
       return NextResponse.json({ error: 'Funcionalidad no disponible' }, { status: 503 })

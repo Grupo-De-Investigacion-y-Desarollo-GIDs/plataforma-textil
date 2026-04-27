@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { logActividad } from '@/compartido/lib/log'
+import { rateLimit } from '@/compartido/lib/ratelimit'
 
 function generateOmId() {
   const year = new Date().getFullYear()
@@ -67,6 +68,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     }
     const role = (session.user as { role?: string }).role
+
+    if (role !== 'ADMIN' && role !== 'ESTADO') {
+      const blocked = await rateLimit(req, 'pedidos', session.user.id!)
+      if (blocked) return blocked
+    }
 
     const body = await req.json()
     const cantidad = Number(body.cantidad)

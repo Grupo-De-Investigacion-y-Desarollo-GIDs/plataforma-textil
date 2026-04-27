@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verificarCuit } from '@/compartido/lib/afip'
+import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
 
 // GET /api/auth/verificar-cuit?cuit=XXXXXXXXXXX
 // No requiere autenticacion — se usa durante el registro
-// Rate limit implicito: AfipSDK plan Free tiene 1k requests/mes
 export async function GET(req: NextRequest) {
+  const ip = getClientIp(req)
+  const blocked = await rateLimit(req, 'verificarCuit', ip)
+  if (blocked) return blocked
+
   try {
     const cuit = req.nextUrl.searchParams.get('cuit')
     if (!cuit || cuit.replace(/-/g, '').length !== 11) {

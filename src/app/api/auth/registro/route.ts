@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client'
 import { logActividad } from '@/compartido/lib/log'
 import { verificarCuit } from '@/compartido/lib/afip'
 import { sendEmail, buildBienvenidaEmail } from '@/compartido/lib/email'
+import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 
@@ -36,6 +37,10 @@ const registerSchema = z.object({
 })
 
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req)
+  const blocked = await rateLimit(req, 'registro', ip)
+  if (blocked) return blocked
+
   try {
     const raw = await req.json()
     const normalized = {

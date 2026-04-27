@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { buscarContexto, generarRespuesta } from '@/compartido/lib/rag'
+import { rateLimit } from '@/compartido/lib/ratelimit'
 import { z } from 'zod'
 
 const chatSchema = z.object({
@@ -13,6 +14,12 @@ export async function POST(req: NextRequest) {
     const session = await auth()
     if (!session?.user) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    }
+
+    const userRole = (session.user as { role?: string }).role
+    if (userRole !== 'ADMIN' && userRole !== 'ESTADO') {
+      const blocked = await rateLimit(req, 'chat', session.user.id!)
+      if (blocked) return blocked
     }
 
     if (!process.env.ANTHROPIC_API_KEY || !process.env.VOYAGE_API_KEY) {
