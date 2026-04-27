@@ -3,6 +3,10 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **16:40** `2174930` — fix: globalSetup limpia rate limit keys antes de todos los E2E
+  - `playwright.config.ts`
+  - `tests/e2e/global-setup.ts`
+
 - **16:34** `ae90646` — fix: remover test fragil de cleanup, migrar KEYS a SCAN
   - `tests/e2e/_helpers/redis-cleanup.ts`
   - `tests/e2e/ratelimit.spec.ts`
