@@ -41,6 +41,7 @@ Este archivo acumula TODAS las verificaciones manuales que requieren ojos humano
 - [ ] Login normal (1-3 intentos) NO se ve afectado
 - [ ] ADMIN/ESTADO autenticados pueden hacer 21+ cotizaciones sin rate limit (verificar por codigo durante review, no por prueba real)
 - [ ] Si Redis cae (simulable cambiando UPSTASH_REDIS_REST_URL en Vercel temporalmente), las requests siguen pasando (fail-open)
+- [ ] Magic link spam: pedir 6 magic links seguidos al mismo email → la 6ta debe retornar 429
 
 ### Como ejecutar
 
