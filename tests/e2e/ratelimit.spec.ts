@@ -14,8 +14,13 @@ test.describe('Rate limiting — S-02', () => {
     expect(page.url()).toContain('/admin')
   })
 
-  test('11 POSTs a /api/feedback retorna 429 con Retry-After', async ({ page, request }) => {
+  // Tests de rate limit con Redis real: correr manualmente, no en CI.
+  // En CI son fragiles por IP compartida del runner, retries que acumulan
+  // rate limit, y tiempos de cleanup que causan timeouts de 30min.
+  // Verificacion cubierta por PRUEBAS_PENDIENTES.md (manual).
+  test('feedback rate limit retorna 429 despues de 10 requests', async ({ page, request }) => {
     await ensureNotProduction(page)
+    test.skip(!!process.env.CI, 'Rate limit con Redis real: verificar manualmente (PRUEBAS_PENDIENTES.md)')
     test.skip(!process.env.UPSTASH_REDIS_REST_URL, 'Requiere UPSTASH_REDIS_REST_URL')
 
     await limpiarRateLimit('rl:*:fb:*')
@@ -44,8 +49,9 @@ test.describe('Rate limiting — S-02', () => {
     await limpiarRateLimit('rl:*:fb:*')
   })
 
-  test('6 POSTs a /api/auth/signin/email retorna 429 (magic link spam)', async ({ page, request }) => {
+  test('magic link rate limit retorna 429 despues de 5 requests', async ({ page, request }) => {
     await ensureNotProduction(page)
+    test.skip(!!process.env.CI, 'Rate limit con Redis real: verificar manualmente (PRUEBAS_PENDIENTES.md)')
     test.skip(!process.env.UPSTASH_REDIS_REST_URL, 'Requiere UPSTASH_REDIS_REST_URL')
 
     await limpiarRateLimit('rl:*:magic:*')
