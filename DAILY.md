@@ -3,6 +3,11 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **16:31** `f82d9ff` — test: E2E para magic link rate limit + actualizar REVIEW y PRUEBAS
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/REVIEW_v3-rate-limiting.md`
+  - `tests/e2e/ratelimit.spec.ts`
+
 - **16:15** `9117015` — fix: rate limit en /api/auth/signin/email (magic links)
   - `src/app/api/auth/[...nextauth]/route.ts`
   - `src/compartido/lib/ratelimit.ts`
