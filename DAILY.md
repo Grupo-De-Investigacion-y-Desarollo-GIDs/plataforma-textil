@@ -3,6 +3,23 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **20:15** `2f04356` — feat: v3-validacion-archivos (S-03) — validacion server-side por magic bytes + config admin
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-validacion-archivos.md`
+  - `.claude/auditorias/REVIEW_v3-validacion-archivos.md`
+  - `prisma/migrations/20260427100000_agregar_configuracion_upload/migration.sql`
+  - `prisma/schema.prisma`
+  - `prisma/seed.ts`
+  - `src/__tests__/file-validation.test.ts`
+  - `src/app/(admin)/admin/configuracion/archivos/page.tsx`
+  - `src/app/(admin)/admin/configuracion/page.tsx`
+  - `src/app/api/admin/configuracion-upload/[id]/route.ts`
+  - `src/app/api/admin/configuracion-upload/route.ts`
+  - `src/app/api/upload/imagenes/route.ts`
+  - `src/app/api/validaciones/[id]/upload/route.ts`
+  - `src/compartido/lib/file-validation.ts`
+  - `tests/e2e/file-validation.spec.ts`
+
 - **19:31** `02ba56d` — feat: progreso de verificacion DEV/QA en index de auditorias
   - `tools/generate-qa.js`
   - `tools/generate-qa.test.js`
