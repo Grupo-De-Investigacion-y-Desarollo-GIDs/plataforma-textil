@@ -3,6 +3,10 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **16:34** `ae90646` — fix: remover test fragil de cleanup, migrar KEYS a SCAN
+  - `tests/e2e/_helpers/redis-cleanup.ts`
+  - `tests/e2e/ratelimit.spec.ts`
+
 - **16:31** `f82d9ff` — test: E2E para magic link rate limit + actualizar REVIEW y PRUEBAS
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `.claude/auditorias/REVIEW_v3-rate-limiting.md`
