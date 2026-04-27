@@ -21,6 +21,8 @@ jobs:
       TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
       TEST_ESTADO_EMAIL: ${{ secrets.TEST_ESTADO_EMAIL }}
       TEST_ESTADO_PASSWORD: ${{ secrets.TEST_ESTADO_PASSWORD }}
+      UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL_TEST }}
+      UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN_TEST }}
 
     steps:
       - uses: actions/checkout@v4
