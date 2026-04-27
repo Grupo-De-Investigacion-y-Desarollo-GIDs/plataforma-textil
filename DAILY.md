@@ -3,6 +3,9 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **17:55** `53f66f8` — fix: revertir skip de tests Redis en CI
+  - `tests/e2e/ratelimit.spec.ts`
+
 - **17:43** `973de84` — fix: remover globalSetup que colgaba CI conectando a Redis
   - `playwright.config.ts`
   - `tests/e2e/global-setup.ts`
