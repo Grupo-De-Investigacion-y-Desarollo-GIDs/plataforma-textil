@@ -3,6 +3,9 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **14:59** `261d6ec` — ci: agregar env vars de Upstash al workflow E2E
+  - `.github/workflows/e2e.yml`
+
 - **14:47** `a121869` — feat: v3-rate-limiting (S-02) — rate limiting en 9 endpoints criticos
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `.claude/auditorias/QA_v3-rate-limiting.md`
