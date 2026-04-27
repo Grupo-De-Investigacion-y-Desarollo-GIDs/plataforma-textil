@@ -3,6 +3,10 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **18:30** `a195e8f` — fix: esperar deploy de Vercel antes de correr E2E en CI
+  - `.github/workflows/e2e.yml`
+  - `src/app/api/health/version/route.ts`
+
 - **18:11** `5972b66` — fix: timeout 5s en Redis cleanup, limpiar login keys en cada test
   - `tests/e2e/_helpers/redis-cleanup.ts`
   - `tests/e2e/ratelimit.spec.ts`
