@@ -1432,6 +1432,79 @@ function generarHtml(mdPath) {
  * Genera un index.html con cards para cada QA_v2/v3-*.md en el directorio.
  * V3 arriba (en curso), V2 abajo (historico, colapsado).
  */
+/**
+ * Parsea un .md de QA V3 y cuenta items de verificación por verificador.
+ * Busca en tablas (Eje 1, 3, 4, 5) y pasos (Eje 2).
+ * Retorna: { dev: { total, ok, bug }, qa: { total, ok, bug }, total, verified }
+ */
+function parsearProgreso(mdContent) {
+  const stats = {
+    dev: { total: 0, ok: 0, bug: 0 },
+    qa: { total: 0, ok: 0, bug: 0 },
+  }
+
+  const lineas = mdContent.split('\n')
+
+  for (let i = 0; i < lineas.length; i++) {
+    const linea = lineas[i]
+
+    // Tablas: | ... | DEV/QA | resultado | ... |
+    // Detectar filas de tabla con contenido (no headers ni separadores)
+    const tablaMatch = linea.match(/^\|\s*\d+\s*\|.*\|\s*(DEV|QA)\s*\|\s*(.*?)\s*\|/)
+    if (tablaMatch) {
+      const verificador = tablaMatch[1].toLowerCase()
+      const resultado = tablaMatch[2].trim().toLowerCase()
+      const bucket = verificador === 'dev' ? stats.dev : stats.qa
+      bucket.total++
+      if (resultado === 'ok') bucket.ok++
+      else if (resultado === 'bug' || resultado === 'bloqueante') bucket.bug++
+      continue
+    }
+
+    // Eje 4 (Performance): | ... | Verificador | Resultado | — sin # al inicio
+    const perfMatch = linea.match(/^\|\s*\d+\s*\|.*\|\s*(DEV|QA)\s*\|\s*(.*?)\s*\|/)
+    if (perfMatch) {
+      // Already caught by tablaMatch above
+      continue
+    }
+
+    // Eje 5 (Consistencia visual): | Verificacion | Resultado | Notas | — sin verificador, cuenta como QA
+    if (linea.match(/^\|[^|]+\|\s*(ok|bug|bloqueante)?\s*\|[^|]*\|$/) && !linea.match(/Resultado|---/)) {
+      const resMatch = linea.match(/^\|[^|]+\|\s*(.*?)\s*\|[^|]*\|$/)
+      if (resMatch) {
+        const resultado = resMatch[1].trim().toLowerCase()
+        stats.qa.total++
+        if (resultado === 'ok') stats.qa.ok++
+        else if (resultado === 'bug' || resultado === 'bloqueante') stats.qa.bug++
+      }
+      continue
+    }
+
+    // Pasos (Eje 2): buscar "- **Verificador:** DEV/QA" seguido de "- **Resultado:**"
+    const pasoVerMatch = linea.match(/^-\s*\*\*Verificador:\*\*\s*(DEV|QA)/i)
+    if (pasoVerMatch) {
+      const verificador = pasoVerMatch[1].toLowerCase()
+      const bucket = verificador === 'dev' ? stats.dev : stats.qa
+      bucket.total++
+      // Buscar resultado en las siguientes lineas
+      for (let j = i + 1; j < Math.min(i + 5, lineas.length); j++) {
+        const resMatch = lineas[j].match(/^-\s*\*\*Resultado:\*\*\s*(.*)/)
+        if (resMatch) {
+          const resultado = resMatch[1].trim().toLowerCase()
+          if (resultado === 'ok' || resultado.startsWith('ok')) bucket.ok++
+          else if (resultado === 'bug' || resultado === 'bloqueante') bucket.bug++
+          break
+        }
+      }
+    }
+  }
+
+  const total = stats.dev.total + stats.qa.total
+  const verified = stats.dev.ok + stats.qa.ok + stats.dev.bug + stats.qa.bug
+
+  return { ...stats, total, verified }
+}
+
 function generarIndex(dirPath) {
   const archivos = fs.readdirSync(dirPath)
     .filter(f => (f.startsWith('QA_v2-') || f.startsWith('QA_v3-')) && f.endsWith('.md'))
@@ -1445,7 +1518,8 @@ function generarIndex(dirPath) {
     const htmlFile = archivo.replace('.md', '.html')
     const htmlExists = fs.existsSync(path.join(dirPath, htmlFile))
     const version = archivo.startsWith('QA_v3-') ? 'v3' : 'v2'
-    return { archivo, htmlFile, htmlExists, meta, version }
+    const progreso = version === 'v3' ? parsearProgreso(mdContent) : null
+    return { archivo, htmlFile, htmlExists, meta, version, progreso }
   })
 
   // Separar y ordenar por fecha (mas reciente primero)
@@ -1475,6 +1549,33 @@ function generarIndex(dirPath) {
         <div class="estado-resumen"></div>
         <div class="estado-detalle" style="display:none"></div>` : ''
 
+    // Progreso de verificacion (solo V3)
+    let progresoHtml = ''
+    if (qa.progreso && qa.progreso.total > 0) {
+      const p = qa.progreso
+      const pct = Math.round((p.verified / p.total) * 100)
+      const devStatus = p.dev.total > 0
+        ? (p.dev.ok === p.dev.total ? `<span class="prog-complete">DEV: ${p.dev.ok}/${p.dev.total}</span>`
+          : `<span class="prog-pending">DEV: ${p.dev.ok}/${p.dev.total}</span>`)
+        : ''
+      const qaStatus = p.qa.total > 0
+        ? (p.qa.ok === p.qa.total ? `<span class="prog-complete">QA: ${p.qa.ok}/${p.qa.total}</span>`
+          : `<span class="prog-pending">QA: ${p.qa.ok}/${p.qa.total}</span>`)
+        : ''
+      const bugsTotal = p.dev.bug + p.qa.bug
+      const bugBadge = bugsTotal > 0 ? ` <span class="prog-bugs">${bugsTotal} bug${bugsTotal > 1 ? 's' : ''}</span>` : ''
+      progresoHtml = `
+        <div class="qa-progreso">
+          <div class="prog-bar-container">
+            <div class="prog-bar" style="width:${pct}%"></div>
+          </div>
+          <div class="prog-info">
+            <span class="prog-pct">${p.verified}/${p.total} verificados (${pct}%)</span>
+            ${devStatus} ${qaStatus}${bugBadge}
+          </div>
+        </div>`
+    }
+
     return `
       <${cardTag}${href} class="qa-card${disabledClass}" data-version="${qa.version}"${qaSlugAttr}>
         <div class="qa-title">${escapeHtml(qa.meta.titulo || qa.archivo)}</div>
@@ -1483,7 +1584,7 @@ function generarIndex(dirPath) {
           <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> ${escapeHtml(qa.meta.fecha || '—')}</div>
           <div class="qa-meta-item">${tag}</div>
         </div>
-        ${perfilesHtml}${estadoHtml}
+        ${perfilesHtml}${progresoHtml}${estadoHtml}
       </${cardTag}>`
   }
 
@@ -1551,6 +1652,40 @@ function generarIndex(dirPath) {
     details summary::-webkit-details-marker { display: none; }
     details summary::before { content: '\\25B6  '; font-size: 10px; color: #999; }
     details[open] summary::before { content: '\\25BC  '; }
+    /* Progreso de verificacion */
+    .progreso-global-panel {
+      background: white; border: 1px solid #e8ecf1; border-radius: 10px;
+      padding: 18px 22px; margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .progreso-global-panel h3 { font-size: 15px; font-weight: 700; color: #1e3a5f; margin-bottom: 10px; }
+    .prog-bar-container {
+      background: #e8ecf1; border-radius: 6px; height: 8px; overflow: hidden; margin-bottom: 6px;
+    }
+    .prog-bar-lg { height: 12px; }
+    .prog-bar {
+      background: linear-gradient(90deg, #2e7d32, #43a047); height: 100%; border-radius: 6px;
+      transition: width 0.3s;
+    }
+    .prog-info {
+      display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+      font-size: 12px; color: #666; margin-top: 4px;
+    }
+    .prog-info-global { font-size: 13px; }
+    .prog-pct { font-weight: 600; color: #333; }
+    .prog-complete {
+      color: #2e7d32; font-weight: 600; padding: 1px 8px;
+      background: #e8f5e9; border-radius: 4px;
+    }
+    .prog-pending {
+      color: #e65100; font-weight: 600; padding: 1px 8px;
+      background: #fff3e0; border-radius: 4px;
+    }
+    .prog-bugs {
+      color: #c62828; font-weight: 600; padding: 1px 8px;
+      background: #ffeaea; border-radius: 4px;
+    }
+    .qa-progreso { margin-top: 10px; }
     /* Panel global de estado */
     .estado-global-panel {
       background: white; border: 1px solid #e8ecf1; border-radius: 10px;
@@ -1764,8 +1899,42 @@ function generarIndex(dirPath) {
       <button class="index-filter-btn" data-filter="v2" onclick="filtrarIndex('v2')">Solo V2</button>
     </div>
 
+    ${(() => {
+      const globalProg = { devTotal: 0, devOk: 0, devBug: 0, qaTotal: 0, qaOk: 0, qaBug: 0, total: 0, verified: 0 }
+      v3Qas.forEach(q => {
+        if (!q.progreso) return
+        globalProg.devTotal += q.progreso.dev.total
+        globalProg.devOk += q.progreso.dev.ok
+        globalProg.devBug += q.progreso.dev.bug
+        globalProg.qaTotal += q.progreso.qa.total
+        globalProg.qaOk += q.progreso.qa.ok
+        globalProg.qaBug += q.progreso.qa.bug
+        globalProg.total += q.progreso.total
+        globalProg.verified += q.progreso.verified
+      })
+      const pct = globalProg.total > 0 ? Math.round((globalProg.verified / globalProg.total) * 100) : 0
+      const devLabel = globalProg.devOk === globalProg.devTotal && globalProg.devTotal > 0
+        ? `<span class="prog-complete">DEV: ${globalProg.devOk}/${globalProg.devTotal} completo</span>`
+        : `<span class="prog-pending">DEV: ${globalProg.devOk}/${globalProg.devTotal}</span>`
+      const qaLabel = globalProg.qaOk === globalProg.qaTotal && globalProg.qaTotal > 0
+        ? `<span class="prog-complete">QA: ${globalProg.qaOk}/${globalProg.qaTotal} completo</span>`
+        : `<span class="prog-pending">QA: ${globalProg.qaOk}/${globalProg.qaTotal} pendiente</span>`
+      const bugsTotal = globalProg.devBug + globalProg.qaBug
+      const bugBadge = bugsTotal > 0 ? `<span class="prog-bugs">${bugsTotal} bug${bugsTotal > 1 ? 's' : ''}</span>` : ''
+      return `<div class="progreso-global-panel">
+      <h3>Progreso de verificacion V3</h3>
+      <div class="prog-bar-container prog-bar-lg">
+        <div class="prog-bar" style="width:${pct}%"></div>
+      </div>
+      <div class="prog-info prog-info-global">
+        <span class="prog-pct">${globalProg.verified}/${globalProg.total} verificados (${pct}%)</span>
+        ${devLabel} ${qaLabel} ${bugBadge}
+      </div>
+    </div>`
+    })()}
+
     <div class="estado-global-panel" id="estado-global">
-      <h3>Estado de auditorias V3</h3>
+      <h3>Issues reportados V3</h3>
       <p class="estado-disabled-msg">Cargando...</p>
     </div>
 
@@ -1844,6 +2013,7 @@ module.exports = {
   parsearPasos,
   parsearChecklist,
   parsearResultadoGlobal,
+  parsearProgreso,
   generarHtml,
   generarIndex,
 }
