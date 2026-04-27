@@ -3,6 +3,9 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **20:57** `1f96492` — chore: trigger redeploy para capturar CI_BYPASS_TOKEN en Vercel
+
+
 - **20:36** `6a1493d` — fix: CI bypass token para rate limit — runners de GitHub comparten IPs
   - `.claude/auditorias/REVIEW_v3-rate-limiting.md`
   - `.claude/auditorias/REVIEW_v3-validacion-archivos.md`
