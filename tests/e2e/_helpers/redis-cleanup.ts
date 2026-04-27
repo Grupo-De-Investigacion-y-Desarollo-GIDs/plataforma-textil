@@ -14,12 +14,12 @@ export async function limpiarRateLimit(pattern: string) {
   const redis = new Redis({ url, token })
 
   const cleanup = async () => {
-    let cursor = 0
+    let cursor: string | number = 0
     do {
       const [nextCursor, keys] = await redis.scan(cursor, { match: pattern, count: 100 })
       cursor = nextCursor
       if (keys.length > 0) await redis.del(...keys)
-    } while (cursor !== 0)
+    } while (cursor !== 0 && cursor !== '0')
   }
 
   const timeout = new Promise<void>((_, reject) =>
