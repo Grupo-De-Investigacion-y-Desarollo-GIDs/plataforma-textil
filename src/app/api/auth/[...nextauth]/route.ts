@@ -5,12 +5,20 @@ import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
 // GET no cambia — NextAuth lo maneja como siempre
 export const GET = handlers.GET
 
-// POST wrapeado para rate limiting en login
+// POST wrapeado para rate limiting en login y magic links
 export async function POST(req: NextRequest) {
-  if (req.nextUrl.pathname === '/api/auth/callback/credentials') {
-    const ip = getClientIp(req)
+  const path = req.nextUrl.pathname
+  const ip = getClientIp(req)
+
+  if (path === '/api/auth/callback/credentials') {
     const blocked = await rateLimit(req, 'login', ip)
     if (blocked) return blocked
   }
+
+  if (path === '/api/auth/signin/email') {
+    const blocked = await rateLimit(req, 'magicLink', ip)
+    if (blocked) return blocked
+  }
+
   return handlers.POST(req)
 }

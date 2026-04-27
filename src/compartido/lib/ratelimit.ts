@@ -67,6 +67,12 @@ function crearLimiters() {
       analytics: false,
       prefix: `rl:${env}:reg`,
     }),
+    magicLink: new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(5, '1 h'),
+      analytics: false,
+      prefix: `rl:${env}:magic`,
+    }),
     chat: new Ratelimit({
       redis,
       limiter: Ratelimit.slidingWindow(30, '1 h'),
