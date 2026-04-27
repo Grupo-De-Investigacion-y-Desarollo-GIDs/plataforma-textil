@@ -3,6 +3,9 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **19:00** `f35ad70` — docs: review S-02 completado — 21/25 verificados, CORS OK
+  - `.claude/auditorias/REVIEW_v3-rate-limiting.md`
+
 - **18:52** `b450a3d` — fix: ampliar exclusiones en tsconfig.json para tests y tools
   - `tsconfig.json`
 
