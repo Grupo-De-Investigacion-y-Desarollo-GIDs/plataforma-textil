@@ -3,18 +3,23 @@ import { ensureNotProduction } from './_helpers/safety'
 import { loginAs } from './_helpers/auth'
 import { limpiarRateLimit } from './_helpers/redis-cleanup'
 
+// Timeout mayor para tests que hacen multiples requests + cleanup Redis
 test.describe('Rate limiting — S-02', () => {
   test('login funciona despues del wrapper de rate limit', async ({ page }) => {
     await ensureNotProduction(page)
+    // Limpiar login keys acumuladas de runs anteriores de CI
+    await limpiarRateLimit('rl:*:login:*')
     await loginAs(page, 'admin')
     expect(page.url()).toContain('/admin')
   })
 
   test('feedback rate limit retorna 429 despues de 10 requests', async ({ page, request }) => {
+    test.setTimeout(60000) // 60s para 11 requests + cleanup
     await ensureNotProduction(page)
     test.skip(!process.env.UPSTASH_REDIS_REST_URL, 'Requiere UPSTASH_REDIS_REST_URL')
 
     await limpiarRateLimit('rl:*:fb:*')
+    await limpiarRateLimit('rl:*:login:*') // No contaminar login de otros tests
 
     let lastStatus = 0
     let retryAfter = ''
@@ -41,10 +46,12 @@ test.describe('Rate limiting — S-02', () => {
   })
 
   test('magic link rate limit retorna 429 despues de 5 requests', async ({ page, request }) => {
+    test.setTimeout(60000)
     await ensureNotProduction(page)
     test.skip(!process.env.UPSTASH_REDIS_REST_URL, 'Requiere UPSTASH_REDIS_REST_URL')
 
     await limpiarRateLimit('rl:*:magic:*')
+    await limpiarRateLimit('rl:*:login:*')
 
     let lastStatus = 0
     let retryAfter = ''
