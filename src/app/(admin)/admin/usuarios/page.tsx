@@ -34,7 +34,66 @@ export default function AdminUsuariosPage() {
   const [search, setSearch] = useState('')
   const [filtroRol, setFiltroRol] = useState('')
   const [detalleModal, setDetalleModal] = useState<Usuario | null>(null)
+  const [editModal, setEditModal] = useState<Usuario | null>(null)
+  const [editRole, setEditRole] = useState('')
+  const [confirmAction, setConfirmAction] = useState<{ user: Usuario; action: 'suspend' | 'resetPassword' } | null>(null)
   const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [toast, setToast] = useState('')
+
+  function showToast(msg: string) {
+    setToast(msg)
+    setTimeout(() => setToast(''), 3000)
+  }
+
+  function refreshUsuarios() {
+    fetch('/api/admin/usuarios').then(r => r.json())
+      .then((d: { usuarios?: Usuario[] }) => setUsuarios(d.usuarios || []))
+      .catch(() => {})
+  }
+
+  async function handleChangeRole() {
+    if (!editModal || !editRole) return
+    setSaving(true)
+    try {
+      const res = await fetch(`/api/admin/usuarios/${editModal.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: editRole }),
+      })
+      if (!res.ok) { showToast('Error al cambiar rol'); return }
+      showToast(`Rol cambiado a ${editRole}`)
+      setEditModal(null)
+      setDetalleModal(null)
+      refreshUsuarios()
+    } finally { setSaving(false) }
+  }
+
+  async function handleSuspend(user: Usuario) {
+    setSaving(true)
+    try {
+      const res = await fetch(`/api/admin/usuarios/${user.id}`, { method: 'DELETE' })
+      if (!res.ok) { showToast('Error al suspender cuenta'); return }
+      showToast(`Cuenta de ${user.email} suspendida`)
+      setConfirmAction(null)
+      setDetalleModal(null)
+      refreshUsuarios()
+    } finally { setSaving(false) }
+  }
+
+  async function handleResetPassword(user: Usuario) {
+    setSaving(true)
+    try {
+      const res = await fetch(`/api/admin/usuarios/${user.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: user.name }),
+      })
+      if (!res.ok) { showToast('Error al resetear'); return }
+      showToast(`Se envio instrucciones de reset a ${user.email} (pendiente implementar email)`)
+      setConfirmAction(null)
+    } finally { setSaving(false) }
+  }
 
   useEffect(() => {
     Promise.all([
@@ -70,8 +129,8 @@ export default function AdminUsuariosPage() {
     { header: 'Acciones', accessor: (row: Usuario) => (
       <div className="flex gap-1">
         <button onClick={() => setDetalleModal(row)} className="p-1 hover:bg-gray-100 rounded" aria-label="Ver detalle"><Eye className="w-4 h-4 text-gray-500" /></button>
-        <button className="p-1 hover:bg-gray-100 rounded" aria-label="Editar"><Edit className="w-4 h-4 text-gray-500" /></button>
-        <button className="p-1 hover:bg-gray-100 rounded" aria-label="Desactivar usuario"><UserX className="w-4 h-4 text-gray-400" /></button>
+        <button onClick={() => { setEditModal(row); setEditRole(row.role) }} className="p-1 hover:bg-gray-100 rounded" aria-label="Editar"><Edit className="w-4 h-4 text-gray-500" /></button>
+        <button onClick={() => setConfirmAction({ user: row, action: 'suspend' })} className="p-1 hover:bg-gray-100 rounded" aria-label="Desactivar usuario"><UserX className="w-4 h-4 text-gray-400" /></button>
       </div>
     )},
   ]
@@ -148,16 +207,72 @@ export default function AdminUsuariosPage() {
               <div><span className="text-gray-500">Rol:</span> {detalleModal.role}</div>
               <div><span className="text-gray-500">Estado:</span> {detalleModal.active ? 'Activo' : 'Inactivo'}</div>
               <div><span className="text-gray-500">Registrado:</span> {new Date(detalleModal.createdAt).toLocaleDateString('es-AR')}</div>
-              <div><span className="text-gray-500">Teléfono:</span> {detalleModal.phone || '-'}</div>
+              <div><span className="text-gray-500">Telefono:</span> {detalleModal.phone || '-'}</div>
             </div>
             <div className="flex gap-2 pt-4 border-t">
-              <Button size="sm" variant="secondary">Cambiar rol</Button>
-              <Button size="sm" variant="secondary">Resetear contraseña</Button>
-              <Button size="sm" variant="secondary">Suspender cuenta</Button>
+              <Button size="sm" variant="secondary" onClick={() => { setEditModal(detalleModal); setEditRole(detalleModal.role) }}>Cambiar rol</Button>
+              <Button size="sm" variant="secondary" onClick={() => setConfirmAction({ user: detalleModal, action: 'resetPassword' })}>Resetear contrasena</Button>
+              <Button size="sm" variant="danger" onClick={() => setConfirmAction({ user: detalleModal, action: 'suspend' })}>Suspender cuenta</Button>
             </div>
           </div>
         )}
       </Modal>
+
+      <Modal open={!!editModal} onClose={() => setEditModal(null)} title="Cambiar rol" size="sm">
+        {editModal && (
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600">Cambiar rol de <strong>{editModal.email}</strong></p>
+            <Select
+              value={editRole}
+              onChange={e => setEditRole(e.target.value)}
+              options={[
+                { value: 'TALLER', label: 'Taller' },
+                { value: 'MARCA', label: 'Marca' },
+                { value: 'ESTADO', label: 'Estado' },
+                { value: 'CONTENIDO', label: 'Contenido' },
+                { value: 'ADMIN', label: 'Admin' },
+              ]}
+            />
+            <div className="flex gap-2 justify-end">
+              <Button size="sm" variant="secondary" onClick={() => setEditModal(null)}>Cancelar</Button>
+              <Button size="sm" onClick={handleChangeRole} disabled={saving || editRole === editModal.role}>
+                {saving ? 'Guardando...' : 'Guardar'}
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      <Modal open={!!confirmAction} onClose={() => setConfirmAction(null)} title={confirmAction?.action === 'suspend' ? 'Suspender cuenta' : 'Resetear contrasena'} size="sm">
+        {confirmAction && (
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600">
+              {confirmAction.action === 'suspend'
+                ? `Vas a suspender la cuenta de ${confirmAction.user.email}. El usuario no podra acceder a la plataforma.`
+                : `Se enviaran instrucciones de reset de contrasena a ${confirmAction.user.email}.`}
+            </p>
+            <div className="flex gap-2 justify-end">
+              <Button size="sm" variant="secondary" onClick={() => setConfirmAction(null)}>Cancelar</Button>
+              <Button
+                size="sm"
+                variant={confirmAction.action === 'suspend' ? 'danger' : 'primary'}
+                disabled={saving}
+                onClick={() => confirmAction.action === 'suspend'
+                  ? handleSuspend(confirmAction.user)
+                  : handleResetPassword(confirmAction.user)}
+              >
+                {saving ? 'Procesando...' : 'Confirmar'}
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {toast && (
+        <div className="fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg text-sm z-50">
+          {toast}
+        </div>
+      )}
     </div>
   )
 }

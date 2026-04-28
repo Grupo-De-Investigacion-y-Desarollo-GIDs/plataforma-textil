@@ -209,6 +209,14 @@ export default function AdminEditarColeccionPage() {
         <Button variant="secondary" onClick={() => router.push('/admin/colecciones')}>
           Cancelar
         </Button>
+        <Button variant="danger" onClick={async () => {
+          if (!confirm('¿Eliminar esta coleccion? Esta accion no se puede deshacer.')) return
+          const res = await fetch(`/api/colecciones/${coleccionId}`, { method: 'DELETE' })
+          if (res.ok) router.push('/admin/colecciones')
+          else setMsg({ type: 'error', text: 'Error al eliminar coleccion' })
+        }}>
+          Eliminar
+        </Button>
       </div>
     </div>
   )

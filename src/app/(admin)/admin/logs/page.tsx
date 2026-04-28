@@ -220,6 +220,7 @@ export default function AdminLogsPage() {
                 const motivo = detalles?.motivo as string | undefined
                 const isExpanded = expandedId === log.id
                 return (
+                  <>
                   <tr key={log.id} className="border-b border-gray-100 hover:bg-gray-50 align-top">
                     <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">
                       {new Date(log.timestamp).toLocaleString('es-AR')}
@@ -239,10 +240,10 @@ export default function AdminLogsPage() {
                       </Badge>
                     </td>
                     <td className="px-4 py-3 text-sm">
-                      {entidad || <span className="text-gray-300">&mdash;</span>}
+                      {entidad || <span className="text-gray-300 text-xs">sin datos</span>}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-600 max-w-48 truncate">
-                      {motivo || <span className="text-gray-300">&mdash;</span>}
+                      {motivo || <span className="text-gray-300 text-xs">sin datos</span>}
                     </td>
                     <td className="px-4 py-3">
                       {detalles && (
@@ -255,20 +256,32 @@ export default function AdminLogsPage() {
                       )}
                     </td>
                   </tr>
+                  {isExpanded && detalles && (
+                    <tr key={`${log.id}-detail`} className="bg-gray-50">
+                      <td colSpan={7} className="px-6 py-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-2 text-sm">
+                          {Object.entries(detalles).map(([key, val]) => (
+                            <div key={key}>
+                              <span className="text-xs font-semibold text-gray-500">{key}:</span>{' '}
+                              <span className="text-xs text-gray-700">
+                                {typeof val === 'object' && val !== null
+                                  ? Object.entries(val as Record<string, unknown>)
+                                      .filter(([, v]) => v !== undefined && v !== null)
+                                      .map(([k, v]) => `${k}: ${v}`)
+                                      .join(', ')
+                                  : String(val ?? '-')}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                  </>
                 )
               })}
             </tbody>
           </table>
-
-          {/* Detalles expandidos */}
-          {expandedId && logs.find(l => l.id === expandedId)?.detalles && (
-            <div className="border-t border-gray-200 bg-gray-50 px-4 py-3">
-              <p className="text-xs font-semibold text-gray-500 mb-1">Detalles completos:</p>
-              <pre className="text-xs text-gray-600 whitespace-pre-wrap break-all">
-                {JSON.stringify(logs.find(l => l.id === expandedId)!.detalles, null, 2)}
-              </pre>
-            </div>
-          )}
         </div>
 
         {/* Paginacion */}

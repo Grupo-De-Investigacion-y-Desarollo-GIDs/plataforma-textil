@@ -3,6 +3,17 @@
 ## 2026-04-28
 
 ### Gerardo Breard
+- **12:05** `a81cc10` — fix: resolver 9 issues de Sergio en QA de S-04 logs
+  - `.claude/auditorias/QA_v3-logs-admin-auditoria.md`
+  - `src/app/(admin)/admin/colecciones/[id]/page.tsx`
+  - `src/app/(admin)/admin/logs/page.tsx`
+  - `src/app/(admin)/admin/usuarios/page.tsx`
+  - `src/app/(auth)/acceso-rapido/page.tsx`
+  - `src/app/api/admin/logs/route.ts`
+
+- **11:35** `99ce3a7` — fix: rate limit E2E test envia body invalido para no crear issues reales
+  - `tests/e2e/ratelimit.spec.ts`
+
 - **10:25** `89e8a3b` — feat: agrupar QAs V3 por bloque en index de auditorias
   - `tools/generate-qa.js`
   - `tools/generate-qa.test.js`

@@ -33,7 +33,7 @@ test.describe('Rate limiting — S-02', () => {
     try {
       for (let i = 0; i < 11; i++) {
         const res = await rawRequest.post('/api/feedback', {
-          data: { tipo: 'bug', mensaje: `Test rate limit intento ${i} - verificacion automatica`, pagina: '/test' },
+          data: { invalid: true },
         })
         lastStatus = res.status()
         if (lastStatus === 429) {
