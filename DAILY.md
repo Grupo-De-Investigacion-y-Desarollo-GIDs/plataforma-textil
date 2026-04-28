@@ -3,6 +3,10 @@
 ## 2026-04-28
 
 ### Gerardo Breard
+- **16:43** `0e12152` — fix: dashboard ESTADO apuntaba a /admin/ en links de validaciones
+  - `src/app/(estado)/estado/page.tsx`
+  - `tests/e2e/roles-estado.spec.ts`
+
 - **15:53** `6709a8e` — fix: ESTADO E2E tests skip gracefully si login falla en preview
   - `tests/e2e/roles-estado.spec.ts`
 
