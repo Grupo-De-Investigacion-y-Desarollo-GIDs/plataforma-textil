@@ -3,6 +3,9 @@
 ## 2026-04-28
 
 ### Gerardo Breard
+- **15:43** `3ae8be7` — fix: loginAs waitUntil commit para evitar cold-start timeout en Vercel
+  - `tests/e2e/_helpers/auth.ts`
+
 - **15:10** `fb25353` — fix: layout estado bloqueaba ADMIN, locators E2E con h1 duplicado
   - `src/app/(estado)/layout.tsx`
   - `tests/e2e/_helpers/auth.ts`
