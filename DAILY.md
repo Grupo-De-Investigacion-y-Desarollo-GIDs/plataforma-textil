@@ -3,6 +3,9 @@
 ## 2026-04-28
 
 ### Gerardo Breard
+- **11:35** `99ce3a7` — fix: rate limit E2E test envia body invalido para no crear issues reales
+  - `tests/e2e/ratelimit.spec.ts`
+
 - **10:25** `89e8a3b` — feat: agrupar QAs V3 por bloque en index de auditorias
   - `tools/generate-qa.js`
   - `tools/generate-qa.test.js`
