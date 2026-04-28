@@ -73,7 +73,7 @@ Verificar que las 14 acciones sensibles generan logs consistentes con entidad/en
 | 11 | Desactivar usuario genera log | QA | | |
 | 12 | Editar taller (como admin) genera log | QA | | |
 | 13 | Editar/borrar coleccion genera log | QA | | |
-| 14 | Crear nota interna genera log | QA | | |
+| 14 | Crear nota interna genera log (ir a /admin/talleres, click en un taller, seccion "Notas internas" al final, escribir texto y guardar. Luego verificar en /admin/logs que aparece NOTA_INTERNA_CREADA) | QA | | |
 | 15 | Crear/desactivar documento RAG genera log | DEV | | |
 | 16 | Exportar datos genera log DATOS_EXPORTADOS | QA | | |
 | 17 | UI `/admin/logs` tiene filtros por usuario, accion, entidad y fecha | QA | | |
@@ -169,7 +169,7 @@ Verificar que las 14 acciones sensibles generan logs consistentes con entidad/en
 | Tipografias consistentes (Overpass para titulos) | | |
 | Colores del design system (brand-blue, brand-red) | | |
 | Badges de sensibilidad tienen colores distinguibles | | |
-| Estados vacios tienen mensaje descriptivo | | |
+| Estados vacios tienen mensaje descriptivo (en /admin/logs, aplicar un filtro que no devuelva resultados — verificar que aparece "No hay logs para mostrar" en vez de tabla vacia) | | |
 | Textos en espanol argentino | | |
 | Sin texto en ingles visible al usuario | | |
 

@@ -97,11 +97,14 @@ export default function AccesoRapidoPage() {
         router.push(user.redirect)
         router.refresh()
       } else {
-        setError(`Error al ingresar como ${user.nombre}`)
+        const msg = result?.error === 'CredentialsSignin'
+          ? `Credenciales incorrectas para ${user.nombre}`
+          : `Error al ingresar como ${user.nombre}. Si intentaste varias veces seguidas, espera unos minutos e intenta de nuevo.`
+        setError(msg)
         setLoading(null)
       }
     } catch {
-      setError('Error de conexion')
+      setError('Error de conexion. Intenta de nuevo en unos segundos.')
       setLoading(null)
     }
   }

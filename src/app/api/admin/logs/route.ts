@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { toCsv } from '@/compartido/lib/csv'
+import { logAccionAdmin } from '@/compartido/lib/log'
 
 export async function GET(req: NextRequest) {
   try {
@@ -67,6 +68,14 @@ export async function GET(req: NextRequest) {
 
       const desdeStr = desde || 'inicio'
       const hastaStr = hasta || new Date().toISOString().split('T')[0]
+
+      try {
+        logAccionAdmin('DATOS_EXPORTADOS', session.user.id!, {
+          entidad: 'exportacion',
+          entidadId: `logs_${desdeStr}_${hastaStr}`,
+          metadata: { registros: logs.length, filtros: { userId, accion, entidad, desde, hasta } },
+        })
+      } catch { /* fire-and-forget */ }
 
       return new NextResponse(csv, {
         headers: {
