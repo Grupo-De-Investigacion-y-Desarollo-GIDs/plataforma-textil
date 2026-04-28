@@ -48,16 +48,16 @@ Verificar que las cookies de sesion de la plataforma tienen los flags de segurid
 
 | # | Criterio | Verificador | Resultado | Issue |
 |---|----------|-------------|-----------|-------|
-| 1 | Configuracion explicita de `session` y `cookies` en `auth.config.ts` (no en `auth.ts`) | DEV | | |
-| 2 | `auth.ts` hereda la config via `...authConfig` sin duplicar `session` | DEV | | |
-| 3 | Prefijos `__Secure-` y `__Host-` aplicados solo en production | DEV | | |
-| 4 | `httpOnly: true` en cookie de sesion | DEV | | |
-| 5 | `httpOnly: true` en cookie CSRF | DEV | | |
-| 6 | `secure: true` solo en production | DEV | | |
-| 7 | `sameSite: 'lax'` en ambas cookies | DEV | | |
-| 8 | `maxAge: 7 dias` con `updateAge: 24h` | DEV | | |
-| 9 | Test E2E `cookies.spec.ts` pasa con credenciales de seed | DEV | | |
-| 10 | Documentacion en `docs/seguridad/cookies.md` con justificacion | DEV | | |
+| 1 | Configuracion explicita de `session` y `cookies` en `auth.config.ts` (no en `auth.ts`) | DEV | ok | |
+| 2 | `auth.ts` hereda la config via `...authConfig` sin duplicar `session` | DEV | ok | |
+| 3 | Prefijos `__Secure-` y `__Host-` aplicados solo en production | DEV | ok | |
+| 4 | `httpOnly: true` en cookie de sesion | DEV | ok | |
+| 5 | `httpOnly: true` en cookie CSRF | DEV | ok | |
+| 6 | `secure: true` solo en production | DEV | ok | |
+| 7 | `sameSite: 'lax'` en ambas cookies | DEV | ok | |
+| 8 | `maxAge: 7 dias` con `updateAge: 24h` | DEV | ok | |
+| 9 | Test E2E `cookies.spec.ts` pasa con credenciales de seed | DEV | ok | |
+| 10 | Documentacion en `docs/seguridad/cookies.md` con justificacion | DEV | ok | |
 
 ---
 
@@ -80,7 +80,7 @@ Verificar que las cookies de sesion de la plataforma tienen los flags de segurid
 - **Verificador:** DEV
 - **Accion:** Abrir DevTools > Application > Cookies > seleccionar el dominio. Buscar la cookie que contiene "session-token".
 - **Esperado:** Cookie con HttpOnly=true, SameSite=Lax, Path=/. Si es HTTPS: Secure=true y nombre empieza con `__Secure-`.
-- **Resultado:** [ ]
+- **Resultado:** ok — verificado con E2E (cookies.spec.ts: 4 tests passed) y curl contra produccion
 - **Notas:**
 
 ### Paso 3 — Login con otro rol
@@ -109,7 +109,7 @@ Verificar que las cookies de sesion de la plataforma tienen los flags de segurid
 
 | # | Caso | Accion | Esperado | Verificador | Resultado |
 |---|------|--------|----------|-------------|-----------|
-| 1 | Cookie no accesible desde JS | En consola del browser ejecutar `document.cookie` | La cookie de sesion NO aparece en el resultado (httpOnly la oculta) | DEV | |
+| 1 | Cookie no accesible desde JS | En consola del browser ejecutar `document.cookie` | La cookie de sesion NO aparece en el resultado (httpOnly la oculta) | DEV | ok |
 | 2 | Logout limpia la cookie de sesion | Cerrar sesion y verificar cookies en DevTools | La cookie de sesion ya no esta presente | QA | |
 | 3 | Login despues de logout | Cerrar sesion y volver a loguearse | Login funciona, nueva cookie de sesion creada | QA | |
 | 4 | Acceso sin cookie a ruta protegida | En ventana de incognito, ir a /admin | Redirige a /login | QA | |

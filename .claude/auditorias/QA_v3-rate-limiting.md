@@ -46,18 +46,18 @@ Verificar que los endpoints sensibles tienen proteccion contra abuso (rate limit
 
 | # | Criterio | Verificador | Resultado | Issue |
 |---|----------|-------------|-----------|-------|
-| 1 | Helper `rateLimit()` y `getClientIp()` creados en `ratelimit.ts` | DEV | | |
-| 2 | `getClientIp()` prioriza `x-real-ip` sobre `x-forwarded-for` | DEV | | |
-| 3 | 9 endpoints con rate limiting aplicado segun tabla del spec | DEV | | |
-| 4 | Login rate limited via wrapper en `[...nextauth]/route.ts` | DEV | | |
-| 5 | ADMIN y ESTADO exentos (excepto login) | DEV | | |
-| 6 | Respuestas 429 con header `Retry-After` | DEV | | |
-| 7 | Intentos bloqueados logueados con `logActividad()` | DEV | | |
-| 8 | Dev y prod usan prefijos diferentes via `VERCEL_ENV` | DEV | | |
-| 9 | `analytics: false` en todos los limiters | DEV | | |
-| 10 | Fallback: si Redis esta caido, la request pasa (fail-open) | DEV | | |
-| 11 | `@upstash/ratelimit` y `@upstash/redis` instalados | DEV | | |
-| 12 | Build sin errores de TypeScript | DEV | | |
+| 1 | Helper `rateLimit()` y `getClientIp()` creados en `ratelimit.ts` | DEV | ok | |
+| 2 | `getClientIp()` prioriza `x-real-ip` sobre `x-forwarded-for` | DEV | ok | |
+| 3 | 9 endpoints con rate limiting aplicado segun tabla del spec | DEV | ok | |
+| 4 | Login rate limited via wrapper en `[...nextauth]/route.ts` | DEV | ok | |
+| 5 | ADMIN y ESTADO exentos (excepto login) | DEV | ok | |
+| 6 | Respuestas 429 con header `Retry-After` | DEV | ok | |
+| 7 | Intentos bloqueados logueados con `logActividad()` | DEV | ok | |
+| 8 | Dev y prod usan prefijos diferentes via `VERCEL_ENV` | DEV | ok | |
+| 9 | `analytics: false` en todos los limiters | DEV | ok | |
+| 10 | Fallback: si Redis esta caido, la request pasa (fail-open) | DEV | ok | |
+| 11 | `@upstash/ratelimit` y `@upstash/redis` instalados | DEV | ok | |
+| 12 | Build sin errores de TypeScript | DEV | ok | |
 
 ---
 
@@ -99,7 +99,7 @@ Verificar que los endpoints sensibles tienen proteccion contra abuso (rate limit
 
 | # | Caso | Accion | Esperado | Verificador | Resultado |
 |---|------|--------|----------|-------------|-----------|
-| 1 | Mensaje 429 en español | Forzar 429 (ver pruebas manuales) | Body dice "Demasiadas solicitudes" y Retry-After header presente | DEV | |
+| 1 | Mensaje 429 en español | Forzar 429 (ver pruebas manuales) | Body dice "Demasiadas solicitudes" y Retry-After header presente | DEV | ok |
 | 2 | Login normal no se ve afectado | Login 1-3 veces seguidas | No hay 429, login funciona normal | QA | |
 | 3 | Uso normal de la plataforma sin rate limit | Navegar por 5+ paginas, hacer acciones normales | Nada retorna 429 en uso normal | QA | |
 

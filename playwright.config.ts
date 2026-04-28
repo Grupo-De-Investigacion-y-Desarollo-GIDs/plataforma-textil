@@ -18,6 +18,9 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    extraHTTPHeaders: process.env.CI_BYPASS_TOKEN
+      ? { 'x-ci-bypass': process.env.CI_BYPASS_TOKEN }
+      : {},
   },
 
   projects: [

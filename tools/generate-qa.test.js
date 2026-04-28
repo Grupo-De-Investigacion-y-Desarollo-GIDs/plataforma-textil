@@ -15,6 +15,7 @@ const {
   parsearPasos,
   parsearChecklist,
   parsearResultadoGlobal,
+  parsearProgreso,
   generarHtml,
   generarIndex,
 } = require('./generate-qa')
@@ -1095,7 +1096,7 @@ console.log('\n📋 Test 23: Index tiene cargarEstadoIndex con polling 5min')
 
   // Panel global
   assert(html.includes('id="estado-global"'), 'Index tiene panel global de estado')
-  assert(html.includes('Estado de auditorias V3'), 'Panel global tiene titulo')
+  assert(html.includes('Issues reportados V3'), 'Panel de issues tiene titulo')
   assert(html.includes('estado-refresh-btn'), 'CSS tiene clase estado-refresh-btn')
 
   // CSS de badges de estado
@@ -1156,6 +1157,106 @@ console.log('\n📋 Test 24: Cards V3 tienen .estado-resumen y .estado-detalle')
   const v2Cards = html.substring(v2Start, v2End)
   assert(!v2Cards.includes('estado-resumen'), 'Card V2 NO tiene .estado-resumen')
   assert(!v2Cards.includes('data-qa-slug'), 'Card V2 NO tiene data-qa-slug')
+
+  // Cleanup
+  fs.rmSync(tmpDir, { recursive: true })
+}
+
+// ============================================
+// Test 25: parsearProgreso cuenta items DEV y QA
+// ============================================
+console.log('\n📋 Test 25: parsearProgreso cuenta items DEV y QA')
+{
+  const fixture = `# QA: Test Progreso
+
+**Spec:** \`v3-test.md\`
+**Fecha:** 2026-04-27
+**Auditor(es):** Sergio
+
+## Eje 1 — Funcionalidad
+| # | Criterio | Verificador | Resultado | Issue |
+|---|----------|-------------|-----------|-------|
+| 1 | Item uno | DEV | ok | |
+| 2 | Item dos | DEV | ok | |
+| 3 | Item tres | QA | | |
+| 4 | Item cuatro | QA | ok | |
+| 5 | Item cinco | DEV | bug | |
+
+## Eje 2 — Navegabilidad
+
+### Paso 1 — Login
+- **Verificador:** QA
+- **Resultado:** ok
+
+### Paso 2 — Navegar
+- **Verificador:** DEV
+- **Resultado:** [ ]
+
+## Eje 3 — Casos borde
+| # | Caso | Accion | Esperado | Verificador | Resultado |
+|---|------|--------|----------|-------------|-----------|
+| 1 | Caso uno | hacer algo | algo pasa | DEV | ok |
+| 2 | Caso dos | hacer otro | otro pasa | QA | bug |
+
+## Checklist de cierre
+- [x] Done
+`
+
+  const p = parsearProgreso(fixture)
+
+  // DEV: items 1,2 (ok), 5 (bug) de Eje1 + paso2 (vacio) de Eje2 + caso1 (ok) de Eje3 = 5 total, 3 ok, 1 bug
+  assert(p.dev.total === 5, `DEV total es 5 (got ${p.dev.total})`)
+  assert(p.dev.ok === 3, `DEV ok es 3 (got ${p.dev.ok})`)
+  assert(p.dev.bug === 1, `DEV bug es 1 (got ${p.dev.bug})`)
+
+  // QA: items 3 (vacio), 4 (ok) de Eje1 + paso1 (ok) de Eje2 + caso2 (bug) de Eje3 = 4 total, 2 ok, 1 bug
+  assert(p.qa.total === 4, `QA total es 4 (got ${p.qa.total})`)
+  assert(p.qa.ok === 2, `QA ok es 2 (got ${p.qa.ok})`)
+  assert(p.qa.bug === 1, `QA bug es 1 (got ${p.qa.bug})`)
+
+  // Global
+  assert(p.total === 9, `Total es 9 (got ${p.total})`)
+  assert(p.verified === 7, `Verificados es 7: 3+1 DEV + 2+1 QA (got ${p.verified})`)
+}
+
+// ============================================
+// Test 26: Index muestra progreso de verificacion
+// ============================================
+console.log('\n📋 Test 26: Index muestra progreso de verificacion')
+{
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'qa-test-progreso-'))
+
+  const v3File = path.join(tmpDir, 'QA_v3-test-progreso.md')
+  fs.writeFileSync(v3File, `# QA: Test Progreso Index
+
+**Spec:** \`v3-progreso.md\`
+**Fecha:** 2026-04-27
+**Auditor(es):** Sergio
+
+## Eje 1 — Funcionalidad
+| # | Criterio | Verificador | Resultado | Issue |
+|---|----------|-------------|-----------|-------|
+| 1 | Item DEV ok | DEV | ok | |
+| 2 | Item QA pendiente | QA | | |
+
+## Checklist de cierre
+- [ ] Done
+`)
+
+  const indexPath = generarIndex(tmpDir)
+  const html = fs.readFileSync(indexPath, 'utf-8')
+
+  // Panel global de progreso
+  assert(html.includes('Progreso de verificacion V3'), 'Index tiene panel de progreso global')
+  assert(html.includes('prog-bar-container'), 'Index tiene barra de progreso')
+  assert(html.includes('verificados'), 'Index muestra conteo de verificados')
+
+  // Card V3 tiene progreso
+  assert(html.includes('qa-progreso'), 'Card V3 tiene seccion de progreso')
+
+  // DEV completo, QA pendiente
+  assert(html.includes('DEV: 1/1'), 'Index muestra DEV 1/1')
+  assert(html.includes('QA: 0/1'), 'Index muestra QA 0/1')
 
   // Cleanup
   fs.rmSync(tmpDir, { recursive: true })

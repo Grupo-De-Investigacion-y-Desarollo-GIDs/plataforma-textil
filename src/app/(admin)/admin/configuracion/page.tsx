@@ -112,6 +112,10 @@ export default function AdminConfiguracionPage() {
     { key: 'features' as const, label: 'Features' },
   ]
 
+  const tabLinks = [
+    { href: '/admin/configuracion/archivos', label: 'Archivos' },
+  ]
+
   return (
     <div className="max-w-3xl mx-auto py-6 px-4">
       <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Configuración General</h1>
@@ -125,12 +129,18 @@ export default function AdminConfiguracionPage() {
         </div>
       )}
 
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2 mb-6 flex-wrap">
         {tabs.map(t => (
           <button key={t.key} onClick={() => setTab(t.key)}
             className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${tab === t.key ? 'bg-brand-blue text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
             {t.label}
           </button>
+        ))}
+        {tabLinks.map(t => (
+          <a key={t.href} href={t.href}
+            className="px-4 py-2 rounded-lg text-sm font-semibold transition-colors bg-gray-100 text-gray-600 hover:bg-gray-200">
+            {t.label}
+          </a>
         ))}
       </div>
 

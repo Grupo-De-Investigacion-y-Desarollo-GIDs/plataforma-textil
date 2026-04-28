@@ -3,6 +3,54 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **21:16** `f60a00b` — fix: E2E resilience — skip graceful si storage/Redis no disponible
+  - `tests/e2e/file-validation.spec.ts`
+  - `tests/e2e/ratelimit.spec.ts`
+
+- **21:10** `711b810` — fix: seed ConfiguracionUpload via migracion + ajustar E2E
+  - `prisma/migrations/20260428000000_seed_configuracion_upload/migration.sql`
+  - `tests/e2e/file-validation.spec.ts`
+
+- **21:04** `2fec2ce` — fix: corregir E2E tests — endpoint correcto y bypass selectivo
+  - `tests/e2e/file-validation.spec.ts`
+  - `tests/e2e/ratelimit.spec.ts`
+
+- **20:57** `1f96492` — chore: trigger redeploy para capturar CI_BYPASS_TOKEN en Vercel
+
+
+- **20:36** `6a1493d` — fix: CI bypass token para rate limit — runners de GitHub comparten IPs
+  - `.claude/auditorias/REVIEW_v3-rate-limiting.md`
+  - `.claude/auditorias/REVIEW_v3-validacion-archivos.md`
+  - `.github/workflows/e2e.yml`
+  - `playwright.config.ts`
+  - `src/__tests__/ratelimit.test.ts`
+  - `src/compartido/lib/ratelimit.ts`
+
+- **20:15** `2f04356` — feat: v3-validacion-archivos (S-03) — validacion server-side por magic bytes + config admin
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-validacion-archivos.md`
+  - `.claude/auditorias/REVIEW_v3-validacion-archivos.md`
+  - `prisma/migrations/20260427100000_agregar_configuracion_upload/migration.sql`
+  - `prisma/schema.prisma`
+  - `prisma/seed.ts`
+  - `src/__tests__/file-validation.test.ts`
+  - `src/app/(admin)/admin/configuracion/archivos/page.tsx`
+  - `src/app/(admin)/admin/configuracion/page.tsx`
+  - `src/app/api/admin/configuracion-upload/[id]/route.ts`
+  - `src/app/api/admin/configuracion-upload/route.ts`
+  - `src/app/api/upload/imagenes/route.ts`
+  - `src/app/api/validaciones/[id]/upload/route.ts`
+  - `src/compartido/lib/file-validation.ts`
+  - `tests/e2e/file-validation.spec.ts`
+
+- **19:31** `02ba56d` — feat: progreso de verificacion DEV/QA en index de auditorias
+  - `tools/generate-qa.js`
+  - `tools/generate-qa.test.js`
+
+- **19:18** `a0aafb9` — docs: marcar items DEV verificados en QAs de S-01 y S-02
+  - `.claude/auditorias/QA_v3-cookies-seguridad.md`
+  - `.claude/auditorias/QA_v3-rate-limiting.md`
+
 - **19:00** `f35ad70` — docs: review S-02 completado — 21/25 verificados, CORS OK
   - `.claude/auditorias/REVIEW_v3-rate-limiting.md`
 
