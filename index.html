@@ -156,6 +156,25 @@
     .estado-issue-link:hover { text-decoration: underline; }
     .estado-issue-title { font-size: 12px; color: #555; }
     .estado-issue-ver { font-size: 12px; color: #1e3a5f; text-decoration: none; margin-left: auto; }
+    /* Bloques V3 */
+    .bloque-section { margin-bottom: 12px; }
+    .bloque-section details {
+      background: white; border: 1px solid #e8ecf1; border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06); overflow: hidden;
+    }
+    .bloque-section summary {
+      padding: 14px 20px; font-size: 15px; font-weight: 700; color: #1e3a5f;
+      display: flex; align-items: center; gap: 10px;
+      user-select: none;
+    }
+    .bloque-section summary:hover { background: #f8f9fb; }
+    .bloque-stats {
+      font-size: 12px; font-weight: 600; color: #666; margin-left: auto;
+    }
+    .bloque-content { padding: 4px 16px 16px; }
+    .bloque-placeholder {
+      font-size: 13px; color: #aaa; font-style: italic; padding: 8px 4px;
+    }
     @media (max-width: 600px) {
       body { padding: 10px; }
       .qa-meta { flex-direction: column; gap: 4px; }
@@ -196,9 +215,109 @@
 
     <div class="qa-section" id="section-v3">
       <div class="qa-section-title">V3 — En curso</div>
-      <div class="qa-section-desc">Auditorias de specs V3 que se estan implementando ahora</div>
-      <div class="qa-grid">
+      <div class="qa-section-desc">Auditorias de specs V3 agrupadas por bloque del plan de implementacion</div>
+      
+      <div class="bloque-section">
+        <details open>
+          <summary>Bloque 0 — Infraestructura QA <span class="bloque-stats">1 QA</span></summary>
+          <div class="bloque-content">
+            <div class="qa-grid">
+      <a href="QA_v3-qa-estado-issues.html" class="qa-card" data-version="v3" data-qa-slug="QA_v3-qa-estado-issues">
+        <div class="qa-title">Estado de issues en interfaz de QA</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v3-qa-estado-issues.md</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-26</div>
+          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
+        </div>
         
+        <div class="qa-progreso">
+          <div class="prog-bar-container">
+            <div class="prog-bar" style="width:0%"></div>
+          </div>
+          <div class="prog-info">
+            <span class="prog-pct">0/27 verificados (0%)</span>
+            <span class="prog-pending">DEV: 0/15</span> <span class="prog-pending">QA: 0/12</span>
+          </div>
+        </div>
+        <div class="estado-resumen"></div>
+        <div class="estado-detalle" style="display:none"></div>
+      </a></div>
+          </div>
+        </details>
+      </div>
+      <div class="bloque-section">
+        <details open>
+          <summary>Bloque 1 — Infraestructura base <span class="bloque-stats">2 QAs</span></summary>
+          <div class="bloque-content">
+            <div class="qa-grid">
+      <a href="QA_v3-separar-ambientes.html" class="qa-card" data-version="v3" data-qa-slug="QA_v3-separar-ambientes">
+        <div class="qa-title">Separar ambientes — Supabase desarrollo y produccion</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v3-separar-ambientes.md</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-26</div>
+          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
+        </div>
+        
+        <div class="qa-progreso">
+          <div class="prog-bar-container">
+            <div class="prog-bar" style="width:0%"></div>
+          </div>
+          <div class="prog-info">
+            <span class="prog-pct">0/21 verificados (0%)</span>
+            <span class="prog-pending">DEV: 0/12</span> <span class="prog-pending">QA: 0/9</span>
+          </div>
+        </div>
+        <div class="estado-resumen"></div>
+        <div class="estado-detalle" style="display:none"></div>
+      </a>
+      <a href="QA_v3-logs-admin-auditoria.html" class="qa-card" data-version="v3" data-qa-slug="QA_v3-logs-admin-auditoria">
+        <div class="qa-title">Logs de auditoria para acciones sensibles del admin</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v3-logs-admin-auditoria.md</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-26</div>
+          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
+        </div>
+        
+        <div class="qa-progreso">
+          <div class="prog-bar-container">
+            <div class="prog-bar" style="width:0%"></div>
+          </div>
+          <div class="prog-info">
+            <span class="prog-pct">0/38 verificados (0%)</span>
+            <span class="prog-pending">DEV: 0/7</span> <span class="prog-pending">QA: 0/31</span>
+          </div>
+        </div>
+        <div class="estado-resumen"></div>
+        <div class="estado-detalle" style="display:none"></div>
+      </a></div>
+          </div>
+        </details>
+      </div>
+      <div class="bloque-section">
+        <details open>
+          <summary>Bloque 2 — Seguridad <span class="bloque-stats">3 QAs</span></summary>
+          <div class="bloque-content">
+            <div class="qa-grid">
+      <a href="QA_v3-cookies-seguridad.html" class="qa-card" data-version="v3" data-qa-slug="QA_v3-cookies-seguridad">
+        <div class="qa-title">Auditoria de configuracion de cookies NextAuth</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v3-cookies-seguridad.md</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-26</div>
+          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
+        </div>
+        <div class="qa-perfiles"><span class="perfil-chip">---</span></div>
+        <div class="qa-progreso">
+          <div class="prog-bar-container">
+            <div class="prog-bar" style="width:55%"></div>
+          </div>
+          <div class="prog-info">
+            <span class="prog-pct">12/22 verificados (55%)</span>
+            <span class="prog-complete">DEV: 12/12</span> <span class="prog-pending">QA: 0/10</span>
+          </div>
+        </div>
+        <div class="estado-resumen"></div>
+        <div class="estado-detalle" style="display:none"></div>
+      </a>
       <a href="QA_v3-rate-limiting.html" class="qa-card" data-version="v3" data-qa-slug="QA_v3-rate-limiting">
         <div class="qa-title">Rate limiting en APIs criticas</div>
         <div class="qa-meta">
@@ -238,88 +357,51 @@
         </div>
         <div class="estado-resumen"></div>
         <div class="estado-detalle" style="display:none"></div>
-      </a>
-      <a href="QA_v3-cookies-seguridad.html" class="qa-card" data-version="v3" data-qa-slug="QA_v3-cookies-seguridad">
-        <div class="qa-title">Auditoria de configuracion de cookies NextAuth</div>
-        <div class="qa-meta">
-          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v3-cookies-seguridad.md</code></div>
-          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-26</div>
-          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
-        </div>
-        <div class="qa-perfiles"><span class="perfil-chip">---</span></div>
-        <div class="qa-progreso">
-          <div class="prog-bar-container">
-            <div class="prog-bar" style="width:55%"></div>
+      </a></div>
           </div>
-          <div class="prog-info">
-            <span class="prog-pct">12/22 verificados (55%)</span>
-            <span class="prog-complete">DEV: 12/12</span> <span class="prog-pending">QA: 0/10</span>
-          </div>
-        </div>
-        <div class="estado-resumen"></div>
-        <div class="estado-detalle" style="display:none"></div>
-      </a>
-      <a href="QA_v3-logs-admin-auditoria.html" class="qa-card" data-version="v3" data-qa-slug="QA_v3-logs-admin-auditoria">
-        <div class="qa-title">Logs de auditoria para acciones sensibles del admin</div>
-        <div class="qa-meta">
-          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v3-logs-admin-auditoria.md</code></div>
-          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-26</div>
-          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
-        </div>
-        
-        <div class="qa-progreso">
-          <div class="prog-bar-container">
-            <div class="prog-bar" style="width:0%"></div>
-          </div>
-          <div class="prog-info">
-            <span class="prog-pct">0/38 verificados (0%)</span>
-            <span class="prog-pending">DEV: 0/7</span> <span class="prog-pending">QA: 0/31</span>
-          </div>
-        </div>
-        <div class="estado-resumen"></div>
-        <div class="estado-detalle" style="display:none"></div>
-      </a>
-      <a href="QA_v3-qa-estado-issues.html" class="qa-card" data-version="v3" data-qa-slug="QA_v3-qa-estado-issues">
-        <div class="qa-title">Estado de issues en interfaz de QA</div>
-        <div class="qa-meta">
-          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v3-qa-estado-issues.md</code></div>
-          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-26</div>
-          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
-        </div>
-        
-        <div class="qa-progreso">
-          <div class="prog-bar-container">
-            <div class="prog-bar" style="width:0%"></div>
-          </div>
-          <div class="prog-info">
-            <span class="prog-pct">0/27 verificados (0%)</span>
-            <span class="prog-pending">DEV: 0/15</span> <span class="prog-pending">QA: 0/12</span>
-          </div>
-        </div>
-        <div class="estado-resumen"></div>
-        <div class="estado-detalle" style="display:none"></div>
-      </a>
-      <a href="QA_v3-separar-ambientes.html" class="qa-card" data-version="v3" data-qa-slug="QA_v3-separar-ambientes">
-        <div class="qa-title">Separar ambientes — Supabase desarrollo y produccion</div>
-        <div class="qa-meta">
-          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v3-separar-ambientes.md</code></div>
-          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-04-26</div>
-          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
-        </div>
-        
-        <div class="qa-progreso">
-          <div class="prog-bar-container">
-            <div class="prog-bar" style="width:0%"></div>
-          </div>
-          <div class="prog-info">
-            <span class="prog-pct">0/21 verificados (0%)</span>
-            <span class="prog-pending">DEV: 0/12</span> <span class="prog-pending">QA: 0/9</span>
-          </div>
-        </div>
-        <div class="estado-resumen"></div>
-        <div class="estado-detalle" style="display:none"></div>
-      </a>
+        </details>
       </div>
+      <div class="bloque-section">
+        <details open>
+          <summary>Bloque 3 — Roles ESTADO <span class="bloque-stats" style="color:#aaa">vacio</span></summary>
+          <div class="bloque-content">
+            <p class="bloque-placeholder">Aun no implementado</p>
+          </div>
+        </details>
+      </div>
+      <div class="bloque-section">
+        <details open>
+          <summary>Bloque 4 — Calidad y errores <span class="bloque-stats" style="color:#aaa">vacio</span></summary>
+          <div class="bloque-content">
+            <p class="bloque-placeholder">Aun no implementado</p>
+          </div>
+        </details>
+      </div>
+      <div class="bloque-section">
+        <details open>
+          <summary>Bloque 5 — Integraciones externas <span class="bloque-stats" style="color:#aaa">vacio</span></summary>
+          <div class="bloque-content">
+            <p class="bloque-placeholder">Aun no implementado</p>
+          </div>
+        </details>
+      </div>
+      <div class="bloque-section">
+        <details open>
+          <summary>Bloque 6 — Features de marca <span class="bloque-stats" style="color:#aaa">vacio</span></summary>
+          <div class="bloque-content">
+            <p class="bloque-placeholder">Aun no implementado</p>
+          </div>
+        </details>
+      </div>
+      <div class="bloque-section">
+        <details open>
+          <summary>Bloque 7 — UX/Onboarding <span class="bloque-stats" style="color:#aaa">vacio</span></summary>
+          <div class="bloque-content">
+            <p class="bloque-placeholder">Aun no implementado</p>
+          </div>
+        </details>
+      </div>
+      
     </div>
 
     <div class="qa-section" id="section-v2">
