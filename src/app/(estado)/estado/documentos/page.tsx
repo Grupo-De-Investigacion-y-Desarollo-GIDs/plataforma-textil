@@ -16,7 +16,7 @@ interface TipoDocumento {
   activo: boolean
 }
 
-export default function AdminDocumentosPage() {
+export default function EstadoDocumentosPage() {
   const [docs, setDocs] = useState<TipoDocumento[]>([])
   const [loading, setLoading] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
@@ -63,7 +63,11 @@ export default function AdminDocumentosPage() {
       })
       if (!res.ok) {
         const data = await res.json()
-        setError(data.error || 'Error al guardar')
+        if (data.code === 'INSUFFICIENT_ROLE') {
+          setError('Solo el rol ESTADO puede gestionar tipos de documento')
+        } else {
+          setError(data.error || 'Error al guardar')
+        }
         return
       }
       setModalOpen(false)
@@ -110,7 +114,7 @@ export default function AdminDocumentosPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Tipos de Documento</h1>
-          <p className="text-gray-500 text-sm">Requisitos para el checklist de formalizacion de talleres</p>
+          <p className="text-gray-500 text-sm">Requisitos de formalizacion por nivel — configuracion regulatoria del Estado</p>
         </div>
         <Button icon={<Plus className="w-4 h-4" />} onClick={handleNew}>Nuevo Requisito</Button>
       </div>

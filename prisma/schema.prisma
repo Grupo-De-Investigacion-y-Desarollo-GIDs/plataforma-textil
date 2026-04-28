@@ -124,6 +124,7 @@ model User {
   logs          LogActividad[]
   auditorias    Auditoria[]    @relation("AuditoriaInspector")
   notasAdmin    NotaInterna[]  @relation("NotasAdmin")
+  validacionesAprobadas Validacion[] @relation("validacionesAprobadas")
 
   @@map("users")
 }
@@ -470,11 +471,14 @@ model Validacion {
   detalle          String?
   documentoUrl     String?
   fechaVencimiento DateTime?
+  aprobadoPor      String?
+  aprobadoEn       DateTime?
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
 
-  taller        Taller         @relation(fields: [tallerId], references: [id], onDelete: Cascade)
-  tipoDocumento TipoDocumento @relation(fields: [tipoDocumentoId], references: [id])
+  taller            Taller         @relation(fields: [tallerId], references: [id], onDelete: Cascade)
+  tipoDocumento     TipoDocumento  @relation(fields: [tipoDocumentoId], references: [id])
+  usuarioAprobador  User?          @relation("validacionesAprobadas", fields: [aprobadoPor], references: [id], onDelete: SetNull)
 
   @@unique([tallerId, tipo])
   @@index([estado])

@@ -65,16 +65,14 @@ export default auth((req) => {
 
   // Protección por rol
 
-  // Rutas de ADMIN — ADMIN siempre, CONTENIDO colecciones/evaluaciones, ESTADO auditorias
+  // Rutas de ADMIN — ADMIN siempre, CONTENIDO colecciones/evaluaciones
+  // ESTADO ya no accede a /admin/* (tiene sus propias rutas /estado/*)
   if (pathname.startsWith('/admin')) {
     if (userRole === 'ADMIN') return NextResponse.next()
     if (userRole === 'CONTENIDO' && (
       pathname.startsWith('/admin/colecciones') ||
       pathname.startsWith('/admin/evaluaciones')
     )) {
-      return NextResponse.next()
-    }
-    if (userRole === 'ESTADO' && pathname.startsWith('/admin/auditorias')) {
       return NextResponse.next()
     }
     return NextResponse.redirect(new URL('/unauthorized', nextUrl))

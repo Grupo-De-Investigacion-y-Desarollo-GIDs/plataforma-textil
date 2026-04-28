@@ -74,7 +74,7 @@ async function main() {
     data: { email: 'martin.echevarria@pdt.org.ar', password: hash, name: 'Martín Echevarría', role: 'MARCA', phone: '+5491189012345', active: true },
   })
 
-  await prisma.user.create({
+  const userEstado = await prisma.user.create({
     data: { email: 'anabelen.torres@pdt.org.ar', password: hash, name: 'Ana Belén Torres', role: 'ESTADO', phone: '+5491190123456', active: true },
   })
 
@@ -253,7 +253,7 @@ async function main() {
   // Bronce: solo CUIT completado
   await prisma.validacion.createMany({
     data: [
-      { tallerId: tallerBronce.id, tipo: 'CUIT/Monotributo', tipoDocumentoId: tdMap['CUIT/Monotributo'], estado: 'COMPLETADO', detalle: 'Monotributo categoría D verificado' },
+      { tallerId: tallerBronce.id, tipo: 'CUIT/Monotributo', tipoDocumentoId: tdMap['CUIT/Monotributo'], estado: 'COMPLETADO', detalle: 'Monotributo categoría D verificado', aprobadoPor: admin.id, aprobadoEn: new Date('2026-01-15') },
       { tallerId: tallerBronce.id, tipo: 'Habilitación municipal', tipoDocumentoId: tdMap['Habilitación municipal'], estado: 'NO_INICIADO' },
       { tallerId: tallerBronce.id, tipo: 'ART', tipoDocumentoId: tdMap['ART'], estado: 'NO_INICIADO' },
       { tallerId: tallerBronce.id, tipo: 'Empleados registrados', tipoDocumentoId: tdMap['Empleados registrados'], estado: 'NO_INICIADO' },
@@ -330,9 +330,9 @@ async function main() {
   // Plata: 3 validaciones completadas, 1 pendiente
   await prisma.validacion.createMany({
     data: [
-      { tallerId: tallerPlata.id, tipo: 'CUIT/Monotributo', tipoDocumentoId: tdMap['CUIT/Monotributo'], estado: 'COMPLETADO', detalle: 'Cooperativa inscripta en INAES y AFIP' },
-      { tallerId: tallerPlata.id, tipo: 'ART', tipoDocumentoId: tdMap['ART'], estado: 'COMPLETADO', detalle: 'Póliza Experta ART vigente hasta 03/2027', fechaVencimiento: new Date('2027-03-15') },
-      { tallerId: tallerPlata.id, tipo: 'Habilitación municipal', tipoDocumentoId: tdMap['Habilitación municipal'], estado: 'COMPLETADO', detalle: 'Habilitación La Matanza expediente 2024-0892' },
+      { tallerId: tallerPlata.id, tipo: 'CUIT/Monotributo', tipoDocumentoId: tdMap['CUIT/Monotributo'], estado: 'COMPLETADO', detalle: 'Cooperativa inscripta en INAES y AFIP', aprobadoPor: admin.id, aprobadoEn: new Date('2026-02-10') },
+      { tallerId: tallerPlata.id, tipo: 'ART', tipoDocumentoId: tdMap['ART'], estado: 'COMPLETADO', detalle: 'Póliza Experta ART vigente hasta 03/2027', fechaVencimiento: new Date('2027-03-15'), aprobadoPor: admin.id, aprobadoEn: new Date('2026-02-12') },
+      { tallerId: tallerPlata.id, tipo: 'Habilitación municipal', tipoDocumentoId: tdMap['Habilitación municipal'], estado: 'COMPLETADO', detalle: 'Habilitación La Matanza expediente 2024-0892', aprobadoPor: admin.id, aprobadoEn: new Date('2026-02-15') },
       { tallerId: tallerPlata.id, tipo: 'Empleados registrados', tipoDocumentoId: tdMap['Empleados registrados'], estado: 'PENDIENTE', detalle: 'En trámite — alta temprana de 2 nuevas asociadas' },
       { tallerId: tallerPlata.id, tipo: 'Habilitación bomberos', tipoDocumentoId: tdMap['Habilitación bomberos'], estado: 'NO_INICIADO' },
       { tallerId: tallerPlata.id, tipo: 'Plan de seguridad e higiene', tipoDocumentoId: tdMap['Plan de seguridad e higiene'], estado: 'NO_INICIADO' },
@@ -416,13 +416,13 @@ async function main() {
   // Oro: todas las validaciones completadas
   await prisma.validacion.createMany({
     data: [
-      { tallerId: tallerOro.id, tipo: 'CUIT/Monotributo', tipoDocumentoId: tdMap['CUIT/Monotributo'], estado: 'COMPLETADO', detalle: 'SRL inscripta — Responsable inscripto IVA' },
-      { tallerId: tallerOro.id, tipo: 'Habilitación municipal', tipoDocumentoId: tdMap['Habilitación municipal'], estado: 'COMPLETADO', detalle: 'Habilitación Avellaneda exp. 2023-4521', fechaVencimiento: new Date('2027-06-30') },
-      { tallerId: tallerOro.id, tipo: 'ART', tipoDocumentoId: tdMap['ART'], estado: 'COMPLETADO', detalle: 'Galeno ART — póliza vigente', fechaVencimiento: new Date('2027-01-15') },
-      { tallerId: tallerOro.id, tipo: 'Empleados registrados', tipoDocumentoId: tdMap['Empleados registrados'], estado: 'COMPLETADO', detalle: '14 empleados en libro — alta temprana al día' },
-      { tallerId: tallerOro.id, tipo: 'Habilitación bomberos', tipoDocumentoId: tdMap['Habilitación bomberos'], estado: 'COMPLETADO', detalle: 'Inspección aprobada 10/2025' },
-      { tallerId: tallerOro.id, tipo: 'Plan de seguridad e higiene', tipoDocumentoId: tdMap['Plan de seguridad e higiene'], estado: 'COMPLETADO', detalle: 'Plan firmado por Ing. Martínez (mat. 4521)' },
-      { tallerId: tallerOro.id, tipo: 'Nómina digital', tipoDocumentoId: tdMap['Nómina digital'], estado: 'COMPLETADO', detalle: 'Libro de sueldos digital activo' },
+      { tallerId: tallerOro.id, tipo: 'CUIT/Monotributo', tipoDocumentoId: tdMap['CUIT/Monotributo'], estado: 'COMPLETADO', detalle: 'SRL inscripta — Responsable inscripto IVA', aprobadoPor: admin.id, aprobadoEn: new Date('2026-01-20') },
+      { tallerId: tallerOro.id, tipo: 'Habilitación municipal', tipoDocumentoId: tdMap['Habilitación municipal'], estado: 'COMPLETADO', detalle: 'Habilitación Avellaneda exp. 2023-4521', fechaVencimiento: new Date('2027-06-30'), aprobadoPor: admin.id, aprobadoEn: new Date('2026-01-22') },
+      { tallerId: tallerOro.id, tipo: 'ART', tipoDocumentoId: tdMap['ART'], estado: 'COMPLETADO', detalle: 'Galeno ART — póliza vigente', fechaVencimiento: new Date('2027-01-15'), aprobadoPor: admin.id, aprobadoEn: new Date('2026-01-25') },
+      { tallerId: tallerOro.id, tipo: 'Empleados registrados', tipoDocumentoId: tdMap['Empleados registrados'], estado: 'COMPLETADO', detalle: '14 empleados en libro — alta temprana al día', aprobadoPor: admin.id, aprobadoEn: new Date('2026-01-28') },
+      { tallerId: tallerOro.id, tipo: 'Habilitación bomberos', tipoDocumentoId: tdMap['Habilitación bomberos'], estado: 'COMPLETADO', detalle: 'Inspección aprobada 10/2025', aprobadoPor: admin.id, aprobadoEn: new Date('2026-02-01') },
+      { tallerId: tallerOro.id, tipo: 'Plan de seguridad e higiene', tipoDocumentoId: tdMap['Plan de seguridad e higiene'], estado: 'COMPLETADO', detalle: 'Plan firmado por Ing. Martínez (mat. 4521)', aprobadoPor: admin.id, aprobadoEn: new Date('2026-02-05') },
+      { tallerId: tallerOro.id, tipo: 'Nómina digital', tipoDocumentoId: tdMap['Nómina digital'], estado: 'COMPLETADO', detalle: 'Libro de sueldos digital activo', aprobadoPor: admin.id, aprobadoEn: new Date('2026-02-08') },
     ],
   })
 
