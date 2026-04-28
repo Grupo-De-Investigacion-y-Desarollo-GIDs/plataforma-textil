@@ -3,6 +3,29 @@
 ## 2026-04-28
 
 ### Gerardo Breard
+- **19:15** `87a3644` — feat: D-02 tipos documento DB y reglas de nivel configurables
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-tipos-documento-db.md`
+  - `.claude/auditorias/REVIEW_v3-tipos-documento-db.md`
+  - `prisma/migrations/20260428200000_tipos_documento_y_reglas_nivel/migration.sql`
+  - `prisma/migrations/20260428200001_seed_reglas_nivel/migration.sql`
+  - `prisma/schema.prisma`
+  - `prisma/seed.ts`
+  - `scripts/verificar-migracion-d02.sql`
+  - `src/__tests__/configuracion-niveles-api.test.ts`
+  - `src/__tests__/nivel.test.ts`
+  - `src/app/(estado)/estado/configuracion-niveles/page.tsx`
+  - `src/app/(estado)/estado/documentos/page.tsx`
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/app/api/estado/configuracion-niveles/[id]/route.ts`
+  - `src/app/api/estado/configuracion-niveles/preview/route.ts`
+  - `src/app/api/estado/configuracion-niveles/route.ts`
+  - `src/app/api/tipos-documento/route.ts`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+  - `src/compartido/lib/nivel.ts`
+  - `tests/e2e/configuracion-niveles.spec.ts`
+  - `tools/recalcular-niveles.ts`
+
 - **16:43** `0e12152` — fix: dashboard ESTADO apuntaba a /admin/ en links de validaciones
   - `src/app/(estado)/estado/page.tsx`
   - `tests/e2e/roles-estado.spec.ts`
