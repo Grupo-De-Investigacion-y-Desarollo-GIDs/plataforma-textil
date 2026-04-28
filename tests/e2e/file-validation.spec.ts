@@ -22,7 +22,7 @@ test.describe('File validation — S-03', () => {
     await loginAs(page, 'taller')
 
     // Obtener tallerId del usuario logueado
-    const tallerRes = await page.request.get('/api/taller/perfil')
+    const tallerRes = await page.request.get('/api/talleres/me')
     const tallerData = await tallerRes.json()
     const tallerId = tallerData.id || tallerData.taller?.id
 
@@ -55,7 +55,7 @@ test.describe('File validation — S-03', () => {
     await ensureNotProduction(page)
     await loginAs(page, 'taller')
 
-    const tallerRes = await page.request.get('/api/taller/perfil')
+    const tallerRes = await page.request.get('/api/talleres/me')
     const tallerData = await tallerRes.json()
     const tallerId = tallerData.id || tallerData.taller?.id
 
@@ -89,7 +89,7 @@ test.describe('File validation — S-03', () => {
     await ensureNotProduction(page)
     await loginAs(page, 'taller')
 
-    const tallerRes = await page.request.get('/api/taller/perfil')
+    const tallerRes = await page.request.get('/api/talleres/me')
     const tallerData = await tallerRes.json()
     const tallerId = tallerData.id || tallerData.taller?.id
 
@@ -122,7 +122,7 @@ test.describe('File validation — S-03', () => {
     await ensureNotProduction(page)
     await loginAs(page, 'taller')
 
-    const tallerRes = await page.request.get('/api/taller/perfil')
+    const tallerRes = await page.request.get('/api/talleres/me')
     const tallerData = await tallerRes.json()
     const tallerId = tallerData.id || tallerData.taller?.id
 
@@ -182,7 +182,7 @@ test.describe('File validation — S-03', () => {
       // Ahora loguearse como taller e intentar subir
       await loginAs(page, 'taller')
 
-      const tallerRes = await page.request.get('/api/taller/perfil')
+      const tallerRes = await page.request.get('/api/talleres/me')
       const tallerData = await tallerRes.json()
       const tallerId = tallerData.id || tallerData.taller?.id
 
