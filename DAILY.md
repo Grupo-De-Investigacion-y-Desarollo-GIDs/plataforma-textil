@@ -3,6 +3,10 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **21:10** `711b810` — fix: seed ConfiguracionUpload via migracion + ajustar E2E
+  - `prisma/migrations/20260428000000_seed_configuracion_upload/migration.sql`
+  - `tests/e2e/file-validation.spec.ts`
+
 - **21:04** `2fec2ce` — fix: corregir E2E tests — endpoint correcto y bypass selectivo
   - `tests/e2e/file-validation.spec.ts`
   - `tests/e2e/ratelimit.spec.ts`
