@@ -3,6 +3,12 @@
 ## 2026-04-28
 
 ### Gerardo Breard
+- **15:10** `fb25353` — fix: layout estado bloqueaba ADMIN, locators E2E con h1 duplicado
+  - `src/app/(estado)/layout.tsx`
+  - `tests/e2e/_helpers/auth.ts`
+  - `tests/e2e/admin-no-regression.spec.ts`
+  - `tests/e2e/roles-estado.spec.ts`
+
 - **14:19** `437690d` — feat: D-01 redefinicion de roles — ESTADO valida documentos
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `.claude/auditorias/QA_v3-redefinicion-roles-estado.md`
