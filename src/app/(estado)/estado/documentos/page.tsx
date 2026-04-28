@@ -14,6 +14,8 @@ interface TipoDocumento {
   descripcion: string | null
   requerido: boolean
   activo: boolean
+  puntosOtorgados: number
+  nivelMinimo: string
 }
 
 export default function EstadoDocumentosPage() {
@@ -22,7 +24,7 @@ export default function EstadoDocumentosPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-  const [editando, setEditando] = useState<{ id: string; nombre: string; descripcion: string; requerido: boolean; activo: boolean } | null>(null)
+  const [editando, setEditando] = useState<{ id: string; nombre: string; descripcion: string; requerido: boolean; activo: boolean; puntosOtorgados: number } | null>(null)
 
   const fetchDocs = useCallback(async () => {
     try {
@@ -39,13 +41,13 @@ export default function EstadoDocumentosPage() {
   const opcionales = docs.filter(d => !d.requerido)
 
   function handleEdit(d: TipoDocumento) {
-    setEditando({ id: d.id, nombre: d.nombre, descripcion: d.descripcion ?? '', requerido: d.requerido, activo: d.activo })
+    setEditando({ id: d.id, nombre: d.nombre, descripcion: d.descripcion ?? '', requerido: d.requerido, activo: d.activo, puntosOtorgados: d.puntosOtorgados })
     setError('')
     setModalOpen(true)
   }
 
   function handleNew() {
-    setEditando({ id: '', nombre: '', descripcion: '', requerido: true, activo: true })
+    setEditando({ id: '', nombre: '', descripcion: '', requerido: true, activo: true, puntosOtorgados: 10 })
     setError('')
     setModalOpen(true)
   }
@@ -91,7 +93,9 @@ export default function EstadoDocumentosPage() {
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <p className="font-semibold text-sm">{doc.nombre}</p>
-                      {!doc.activo && <Badge variant="muted">Inactivo</Badge>}
+                      <Badge variant="muted">{doc.puntosOtorgados} pts</Badge>
+                      <Badge variant="default">{doc.nivelMinimo}</Badge>
+                      {!doc.activo && <Badge variant="warning">Inactivo</Badge>}
                     </div>
                     {doc.descripcion && (
                       <p className="text-xs text-gray-400">{doc.descripcion}</p>
@@ -137,6 +141,12 @@ export default function EstadoDocumentosPage() {
               <label className="block text-sm font-semibold text-gray-700 mb-1">Descripcion</label>
               <textarea value={editando.descripcion} onChange={e => setEditando({ ...editando, descripcion: e.target.value })} rows={2}
                 className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent" />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Puntos otorgados</label>
+              <input type="number" min={0} max={100} value={editando.puntosOtorgados} onChange={e => setEditando({ ...editando, puntosOtorgados: parseInt(e.target.value) || 0 })}
+                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent" />
+              <p className="text-xs text-gray-400 mt-1">Puntos que suma el taller al completar este documento</p>
             </div>
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" checked={editando.requerido} onChange={e => setEditando({ ...editando, requerido: e.target.checked })} className="rounded" />

@@ -28,6 +28,7 @@ async function main() {
   await prisma.coleccion.deleteMany()
   await prisma.validacion.deleteMany()
   await prisma.tipoDocumento.deleteMany()
+  await prisma.reglaNivel.deleteMany()
   await prisma.ordenManufactura.deleteMany()
   await prisma.pedido.deleteMany()
   await prisma.maquinaria.deleteMany()
@@ -133,6 +134,7 @@ async function main() {
       nivelMinimo: 'PLATA' as const,
       requerido: true,
       orden: 1,
+      puntosOtorgados: 15,
     },
     {
       nombre: 'Habilitación municipal',
@@ -143,6 +145,7 @@ async function main() {
       nivelMinimo: 'PLATA' as const,
       requerido: true,
       orden: 2,
+      puntosOtorgados: 15,
     },
     {
       nombre: 'ART',
@@ -153,6 +156,7 @@ async function main() {
       nivelMinimo: 'PLATA' as const,
       requerido: true,
       orden: 3,
+      puntosOtorgados: 15,
     },
     {
       nombre: 'Empleados registrados',
@@ -163,6 +167,7 @@ async function main() {
       nivelMinimo: 'ORO' as const,
       requerido: true,
       orden: 4,
+      puntosOtorgados: 20,
     },
     {
       nombre: 'Habilitación bomberos',
@@ -173,6 +178,7 @@ async function main() {
       nivelMinimo: 'ORO' as const,
       requerido: true,
       orden: 5,
+      puntosOtorgados: 20,
     },
     {
       nombre: 'Plan de seguridad e higiene',
@@ -183,6 +189,7 @@ async function main() {
       nivelMinimo: 'ORO' as const,
       requerido: true,
       orden: 6,
+      puntosOtorgados: 20,
     },
     {
       nombre: 'Nómina digital',
@@ -193,6 +200,7 @@ async function main() {
       nivelMinimo: 'ORO' as const,
       requerido: true,
       orden: 7,
+      puntosOtorgados: 20,
     },
   ]
 
@@ -209,6 +217,40 @@ async function main() {
   tiposDoc.forEach(t => { tdMap[t.nombre] = t.id })
 
   console.log('  ✓ 7 tipos de documento')
+
+  // ============================================
+  // REGLAS DE NIVEL (3)
+  // ============================================
+  await prisma.reglaNivel.createMany({
+    data: [
+      {
+        nivel: 'BRONCE',
+        puntosMinimos: 0,
+        requiereVerificadoAfip: false,
+        certificadosAcademiaMin: 0,
+        descripcion: 'Nivel inicial — el taller esta registrado en la plataforma',
+        beneficios: ['Aparece en el directorio publico', 'Recibe pedidos compatibles con su capacidad'],
+      },
+      {
+        nivel: 'PLATA',
+        puntosMinimos: 50,
+        requiereVerificadoAfip: true,
+        certificadosAcademiaMin: 1,
+        descripcion: 'El taller demuestra formalizacion basica y compromiso con la capacitacion',
+        beneficios: ['Aparece mas arriba en el directorio', 'Acceso a pedidos de marcas medianas', 'Distintivo PLATA visible'],
+      },
+      {
+        nivel: 'ORO',
+        puntosMinimos: 100,
+        requiereVerificadoAfip: true,
+        certificadosAcademiaMin: 0,
+        descripcion: 'Taller plenamente formalizado con capacitacion avanzada',
+        beneficios: ['Top del directorio', 'Acceso a marcas grandes', 'Invitaciones directas a pedidos premium', 'Distintivo ORO visible'],
+      },
+    ],
+  })
+
+  console.log('  ✓ 3 reglas de nivel')
 
   // ============================================
   // TALLER BRONCE — "Taller La Aguja" (Florencio Varela)

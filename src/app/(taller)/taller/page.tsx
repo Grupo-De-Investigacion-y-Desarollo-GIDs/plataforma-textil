@@ -5,14 +5,8 @@ import { prisma } from '@/compartido/lib/prisma'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ProgressRing } from '@/compartido/componentes/ui/progress-ring'
-import {
-  PTS_VERIFICADO_AFIP,
-  PTS_POR_VALIDACION,
-  PTS_POR_CERTIFICADO,
-  PUNTAJE_MAX,
-} from '@/compartido/lib/nivel'
-
-const TOTAL_VALIDACIONES = 8
+const PTS_VERIFICADO_AFIP = 10 // bonus AFIP fijo
+const PTS_POR_CERTIFICADO = 15 // bonus por certificado fijo
 
 export default async function TallerDashboardPage() {
   const session = await auth()
@@ -21,7 +15,9 @@ export default async function TallerDashboardPage() {
   const taller = await prisma.taller.findFirst({
     where: { userId: session.user.id },
     include: {
-      validaciones: true,
+      validaciones: {
+        include: { tipoDocumento: { select: { puntosOtorgados: true } } },
+      },
       certificados: { where: { revocado: false } },
       progresoCapacitacion: {
         include: { coleccion: { select: { titulo: true } } },
@@ -152,10 +148,11 @@ export default async function TallerDashboardPage() {
 
   // Calcular progreso de formalización
   const validaciones = taller?.validaciones ?? []
+  const totalValidaciones = validaciones.length
   const completadas = validaciones.filter((v) => v.estado === 'COMPLETADO').length
   const pendientes = validaciones.filter((v) => v.estado === 'PENDIENTE').length
-  const porcentajeFormal = validaciones.length > 0
-    ? Math.round((completadas / TOTAL_VALIDACIONES) * 100)
+  const porcentajeFormal = totalValidaciones > 0
+    ? Math.round((completadas / totalValidaciones) * 100)
     : 0
 
   // Nivel siguiente
@@ -250,7 +247,7 @@ export default async function TallerDashboardPage() {
               <div className="flex items-center gap-2">
                 <span className="w-5 h-5 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center text-xs">○</span>
                 <span className="text-gray-600">
-                  {TOTAL_VALIDACIONES - completadas - pendientes} sin iniciar
+                  {totalValidaciones - completadas - pendientes} sin iniciar
                 </span>
               </div>
             </div>
@@ -264,7 +261,7 @@ export default async function TallerDashboardPage() {
           {taller && taller.nivel === 'BRONCE' && porcentajeFormal < 100 && (
             <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm">
               <p className="font-medium text-amber-800">
-                Te faltan {TOTAL_VALIDACIONES - completadas} documentos para ser PLATA
+                Te faltan {totalValidaciones - completadas} documentos para ser PLATA
               </p>
               <p className="text-amber-600 text-xs mt-1">
                 Con PLATA apareces mas arriba en el directorio y accedes a marcas mas grandes
@@ -274,7 +271,7 @@ export default async function TallerDashboardPage() {
           {taller && taller.nivel === 'PLATA' && porcentajeFormal < 100 && (
             <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
               <p className="font-medium text-yellow-800">
-                Te faltan {TOTAL_VALIDACIONES - completadas} documentos para ser ORO
+                Te faltan {totalValidaciones - completadas} documentos para ser ORO
               </p>
               <p className="text-yellow-600 text-xs mt-1">
                 Con ORO apareces primero en el directorio y podes recibir pedidos grandes
@@ -300,15 +297,10 @@ export default async function TallerDashboardPage() {
                 <p>+ {PTS_VERIFICADO_AFIP} pts CUIT verificado</p>
               )}
               {completadas > 0 && (
-                <p>+ {completadas * PTS_POR_VALIDACION} pts documentos ({completadas})</p>
+                <p>+ {taller?.validaciones.filter(v => v.estado === 'COMPLETADO').reduce((s, v) => s + v.tipoDocumento.puntosOtorgados, 0)} pts documentos ({completadas})</p>
               )}
               {certificadosActivos > 0 && (
                 <p>+ {certificadosActivos * PTS_POR_CERTIFICADO} pts capacitaciones ({certificadosActivos})</p>
-              )}
-              {(taller?.puntaje ?? 0) >= PUNTAJE_MAX && (
-                <p className="text-gray-500 font-medium mt-1">
-                  Puntaje maximo alcanzado ({PUNTAJE_MAX} pts)
-                </p>
               )}
             </div>
           </div>

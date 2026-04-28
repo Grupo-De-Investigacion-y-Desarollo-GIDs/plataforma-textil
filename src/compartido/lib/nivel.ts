@@ -1,105 +1,133 @@
 import { prisma } from '@/compartido/lib/prisma'
 import { logActividad } from './log'
+import type { NivelTaller, ReglaNivel } from '@prisma/client'
 
-export type NivelTaller = 'BRONCE' | 'PLATA' | 'ORO'
+export type { NivelTaller }
 
 export interface ResultadoNivel {
   nivel: NivelTaller
   puntaje: number
 }
 
-export interface DatosTaller {
-  verificadoAfip: boolean
-  tiposValidacionCompletados: string[]
-  numCertificadosActivos: number
-  tiposPlata: string[]
-  tiposOro: string[]
+export interface ProximoNivelInfo {
+  nivelActual: NivelTaller
+  nivelProximo: NivelTaller | null
+  puntosActuales: number
+  puntosObjetivo: number
+  puntosFaltantes: number
+  documentosFaltantes: {
+    id: string
+    nombre: string
+    label: string
+    nivelMinimo: NivelTaller
+    puntos: number
+    requerido: boolean
+  }[]
+  requiereAfip: boolean
+  tieneAfip: boolean
+  certificadosFaltantes: number
+  beneficiosProximoNivel: string[]
 }
 
-// Puntaje
-export const PTS_VERIFICADO_AFIP = 10
-export const PTS_POR_VALIDACION = 10
-export const PTS_POR_CERTIFICADO = 15
-export const PUNTAJE_MAX = 100
+// --- Cache in-memory con TTL 60s (mismo patron S-03) ---
 
-/** Pure function: calcula nivel y puntaje sin acceder a la DB */
-export function calcularNivelPuro(datos: DatosTaller): ResultadoNivel {
-  const tiposCompletados = new Set(datos.tiposValidacionCompletados)
-  const numValidaciones = datos.tiposValidacionCompletados.length
-  const numCertificados = datos.numCertificadosActivos
+interface TipoDocCache {
+  id: string
+  nombre: string
+  label: string
+  nivelMinimo: NivelTaller
+  requerido: boolean
+  puntosOtorgados: number
+}
 
-  // Calcular puntaje
-  let puntaje = 0
-  if (datos.verificadoAfip) puntaje += PTS_VERIFICADO_AFIP
-  puntaje += numValidaciones * PTS_POR_VALIDACION
-  puntaje += numCertificados * PTS_POR_CERTIFICADO
-  puntaje = Math.min(puntaje, PUNTAJE_MAX)
+const cacheReglas = new Map<string, { data: ReglaNivel[]; expira: number }>()
+const cacheTipos = new Map<string, { data: TipoDocCache[]; expira: number }>()
+const CACHE_TTL_MS = 60_000
 
-  // Determinar nivel usando los parámetros
-  let nivel: NivelTaller = 'BRONCE'
+async function getReglasNivel(): Promise<ReglaNivel[]> {
+  const cached = cacheReglas.get('all')
+  if (cached && cached.expira > Date.now()) return cached.data
+  const data = await prisma.reglaNivel.findMany({ orderBy: { puntosMinimos: 'desc' } })
+  cacheReglas.set('all', { data, expira: Date.now() + CACHE_TTL_MS })
+  return data
+}
 
-  const tienePlata =
-    datos.verificadoAfip &&
-    datos.tiposPlata.every((v) => tiposCompletados.has(v)) &&
-    numCertificados >= 1
+async function getTiposActivos(): Promise<TipoDocCache[]> {
+  const cached = cacheTipos.get('all')
+  if (cached && cached.expira > Date.now()) return cached.data
+  const data = await prisma.tipoDocumento.findMany({
+    where: { activo: true, requerido: true },
+    select: { id: true, nombre: true, label: true, nivelMinimo: true, requerido: true, puntosOtorgados: true },
+  })
+  cacheTipos.set('all', { data, expira: Date.now() + CACHE_TTL_MS })
+  return data
+}
 
-  if (tienePlata) {
-    nivel = 'PLATA'
+export function invalidarCacheNivel() {
+  cacheReglas.clear()
+  cacheTipos.clear()
+}
 
-    // Para ORO se requieren TODOS los de PLATA + TODOS los de ORO
-    const tieneOro = [...datos.tiposPlata, ...datos.tiposOro].every((v) =>
-      tiposCompletados.has(v)
-    )
-    if (tieneOro) {
-      nivel = 'ORO'
+// --- Helpers ---
+
+const ORDEN_NIVEL: Record<string, number> = { BRONCE: 0, PLATA: 1, ORO: 2 }
+
+function nivelesIncluyenHasta(nivel: NivelTaller): NivelTaller[] {
+  if (nivel === 'BRONCE') return ['BRONCE']
+  if (nivel === 'PLATA') return ['BRONCE', 'PLATA']
+  return ['BRONCE', 'PLATA', 'ORO']
+}
+
+function siguienteNivel(nivel: NivelTaller): NivelTaller | null {
+  if (nivel === 'BRONCE') return 'PLATA'
+  if (nivel === 'PLATA') return 'ORO'
+  return null
+}
+
+// --- Calculo de nivel ---
+
+export async function calcularNivel(tallerId: string): Promise<ResultadoNivel> {
+  const [reglas, taller, todosLosTipos] = await Promise.all([
+    getReglasNivel(),
+    prisma.taller.findUniqueOrThrow({
+      where: { id: tallerId },
+      include: {
+        validaciones: {
+          where: { estado: 'COMPLETADO' },
+          include: { tipoDocumento: { select: { id: true, puntosOtorgados: true } } },
+        },
+        certificados: { where: { revocado: false }, select: { id: true } },
+      },
+    }),
+    getTiposActivos(),
+  ])
+
+  // Sumar puntosOtorgados de cada validacion COMPLETADO + bonus AFIP
+  const puntaje = taller.validaciones.reduce(
+    (sum, v) => sum + v.tipoDocumento.puntosOtorgados, 0
+  ) + (taller.verificadoAfip ? 10 : 0)
+
+  const certificados = taller.certificados.length
+  const tiposCompletados = new Set(taller.validaciones.map(v => v.tipoDocumento.id))
+
+  // Evaluar reglas de mayor a menor — el primer match gana
+  for (const regla of reglas) {
+    const cumplePuntos = puntaje >= regla.puntosMinimos
+    const cumpleAfip = !regla.requiereVerificadoAfip || taller.verificadoAfip
+    const cumpleCertificados = certificados >= regla.certificadosAcademiaMin
+    const niveles = nivelesIncluyenHasta(regla.nivel)
+    const tiposRequeridos = todosLosTipos.filter(t => niveles.includes(t.nivelMinimo))
+    const cumpleDocumentos = tiposRequeridos.every(t => tiposCompletados.has(t.id))
+
+    if (cumplePuntos && cumpleAfip && cumpleCertificados && cumpleDocumentos) {
+      return { nivel: regla.nivel, puntaje }
     }
   }
 
-  return { nivel, puntaje }
-}
-
-export async function calcularNivel(tallerId: string): Promise<ResultadoNivel> {
-  const [taller, tiposRequeridos] = await Promise.all([
-    prisma.taller.findUnique({
-      where: { id: tallerId },
-      select: {
-        verificadoAfip: true,
-        validaciones: {
-          where: { estado: 'COMPLETADO' },
-          select: { tipo: true },
-        },
-        certificados: {
-          where: { revocado: false },
-          select: { id: true },
-        },
-      },
-    }),
-    prisma.tipoDocumento.findMany({
-      where: { requerido: true, activo: true },
-      select: { nombre: true, nivelMinimo: true },
-    }),
-  ])
-
-  if (!taller) throw new Error(`Taller ${tallerId} no encontrado`)
-
-  const tiposPlata = tiposRequeridos
-    .filter(t => t.nivelMinimo === 'PLATA')
-    .map(t => t.nombre)
-  const tiposOro = tiposRequeridos
-    .filter(t => t.nivelMinimo === 'ORO')
-    .map(t => t.nombre)
-
-  return calcularNivelPuro({
-    verificadoAfip: taller.verificadoAfip,
-    tiposValidacionCompletados: taller.validaciones.map((v) => v.tipo),
-    numCertificadosActivos: taller.certificados.length,
-    tiposPlata,
-    tiposOro,
-  })
+  return { nivel: 'BRONCE', puntaje }
 }
 
 export async function aplicarNivel(tallerId: string, userId?: string): Promise<ResultadoNivel> {
-  // Leer nivel actual antes del calculo
   const tallerActual = await prisma.taller.findUnique({
     where: { id: tallerId },
     select: { nivel: true },
@@ -110,16 +138,11 @@ export async function aplicarNivel(tallerId: string, userId?: string): Promise<R
 
   await prisma.taller.update({
     where: { id: tallerId },
-    data: {
-      nivel: resultado.nivel,
-      puntaje: resultado.puntaje,
-    },
+    data: { nivel: resultado.nivel, puntaje: resultado.puntaje },
   })
 
-  // Loguear si el nivel cambio
   if (nivelAnterior !== resultado.nivel) {
-    const orden: Record<string, number> = { BRONCE: 0, PLATA: 1, ORO: 2 }
-    const accion = orden[resultado.nivel] > orden[nivelAnterior] ? 'NIVEL_SUBIDO' : 'NIVEL_BAJADO'
+    const accion = ORDEN_NIVEL[resultado.nivel] > ORDEN_NIVEL[nivelAnterior] ? 'NIVEL_SUBIDO' : 'NIVEL_BAJADO'
     logActividad(accion, userId, {
       tallerId,
       nivelAnterior,
@@ -128,4 +151,88 @@ export async function aplicarNivel(tallerId: string, userId?: string): Promise<R
   }
 
   return resultado
+}
+
+// --- Proximo nivel (para dashboard taller y F-01) ---
+
+export async function calcularProximoNivel(tallerId: string): Promise<ProximoNivelInfo> {
+  const [reglas, taller, todosLosTipos] = await Promise.all([
+    getReglasNivel(),
+    prisma.taller.findUniqueOrThrow({
+      where: { id: tallerId },
+      include: {
+        validaciones: {
+          where: { estado: 'COMPLETADO' },
+          include: { tipoDocumento: { select: { id: true, puntosOtorgados: true } } },
+        },
+        certificados: { where: { revocado: false }, select: { id: true } },
+      },
+    }),
+    getTiposActivos(),
+  ])
+
+  const puntosActuales = taller.validaciones.reduce(
+    (sum, v) => sum + v.tipoDocumento.puntosOtorgados, 0
+  ) + (taller.verificadoAfip ? 10 : 0)
+
+  const certificados = taller.certificados.length
+  const tiposCompletados = new Set(taller.validaciones.map(v => v.tipoDocumento.id))
+
+  // Determinar nivel actual
+  let nivelActual: NivelTaller = 'BRONCE'
+  for (const regla of reglas) {
+    const niveles = nivelesIncluyenHasta(regla.nivel)
+    const tiposRequeridos = todosLosTipos.filter(t => niveles.includes(t.nivelMinimo))
+    const cumple = puntosActuales >= regla.puntosMinimos
+      && (!regla.requiereVerificadoAfip || taller.verificadoAfip)
+      && certificados >= regla.certificadosAcademiaMin
+      && tiposRequeridos.every(t => tiposCompletados.has(t.id))
+    if (cumple) { nivelActual = regla.nivel; break }
+  }
+
+  const proximo = siguienteNivel(nivelActual)
+  if (!proximo) {
+    return {
+      nivelActual,
+      nivelProximo: null,
+      puntosActuales,
+      puntosObjetivo: puntosActuales,
+      puntosFaltantes: 0,
+      documentosFaltantes: [],
+      requiereAfip: false,
+      tieneAfip: taller.verificadoAfip,
+      certificadosFaltantes: 0,
+      beneficiosProximoNivel: [],
+    }
+  }
+
+  const reglaProximo = reglas.find(r => r.nivel === proximo)!
+  const nivelesProximo = nivelesIncluyenHasta(proximo)
+  const tiposRequeridosProximo = todosLosTipos.filter(t => nivelesProximo.includes(t.nivelMinimo))
+
+  const documentosFaltantes = tiposRequeridosProximo
+    .filter(t => !tiposCompletados.has(t.id))
+    .map(t => ({
+      id: t.id,
+      nombre: t.nombre,
+      label: t.label,
+      nivelMinimo: t.nivelMinimo,
+      puntos: t.puntosOtorgados,
+      requerido: t.requerido,
+    }))
+
+  const certsFaltantes = Math.max(0, reglaProximo.certificadosAcademiaMin - certificados)
+
+  return {
+    nivelActual,
+    nivelProximo: proximo,
+    puntosActuales,
+    puntosObjetivo: reglaProximo.puntosMinimos,
+    puntosFaltantes: Math.max(0, reglaProximo.puntosMinimos - puntosActuales),
+    documentosFaltantes,
+    requiereAfip: reglaProximo.requiereVerificadoAfip,
+    tieneAfip: taller.verificadoAfip,
+    certificadosFaltantes: certsFaltantes,
+    beneficiosProximoNivel: reglaProximo.beneficios,
+  }
 }

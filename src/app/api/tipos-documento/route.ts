@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { invalidarCacheNivel } from '@/compartido/lib/nivel'
 
 export async function GET() {
   try {
@@ -40,9 +41,11 @@ export async function POST(req: NextRequest) {
         requerido: body.requerido ?? true,
         activo: body.activo ?? true,
         orden: body.orden ?? 0,
+        puntosOtorgados: body.puntosOtorgados ?? 10,
       },
     })
 
+    invalidarCacheNivel()
     return NextResponse.json(tipo, { status: 201 })
   } catch (error: unknown) {
     if (error && typeof error === 'object' && 'code' in error && (error as { code: string }).code === 'P2002') {
@@ -63,16 +66,20 @@ export async function PUT(req: NextRequest) {
     if (!body.id) return NextResponse.json({ error: 'ID requerido' }, { status: 400 })
     if (!body.nombre?.trim()) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 })
 
+    const data: Record<string, unknown> = {
+      nombre: body.nombre.trim(),
+      descripcion: body.descripcion?.trim() || null,
+      requerido: body.requerido ?? true,
+      activo: body.activo ?? true,
+    }
+    if (body.puntosOtorgados !== undefined) data.puntosOtorgados = body.puntosOtorgados
+
     const tipo = await prisma.tipoDocumento.update({
       where: { id: body.id },
-      data: {
-        nombre: body.nombre.trim(),
-        descripcion: body.descripcion?.trim() || null,
-        requerido: body.requerido ?? true,
-        activo: body.activo ?? true,
-      },
+      data,
     })
 
+    invalidarCacheNivel()
     return NextResponse.json(tipo)
   } catch (error: unknown) {
     if (error && typeof error === 'object' && 'code' in error && (error as { code: string }).code === 'P2002') {

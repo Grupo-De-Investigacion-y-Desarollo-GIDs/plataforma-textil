@@ -115,3 +115,26 @@ Este archivo acumula TODAS las verificaciones manuales que requieren ojos humano
 ### Post-migracion (solo produccion)
 - [ ] Ejecutar `scripts/verificar-migracion-d01.sql` en Supabase SQL editor
 - [ ] Documentar resultados en REVIEW_v3-redefinicion-roles-estado.md
+
+---
+
+## Spec D-02 — Tipos de documento DB y reglas de nivel configurables
+
+### Login como ESTADO (anabelen.torres@pdt.org.ar / pdt2026)
+1. [ ] /estado/documentos muestra puntos por tipo (15 pts PLATA, 20 pts ORO)
+2. [ ] Editar un tipo → cambiar puntos → guardar → cambio persistido
+3. [ ] /estado/configuracion-niveles muestra 3 cards (BRONCE 0 pts, PLATA 50 pts, ORO 100 pts)
+4. [ ] Editar regla PLATA → click "Ver impacto" → muestra preview de talleres afectados
+5. [ ] Sidebar ESTADO muestra item "Niveles"
+
+### Login como TALLER (roberto.gimenez@pdt.org.ar / pdt2026)
+6. [ ] Dashboard muestra desglose de puntaje sin error
+7. [ ] Los puntos reflejan los valores de DB (no el fijo de 10)
+
+### Login como ADMIN (lucia.fernandez@pdt.org.ar / pdt2026)
+8. [ ] Puede VER /estado/configuracion-niveles (lectura)
+
+### Post-migracion (solo produccion)
+- [ ] Ejecutar `scripts/verificar-migracion-d02.sql` en Supabase SQL editor
+- [ ] Ejecutar `npx tsx tools/recalcular-niveles.ts --dry-run` para verificar impacto
+- [ ] Documentar resultados en REVIEW_v3-tipos-documento-db.md
