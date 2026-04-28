@@ -1,5 +1,13 @@
 # Daily Log
 
+## 2026-04-28
+
+### Gerardo Breard
+- **10:25** `89e8a3b` — feat: agrupar QAs V3 por bloque en index de auditorias
+  - `tools/generate-qa.js`
+  - `tools/generate-qa.test.js`
+
+
 ## 2026-04-27
 
 ### Gerardo Breard
