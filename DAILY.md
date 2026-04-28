@@ -3,6 +3,10 @@
 ## 2026-04-27
 
 ### Gerardo Breard
+- **21:04** `2fec2ce` — fix: corregir E2E tests — endpoint correcto y bypass selectivo
+  - `tests/e2e/file-validation.spec.ts`
+  - `tests/e2e/ratelimit.spec.ts`
+
 - **20:57** `1f96492` — chore: trigger redeploy para capturar CI_BYPASS_TOKEN en Vercel
 
 
