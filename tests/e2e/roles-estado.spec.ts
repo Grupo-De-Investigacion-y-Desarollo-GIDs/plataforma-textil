@@ -114,4 +114,20 @@ test.describe('D-01 Roles ESTADO — flujos principales', () => {
       await apiContext.dispose()
     }
   })
+
+  test('Dashboard ESTADO no tiene links a /admin/', async ({ page }) => {
+    await ensureNotProduction(page)
+    await loginEstado(page)
+    // El dashboard es /estado (la pagina a la que redirige el login)
+    await page.goto('/estado')
+    await page.waitForLoadState('domcontentloaded')
+    // Buscar todos los links en el main content
+    const links = await page.locator('main a[href]').all()
+    for (const link of links) {
+      const href = await link.getAttribute('href')
+      if (href) {
+        expect(href, `Link "${await link.textContent()}" apunta a ruta admin`).not.toMatch(/^\/admin/)
+      }
+    }
+  })
 })

@@ -159,7 +159,7 @@ export default async function EstadoDashboardPage() {
               <Clock className="w-8 h-8 text-amber-400" />
             </div>
             {validacionesPendientes > 0 && (
-              <Link href="/admin/talleres" className="text-xs text-brand-blue hover:underline mt-2 block">
+              <Link href="/estado/talleres" className="text-xs text-brand-blue hover:underline mt-2 block">
                 Revisar documentos →
               </Link>
             )}
@@ -206,7 +206,7 @@ export default async function EstadoDashboardPage() {
                       <Clock className="w-3 h-3" />
                       {v.updatedAt.toLocaleDateString('es-AR')}
                     </span>
-                    <Link href={`/admin/talleres/${v.taller.id}?tab=documentos`}>
+                    <Link href={`/estado/talleres/${v.taller.id}`}>
                       <Badge variant="warning">Revisar</Badge>
                     </Link>
                   </div>
