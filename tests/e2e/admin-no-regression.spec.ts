@@ -46,7 +46,7 @@ test.describe('D-01 Admin no-regression — verificar que ADMIN no se rompio', (
     await page.goto('/estado/talleres')
     // No debe redirigir a unauthorized
     await expect(page).not.toHaveURL(/\/unauthorized/)
-    await expect(page.locator('h1')).toContainText('Talleres')
+    await expect(page.getByRole('heading', { name: 'Talleres' })).toBeVisible()
   })
 
   test('ADMIN GET /api/tipos-documento sigue funcionando', async ({ page, playwright }) => {

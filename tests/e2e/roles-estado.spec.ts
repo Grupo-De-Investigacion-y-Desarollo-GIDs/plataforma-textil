@@ -7,7 +7,7 @@ test.describe('D-01 Roles ESTADO — flujos principales', () => {
     await ensureNotProduction(page)
     await loginAs(page, 'estado')
     await page.goto('/estado/talleres')
-    await expect(page.locator('h1')).toContainText('Talleres')
+    await expect(page.getByRole('heading', { name: 'Talleres' })).toBeVisible()
     // Debe haber al menos 1 taller en la tabla (seed data)
     await expect(page.locator('table tbody tr').first()).toBeVisible()
   })
@@ -16,14 +16,14 @@ test.describe('D-01 Roles ESTADO — flujos principales', () => {
     await ensureNotProduction(page)
     await loginAs(page, 'estado')
     await page.goto('/estado/documentos')
-    await expect(page.locator('h1')).toContainText('Tipos de Documento')
+    await expect(page.getByRole('heading', { name: 'Tipos de Documento' })).toBeVisible()
   })
 
   test('ESTADO puede acceder a /estado/auditorias', async ({ page }) => {
     await ensureNotProduction(page)
     await loginAs(page, 'estado')
     await page.goto('/estado/auditorias')
-    await expect(page.locator('h1')).toContainText('Auditorias')
+    await expect(page.getByRole('heading', { name: 'Auditorias' })).toBeVisible()
   })
 
   test('ESTADO sidebar muestra 8 items', async ({ page }) => {

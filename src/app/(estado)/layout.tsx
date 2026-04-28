@@ -9,11 +9,12 @@ export default async function EstadoLayout({ children }: { children: React.React
   if (!session?.user) {
     redirect('/login')
   }
-  if (session.user.role !== 'ESTADO') {
+  const role = session.user.role as string
+  if (role !== 'ESTADO' && role !== 'ADMIN') {
     redirect('/unauthorized')
   }
 
-  const userName = session.user.name || 'Ente Estatal'
+  const userName = session.user.name || (role === 'ADMIN' ? 'Administrador' : 'Ente Estatal')
 
   return (
     <div className="min-h-screen bg-gray-50">
