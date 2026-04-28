@@ -3,6 +3,49 @@
 ## 2026-04-28
 
 ### Gerardo Breard
+- **16:43** `0e12152` — fix: dashboard ESTADO apuntaba a /admin/ en links de validaciones
+  - `src/app/(estado)/estado/page.tsx`
+  - `tests/e2e/roles-estado.spec.ts`
+
+- **15:53** `6709a8e` — fix: ESTADO E2E tests skip gracefully si login falla en preview
+  - `tests/e2e/roles-estado.spec.ts`
+
+- **15:43** `3ae8be7` — fix: loginAs waitUntil commit para evitar cold-start timeout en Vercel
+  - `tests/e2e/_helpers/auth.ts`
+
+- **15:10** `fb25353` — fix: layout estado bloqueaba ADMIN, locators E2E con h1 duplicado
+  - `src/app/(estado)/layout.tsx`
+  - `tests/e2e/_helpers/auth.ts`
+  - `tests/e2e/admin-no-regression.spec.ts`
+  - `tests/e2e/roles-estado.spec.ts`
+
+- **14:19** `437690d` — feat: D-01 redefinicion de roles — ESTADO valida documentos
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-redefinicion-roles-estado.md`
+  - `.claude/auditorias/REVIEW_v3-redefinicion-roles-estado.md`
+  - `prisma/migrations/20260428100000_agregar_aprobado_por_validacion/migration.sql`
+  - `prisma/migrations/20260428100001_backfill_aprobado_por_validacion/migration.sql`
+  - `prisma/schema.prisma`
+  - `prisma/seed.ts`
+  - `scripts/verificar-migracion-d01.sql`
+  - `src/__tests__/permisos.test.ts`
+  - `src/__tests__/revocar-validacion.test.ts`
+  - `src/__tests__/tipos-documento-permisos.test.ts`
+  - `src/app/(admin)/admin/documentos/page.tsx`
+  - `src/app/(admin)/admin/logs/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(estado)/estado/auditorias/page.tsx`
+  - `src/app/(estado)/estado/documentos/page.tsx`
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/(estado)/estado/talleres/page.tsx`
+  - `src/app/api/tipos-documento/route.ts`
+  - `src/app/api/validaciones/[id]/route.ts`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+  - `src/compartido/lib/permisos.ts`
+  - `src/middleware.ts`
+  - `tests/e2e/admin-no-regression.spec.ts`
+  - `tests/e2e/roles-estado.spec.ts`
+
 - **12:05** `a81cc10` — fix: resolver 9 issues de Sergio en QA de S-04 logs
   - `.claude/auditorias/QA_v3-logs-admin-auditoria.md`
   - `src/app/(admin)/admin/colecciones/[id]/page.tsx`

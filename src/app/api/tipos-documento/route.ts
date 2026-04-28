@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     const session = await auth()
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN') return NextResponse.json({ error: 'Solo admin' }, { status: 403 })
+    if (role !== 'ESTADO') return NextResponse.json({ error: 'Requiere rol: ESTADO', code: 'INSUFFICIENT_ROLE', rolesRequeridos: ['ESTADO'] }, { status: 403 })
 
     const body = await req.json()
     if (!body.nombre?.trim()) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 })
@@ -57,7 +57,7 @@ export async function PUT(req: NextRequest) {
     const session = await auth()
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN') return NextResponse.json({ error: 'Solo admin' }, { status: 403 })
+    if (role !== 'ESTADO') return NextResponse.json({ error: 'Requiere rol: ESTADO', code: 'INSUFFICIENT_ROLE', rolesRequeridos: ['ESTADO'] }, { status: 403 })
 
     const body = await req.json()
     if (!body.id) return NextResponse.json({ error: 'ID requerido' }, { status: 400 })

@@ -80,3 +80,38 @@ Este archivo acumula TODAS las verificaciones manuales que requieren ojos humano
 5. Para probar la UI admin: login como admin (lucia.fernandez@pdt.org.ar / pdt2026)
 6. Ir a /admin/configuracion → click tab "Archivos"
 7. Editar una config, verificar que los cambios se reflejan
+
+---
+
+## Spec D-01 — Redefinicion de roles ESTADO (verificacion obligatoria pre-merge)
+
+### Criticidad: ALTA — este spec redefine el sistema completo de permisos
+
+### Login como ESTADO (anabelen.torres@pdt.org.ar / pdt2026)
+1. [ ] Sidebar muestra 8 items: Dashboard, Talleres, Documentos, Auditorias, Diagnostico Sector, Exportar Datos, Notificaciones, Mi Cuenta
+2. [ ] Click en /estado/talleres → ver listado con filtros por nivel/provincia/pendientes
+3. [ ] Click en un taller → ver tabs Formalizacion / Historial / Datos del taller
+4. [ ] En Formalizacion: documentos COMPLETADO muestran "Aprobado por: [nombre]" con fecha
+5. [ ] En /estado/documentos → ver tipos de documento, poder editar uno y guardar cambios
+
+### Login como ADMIN (lucia.fernandez@pdt.org.ar / pdt2026)
+6. [ ] Acceder a /estado/talleres/[id] → ver banner "Modo lectura", sin botones Aprobar/Rechazar/Revocar
+7. [ ] Acceder a /admin/documentos → debe dar 404 (mudada a /estado/documentos)
+8. [ ] /admin/logs → siguen apareciendo logs de validacion (historicos y nuevos ESTADO_VALIDACION_*)
+9. [ ] /admin/talleres/[id] → ver banner con link "Ver vista de formalizacion", sin tab Formalizacion
+
+### Login como TALLER (roberto.gimenez@pdt.org.ar / pdt2026)
+10. [ ] Acceder a /estado/talleres → redirect a /unauthorized
+
+### Como ejecutar
+
+1. Abrir plataforma-textil-dev.vercel.app en ventana de incognito
+2. Usar acceso-rapido (/) para login rapido entre roles
+3. Verificar cada item de la checklist — tiempo estimado: 15 minutos
+4. Los items 1-5 son los mas criticos (funcionalidad nueva ESTADO)
+5. Los items 6-9 verifican que ADMIN no se rompio
+6. El item 10 verifica aislamiento de permisos
+
+### Post-migracion (solo produccion)
+- [ ] Ejecutar `scripts/verificar-migracion-d01.sql` en Supabase SQL editor
+- [ ] Documentar resultados en REVIEW_v3-redefinicion-roles-estado.md

@@ -18,7 +18,8 @@ import {
   FileText,
   Building2,
   BarChart3,
-  ClipboardList
+  ClipboardList,
+  Download,
 } from 'lucide-react'
 import { cn } from '@/compartido/lib/utils'
 
@@ -60,8 +61,11 @@ const menuItemsByRole: Record<string, MenuItem[]> = {
   ],
   ESTADO: [
     { id: 'dashboard', label: 'Dashboard', href: '/estado', icon: Home },
-    { id: 'exportar', label: 'Exportar Datos', href: '/estado/exportar', icon: FileText },
-    { id: 'auditorias', label: 'Auditorias', href: '/admin/auditorias', icon: ClipboardCheck },
+    { id: 'talleres', label: 'Talleres', href: '/estado/talleres', icon: Building2 },
+    { id: 'documentos', label: 'Documentos', href: '/estado/documentos', icon: FileText },
+    { id: 'auditorias', label: 'Auditorias', href: '/estado/auditorias', icon: ClipboardCheck },
+    { id: 'sector', label: 'Diagnostico Sector', href: '/estado/sector', icon: BarChart3 },
+    { id: 'exportar', label: 'Exportar Datos', href: '/estado/exportar', icon: Download },
     { id: 'notificaciones', label: 'Notificaciones', href: '/cuenta/notificaciones', icon: Bell, badge: 0 },
     { id: 'cuenta', label: 'Mi Cuenta', href: '/cuenta', icon: Settings },
   ],
