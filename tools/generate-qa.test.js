@@ -893,7 +893,7 @@ console.log('\n📋 Test 20: Index separa V2 y V3 en secciones')
   assert(html.includes('V2 — Historico'), 'seccion V2 tiene titulo correcto')
 
   // Descripciones
-  assert(html.includes('specs V3 que se estan implementando ahora'), 'V3 tiene descripcion')
+  assert(html.includes('agrupadas por bloque del plan de implementacion'), 'V3 tiene descripcion')
   assert(html.includes('specs V2 ya cerrados'), 'V2 tiene descripcion')
 
   // V2 esta dentro de <details> (colapsable)
@@ -1226,10 +1226,10 @@ console.log('\n📋 Test 26: Index muestra progreso de verificacion')
 {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'qa-test-progreso-'))
 
-  const v3File = path.join(tmpDir, 'QA_v3-test-progreso.md')
+  const v3File = path.join(tmpDir, 'QA_v3-cookies-seguridad.md')
   fs.writeFileSync(v3File, `# QA: Test Progreso Index
 
-**Spec:** \`v3-progreso.md\`
+**Spec:** \`v3-cookies-seguridad.md\`
 **Fecha:** 2026-04-27
 **Auditor(es):** Sergio
 
@@ -1257,6 +1257,142 @@ console.log('\n📋 Test 26: Index muestra progreso de verificacion')
   // DEV completo, QA pendiente
   assert(html.includes('DEV: 1/1'), 'Index muestra DEV 1/1')
   assert(html.includes('QA: 0/1'), 'Index muestra QA 0/1')
+
+  // Cleanup
+  fs.rmSync(tmpDir, { recursive: true })
+}
+
+// ============================================
+// Test 27: Index agrupa QAs V3 por bloque, mantiene V2 en lista plana
+// ============================================
+console.log('\n📋 Test 27: Index agrupa QAs V3 por bloque, mantiene V2 en lista plana')
+{
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'qa-test-bloques-'))
+
+  // Crear QAs V3 de diferentes bloques
+  fs.writeFileSync(path.join(tmpDir, 'QA_v3-cookies-seguridad.md'), `# QA: Cookies
+**Spec:** \`v3-cookies-seguridad.md\`
+**Fecha:** 2026-04-27
+**Auditor(es):** Sergio
+## Checklist de cierre
+- [ ] Done
+`)
+  fs.writeFileSync(path.join(tmpDir, 'QA_v3-rate-limiting.md'), `# QA: Rate Limiting
+**Spec:** \`v3-rate-limiting.md\`
+**Fecha:** 2026-04-27
+**Auditor(es):** Sergio
+## Checklist de cierre
+- [ ] Done
+`)
+  fs.writeFileSync(path.join(tmpDir, 'QA_v3-separar-ambientes.md'), `# QA: Separar Ambientes
+**Spec:** \`v3-separar-ambientes.md\`
+**Fecha:** 2026-04-26
+**Auditor(es):** Sergio
+## Checklist de cierre
+- [ ] Done
+`)
+
+  // Crear un QA V2
+  fs.writeFileSync(path.join(tmpDir, 'QA_v2-test-historico.md'), `# QA: Test Historico
+**Spec:** \`v2-test-historico.md\`
+**Fecha:** 2026-01-01
+**Auditor(es):** Sergio
+## Checklist de cierre
+- [ ] Done
+`)
+
+  const indexPath = generarIndex(tmpDir)
+  const html = fs.readFileSync(indexPath, 'utf-8')
+
+  // V3 agrupados por bloque
+  assert(html.includes('Bloque 2'), 'Index tiene Bloque 2 — Seguridad')
+  assert(html.includes('Bloque 1'), 'Index tiene Bloque 1 — Infraestructura base')
+  assert(html.includes('bloque-section'), 'Index usa class bloque-section')
+  assert(html.includes('<details open>'), 'Bloques usan details open')
+
+  // Cookies y rate-limiting estan en Bloque 2
+  const b2Start = html.indexOf('Bloque 2')
+  const b2End = html.indexOf('Bloque 3', b2Start)
+  const b2Section = html.slice(b2Start, b2End > -1 ? b2End : undefined)
+  assert(b2Section.includes('cookies-seguridad'), 'Bloque 2 contiene cookies-seguridad')
+  assert(b2Section.includes('rate-limiting'), 'Bloque 2 contiene rate-limiting')
+
+  // Separar-ambientes esta en Bloque 1
+  const b1Start = html.indexOf('Bloque 1')
+  const b1End = html.indexOf('Bloque 2', b1Start)
+  const b1Section = html.slice(b1Start, b1End > -1 ? b1End : undefined)
+  assert(b1Section.includes('separar-ambientes'), 'Bloque 1 contiene separar-ambientes')
+
+  // V2 esta en seccion aparte, lista plana (no bloques)
+  const v2Start = html.indexOf('section-v2')
+  const v2Section = html.slice(v2Start)
+  assert(v2Section.includes('test-historico'), 'V2 contiene test-historico')
+  assert(!v2Section.includes('bloque-section'), 'V2 NO tiene bloque-section')
+
+  // Cleanup
+  fs.rmSync(tmpDir, { recursive: true })
+}
+
+// ============================================
+// Test 28: Bloques sin QAs muestran placeholder
+// ============================================
+console.log('\n📋 Test 28: Bloques sin QAs muestran placeholder')
+{
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'qa-test-placeholder-'))
+
+  // Solo un QA en Bloque 2, el resto de bloques vacios
+  fs.writeFileSync(path.join(tmpDir, 'QA_v3-cookies-seguridad.md'), `# QA: Cookies
+**Spec:** \`v3-cookies-seguridad.md\`
+**Fecha:** 2026-04-27
+**Auditor(es):** Sergio
+## Checklist de cierre
+- [ ] Done
+`)
+
+  const indexPath = generarIndex(tmpDir)
+  const html = fs.readFileSync(indexPath, 'utf-8')
+
+  // Bloques vacios muestran placeholder
+  assert(html.includes('Aun no implementado'), 'Bloques vacios muestran placeholder')
+
+  // Contar placeholders — deberia haber 7 (8 bloques - 1 con QA = 7 vacios)
+  const placeholderCount = (html.match(/Aun no implementado/g) || []).length
+  assert(placeholderCount === 7, `7 bloques vacios tienen placeholder (encontrados: ${placeholderCount})`)
+
+  // Bloque 2 NO tiene placeholder
+  const b2Start = html.indexOf('Bloque 2')
+  const b3Start = html.indexOf('Bloque 3', b2Start)
+  const b2Section = html.slice(b2Start, b3Start)
+  assert(!b2Section.includes('Aun no implementado'), 'Bloque 2 con QA no tiene placeholder')
+
+  // Stats de bloque vacio vs con QA
+  assert(html.includes('vacio'), 'Bloques vacios muestran stats "vacio"')
+
+  // Cleanup
+  fs.rmSync(tmpDir, { recursive: true })
+}
+
+// ============================================
+// Test 29: QA V3 no mapeado a bloque aparece en Otros V3
+// ============================================
+console.log('\n📋 Test 29: QA V3 no mapeado a bloque aparece en Otros V3')
+{
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'qa-test-otros-'))
+
+  // QA con nombre que no esta en ningun bloque
+  fs.writeFileSync(path.join(tmpDir, 'QA_v3-feature-desconocida.md'), `# QA: Feature Desconocida
+**Spec:** \`v3-feature-desconocida.md\`
+**Fecha:** 2026-04-27
+**Auditor(es):** Sergio
+## Checklist de cierre
+- [ ] Done
+`)
+
+  const indexPath = generarIndex(tmpDir)
+  const html = fs.readFileSync(indexPath, 'utf-8')
+
+  assert(html.includes('Otros V3'), 'Index tiene seccion Otros V3')
+  assert(html.includes('feature-desconocida'), 'Otros V3 contiene el QA no mapeado')
 
   // Cleanup
   fs.rmSync(tmpDir, { recursive: true })

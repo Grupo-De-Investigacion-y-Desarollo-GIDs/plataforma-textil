@@ -1527,6 +1527,28 @@ function generarIndex(dirPath) {
   const v3Qas = qas.filter(q => q.version === 'v3').sort(sortByFecha)
   const v2Qas = qas.filter(q => q.version === 'v2').sort(sortByFecha)
 
+  // Mapeo de archivo QA a bloque V3 (basado en ORDEN_IMPLEMENTACION_V3.md)
+  const BLOQUES_V3 = [
+    { id: 'b0', nombre: 'Bloque 0 — Infraestructura QA', slugs: ['QA_v3-formato-ampliado', 'QA_v3-qa-estado-issues'] },
+    { id: 'b1', nombre: 'Bloque 1 — Infraestructura base', slugs: ['QA_v3-separar-ambientes', 'QA_v3-logs-admin-auditoria'] },
+    { id: 'b2', nombre: 'Bloque 2 — Seguridad', slugs: ['QA_v3-cookies-seguridad', 'QA_v3-rate-limiting', 'QA_v3-validacion-archivos'] },
+    { id: 'b3', nombre: 'Bloque 3 — Roles ESTADO', slugs: ['QA_v3-redefinicion-roles-estado', 'QA_v3-tipos-documento-db'] },
+    { id: 'b4', nombre: 'Bloque 4 — Calidad y errores', slugs: ['QA_v3-tests-e2e', 'QA_v3-error-boundaries', 'QA_v3-errores-consistentes-apis'] },
+    { id: 'b5', nombre: 'Bloque 5 — Integraciones externas', slugs: ['QA_v3-arca-verificacion-cuit', 'QA_v3-whatsapp-magic-link', 'QA_v3-rag-asistente'] },
+    { id: 'b6', nombre: 'Bloque 6 — Features de marca', slugs: ['QA_v3-proximo-nivel-dashboard', 'QA_v3-exportes-estado', 'QA_v3-demanda-insatisfecha', 'QA_v3-mensajes-individuales'] },
+    { id: 'b7', nombre: 'Bloque 7 — UX/Onboarding', slugs: ['QA_v3-protocolos-onboarding', 'QA_v3-reporte-campo', 'QA_v3-ux-mejoras'] },
+  ]
+
+  // Clasificar V3 QAs en bloques
+  const allKnownSlugs = new Set(BLOQUES_V3.flatMap(b => b.slugs))
+  const v3PorBloque = BLOQUES_V3.map(bloque => {
+    const bloqueQas = bloque.slugs
+      .map(slug => v3Qas.find(q => q.archivo.replace('.md', '') === slug))
+      .filter(Boolean)
+    return { ...bloque, qas: bloqueQas }
+  })
+  const v3Otros = v3Qas.filter(q => !allKnownSlugs.has(q.archivo.replace('.md', '')))
+
   function renderCard(qa) {
     const tag = qa.htmlExists
       ? '<span class="qa-badge badge-ready">HTML listo</span>'
@@ -1740,6 +1762,25 @@ function generarIndex(dirPath) {
     .estado-issue-link:hover { text-decoration: underline; }
     .estado-issue-title { font-size: 12px; color: #555; }
     .estado-issue-ver { font-size: 12px; color: #1e3a5f; text-decoration: none; margin-left: auto; }
+    /* Bloques V3 */
+    .bloque-section { margin-bottom: 12px; }
+    .bloque-section details {
+      background: white; border: 1px solid #e8ecf1; border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06); overflow: hidden;
+    }
+    .bloque-section summary {
+      padding: 14px 20px; font-size: 15px; font-weight: 700; color: #1e3a5f;
+      display: flex; align-items: center; gap: 10px;
+      user-select: none;
+    }
+    .bloque-section summary:hover { background: #f8f9fb; }
+    .bloque-stats {
+      font-size: 12px; font-weight: 600; color: #666; margin-left: auto;
+    }
+    .bloque-content { padding: 4px 16px 16px; }
+    .bloque-placeholder {
+      font-size: 13px; color: #aaa; font-style: italic; padding: 8px 4px;
+    }
     @media (max-width: 600px) {
       body { padding: 10px; }
       .qa-meta { flex-direction: column; gap: 4px; }
@@ -1940,10 +1981,39 @@ function generarIndex(dirPath) {
 
     <div class="qa-section" id="section-v3">
       <div class="qa-section-title">V3 — En curso</div>
-      <div class="qa-section-desc">Auditorias de specs V3 que se estan implementando ahora</div>
-      <div class="qa-grid">
-        ${v3Qas.length > 0 ? v3Qas.map(renderCard).join('') : '<p style="color:#999;font-size:13px;padding:8px">Sin QAs V3 todavia</p>'}
-      </div>
+      <div class="qa-section-desc">Auditorias de specs V3 agrupadas por bloque del plan de implementacion</div>
+      ${v3PorBloque.map(bloque => {
+        const bloqueProgreso = { open: 0, closed: 0 }
+        bloque.qas.forEach(q => {
+          if (q.progreso) {
+            bloqueProgreso.closed += q.progreso.verified
+            bloqueProgreso.open += (q.progreso.total - q.progreso.verified)
+          }
+        })
+        const statsHtml = bloque.qas.length > 0
+          ? `<span class="bloque-stats">${bloque.qas.length} QA${bloque.qas.length > 1 ? 's' : ''}</span>`
+          : '<span class="bloque-stats" style="color:#aaa">vacio</span>'
+        return `
+      <div class="bloque-section">
+        <details open>
+          <summary>${escapeHtml(bloque.nombre)} ${statsHtml}</summary>
+          <div class="bloque-content">
+            ${bloque.qas.length > 0
+              ? `<div class="qa-grid">${bloque.qas.map(renderCard).join('')}</div>`
+              : '<p class="bloque-placeholder">Aun no implementado</p>'}
+          </div>
+        </details>
+      </div>`
+      }).join('')}
+      ${v3Otros.length > 0 ? `
+      <div class="bloque-section">
+        <details open>
+          <summary>Otros V3 <span class="bloque-stats">${v3Otros.length} QA${v3Otros.length > 1 ? 's' : ''}</span></summary>
+          <div class="bloque-content">
+            <div class="qa-grid">${v3Otros.map(renderCard).join('')}</div>
+          </div>
+        </details>
+      </div>` : ''}
     </div>
 
     <div class="qa-section" id="section-v2">
