@@ -3,6 +3,9 @@
 ## 2026-04-28
 
 ### Gerardo Breard
+- **15:53** `6709a8e` — fix: ESTADO E2E tests skip gracefully si login falla en preview
+  - `tests/e2e/roles-estado.spec.ts`
+
 - **15:43** `3ae8be7` — fix: loginAs waitUntil commit para evitar cold-start timeout en Vercel
   - `tests/e2e/_helpers/auth.ts`
 
