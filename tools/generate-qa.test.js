@@ -18,6 +18,8 @@ const {
   parsearChecklist,
   parsearResultadoGlobal,
   parsearProgreso,
+  parsearCheckboxes,
+  renderItemCard,
   generarHtml,
   generarIndex,
 } = require('./generate-qa')
@@ -1468,6 +1470,40 @@ autor: Gerardo (Claude Code)
   assert(progreso.qa.total === 2, 'emoji: 2 items QA totales, obtuvo ' + progreso.qa.total)
   assert(progreso.qa.ok === 1, 'emoji: 1 item QA verificado con ok, obtuvo ' + progreso.qa.ok)
   assert(progreso.verified === 3, 'emoji: 3 verificados total (2 DEV + 1 QA), obtuvo ' + progreso.verified)
+}
+
+// ============================================
+// TEST 34: parsearCheckboxes extrae items de checkboxes
+// ============================================
+{
+  const contenido = `### 1.1 Login
+- [x] Login como ESTADO — ✅ Gerardo 28/4
+- [ ] Verificar sidebar
+- [x] Click en taller — ok
+`
+  const items = parsearCheckboxes(contenido)
+  assert(items.length === 3, 'parsearCheckboxes: 3 items, obtuvo ' + items.length)
+  assert(items[0].verificador === 'DEV', 'parsearCheckboxes: item con ✅ Gerardo es DEV')
+  assert(items[0].preStatus === '✅', 'parsearCheckboxes: item [x] tiene preStatus ✅')
+  assert(items[1].verificador === 'QA', 'parsearCheckboxes: item sin marca es QA')
+  assert(items[1].preStatus === '', 'parsearCheckboxes: item [ ] tiene preStatus vacio')
+  assert(items[2].preStatus === '✅', 'parsearCheckboxes: segundo [x] tiene preStatus ✅')
+}
+
+// ============================================
+// TEST 35: renderItemCard genera HTML con data attributes
+// ============================================
+{
+  const html = renderItemCard('1', 3, 'Verificar login', 'DEV', '✅')
+  assert(html.includes('data-eje="1"'), 'renderItemCard: tiene data-eje')
+  assert(html.includes('data-num="3"'), 'renderItemCard: tiene data-num')
+  assert(html.includes('data-verificador="DEV"'), 'renderItemCard: tiene data-verificador DEV')
+  assert(html.includes('Verificar login'), 'renderItemCard: contiene texto')
+  assert(html.includes('data-pre-status="✅"'), 'renderItemCard: tiene pre-status cuando verificado')
+
+  const html2 = renderItemCard('2', 1, 'Item QA', 'QA', '')
+  assert(html2.includes('data-verificador="QA"'), 'renderItemCard: QA sin pre-status')
+  assert(!html2.includes('data-pre-status'), 'renderItemCard: sin pre-status cuando vacio')
 }
 
 // ============================================
