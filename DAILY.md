@@ -3,6 +3,11 @@
 ## 2026-04-29
 
 ### Gerardo Breard
+- **13:56** `3fb71bd` — fix: reescribir QA Q-01 para audiencia QA + corregir tests flaky en CI
+  - `.claude/auditorias/QA_v3-tests-e2e.md`
+  - `tests/e2e/flujo-comercial.spec.ts`
+  - `tests/e2e/registro-taller.spec.ts`
+
 - **13:09** `d43e0fd` — docs: agregar verificacion_dev al QA Q-01
   - `.claude/auditorias/QA_v3-tests-e2e.md`
 
