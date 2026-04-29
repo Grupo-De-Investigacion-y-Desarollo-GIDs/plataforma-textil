@@ -85,7 +85,7 @@ export function CotizarForm({ pedidoId }: { pedidoId: string }) {
           className="mt-2"
         />
       </div>
-      <Button type="submit" loading={loading} icon={<Send className="w-4 h-4" />} className="w-full">
+      <Button type="submit" loading={loading} icon={<Send className="w-4 h-4" />} className="w-full" data-action="enviar-cotizacion">
         Enviar cotizacion
       </Button>
     </form>

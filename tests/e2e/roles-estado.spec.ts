@@ -35,7 +35,7 @@ test.describe('D-01 Roles ESTADO — flujos principales', () => {
     await expect(page.getByRole('heading', { name: 'Auditorias' })).toBeVisible()
   })
 
-  test('ESTADO sidebar muestra 8 items', async ({ page }) => {
+  test('ESTADO sidebar muestra 9 items', async ({ page }) => {
     await ensureNotProduction(page)
     await loginEstado(page)
     // Abrir sidebar hamburger
@@ -43,9 +43,10 @@ test.describe('D-01 Roles ESTADO — flujos principales', () => {
     if (await menuBtn.isVisible()) {
       await menuBtn.click()
     }
-    // Contar items de navegacion en el sidebar (excl footer)
+    // Contar items de navegacion en el sidebar
+    // 9 items: Dashboard, Talleres, Documentos, Auditorias, Niveles, Diagnostico Sector, Exportar Datos, Notificaciones, Mi Cuenta
     const navItems = page.locator('nav ul li')
-    await expect(navItems).toHaveCount(8)
+    await expect(navItems).toHaveCount(9)
   })
 
   test('ESTADO ve tabs Formalizacion/Historial/Datos en detalle taller', async ({ page }) => {

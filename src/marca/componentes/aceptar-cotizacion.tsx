@@ -34,7 +34,7 @@ export function AceptarCotizacion({ cotizacionId }: { cotizacionId: string }) {
   if (confirmar) {
     return (
       <div className="flex items-center gap-2">
-        <button onClick={handleAceptar} disabled={loading}
+        <button onClick={handleAceptar} disabled={loading} data-action="confirmar-aceptacion"
           className="bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-green-700 disabled:opacity-50">
           {loading ? 'Aceptando...' : 'Confirmar'}
         </button>
@@ -45,7 +45,7 @@ export function AceptarCotizacion({ cotizacionId }: { cotizacionId: string }) {
   }
 
   return (
-    <button onClick={() => setConfirmar(true)}
+    <button onClick={() => setConfirmar(true)} data-action="aceptar-cotizacion"
       className="bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-green-700">
       Aceptar
     </button>

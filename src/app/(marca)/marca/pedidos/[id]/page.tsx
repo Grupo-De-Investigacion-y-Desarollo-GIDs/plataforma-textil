@@ -238,6 +238,7 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
             {cotizaciones.map(cot => (
               <div
                 key={cot.id}
+                data-estado={cot.estado}
                 className={`border rounded-lg p-4 ${
                   cot.estado === 'ACEPTADA'
                     ? 'border-green-300 bg-green-50'
