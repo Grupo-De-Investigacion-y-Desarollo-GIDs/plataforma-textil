@@ -1,7 +1,8 @@
 # QA: Logs de auditoria para acciones sensibles del admin
 
 **Spec:** `v3-logs-admin-auditoria.md` (S-04)
-**Commit de implementacion:** `8423747`
+**Commit de implementacion:** `8423747` + fixes
+**Verificacion DEV:** Completada por Gerardo el 2026-04-28
 **URL de prueba:** https://plataforma-textil-dev.vercel.app
 **Fecha:** 2026-04-26
 **Auditor(es):** Sergio (tecnico)
@@ -60,8 +61,8 @@ Verificar que las 14 acciones sensibles generan logs consistentes con entidad/en
 
 | # | Criterio | Verificador | Resultado | Issue |
 |---|----------|-------------|-----------|-------|
-| 1 | Wrapper `logAccionAdmin` agregado a `src/compartido/lib/log.ts` con tipado estricto | DEV | | |
-| 2 | `logActividad` existente NO se modifica — los callers existentes siguen funcionando | DEV | | |
+| 1 | Wrapper `logAccionAdmin` agregado a `src/compartido/lib/log.ts` con tipado estricto | DEV | ✅ Gerardo 28/4 | |
+| 2 | `logActividad` existente NO se modifica — los callers existentes siguen funcionando | DEV | ✅ Gerardo 28/4 | |
 | 3 | Aprobar validacion genera log con entidad/entidadId | QA | | |
 | 4 | Rechazar validacion genera log con motivo | QA | | |
 | 5 | Revocar validacion sin motivo retorna error (campo required en UI) | QA | | |
@@ -74,14 +75,14 @@ Verificar que las 14 acciones sensibles generan logs consistentes con entidad/en
 | 12 | Editar taller (como admin) genera log | QA | | |
 | 13 | Editar/borrar coleccion genera log | QA | | |
 | 14 | Crear nota interna genera log (ir a /admin/talleres, click en un taller, seccion "Notas internas" al final, escribir texto y guardar. Luego verificar en /admin/logs que aparece NOTA_INTERNA_CREADA) | QA | | |
-| 15 | Crear/desactivar documento RAG genera log | DEV | | |
+| 15 | Crear/desactivar documento RAG genera log | DEV | ✅ Gerardo 28/4 | |
 | 16 | Exportar datos genera log DATOS_EXPORTADOS | QA | | |
 | 17 | UI `/admin/logs` tiene filtros por usuario, accion, entidad y fecha | QA | | |
 | 18 | UI muestra badges de sensibilidad (critica/alta/media/baja) | QA | | |
-| 19 | `toCsv` extraido a `src/compartido/lib/csv.ts` y usado en ambos endpoints | DEV | | |
+| 19 | `toCsv` extraido a `src/compartido/lib/csv.ts` y usado en ambos endpoints | DEV | ✅ Gerardo 28/4 | |
 | 20 | `GET /api/admin/logs?export=csv` retorna CSV valido | QA | | |
-| 21 | Build sin errores de TypeScript | DEV | | |
-| 22 | Logs existentes siguen siendo compatibles (el cambio es aditivo) | DEV | | |
+| 21 | Build sin errores de TypeScript | DEV | ✅ Gerardo 28/4 | |
+| 22 | Logs existentes siguen siendo compatibles (el cambio es aditivo) | DEV | ✅ Gerardo 28/4 | |
 
 ---
 
@@ -147,7 +148,7 @@ Verificar que las 14 acciones sensibles generan logs consistentes con entidad/en
 | 2 | Filtrar sin resultados | Aplicar filtros que no matchean ningun log | Mensaje "No hay logs para mostrar" | QA | |
 | 3 | CSV con filtros vacios | Exportar CSV sin filtros | Se exportan todos los logs (hasta 10000) | QA | |
 | 4 | Paginacion funciona | Navegar paginas en una lista larga de logs | Navegacion fluida, contadores correctos | QA | |
-| 5 | logActividad generico sigue funcionando | Verificar que acciones como COTIZACION_RECIBIDA, LOGIN_SUCCESS siguen generando logs | Logs genericos aparecen en la lista | DEV | |
+| 5 | logActividad generico sigue funcionando | Verificar que acciones como COTIZACION_RECIBIDA, LOGIN_SUCCESS siguen generando logs | Logs genericos aparecen en la lista | DEV | ✅ Gerardo 28/4 |
 
 ---
 

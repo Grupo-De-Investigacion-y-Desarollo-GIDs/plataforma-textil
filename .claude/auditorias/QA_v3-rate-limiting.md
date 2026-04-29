@@ -1,7 +1,8 @@
 # QA: Rate limiting en APIs criticas
 
 **Spec:** `v3-rate-limiting.md`
-**Commit de implementacion:** `pendiente`
+**Commit de implementacion:** varios (Bloque 2 — S-02)
+**Verificacion DEV:** Completada por Gerardo el 2026-04-28
 **URL de prueba:** https://plataforma-textil-dev.vercel.app
 **Fecha:** 2026-04-27
 **Auditor(es):** Sergio (tecnico)

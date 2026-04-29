@@ -5,6 +5,7 @@ bloque: 3
 titulo: "Tipos de documento gestionados desde la base de datos"
 fecha: 2026-04-28
 autor: Gerardo (Claude Code)
+verificacion_dev: Completada por Gerardo el 2026-04-28
 ---
 
 # QA: Tipos de documento DB (D-02)
