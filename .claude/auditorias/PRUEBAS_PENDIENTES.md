@@ -154,6 +154,25 @@ Este archivo acumula TODAS las verificaciones manuales que requieren ojos humano
 
 ---
 
+## Spec Q-02 — Error Boundaries
+
+### Verificacion en plataforma-textil-dev.vercel.app (DEV)
+
+- [ ] Ruta inexistente `/ruta-que-no-existe` muestra pagina 404 amigable con "Volver al inicio"
+- [ ] Ruta inexistente `/admin/ruta-que-no-existe` (login admin) muestra 404, "Volver al inicio" lleva a /admin
+- [ ] Ruta inexistente `/taller/ruta-que-no-existe` (login taller) muestra 404, "Volver al inicio" lleva a /taller
+- [ ] Ruta inexistente `/marca/ruta-que-no-existe` (login marca) muestra 404, "Volver al inicio" lleva a /marca
+- [ ] Ruta inexistente `/estado/ruta-que-no-existe` (login estado) muestra 404, "Volver al inicio" lleva a /estado
+
+### Tests automatizados
+
+- [x] 11 Vitest tests (error-logger + log-error-route) — Gerardo 29/4
+- [x] 4 E2E tests (error-boundaries.spec.ts) — Gerardo 29/4
+- [x] TypeScript 0 errores — Gerardo 29/4
+- [ ] Verificar que CI (GitHub Actions) pasa con los tests nuevos
+
+---
+
 ## Nota tecnica: E2E tests crean issues reales en GitHub
 
 Los tests E2E de rate limiting (S-02) envian requests POST a `/api/feedback` que crea issues reales en GitHub. Cada corrida de CI genera ~11 issues basura con titulo "Test rate limit intento N". Esto contamina el panel de issues y el conteo del QA index.
