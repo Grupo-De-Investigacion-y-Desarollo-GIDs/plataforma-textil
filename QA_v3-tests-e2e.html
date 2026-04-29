@@ -351,7 +351,7 @@
   </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="DEV" data-item-selector="eje-1-item-1" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#1</span>
-        <span class="item-text">Test: taller se registra en 3 pasos (rol, datos personales, datos entidad) — ✅ Gerardo 29/4</span>
+        <span class="item-text">Abrir GitHub Actions: https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil/actions/workflows/e2e.yml y verificar que el ultimo run en `main` esta en verde — ✅ Gerardo 29/4</span>
         <span class="badge-dev">DEV</span>
       </div>
       <div class="item-badges"></div>
@@ -364,11 +364,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="2" data-verificador="DEV" data-item-selector="eje-1-item-2" data-pre-status="✅">
+    </div><div class="item-card" data-eje="1" data-num="2" data-verificador="QA" data-item-selector="eje-1-item-2">
       <div class="item-header">
         <span class="item-num">#2</span>
-        <span class="item-text">Test: CUIT se verifica via ARCA o queda pendiente — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Si el ultimo run esta en rojo, abrir el detalle y reportar que test fallo</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -383,7 +383,7 @@
     </div><div class="item-card" data-eje="1" data-num="3" data-verificador="DEV" data-item-selector="eje-1-item-3" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#3</span>
-        <span class="item-text">Test: despues del registro, redirige a /taller con nivel BRONCE — ✅ Gerardo 29/4</span>
+        <span class="item-text">Abrir la carpeta de tests en GitHub: https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil/tree/main/tests/e2e y verificar que existen estos 13 archivos .spec.ts — ✅ Gerardo 29/4</span>
         <span class="badge-dev">DEV</span>
       </div>
       <div class="item-badges"></div>
@@ -396,11 +396,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="4" data-verificador="DEV" data-item-selector="eje-1-item-4" data-pre-status="✅">
+    </div><div class="item-card" data-eje="1" data-num="4" data-verificador="QA" data-item-selector="eje-1-item-4">
       <div class="item-header">
         <span class="item-num">#4</span>
-        <span class="item-text">Test: marca se registra con el mismo formulario multi-step — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Verificar que existe `registro-taller.spec.ts` (flujo: taller se registra en 3 pasos y llega a su dashboard)</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -412,11 +412,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="5" data-verificador="DEV" data-item-selector="eje-1-item-5" data-pre-status="✅">
+    </div><div class="item-card" data-eje="1" data-num="5" data-verificador="QA" data-item-selector="eje-1-item-5">
       <div class="item-header">
         <span class="item-num">#5</span>
-        <span class="item-text">Test: redirige a /marca despues del registro — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Verificar que existe `registro-marca.spec.ts` (flujo: marca se registra y llega a su dashboard)</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -428,11 +428,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="6" data-verificador="DEV" data-item-selector="eje-1-item-6" data-pre-status="✅">
+    </div><div class="item-card" data-eje="1" data-num="6" data-verificador="QA" data-item-selector="eje-1-item-6">
       <div class="item-header">
         <span class="item-num">#6</span>
-        <span class="item-text">Test: taller llega a /taller — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Verificar que existe `auth-roles.spec.ts` (flujo: login de taller, marca, admin, estado + credenciales invalidas)</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -444,11 +444,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="7" data-verificador="DEV" data-item-selector="eje-1-item-7" data-pre-status="✅">
+    </div><div class="item-card" data-eje="1" data-num="7" data-verificador="QA" data-item-selector="eje-1-item-7">
       <div class="item-header">
         <span class="item-num">#7</span>
-        <span class="item-text">Test: marca llega a /marca — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Verificar que existe `flujo-comercial.spec.ts` (flujo: marca crea pedido → publica → taller cotiza → marca acepta)</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -460,11 +460,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="8" data-verificador="DEV" data-item-selector="eje-1-item-8" data-pre-status="✅">
+    </div><div class="item-card" data-eje="1" data-num="8" data-verificador="QA" data-item-selector="eje-1-item-8">
       <div class="item-header">
         <span class="item-num">#8</span>
-        <span class="item-text">Test: admin llega a /admin — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Verificar que existe `aprobacion-documento.spec.ts` (flujo: ESTADO aprueba documento + ADMIN no puede aprobar)</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -479,7 +479,7 @@
     </div><div class="item-card" data-eje="1" data-num="9" data-verificador="DEV" data-item-selector="eje-1-item-9" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#9</span>
-        <span class="item-text">Test: estado llega a /estado — ✅ Gerardo 29/4</span>
+        <span class="item-text">Abrir el ultimo run verde en GitHub Actions y verificar que el job `e2e` tardo menos de 10 minutos — ✅ Gerardo 29/4</span>
         <span class="badge-dev">DEV</span>
       </div>
       <div class="item-badges"></div>
@@ -492,123 +492,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="10" data-verificador="DEV" data-item-selector="eje-1-item-10" data-pre-status="✅">
+    </div><div class="item-card" data-eje="1" data-num="10" data-verificador="QA" data-item-selector="eje-1-item-10">
       <div class="item-header">
         <span class="item-num">#10</span>
-        <span class="item-text">Test: credenciales invalidas muestran error — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="1" data-num="11" data-verificador="DEV" data-item-selector="eje-1-item-11" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#11</span>
-        <span class="item-text">Test: marca crea pedido (BORRADOR) — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="1" data-num="12" data-verificador="DEV" data-item-selector="eje-1-item-12" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#12</span>
-        <span class="item-text">Test: marca publica pedido (PUBLICADO) — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="1" data-num="13" data-verificador="DEV" data-item-selector="eje-1-item-13" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#13</span>
-        <span class="item-text">Test: taller ve pedido en disponibles y cotiza — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="1" data-num="14" data-verificador="DEV" data-item-selector="eje-1-item-14" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#14</span>
-        <span class="item-text">Test: marca acepta cotizacion (badge ACEPTADA) — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="1" data-num="15" data-verificador="DEV" data-item-selector="eje-1-item-15" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#15</span>
-        <span class="item-text">Test: ESTADO aprueba documento PENDIENTE — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="1" data-num="16" data-verificador="DEV" data-item-selector="eje-1-item-16" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#16</span>
-        <span class="item-text">Test: metadata &quot;Aprobado por&quot; visible despues — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="1" data-num="17" data-verificador="DEV" data-item-selector="eje-1-item-17" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#17</span>
-        <span class="item-text">Test: ADMIN no puede aprobar (modo lectura) — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Si tardo mas de 10 minutos, reportar como issue</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -623,7 +511,7 @@
     </div></div><div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2><div class="item-card" data-eje="2" data-num="1" data-verificador="DEV" data-item-selector="eje-2-item-1" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#1</span>
-        <span class="item-text">playwright.config.ts con multi-environment — ✅ Gerardo 29/4</span>
+        <span class="item-text">Abrir https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil/blob/main/src/marca/componentes/publicar-pedido.tsx y buscar `data-action=&quot;publicar&quot;` en el boton — ✅ Gerardo 29/4</span>
         <span class="badge-dev">DEV</span>
       </div>
       <div class="item-badges"></div>
@@ -636,11 +524,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="2" data-num="2" data-verificador="DEV" data-item-selector="eje-2-item-2" data-pre-status="✅">
+    </div><div class="item-card" data-eje="2" data-num="2" data-verificador="QA" data-item-selector="eje-2-item-2">
       <div class="item-header">
         <span class="item-num">#2</span>
-        <span class="item-text">Helper loginAs(page, rol) para 4 roles — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Verificar que la linea existe (buscar con Ctrl+F &quot;data-action&quot;)</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -655,7 +543,7 @@
     </div><div class="item-card" data-eje="2" data-num="3" data-verificador="DEV" data-item-selector="eje-2-item-3" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#3</span>
-        <span class="item-text">Helper logout(page) — ✅ Gerardo 29/4</span>
+        <span class="item-text">Abrir https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil/blob/main/src/taller/componentes/cotizar-form.tsx y buscar `data-action=&quot;enviar-cotizacion&quot;` — ✅ Gerardo 29/4</span>
         <span class="badge-dev">DEV</span>
       </div>
       <div class="item-badges"></div>
@@ -668,11 +556,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="2" data-num="4" data-verificador="DEV" data-item-selector="eje-2-item-4" data-pre-status="✅">
+    </div><div class="item-card" data-eje="2" data-num="4" data-verificador="QA" data-item-selector="eje-2-item-4">
       <div class="item-header">
         <span class="item-num">#4</span>
-        <span class="item-text">Helper ensureNotProduction(page) — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Verificar que la linea existe</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -687,7 +575,7 @@
     </div><div class="item-card" data-eje="2" data-num="5" data-verificador="DEV" data-item-selector="eje-2-item-5" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#5</span>
-        <span class="item-text">Helper cleanup.ts para datos de test — ✅ Gerardo 29/4</span>
+        <span class="item-text">Abrir https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil/blob/main/src/marca/componentes/aceptar-cotizacion.tsx y buscar `data-action=&quot;aceptar-cotizacion&quot;` y `data-action=&quot;confirmar-aceptacion&quot;` — ✅ Gerardo 29/4</span>
         <span class="badge-dev">DEV</span>
       </div>
       <div class="item-badges"></div>
@@ -700,11 +588,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="2" data-num="6" data-verificador="DEV" data-item-selector="eje-2-item-6" data-pre-status="✅">
+    </div><div class="item-card" data-eje="2" data-num="6" data-verificador="QA" data-item-selector="eje-2-item-6">
       <div class="item-header">
         <span class="item-num">#6</span>
-        <span class="item-text">GitHub Action e2e.yml configurada — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Verificar que ambos atributos existen en el archivo</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -719,7 +607,7 @@
     </div><div class="item-card" data-eje="2" data-num="7" data-verificador="DEV" data-item-selector="eje-2-item-7" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#7</span>
-        <span class="item-text">Wait for Vercel deployment antes de tests — ✅ Gerardo 29/4</span>
+        <span class="item-text">Abrir https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil/blob/main/src/app/(marca)/marca/pedidos/nuevo/nuevo-pedido-form.tsx y buscar `data-testid=&quot;proceso-&quot;` — ✅ Gerardo 29/4</span>
         <span class="badge-dev">DEV</span>
       </div>
       <div class="item-badges"></div>
@@ -732,11 +620,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="2" data-num="8" data-verificador="DEV" data-item-selector="eje-2-item-8" data-pre-status="✅">
+    </div><div class="item-card" data-eje="2" data-num="8" data-verificador="QA" data-item-selector="eje-2-item-8">
       <div class="item-header">
         <span class="item-num">#8</span>
-        <span class="item-text">Upload de playwright-report en failure — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Verificar que el atributo existe en los botones de seleccion de proceso</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -751,7 +639,7 @@
     </div><div class="item-card" data-eje="2" data-num="9" data-verificador="DEV" data-item-selector="eje-2-item-9" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#9</span>
-        <span class="item-text">Variables de entorno en GitHub Secrets — ✅ Gerardo 29/4</span>
+        <span class="item-text">Abrir https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil/blob/main/src/app/(marca)/marca/pedidos/%5Bid%5D/page.tsx y buscar `data-estado={cot.estado}` — ✅ Gerardo 29/4</span>
         <span class="badge-dev">DEV</span>
       </div>
       <div class="item-badges"></div>
@@ -764,107 +652,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="2" data-num="10" data-verificador="DEV" data-item-selector="eje-2-item-10" data-pre-status="✅">
+    </div><div class="item-card" data-eje="2" data-num="10" data-verificador="QA" data-item-selector="eje-2-item-10">
       <div class="item-header">
         <span class="item-num">#10</span>
-        <span class="item-text">data-action=&quot;publicar&quot; en publicar-pedido.tsx — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="2" data-num="11" data-verificador="DEV" data-item-selector="eje-2-item-11" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#11</span>
-        <span class="item-text">data-action=&quot;enviar-cotizacion&quot; en cotizar-form.tsx — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="2" data-num="12" data-verificador="DEV" data-item-selector="eje-2-item-12" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#12</span>
-        <span class="item-text">data-action=&quot;aceptar-cotizacion&quot; en aceptar-cotizacion.tsx — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="2" data-num="13" data-verificador="DEV" data-item-selector="eje-2-item-13" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#13</span>
-        <span class="item-text">data-action=&quot;confirmar-aceptacion&quot; en aceptar-cotizacion.tsx — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="2" data-num="14" data-verificador="DEV" data-item-selector="eje-2-item-14" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#14</span>
-        <span class="item-text">data-action=&quot;confirmar-aprobacion&quot; en orden-actions.tsx — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="2" data-num="15" data-verificador="DEV" data-item-selector="eje-2-item-15" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#15</span>
-        <span class="item-text">data-testid=&quot;proceso-*&quot; en nuevo-pedido-form.tsx — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="2" data-num="16" data-verificador="DEV" data-item-selector="eje-2-item-16" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#16</span>
-        <span class="item-text">data-estado en cotizacion containers — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Verificar que el atributo existe en el contenedor de cada cotizacion</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -879,7 +671,7 @@
     </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1" data-verificador="DEV" data-item-selector="eje-3-item-1" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#1</span>
-        <span class="item-text">49 tests totales (13 archivos) — ✅ Gerardo 29/4</span>
+        <span class="item-text">Abrir https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil/blob/main/tests/e2e/_helpers/auth.ts y verificar que tiene funciones `loginAs` y `logout` — ✅ Gerardo 29/4</span>
         <span class="badge-dev">DEV</span>
       </div>
       <div class="item-badges"></div>
@@ -892,11 +684,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="2" data-verificador="DEV" data-item-selector="eje-3-item-2" data-pre-status="✅">
+    </div><div class="item-card" data-eje="3" data-num="2" data-verificador="QA" data-item-selector="eje-3-item-2">
       <div class="item-header">
         <span class="item-num">#2</span>
-        <span class="item-text">43 pasaron, 4 skipped, 2 flaky bajo carga local — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Verificar que `loginAs` acepta 4 roles: taller, marca, admin, estado</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -911,7 +703,7 @@
     </div><div class="item-card" data-eje="3" data-num="3" data-verificador="DEV" data-item-selector="eje-3-item-3" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#3</span>
-        <span class="item-text">Tiempo total: 1m 26s (3 workers local) — ✅ Gerardo 29/4</span>
+        <span class="item-text">Abrir https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil/blob/main/tests/e2e/_helpers/safety.ts y verificar que tiene la funcion `ensureNotProduction` — ✅ Gerardo 29/4</span>
         <span class="badge-dev">DEV</span>
       </div>
       <div class="item-badges"></div>
@@ -924,11 +716,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="4" data-verificador="DEV" data-item-selector="eje-3-item-4" data-pre-status="✅">
+    </div><div class="item-card" data-eje="3" data-num="4" data-verificador="QA" data-item-selector="eje-3-item-4">
       <div class="item-header">
         <span class="item-num">#4</span>
-        <span class="item-text">TypeScript check sin errores — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Verificar que la funcion bloquea si la URL contiene `plataforma-textil.vercel.app` (sin -dev)</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -940,11 +732,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="5" data-verificador="QA" data-item-selector="eje-3-item-5">
+    </div><div class="item-card" data-eje="3" data-num="5" data-verificador="DEV" data-item-selector="eje-3-item-5" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#5</span>
-        <span class="item-text">aprobacion-documento: skip si no hay docs PENDIENTE aprobables (seed ya consumido)</span>
-        <span class="badge-qa">QA</span>
+        <span class="item-text">Abrir https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil/blob/main/.github/workflows/e2e.yml y verificar que existe — ✅ Gerardo 29/4</span>
+        <span class="badge-dev">DEV</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -959,7 +751,7 @@
     </div><div class="item-card" data-eje="3" data-num="6" data-verificador="QA" data-item-selector="eje-3-item-6">
       <div class="item-header">
         <span class="item-num">#6</span>
-        <span class="item-text">file-validation upload JPEG: skip si Supabase Storage no disponible</span>
+        <span class="item-text">Verificar que se ejecuta en push y pull_request a `develop` y `main`</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -975,7 +767,7 @@
     </div><div class="item-card" data-eje="3" data-num="7" data-verificador="QA" data-item-selector="eje-3-item-7">
       <div class="item-header">
         <span class="item-num">#7</span>
-        <span class="item-text">ratelimit feedback: skip si Redis no configurado</span>
+        <span class="item-text">Verificar que instala Chromium (`npx playwright install --with-deps chromium`)</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -988,27 +780,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="8" data-verificador="QA" data-item-selector="eje-3-item-8">
-      <div class="item-header">
-        <span class="item-num">#8</span>
-        <span class="item-text">ratelimit magic link: skip si Redis no configurado</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card" data-eje="4" data-num="1" data-verificador="DEV" data-item-selector="eje-4-item-1" data-pre-status="✅">
+    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card" data-eje="4" data-num="1" data-verificador="QA" data-item-selector="eje-4-item-1">
       <div class="item-header">
         <span class="item-num">#1</span>
-        <span class="item-text">Pedido creation: 2 pasos (crear borrador + publicar), no 1 — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Abrir https://plataforma-textil-dev.vercel.app/registro en incognito</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -1020,11 +796,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="4" data-num="2" data-verificador="DEV" data-item-selector="eje-4-item-2" data-pre-status="✅">
+    </div><div class="item-card" data-eje="4" data-num="2" data-verificador="QA" data-item-selector="eje-4-item-2">
       <div class="item-header">
         <span class="item-num">#2</span>
-        <span class="item-text">Cotizacion success: redirect, no toast — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Seleccionar &quot;Taller&quot; → completar nombre, email, password → avanzar → completar nombre del taller y CUIT → crear cuenta</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -1036,11 +812,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="4" data-num="3" data-verificador="DEV" data-item-selector="eje-4-item-3" data-pre-status="✅">
+    </div><div class="item-card" data-eje="4" data-num="3" data-verificador="QA" data-item-selector="eje-4-item-3">
       <div class="item-header">
         <span class="item-num">#3</span>
-        <span class="item-text">Aceptar success: badge change, no toast — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Verificar que redirige al dashboard del taller con nivel BRONCE</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -1052,11 +828,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="4" data-num="4" data-verificador="DEV" data-item-selector="eje-4-item-4" data-pre-status="✅">
+    </div><div class="item-card" data-eje="4" data-num="4" data-verificador="QA" data-item-selector="eje-4-item-4">
       <div class="item-header">
         <span class="item-num">#4</span>
-        <span class="item-text">Registro: 3 pasos (rol + datos + entidad), no 2 — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Login como taller (roberto.gimenez@pdt.org.ar / pdt2026) → llega a /taller</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -1068,11 +844,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="4" data-num="5" data-verificador="DEV" data-item-selector="eje-4-item-5" data-pre-status="✅">
+    </div><div class="item-card" data-eje="4" data-num="5" data-verificador="QA" data-item-selector="eje-4-item-5">
       <div class="item-header">
         <span class="item-num">#5</span>
-        <span class="item-text">ESTADO aprobacion: server action form, no modal con confirm — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Login como marca (martin.echevarria@pdt.org.ar / pdt2026) → llega a /marca</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -1084,11 +860,11 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="4" data-num="6" data-verificador="DEV" data-item-selector="eje-4-item-6" data-pre-status="✅">
+    </div><div class="item-card" data-eje="4" data-num="6" data-verificador="QA" data-item-selector="eje-4-item-6">
       <div class="item-header">
         <span class="item-num">#6</span>
-        <span class="item-text">data-action=&quot;ver-cotizaciones&quot; no aplica (cotizaciones siempre inline) — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Login como admin (lucia.fernandez@pdt.org.ar / pdt2026) → llega a /admin</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
@@ -1100,11 +876,59 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="4" data-num="7" data-verificador="DEV" data-item-selector="eje-4-item-7" data-pre-status="✅">
+    </div><div class="item-card" data-eje="4" data-num="7" data-verificador="QA" data-item-selector="eje-4-item-7">
       <div class="item-header">
         <span class="item-num">#7</span>
-        <span class="item-text">data-filter=&quot;con-pendientes&quot; no aplica (no hay boton filtro en dashboard) — ✅ Gerardo 29/4</span>
-        <span class="badge-dev">DEV</span>
+        <span class="item-text">Login como estado (anabelen.torres@pdt.org.ar / pdt2026) → llega a /estado</span>
+        <span class="badge-qa">QA</span>
+      </div>
+      <div class="item-badges"></div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="4" data-num="8" data-verificador="QA" data-item-selector="eje-4-item-8">
+      <div class="item-header">
+        <span class="item-num">#8</span>
+        <span class="item-text">Login como marca → crear pedido nuevo → verificar que aparece como Borrador</span>
+        <span class="badge-qa">QA</span>
+      </div>
+      <div class="item-badges"></div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="4" data-num="9" data-verificador="QA" data-item-selector="eje-4-item-9">
+      <div class="item-header">
+        <span class="item-num">#9</span>
+        <span class="item-text">Publicar el pedido → verificar que cambia a Publicado</span>
+        <span class="badge-qa">QA</span>
+      </div>
+      <div class="item-badges"></div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="4" data-num="10" data-verificador="QA" data-item-selector="eje-4-item-10">
+      <div class="item-header">
+        <span class="item-num">#10</span>
+        <span class="item-text">Login como taller → ir a Pedidos disponibles → verificar que el pedido aparece</span>
+        <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
       <div class="item-controls">
