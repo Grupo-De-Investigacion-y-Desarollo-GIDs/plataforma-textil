@@ -3,6 +3,11 @@
 ## 2026-04-28
 
 ### Gerardo Breard
+- **22:53** `d6a1ca1` — fix: generador QA parsea YAML frontmatter, checkboxes, y resultados ✅
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `tools/generate-qa.js`
+  - `tools/generate-qa.test.js`
+
 - **22:30** `5e73538` — docs: marcar verificacion DEV completada en 7 QAs V3
   - `.claude/auditorias/QA_v3-cookies-seguridad.md`
   - `.claude/auditorias/QA_v3-logs-admin-auditoria.md`
