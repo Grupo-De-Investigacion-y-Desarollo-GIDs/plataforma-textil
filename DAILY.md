@@ -3,6 +3,9 @@
 ## 2026-04-29
 
 ### Gerardo Breard
+- **14:20** `6bf18d7` — fix: agregar link "Volver al indice" en todos los QA HTML
+  - `tools/generate-qa.js`
+
 - **13:56** `3fb71bd` — fix: reescribir QA Q-01 para audiencia QA + corregir tests flaky en CI
   - `.claude/auditorias/QA_v3-tests-e2e.md`
   - `tests/e2e/flujo-comercial.spec.ts`
