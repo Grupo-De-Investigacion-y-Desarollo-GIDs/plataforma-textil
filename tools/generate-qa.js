@@ -590,26 +590,50 @@ function renderEje6(contenido) {
       <h2>${escapeHtml(titulo)} <span class="collapse-icon">&#9654;</span></h2>
       <div class="collapse-content">`
 
-    for (let i = 0; i < filas.length; i++) {
-      const f = filas[i]
-      const num = f['#'] || (i + 1)
-      const pregunta = f.pregunta || ''
-      html += `<div class="item-card" data-eje="6" data-num="${num}" data-verificador="perfil" data-perfil="${escapeHtml(perfil)}" data-item-selector="eje-6-${escapeHtml(perfil)}-${num}">
-        <div class="item-header">
-          <span class="item-num">#${escapeHtml(String(num))}</span>
-          <span class="item-text">${escapeHtml(pregunta)}</span>
-          <span class="badge-perfil">${escapeHtml(perfil)}</span>
-        </div>
-        <div class="item-badges"></div>
-        <div class="item-controls">
-          <div class="status-btns">
-            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+    // Items de tabla (formato original)
+    if (filas.length > 0) {
+      for (let i = 0; i < filas.length; i++) {
+        const f = filas[i]
+        const num = f['#'] || (i + 1)
+        const pregunta = f.pregunta || ''
+        html += `<div class="item-card" data-eje="6" data-num="${num}" data-verificador="perfil" data-perfil="${escapeHtml(perfil)}" data-item-selector="eje-6-${escapeHtml(perfil)}-${num}">
+          <div class="item-header">
+            <span class="item-num">#${escapeHtml(String(num))}</span>
+            <span class="item-text">${escapeHtml(pregunta)}</span>
+            <span class="badge-perfil">${escapeHtml(perfil)}</span>
           </div>
-          <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
-          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-        </div>
-      </div>`
+          <div class="item-badges"></div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div>`
+      }
+    } else {
+      // Fallback: checkboxes bajo cada perfil
+      const cbItems = parsearCheckboxes(restContent)
+      for (const item of cbItems) {
+        html += `<div class="item-card" data-eje="6" data-num="${item.num}" data-verificador="perfil" data-perfil="${escapeHtml(perfil)}" data-item-selector="eje-6-${escapeHtml(perfil)}-${item.num}">
+          <div class="item-header">
+            <span class="item-num">#${escapeHtml(String(item.num))}</span>
+            <span class="item-text">${escapeHtml(item.texto)}</span>
+            <span class="badge-perfil">${escapeHtml(perfil)}</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div>`
+      }
     }
     html += `</div></div>`
   }

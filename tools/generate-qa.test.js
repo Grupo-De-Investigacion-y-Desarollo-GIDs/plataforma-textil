@@ -1507,6 +1507,46 @@ autor: Gerardo (Claude Code)
 }
 
 // ============================================
+// TEST 36: renderEje6 con checkboxes bajo cada perfil (D-01 format)
+// ============================================
+{
+  // Simular el contenido que renderEje6 recibe (ya sin el ## Eje 6 header)
+  // renderEje6 hace split por ### para obtener subsecciones
+  const contenidoEje6 = `### 6.1 Perspectiva politologica
+- [ ] PREGUNTA: La separacion refleja la realidad?
+- [ ] VERIFICAR: El rol ESTADO tiene autonomia
+
+### 6.2 Perspectiva sociologica
+- [ ] PREGUNTA: El taller percibe diferencia?
+`
+  // renderEje6 hace split por ### — el primer bloque no-vacio es 6.1
+  const bloques = contenidoEje6.split(/^### /m).filter(b => b.trim())
+  assert(bloques.length === 2, 'Eje6 checkbox: 2 bloques de perfil, obtuvo ' + bloques.length)
+
+  // Primer bloque: politologica
+  const lineas1 = bloques[0].split('\n')
+  const titulo1 = lineas1[0].trim()
+  assert(titulo1.includes('politologica'), 'Eje6 checkbox: titulo contiene politologica')
+
+  const rest1 = lineas1.slice(1).join('\n')
+  const items1 = parsearCheckboxes(rest1)
+  assert(items1.length === 2, 'Eje6 checkbox: 2 items en politologica, obtuvo ' + items1.length)
+  assert(items1[0].texto.includes('PREGUNTA'), 'Eje6 checkbox: primer item es PREGUNTA')
+}
+
+// ============================================
+// TEST 37: parsearCheckboxes preserva texto de pregunta completo
+// ============================================
+{
+  const contenido = `- [ ] PREGUNTA: Los tipos de documento configurados reflejan la realidad fiscal argentina?
+- [ ] VERIFICAR: El Estado puede ver todos los talleres en una sola pantalla`
+  const items = parsearCheckboxes(contenido)
+  assert(items.length === 2, 'Eje6 preguntas: 2 items')
+  assert(items[0].texto.includes('realidad fiscal argentina'), 'Eje6 preguntas: texto completo preservado')
+  assert(items[1].texto.includes('una sola pantalla'), 'Eje6 preguntas: segundo texto completo')
+}
+
+// ============================================
 // TEST 33: esResultadoVerificado rechaza valores vacios/pendientes
 // ============================================
 {
