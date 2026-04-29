@@ -4,6 +4,7 @@ import { logActividad } from '@/compartido/lib/log'
 import { corsHeaders, handleOptions } from '@/compartido/lib/cors'
 import { buildIssueLabels, buildIssueBody } from '@/compartido/lib/feedback'
 import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
+import { errorResponse } from '@/compartido/lib/api-errors'
 
 export async function OPTIONS(request: Request) {
   return handleOptions(request)
@@ -20,7 +21,9 @@ export async function POST(request: NextRequest) {
   const { tipo, mensaje, pagina, entidad, entidadId, auditorNombre, auditorRol, contextoQA } = body
 
   if (!tipo || !mensaje || mensaje.length < 10) {
-    return NextResponse.json({ error: 'Datos invalidos' }, { status: 400, headers: corsHeaders(request) })
+    const res = errorResponse({ code: 'INVALID_INPUT', message: 'Datos invalidos', status: 400 })
+    for (const [k, v] of Object.entries(corsHeaders(request))) res.headers.set(k, v)
+    return res
   }
 
   // Datos del usuario: de la sesion si esta logueado, del body si es auditor externo

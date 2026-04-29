@@ -251,10 +251,10 @@ function StepEntidadInfo({
         setCuitVerificado(true)
         setCuitData({ razonSocial: data.razonSocial })
       } else {
-        const errorMsg = (data.error || '').toLowerCase()
+        const errorMsg = (typeof data.error === 'string' ? data.error : data.error?.message || '').toLowerCase()
         const esCuitInvalido = ERRORES_CUIT_INVALIDO.some(e => errorMsg.includes(e))
         if (esCuitInvalido) {
-          setCuitError(data.error)
+          setCuitError(typeof data.error === 'string' ? data.error : data.error?.message || 'CUIT invalido')
         } else {
           // Servicio no disponible — permitir continuar
           setCuitPendiente(true)
@@ -380,7 +380,7 @@ function RegistroContent() {
 
       const body = await res.json()
       if (!res.ok) {
-        setError(body.error || 'Error al crear la cuenta')
+        setError(typeof body.error === 'string' ? body.error : body.error?.message || 'Error al crear la cuenta')
         setLoading(false)
         return
       }

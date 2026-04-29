@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { apiHandler, errorAuthRequired, errorForbidden } from '@/compartido/lib/api-errors'
 
 async function checkPedidoAccess(pedidoId: string, userId: string, role: string | undefined) {
   if (role === 'ADMIN') return true
@@ -11,29 +12,24 @@ async function checkPedidoAccess(pedidoId: string, userId: string, role: string 
   return pedido?.marca.userId === userId
 }
 
-export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
+export const GET = apiHandler(async (_req: NextRequest, ctx) => {
+  const session = await auth()
+  if (!session?.user) return errorAuthRequired()
+  const role = (session.user as { role?: string }).role
 
-    const { id } = await params
-    if (!(await checkPedidoAccess(id, session.user.id!, role))) {
-      return NextResponse.json({ error: 'Sin acceso a este pedido' }, { status: 403 })
-    }
+  const { id } = await ctx.params!
 
-    const ordenes = await prisma.ordenManufactura.findMany({
-      where: { pedidoId: id },
-      include: {
-        taller: { select: { id: true, nombre: true, nivel: true } },
-      },
-      orderBy: { createdAt: 'asc' },
-    })
-
-    return NextResponse.json(ordenes)
-  } catch (error) {
-    console.error('Error en GET /api/pedidos/[id]/ordenes:', error)
-    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })
+  if (!(await checkPedidoAccess(id as string, session.user.id!, role))) {
+    return errorForbidden()
   }
-}
 
+  const ordenes = await prisma.ordenManufactura.findMany({
+    where: { pedidoId: id as string },
+    include: {
+      taller: { select: { id: true, nombre: true, nivel: true } },
+    },
+    orderBy: { createdAt: 'asc' },
+  })
+
+  return NextResponse.json(ordenes)
+})

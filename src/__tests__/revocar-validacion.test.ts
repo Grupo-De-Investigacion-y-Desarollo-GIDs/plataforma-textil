@@ -105,21 +105,20 @@ describe('PUT /api/validaciones/[id] — permisos post-D01', () => {
     )
   })
 
-  it('ADMIN recibe 403 al intentar aprobar — INSUFFICIENT_ROLE', async () => {
+  it('ADMIN recibe 403 al intentar aprobar — FORBIDDEN', async () => {
     mockAuth.mockResolvedValue({ user: { id: 'admin-1', role: 'ADMIN' } })
     const res = await PUT(makeRequest({ estado: 'COMPLETADO' }), { params: mockParams })
     expect(res.status).toBe(403)
     const body = await res.json()
-    expect(body.code).toBe('INSUFFICIENT_ROLE')
-    expect(body.rolesRequeridos).toEqual(['ESTADO'])
-    expect(body.error).toContain('ESTADO')
+    expect(body.error.code).toBe('FORBIDDEN')
+    expect(body.error.message).toContain('ESTADO')
   })
 
   it('ADMIN recibe mensaje explicativo de que requiere rol ESTADO', async () => {
     mockAuth.mockResolvedValue({ user: { id: 'admin-1', role: 'ADMIN' } })
     const res = await PUT(makeRequest({ estado: 'COMPLETADO' }), { params: mockParams })
     const body = await res.json()
-    expect(body.error).toContain('rol ESTADO')
+    expect(body.error.message).toContain('rol ESTADO')
   })
 
   it('taller owner puede subir documento pero NO cambiar estado', async () => {

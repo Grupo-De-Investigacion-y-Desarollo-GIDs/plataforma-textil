@@ -68,8 +68,9 @@ Origen: decisiones tomadas durante V3 que conviene revisar.
 | T-05 | Cambiar `redis.keys()` a `redis.scan()` en cleanup | El helper de cleanup de tests usa `KEYS` que es peligroso en Redis con DBs grandes. Migrar a `SCAN` cuando la DB de tests crezca | 2h |
 | T-06 | Reactivar Vercel Authentication con bypass para CI | Hoy desactivamos Vercel Auth porque bloqueaba el CI. Reactivarlo con un bypass token específico para tener una capa más de protección | 4h |
 | T-07 | Endpoint `/api/health/version` con cache headers explícitos | Confirmar que el endpoint usado por el polling del CI tiene `Cache-Control: no-store` correctamente configurado | 1h |
+| T-08 | Migrar ~57 endpoints restantes al formato de error consistente | Q-03 migró 11 endpoints críticos al formato `{ error: { code, message, digest } }` con `apiHandler`. Quedan ~57 endpoints con formato legacy `{ error: "string" }`. Incluye migrar los ~18 frontends que consumen esos endpoints para usar `getErrorMessage()` | 10h |
 
-**Total estimado Bloque D:** ~11h
+**Total estimado Bloque D:** ~21h
 
 ---
 
@@ -175,14 +176,14 @@ Este bloque transforma la PDT de un sistema transaccional a una plataforma con i
 | A — Cumplimiento OIT | 10 specs | 43h + docs | Alta (bloquea escalamiento) |
 | B — Mobile y UX | 3 specs | 22h | Alta (talleres usan celular) |
 | C — Mejoras de QA | 4 specs | 20h | Media |
-| D — Deuda técnica V3 | 4 specs | 11h | Baja |
+| D — Deuda técnica V3 | 5 specs | 21h | Baja |
 | E — Integraciones | 3 specs | 36h | Variable según piloto |
 | F — Internacionalización | 3 specs | 52h | Solo si se escala |
 | G — Feedback del piloto | TBD | TBD | Variable |
 | H — Mercado y transparencia | 7 specs | 66h | Post-piloto (junio) |
 | I — Servicios y catálogo | 7 specs | 62h | Post-piloto (después de H) |
 
-**Total estimado V4 (sin Bloque G):** ~312h ≈ 8-9 semanas de trabajo
+**Total estimado V4 (sin Bloque G):** ~322h ≈ 8-9 semanas de trabajo
 
 ---
 

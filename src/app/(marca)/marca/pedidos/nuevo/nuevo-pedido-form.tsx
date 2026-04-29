@@ -59,7 +59,8 @@ export function NuevoPedidoForm({ marcaId, procesos }: Props) {
         router.push('/marca/pedidos?created=1')
       } else {
         const data = await res.json()
-        setError(data.error ?? 'Error al crear el pedido')
+        const msg = typeof data.error === 'string' ? data.error : data.error?.message
+        setError(msg ?? 'Error al crear el pedido')
       }
     } catch {
       setError('Error de conexion')

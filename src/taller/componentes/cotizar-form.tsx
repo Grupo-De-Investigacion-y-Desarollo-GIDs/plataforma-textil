@@ -45,7 +45,8 @@ export function CotizarForm({ pedidoId }: { pedidoId: string }) {
       })
       const data = await res.json()
       if (!res.ok) {
-        setError(res.status === 409 ? 'Ya tenes una cotizacion activa para este pedido.' : (data.error || 'Error al enviar la cotizacion.'))
+        const msg = typeof data.error === 'string' ? data.error : data.error?.message
+        setError(res.status === 409 ? 'Ya tenes una cotizacion activa para este pedido.' : (msg || 'Error al enviar la cotizacion.'))
         setLoading(false)
         return
       }

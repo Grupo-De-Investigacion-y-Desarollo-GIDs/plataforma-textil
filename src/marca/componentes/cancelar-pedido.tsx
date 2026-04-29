@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { XCircle } from 'lucide-react'
+import { getErrorMessage } from '@/compartido/lib/api-client'
 
 interface CancelarPedidoProps {
   pedidoId: string
@@ -27,7 +28,7 @@ export function CancelarPedido({ pedidoId }: CancelarPedidoProps) {
       })
       if (!res.ok) {
         const data = await res.json()
-        setError(data.error ?? 'Error al cancelar el pedido')
+        setError(getErrorMessage(data, 'Error al cancelar el pedido'))
         return
       }
       router.refresh()

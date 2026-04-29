@@ -1,22 +1,18 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { apiHandler, errorAuthRequired, errorNotFound } from '@/compartido/lib/api-errors'
 
-export async function GET() {
-  try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+export const GET = apiHandler(async () => {
+  const session = await auth()
+  if (!session?.user) return errorAuthRequired()
 
-    const taller = await prisma.taller.findUnique({
-      where: { userId: session.user.id! },
-      include: { maquinaria: true },
-    })
+  const taller = await prisma.taller.findUnique({
+    where: { userId: session.user.id! },
+    include: { maquinaria: true },
+  })
 
-    if (!taller) return NextResponse.json({ error: 'Taller no encontrado' }, { status: 404 })
+  if (!taller) return errorNotFound('taller')
 
-    return NextResponse.json(taller)
-  } catch (error) {
-    console.error('Error en GET /api/talleres/me:', error)
-    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })
-  }
-}
+  return NextResponse.json(taller)
+})
