@@ -6,6 +6,9 @@ test.describe('Paginas 404 — Not Found', () => {
   test('Ruta inexistente global muestra 404', async ({ page }) => {
     await ensureNotProduction(page)
 
+    // Login necesario: middleware redirige a /login para rutas no-publicas sin sesion
+    await loginAs(page, 'admin')
+
     await page.goto('/ruta-inexistente-e2e-test')
     await expect(page.getByText('Pagina no encontrada')).toBeVisible({ timeout: 10000 })
     await expect(page.getByText('Volver al inicio')).toBeVisible()
