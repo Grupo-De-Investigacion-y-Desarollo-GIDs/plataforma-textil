@@ -906,211 +906,211 @@
         </div>
       </div>
     </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1" data-verificador="QA" data-item-selector="eje-3-caso-1">
-      <div class="item-header">
-        <span class="item-num">#1</span>
-        <span class="item-text">Feedback sin nombre (sin login)</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details">
-        <div class="detail-row"><span class="detail-label">Accion:</span> Abrir widget sin login, dejar nombre vacio, intentar enviar</div>
-        <div class="detail-row"><span class="detail-label">Esperado:</span> Debe mostrar error &quot;Ingresa tu nombre (al menos 2 caracteres)&quot;</div>
-      </div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        <div class="item-header">
+          <span class="item-num">#1</span>
+          <span class="item-text">Feedback sin nombre (sin login)</span>
+          <span class="badge-qa">QA</span>
         </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="3" data-num="2" data-verificador="QA" data-item-selector="eje-3-caso-2">
-      <div class="item-header">
-        <span class="item-num">#2</span>
-        <span class="item-text">Feedback con mensaje corto</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details">
-        <div class="detail-row"><span class="detail-label">Accion:</span> Seleccionar un tipo, escribir menos de 10 caracteres, enviar</div>
-        <div class="detail-row"><span class="detail-label">Esperado:</span> Debe mostrar error &quot;Elegi un tipo y escribi al menos 10 caracteres&quot;</div>
-      </div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Accion:</span> Abrir widget sin login, dejar nombre vacio, intentar enviar</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> Debe mostrar error &quot;Ingresa tu nombre (al menos 2 caracteres)&quot;</div>
         </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="3" data-num="3" data-verificador="QA" data-item-selector="eje-3-caso-3">
-      <div class="item-header">
-        <span class="item-num">#3</span>
-        <span class="item-text">Feedback sin tipo seleccionado</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details">
-        <div class="detail-row"><span class="detail-label">Accion:</span> Escribir mensaje largo pero no seleccionar tipo, enviar</div>
-        <div class="detail-row"><span class="detail-label">Esperado:</span> Debe mostrar error de validacion</div>
-      </div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="3" data-num="4" data-verificador="QA" data-item-selector="eje-3-caso-4">
-      <div class="item-header">
-        <span class="item-num">#4</span>
-        <span class="item-text">Login con credenciales incorrectas</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details">
-        <div class="detail-row"><span class="detail-label">Accion:</span> Ir a `/login`, usar email correcto pero password incorrecto</div>
-        <div class="detail-row"><span class="detail-label">Esperado:</span> No debe loguearse, debe mostrar error</div>
-      </div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+      </div><div class="item-card" data-eje="3" data-num="2" data-verificador="QA" data-item-selector="eje-3-caso-2">
+        <div class="item-header">
+          <span class="item-num">#2</span>
+          <span class="item-text">Feedback con mensaje corto</span>
+          <span class="badge-qa">QA</span>
         </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1" data-verificador="QA" data-item-selector="eje-4-item-1">
-      <div class="item-header">
-        <span class="item-text">`/acceso-rapido` carga en menos de 3 segundos</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details"><span class="detail-label">Metodo:</span> Abrir DevTools → Network → recargar</div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Accion:</span> Seleccionar un tipo, escribir menos de 10 caracteres, enviar</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> Debe mostrar error &quot;Elegi un tipo y escribi al menos 10 caracteres&quot;</div>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="4" data-num="2" data-verificador="QA" data-item-selector="eje-4-item-2">
-      <div class="item-header">
-        <span class="item-text">Widget de feedback abre sin delay visible</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details"><span class="detail-label">Metodo:</span> Click en boton azul, medir tiempo de apertura</div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="4" data-num="3" data-verificador="QA" data-item-selector="eje-4-item-3">
-      <div class="item-header">
-        <span class="item-text">Sin errores en consola del browser</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Console → revisar en `/acceso-rapido` y `/taller`</div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+      </div><div class="item-card" data-eje="3" data-num="3" data-verificador="QA" data-item-selector="eje-3-caso-3">
+        <div class="item-header">
+          <span class="item-num">#3</span>
+          <span class="item-text">Feedback sin tipo seleccionado</span>
+          <span class="badge-qa">QA</span>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="4" data-num="4" data-verificador="QA" data-item-selector="eje-4-item-4">
-      <div class="item-header">
-        <span class="item-text">Funciona en movil (responsive)</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Toggle device toolbar → verificar `/acceso-rapido`</div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Accion:</span> Escribir mensaje largo pero no seleccionar tipo, enviar</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> Debe mostrar error de validacion</div>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1" data-item-selector="eje-5-item-1">
-      <div class="item-header">
-        <span class="item-text">Nombres con tildes se renderizan bien (no aparecen caracteres rotos)</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="5" data-num="2" data-item-selector="eje-5-item-2">
-      <div class="item-header">
-        <span class="item-text">Widget de feedback usa colores brand-blue</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+      </div><div class="item-card" data-eje="3" data-num="4" data-verificador="QA" data-item-selector="eje-3-caso-4">
+        <div class="item-header">
+          <span class="item-num">#4</span>
+          <span class="item-text">Login con credenciales incorrectas</span>
+          <span class="badge-qa">QA</span>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="5" data-num="3" data-item-selector="eje-5-item-3">
-      <div class="item-header">
-        <span class="item-text">Widget se posiciona correctamente en mobile (no tapa contenido)</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Accion:</span> Ir a `/login`, usar email correcto pero password incorrecto</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> No debe loguearse, debe mostrar error</div>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="5" data-num="4" data-item-selector="eje-5-item-4">
-      <div class="item-header">
-        <span class="item-text">Campos de nombre y rol del widget tienen estilo consistente</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="5" data-num="5" data-item-selector="eje-5-item-5">
-      <div class="item-header">
-        <span class="item-text">Textos del widget en espanol argentino (vos/tenes)</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+      </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1" data-verificador="QA" data-item-selector="eje-4-item-1">
+        <div class="item-header">
+          <span class="item-text">`/acceso-rapido` carga en menos de 3 segundos</span>
+          <span class="badge-qa">QA</span>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div></div><div class="section" id="resumen-issues">
+        <div class="item-badges"></div>
+        <div class="item-details"><span class="detail-label">Metodo:</span> Abrir DevTools → Network → recargar</div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="4" data-num="2" data-verificador="QA" data-item-selector="eje-4-item-2">
+        <div class="item-header">
+          <span class="item-text">Widget de feedback abre sin delay visible</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details"><span class="detail-label">Metodo:</span> Click en boton azul, medir tiempo de apertura</div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="4" data-num="3" data-verificador="QA" data-item-selector="eje-4-item-3">
+        <div class="item-header">
+          <span class="item-text">Sin errores en consola del browser</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Console → revisar en `/acceso-rapido` y `/taller`</div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="4" data-num="4" data-verificador="QA" data-item-selector="eje-4-item-4">
+        <div class="item-header">
+          <span class="item-text">Funciona en movil (responsive)</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Toggle device toolbar → verificar `/acceso-rapido`</div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1" data-item-selector="eje-5-item-1">
+        <div class="item-header">
+          <span class="item-text">Nombres con tildes se renderizan bien (no aparecen caracteres rotos)</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="2" data-item-selector="eje-5-item-2">
+        <div class="item-header">
+          <span class="item-text">Widget de feedback usa colores brand-blue</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="3" data-item-selector="eje-5-item-3">
+        <div class="item-header">
+          <span class="item-text">Widget se posiciona correctamente en mobile (no tapa contenido)</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="4" data-item-selector="eje-5-item-4">
+        <div class="item-header">
+          <span class="item-text">Campos de nombre y rol del widget tienen estilo consistente</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="5" data-item-selector="eje-5-item-5">
+        <div class="item-header">
+          <span class="item-text">Textos del widget en espanol argentino (vos/tenes)</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div></div><div class="section" id="resumen-issues">
     <h2>Resumen de issues abiertos</h2>
     <textarea class="large-textarea" id="textarea-resumen-issues" placeholder="Listar issues abiertos con # y descripcion breve" rows="4"></textarea>
   </div><div class="section" id="notas-auditor">

@@ -870,331 +870,331 @@ body: JSON.stringify({ respuestas: [1, 1, 1] }),
         </div>
       </div>
     </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1" data-verificador="QA" data-item-selector="eje-3-caso-1">
-      <div class="item-header">
-        <span class="item-num">#1</span>
-        <span class="item-text">Bypass progreso vía fetch</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details">
-        <div class="detail-row"><span class="detail-label">Accion:</span> En consola: `fetch(&#39;/api/colecciones/&lt;id&gt;/progreso&#39;, { method: &#39;POST&#39;, headers: {&#39;Content-Type&#39;:&#39;application/json&#39;}, body: JSON.stringify({videosVistos: 999, totalVideos: 1}) })` → verificar en DB</div>
-        <div class="detail-row"><span class="detail-label">Esperado:</span> `porcentajeCompletado` clampeado al 100% máximo, `videosVistos` limitado al total real de la colección</div>
-      </div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        <div class="item-header">
+          <span class="item-num">#1</span>
+          <span class="item-text">Bypass progreso vía fetch</span>
+          <span class="badge-qa">QA</span>
         </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="3" data-num="2" data-verificador="QA" data-item-selector="eje-3-caso-2">
-      <div class="item-header">
-        <span class="item-num">#2</span>
-        <span class="item-text">Bypass evaluación sin progreso</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details">
-        <div class="detail-row"><span class="detail-label">Accion:</span> En consola: `POST /api/colecciones/&lt;id&gt;/evaluacion` con respuestas sin haber visto videos</div>
-        <div class="detail-row"><span class="detail-label">Esperado:</span> 403 con mensaje &quot;Debés completar todos los videos antes de rendir la evaluación&quot;</div>
-      </div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Accion:</span> En consola: `fetch(&#39;/api/colecciones/&lt;id&gt;/progreso&#39;, { method: &#39;POST&#39;, headers: {&#39;Content-Type&#39;:&#39;application/json&#39;}, body: JSON.stringify({videosVistos: 999, totalVideos: 1}) })` → verificar en DB</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> `porcentajeCompletado` clampeado al 100% máximo, `videosVistos` limitado al total real de la colección</div>
         </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="3" data-num="3" data-verificador="QA" data-item-selector="eje-3-caso-3">
-      <div class="item-header">
-        <span class="item-num">#3</span>
-        <span class="item-text">Último video no marcado manualmente</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details">
-        <div class="detail-row"><span class="detail-label">Accion:</span> Ver todos los videos clickeando por la lista (sin usar &quot;Marcar como visto&quot;) → click &quot;Rendir&quot;</div>
-        <div class="detail-row"><span class="detail-label">Esperado:</span> El onClick auto-marca los faltantes antes de abrir el quiz — no da 403</div>
-      </div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="3" data-num="4" data-verificador="QA" data-item-selector="eje-3-caso-4">
-      <div class="item-header">
-        <span class="item-num">#4</span>
-        <span class="item-text">Email falla silenciosamente</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details">
-        <div class="detail-row"><span class="detail-label">Accion:</span> Aprobar quiz con SendGrid mal configurado</div>
-        <div class="detail-row"><span class="detail-label">Esperado:</span> Certificado se crea igual, &quot;¡Aprobaste!&quot; se muestra, error logueado con `[academia]`</div>
-      </div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+      </div><div class="item-card" data-eje="3" data-num="2" data-verificador="QA" data-item-selector="eje-3-caso-2">
+        <div class="item-header">
+          <span class="item-num">#2</span>
+          <span class="item-text">Bypass evaluación sin progreso</span>
+          <span class="badge-qa">QA</span>
         </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="3" data-num="5" data-verificador="QA" data-item-selector="eje-3-caso-5">
-      <div class="item-header">
-        <span class="item-num">#5</span>
-        <span class="item-text">Certificado existente con `yaExiste`</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details">
-        <div class="detail-row"><span class="detail-label">Accion:</span> Forzar POST evaluación en colección ya certificada</div>
-        <div class="detail-row"><span class="detail-label">Esperado:</span> Devuelve `{ aprobado: true, yaExiste: true, codigo: &quot;PDT-...&quot; }` sin crear duplicado</div>
-      </div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Accion:</span> En consola: `POST /api/colecciones/&lt;id&gt;/evaluacion` con respuestas sin haber visto videos</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> 403 con mensaje &quot;Debés completar todos los videos antes de rendir la evaluación&quot;</div>
         </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="3" data-num="6" data-verificador="QA" data-item-selector="eje-3-caso-6">
-      <div class="item-header">
-        <span class="item-num">#6</span>
-        <span class="item-text">`aplicarNivel` falla</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details">
-        <div class="detail-row"><span class="detail-label">Accion:</span> Aprobar quiz cuando `aplicarNivel` tiene error interno</div>
-        <div class="detail-row"><span class="detail-label">Esperado:</span> Certificado se crea, respuesta 200, nivel se recalcula en próximo trigger</div>
-      </div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1" data-verificador="QA" data-item-selector="eje-4-item-1">
-      <div class="item-header">
-        <span class="item-text">`/taller/aprender/[id]` carga en &lt; 3s</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Network → recargar</div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+      </div><div class="item-card" data-eje="3" data-num="3" data-verificador="QA" data-item-selector="eje-3-caso-3">
+        <div class="item-header">
+          <span class="item-num">#3</span>
+          <span class="item-text">Último video no marcado manualmente</span>
+          <span class="badge-qa">QA</span>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="4" data-num="2" data-verificador="QA" data-item-selector="eje-4-item-2">
-      <div class="item-header">
-        <span class="item-text">Marcar video como visto responde en &lt; 1s</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details"><span class="detail-label">Metodo:</span> Click &quot;Marcar como visto&quot; → verificar actualización visual inmediata</div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Accion:</span> Ver todos los videos clickeando por la lista (sin usar &quot;Marcar como visto&quot;) → click &quot;Rendir&quot;</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> El onClick auto-marca los faltantes antes de abrir el quiz — no da 403</div>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="4" data-num="3" data-verificador="QA" data-item-selector="eje-4-item-3">
-      <div class="item-header">
-        <span class="item-text">Enviar quiz responde en &lt; 3s</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details"><span class="detail-label">Metodo:</span> Click &quot;Enviar respuestas&quot; → medir tiempo hasta resultado</div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="4" data-num="4" data-verificador="QA" data-item-selector="eje-4-item-4">
-      <div class="item-header">
-        <span class="item-text">Sin errores en consola del browser</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Console → revisar durante todo el flujo</div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+      </div><div class="item-card" data-eje="3" data-num="4" data-verificador="QA" data-item-selector="eje-3-caso-4">
+        <div class="item-header">
+          <span class="item-num">#4</span>
+          <span class="item-text">Email falla silenciosamente</span>
+          <span class="badge-qa">QA</span>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="4" data-num="5" data-verificador="QA" data-item-selector="eje-4-item-5">
-      <div class="item-header">
-        <span class="item-text">Funciona en móvil (responsive)</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Toggle device toolbar → verificar player + quiz</div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Accion:</span> Aprobar quiz con SendGrid mal configurado</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> Certificado se crea igual, &quot;¡Aprobaste!&quot; se muestra, error logueado con `[academia]`</div>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1" data-item-selector="eje-5-item-1">
-      <div class="item-header">
-        <span class="item-text">Gate visual: ícono candado amarillo + texto cuando faltan videos</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="5" data-num="2" data-item-selector="eje-5-item-2">
-      <div class="item-header">
-        <span class="item-text">Botón &quot;Rendir evaluación&quot; deshabilitado: opacity reducida, no clickeable</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+      </div><div class="item-card" data-eje="3" data-num="5" data-verificador="QA" data-item-selector="eje-3-caso-5">
+        <div class="item-header">
+          <span class="item-num">#5</span>
+          <span class="item-text">Certificado existente con `yaExiste`</span>
+          <span class="badge-qa">QA</span>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="5" data-num="3" data-item-selector="eje-5-item-3">
-      <div class="item-header">
-        <span class="item-text">Card aprobado: bg-green-50 border-green-200, texto verde</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Accion:</span> Forzar POST evaluación en colección ya certificada</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> Devuelve `{ aprobado: true, yaExiste: true, codigo: &quot;PDT-...&quot; }` sin crear duplicado</div>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="5" data-num="4" data-item-selector="eje-5-item-4">
-      <div class="item-header">
-        <span class="item-text">Card reprobado: bg-red-50 border-red-200, texto rojo</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="5" data-num="5" data-item-selector="eje-5-item-5">
-      <div class="item-header">
-        <span class="item-text">Card error 403: bg-red-50 con ícono Lock rojo + &quot;No podés rendir todavía&quot;</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+      </div><div class="item-card" data-eje="3" data-num="6" data-verificador="QA" data-item-selector="eje-3-caso-6">
+        <div class="item-header">
+          <span class="item-num">#6</span>
+          <span class="item-text">`aplicarNivel` falla</span>
+          <span class="badge-qa">QA</span>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="5" data-num="6" data-item-selector="eje-5-item-6">
-      <div class="item-header">
-        <span class="item-text">Código de certificado en fuente mono (font-mono)</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Accion:</span> Aprobar quiz cuando `aplicarNivel` tiene error interno</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> Certificado se crea, respuesta 200, nivel se recalcula en próximo trigger</div>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="5" data-num="7" data-item-selector="eje-5-item-7">
-      <div class="item-header">
-        <span class="item-text">Barra de progreso en brand-blue sobre gray-200</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="5" data-num="8" data-item-selector="eje-5-item-8">
-      <div class="item-header">
-        <span class="item-text">Botón &quot;Intentar de nuevo&quot; en text-brand-blue hover:underline</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+      </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1" data-verificador="QA" data-item-selector="eje-4-item-1">
+        <div class="item-header">
+          <span class="item-text">`/taller/aprender/[id]` carga en &lt; 3s</span>
+          <span class="badge-qa">QA</span>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="5" data-num="9" data-item-selector="eje-5-item-9">
-      <div class="item-header">
-        <span class="item-text">Tipografías consistentes (Overpass para títulos)</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        <div class="item-badges"></div>
+        <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Network → recargar</div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="5" data-num="10" data-item-selector="eje-5-item-10">
-      <div class="item-header">
-        <span class="item-text">Textos en español argentino</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+      </div><div class="item-card compact" data-eje="4" data-num="2" data-verificador="QA" data-item-selector="eje-4-item-2">
+        <div class="item-header">
+          <span class="item-text">Marcar video como visto responde en &lt; 1s</span>
+          <span class="badge-qa">QA</span>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div></div><div class="section" id="resumen-issues">
+        <div class="item-badges"></div>
+        <div class="item-details"><span class="detail-label">Metodo:</span> Click &quot;Marcar como visto&quot; → verificar actualización visual inmediata</div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="4" data-num="3" data-verificador="QA" data-item-selector="eje-4-item-3">
+        <div class="item-header">
+          <span class="item-text">Enviar quiz responde en &lt; 3s</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details"><span class="detail-label">Metodo:</span> Click &quot;Enviar respuestas&quot; → medir tiempo hasta resultado</div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="4" data-num="4" data-verificador="QA" data-item-selector="eje-4-item-4">
+        <div class="item-header">
+          <span class="item-text">Sin errores en consola del browser</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Console → revisar durante todo el flujo</div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="4" data-num="5" data-verificador="QA" data-item-selector="eje-4-item-5">
+        <div class="item-header">
+          <span class="item-text">Funciona en móvil (responsive)</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details"><span class="detail-label">Metodo:</span> DevTools → Toggle device toolbar → verificar player + quiz</div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1" data-item-selector="eje-5-item-1">
+        <div class="item-header">
+          <span class="item-text">Gate visual: ícono candado amarillo + texto cuando faltan videos</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="2" data-item-selector="eje-5-item-2">
+        <div class="item-header">
+          <span class="item-text">Botón &quot;Rendir evaluación&quot; deshabilitado: opacity reducida, no clickeable</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="3" data-item-selector="eje-5-item-3">
+        <div class="item-header">
+          <span class="item-text">Card aprobado: bg-green-50 border-green-200, texto verde</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="4" data-item-selector="eje-5-item-4">
+        <div class="item-header">
+          <span class="item-text">Card reprobado: bg-red-50 border-red-200, texto rojo</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="5" data-item-selector="eje-5-item-5">
+        <div class="item-header">
+          <span class="item-text">Card error 403: bg-red-50 con ícono Lock rojo + &quot;No podés rendir todavía&quot;</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="6" data-item-selector="eje-5-item-6">
+        <div class="item-header">
+          <span class="item-text">Código de certificado en fuente mono (font-mono)</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="7" data-item-selector="eje-5-item-7">
+        <div class="item-header">
+          <span class="item-text">Barra de progreso en brand-blue sobre gray-200</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="8" data-item-selector="eje-5-item-8">
+        <div class="item-header">
+          <span class="item-text">Botón &quot;Intentar de nuevo&quot; en text-brand-blue hover:underline</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="9" data-item-selector="eje-5-item-9">
+        <div class="item-header">
+          <span class="item-text">Tipografías consistentes (Overpass para títulos)</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="10" data-item-selector="eje-5-item-10">
+        <div class="item-header">
+          <span class="item-text">Textos en español argentino</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div></div><div class="section" id="resumen-issues">
     <h2>Resumen de issues abiertos</h2>
     <textarea class="large-textarea" id="textarea-resumen-issues" placeholder="Listar issues abiertos con # y descripcion breve" rows="4"></textarea>
   </div><div class="section" id="notas-auditor">

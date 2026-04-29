@@ -689,218 +689,218 @@
         </div>
       </div>
     </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1" data-verificador="DEV" data-item-selector="eje-3-caso-1">
-      <div class="item-header">
-        <span class="item-num">#1</span>
-        <span class="item-text">Seed en produccion</span>
-        <span class="badge-dev">DEV</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details">
-        <div class="detail-row"><span class="detail-label">Accion:</span> Verificar logs de build de produccion en Vercel</div>
-        <div class="detail-row"><span class="detail-label">Esperado:</span> No debe aparecer `prisma db seed` en los logs</div>
-      </div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        <div class="item-header">
+          <span class="item-num">#1</span>
+          <span class="item-text">Seed en produccion</span>
+          <span class="badge-dev">DEV</span>
         </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="3" data-num="2" data-verificador="DEV" data-item-selector="eje-3-caso-2">
-      <div class="item-header">
-        <span class="item-num">#2</span>
-        <span class="item-text">Migraciones automaticas</span>
-        <span class="badge-dev">DEV</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details">
-        <div class="detail-row"><span class="detail-label">Accion:</span> Verificar logs de build en Vercel</div>
-        <div class="detail-row"><span class="detail-label">Esperado:</span> `prisma migrate deploy` aparece en los logs de build</div>
-      </div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Accion:</span> Verificar logs de build de produccion en Vercel</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> No debe aparecer `prisma db seed` en los logs</div>
         </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="3" data-num="3" data-verificador="QA" data-item-selector="eje-3-caso-3">
-      <div class="item-header">
-        <span class="item-num">#3</span>
-        <span class="item-text">NEXTAUTH_URL en Preview</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details">
-        <div class="detail-row"><span class="detail-label">Accion:</span> Loguearse en Preview</div>
-        <div class="detail-row"><span class="detail-label">Esperado:</span> Login funciona sin error de callback URL</div>
-      </div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="3" data-num="4" data-verificador="DEV" data-item-selector="eje-3-caso-4">
-      <div class="item-header">
-        <span class="item-num">#4</span>
-        <span class="item-text">Banner en desarrollo local</span>
-        <span class="badge-dev">DEV</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details">
-        <div class="detail-row"><span class="detail-label">Accion:</span> Correr `npm run dev` localmente</div>
-        <div class="detail-row"><span class="detail-label">Esperado:</span> No debe aparecer banner (VERCEL_ENV no existe localmente)</div>
-      </div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+      </div><div class="item-card" data-eje="3" data-num="2" data-verificador="DEV" data-item-selector="eje-3-caso-2">
+        <div class="item-header">
+          <span class="item-num">#2</span>
+          <span class="item-text">Migraciones automaticas</span>
+          <span class="badge-dev">DEV</span>
         </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="3" data-num="5" data-verificador="QA" data-item-selector="eje-3-caso-5">
-      <div class="item-header">
-        <span class="item-num">#5</span>
-        <span class="item-text">Modificar datos en Preview no afecta prod</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details">
-        <div class="detail-row"><span class="detail-label">Accion:</span> Crear/editar datos desde Preview</div>
-        <div class="detail-row"><span class="detail-label">Esperado:</span> Verificar que los mismos datos en produccion no cambiaron</div>
-      </div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Accion:</span> Verificar logs de build en Vercel</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> `prisma migrate deploy` aparece en los logs de build</div>
         </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1" data-verificador="QA" data-item-selector="eje-4-item-1">
-      <div class="item-header">
-        <span class="item-text">Preview carga en menos de 3 segundos</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details"><span class="detail-label">Metodo:</span> Abrir DevTools -&gt; Network -&gt; recargar</div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="4" data-num="2" data-verificador="QA" data-item-selector="eje-4-item-2">
-      <div class="item-header">
-        <span class="item-text">Production carga en menos de 3 segundos</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details"><span class="detail-label">Metodo:</span> Abrir DevTools -&gt; Network -&gt; recargar</div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+      </div><div class="item-card" data-eje="3" data-num="3" data-verificador="QA" data-item-selector="eje-3-caso-3">
+        <div class="item-header">
+          <span class="item-num">#3</span>
+          <span class="item-text">NEXTAUTH_URL en Preview</span>
+          <span class="badge-qa">QA</span>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="4" data-num="3" data-verificador="QA" data-item-selector="eje-4-item-3">
-      <div class="item-header">
-        <span class="item-text">Sin errores en consola del browser (Preview)</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools -&gt; Console -&gt; revisar</div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Accion:</span> Loguearse en Preview</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> Login funciona sin error de callback URL</div>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="4" data-num="4" data-verificador="QA" data-item-selector="eje-4-item-4">
-      <div class="item-header">
-        <span class="item-text">Sin errores en consola del browser (Production)</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details"><span class="detail-label">Metodo:</span> DevTools -&gt; Console -&gt; revisar</div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1" data-item-selector="eje-5-item-1">
-      <div class="item-header">
-        <span class="item-text">Banner de Preview es amarillo (bg-amber-500) y legible</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+      </div><div class="item-card" data-eje="3" data-num="4" data-verificador="DEV" data-item-selector="eje-3-caso-4">
+        <div class="item-header">
+          <span class="item-num">#4</span>
+          <span class="item-text">Banner en desarrollo local</span>
+          <span class="badge-dev">DEV</span>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="5" data-num="2" data-item-selector="eje-5-item-2">
-      <div class="item-header">
-        <span class="item-text">Banner no interfiere con el layout del resto de la pagina</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Accion:</span> Correr `npm run dev` localmente</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> No debe aparecer banner (VERCEL_ENV no existe localmente)</div>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="5" data-num="3" data-item-selector="eje-5-item-3">
-      <div class="item-header">
-        <span class="item-text">Banner tiene texto centrado y tamano apropiado (text-xs)</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card compact" data-eje="5" data-num="4" data-item-selector="eje-5-item-4">
-      <div class="item-header">
-        <span class="item-text">Production se ve identica a como se veia antes del cambio</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+      </div><div class="item-card" data-eje="3" data-num="5" data-verificador="QA" data-item-selector="eje-3-caso-5">
+        <div class="item-header">
+          <span class="item-num">#5</span>
+          <span class="item-text">Modificar datos en Preview no afecta prod</span>
+          <span class="badge-qa">QA</span>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div></div><div class="section" id="resumen-issues">
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Accion:</span> Crear/editar datos desde Preview</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> Verificar que los mismos datos en produccion no cambiaron</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1" data-verificador="QA" data-item-selector="eje-4-item-1">
+        <div class="item-header">
+          <span class="item-text">Preview carga en menos de 3 segundos</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details"><span class="detail-label">Metodo:</span> Abrir DevTools -&gt; Network -&gt; recargar</div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="4" data-num="2" data-verificador="QA" data-item-selector="eje-4-item-2">
+        <div class="item-header">
+          <span class="item-text">Production carga en menos de 3 segundos</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details"><span class="detail-label">Metodo:</span> Abrir DevTools -&gt; Network -&gt; recargar</div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="4" data-num="3" data-verificador="QA" data-item-selector="eje-4-item-3">
+        <div class="item-header">
+          <span class="item-text">Sin errores en consola del browser (Preview)</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details"><span class="detail-label">Metodo:</span> DevTools -&gt; Console -&gt; revisar</div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="4" data-num="4" data-verificador="QA" data-item-selector="eje-4-item-4">
+        <div class="item-header">
+          <span class="item-text">Sin errores en consola del browser (Production)</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details"><span class="detail-label">Metodo:</span> DevTools -&gt; Console -&gt; revisar</div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1" data-item-selector="eje-5-item-1">
+        <div class="item-header">
+          <span class="item-text">Banner de Preview es amarillo (bg-amber-500) y legible</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="2" data-item-selector="eje-5-item-2">
+        <div class="item-header">
+          <span class="item-text">Banner no interfiere con el layout del resto de la pagina</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="3" data-item-selector="eje-5-item-3">
+        <div class="item-header">
+          <span class="item-text">Banner tiene texto centrado y tamano apropiado (text-xs)</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="4" data-item-selector="eje-5-item-4">
+        <div class="item-header">
+          <span class="item-text">Production se ve identica a como se veia antes del cambio</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div></div><div class="section" id="resumen-issues">
     <h2>Resumen de issues abiertos</h2>
     <textarea class="large-textarea" id="textarea-resumen-issues" placeholder="Listar issues abiertos con # y descripcion breve" rows="4"></textarea>
   </div><div class="section" id="notas-auditor">
