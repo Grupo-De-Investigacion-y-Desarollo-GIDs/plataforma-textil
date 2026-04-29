@@ -3,6 +3,9 @@
 ## 2026-04-29
 
 ### Gerardo Breard
+- **13:09** `d43e0fd` — docs: agregar verificacion_dev al QA Q-01
+  - `.claude/auditorias/QA_v3-tests-e2e.md`
+
 - **01:09** `5a2929e` — docs: agregar G-01 al V4 backlog (filtro pendientes dashboard ESTADO)
   - `.claude/specs/V4_BACKLOG.md`
 
