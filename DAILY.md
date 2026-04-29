@@ -3,6 +3,39 @@
 ## 2026-04-29
 
 ### Gerardo Breard
+- **17:31** `be284c8` — feat: v3-errores-consistentes-apis (Q-03) — formato de error estructurado en APIs
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-errores-consistentes-apis.md`
+  - `.claude/auditorias/REVIEW_v3-errores-consistentes-apis.md`
+  - `.claude/specs/V4_BACKLOG.md`
+  - `src/__tests__/api-client.test.ts`
+  - `src/__tests__/api-errors.test.ts`
+  - `src/__tests__/revocar-validacion.test.ts`
+  - `src/app/(auth)/registro/page.tsx`
+  - `src/app/(marca)/marca/pedidos/nuevo/nuevo-pedido-form.tsx`
+  - `src/app/api/README.md`
+  - `src/app/api/auth/registro/route.ts`
+  - `src/app/api/chat/route.ts`
+  - `src/app/api/cotizaciones/[id]/route.ts`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/app/api/feedback/route.ts`
+  - `src/app/api/pedidos/[id]/ordenes/route.ts`
+  - `src/app/api/pedidos/[id]/route.ts`
+  - `src/app/api/pedidos/route.ts`
+  - `src/app/api/talleres/me/route.ts`
+  - `src/app/api/validaciones/[id]/route.ts`
+  - `src/app/api/validaciones/[id]/upload/route.ts`
+  - `src/compartido/lib/api-client.ts`
+  - `src/compartido/lib/api-errors.ts`
+  - `src/compartido/lib/upload-imagen.ts`
+  - `src/marca/componentes/aceptar-cotizacion.tsx`
+  - `src/marca/componentes/cancelar-pedido.tsx`
+  - `src/marca/componentes/publicar-pedido.tsx`
+  - `src/marca/componentes/rechazar-cotizacion.tsx`
+  - `src/taller/componentes/asistente-chat.tsx`
+  - `src/taller/componentes/cotizar-form.tsx`
+  - `src/taller/componentes/orden-actions.tsx`
+
 - **16:36** `c1e477d` — docs: agregar Bloque H (mercado y transparencia) y Bloque I (servicios y catálogo) al V4_BACKLOG
   - `.claude/specs/V4_BACKLOG.md`
 
