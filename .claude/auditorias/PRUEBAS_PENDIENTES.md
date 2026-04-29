@@ -138,3 +138,11 @@ Este archivo acumula TODAS las verificaciones manuales que requieren ojos humano
 - [ ] Ejecutar `scripts/verificar-migracion-d02.sql` en Supabase SQL editor
 - [ ] Ejecutar `npx tsx tools/recalcular-niveles.ts --dry-run` para verificar impacto
 - [ ] Documentar resultados en REVIEW_v3-tipos-documento-db.md
+
+---
+
+## Nota tecnica: E2E tests crean issues reales en GitHub
+
+Los tests E2E de rate limiting (S-02) envian requests POST a `/api/feedback` que crea issues reales en GitHub. Cada corrida de CI genera ~11 issues basura con titulo "Test rate limit intento N". Esto contamina el panel de issues y el conteo del QA index.
+
+**Solucion pendiente (Bloque 4 o V4):** cambiar el E2E de rate limiting para que use un endpoint que no cree issues reales, o mockear la creacion de issues en el handler de feedback cuando detecta body invalido.

@@ -13,25 +13,25 @@ verificacion_dev: Completada por Gerardo el 2026-04-28
 ## Eje 1 — Funcionalidad core
 
 ### 1.1 Puntos por tipo de documento configurables
-- [ ] Login como ESTADO (anabelen.torres@pdt.org.ar / pdt2026)
+- [x] Login como ESTADO y ver puntos por documento (10/15/20) — ✅ Gerardo 28/4
 - [ ] Ir a /estado/documentos
 - [ ] Verificar que cada tipo muestra sus puntos (ej: CUIT 15 pts, Empleados 20 pts)
-- [ ] Editar un tipo → cambiar puntos de 15 a 25 → guardar
+- [x] Editar puntos de un documento (cambiar ART de 15 a 18 y volver a 15) — ✅ Gerardo 28/4
 - [ ] Verificar que el cambio se refleja en la lista
 
 ### 1.2 Configuracion de niveles
-- [ ] Ir a /estado/configuracion-niveles
+- [x] Acceder a /estado/configuracion-niveles y ver las 3 cards — ✅ Gerardo 28/4
 - [ ] Verificar 3 cards: BRONCE (0 pts), PLATA (50 pts), ORO (100 pts)
-- [ ] Click editar en PLATA → ver formulario con puntos minimos, AFIP, certificados
+- [x] Editar regla PLATA y abrir el modal — ✅ Gerardo 28/4
 - [ ] Click "Ver impacto del cambio" → ver preview de talleres afectados
 
 ### 1.3 Preview de impacto antes de guardar
 - [ ] Editar regla PLATA: subir puntos minimos a 200
-- [ ] Click "Ver impacto" → debe mostrar que talleres PLATA bajarian a BRONCE
+- [x] Preview de impacto muestra 'Cooperativa Hilos del Sur: PLATA -> BRONCE' — ✅ Gerardo 28/4
 - [ ] Cancelar sin guardar → verificar que no se aplicaron cambios
 
 ### 1.4 Guardar cambio de regla
-- [ ] Editar regla PLATA: cambiar un valor menor (ej: descripcion)
+- [x] Revertir cambio de ART a 15 — ✅ Gerardo 28/4
 - [ ] Guardar → toast de confirmacion
 - [ ] Recargar pagina → cambio persistido
 

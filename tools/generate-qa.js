@@ -25,12 +25,39 @@ function normalizar(text) {
 /**
  * Parsea metadata del header del .md (líneas antes del primer ##)
  */
+/**
+ * Parsea YAML frontmatter delimitado por --- al inicio del archivo.
+ * Retorna objeto con los campos encontrados, o null si no hay frontmatter.
+ */
+function parsearFrontmatter(text) {
+  const match = text.match(/^---\n([\s\S]*?)\n---/)
+  if (!match) return null
+  const fm = {}
+  for (const line of match[1].split('\n')) {
+    const kv = line.match(/^(\w[\w_]*):\s*"?(.+?)"?\s*$/)
+    if (kv) fm[kv[1]] = kv[2]
+  }
+  return fm
+}
+
 function parsearMetadata(header) {
   const meta = { titulo: '', spec: '', commit: '', url: '', fecha: '', auditor: '', incluyeEje6: false, perfiles: [] }
 
+  // Intentar YAML frontmatter primero
+  const fm = parsearFrontmatter(header)
+  if (fm) {
+    if (fm.titulo) meta.titulo = fm.titulo
+    if (fm.spec) meta.spec = fm.spec
+    if (fm.fecha) meta.fecha = fm.fecha
+    if (fm.autor) meta.auditor = fm.autor
+    if (fm.version) meta.commit = fm.version
+  }
+
+  // Titulo desde # QA: ... (funciona con y sin frontmatter)
   const tituloMatch = header.match(/^#\s+QA:\s*(.+)$/m)
   if (tituloMatch) meta.titulo = tituloMatch[1].trim()
 
+  // Fallback inline markdown (sobreescribe frontmatter si ambos existen)
   const specMatch = header.match(/\*\*Spec:\*\*\s*`([^`]+)`/m)
   if (specMatch) meta.spec = specMatch[1].trim()
 
@@ -297,20 +324,37 @@ function badgeVerificador(verificador) {
   return `<span class="${cls}">${escapeHtml(v)}</span>`
 }
 
-function renderEje1(contenido) {
-  const filas = parsearTabla(contenido)
-  let html = `<div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2>`
+/**
+ * Parsea checkboxes agrupados por headers ### de un contenido de Eje.
+ * Retorna items con formato compatible con renderItemCard.
+ */
+function parsearCheckboxes(contenido) {
+  const items = []
+  let num = 0
+  for (const linea of contenido.split('\n')) {
+    const cbMatch = linea.match(/^-\s*\[([ xX])\]\s*(.+)/)
+    if (cbMatch) {
+      num++
+      const checked = cbMatch[1].toLowerCase() === 'x'
+      const texto = cbMatch[2].trim()
+      const esDev = texto.includes('✅ Gerardo') || texto.includes('DEV')
+      const verificador = esDev ? 'DEV' : 'QA'
+      // Determinar status preestablecido
+      let preStatus = ''
+      if (checked) preStatus = '✅'
+      items.push({ num, texto, verificador, preStatus })
+    }
+  }
+  return items
+}
 
-  for (let i = 0; i < filas.length; i++) {
-    const f = filas[i]
-    const num = f['#'] || (i + 1)
-    const criterio = f.criterio || ''
-    const verificador = f.verificador || 'QA'
-    const dataVerif = verificador.includes('DEV') ? 'DEV' : 'QA'
-    html += `<div class="item-card" data-eje="1" data-num="${num}" data-verificador="${dataVerif}" data-item-selector="eje-1-item-${num}">
+function renderItemCard(ejeId, num, texto, verificador, preStatus) {
+  const dataVerif = verificador.includes('DEV') ? 'DEV' : 'QA'
+  const preChecked = preStatus === '✅' ? ' data-pre-status="✅"' : ''
+  return `<div class="item-card" data-eje="${ejeId}" data-num="${num}" data-verificador="${dataVerif}" data-item-selector="eje-${ejeId}-item-${num}"${preChecked}>
       <div class="item-header">
         <span class="item-num">#${escapeHtml(String(num))}</span>
-        <span class="item-text">${escapeHtml(criterio)}</span>
+        <span class="item-text">${escapeHtml(texto)}</span>
         ${badgeVerificador(verificador)}
       </div>
       <div class="item-badges"></div>
@@ -324,7 +368,29 @@ function renderEje1(contenido) {
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
     </div>`
+}
+
+function renderEje1(contenido) {
+  const filas = parsearTabla(contenido)
+  let html = `<div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2>`
+
+  if (filas.length > 0) {
+    // Formato tabla (S-01, S-02, S-03, S-04, I-01)
+    for (let i = 0; i < filas.length; i++) {
+      const f = filas[i]
+      const num = f['#'] || (i + 1)
+      const criterio = f.criterio || ''
+      const verificador = f.verificador || 'QA'
+      html += renderItemCard('1', num, criterio, verificador, '')
+    }
+  } else {
+    // Fallback: checkboxes sueltos (D-01, D-02)
+    const items = parsearCheckboxes(contenido)
+    for (const item of items) {
+      html += renderItemCard('1', item.num, item.texto, item.verificador, item.preStatus)
+    }
   }
+
   html += `</div>`
   return html
 }
@@ -332,6 +398,16 @@ function renderEje1(contenido) {
 function renderEje2(contenido) {
   const pasos = parsearPasos(contenido)
   let html = `<div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2>`
+
+  if (pasos.length === 0) {
+    // Fallback: checkboxes
+    const items = parsearCheckboxes(contenido)
+    for (const item of items) {
+      html += renderItemCard('2', item.num, item.texto, item.verificador, item.preStatus)
+    }
+    html += `</div>`
+    return html
+  }
 
   for (const p of pasos) {
     html += `<div class="paso-card" data-eje="2" data-num="${p.numero}" data-item-selector="eje-2-paso-${p.numero}">
@@ -370,33 +446,41 @@ function renderEje3(contenido) {
   const filas = parsearTabla(contenido)
   let html = `<div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2>`
 
-  for (let i = 0; i < filas.length; i++) {
-    const f = filas[i]
-    const num = f['#'] || (i + 1)
-    const verificador3 = f.verificador || 'QA'
-    const dataVerif3 = verificador3.includes('DEV') ? 'DEV' : 'QA'
-    html += `<div class="item-card" data-eje="3" data-num="${num}" data-verificador="${dataVerif3}" data-item-selector="eje-3-caso-${num}">
-      <div class="item-header">
-        <span class="item-num">#${escapeHtml(String(num))}</span>
-        <span class="item-text">${escapeHtml(f.caso || '')}</span>
-        ${badgeVerificador(verificador3)}
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-details">
-        ${f.accion ? `<div class="detail-row"><span class="detail-label">Accion:</span> ${escapeHtml(f.accion)}</div>` : ''}
-        ${f.esperado ? `<div class="detail-row"><span class="detail-label">Esperado:</span> ${escapeHtml(f.esperado)}</div>` : ''}
-      </div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+  if (filas.length > 0) {
+    for (let i = 0; i < filas.length; i++) {
+      const f = filas[i]
+      const num = f['#'] || (i + 1)
+      const verificador3 = f.verificador || 'QA'
+      const dataVerif3 = verificador3.includes('DEV') ? 'DEV' : 'QA'
+      html += `<div class="item-card" data-eje="3" data-num="${num}" data-verificador="${dataVerif3}" data-item-selector="eje-3-caso-${num}">
+        <div class="item-header">
+          <span class="item-num">#${escapeHtml(String(num))}</span>
+          <span class="item-text">${escapeHtml(f.caso || '')}</span>
+          ${badgeVerificador(verificador3)}
         </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div>`
+        <div class="item-badges"></div>
+        <div class="item-details">
+          ${f.accion ? `<div class="detail-row"><span class="detail-label">Accion:</span> ${escapeHtml(f.accion)}</div>` : ''}
+          ${f.esperado ? `<div class="detail-row"><span class="detail-label">Esperado:</span> ${escapeHtml(f.esperado)}</div>` : ''}
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>`
+    }
+  } else {
+    const items = parsearCheckboxes(contenido)
+    for (const item of items) {
+      html += renderItemCard('3', item.num, item.texto, item.verificador, item.preStatus)
+    }
   }
+
   html += `</div>`
   return html
 }
@@ -405,27 +489,35 @@ function renderEje4(contenido) {
   const filas = parsearTabla(contenido)
   let html = `<div class="section" id="eje4"><h2>Eje 4 — Performance</h2>`
 
-  for (let i = 0; i < filas.length; i++) {
-    const f = filas[i]
-    const verificador4 = f.verificador || 'QA'
-    const dataVerif4 = verificador4.includes('DEV') ? 'DEV' : 'QA'
-    html += `<div class="item-card compact" data-eje="4" data-num="${i + 1}" data-verificador="${dataVerif4}" data-item-selector="eje-4-item-${i + 1}">
-      <div class="item-header">
-        <span class="item-text">${escapeHtml(f.verificacion || '')}</span>
-        ${badgeVerificador(verificador4)}
-      </div>
-      <div class="item-badges"></div>
-      ${f.metodo ? `<div class="item-details"><span class="detail-label">Metodo:</span> ${escapeHtml(f.metodo)}</div>` : ''}
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+  if (filas.length > 0) {
+    for (let i = 0; i < filas.length; i++) {
+      const f = filas[i]
+      const verificador4 = f.verificador || 'QA'
+      const dataVerif4 = verificador4.includes('DEV') ? 'DEV' : 'QA'
+      html += `<div class="item-card compact" data-eje="4" data-num="${i + 1}" data-verificador="${dataVerif4}" data-item-selector="eje-4-item-${i + 1}">
+        <div class="item-header">
+          <span class="item-text">${escapeHtml(f.verificacion || '')}</span>
+          ${badgeVerificador(verificador4)}
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div>`
+        <div class="item-badges"></div>
+        ${f.metodo ? `<div class="item-details"><span class="detail-label">Metodo:</span> ${escapeHtml(f.metodo)}</div>` : ''}
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>`
+    }
+  } else {
+    const items = parsearCheckboxes(contenido)
+    for (const item of items) {
+      html += renderItemCard('4', item.num, item.texto, item.verificador, item.preStatus)
+    }
   }
+
   html += `</div>`
   return html
 }
@@ -434,23 +526,31 @@ function renderEje5(contenido) {
   const filas = parsearTabla(contenido)
   let html = `<div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2>`
 
-  for (let i = 0; i < filas.length; i++) {
-    const f = filas[i]
-    html += `<div class="item-card compact" data-eje="5" data-num="${i + 1}" data-item-selector="eje-5-item-${i + 1}">
-      <div class="item-header">
-        <span class="item-text">${escapeHtml(f.verificacion || '')}</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+  if (filas.length > 0) {
+    for (let i = 0; i < filas.length; i++) {
+      const f = filas[i]
+      html += `<div class="item-card compact" data-eje="5" data-num="${i + 1}" data-item-selector="eje-5-item-${i + 1}">
+        <div class="item-header">
+          <span class="item-text">${escapeHtml(f.verificacion || '')}</span>
         </div>
-        <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div>`
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>`
+    }
+  } else {
+    const items = parsearCheckboxes(contenido)
+    for (const item of items) {
+      html += renderItemCard('5', item.num, item.texto, item.verificador, item.preStatus)
+    }
   }
+
   html += `</div>`
   return html
 }
@@ -490,26 +590,50 @@ function renderEje6(contenido) {
       <h2>${escapeHtml(titulo)} <span class="collapse-icon">&#9654;</span></h2>
       <div class="collapse-content">`
 
-    for (let i = 0; i < filas.length; i++) {
-      const f = filas[i]
-      const num = f['#'] || (i + 1)
-      const pregunta = f.pregunta || ''
-      html += `<div class="item-card" data-eje="6" data-num="${num}" data-verificador="perfil" data-perfil="${escapeHtml(perfil)}" data-item-selector="eje-6-${escapeHtml(perfil)}-${num}">
-        <div class="item-header">
-          <span class="item-num">#${escapeHtml(String(num))}</span>
-          <span class="item-text">${escapeHtml(pregunta)}</span>
-          <span class="badge-perfil">${escapeHtml(perfil)}</span>
-        </div>
-        <div class="item-badges"></div>
-        <div class="item-controls">
-          <div class="status-btns">
-            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+    // Items de tabla (formato original)
+    if (filas.length > 0) {
+      for (let i = 0; i < filas.length; i++) {
+        const f = filas[i]
+        const num = f['#'] || (i + 1)
+        const pregunta = f.pregunta || ''
+        html += `<div class="item-card" data-eje="6" data-num="${num}" data-verificador="perfil" data-perfil="${escapeHtml(perfil)}" data-item-selector="eje-6-${escapeHtml(perfil)}-${num}">
+          <div class="item-header">
+            <span class="item-num">#${escapeHtml(String(num))}</span>
+            <span class="item-text">${escapeHtml(pregunta)}</span>
+            <span class="badge-perfil">${escapeHtml(perfil)}</span>
           </div>
-          <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
-          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-        </div>
-      </div>`
+          <div class="item-badges"></div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div>`
+      }
+    } else {
+      // Fallback: checkboxes bajo cada perfil
+      const cbItems = parsearCheckboxes(restContent)
+      for (const item of cbItems) {
+        html += `<div class="item-card" data-eje="6" data-num="${item.num}" data-verificador="perfil" data-perfil="${escapeHtml(perfil)}" data-item-selector="eje-6-${escapeHtml(perfil)}-${item.num}">
+          <div class="item-header">
+            <span class="item-num">#${escapeHtml(String(item.num))}</span>
+            <span class="item-text">${escapeHtml(item.texto)}</span>
+            <span class="badge-perfil">${escapeHtml(perfil)}</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div>`
+      }
     }
     html += `</div></div>`
   }
@@ -1437,6 +1561,22 @@ function generarHtml(mdPath) {
  * Busca en tablas (Eje 1, 3, 4, 5) y pasos (Eje 2).
  * Retorna: { dev: { total, ok, bug }, qa: { total, ok, bug }, total, verified }
  */
+/**
+ * Determina si un resultado de tabla/checkbox cuenta como "verificado".
+ * Acepta: ok, ✅, texto que empiece con ✅, "verificado".
+ * Rechaza: vacío, —, n/a, tbd, pendiente.
+ */
+function esResultadoVerificado(resultado) {
+  if (!resultado) return false
+  const r = resultado.trim().toLowerCase()
+  if (!r || r === '—' || r === '-' || r === 'n/a' || r === 'tbd' || r === 'pendiente' || r === '[ ]') return false
+  if (r === 'ok' || r.startsWith('ok ') || r.startsWith('ok—') || r.startsWith('ok,')) return 'ok'
+  if (resultado.trim().startsWith('✅') || r.startsWith('verificado')) return 'ok'
+  if (r === 'bug' || r === 'bloqueante') return 'bug'
+  // Cualquier otro texto no vacío y no-pendiente = verificado
+  return 'ok'
+}
+
 function parsearProgreso(mdContent) {
   const stats = {
     dev: { total: 0, ok: 0, bug: 0 },
@@ -1444,38 +1584,37 @@ function parsearProgreso(mdContent) {
   }
 
   const lineas = mdContent.split('\n')
+  let enChecklist = false
 
   for (let i = 0; i < lineas.length; i++) {
     const linea = lineas[i]
 
-    // Tablas: | ... | DEV/QA | resultado | ... |
-    // Detectar filas de tabla con contenido (no headers ni separadores)
+    // Detectar seccion "Checklist de cierre" — no contar sus checkboxes
+    if (linea.match(/^##\s+/)) {
+      enChecklist = normalizar(linea).includes('checklist')
+    }
+
+    // Tablas: | # | ... | DEV/QA | resultado | ... |
     const tablaMatch = linea.match(/^\|\s*\d+\s*\|.*\|\s*(DEV|QA)\s*\|\s*(.*?)\s*\|/)
     if (tablaMatch) {
       const verificador = tablaMatch[1].toLowerCase()
-      const resultado = tablaMatch[2].trim().toLowerCase()
+      const resultado = tablaMatch[2].trim()
       const bucket = verificador === 'dev' ? stats.dev : stats.qa
       bucket.total++
-      if (resultado === 'ok') bucket.ok++
-      else if (resultado === 'bug' || resultado === 'bloqueante') bucket.bug++
-      continue
-    }
-
-    // Eje 4 (Performance): | ... | Verificador | Resultado | — sin # al inicio
-    const perfMatch = linea.match(/^\|\s*\d+\s*\|.*\|\s*(DEV|QA)\s*\|\s*(.*?)\s*\|/)
-    if (perfMatch) {
-      // Already caught by tablaMatch above
+      const tipo = esResultadoVerificado(resultado)
+      if (tipo === 'ok') bucket.ok++
+      else if (tipo === 'bug') bucket.bug++
       continue
     }
 
     // Eje 5 (Consistencia visual): | Verificacion | Resultado | Notas | — sin verificador, cuenta como QA
-    if (linea.match(/^\|[^|]+\|\s*(ok|bug|bloqueante)?\s*\|[^|]*\|$/) && !linea.match(/Resultado|---/)) {
+    if (linea.match(/^\|[^|]+\|[^|]+\|[^|]*\|$/) && !linea.match(/Resultado|Verificacion|---/i)) {
       const resMatch = linea.match(/^\|[^|]+\|\s*(.*?)\s*\|[^|]*\|$/)
       if (resMatch) {
-        const resultado = resMatch[1].trim().toLowerCase()
         stats.qa.total++
-        if (resultado === 'ok') stats.qa.ok++
-        else if (resultado === 'bug' || resultado === 'bloqueante') stats.qa.bug++
+        const tipo = esResultadoVerificado(resMatch[1].trim())
+        if (tipo === 'ok') stats.qa.ok++
+        else if (tipo === 'bug') stats.qa.bug++
       }
       continue
     }
@@ -1486,16 +1625,29 @@ function parsearProgreso(mdContent) {
       const verificador = pasoVerMatch[1].toLowerCase()
       const bucket = verificador === 'dev' ? stats.dev : stats.qa
       bucket.total++
-      // Buscar resultado en las siguientes lineas
       for (let j = i + 1; j < Math.min(i + 5, lineas.length); j++) {
         const resMatch = lineas[j].match(/^-\s*\*\*Resultado:\*\*\s*(.*)/)
         if (resMatch) {
-          const resultado = resMatch[1].trim().toLowerCase()
-          if (resultado === 'ok' || resultado.startsWith('ok')) bucket.ok++
-          else if (resultado === 'bug' || resultado === 'bloqueante') bucket.bug++
+          const tipo = esResultadoVerificado(resMatch[1].trim())
+          if (tipo === 'ok') bucket.ok++
+          else if (tipo === 'bug') bucket.bug++
           break
         }
       }
+      continue
+    }
+
+    // Checkboxes sueltos: - [x] texto / - [ ] texto
+    // Solo contar si NO estamos en seccion Checklist de cierre y NO es un Resultado inline
+    const checkboxMatch = linea.match(/^-\s*\[([ xX])\]\s*(.+)/)
+    if (checkboxMatch && !enChecklist && !linea.includes('**Resultado:**')) {
+      const checked = checkboxMatch[1].toLowerCase() === 'x'
+      const texto = checkboxMatch[2]
+      const esDev = texto.includes('✅ Gerardo') || texto.includes('DEV')
+      const bucket = esDev ? stats.dev : stats.qa
+      bucket.total++
+      if (checked) bucket.ok++
+      continue
     }
   }
 
@@ -2077,13 +2229,17 @@ if (require.main === module) {
 // Export para tests
 module.exports = {
   normalizar,
+  parsearFrontmatter,
   parsearMetadata,
+  esResultadoVerificado,
   dividirSecciones,
   parsearTabla,
   parsearPasos,
   parsearChecklist,
   parsearResultadoGlobal,
   parsearProgreso,
+  parsearCheckboxes,
+  renderItemCard,
   generarHtml,
   generarIndex,
 }

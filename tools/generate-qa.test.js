@@ -9,13 +9,17 @@ const os = require('os')
 const path = require('path')
 const {
   normalizar,
+  parsearFrontmatter,
   parsearMetadata,
+  esResultadoVerificado,
   dividirSecciones,
   parsearTabla,
   parsearPasos,
   parsearChecklist,
   parsearResultadoGlobal,
   parsearProgreso,
+  parsearCheckboxes,
+  renderItemCard,
   generarHtml,
   generarIndex,
 } = require('./generate-qa')
@@ -1396,6 +1400,165 @@ console.log('\n📋 Test 29: QA V3 no mapeado a bloque aparece en Otros V3')
 
   // Cleanup
   fs.rmSync(tmpDir, { recursive: true })
+}
+
+// ============================================
+// TEST 30: parsearMetadata con YAML frontmatter
+// ============================================
+{
+  const header = `---
+spec: v3-redefinicion-roles-estado
+version: V3
+bloque: 3
+titulo: "Redefinicion de roles"
+fecha: 2026-04-28
+autor: Gerardo (Claude Code)
+---
+
+# QA: Redefinicion de roles ESTADO (D-01)`
+
+  const meta = parsearMetadata(header)
+  assert(meta.spec === 'v3-redefinicion-roles-estado', 'frontmatter: spec parseado correctamente')
+  assert(meta.fecha === '2026-04-28', 'frontmatter: fecha parseada correctamente')
+  assert(meta.titulo === 'Redefinicion de roles ESTADO (D-01)', 'frontmatter: titulo del # QA sobreescribe frontmatter')
+  assert(meta.auditor === 'Gerardo (Claude Code)', 'frontmatter: autor mapeado a auditor')
+}
+
+// ============================================
+// TEST 31: parsearProgreso con checkboxes sueltos
+// ============================================
+{
+  const md = `# QA: Test
+
+## Eje 1 — Funcionalidad
+
+### 1.1 Items verificados
+- [x] Login como ESTADO — ok
+- [x] Sidebar muestra 8 items — ok
+- [ ] Filtrar por nivel
+
+### 1.2 Items pendientes
+- [ ] Click en un taller
+- [ ] Ver tabs
+`
+
+  const progreso = parsearProgreso(md)
+  assert(progreso.total === 5, 'checkboxes: cuenta 5 items totales, obtuvo ' + progreso.total)
+  assert(progreso.verified === 2, 'checkboxes: 2 verificados (los [x]), obtuvo ' + progreso.verified)
+}
+
+// ============================================
+// TEST 32: parsearProgreso cuenta ✅ Gerardo como verificado
+// ============================================
+{
+  const md = `# QA: Test
+
+## Eje 1 — Funcionalidad
+
+| # | Criterio | Verificador | Resultado | Issue |
+|---|----------|-------------|-----------|-------|
+| 1 | DB existe | DEV | ✅ Gerardo 28/4 | |
+| 2 | Migraciones ok | DEV | ✅ Gerardo 28/4 | |
+| 3 | Seed funciona | DEV | | |
+| 4 | Banner visible | QA | ok | |
+| 5 | Login funciona | QA | | |
+`
+
+  const progreso = parsearProgreso(md)
+  assert(progreso.dev.total === 3, 'emoji: 3 items DEV totales, obtuvo ' + progreso.dev.total)
+  assert(progreso.dev.ok === 2, 'emoji: 2 items DEV verificados con ✅, obtuvo ' + progreso.dev.ok)
+  assert(progreso.qa.total === 2, 'emoji: 2 items QA totales, obtuvo ' + progreso.qa.total)
+  assert(progreso.qa.ok === 1, 'emoji: 1 item QA verificado con ok, obtuvo ' + progreso.qa.ok)
+  assert(progreso.verified === 3, 'emoji: 3 verificados total (2 DEV + 1 QA), obtuvo ' + progreso.verified)
+}
+
+// ============================================
+// TEST 34: parsearCheckboxes extrae items de checkboxes
+// ============================================
+{
+  const contenido = `### 1.1 Login
+- [x] Login como ESTADO — ✅ Gerardo 28/4
+- [ ] Verificar sidebar
+- [x] Click en taller — ok
+`
+  const items = parsearCheckboxes(contenido)
+  assert(items.length === 3, 'parsearCheckboxes: 3 items, obtuvo ' + items.length)
+  assert(items[0].verificador === 'DEV', 'parsearCheckboxes: item con ✅ Gerardo es DEV')
+  assert(items[0].preStatus === '✅', 'parsearCheckboxes: item [x] tiene preStatus ✅')
+  assert(items[1].verificador === 'QA', 'parsearCheckboxes: item sin marca es QA')
+  assert(items[1].preStatus === '', 'parsearCheckboxes: item [ ] tiene preStatus vacio')
+  assert(items[2].preStatus === '✅', 'parsearCheckboxes: segundo [x] tiene preStatus ✅')
+}
+
+// ============================================
+// TEST 35: renderItemCard genera HTML con data attributes
+// ============================================
+{
+  const html = renderItemCard('1', 3, 'Verificar login', 'DEV', '✅')
+  assert(html.includes('data-eje="1"'), 'renderItemCard: tiene data-eje')
+  assert(html.includes('data-num="3"'), 'renderItemCard: tiene data-num')
+  assert(html.includes('data-verificador="DEV"'), 'renderItemCard: tiene data-verificador DEV')
+  assert(html.includes('Verificar login'), 'renderItemCard: contiene texto')
+  assert(html.includes('data-pre-status="✅"'), 'renderItemCard: tiene pre-status cuando verificado')
+
+  const html2 = renderItemCard('2', 1, 'Item QA', 'QA', '')
+  assert(html2.includes('data-verificador="QA"'), 'renderItemCard: QA sin pre-status')
+  assert(!html2.includes('data-pre-status'), 'renderItemCard: sin pre-status cuando vacio')
+}
+
+// ============================================
+// TEST 36: renderEje6 con checkboxes bajo cada perfil (D-01 format)
+// ============================================
+{
+  // Simular el contenido que renderEje6 recibe (ya sin el ## Eje 6 header)
+  // renderEje6 hace split por ### para obtener subsecciones
+  const contenidoEje6 = `### 6.1 Perspectiva politologica
+- [ ] PREGUNTA: La separacion refleja la realidad?
+- [ ] VERIFICAR: El rol ESTADO tiene autonomia
+
+### 6.2 Perspectiva sociologica
+- [ ] PREGUNTA: El taller percibe diferencia?
+`
+  // renderEje6 hace split por ### — el primer bloque no-vacio es 6.1
+  const bloques = contenidoEje6.split(/^### /m).filter(b => b.trim())
+  assert(bloques.length === 2, 'Eje6 checkbox: 2 bloques de perfil, obtuvo ' + bloques.length)
+
+  // Primer bloque: politologica
+  const lineas1 = bloques[0].split('\n')
+  const titulo1 = lineas1[0].trim()
+  assert(titulo1.includes('politologica'), 'Eje6 checkbox: titulo contiene politologica')
+
+  const rest1 = lineas1.slice(1).join('\n')
+  const items1 = parsearCheckboxes(rest1)
+  assert(items1.length === 2, 'Eje6 checkbox: 2 items en politologica, obtuvo ' + items1.length)
+  assert(items1[0].texto.includes('PREGUNTA'), 'Eje6 checkbox: primer item es PREGUNTA')
+}
+
+// ============================================
+// TEST 37: parsearCheckboxes preserva texto de pregunta completo
+// ============================================
+{
+  const contenido = `- [ ] PREGUNTA: Los tipos de documento configurados reflejan la realidad fiscal argentina?
+- [ ] VERIFICAR: El Estado puede ver todos los talleres en una sola pantalla`
+  const items = parsearCheckboxes(contenido)
+  assert(items.length === 2, 'Eje6 preguntas: 2 items')
+  assert(items[0].texto.includes('realidad fiscal argentina'), 'Eje6 preguntas: texto completo preservado')
+  assert(items[1].texto.includes('una sola pantalla'), 'Eje6 preguntas: segundo texto completo')
+}
+
+// ============================================
+// TEST 33: esResultadoVerificado rechaza valores vacios/pendientes
+// ============================================
+{
+  assert(esResultadoVerificado('') === false, 'vacio no es verificado')
+  assert(esResultadoVerificado('—') === false, 'guion largo no es verificado')
+  assert(esResultadoVerificado('n/a') === false, 'n/a no es verificado')
+  assert(esResultadoVerificado('pendiente') === false, 'pendiente no es verificado')
+  assert(esResultadoVerificado('tbd') === false, 'tbd no es verificado')
+  assert(esResultadoVerificado('ok') === 'ok', 'ok es verificado')
+  assert(esResultadoVerificado('✅ Gerardo 28/4') === 'ok', '✅ con texto es verificado')
+  assert(esResultadoVerificado('bug') === 'bug', 'bug es bug')
+  assert(esResultadoVerificado('ok — verificado con E2E') === 'ok', 'ok con nota es verificado')
 }
 
 // ============================================
