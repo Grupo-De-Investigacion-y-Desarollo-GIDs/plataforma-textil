@@ -5,6 +5,7 @@ bloque: 4
 titulo: "Tests E2E con Playwright"
 fecha: 2026-04-29
 autor: Gerardo (Claude Code)
+verificacion_dev: Completada por Gerardo el 2026-04-29
 ---
 
 # QA: Tests E2E (Q-01)
