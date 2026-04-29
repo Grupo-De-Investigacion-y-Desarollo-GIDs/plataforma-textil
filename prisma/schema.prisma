@@ -487,20 +487,36 @@ model Validacion {
 }
 
 model TipoDocumento {
-  id            String      @id @default(cuid())
-  nombre        String      @unique
-  label         String
-  descripcion   String?
-  enlaceTramite String?
-  costoEstimado String?
-  nivelMinimo   NivelTaller
-  requerido     Boolean     @default(true)
-  activo        Boolean     @default(true)
-  orden         Int         @default(0)
+  id                 String      @id @default(cuid())
+  nombre             String      @unique
+  label              String
+  descripcion        String?
+  enlaceTramite      String?
+  costoEstimado      String?
+  nivelMinimo        NivelTaller
+  requerido          Boolean     @default(true)
+  activo             Boolean     @default(true)
+  orden              Int         @default(0)
+  puntosOtorgados    Int         @default(10)
+  ordenVisualizacion Int         @default(0)
 
   validaciones Validacion[]
 
   @@map("tipos_documento")
+}
+
+model ReglaNivel {
+  id                      String      @id @default(cuid())
+  nivel                   NivelTaller @unique
+  puntosMinimos           Int
+  requiereVerificadoAfip  Boolean     @default(false)
+  certificadosAcademiaMin Int         @default(0)
+  descripcion             String?
+  beneficios              String[]    @default([])
+  createdAt               DateTime    @default(now())
+  updatedAt               DateTime    @updatedAt
+
+  @@map("reglas_nivel")
 }
 
 // ============================================

@@ -1,7 +1,8 @@
 # QA: Auditoria de configuracion de cookies NextAuth
 
 **Spec:** `v3-cookies-seguridad.md`
-**Commit de implementacion:** `pendiente`
+**Commit de implementacion:** varios (Bloque 2 — S-01)
+**Verificacion DEV:** Completada por Gerardo el 2026-04-28
 **URL de prueba:** https://plataforma-textil-dev.vercel.app
 **Fecha:** 2026-04-26
 **Auditor(es):** Sergio (tecnico)

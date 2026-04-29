@@ -1,7 +1,8 @@
 # QA: Separar ambientes — Supabase desarrollo y produccion
 
 **Spec:** `v3-separar-ambientes.md`
-**Commit de implementacion:** `pendiente`
+**Commit de implementacion:** varios (Bloque 0)
+**Verificacion DEV:** Completada por Gerardo el 2026-04-28
 **URL de prueba:** https://plataforma-textil.vercel.app (prod) + URL de Preview (develop)
 **Fecha:** 2026-04-26
 **Auditor:** Sergio
@@ -27,18 +28,18 @@ Verificar que cada criterio de aceptacion del spec esta implementado.
 
 | # | Criterio | Verificador | Resultado | Issue |
 |---|----------|-------------|-----------|-------|
-| 1 | Nueva Supabase `plataforma-textil-dev` existe con el mismo schema que prod | DEV | | |
-| 2 | Las 17 migraciones aparecen en `_prisma_migrations` de la nueva DB | DEV | | |
-| 3 | Seed corre limpio en la nueva instancia sin errores | DEV | | |
-| 4 | Variables de entorno en Vercel: 4 vars DB con scope diferenciado (Preview vs Production) | DEV | | |
-| 5 | Variables de entorno en Vercel: vars compartidas con scope "All Environments" | DEV | | |
-| 6 | Branch `main` configurada como Production Branch en Vercel | DEV | | |
+| 1 | Nueva Supabase `plataforma-textil-dev` existe con el mismo schema que prod | DEV | ✅ Gerardo 28/4 | |
+| 2 | Las 17 migraciones aparecen en `_prisma_migrations` de la nueva DB | DEV | ✅ Gerardo 28/4 | |
+| 3 | Seed corre limpio en la nueva instancia sin errores | DEV | ✅ Gerardo 28/4 | |
+| 4 | Variables de entorno en Vercel: 4 vars DB con scope diferenciado (Preview vs Production) | DEV | ✅ Gerardo 28/4 | |
+| 5 | Variables de entorno en Vercel: vars compartidas con scope "All Environments" | DEV | ✅ Gerardo 28/4 | |
+| 6 | Branch `main` configurada como Production Branch en Vercel | DEV | ✅ Gerardo 28/4 | |
 | 7 | Push a `develop` genera Preview con Supabase dev | QA | | |
-| 8 | Push a `main` genera deploy automatico a produccion con Supabase prod | DEV | | |
+| 8 | Push a `main` genera deploy automatico a produccion con Supabase prod | DEV | ✅ Gerardo 28/4 | |
 | 9 | Banner de ambiente visible en Preview | QA | | |
 | 10 | Banner de ambiente invisible en Production | QA | | |
-| 11 | Build corre `prisma migrate deploy` automaticamente en cada deploy | DEV | | |
-| 12 | Seed no se ejecuta en produccion | DEV | | |
+| 11 | Build corre `prisma migrate deploy` automaticamente en cada deploy | DEV | ✅ Gerardo 28/4 | |
+| 12 | Seed no se ejecuta en produccion | DEV | ✅ Gerardo 28/4 | |
 
 ---
 
@@ -97,10 +98,10 @@ Verificar que cada criterio de aceptacion del spec esta implementado.
 
 | # | Caso | Accion | Esperado | Verificador | Resultado |
 |---|------|--------|----------|-------------|-----------|
-| 1 | Seed en produccion | Verificar logs de build de produccion en Vercel | No debe aparecer `prisma db seed` en los logs | DEV | |
-| 2 | Migraciones automaticas | Verificar logs de build en Vercel | `prisma migrate deploy` aparece en los logs de build | DEV | |
+| 1 | Seed en produccion | Verificar logs de build de produccion en Vercel | No debe aparecer `prisma db seed` en los logs | DEV | ✅ Gerardo 28/4 |
+| 2 | Migraciones automaticas | Verificar logs de build en Vercel | `prisma migrate deploy` aparece en los logs de build | DEV | ✅ Gerardo 28/4 |
 | 3 | NEXTAUTH_URL en Preview | Loguearse en Preview | Login funciona sin error de callback URL | QA | |
-| 4 | Banner en desarrollo local | Correr `npm run dev` localmente | No debe aparecer banner (VERCEL_ENV no existe localmente) | DEV | |
+| 4 | Banner en desarrollo local | Correr `npm run dev` localmente | No debe aparecer banner (VERCEL_ENV no existe localmente) | DEV | ✅ Gerardo 28/4 |
 | 5 | Modificar datos en Preview no afecta prod | Crear/editar datos desde Preview | Verificar que los mismos datos en produccion no cambiaron | QA | |
 
 ---

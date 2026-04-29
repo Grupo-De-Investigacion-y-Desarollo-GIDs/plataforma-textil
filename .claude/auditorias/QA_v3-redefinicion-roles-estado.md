@@ -5,6 +5,7 @@ bloque: 3
 titulo: "Redefinicion de roles — ESTADO valida documentos"
 fecha: 2026-04-28
 autor: Gerardo (Claude Code)
+verificacion_dev: Completada por Gerardo el 2026-04-28
 ---
 
 # QA: Redefinicion de roles ESTADO (D-01)
@@ -12,24 +13,24 @@ autor: Gerardo (Claude Code)
 ## Eje 1 — Funcionalidad core
 
 ### 1.1 ESTADO puede acceder a /estado/talleres
-- [ ] Login como ESTADO (anabelen.torres@pdt.org.ar / pdt2026)
-- [ ] Navegar a /estado/talleres
-- [ ] Ver listado con columnas: Taller, Nivel, Provincia, Docs pendientes, Progreso
-- [ ] Verificar que los 3 talleres del seed aparecen
+- [x] Login como ESTADO (anabelen.torres@pdt.org.ar / pdt2026) — ✅ Gerardo 28/4
+- [x] Navegar a /estado/talleres — ✅ Gerardo 28/4
+- [x] Ver listado con columnas: Taller, Nivel, Provincia, Docs pendientes, Progreso — ✅ Gerardo 28/4
+- [x] Verificar que los 3 talleres del seed aparecen — ✅ Gerardo 28/4
 - [ ] Filtrar por nivel Bronce -> solo aparece Taller La Aguja
 - [ ] Limpiar filtro -> vuelven los 3
 
 ### 1.2 ESTADO puede ver detalle de taller con tabs
-- [ ] Click en un taller del listado
-- [ ] Ver header con nombre, CUIT, nivel, puntaje
-- [ ] Tab Formalizacion visible con checklist de documentos
-- [ ] Tab Historial visible con timeline de decisiones
-- [ ] Tab Datos del taller con info de solo lectura
+- [x] Click en un taller del listado — ✅ Gerardo 28/4
+- [x] Ver header con nombre, CUIT, nivel, puntaje — ✅ Gerardo 28/4
+- [x] Tab Formalizacion visible con checklist de documentos — ✅ Gerardo 28/4
+- [x] Tab Historial visible con timeline de decisiones — ✅ Gerardo 28/4
+- [x] Tab Datos del taller con info de solo lectura — ✅ Gerardo 28/4
 
 ### 1.3 ESTADO puede aprobar/rechazar documentos
-- [ ] En tab Formalizacion, encontrar un documento PENDIENTE
-- [ ] Click Aprobar -> documento pasa a COMPLETADO
-- [ ] Verificar que muestra "Aprobado por: Ana Belen Torres" con fecha
+- [x] En tab Formalizacion, encontrar un documento PENDIENTE — ✅ Gerardo 28/4
+- [x] Click Aprobar -> documento pasa a COMPLETADO — ✅ Gerardo 28/4
+- [x] Verificar que muestra "Aprobado por: Ana Belen Torres" con fecha — ✅ Gerardo 28/4
 - [ ] Volver atras, encontrar otro PENDIENTE, rechazar con motivo
 - [ ] Verificar que muestra "Rechazado: [motivo]"
 
@@ -56,19 +57,19 @@ autor: Gerardo (Claude Code)
 ## Eje 2 — Seguridad y permisos
 
 ### 2.1 ADMIN NO puede aprobar documentos
-- [ ] Login como ADMIN (lucia.fernandez@pdt.org.ar / pdt2026)
-- [ ] Acceder a /estado/talleres/[id]
-- [ ] Verificar que aparece banner "Modo lectura"
-- [ ] Verificar que NO hay botones Aprobar/Rechazar/Revocar
+- [x] Login como ADMIN (lucia.fernandez@pdt.org.ar / pdt2026) — ✅ Gerardo 28/4
+- [x] Acceder a /estado/talleres/[id] — ✅ Gerardo 28/4
+- [x] Verificar que aparece banner "Modo lectura" — ✅ Gerardo 28/4
+- [x] Verificar que NO hay botones Aprobar/Rechazar/Revocar — ✅ Gerardo 28/4
 - [ ] Intentar POST a /api/tipos-documento via DevTools -> 403
 
 ### 2.2 ADMIN no puede acceder a /admin/documentos
-- [ ] Login como ADMIN
-- [ ] Navegar a /admin/documentos -> 404
+- [x] Login como ADMIN — ✅ Gerardo 28/4
+- [x] Navegar a /admin/documentos -> 404 — ✅ Gerardo 28/4
 
 ### 2.3 TALLER no puede acceder a /estado/*
-- [ ] Login como TALLER (roberto.gimenez@pdt.org.ar / pdt2026)
-- [ ] Navegar a /estado/talleres -> redirect a /unauthorized
+- [x] Login como TALLER (roberto.gimenez@pdt.org.ar / pdt2026) — ✅ Gerardo 28/4
+- [x] Navegar a /estado/talleres -> redirect a /unauthorized — ✅ Gerardo 28/4
 - [ ] Navegar a /estado/documentos -> redirect a /unauthorized
 
 ### 2.4 MARCA no puede acceder a /estado/*
@@ -78,9 +79,9 @@ autor: Gerardo (Claude Code)
 ## Eje 3 — Navegacion y UI
 
 ### 3.1 Sidebar ESTADO tiene 8 items
-- [ ] Login como ESTADO
-- [ ] Abrir sidebar hamburguesa
-- [ ] Verificar items: Dashboard, Talleres, Documentos, Auditorias, Diagnostico Sector, Exportar Datos, Notificaciones, Mi Cuenta
+- [x] Login como ESTADO — ✅ Gerardo 28/4
+- [x] Abrir sidebar hamburguesa — ✅ Gerardo 28/4
+- [x] Verificar items: Dashboard, Talleres, Documentos, Auditorias, Diagnostico Sector, Exportar Datos, Notificaciones, Mi Cuenta — ✅ Gerardo 28/4
 
 ### 3.2 Sidebar ADMIN no muestra Documentos
 - [ ] Login como ADMIN
@@ -99,9 +100,9 @@ autor: Gerardo (Claude Code)
 - [ ] Los documentos COMPLETADO deben mostrar "Aprobado por: Lucia Fernandez" (admin del seed) o "Sistema (pre-V3)"
 
 ### 4.2 Logs historicos siguen visibles
-- [ ] Login como ADMIN
-- [ ] Ir a /admin/logs
-- [ ] Verificar que acciones VALIDACION_APROBADA y ESTADO_VALIDACION_* aparecen
+- [x] Login como ADMIN — ✅ Gerardo 28/4
+- [x] Ir a /admin/logs — ✅ Gerardo 28/4
+- [x] Verificar que acciones VALIDACION_APROBADA y ESTADO_VALIDACION_* aparecen — ✅ Gerardo 28/4
 
 ### 4.3 Niveles no se alteraron
 - [ ] Verificar que Taller La Aguja sigue en BRONCE
