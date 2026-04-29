@@ -3,6 +3,15 @@
 ## 2026-04-28
 
 ### Gerardo Breard
+- **22:30** `5e73538` — docs: marcar verificacion DEV completada en 7 QAs V3
+  - `.claude/auditorias/QA_v3-cookies-seguridad.md`
+  - `.claude/auditorias/QA_v3-logs-admin-auditoria.md`
+  - `.claude/auditorias/QA_v3-rate-limiting.md`
+  - `.claude/auditorias/QA_v3-redefinicion-roles-estado.md`
+  - `.claude/auditorias/QA_v3-separar-ambientes.md`
+  - `.claude/auditorias/QA_v3-tipos-documento-db.md`
+  - `.claude/auditorias/QA_v3-validacion-archivos.md`
+
 - **19:15** `87a3644` — feat: D-02 tipos documento DB y reglas de nivel configurables
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `.claude/auditorias/QA_v3-tipos-documento-db.md`
