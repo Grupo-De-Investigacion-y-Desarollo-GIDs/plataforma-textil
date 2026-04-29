@@ -3,6 +3,9 @@
 ## 2026-04-29
 
 ### Gerardo Breard
+- **16:36** `c1e477d` — docs: agregar Bloque H (mercado y transparencia) y Bloque I (servicios y catálogo) al V4_BACKLOG
+  - `.claude/specs/V4_BACKLOG.md`
+
 - **16:17** `a578479` — fix: E2E 404 global necesita login — middleware redirige a /login sin sesion
   - `tests/e2e/error-boundaries.spec.ts`
 
