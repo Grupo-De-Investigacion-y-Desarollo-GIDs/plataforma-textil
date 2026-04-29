@@ -55,6 +55,7 @@ export function OrdenActions({ ordenId, estado, progresoActual }: OrdenActionsPr
                   actualizarOrden({ estado: confirmar === 'aceptar' ? 'EN_EJECUCION' : 'CANCELADO' })
                 }
                 disabled={loading}
+                data-action={confirmar === 'aceptar' ? 'confirmar-aprobacion' : 'confirmar-rechazo'}
                 className={`px-4 py-2 text-sm font-semibold text-white rounded-lg disabled:opacity-50 transition-colors ${
                   confirmar === 'aceptar'
                     ? 'bg-green-600 hover:bg-green-700'

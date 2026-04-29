@@ -141,6 +141,19 @@ Este archivo acumula TODAS las verificaciones manuales que requieren ojos humano
 
 ---
 
+## Spec Q-01 — Tests E2E Playwright
+
+### Suite completo (local 2026-04-29)
+
+- [x] 49 tests totales, 43 passed, 4 skipped, 2 flaky bajo carga — Gerardo 29/4
+- [x] Nuevos: registro-taller, registro-marca, auth-roles, flujo-comercial, aprobacion-documento — Gerardo 29/4
+- [x] data-* attributes agregados a 7 componentes — Gerardo 29/4
+- [x] Tests pre-existentes corregidos (configuracion-niveles strict mode, sidebar count 9) — Gerardo 29/4
+- [ ] Verificar que CI (GitHub Actions) pasa con el suite completo
+- [ ] Verificar que branch protection bloquea merge si tests fallan
+
+---
+
 ## Nota tecnica: E2E tests crean issues reales en GitHub
 
 Los tests E2E de rate limiting (S-02) envian requests POST a `/api/feedback` que crea issues reales en GitHub. Cada corrida de CI genera ~11 issues basura con titulo "Test rate limit intento N". Esto contamina el panel de issues y el conteo del QA index.

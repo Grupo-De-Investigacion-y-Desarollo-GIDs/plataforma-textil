@@ -31,7 +31,7 @@ export function PublicarPedido({ pedidoId }: { pedidoId: string }) {
   }
 
   return (
-    <Button onClick={handlePublicar} loading={loading} icon={<Send className="w-4 h-4" />}>
+    <Button onClick={handlePublicar} loading={loading} icon={<Send className="w-4 h-4" />} data-action="publicar">
       Publicar pedido
     </Button>
   )

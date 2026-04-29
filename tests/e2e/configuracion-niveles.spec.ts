@@ -17,9 +17,9 @@ test.describe('D-02 Configuracion de niveles y tipos de documento', () => {
     await page.goto('/estado/configuracion-niveles')
     await expect(page.getByRole('heading', { name: 'Configuracion de Niveles' })).toBeVisible()
     // Debe haber 3 cards (BRONCE, PLATA, ORO)
-    await expect(page.getByText('BRONCE')).toBeVisible()
-    await expect(page.getByText('PLATA')).toBeVisible()
-    await expect(page.getByText('ORO')).toBeVisible()
+    await expect(page.getByText('BRONCE', { exact: true })).toBeVisible()
+    await expect(page.getByText('PLATA', { exact: true })).toBeVisible()
+    await expect(page.getByText('ORO', { exact: true })).toBeVisible()
   })
 
   test('ESTADO puede ver puntos en /estado/documentos', async ({ page }) => {

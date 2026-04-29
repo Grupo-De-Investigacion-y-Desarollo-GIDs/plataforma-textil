@@ -159,6 +159,7 @@ export function NuevoPedidoForm({ marcaId, procesos }: Props) {
                   key={p.id}
                   type="button"
                   onClick={() => toggleProceso(p.id)}
+                  data-testid={`proceso-${p.nombre.toLowerCase().replace(/\s+/g, '-')}`}
                   className={`px-3 py-1.5 rounded-lg text-sm border transition-colors ${
                     procesosSeleccionados.includes(p.id)
                       ? 'bg-brand-blue text-white border-brand-blue'
@@ -188,6 +189,7 @@ export function NuevoPedidoForm({ marcaId, procesos }: Props) {
         <button
           type="submit"
           disabled={guardando}
+          data-action="crear-pedido"
           className="inline-flex items-center justify-center rounded-lg font-overpass font-semibold transition-colors bg-brand-blue hover:bg-brand-blue-hover text-white px-5 py-2.5 text-sm disabled:opacity-50"
         >
           {guardando ? 'Creando pedido...' : 'Crear pedido'}
