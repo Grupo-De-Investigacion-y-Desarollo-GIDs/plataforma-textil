@@ -4,12 +4,10 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { UserPlus } from 'lucide-react'
 import { Modal } from '@/compartido/componentes/ui/modal'
-import { Badge } from '@/compartido/componentes/ui/badge'
 
 interface Taller {
   id: string
   nombre: string
-  nivel: string
   ubicacion: string | null
   capacidadMensual: number
 }
@@ -113,7 +111,6 @@ export function InvitarACotizar({ pedidoId }: { pedidoId: string }) {
                         {t.ubicacion} · {t.capacidadMensual} prendas/mes
                       </p>
                     </div>
-                    <Badge variant="muted">{t.nivel}</Badge>
                   </label>
                 )
               })}
@@ -151,7 +148,6 @@ export function InvitarACotizar({ pedidoId }: { pedidoId: string }) {
               {seleccionados.map(t => (
                 <div key={t.id} className="flex items-center justify-between text-sm p-2 bg-gray-50 rounded-lg">
                   <span>{t.nombre}</span>
-                  <Badge variant="muted">{t.nivel}</Badge>
                 </div>
               ))}
             </div>

@@ -198,6 +198,56 @@ Este archivo acumula TODAS las verificaciones manuales que requieren ojos humano
 
 ---
 
+## Spec INT-00 — Acceso pre-formalizacion y niveles privados
+
+### Criticidad: ALTA — este spec define las restricciones de acceso para talleres no verificados y la privacidad de niveles
+
+### Verificacion de niveles ocultos
+
+1. [ ] /directorio (sin login) — NO hay filtro de nivel, NO hay badges BRONCE/PLATA/ORO
+2. [ ] /directorio (sin login) — talleres muestran "N credenciales verificadas" en vez de nivel
+3. [ ] /perfil/[id] (sin login) — NO hay badge de nivel, SI hay credenciales individuales (CUIT verificado, ART, etc.)
+4. [ ] /marca/directorio (login marca) — NO hay filtro de nivel, NO hay badges de nivel
+5. [ ] /marca/directorio/[id] (login marca) — NO hay badge de nivel, SI hay credenciales individuales
+6. [ ] /marca/pedidos/[id] (login marca) — cotizaciones NO muestran badge de nivel
+7. [ ] /marca/pedidos/[id] (login marca) — ordenes NO muestran "(BRONCE/PLATA/ORO)" junto al nombre
+8. [ ] Boton "Invitar a cotizar" (login marca) — talleres en lista NO muestran badge de nivel
+9. [ ] PDF orden de manufactura — descargar y verificar que NO aparece "Nivel PDT"
+10. [ ] /taller (login taller) — SI muestra nivel propio en dashboard
+11. [ ] /taller/formalizacion (login taller) — SI muestra nivel propio
+12. [ ] /estado/talleres (login estado) — SI muestra niveles de todos los talleres
+
+### Verificacion de acceso restringido (requiere taller con verificadoAfip: false)
+
+13. [ ] Dashboard taller no verificado muestra banner amber "en proceso de formalizacion"
+14. [ ] Pedidos disponibles para taller no verificado muestra banner + boton dice "Ver detalle" (no "Ver y cotizar")
+15. [ ] Pagina de detalle de pedido para taller no verificado muestra banner en vez de form cotizacion
+16. [ ] Banner tiene link funcional a /taller/formalizacion
+
+### Verificacion ESTADO
+
+17. [ ] /estado/talleres tiene filtro "Verificacion AFIP" con opciones Verificados/Sin verificar
+18. [ ] Filtro "Sin verificar" muestra solo talleres con verificadoAfip: false
+19. [ ] Stat card "Sin verificar" muestra conteo correcto
+20. [ ] Badge "Sin verificar" aparece junto al CUIT de talleres no verificados
+
+### Tests automatizados
+
+- [x] 6 Vitest tests (acceso-verificado.test.ts) — Gerardo 29/4
+- [x] 3 E2E tests (acceso-verificado.spec.ts) — Gerardo 29/4
+- [x] TypeScript 0 errores — Gerardo 29/4
+- [x] 210/210 tests pasan en suite completo — Gerardo 29/4
+- [ ] Verificar que CI (GitHub Actions) pasa
+
+### Como ejecutar (items 13-16)
+
+> Los items 13-16 requieren un taller con verificadoAfip: false. Si todos los talleres del seed estan verificados, se puede testear:
+> 1. Via Supabase SQL: `UPDATE "Taller" SET "verificadoAfip" = false WHERE cuit = '20-30123456-7'` (taller de prueba)
+> 2. Verificar items 13-16
+> 3. Revertir: `UPDATE "Taller" SET "verificadoAfip" = true WHERE cuit = '20-30123456-7'`
+
+---
+
 ## Nota tecnica: E2E tests crean issues reales en GitHub
 
 Los tests E2E de rate limiting (S-02) envian requests POST a `/api/feedback` que crea issues reales en GitHub. Cada corrida de CI genera ~11 issues basura con titulo "Test rate limit intento N". Esto contamina el panel de issues y el conteo del QA index.

@@ -35,11 +35,20 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       )
     }
 
-    // Pre-validar que todos los tallerIds existen
+    // Pre-validar que todos los tallerIds existen y están verificados
     const talleresConUser = await prisma.taller.findMany({
       where: { id: { in: tallerIds } },
       include: { user: { select: { id: true, email: true } } },
     })
+
+    const noVerificados = talleresConUser.filter(t => !t.verificadoAfip)
+    if (noVerificados.length > 0) {
+      return NextResponse.json(
+        { error: `Los siguientes talleres no tienen CUIT verificado y no pueden ser invitados: ${noVerificados.map(t => t.nombre).join(', ')}` },
+        { status: 400 }
+      )
+    }
+
     const idsValidos = talleresConUser.map(t => t.id)
 
     if (idsValidos.length === 0) {

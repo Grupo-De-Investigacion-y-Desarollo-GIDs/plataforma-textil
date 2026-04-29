@@ -22,7 +22,7 @@ export default async function PedidoDisponibleDetallePage({ params }: { params: 
 
   const taller = await prisma.taller.findFirst({
     where: { userId: session.user.id },
-    select: { id: true },
+    select: { id: true, verificadoAfip: true },
   })
   const cotizacionExistente = taller
     ? await prisma.cotizacion.findFirst({
@@ -80,7 +80,24 @@ export default async function PedidoDisponibleDetallePage({ params }: { params: 
         </Card>
       )}
 
-      {cotizacionExistente ? (
+      {taller && !taller.verificadoAfip ? (
+        <Card>
+          <div className="text-center py-6">
+            <p className="font-overpass font-semibold text-amber-800 mb-2">
+              Para enviar cotizaciones, tu taller necesita tener el CUIT verificado
+            </p>
+            <p className="text-sm text-gray-600 mb-4">
+              Subi tu documentacion en Formalizacion — el Estado revisa y aprueba en dias habiles.
+            </p>
+            <Link
+              href="/taller/formalizacion"
+              className="inline-flex items-center gap-2 bg-brand-blue text-white px-4 py-2 rounded-lg text-sm font-overpass font-semibold hover:bg-brand-blue-hover transition-colors"
+            >
+              Ir a Formalizacion
+            </Link>
+          </div>
+        </Card>
+      ) : cotizacionExistente ? (
         <Card>
           <div className="text-center py-4">
             <p className="font-overpass font-semibold text-brand-blue">Ya enviaste una cotizacion para este pedido</p>
