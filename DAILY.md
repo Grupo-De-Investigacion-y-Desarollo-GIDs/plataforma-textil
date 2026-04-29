@@ -3,6 +3,38 @@
 ## 2026-04-29
 
 ### Gerardo Breard
+- **15:38** `1b65a1b` — feat: v3-error-boundaries (Q-02) — error boundaries y 404 en todos los layouts
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-error-boundaries.md`
+  - `.claude/auditorias/REVIEW_v3-error-boundaries.md`
+  - `package-lock.json`
+  - `package.json`
+  - `src/__tests__/error-logger.test.ts`
+  - `src/__tests__/log-error-route.test.ts`
+  - `src/app/(admin)/error.tsx`
+  - `src/app/(admin)/not-found.tsx`
+  - `src/app/(auth)/error.tsx`
+  - `src/app/(auth)/not-found.tsx`
+  - `src/app/(contenido)/error.tsx`
+  - `src/app/(contenido)/not-found.tsx`
+  - `src/app/(estado)/error.tsx`
+  - `src/app/(estado)/not-found.tsx`
+  - `src/app/(marca)/error.tsx`
+  - `src/app/(marca)/not-found.tsx`
+  - `src/app/(public)/error.tsx`
+  - `src/app/(public)/not-found.tsx`
+  - `src/app/(taller)/error.tsx`
+  - `src/app/(taller)/not-found.tsx`
+  - `src/app/api/log-error/route.ts`
+  - `src/app/error.tsx`
+  - `src/app/global-error.tsx`
+  - `src/app/not-found.tsx`
+  - `src/compartido/componentes/error-page.tsx`
+  - `src/compartido/componentes/feedback-widget.tsx`
+  - `src/compartido/componentes/not-found-page.tsx`
+  - `src/compartido/lib/error-logger.ts`
+  - `tests/e2e/error-boundaries.spec.ts`
+
 - **14:20** `6bf18d7` — fix: agregar link "Volver al indice" en todos los QA HTML
   - `tools/generate-qa.js`
 
