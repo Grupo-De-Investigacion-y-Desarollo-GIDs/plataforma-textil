@@ -3,6 +3,11 @@
 ## 2026-04-28
 
 ### Gerardo Breard
+- **23:19** `b3bdb28` — fix: renderer QA soporta checkboxes como fallback cuando no hay tabla
+  - `.claude/auditorias/QA_v3-tipos-documento-db.md`
+  - `tools/generate-qa.js`
+  - `tools/generate-qa.test.js`
+
 - **22:53** `d6a1ca1` — fix: generador QA parsea YAML frontmatter, checkboxes, y resultados ✅
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `tools/generate-qa.js`
