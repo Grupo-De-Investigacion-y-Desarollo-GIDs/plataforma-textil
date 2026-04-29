@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { getErrorMessage } from '@/compartido/lib/api-client'
 
 export function RechazarCotizacion({ cotizacionId }: { cotizacionId: string }) {
   const router = useRouter()
@@ -19,7 +20,7 @@ export function RechazarCotizacion({ cotizacionId }: { cotizacionId: string }) {
       })
       if (!res.ok) {
         const data = await res.json()
-        setError(data.error ?? 'Error al rechazar')
+        setError(getErrorMessage(data, 'Error al rechazar'))
         return
       }
       router.refresh()

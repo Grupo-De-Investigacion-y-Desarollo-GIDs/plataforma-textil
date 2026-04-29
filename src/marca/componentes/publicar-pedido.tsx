@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Send } from 'lucide-react'
 import { Button } from '@/compartido/componentes/ui/button'
+import { getErrorMessage } from '@/compartido/lib/api-client'
 
 export function PublicarPedido({ pedidoId }: { pedidoId: string }) {
   const router = useRouter()
@@ -22,7 +23,7 @@ export function PublicarPedido({ pedidoId }: { pedidoId: string }) {
         router.refresh()
       } else {
         const data = await res.json()
-        alert(data.error || 'Error al publicar el pedido')
+        alert(getErrorMessage(data, 'Error al publicar el pedido'))
       }
     } catch {
       alert('Error de conexion')

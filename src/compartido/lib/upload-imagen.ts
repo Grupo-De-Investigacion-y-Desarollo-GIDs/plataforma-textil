@@ -15,7 +15,8 @@ export async function uploadImagen(
 
   if (!res.ok) {
     const data = await res.json()
-    throw new Error(data.error ?? 'Error al subir imagen')
+    const msg = typeof data.error === 'string' ? data.error : data.error?.message
+    throw new Error(msg ?? 'Error al subir imagen')
   }
 
   const { url } = await res.json()

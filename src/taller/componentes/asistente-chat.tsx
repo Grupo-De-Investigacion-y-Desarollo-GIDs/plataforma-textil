@@ -3,6 +3,7 @@ import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import Link from 'next/link'
 import { MessageCircle, ChevronDown, ChevronUp, Send, Loader2 } from 'lucide-react'
+import { getErrorMessage, getErrorCode } from '@/compartido/lib/api-client'
 
 export function AsistenteChat() {
   const [abierto, setAbierto] = useState(false)
@@ -31,13 +32,11 @@ export function AsistenteChat() {
       })
       if (!res.ok) {
         const data = await res.json()
-        const esPermanente =
-          data.error === 'Asistente no disponible' ||
-          data.error === 'El asistente está deshabilitado temporalmente'
-        if (esPermanente) {
+        const code = getErrorCode(data)
+        if (code === 'EXTERNAL_SERVICE_ERROR') {
           setNoDisponible(true)
         } else {
-          setError(data.error ?? 'Error al consultar el asistente')
+          setError(getErrorMessage(data, 'Error al consultar el asistente'))
         }
         return
       }

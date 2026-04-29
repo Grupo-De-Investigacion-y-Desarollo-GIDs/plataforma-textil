@@ -173,6 +173,31 @@ Este archivo acumula TODAS las verificaciones manuales que requieren ojos humano
 
 ---
 
+## Spec Q-03 — Errores consistentes en APIs
+
+### Tests automatizados
+
+- [x] 27 Vitest tests (api-errors + api-client) — Gerardo 29/4
+- [x] TypeScript 0 errores — Gerardo 29/4
+- [x] 11 endpoints migrados al formato V3 — Gerardo 29/4
+- [x] 10 frontends actualizados con getErrorMessage — Gerardo 29/4
+- [ ] Verificar que CI (GitHub Actions) pasa
+
+### Verificacion funcional en plataforma-textil-dev.vercel.app (DEV)
+
+- [ ] Registro con email invalido → error amigable (no "Internal Server Error")
+- [ ] Registro duplicado → "El email ya esta registrado" (no crash)
+- [ ] Flujo comercial completo (crear pedido → cotizar → aceptar) funciona sin errores
+- [ ] Asistente RAG responde o muestra "no disponible" correctamente
+- [ ] Feedback widget envia sin error
+
+### Deuda documentada
+
+- 57 endpoints con formato legacy quedan para V4 T-08 (~10h)
+- 18 frontends con `data.error` legacy se migran con T-08
+
+---
+
 ## Nota tecnica: E2E tests crean issues reales en GitHub
 
 Los tests E2E de rate limiting (S-02) envian requests POST a `/api/feedback` que crea issues reales en GitHub. Cada corrida de CI genera ~11 issues basura con titulo "Test rate limit intento N". Esto contamina el panel de issues y el conteo del QA index.

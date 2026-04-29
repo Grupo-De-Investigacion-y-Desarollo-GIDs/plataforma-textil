@@ -5,6 +5,7 @@ import { logActividad } from '@/compartido/lib/log'
 import { verificarCuit } from '@/compartido/lib/afip'
 import { sendEmail, buildBienvenidaEmail } from '@/compartido/lib/email'
 import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
+import { apiHandler, errorResponse, errorConflict } from '@/compartido/lib/api-errors'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 
@@ -36,64 +37,57 @@ const registerSchema = z.object({
   }
 })
 
-export async function POST(req: NextRequest) {
+export const POST = apiHandler(async (req: NextRequest) => {
   const ip = getClientIp(req)
   const blocked = await rateLimit(req, 'registro', ip)
   if (blocked) return blocked
 
-  try {
-    const raw = await req.json()
-    const normalized = {
-      ...raw,
-      tallerData: raw.tallerData ?? raw.taller,
-      marcaData: raw.marcaData ?? raw.marca,
-      email: typeof raw.email === 'string' ? raw.email.trim().toLowerCase() : raw.email,
-      phone: typeof raw.phone === 'string' ? raw.phone.trim() : raw.phone,
-    }
+  const raw = await req.json()
+  const normalized = {
+    ...raw,
+    tallerData: raw.tallerData ?? raw.taller,
+    marcaData: raw.marcaData ?? raw.marca,
+    email: typeof raw.email === 'string' ? raw.email.trim().toLowerCase() : raw.email,
+    phone: typeof raw.phone === 'string' ? raw.phone.trim() : raw.phone,
+  }
 
-    const parsed = registerSchema.safeParse(normalized)
-    if (!parsed.success) {
-      const message = parsed.error.issues[0]?.message || 'Datos invalidos'
-      return NextResponse.json({ error: message }, { status: 400 })
-    }
+  const parsed = registerSchema.safeParse(normalized)
+  if (!parsed.success) {
+    const message = parsed.error.issues[0]?.message || 'Datos invalidos'
+    return errorResponse({ code: 'INVALID_INPUT', message, status: 400 })
+  }
 
-    const data = parsed.data
+  const data = parsed.data
 
-    // Verificar CUIT con AfipSDK server-side
-    // Solo rechazar si AFIP confirma que el CUIT es invalido/inexistente/inactivo
-    // Cualquier otro error (servicio caido, timeout, error generico) permite continuar
-    const ERRORES_CUIT_INVALIDO = ['inexistente', 'inactivo', 'invalido']
-    let cuitVerificado = false
-    const cuitToVerify = data.tallerData?.cuit || data.marcaData?.cuit
-    if (cuitToVerify) {
-      try {
-        const afipResult = await verificarCuit(cuitToVerify)
-        if (afipResult.valid) {
-          cuitVerificado = true
-        } else if (afipResult.error) {
-          const errorLower = afipResult.error.toLowerCase()
-          const esCuitInvalido = ERRORES_CUIT_INVALIDO.some(e => errorLower.includes(e))
-          if (esCuitInvalido) {
-            return NextResponse.json(
-              { error: afipResult.error },
-              { status: 400 }
-            )
-          }
-          // Servicio no disponible — permitir registro sin verificacion
+  // Verificar CUIT con AfipSDK server-side
+  const ERRORES_CUIT_INVALIDO = ['inexistente', 'inactivo', 'invalido']
+  let cuitVerificado = false
+  const cuitToVerify = data.tallerData?.cuit || data.marcaData?.cuit
+  if (cuitToVerify) {
+    try {
+      const afipResult = await verificarCuit(cuitToVerify)
+      if (afipResult.valid) {
+        cuitVerificado = true
+      } else if (afipResult.error) {
+        const errorLower = afipResult.error.toLowerCase()
+        const esCuitInvalido = ERRORES_CUIT_INVALIDO.some(e => errorLower.includes(e))
+        if (esCuitInvalido) {
+          return errorResponse({ code: 'INVALID_INPUT', message: afipResult.error, status: 400 })
         }
-      } catch {
-        // AFIP no disponible — permitir registro sin verificacion
-        console.error('AFIP no disponible durante registro, permitiendo continuar')
       }
+    } catch {
+      console.error('AFIP no disponible durante registro, permitiendo continuar')
     }
+  }
 
-    const exists = await prisma.user.findUnique({ where: { email: data.email } })
-    if (exists) {
-      return NextResponse.json({ error: 'El email ya esta registrado' }, { status: 409 })
-    }
+  const exists = await prisma.user.findUnique({ where: { email: data.email } })
+  if (exists) {
+    return errorConflict('El email ya esta registrado')
+  }
 
-    const hashedPassword = await bcrypt.hash(data.password, 10)
+  const hashedPassword = await bcrypt.hash(data.password, 10)
 
+  try {
     const user = await prisma.user.create({
       data: {
         email: data.email,
@@ -133,7 +127,6 @@ export async function POST(req: NextRequest) {
 
     logActividad('AUTH_REGISTRO', user.id, { email: data.email, role: data.role })
 
-    // Crear validaciones iniciales para talleres nuevos
     if (data.role === 'TALLER') {
       const nuevoTaller = await prisma.taller.findUnique({ where: { userId: user.id }, select: { id: true } })
       if (nuevoTaller) {
@@ -152,7 +145,6 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Email bienvenida (fire-and-forget, no bloquea la respuesta)
     const nombre = data.name || data.nombre || data.email
     sendEmail({ to: data.email, ...buildBienvenidaEmail({ nombre, role: data.role }) }).catch(() => {})
 
@@ -160,15 +152,10 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
       const target = (error.meta?.target as string[]) ?? []
-      if (target.includes('cuit')) {
-        return NextResponse.json({ error: 'El CUIT ingresado ya está registrado' }, { status: 409 })
-      }
-      if (target.includes('email')) {
-        return NextResponse.json({ error: 'El email ya está registrado' }, { status: 409 })
-      }
-      return NextResponse.json({ error: 'Ya existe un registro con esos datos' }, { status: 409 })
+      if (target.includes('cuit')) return errorConflict('El CUIT ingresado ya esta registrado')
+      if (target.includes('email')) return errorConflict('El email ya esta registrado')
+      return errorConflict()
     }
-    console.error('Error en POST /api/auth/registro:', error)
-    return NextResponse.json({ error: 'Error al registrar usuario' }, { status: 500 })
+    throw error
   }
-}
+})

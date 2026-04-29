@@ -27,7 +27,8 @@ export function OrdenActions({ ordenId, estado, progresoActual }: OrdenActionsPr
       })
       const data = await res.json()
       if (!res.ok) {
-        setError(data.error ?? 'Error al actualizar la orden.')
+        const msg = typeof data.error === 'string' ? data.error : data.error?.message
+        setError(msg ?? 'Error al actualizar la orden.')
         return
       }
       router.refresh()
