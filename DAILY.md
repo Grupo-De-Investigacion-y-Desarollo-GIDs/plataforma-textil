@@ -3,6 +3,9 @@
 ## 2026-04-29
 
 ### Gerardo Breard
+- **01:09** `5a2929e` — docs: agregar G-01 al V4 backlog (filtro pendientes dashboard ESTADO)
+  - `.claude/specs/V4_BACKLOG.md`
+
 - **00:51** `3122d44` — feat: Q-01 tests E2E flujos criticos del piloto
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `.claude/auditorias/QA_v3-tests-e2e.md`
