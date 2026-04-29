@@ -3,6 +3,9 @@
 ## 2026-04-29
 
 ### Gerardo Breard
+- **16:17** `a578479` — fix: E2E 404 global necesita login — middleware redirige a /login sin sesion
+  - `tests/e2e/error-boundaries.spec.ts`
+
 - **15:38** `1b65a1b` — feat: v3-error-boundaries (Q-02) — error boundaries y 404 en todos los layouts
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `.claude/auditorias/QA_v3-error-boundaries.md`
