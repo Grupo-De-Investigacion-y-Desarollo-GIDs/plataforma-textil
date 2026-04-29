@@ -3,6 +3,30 @@
 ## 2026-04-29
 
 ### Gerardo Breard
+- **20:23** `da33f6d` — feat: acceso pre-formalizacion y niveles privados
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-acceso-pre-formalizacion.md`
+  - `.claude/auditorias/REVIEW_v3-acceso-pre-formalizacion.md`
+  - `.claude/specs/V4_BACKLOG.md`
+  - `src/__tests__/acceso-verificado.test.ts`
+  - `src/app/(estado)/estado/talleres/page.tsx`
+  - `src/app/(marca)/marca/directorio/[id]/page.tsx`
+  - `src/app/(marca)/marca/directorio/page.tsx`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(public)/directorio/page.tsx`
+  - `src/app/(public)/perfil/[id]/page.tsx`
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/app/api/ordenes/[id]/pdf/route.tsx`
+  - `src/app/api/pedidos/[id]/invitaciones/route.ts`
+  - `src/app/api/talleres/route.ts`
+  - `src/compartido/componentes/pdf/orden-pdf.tsx`
+  - `src/marca/componentes/contactar-taller.tsx`
+  - `src/marca/componentes/invitar-a-cotizar.tsx`
+  - `tests/e2e/acceso-verificado.spec.ts`
+
 - **17:31** `be284c8` — feat: v3-errores-consistentes-apis (Q-03) — formato de error estructurado en APIs
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `.claude/auditorias/QA_v3-errores-consistentes-apis.md`
