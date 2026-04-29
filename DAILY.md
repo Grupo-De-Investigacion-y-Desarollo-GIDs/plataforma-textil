@@ -1,5 +1,27 @@
 # Daily Log
 
+## 2026-04-29
+
+### Gerardo Breard
+- **00:51** `3122d44` — feat: Q-01 tests E2E flujos criticos del piloto
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-tests-e2e.md`
+  - `.claude/auditorias/REVIEW_v3-tests-e2e.md`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(marca)/marca/pedidos/nuevo/nuevo-pedido-form.tsx`
+  - `src/marca/componentes/aceptar-cotizacion.tsx`
+  - `src/marca/componentes/publicar-pedido.tsx`
+  - `src/taller/componentes/cotizar-form.tsx`
+  - `src/taller/componentes/orden-actions.tsx`
+  - `tests/e2e/aprobacion-documento.spec.ts`
+  - `tests/e2e/auth-roles.spec.ts`
+  - `tests/e2e/configuracion-niveles.spec.ts`
+  - `tests/e2e/flujo-comercial.spec.ts`
+  - `tests/e2e/registro-marca.spec.ts`
+  - `tests/e2e/registro-taller.spec.ts`
+  - `tests/e2e/roles-estado.spec.ts`
+
+
 ## 2026-04-28
 
 ### Gerardo Breard
