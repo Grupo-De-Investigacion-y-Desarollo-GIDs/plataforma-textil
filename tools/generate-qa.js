@@ -252,6 +252,11 @@ function escapeHtml(text) {
 
 function renderMetaHeader(meta) {
   return `
+    <div style="margin-bottom: 12px;">
+      <a href="index.html" style="display: inline-flex; align-items: center; gap: 6px; color: #1e3a5f; text-decoration: none; font-size: 14px; font-weight: 600;">
+        <span style="font-size: 18px;">&#8592;</span> Volver al indice
+      </a>
+    </div>
     <div class="header">
       <h1>${escapeHtml(meta.titulo)}</h1>
       <div class="meta-grid">
