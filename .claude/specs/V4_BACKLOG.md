@@ -115,6 +115,59 @@ Origen: cosas que vamos a aprender durante el piloto. **Este bloque está vacío
 
 ---
 
+## Bloque H — Mercado y transparencia
+
+**Justificación arquitectónica:** La PDT hoy resuelve transacciones individuales (marca pide → taller cotiza → marca acepta) pero no expone la dinámica de mercado agregado. A diferencia de un marketplace puro tipo MercadoLibre, la PDT tiene un componente institucional (ESTADO/OIT) que necesita ver el mercado como sistema, no solo como suma de transacciones. Y a diferencia de ML, la PDT puede agregar capas de indicadores sociales (precio justo, impacto laboral, concentración geográfica) que un marketplace privado no tiene incentivo para mostrar.
+
+Este bloque transforma la PDT de un sistema transaccional a una plataforma con inteligencia de mercado diferenciada por rol.
+
+| ID | Spec | Descripción | Estimación | Dependencias |
+|----|------|-------------|------------|--------------|
+| H-01 | Vidriera pública `/mercado` | Página pública (sin login) con datos agregados anonimizados: volumen de pedidos por tipo de prenda, rango de precios por proceso, distribución geográfica de talleres, tendencias mensuales. Sin datos individuales de talleres ni marcas | 12h | Volumen real del piloto |
+| H-02 | Inteligencia de mercado para TALLER | Dashboard con: precios sugeridos basados en cotizaciones aceptadas de pares, demanda compatible con sus procesos/capacidad, comparación de su nivel vs promedio del mercado, alertas de oportunidades nuevas | 10h | H-01 |
+| H-03 | Inteligencia de mercado para MARCA | Dashboard con: precios de mercado por tipo de prenda/proceso, disponibilidad actual de talleres por zona, tiempos promedio de entrega, benchmark de sus pedidos vs mercado | 10h | H-01 |
+| H-04 | Analítica institucional para ESTADO/OIT | Panel con: tendencias de formalización, concentración de mercado (índice Herfindahl), distribución territorial de actividad, evolución de niveles, flujo de pedidos/cotizaciones por período. Exportable a PDF/CSV para informes OIT | 12h | H-01 |
+| H-05 | Indicadores de mercado justo | Precio mínimo de referencia social calculado por tipo de prenda/proceso. Alertas visibles cuando una cotización está significativamente por debajo del referencial. Banner informativo (no bloqueante) tanto para taller que cotiza bajo como para marca que acepta precio bajo | 8h | H-01, H-02 |
+| H-06 | Alertas de concentración y territorio | Detección automática de desbalances: una marca concentra >X% del volumen, una zona tiene exceso/déficit de talleres, un proceso tiene oferta insuficiente. Alertas para ESTADO/OIT, no para actores individuales | 6h | H-04 |
+| H-07 | Métricas de impacto laboral | Indicadores: horas de trabajo formal estimadas generadas por la plataforma, tasa de formalización por sector/zona, correlación entre nivel del taller y volumen de pedidos. Para informes OIT y vidriera pública | 8h | H-04 |
+
+**Total estimado Bloque H:** ~66h
+
+**Dependencia crítica:** Este bloque depende del piloto generando volumen real de transacciones (mayo 2026). Sin datos reales, los indicadores no tienen sentido. **Implementación recomendada:** junio post-piloto, priorizando H-01 y H-04 primero (los más demandados por OIT).
+
+**Decisión de producto pendiente:** ver nota al final del documento sobre el modelo de la PDT.
+
+---
+
+## Bloque I — Servicios y catálogo de talleres
+
+**Justificación:** Hoy los talleres tienen perfil + portfolio + datos de capacidad, pero no pueden mostrar activamente qué servicios ofrecen ni publicar disponibilidad. La PDT funciona como flujo reactivo (marca pide → taller cotiza) pero le falta el flujo proactivo (taller ofrece → marca descubre). Este bloque agrega una capa de marketplace activo donde el taller puede "vender" su capacidad, similar al modelo perfil + tienda de plataformas como Etsy o LinkedIn Services.
+
+| ID | Spec | Descripción | Estimación | Dependencias |
+|----|------|-------------|------------|--------------|
+| I-01 | Servicios destacados del taller | Cada taller puede definir 3-5 servicios destacados con: nombre, descripción, rango de precio orientativo, tiempo estimado, fotos de ejemplo. Visibles en su perfil público y en el directorio | 8h | — |
+| I-02 | Catálogo organizado por categoría | Vista `/explorar-servicios` organizada por categoría de proceso (corte, confección, estampado, etc.). Cada entrada muestra talleres que ofrecen ese servicio con sus datos resumidos | 12h | I-01 |
+| I-03 | Sistema de publicaciones/anuncios | Talleres pueden publicar: disponibilidad actual, novedades, promociones temporales. Feed cronológico visible en su perfil y opcionalmente en la vidriera pública. Duración configurable (7/15/30 días) | 10h | I-01 |
+| I-04 | Integración con vidriera pública | Los servicios y publicaciones de talleres alimentan la vidriera `/mercado` del Bloque H: servicios más demandados, talleres con disponibilidad inmediata, novedades del sector | 6h | H-01, I-01, I-03 |
+| I-05 | Filtros avanzados en exploración | Agregar filtros en `/directorio` (o nueva ruta `/explorar-talleres`): por servicio ofrecido, por disponibilidad actual, por rango de precio, por zona + radio | 6h | I-01, I-02 |
+| I-06 | Moderación básica + límites antispam | Revisión de publicaciones (auto-aprobación para PLATA+, moderación para BRONCE). Límites de frecuencia (máx N publicaciones/semana). Reporte de contenido inapropiado | 8h | I-03 |
+| I-07 | Recomendaciones de talleres para marcas | Sistema de matching: basado en los pedidos anteriores de la marca, sugerir talleres compatibles por proceso, zona, nivel, precio histórico. Widget en dashboard de marca | 12h | I-01, I-02, H-01 |
+
+**Total estimado Bloque I:** ~62h
+
+**Decisiones pendientes a discutir con OIT/UNTREF antes de implementar:**
+
+1. **Modelo de precio:** ¿precio fijo publicado, capacidad para cotizar, o híbrido? (impacta I-01 y I-05)
+2. **Nivel mínimo para publicar:** ¿BRONCE puede publicar servicios o solo PLATA+? (impacta I-01 y I-06)
+3. **Moderación:** ¿auto-aprobación para todos o solo niveles altos? (impacta I-06)
+4. **Visibilidad pública:** ¿los servicios son visibles sin login o solo para marcas registradas? (impacta I-02 y I-04)
+5. **Antispam:** ¿cuántas publicaciones por semana? ¿cuántos servicios destacados? (impacta I-06)
+6. **Gamificación:** ¿publicar con calidad suma puntos al nivel del taller? (impacta sistema de niveles)
+
+**Dependencia crítica:** Este bloque depende del piloto para definir bien la implementación. **Recomendado post-piloto (junio o más adelante), después del Bloque H** que provee la infraestructura de mercado.
+
+---
+
 ## Resumen ejecutivo de V4
 
 | Bloque | Specs | Estimación | Prioridad |
@@ -126,8 +179,10 @@ Origen: cosas que vamos a aprender durante el piloto. **Este bloque está vacío
 | E — Integraciones | 3 specs | 36h | Variable según piloto |
 | F — Internacionalización | 3 specs | 52h | Solo si se escala |
 | G — Feedback del piloto | TBD | TBD | Variable |
+| H — Mercado y transparencia | 7 specs | 66h | Post-piloto (junio) |
+| I — Servicios y catálogo | 7 specs | 62h | Post-piloto (después de H) |
 
-**Total estimado V4 (sin Bloque G):** ~184h ≈ 4-5 semanas de trabajo
+**Total estimado V4 (sin Bloque G):** ~312h ≈ 8-9 semanas de trabajo
 
 ---
 
@@ -155,3 +210,19 @@ Origen: cosas que vamos a aprender durante el piloto. **Este bloque está vacío
 - Este backlog NO es definitivo. Es un punto de partida basado en lo que sabemos hoy.
 - Los specs no están escritos todavía, solo identificados. Cuando V4 arranque, cada uno se desarrolla con la misma rigurosidad de V3.
 - Los Bloques no se implementan en orden alfabético: el orden lo determina la prioridad y dependencias.
+
+---
+
+## Nota de diseño de producto — Modelo de la PDT
+
+**Los Bloques H e I plantean una pregunta de producto que debe resolver OIT/UNTREF:**
+
+> ¿La PDT es un sistema de gestión de formalización que también permite hacer pedidos?
+> ¿O es un marketplace textil que también ayuda a formalizar?
+
+- **Modelo institucional (ESTADO céntrico):** La PDT es una herramienta de política pública. El flujo comercial existe para incentivar la formalización, pero el centro es la relación taller-Estado. Los Bloques H e I son herramientas de transparencia e información, no de competencia comercial.
+- **Modelo de mercado (oferta-demanda céntrico):** La PDT es un marketplace con capa institucional. El centro es la transacción taller-marca, y la formalización es un requisito de entrada que genera confianza. Los Bloques H e I son features competitivas de marketplace.
+
+Las decisiones de implementación cambian según el modelo: moderación, visibilidad, gamificación, indicadores de precio justo, todo depende de qué tipo de plataforma queremos que sea.
+
+**Recomendación:** definir esto durante el piloto (mayo 2026), antes de implementar H e I. La respuesta probablemente es un híbrido, pero el balance importa para las decisiones de diseño.

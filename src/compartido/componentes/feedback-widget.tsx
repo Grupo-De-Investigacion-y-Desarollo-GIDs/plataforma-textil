@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { MessageSquarePlus, X, Send, Loader2, CheckCircle } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
@@ -46,6 +46,19 @@ export function FeedbackWidget() {
   const [abierto, setAbierto] = useState(false)
   const [tipo, setTipo] = useState('')
   const [mensaje, setMensaje] = useState('')
+
+  // Listener para que ErrorPage pueda abrir el widget programaticamente
+  useEffect(() => {
+    const handler = (e: CustomEvent<{ contexto?: string }>) => {
+      setAbierto(true)
+      if (e.detail?.contexto) {
+        setMensaje(`[Error: ${e.detail.contexto}] `)
+      }
+    }
+
+    window.addEventListener('open-feedback', handler as EventListener)
+    return () => window.removeEventListener('open-feedback', handler as EventListener)
+  }, [])
   const [auditorNombre, setAuditorNombre] = useState('')
   const [auditorRol, setAuditorRol] = useState('SIN_LOGIN')
   const [enviando, setEnviando] = useState(false)

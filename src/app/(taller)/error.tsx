@@ -1,7 +1,7 @@
 'use client'
 
-import { SectionError } from '@/compartido/componentes/ui/section-error'
+import { ErrorPage } from '@/compartido/componentes/error-page'
 
-export default function TallerError({ reset }: { error: Error; reset: () => void }) {
-  return <SectionError section="Taller" reset={reset} />
+export default function TallerError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  return <ErrorPage error={error} reset={reset} contexto="taller" />
 }

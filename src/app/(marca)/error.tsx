@@ -1,7 +1,7 @@
 'use client'
 
-import { SectionError } from '@/compartido/componentes/ui/section-error'
+import { ErrorPage } from '@/compartido/componentes/error-page'
 
-export default function MarcaError({ reset }: { error: Error; reset: () => void }) {
-  return <SectionError section="Marca" reset={reset} />
+export default function MarcaError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  return <ErrorPage error={error} reset={reset} contexto="marca" />
 }

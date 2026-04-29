@@ -1,7 +1,7 @@
 'use client'
 
-import { SectionError } from '@/compartido/componentes/ui/section-error'
+import { ErrorPage } from '@/compartido/componentes/error-page'
 
-export default function AdminError({ reset }: { error: Error; reset: () => void }) {
-  return <SectionError section="Administracion" reset={reset} />
+export default function AdminError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  return <ErrorPage error={error} reset={reset} contexto="admin" />
 }
