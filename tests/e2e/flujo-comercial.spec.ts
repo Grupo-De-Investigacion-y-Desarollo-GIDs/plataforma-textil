@@ -105,10 +105,12 @@ test.describe('Flujo comercial completo', () => {
     await page.goto(pedidoUrl)
 
     // La seccion de cotizaciones debe mostrar nuestra cotizacion
-    await expect(page.getByText('Cotizacion E2E')).toBeVisible({ timeout: 10000 })
+    // Usar .first() porque runs anteriores pueden haber dejado cotizaciones en la DB
+    await expect(page.getByText('Cotizacion E2E').first()).toBeVisible({ timeout: 10000 })
 
     // Click en "Aceptar" (primer paso del two-step)
-    await page.click('button[data-action="aceptar-cotizacion"]')
+    // .first() en caso de multiples cotizaciones ENVIADA de runs anteriores
+    await page.locator('button[data-action="aceptar-cotizacion"]').first().click()
 
     // Click en "Confirmar" (segundo paso)
     await page.click('button[data-action="confirmar-aceptacion"]')
