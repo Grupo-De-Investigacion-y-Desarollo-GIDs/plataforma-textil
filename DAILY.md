@@ -3,6 +3,10 @@
 ## 2026-04-28
 
 ### Gerardo Breard
+- **23:32** `294059c` — fix: renderEje6 soporta checkboxes como fallback (D-01 Eje 6)
+  - `tools/generate-qa.js`
+  - `tools/generate-qa.test.js`
+
 - **23:19** `b3bdb28` — fix: renderer QA soporta checkboxes como fallback cuando no hay tabla
   - `.claude/auditorias/QA_v3-tipos-documento-db.md`
   - `tools/generate-qa.js`
