@@ -9,7 +9,9 @@ const os = require('os')
 const path = require('path')
 const {
   normalizar,
+  parsearFrontmatter,
   parsearMetadata,
+  esResultadoVerificado,
   dividirSecciones,
   parsearTabla,
   parsearPasos,
@@ -1396,6 +1398,91 @@ console.log('\n📋 Test 29: QA V3 no mapeado a bloque aparece en Otros V3')
 
   // Cleanup
   fs.rmSync(tmpDir, { recursive: true })
+}
+
+// ============================================
+// TEST 30: parsearMetadata con YAML frontmatter
+// ============================================
+{
+  const header = `---
+spec: v3-redefinicion-roles-estado
+version: V3
+bloque: 3
+titulo: "Redefinicion de roles"
+fecha: 2026-04-28
+autor: Gerardo (Claude Code)
+---
+
+# QA: Redefinicion de roles ESTADO (D-01)`
+
+  const meta = parsearMetadata(header)
+  assert(meta.spec === 'v3-redefinicion-roles-estado', 'frontmatter: spec parseado correctamente')
+  assert(meta.fecha === '2026-04-28', 'frontmatter: fecha parseada correctamente')
+  assert(meta.titulo === 'Redefinicion de roles ESTADO (D-01)', 'frontmatter: titulo del # QA sobreescribe frontmatter')
+  assert(meta.auditor === 'Gerardo (Claude Code)', 'frontmatter: autor mapeado a auditor')
+}
+
+// ============================================
+// TEST 31: parsearProgreso con checkboxes sueltos
+// ============================================
+{
+  const md = `# QA: Test
+
+## Eje 1 — Funcionalidad
+
+### 1.1 Items verificados
+- [x] Login como ESTADO — ok
+- [x] Sidebar muestra 8 items — ok
+- [ ] Filtrar por nivel
+
+### 1.2 Items pendientes
+- [ ] Click en un taller
+- [ ] Ver tabs
+`
+
+  const progreso = parsearProgreso(md)
+  assert(progreso.total === 5, 'checkboxes: cuenta 5 items totales, obtuvo ' + progreso.total)
+  assert(progreso.verified === 2, 'checkboxes: 2 verificados (los [x]), obtuvo ' + progreso.verified)
+}
+
+// ============================================
+// TEST 32: parsearProgreso cuenta ✅ Gerardo como verificado
+// ============================================
+{
+  const md = `# QA: Test
+
+## Eje 1 — Funcionalidad
+
+| # | Criterio | Verificador | Resultado | Issue |
+|---|----------|-------------|-----------|-------|
+| 1 | DB existe | DEV | ✅ Gerardo 28/4 | |
+| 2 | Migraciones ok | DEV | ✅ Gerardo 28/4 | |
+| 3 | Seed funciona | DEV | | |
+| 4 | Banner visible | QA | ok | |
+| 5 | Login funciona | QA | | |
+`
+
+  const progreso = parsearProgreso(md)
+  assert(progreso.dev.total === 3, 'emoji: 3 items DEV totales, obtuvo ' + progreso.dev.total)
+  assert(progreso.dev.ok === 2, 'emoji: 2 items DEV verificados con ✅, obtuvo ' + progreso.dev.ok)
+  assert(progreso.qa.total === 2, 'emoji: 2 items QA totales, obtuvo ' + progreso.qa.total)
+  assert(progreso.qa.ok === 1, 'emoji: 1 item QA verificado con ok, obtuvo ' + progreso.qa.ok)
+  assert(progreso.verified === 3, 'emoji: 3 verificados total (2 DEV + 1 QA), obtuvo ' + progreso.verified)
+}
+
+// ============================================
+// TEST 33: esResultadoVerificado rechaza valores vacios/pendientes
+// ============================================
+{
+  assert(esResultadoVerificado('') === false, 'vacio no es verificado')
+  assert(esResultadoVerificado('—') === false, 'guion largo no es verificado')
+  assert(esResultadoVerificado('n/a') === false, 'n/a no es verificado')
+  assert(esResultadoVerificado('pendiente') === false, 'pendiente no es verificado')
+  assert(esResultadoVerificado('tbd') === false, 'tbd no es verificado')
+  assert(esResultadoVerificado('ok') === 'ok', 'ok es verificado')
+  assert(esResultadoVerificado('✅ Gerardo 28/4') === 'ok', '✅ con texto es verificado')
+  assert(esResultadoVerificado('bug') === 'bug', 'bug es bug')
+  assert(esResultadoVerificado('ok — verificado con E2E') === 'ok', 'ok con nota es verificado')
 }
 
 // ============================================

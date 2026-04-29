@@ -25,12 +25,39 @@ function normalizar(text) {
 /**
  * Parsea metadata del header del .md (líneas antes del primer ##)
  */
+/**
+ * Parsea YAML frontmatter delimitado por --- al inicio del archivo.
+ * Retorna objeto con los campos encontrados, o null si no hay frontmatter.
+ */
+function parsearFrontmatter(text) {
+  const match = text.match(/^---\n([\s\S]*?)\n---/)
+  if (!match) return null
+  const fm = {}
+  for (const line of match[1].split('\n')) {
+    const kv = line.match(/^(\w[\w_]*):\s*"?(.+?)"?\s*$/)
+    if (kv) fm[kv[1]] = kv[2]
+  }
+  return fm
+}
+
 function parsearMetadata(header) {
   const meta = { titulo: '', spec: '', commit: '', url: '', fecha: '', auditor: '', incluyeEje6: false, perfiles: [] }
 
+  // Intentar YAML frontmatter primero
+  const fm = parsearFrontmatter(header)
+  if (fm) {
+    if (fm.titulo) meta.titulo = fm.titulo
+    if (fm.spec) meta.spec = fm.spec
+    if (fm.fecha) meta.fecha = fm.fecha
+    if (fm.autor) meta.auditor = fm.autor
+    if (fm.version) meta.commit = fm.version
+  }
+
+  // Titulo desde # QA: ... (funciona con y sin frontmatter)
   const tituloMatch = header.match(/^#\s+QA:\s*(.+)$/m)
   if (tituloMatch) meta.titulo = tituloMatch[1].trim()
 
+  // Fallback inline markdown (sobreescribe frontmatter si ambos existen)
   const specMatch = header.match(/\*\*Spec:\*\*\s*`([^`]+)`/m)
   if (specMatch) meta.spec = specMatch[1].trim()
 
@@ -1437,6 +1464,22 @@ function generarHtml(mdPath) {
  * Busca en tablas (Eje 1, 3, 4, 5) y pasos (Eje 2).
  * Retorna: { dev: { total, ok, bug }, qa: { total, ok, bug }, total, verified }
  */
+/**
+ * Determina si un resultado de tabla/checkbox cuenta como "verificado".
+ * Acepta: ok, ✅, texto que empiece con ✅, "verificado".
+ * Rechaza: vacío, —, n/a, tbd, pendiente.
+ */
+function esResultadoVerificado(resultado) {
+  if (!resultado) return false
+  const r = resultado.trim().toLowerCase()
+  if (!r || r === '—' || r === '-' || r === 'n/a' || r === 'tbd' || r === 'pendiente' || r === '[ ]') return false
+  if (r === 'ok' || r.startsWith('ok ') || r.startsWith('ok—') || r.startsWith('ok,')) return 'ok'
+  if (resultado.trim().startsWith('✅') || r.startsWith('verificado')) return 'ok'
+  if (r === 'bug' || r === 'bloqueante') return 'bug'
+  // Cualquier otro texto no vacío y no-pendiente = verificado
+  return 'ok'
+}
+
 function parsearProgreso(mdContent) {
   const stats = {
     dev: { total: 0, ok: 0, bug: 0 },
@@ -1444,38 +1487,37 @@ function parsearProgreso(mdContent) {
   }
 
   const lineas = mdContent.split('\n')
+  let enChecklist = false
 
   for (let i = 0; i < lineas.length; i++) {
     const linea = lineas[i]
 
-    // Tablas: | ... | DEV/QA | resultado | ... |
-    // Detectar filas de tabla con contenido (no headers ni separadores)
+    // Detectar seccion "Checklist de cierre" — no contar sus checkboxes
+    if (linea.match(/^##\s+/)) {
+      enChecklist = normalizar(linea).includes('checklist')
+    }
+
+    // Tablas: | # | ... | DEV/QA | resultado | ... |
     const tablaMatch = linea.match(/^\|\s*\d+\s*\|.*\|\s*(DEV|QA)\s*\|\s*(.*?)\s*\|/)
     if (tablaMatch) {
       const verificador = tablaMatch[1].toLowerCase()
-      const resultado = tablaMatch[2].trim().toLowerCase()
+      const resultado = tablaMatch[2].trim()
       const bucket = verificador === 'dev' ? stats.dev : stats.qa
       bucket.total++
-      if (resultado === 'ok') bucket.ok++
-      else if (resultado === 'bug' || resultado === 'bloqueante') bucket.bug++
-      continue
-    }
-
-    // Eje 4 (Performance): | ... | Verificador | Resultado | — sin # al inicio
-    const perfMatch = linea.match(/^\|\s*\d+\s*\|.*\|\s*(DEV|QA)\s*\|\s*(.*?)\s*\|/)
-    if (perfMatch) {
-      // Already caught by tablaMatch above
+      const tipo = esResultadoVerificado(resultado)
+      if (tipo === 'ok') bucket.ok++
+      else if (tipo === 'bug') bucket.bug++
       continue
     }
 
     // Eje 5 (Consistencia visual): | Verificacion | Resultado | Notas | — sin verificador, cuenta como QA
-    if (linea.match(/^\|[^|]+\|\s*(ok|bug|bloqueante)?\s*\|[^|]*\|$/) && !linea.match(/Resultado|---/)) {
+    if (linea.match(/^\|[^|]+\|[^|]+\|[^|]*\|$/) && !linea.match(/Resultado|Verificacion|---/i)) {
       const resMatch = linea.match(/^\|[^|]+\|\s*(.*?)\s*\|[^|]*\|$/)
       if (resMatch) {
-        const resultado = resMatch[1].trim().toLowerCase()
         stats.qa.total++
-        if (resultado === 'ok') stats.qa.ok++
-        else if (resultado === 'bug' || resultado === 'bloqueante') stats.qa.bug++
+        const tipo = esResultadoVerificado(resMatch[1].trim())
+        if (tipo === 'ok') stats.qa.ok++
+        else if (tipo === 'bug') stats.qa.bug++
       }
       continue
     }
@@ -1486,16 +1528,29 @@ function parsearProgreso(mdContent) {
       const verificador = pasoVerMatch[1].toLowerCase()
       const bucket = verificador === 'dev' ? stats.dev : stats.qa
       bucket.total++
-      // Buscar resultado en las siguientes lineas
       for (let j = i + 1; j < Math.min(i + 5, lineas.length); j++) {
         const resMatch = lineas[j].match(/^-\s*\*\*Resultado:\*\*\s*(.*)/)
         if (resMatch) {
-          const resultado = resMatch[1].trim().toLowerCase()
-          if (resultado === 'ok' || resultado.startsWith('ok')) bucket.ok++
-          else if (resultado === 'bug' || resultado === 'bloqueante') bucket.bug++
+          const tipo = esResultadoVerificado(resMatch[1].trim())
+          if (tipo === 'ok') bucket.ok++
+          else if (tipo === 'bug') bucket.bug++
           break
         }
       }
+      continue
+    }
+
+    // Checkboxes sueltos: - [x] texto / - [ ] texto
+    // Solo contar si NO estamos en seccion Checklist de cierre y NO es un Resultado inline
+    const checkboxMatch = linea.match(/^-\s*\[([ xX])\]\s*(.+)/)
+    if (checkboxMatch && !enChecklist && !linea.includes('**Resultado:**')) {
+      const checked = checkboxMatch[1].toLowerCase() === 'x'
+      const texto = checkboxMatch[2]
+      const esDev = texto.includes('✅ Gerardo') || texto.includes('DEV')
+      const bucket = esDev ? stats.dev : stats.qa
+      bucket.total++
+      if (checked) bucket.ok++
+      continue
     }
   }
 
@@ -2077,7 +2132,9 @@ if (require.main === module) {
 // Export para tests
 module.exports = {
   normalizar,
+  parsearFrontmatter,
   parsearMetadata,
+  esResultadoVerificado,
   dividirSecciones,
   parsearTabla,
   parsearPasos,
