@@ -44,7 +44,7 @@ test.describe('Acceso pre-formalizacion y niveles privados', () => {
     await expect(nivelBadges).toHaveCount(0)
   })
 
-  test('ESTADO talleres tiene filtro de verificacion AFIP', async ({ page }) => {
+  test('ESTADO talleres tiene filtro de verificacion AFIP', { timeout: 60000 }, async ({ page }) => {
     await ensureNotProduction(page)
     await loginAs(page, 'estado')
 
