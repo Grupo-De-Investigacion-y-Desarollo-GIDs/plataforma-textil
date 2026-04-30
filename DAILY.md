@@ -3,6 +3,9 @@
 ## 2026-04-29
 
 ### Gerardo Breard
+- **21:06** `ac3b49a` — fix: E2E selectors — use getByRole heading for strict mode
+  - `tests/e2e/acceso-verificado.spec.ts`
+
 - **20:23** `da33f6d` — feat: acceso pre-formalizacion y niveles privados
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `.claude/auditorias/QA_v3-acceso-pre-formalizacion.md`
