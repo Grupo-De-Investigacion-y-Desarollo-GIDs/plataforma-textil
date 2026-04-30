@@ -3,6 +3,9 @@
 ## 2026-04-29
 
 ### Gerardo Breard
+- **21:49** `6e50273` — fix: mark ESTADO E2E test as fixme — CI login flakiness
+  - `tests/e2e/acceso-verificado.spec.ts`
+
 - **21:24** `4bf8268` — fix: increase ESTADO E2E test timeout to 60s for CI flakiness
   - `tests/e2e/acceso-verificado.spec.ts`
 
