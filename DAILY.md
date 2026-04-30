@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-04-30
+
+### Gerardo Breard
+- **11:52** `dbdf7e1` — docs: mark 6 DEV items as verified in QA acceso-pre-formalizacion
+  - `.claude/auditorias/QA_v3-acceso-pre-formalizacion.md`
+
+
 ## 2026-04-29
 
 ### Gerardo Breard

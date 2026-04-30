@@ -48,10 +48,10 @@ Verificar que: (1) talleres no verificados no pueden cotizar ni aparecer en dire
 
 | # | Criterio | Verificador | Resultado | Issue |
 |---|----------|-------------|-----------|-------|
-| 1 | POST /api/cotizaciones rechaza taller con verificadoAfip:false con 403 TALLER_NO_VERIFICADO | DEV | | # |
-| 2 | POST /api/cotizaciones permite taller con verificadoAfip:true | DEV | | # |
-| 3 | GET /api/talleres solo retorna talleres verificados | DEV | | # |
-| 4 | POST /api/pedidos/[id]/invitaciones rechaza talleres no verificados | DEV | | # |
+| 1 | POST /api/cotizaciones rechaza taller con verificadoAfip:false con 403 TALLER_NO_VERIFICADO | DEV | ok | |
+| 2 | POST /api/cotizaciones permite taller con verificadoAfip:true | DEV | ok | |
+| 3 | GET /api/talleres solo retorna talleres verificados | DEV | ok | |
+| 4 | POST /api/pedidos/[id]/invitaciones rechaza talleres no verificados | DEV | ok | |
 | 5 | Directorio publico filtra solo talleres verificados | QA | | # |
 | 6 | Directorio marca filtra solo talleres verificados | QA | | # |
 | 7 | Nivel NO visible en directorio publico | QA | | # |
@@ -143,9 +143,9 @@ Verificar que: (1) talleres no verificados no pueden cotizar ni aparecer en dire
 
 | # | Caso | Accion | Esperado | Verificador | Resultado |
 |---|------|--------|----------|-------------|-----------|
-| 1 | Taller recien registrado (verificadoAfip: false) | Intentar cotizar via API directa (curl/Postman) | 403 TALLER_NO_VERIFICADO | DEV | |
+| 1 | Taller recien registrado (verificadoAfip: false) | Intentar cotizar via API directa (curl/Postman) | 403 TALLER_NO_VERIFICADO | DEV | ok |
 | 2 | Cotizaciones existentes de taller que pierde verificacion | Verificar que cotizaciones ya enviadas siguen visibles | Cotizaciones anteriores se mantienen | QA | |
-| 3 | Marca invita taller no verificado via API | POST /api/pedidos/[id]/invitaciones con tallerId no verificado | 400 con mensaje descriptivo | DEV | |
+| 3 | Marca invita taller no verificado via API | POST /api/pedidos/[id]/invitaciones con tallerId no verificado | 400 con mensaje descriptivo | DEV | ok |
 | 4 | Directorio vacio por filtro | Aplicar filtros que no matchean ningun taller | Mensaje "No encontramos talleres con esos filtros" | QA | |
 | 5 | Taller sin validaciones completadas | Ver perfil publico de taller sin docs aprobados | Sin seccion de credenciales (solo CUIT verificado si aplica) | QA | |
 
