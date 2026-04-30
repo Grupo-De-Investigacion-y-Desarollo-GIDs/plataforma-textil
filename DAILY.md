@@ -3,6 +3,9 @@
 ## 2026-04-29
 
 ### Gerardo Breard
+- **21:24** `4bf8268` — fix: increase ESTADO E2E test timeout to 60s for CI flakiness
+  - `tests/e2e/acceso-verificado.spec.ts`
+
 - **21:06** `ac3b49a` — fix: E2E selectors — use getByRole heading for strict mode
   - `tests/e2e/acceso-verificado.spec.ts`
 
