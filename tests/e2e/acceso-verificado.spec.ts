@@ -34,7 +34,7 @@ test.describe('Acceso pre-formalizacion y niveles privados', () => {
     await loginAs(page, 'marca')
 
     await page.goto('/marca/directorio')
-    await expect(page.getByText('Explorar Talleres')).toBeVisible({ timeout: 15000 })
+    await expect(page.getByRole('heading', { name: 'Explorar Talleres' })).toBeVisible({ timeout: 15000 })
 
     // No deberia haber filtro de nivel
     await expect(page.locator('select[name="nivel"]')).toHaveCount(0)
@@ -49,7 +49,7 @@ test.describe('Acceso pre-formalizacion y niveles privados', () => {
     await loginAs(page, 'estado')
 
     await page.goto('/estado/talleres')
-    await expect(page.getByText('Talleres')).toBeVisible({ timeout: 15000 })
+    await expect(page.getByRole('heading', { name: 'Talleres' })).toBeVisible({ timeout: 15000 })
 
     // Debe existir el filtro de verificacion
     const filtroVerificacion = page.locator('select[name="verificacion"]')
