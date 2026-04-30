@@ -4,10 +4,8 @@ import { notFound } from 'next/navigation'
 import { prisma } from '@/compartido/lib/prisma'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
-import { Star, MapPin, Users, TrendingUp, Clock, Award } from 'lucide-react'
+import { Star, MapPin, Users, TrendingUp, Clock, Award, ShieldCheck } from 'lucide-react'
 import { GaleriaFotos } from '@/taller/componentes/galeria-fotos'
-
-const nivelColor: Record<string, 'warning' | 'default' | 'success'> = { BRONCE: 'warning', PLATA: 'default', ORO: 'success' }
 
 export default async function PerfilPublicoPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -23,6 +21,10 @@ export default async function PerfilPublicoPage({ params }: { params: Promise<{ 
         include: { coleccion: { select: { titulo: true, institucion: true } } },
         orderBy: { fecha: 'desc' },
       },
+      validaciones: {
+        where: { estado: 'COMPLETADO' },
+        select: { tipoDocumento: { select: { nombre: true } } },
+      },
     },
   })
 
@@ -37,10 +39,17 @@ export default async function PerfilPublicoPage({ params }: { params: Promise<{ 
       </div>
 
       <div className="mb-6">
-        <div className="flex items-center gap-3 mb-2">
-          <h1 className="font-overpass font-bold text-3xl text-brand-blue">{taller.nombre}</h1>
-          <Badge variant={nivelColor[taller.nivel]}>{taller.nivel}</Badge>
-        </div>
+        <h1 className="font-overpass font-bold text-3xl text-brand-blue mb-2">{taller.nombre}</h1>
+        {(taller.verificadoAfip || taller.validaciones.length > 0) && (
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            {taller.verificadoAfip && (
+              <Badge variant="success"><ShieldCheck className="w-3 h-3 mr-1" />CUIT verificado</Badge>
+            )}
+            {taller.validaciones.map((v: { tipoDocumento: { nombre: string } }, i: number) => (
+              <Badge key={i} variant="success"><ShieldCheck className="w-3 h-3 mr-1" />{v.tipoDocumento.nombre}</Badge>
+            ))}
+          </div>
+        )}
         {taller.provincia && (
           <p className="flex items-center gap-1 text-gray-600">
             <MapPin className="w-4 h-4" /> {taller.provincia}{taller.partido ? `, ${taller.partido}` : ''}

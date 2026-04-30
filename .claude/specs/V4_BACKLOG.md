@@ -109,6 +109,7 @@ Origen: cosas que vamos a aprender durante el piloto. **Este bloque está vacío
 | ID | Spec | Descripción | Estimación |
 |----|------|-------------|------------|
 | G-01 | Boton filtro "Ver pendientes" en dashboard ESTADO | Agregar boton `data-filter="con-pendientes"` en dashboard ESTADO que linkee a `/estado/talleres?pendientes=con`. Hoy la ruta de filtro existe pero no hay acceso directo desde el dashboard | 1h |
+| G-02 | Control granular de credenciales exhibidas | Permitir al taller decidir que credenciales verificadas exhibir en su perfil publico (control granular). Hoy (v3) todas las credenciales COMPLETADO se muestran automaticamente. Si el feedback del piloto lo justifica, agregar toggle por credencial en /taller/perfil/editar | 4h |
 | (TBD) | (Pendiente de feedback de talleres) | | |
 | (TBD) | (Pendiente de feedback de marcas) | | |
 | (TBD) | (Pendiente de feedback de OIT) | | |

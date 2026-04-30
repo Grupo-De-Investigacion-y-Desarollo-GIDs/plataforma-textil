@@ -195,6 +195,24 @@ export default async function TallerDashboardPage() {
         </p>
       </div>
 
+      {/* Banner taller no verificado */}
+      {taller && !taller.verificadoAfip && (
+        <div className="border-l-4 border-l-amber-400 bg-amber-50 rounded-xl p-4">
+          <p className="font-overpass font-bold text-amber-800 mb-1">
+            Tu taller esta en proceso de formalizacion
+          </p>
+          <p className="text-sm text-amber-700">
+            Podes navegar la plataforma, capacitarte y subir documentos para avanzar. Una vez que el Estado verifique tu CUIT, vas a poder cotizar pedidos y aparecer en el directorio.
+          </p>
+          <Link
+            href="/taller/formalizacion"
+            className="inline-flex items-center gap-1 mt-2 text-sm font-semibold text-amber-800 hover:underline"
+          >
+            Ir a Formalizacion →
+          </Link>
+        </div>
+      )}
+
       {/* Banner de cambio de nivel */}
       {cambioNivel && cambioNivel.nivelNuevo && (
         cambioNivel.accion === 'NIVEL_SUBIDO' ? (

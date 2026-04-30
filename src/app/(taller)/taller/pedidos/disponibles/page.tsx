@@ -16,7 +16,7 @@ export default async function PedidosDisponiblesPage({ searchParams }: { searchP
 
   const page = Math.max(1, parseInt(pageParam || '1'))
 
-  const taller = await prisma.taller.findFirst({ where: { userId: session.user.id }, select: { id: true } })
+  const taller = await prisma.taller.findFirst({ where: { userId: session.user.id }, select: { id: true, verificadoAfip: true } })
 
   const where = {
     estado: 'PUBLICADO' as const,
@@ -59,6 +59,16 @@ export default async function PedidosDisponiblesPage({ searchParams }: { searchP
         <h1 className="font-overpass font-bold text-3xl text-brand-blue mt-2">Pedidos disponibles</h1>
         <p className="text-gray-500 mt-1">Pedidos publicados por marcas que buscan talleres</p>
       </div>
+
+      {taller && !taller.verificadoAfip && (
+        <div className="rounded-lg bg-amber-50 border border-amber-200 px-4 py-3">
+          <p className="text-sm text-amber-800">
+            <span className="font-semibold">Tu CUIT aun no esta verificado.</span>{' '}
+            Podes ver los pedidos disponibles, pero para cotizar necesitas completar la verificacion en{' '}
+            <Link href="/taller/formalizacion" className="font-semibold underline">Formalizacion</Link>.
+          </p>
+        </div>
+      )}
 
       {pedidosDisponibles.length === 0 ? (
         <Card>
@@ -116,7 +126,7 @@ export default async function PedidosDisponiblesPage({ searchParams }: { searchP
                   href={`/taller/pedidos/disponibles/${pedido.id}`}
                   className="inline-flex items-center gap-2 bg-brand-blue text-white px-4 py-2 rounded-lg text-sm font-overpass font-semibold hover:bg-brand-blue-hover transition-colors shrink-0"
                 >
-                  Ver y cotizar
+                  {taller?.verificadoAfip ? 'Ver y cotizar' : 'Ver detalle'}
                 </Link>
               </div>
             </Card>

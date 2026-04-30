@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '10')
 
-    const where: Record<string, unknown> = {}
+    const where: Record<string, unknown> = { verificadoAfip: true }
 
     if (nivel) where.nivel = nivel
     if (provincia) where.provincia = { contains: provincia, mode: 'insensitive' }

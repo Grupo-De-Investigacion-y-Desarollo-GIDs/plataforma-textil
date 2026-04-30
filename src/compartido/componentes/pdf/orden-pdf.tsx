@@ -20,7 +20,6 @@ interface OrdenPDFProps {
   moId: string
   nombreTaller: string
   cuitTaller: string
-  nivelTaller: string
   nombreMarca: string
   tipoPrenda: string
   cantidad: number
@@ -30,7 +29,7 @@ interface OrdenPDFProps {
   fechaAcuerdo: Date
 }
 
-export function OrdenPDF({ moId, nombreTaller, cuitTaller, nivelTaller, nombreMarca, tipoPrenda, cantidad, proceso, precio, plazoDias, fechaAcuerdo }: OrdenPDFProps) {
+export function OrdenPDF({ moId, nombreTaller, cuitTaller, nombreMarca, tipoPrenda, cantidad, proceso, precio, plazoDias, fechaAcuerdo }: OrdenPDFProps) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -44,7 +43,6 @@ export function OrdenPDF({ moId, nombreTaller, cuitTaller, nivelTaller, nombreMa
           <Text style={styles.sectionTitle}>Taller</Text>
           <View style={styles.row}><Text style={styles.label}>Nombre:</Text><Text style={styles.value}>{nombreTaller}</Text></View>
           <View style={styles.row}><Text style={styles.label}>CUIT:</Text><Text style={styles.value}>{cuitTaller}</Text></View>
-          <View style={styles.row}><Text style={styles.label}>Nivel PDT:</Text><Text style={styles.value}>{nivelTaller}</Text></View>
         </View>
 
         <View style={styles.section}>

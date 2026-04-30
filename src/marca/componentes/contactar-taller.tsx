@@ -7,7 +7,6 @@ interface ContactarTallerProps {
   taller: {
     id: string
     nombre: string
-    nivel: string
     phone: string | null
   }
   marca: {

@@ -6,19 +6,10 @@ import { redirect } from 'next/navigation'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import Link from 'next/link'
-import { MapPin, Star, MessageCircle, Factory } from 'lucide-react'
-
-const nivelVariant: Record<string, 'warning' | 'default' | 'success'> = {
-  BRONCE: 'warning',
-  PLATA: 'default',
-  ORO: 'success',
-}
-
-const allowedNiveles = ['BRONCE', 'PLATA', 'ORO'] as const
+import { MapPin, Star, MessageCircle, Factory, ShieldCheck } from 'lucide-react'
 
 type SearchParams = {
   q?: string
-  nivel?: string
   proceso?: string
   prenda?: string
 }
@@ -33,10 +24,6 @@ export default async function DirectorioPage({
 
   const resolvedSearchParams = await Promise.resolve(searchParams ?? {})
   const query = (resolvedSearchParams.q || '').trim()
-  const nivelRaw = (resolvedSearchParams.nivel || '').trim().toUpperCase()
-  const nivel = allowedNiveles.includes(nivelRaw as (typeof allowedNiveles)[number])
-    ? (nivelRaw as (typeof allowedNiveles)[number])
-    : ''
   const procesoId = (resolvedSearchParams.proceso || '').trim()
   const prendaId = (resolvedSearchParams.prenda || '').trim()
 
@@ -54,9 +41,10 @@ export default async function DirectorioPage({
     }),
   ])
 
-  // Query principal con filtros dinámicos
+  // Query principal con filtros dinámicos — solo talleres verificados
   const talleres = await prisma.taller.findMany({
     where: {
+      verificadoAfip: true,
       ...(query
         ? {
             OR: [
@@ -65,18 +53,21 @@ export default async function DirectorioPage({
             ],
           }
         : {}),
-      ...(nivel ? { nivel } : {}),
       ...(procesoId ? { procesos: { some: { procesoId } } } : {}),
       ...(prendaId ? { prendas: { some: { prendaId } } } : {}),
     },
     include: {
       procesos: { include: { proceso: true } },
       prendas: { include: { prenda: true } },
+      validaciones: {
+        where: { estado: 'COMPLETADO' },
+        select: { tipoDocumento: { select: { nombre: true } } },
+      },
     },
     orderBy: { puntaje: 'desc' },
   })
 
-  const hasFilters = query || nivel || procesoId || prendaId
+  const hasFilters = query || procesoId || prendaId
 
   return (
     <div className="space-y-6">
@@ -103,23 +94,7 @@ export default async function DirectorioPage({
               className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent"
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div>
-              <label htmlFor="nivel" className="block text-sm font-medium text-brand-blue mb-1.5">
-                Nivel
-              </label>
-              <select
-                id="nivel"
-                name="nivel"
-                defaultValue={nivel}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent"
-              >
-                <option value="">Todos</option>
-                <option value="ORO">Oro</option>
-                <option value="PLATA">Plata</option>
-                <option value="BRONCE">Bronce</option>
-              </select>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
               <label htmlFor="proceso" className="block text-sm font-medium text-brand-blue mb-1.5">
                 Proceso
@@ -206,13 +181,18 @@ export default async function DirectorioPage({
                   )}
                 </div>
                 <div className="p-4">
-                <div className="flex items-start justify-between mb-3">
+                <div className="mb-3">
                   <h3 className="font-overpass font-bold text-xl text-brand-blue">
                     {taller.nombre}
                   </h3>
-                  <Badge variant={nivelVariant[taller.nivel] || 'default'} className="text-xs px-2 py-1">
-                    {taller.nivel}
-                  </Badge>
+                  {taller.validaciones.length > 0 && (
+                    <div className="flex items-center gap-1 mt-1">
+                      <ShieldCheck className="w-3.5 h-3.5 text-green-600 shrink-0" />
+                      <span className="text-xs text-green-700 font-medium">
+                        {taller.validaciones.length} {taller.validaciones.length === 1 ? 'credencial verificada' : 'credenciales verificadas'}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {taller.ubicacion && (

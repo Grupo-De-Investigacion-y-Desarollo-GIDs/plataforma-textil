@@ -80,7 +80,7 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
     include: {
       ordenes: {
         include: {
-          taller: { select: { nombre: true, nivel: true, user: { select: { phone: true } } } },
+          taller: { select: { nombre: true, user: { select: { phone: true } } } },
         },
         orderBy: { createdAt: 'desc' },
       },
@@ -92,7 +92,7 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
   const [cotizaciones, actividad] = await Promise.all([
     prisma.cotizacion.findMany({
       where: { pedidoId: pedido.id },
-      include: { taller: { select: { nombre: true, nivel: true } } },
+      include: { taller: { select: { nombre: true } } },
       orderBy: { createdAt: 'desc' },
     }),
     prisma.logActividad.findMany({
@@ -246,11 +246,8 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
                 }`}
               >
                 <div className="flex items-start justify-between">
-                  <div className="space-y-1">
+                  <div>
                     <p className="font-medium text-gray-800">{cot.taller.nombre}</p>
-                    <Badge variant={cot.taller.nivel === 'ORO' ? 'success' : cot.taller.nivel === 'PLATA' ? 'default' : 'warning'}>
-                      {cot.taller.nivel}
-                    </Badge>
                   </div>
                   <Badge variant={
                     cot.estado === 'ENVIADA' ? 'default' :
@@ -309,7 +306,7 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
                   <div className="space-y-1">
                     <p className="font-overpass font-semibold text-brand-blue">{orden.moId}</p>
                     <p className="text-sm text-gray-600">
-                      Taller: {orden.taller.nombre} ({orden.taller.nivel})
+                      Taller: {orden.taller.nombre}
                     </p>
                   </div>
                   <Badge variant={ordenStatusVariant[orden.estado] || 'default'}>

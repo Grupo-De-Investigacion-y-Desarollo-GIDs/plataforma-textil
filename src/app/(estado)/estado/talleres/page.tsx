@@ -11,15 +11,17 @@ import { Eye } from 'lucide-react'
 export default async function EstadoTalleresPage({
   searchParams,
 }: {
-  searchParams: Promise<{ nivel?: string; provincia?: string; pendientes?: string }>
+  searchParams: Promise<{ nivel?: string; provincia?: string; pendientes?: string; verificacion?: string }>
 }) {
   await requiereRol(['ESTADO', 'ADMIN'])
 
-  const { nivel, provincia, pendientes } = await searchParams
+  const { nivel, provincia, pendientes, verificacion } = await searchParams
 
   const where: Record<string, unknown> = {}
   if (nivel) where.nivel = nivel
   if (provincia) where.provincia = provincia
+  if (verificacion === 'verificados') where.verificadoAfip = true
+  if (verificacion === 'sin-verificar') where.verificadoAfip = false
 
   const talleres = await prisma.taller.findMany({
     where,
@@ -47,22 +49,24 @@ export default async function EstadoTalleresPage({
 
   const provincias = [...new Set(talleres.map(t => t.provincia).filter(Boolean))].sort()
   const byNivel = (n: string) => talleres.filter(t => t.nivel === n).length
+  const sinVerificar = talleres.filter(t => !t.verificadoAfip).length
 
   return (
     <div className="max-w-5xl mx-auto py-6 px-4">
       <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Talleres</h1>
       <p className="text-gray-500 text-sm mb-6">Vista regulatoria — estado de formalizacion y documentacion</p>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
         <StatCard value={String(talleres.length)} label="Total" variant="success" />
         <StatCard value={String(byNivel('ORO'))} label="Oro" variant="success" />
         <StatCard value={String(byNivel('PLATA'))} label="Plata" variant="muted" />
         <StatCard value={String(byNivel('BRONCE'))} label="Bronce" variant="warning" />
+        <StatCard value={String(sinVerificar)} label="Sin verificar" variant={sinVerificar > 0 ? 'warning' : 'muted'} />
       </div>
 
       {/* Filtros */}
       <Card className="mb-4">
-        <form method="get" className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <form method="get" className="grid grid-cols-1 sm:grid-cols-4 gap-3">
           <select name="nivel" defaultValue={nivel || ''} className="rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue">
             <option value="">Todos los niveles</option>
             <option value="BRONCE">Bronce</option>
@@ -80,7 +84,12 @@ export default async function EstadoTalleresPage({
             <option value="con">Con docs pendientes</option>
             <option value="sin">Sin docs pendientes</option>
           </select>
-          <div className="sm:col-span-3 flex gap-2">
+          <select name="verificacion" defaultValue={verificacion || ''} className="rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue">
+            <option value="">Verificacion AFIP</option>
+            <option value="verificados">Verificados</option>
+            <option value="sin-verificar">Sin verificar</option>
+          </select>
+          <div className="sm:col-span-4 flex gap-2">
             <button type="submit" className="px-4 py-2 bg-brand-blue text-white rounded-lg text-sm font-semibold hover:bg-brand-blue/90">Filtrar</button>
             <a href="/estado/talleres" className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm font-semibold hover:bg-gray-200">Limpiar</a>
           </div>
@@ -109,6 +118,7 @@ export default async function EstadoTalleresPage({
                   <td className="px-4 py-3">
                     <p className="font-semibold text-sm">{t.nombre}</p>
                     <p className="text-xs text-gray-400">{t.cuit}</p>
+                    {!t.verificadoAfip && <Badge variant="error" className="mt-0.5 text-[10px]">Sin verificar</Badge>}
                   </td>
                   <td className="px-4 py-3">
                     <Badge variant={t.nivel === 'ORO' ? 'success' : t.nivel === 'PLATA' ? 'default' : 'warning'}>{t.nivel}</Badge>

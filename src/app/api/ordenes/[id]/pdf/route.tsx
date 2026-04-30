@@ -20,7 +20,7 @@ export async function GET(
   const orden = await prisma.ordenManufactura.findUnique({
     where: { id },
     include: {
-      taller: { select: { nombre: true, cuit: true, nivel: true, userId: true } },
+      taller: { select: { nombre: true, cuit: true, userId: true } },
       pedido: {
         select: {
           tipoPrenda: true,
@@ -52,7 +52,6 @@ export async function GET(
       moId={orden.moId}
       nombreTaller={orden.taller.nombre}
       cuitTaller={orden.taller.cuit}
-      nivelTaller={orden.taller.nivel}
       nombreMarca={orden.pedido.marca.nombre}
       tipoPrenda={orden.pedido.tipoPrenda}
       cantidad={orden.pedido.cantidad}

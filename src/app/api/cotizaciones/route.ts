@@ -57,7 +57,7 @@ export const GET = apiHandler(async (req: NextRequest) => {
   const cotizaciones = await prisma.cotizacion.findMany({
     where,
     include: {
-      taller: { select: { id: true, nombre: true, nivel: true } },
+      taller: { select: { id: true, nombre: true } },
       pedido: { select: { id: true, omId: true, tipoPrenda: true, cantidad: true, estado: true } },
     },
     orderBy: { createdAt: 'desc' },
@@ -80,9 +80,17 @@ export const POST = apiHandler(async (req: NextRequest) => {
 
   const taller = await prisma.taller.findUnique({
     where: { userId: session.user.id! },
-    select: { id: true, nombre: true },
+    select: { id: true, nombre: true, verificadoAfip: true },
   })
   if (!taller) return errorNotFound('taller')
+
+  if (!taller.verificadoAfip) {
+    return errorResponse({
+      code: 'TALLER_NO_VERIFICADO',
+      message: 'Para cotizar pedidos, tu taller necesita tener el CUIT verificado por AFIP. Completá tu documentación en la sección Formalización.',
+      status: 403,
+    })
+  }
 
   const body = await req.json()
   const parsed = cotizacionSchema.safeParse(body)

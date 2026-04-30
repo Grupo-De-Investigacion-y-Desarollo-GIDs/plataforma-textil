@@ -6,37 +6,30 @@ import { prisma } from '@/compartido/lib/prisma'
 import { getFeatureFlag } from '@/compartido/lib/features'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
-import { Star, MapPin, Users, ArrowRight, Factory } from 'lucide-react'
-
-const nivelColor: Record<string, 'warning' | 'default' | 'success'> = { BRONCE: 'warning', PLATA: 'default', ORO: 'success' }
-const allowedNiveles = ['BRONCE', 'PLATA', 'ORO'] as const
+import { Star, MapPin, Users, ArrowRight, Factory, ShieldCheck } from 'lucide-react'
 
 export default async function DirectorioPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ q?: string; nivel?: string; proceso?: string; prenda?: string; page?: string }> | { q?: string; nivel?: string; proceso?: string; prenda?: string; page?: string }
+  searchParams?: Promise<{ q?: string; proceso?: string; prenda?: string; page?: string }> | { q?: string; proceso?: string; prenda?: string; page?: string }
 }) {
   if (!await getFeatureFlag('directorio_publico')) notFound()
 
   const params = await Promise.resolve(searchParams ?? {})
   const query = (params.q || '').trim()
-  const nivelRaw = (params.nivel || '').trim().toUpperCase()
-  const nivel = allowedNiveles.includes(nivelRaw as (typeof allowedNiveles)[number])
-    ? (nivelRaw as (typeof allowedNiveles)[number])
-    : ''
   const procesoId = (params.proceso || '').trim()
   const prendaId = (params.prenda || '').trim()
   const page = Math.max(1, parseInt(params.page || '1'))
   const PAGE_SIZE = 12
 
   const tallerWhere = {
+    verificadoAfip: true,
     ...(query ? { OR: [
       { nombre: { contains: query, mode: 'insensitive' as const } },
       { ubicacion: { contains: query, mode: 'insensitive' as const } },
       { provincia: { contains: query, mode: 'insensitive' as const } },
       { partido: { contains: query, mode: 'insensitive' as const } },
     ]} : {}),
-    ...(nivel ? { nivel } : {}),
     ...(procesoId ? { procesos: { some: { procesoId } } } : {}),
     ...(prendaId ? { prendas: { some: { prendaId } } } : {}),
   }
@@ -57,6 +50,10 @@ export default async function DirectorioPage({
       include: {
         procesos: { include: { proceso: true } },
         prendas: { include: { prenda: true } },
+        validaciones: {
+          where: { estado: 'COMPLETADO' },
+          select: { tipoDocumento: { select: { nombre: true } } },
+        },
       },
       orderBy: { puntaje: 'desc' },
       skip: (page - 1) * PAGE_SIZE,
@@ -65,7 +62,7 @@ export default async function DirectorioPage({
     prisma.taller.count({ where: tallerWhere }),
   ])
 
-  const hasFilters = query || nivel || procesoId || prendaId
+  const hasFilters = query || procesoId || prendaId
 
   return (
     <div>
@@ -75,7 +72,7 @@ export default async function DirectorioPage({
       </div>
 
       <form method="get" className="bg-white rounded-xl border border-gray-100 p-4 mb-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <input
             name="q"
             defaultValue={query}
@@ -83,14 +80,6 @@ export default async function DirectorioPage({
             aria-label="Buscar por nombre o ubicacion"
             className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/30"
           />
-          <select name="nivel" defaultValue={nivel}
-            aria-label="Filtrar por nivel"
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm">
-            <option value="">Todos los niveles</option>
-            <option value="BRONCE">Bronce</option>
-            <option value="PLATA">Plata</option>
-            <option value="ORO">Oro</option>
-          </select>
           <select name="proceso" defaultValue={procesoId}
             aria-label="Filtrar por proceso productivo"
             className="border border-gray-300 rounded-lg px-3 py-2 text-sm">
@@ -153,9 +142,16 @@ export default async function DirectorioPage({
                   )}
                 </div>
                 <div className="p-4">
-                <div className="flex items-start justify-between mb-3">
+                <div className="mb-3">
                   <h2 className="font-overpass font-bold text-lg text-brand-blue">{taller.nombre}</h2>
-                  <Badge variant={nivelColor[taller.nivel]}>{taller.nivel}</Badge>
+                  {taller.validaciones.length > 0 && (
+                    <div className="flex items-center gap-1 mt-1">
+                      <ShieldCheck className="w-3.5 h-3.5 text-green-600 shrink-0" />
+                      <span className="text-xs text-green-700 font-medium">
+                        {taller.validaciones.length} {taller.validaciones.length === 1 ? 'credencial verificada' : 'credenciales verificadas'}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {(taller.provincia || taller.ubicacion) && (
@@ -197,7 +193,7 @@ export default async function DirectorioPage({
         <div className="flex items-center justify-center gap-2 mt-8">
           {page > 1 && (
             <Link
-              href={`/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(nivel ? { nivel } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), page: String(page - 1) }).toString()}`}
+              href={`/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), page: String(page - 1) }).toString()}`}
               className="px-4 py-2 rounded-lg border border-gray-300 text-sm text-gray-600 hover:bg-gray-50"
             >
               ← Anterior
@@ -206,7 +202,7 @@ export default async function DirectorioPage({
           {Array.from({ length: Math.ceil(totalTalleres / PAGE_SIZE) }, (_, i) => i + 1).map(p => (
             <Link
               key={p}
-              href={`/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(nivel ? { nivel } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), page: String(p) }).toString()}`}
+              href={`/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), page: String(p) }).toString()}`}
               className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium ${
                 p === page ? 'bg-brand-blue text-white' : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
               }`}
@@ -216,7 +212,7 @@ export default async function DirectorioPage({
           ))}
           {page < Math.ceil(totalTalleres / PAGE_SIZE) && (
             <Link
-              href={`/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(nivel ? { nivel } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), page: String(page + 1) }).toString()}`}
+              href={`/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), page: String(page + 1) }).toString()}`}
               className="px-4 py-2 rounded-lg border border-gray-300 text-sm text-gray-600 hover:bg-gray-50"
             >
               Siguiente →
