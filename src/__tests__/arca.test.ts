@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import fixtureActivo from '../../tests/fixtures/arca-responses/padron-a10-activo.json'
-import fixtureInactivo from '../../tests/fixtures/arca-responses/padron-a10-inactivo.json'
-import fixtureMonotributo from '../../tests/fixtures/arca-responses/padron-a10-monotributo.json'
-import fixtureSinActividad from '../../tests/fixtures/arca-responses/padron-a10-sin-actividad.json'
-import fixtureBaja from '../../tests/fixtures/arca-responses/padron-a10-baja.json'
+import fixtureActivo from '../../tests/fixtures/arca-responses/padron-a13-activo.json'
+import fixtureInactivo from '../../tests/fixtures/arca-responses/padron-a13-inactivo.json'
+import fixtureMonotributo from '../../tests/fixtures/arca-responses/padron-a13-monotributo.json'
+import fixtureSinActividad from '../../tests/fixtures/arca-responses/padron-a13-sin-actividad.json'
+import fixtureBaja from '../../tests/fixtures/arca-responses/padron-a13-baja.json'
 
 // ─── Shared mock references (vi.hoisted ensures they're available to vi.mock) ──
 
@@ -25,7 +25,7 @@ const { mockGetTaxpayerDetails, mockCreate, mockFindUnique, mockUpdate } = vi.ho
 vi.mock('@afipsdk/afip.js', () => {
   return {
     default: class MockAfip {
-      RegisterScopeTen = { getTaxpayerDetails: mockGetTaxpayerDetails }
+      RegisterScopeThirteen = { getTaxpayerDetails: mockGetTaxpayerDetails }
     },
   }
 })
@@ -141,7 +141,7 @@ describe('consultarPadron', () => {
       data: expect.objectContaining({
         tallerId: 'taller-123',
         cuit: '20-30123456-7',
-        endpoint: 'padron-a10',
+        endpoint: 'padron-a13',
         exitosa: true,
       }),
     })

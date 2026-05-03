@@ -14,6 +14,8 @@ function getConfig() {
     cuitPlataforma: process.env.AFIP_CUIT_PLATAFORMA ?? '',
     accessToken: process.env.AFIP_SDK_TOKEN ?? '',
     production: process.env.AFIP_SDK_ENV === 'production',
+    cert: process.env.AFIP_CERT ?? '',
+    key: process.env.AFIP_KEY ?? '',
   }
 }
 
@@ -29,6 +31,7 @@ function getCliente(): InstanceType<typeof Afip> {
       CUIT: config.cuitPlataforma,
       production: config.production,
       access_token: config.accessToken,
+      ...(config.cert && config.key ? { cert: config.cert, key: config.key } : {}),
     })
   }
   return cliente
@@ -94,14 +97,14 @@ export async function consultarPadron(cuit: string, tallerId?: string): Promise<
 
     // Timeout de 10 segundos para no bloquear registro si ARCA tarda
     const respuesta = await Promise.race([
-      sdk.RegisterScopeTen.getTaxpayerDetails(cuitNumero),
+      sdk.RegisterScopeThirteen.getTaxpayerDetails(cuitNumero),
       new Promise<never>((_, reject) =>
         setTimeout(() => reject(new Error('timeout: ARCA no respondio en 10s')), 10_000)
       ),
     ])
 
     if (!respuesta) {
-      await registrarConsulta(tallerId, cuit, 'padron-a10', false, null, 'CUIT_INEXISTENTE', inicio)
+      await registrarConsulta(tallerId, cuit, 'padron-a13', false, null, 'CUIT_INEXISTENTE', inicio)
       logAfipVerificacion(tallerId, cuit, false, 'CUIT_INEXISTENTE')
       return { exitosa: false, error: 'CUIT_INEXISTENTE', duracionMs: Date.now() - inicio }
     }
@@ -114,25 +117,25 @@ export async function consultarPadron(cuit: string, tallerId?: string): Promise<
 
     // Verificar estado del CUIT
     if (datos.estadoCuit === 'INACTIVO' || datos.estadoCuit === 'BAJA') {
-      await registrarConsulta(tallerId, cuit, 'padron-a10', true, limpiarDatosSensibles(respuesta), 'CUIT_INACTIVO', inicio)
+      await registrarConsulta(tallerId, cuit, 'padron-a13', true, limpiarDatosSensibles(respuesta), 'CUIT_INACTIVO', inicio)
       logAfipVerificacion(tallerId, cuit, false, 'CUIT_INACTIVO')
       return { exitosa: false, error: 'CUIT_INACTIVO', datos, duracionMs: Date.now() - inicio }
     }
 
     // Verificar actividades económicas
     if (datos.actividades.length === 0) {
-      await registrarConsulta(tallerId, cuit, 'padron-a10', true, limpiarDatosSensibles(respuesta), 'CUIT_SIN_ACTIVIDAD', inicio)
+      await registrarConsulta(tallerId, cuit, 'padron-a13', true, limpiarDatosSensibles(respuesta), 'CUIT_SIN_ACTIVIDAD', inicio)
       logAfipVerificacion(tallerId, cuit, false, 'CUIT_SIN_ACTIVIDAD')
       return { exitosa: false, error: 'CUIT_SIN_ACTIVIDAD', datos, duracionMs: Date.now() - inicio }
     }
 
-    await registrarConsulta(tallerId, cuit, 'padron-a10', true, limpiarDatosSensibles(respuesta), null, inicio)
+    await registrarConsulta(tallerId, cuit, 'padron-a13', true, limpiarDatosSensibles(respuesta), null, inicio)
     logAfipVerificacion(tallerId, cuit, true, null)
 
     return { exitosa: true, datos, duracionMs: Date.now() - inicio }
   } catch (error: unknown) {
     const codigo = clasificarError(error)
-    await registrarConsulta(tallerId, cuit, 'padron-a10', false, null, codigo, inicio)
+    await registrarConsulta(tallerId, cuit, 'padron-a13', false, null, codigo, inicio)
     logAfipVerificacion(tallerId, cuit, false, codigo)
 
     return {
