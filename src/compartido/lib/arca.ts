@@ -13,7 +13,7 @@ function getConfig() {
     provider: (process.env.ARCA_PROVIDER as 'afipsdk' | 'mock') ?? 'afipsdk',
     cuitPlataforma: process.env.AFIP_CUIT_PLATAFORMA ?? '',
     accessToken: process.env.AFIP_SDK_TOKEN ?? '',
-    production: process.env.AFIP_SDK_ENV === 'production',
+    production: process.env.AFIP_SDK_ENV?.trim() === 'production',
     cert: process.env.AFIP_CERT ?? '',
     key: process.env.AFIP_KEY ?? '',
   }
