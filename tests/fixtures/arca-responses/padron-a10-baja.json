@@ -1,0 +1,17 @@
+{
+  "datosGenerales": {
+    "razonSocial": "TALLER CERRADO SA",
+    "estadoClave": "BAJA",
+    "categoriaIva": "IVA Responsable Inscripto",
+    "fechaInscripcion": "2005-11-03",
+    "categoriaMonotributo": null
+  },
+  "domicilioFiscal": {
+    "descripcionProvincia": "Cordoba",
+    "localidad": "Capital",
+    "direccion": "Dean Funes 100"
+  },
+  "actividades": [
+    { "idActividad": "181000", "descripcion": "Confeccion de prendas de vestir" }
+  ]
+}

@@ -248,6 +248,36 @@ Este archivo acumula TODAS las verificaciones manuales que requieren ojos humano
 
 ---
 
+## Spec INT-01 — Integracion completa ARCA/AFIP
+
+### Pruebas en plataforma-textil-dev.vercel.app (DEV)
+
+- [ ] Registro taller: verificar que al ingresar CUIT valido, el campo "Razon social" se autocompleta desde ARCA
+- [ ] Registro taller: ingresar CUIT inexistente (ej: 99-99999999-9), verificar mensaje "No encontramos este CUIT en ARCA"
+- [ ] Registro taller: verificar que CUIT inactivo muestra mensaje con link a [contacto-pdt]
+- [ ] ESTADO > Talleres: card "Verificacion ARCA" muestra conteos correctos
+- [ ] ESTADO > Talleres: boton "Sincronizar todos con ARCA" funciona y muestra resultado
+- [ ] ESTADO > Talleres > [taller]: tab "Datos del taller" muestra seccion ARCA con tipo inscripcion, actividades, domicilio
+- [ ] ESTADO > Talleres > [taller]: boton "Re-verificar contra ARCA" funciona
+- [ ] Directorio publico: talleres verificados aparecen primero
+- [ ] Directorio publico: badge "Verificado por ARCA" visible en tarjetas
+- [ ] Directorio marca: mismo comportamiento que directorio publico
+- [ ] Perfil publico: badge "Verificado por ARCA" visible
+- [ ] ConsultaArca: verificar en Supabase que cada consulta crea un registro
+
+### Pruebas de seguridad
+
+- [ ] TALLER no puede acceder a /api/estado/arca (debe retornar 403)
+- [ ] MARCA no puede acceder a /api/estado/arca/reverificar/[id] (debe retornar 403)
+
+### Como ejecutar
+
+> **Importante:** esta spec usa AfipSDK con plan Pro. En dev/preview el provider puede ser 'mock' o 'afipsdk' segun ARCA_ENABLED.
+> 1. Para probar con mock: verificar que ARCA_ENABLED=true y ARCA_PROVIDER=mock en Vercel
+> 2. Para probar con ARCA real: ARCA_ENABLED=true y ARCA_PROVIDER=afipsdk (requiere las 3 vars AFIP_*)
+
+---
+
 ## Nota tecnica: E2E tests crean issues reales en GitHub
 
 Los tests E2E de rate limiting (S-02) envian requests POST a `/api/feedback` que crea issues reales en GitHub. Cada corrida de CI genera ~11 issues basura con titulo "Test rate limit intento N". Esto contamina el panel de issues y el conteo del QA index.

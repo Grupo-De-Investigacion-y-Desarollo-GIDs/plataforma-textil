@@ -6,6 +6,7 @@ import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Star, MapPin, Users, TrendingUp, Clock, Award, ShieldCheck } from 'lucide-react'
 import { GaleriaFotos } from '@/taller/componentes/galeria-fotos'
+import { BadgeArca } from '@/compartido/componentes/badge-arca'
 
 export default async function PerfilPublicoPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -42,9 +43,7 @@ export default async function PerfilPublicoPage({ params }: { params: Promise<{ 
         <h1 className="font-overpass font-bold text-3xl text-brand-blue mb-2">{taller.nombre}</h1>
         {(taller.verificadoAfip || taller.validaciones.length > 0) && (
           <div className="flex flex-wrap items-center gap-2 mb-2">
-            {taller.verificadoAfip && (
-              <Badge variant="success"><ShieldCheck className="w-3 h-3 mr-1" />CUIT verificado</Badge>
-            )}
+            {taller.verificadoAfip && <BadgeArca verificado={true} />}
             {taller.validaciones.map((v: { tipoDocumento: { nombre: string } }, i: number) => (
               <Badge key={i} variant="success"><ShieldCheck className="w-3 h-3 mr-1" />{v.tipoDocumento.nombre}</Badge>
             ))}

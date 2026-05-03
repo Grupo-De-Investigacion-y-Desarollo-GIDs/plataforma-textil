@@ -80,7 +80,7 @@ Origen: pedidos durante el piloto.
 
 | ID | Spec | Descripción | Estimación |
 |----|------|-------------|------------|
-| I-02 | Integración con AFIP/ARCA Padrón A5 | Verificar adicional contra base de datos AFIP de actividad económica (no solo CUIT existe, sino que está activo en rubro textil) | 8h |
+| ~~I-02~~ | ~~Integración con AFIP/ARCA Padrón A5~~ | ~~Resuelto en INT-01 (v3-arca-completo): consultarPadron() verifica existencia, estado y actividades~~ | ~~8h~~ |
 | I-03 | Integración con MercadoPago para pagos | Permitir que talleres cobren a marcas vía la plataforma. Comisión configurable | 16h |
 | I-04 | Integración con Andreani/Correo Argentino | Tracking de envíos de prendas entre taller y marca | 12h |
 

@@ -1,0 +1,15 @@
+{
+  "datosGenerales": {
+    "razonSocial": "PEREZ JUAN MANUEL",
+    "estadoClave": "ACTIVO",
+    "categoriaIva": "Responsable Monotributo",
+    "fechaInscripcion": "2022-07-01",
+    "categoriaMonotributo": "A"
+  },
+  "domicilioFiscal": {
+    "descripcionProvincia": "Tucuman",
+    "localidad": "Capital",
+    "direccion": "Laprida 300"
+  },
+  "actividades": []
+}

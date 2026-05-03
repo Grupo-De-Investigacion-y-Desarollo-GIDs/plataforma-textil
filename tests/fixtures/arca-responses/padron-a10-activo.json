@@ -1,0 +1,18 @@
+{
+  "datosGenerales": {
+    "razonSocial": "COOPERATIVA DE TRABAJO TEXTIL PROGRESO LTDA",
+    "estadoClave": "ACTIVO",
+    "categoriaIva": "IVA Responsable Inscripto",
+    "fechaInscripcion": "2015-03-10",
+    "categoriaMonotributo": null
+  },
+  "domicilioFiscal": {
+    "descripcionProvincia": "Buenos Aires",
+    "localidad": "Quilmes",
+    "direccion": "San Martin 1234"
+  },
+  "actividades": [
+    { "idActividad": "181000", "descripcion": "Confeccion de prendas de vestir" },
+    { "idActividad": "181100", "descripcion": "Confeccion de ropa de trabajo" }
+  ]
+}
