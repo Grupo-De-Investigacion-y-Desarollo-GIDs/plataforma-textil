@@ -3,6 +3,9 @@
 ## 2026-05-03
 
 ### Gerardo Breard
+- **00:37** `933e813` — chore: redeploy con AFIP_SDK_ENV sin newline
+
+
 - **00:34** `636881e` — fix: trim AFIP_SDK_ENV para manejar newline de Vercel CLI
   - `src/compartido/lib/arca.ts`
 
