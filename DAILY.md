@@ -3,6 +3,9 @@
 ## 2026-05-03
 
 ### Gerardo Breard
+- **00:41** `81702bf` — temp: debug endpoint con consulta ARCA raw
+  - `src/app/api/debug-arca/route.ts`
+
 - **00:37** `933e813` — chore: redeploy con AFIP_SDK_ENV sin newline
 
 
