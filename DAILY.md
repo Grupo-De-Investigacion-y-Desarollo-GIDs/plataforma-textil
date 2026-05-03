@@ -3,6 +3,9 @@
 ## 2026-05-03
 
 ### Gerardo Breard
+- **00:30** `8a5d1f0` — chore: redeploy con AFIP_SDK_ENV limpio via CLI
+
+
 - **00:27** `d1d7612` — chore: redeploy develop con AFIP_SDK_ENV=production corregido
 
 
