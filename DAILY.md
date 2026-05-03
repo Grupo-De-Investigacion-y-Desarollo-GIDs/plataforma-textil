@@ -1,5 +1,37 @@
 # Daily Log
 
+## 2026-05-02
+
+### Gerardo Breard
+- **22:02** `015b742` — feat: INT-01 — integracion completa con ARCA/AFIP
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-arca-completo.md`
+  - `.claude/auditorias/REVIEW_v3-arca-completo.md`
+  - `.claude/specs/V4_BACKLOG.md`
+  - `.env.example`
+  - `prisma/schema.prisma`
+  - `src/__tests__/arca.test.ts`
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/(estado)/estado/talleres/[id]/reverificar-button.tsx`
+  - `src/app/(estado)/estado/talleres/page.tsx`
+  - `src/app/(estado)/estado/talleres/sync-arca-button.tsx`
+  - `src/app/(marca)/marca/directorio/page.tsx`
+  - `src/app/(public)/directorio/page.tsx`
+  - `src/app/(public)/perfil/[id]/page.tsx`
+  - `src/app/api/auth/registro/route.ts`
+  - `src/app/api/auth/verificar-cuit/route.ts`
+  - `src/app/api/estado/arca/reverificar/[id]/route.ts`
+  - `src/app/api/estado/arca/route.ts`
+  - `src/compartido/componentes/badge-arca.tsx`
+  - `src/compartido/lib/arca.ts`
+  - `tests/fixtures/arca-responses/padron-a10-activo.json`
+  - `tests/fixtures/arca-responses/padron-a10-baja.json`
+  - `tests/fixtures/arca-responses/padron-a10-inactivo.json`
+  - `tests/fixtures/arca-responses/padron-a10-monotributo.json`
+  - `tests/fixtures/arca-responses/padron-a10-sin-actividad.json`
+  - `tools/sincronizar-arca.ts`
+
+
 ## 2026-04-30
 
 ### Gerardo Breard
