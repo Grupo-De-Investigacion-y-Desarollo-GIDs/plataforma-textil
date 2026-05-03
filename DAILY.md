@@ -3,6 +3,9 @@
 ## 2026-05-02
 
 ### Gerardo Breard
+- **22:15** `612f4d2` — fix: timeout de 10s en consultarPadron para no bloquear registro
+  - `src/compartido/lib/arca.ts`
+
 - **22:02** `015b742` — feat: INT-01 — integracion completa con ARCA/AFIP
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `.claude/auditorias/QA_v3-arca-completo.md`
