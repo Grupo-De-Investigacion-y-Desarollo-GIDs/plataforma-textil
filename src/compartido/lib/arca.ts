@@ -205,29 +205,45 @@ export async function sincronizarTaller(tallerId: string, force = false): Promis
 // ---------------------------------------------------------------------------
 
 function mapearRespuesta(cuit: string, data: Record<string, unknown>): DatosArca {
-  // IMPORTANTE: estos paths se basan en la documentación de ws_sr_padron_a10
-  // y deben validarse con la primera consulta real exitosa con plan Pro
-  const dg = (data.datosGenerales ?? data) as Record<string, unknown>
+  // Estructura real de A13 (validada 2026-05-03):
+  // - Campos directos: apellido, nombre, estadoClave, idActividadPrincipal, tipoClave, tipoPersona
+  // - domicilio: array de objetos con tipoDomicilio FISCAL/LEGAL
+  // - No tiene: datosGenerales, categoriaIva, categoriaMonotributo, actividades[]
+
+  // Nombre: persona física = nombre + apellido, jurídica = razonSocial
+  const nombre = data.tipoPersona === 'FISICA'
+    ? [data.nombre, data.apellido].filter(Boolean).join(' ')
+    : (data.razonSocial ?? data.denominacion ?? '') as string
+
+  // Actividades: A13 solo trae idActividadPrincipal como número
+  const actividades: string[] = []
+  if (data.idActividadPrincipal) {
+    actividades.push(String(data.idActividadPrincipal))
+  }
+
+  // Domicilio: A13 trae array, buscamos el FISCAL
+  const domicilioFiscal = mapearDomicilioA13(data.domicilio)
 
   return {
     cuit,
-    nombre: (dg.razonSocial ?? dg.denominacion ?? data.denominacion ?? '') as string,
-    tipoInscripcion: mapearTipoInscripcion(dg.categoriaIva as string | undefined),
-    categoriaMonotributo: (dg.categoriaMonotributo as string) ?? undefined,
-    estadoCuit: mapearEstadoCuit((dg.estadoClave ?? data.estadoClave) as string | undefined),
-    fechaInscripcion: dg.fechaInscripcion ? new Date(dg.fechaInscripcion as string) : undefined,
-    actividades: mapearActividades(data.actividades ?? dg.actividades),
-    domicilioFiscal: mapearDomicilio(data.domicilioFiscal ?? dg.domicilioFiscal),
+    nombre,
+    tipoInscripcion: mapearTipoInscripcion(data.tipoClave as string | undefined, data.descripcionActividadPrincipal as string | undefined),
+    categoriaMonotributo: (data.categoriaMonotributo as string) ?? undefined,
+    estadoCuit: mapearEstadoCuit(data.estadoClave as string | undefined),
+    fechaInscripcion: data.fechaInscripcion ? new Date(data.fechaInscripcion as string) : undefined,
+    actividades,
+    domicilioFiscal,
   }
 }
 
-function mapearTipoInscripcion(valor: string | undefined): TipoInscripcionAfip {
-  if (!valor) return 'NO_INSCRIPTO'
-  const v = valor.toUpperCase()
-  if (v.includes('MONOTRIBUTO')) return 'MONOTRIBUTO'
-  if (v.includes('RESPONSABLE INSCRIPTO') || v.includes('IVA')) return 'RESPONSABLE_INSCRIPTO'
-  if (v.includes('EXENTO')) return 'EXENTO'
-  return 'NO_INSCRIPTO'
+function mapearTipoInscripcion(tipoClave: string | undefined, descripcionActividad: string | undefined): TipoInscripcionAfip {
+  // A13 no trae categoriaIva directamente; inferimos de tipoClave y otros campos
+  if (!tipoClave) return 'NO_INSCRIPTO'
+  const v = tipoClave.toUpperCase()
+  if (v === 'CUIL') return 'NO_INSCRIPTO'
+  // Si tiene CUIT asumimos inscripto; categoría se determina con datos adicionales
+  if (descripcionActividad?.toUpperCase().includes('MONOTRIBUTO')) return 'MONOTRIBUTO'
+  return 'RESPONSABLE_INSCRIPTO'
 }
 
 function mapearEstadoCuit(valor: string | undefined): EstadoCuit {
@@ -239,20 +255,17 @@ function mapearEstadoCuit(valor: string | undefined): EstadoCuit {
   return 'SUSPENDIDO'
 }
 
-function mapearActividades(valor: unknown): string[] {
-  if (!Array.isArray(valor)) return []
-  return valor.map((a: Record<string, unknown>) =>
-    String(a.idActividad ?? a.codigo ?? a)
-  )
-}
-
-function mapearDomicilio(valor: unknown): DatosArca['domicilioFiscal'] {
-  if (!valor || typeof valor !== 'object') return undefined
-  const d = valor as Record<string, unknown>
+function mapearDomicilioA13(domicilios: unknown): DatosArca['domicilioFiscal'] {
+  if (!Array.isArray(domicilios) || domicilios.length === 0) return undefined
+  // Buscar domicilio FISCAL, o usar el primero
+  const fiscal = domicilios.find((d: Record<string, unknown>) =>
+    (d.tipoDomicilio as string)?.toUpperCase() === 'FISCAL'
+  ) ?? domicilios[0]
+  const d = fiscal as Record<string, unknown>
   return {
-    provincia: (d.descripcionProvincia ?? d.provincia) as string | undefined,
+    provincia: d.descripcionProvincia as string | undefined,
     localidad: d.localidad as string | undefined,
-    calle: (d.direccion ?? d.calle) as string | undefined,
+    calle: d.direccion as string | undefined,
   }
 }
 

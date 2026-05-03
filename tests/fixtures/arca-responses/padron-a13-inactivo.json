@@ -1,17 +1,16 @@
 {
-  "datosGenerales": {
-    "razonSocial": "TALLER INACTIVO SRL",
-    "estadoClave": "INACTIVO",
-    "categoriaIva": "IVA Responsable Inscripto",
-    "fechaInscripcion": "2010-06-15",
-    "categoriaMonotributo": null
-  },
-  "domicilioFiscal": {
-    "descripcionProvincia": "Salta",
-    "localidad": "Capital",
-    "direccion": "Mitre 567"
-  },
-  "actividades": [
-    { "idActividad": "181000", "descripcion": "Confeccion de prendas de vestir" }
-  ]
+  "descripcionActividadPrincipal": "CONFECCION DE PRENDAS DE VESTIR",
+  "domicilio": [
+    {
+      "descripcionProvincia": "SALTA",
+      "direccion": "MITRE 567",
+      "tipoDomicilio": "FISCAL"
+    }
+  ],
+  "estadoClave": "INACTIVO",
+  "idActividadPrincipal": 181000,
+  "idPersona": 20111111111,
+  "tipoClave": "CUIT",
+  "tipoPersona": "JURIDICA",
+  "razonSocial": "TALLER INACTIVO SRL"
 }

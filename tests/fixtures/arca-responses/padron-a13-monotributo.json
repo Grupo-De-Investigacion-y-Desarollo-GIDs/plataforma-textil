@@ -1,17 +1,17 @@
 {
-  "datosGenerales": {
-    "razonSocial": "GIMENEZ ROBERTO CARLOS",
-    "estadoClave": "ACTIVO",
-    "categoriaIva": "Responsable Monotributo",
-    "fechaInscripcion": "2018-01-20",
-    "categoriaMonotributo": "C"
-  },
-  "domicilioFiscal": {
-    "descripcionProvincia": "Buenos Aires",
-    "localidad": "La Matanza",
-    "direccion": "Av. Crovara 2150"
-  },
-  "actividades": [
-    { "idActividad": "181000", "descripcion": "Confeccion de prendas de vestir" }
-  ]
+  "apellido": "GIMENEZ",
+  "descripcionActividadPrincipal": "CONFECCION DE PRENDAS DE VESTIR",
+  "domicilio": [
+    {
+      "descripcionProvincia": "BUENOS AIRES",
+      "direccion": "AV. CROVARA 2150",
+      "tipoDomicilio": "FISCAL"
+    }
+  ],
+  "estadoClave": "ACTIVO",
+  "idActividadPrincipal": 181000,
+  "idPersona": 20282165733,
+  "nombre": "ROBERTO CARLOS",
+  "tipoClave": "CUIT",
+  "tipoPersona": "FISICA"
 }

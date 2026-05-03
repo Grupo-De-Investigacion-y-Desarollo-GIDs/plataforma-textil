@@ -67,19 +67,18 @@ describe('consultarPadron', () => {
     expect(resultado.datos!.nombre).toBe('COOPERATIVA DE TRABAJO TEXTIL PROGRESO LTDA')
     expect(resultado.datos!.tipoInscripcion).toBe('RESPONSABLE_INSCRIPTO')
     expect(resultado.datos!.estadoCuit).toBe('ACTIVO')
-    expect(resultado.datos!.actividades).toEqual(['181000', '181100'])
-    expect(resultado.datos!.domicilioFiscal?.provincia).toBe('Buenos Aires')
-    expect(resultado.datos!.domicilioFiscal?.localidad).toBe('Quilmes')
+    expect(resultado.datos!.actividades).toEqual(['181000'])
+    expect(resultado.datos!.domicilioFiscal?.provincia).toBe('BUENOS AIRES')
     expect(resultado.duracionMs).toBeGreaterThanOrEqual(0)
   })
 
-  it('retorna MONOTRIBUTO con categoria para taller monotributista', async () => {
+  it('retorna datos para persona fisica con nombre + apellido', async () => {
     mockGetTaxpayerDetails.mockResolvedValue(fixtureMonotributo)
     const resultado = await consultarPadron('20-28216573-3')
 
     expect(resultado.exitosa).toBe(true)
-    expect(resultado.datos!.tipoInscripcion).toBe('MONOTRIBUTO')
-    expect(resultado.datos!.categoriaMonotributo).toBe('C')
+    expect(resultado.datos!.nombre).toBe('ROBERTO CARLOS GIMENEZ')
+    expect(resultado.datos!.tipoInscripcion).toBe('RESPONSABLE_INSCRIPTO')
   })
 
   it('retorna CUIT_INEXISTENTE cuando ARCA devuelve null', async () => {
@@ -207,7 +206,7 @@ describe('sincronizarTaller', () => {
         data: expect.objectContaining({
           verificadoAfip: true,
           tipoInscripcionAfip: 'RESPONSABLE_INSCRIPTO',
-          actividadesAfip: ['181000', '181100'],
+          actividadesAfip: ['181000'],
         }),
       })
     )
