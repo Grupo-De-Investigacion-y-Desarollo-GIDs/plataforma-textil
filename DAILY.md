@@ -3,6 +3,9 @@
 ## 2026-05-02
 
 ### Gerardo Breard
+- **23:40** `b3f929a` — temp: debug endpoint para verificar env vars ARCA en Vercel
+  - `src/app/api/debug-arca/route.ts`
+
 - **23:24** `88d2cca` — fix: cambiar de A10 a A13, agregar soporte cert/key para AFIP
   - `.env.example`
   - `src/__tests__/arca.test.ts`
