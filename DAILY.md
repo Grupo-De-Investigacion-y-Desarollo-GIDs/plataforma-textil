@@ -3,6 +3,9 @@
 ## 2026-05-03
 
 ### Gerardo Breard
+- **00:53** `acc0db1` — chore: eliminar endpoint debug-arca temporal
+  - `src/app/api/debug-arca/route.ts`
+
 - **00:51** `d901d4d` — fix: clasificarError detecta CUIT inexistente de excepcion SOAP A13
   - `src/compartido/lib/arca.ts`
 
