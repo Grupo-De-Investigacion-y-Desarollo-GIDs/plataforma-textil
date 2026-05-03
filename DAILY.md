@@ -3,6 +3,15 @@
 ## 2026-05-03
 
 ### Gerardo Breard
+- **00:47** `1de3af4` — fix: adaptar mapearRespuesta a estructura real de A13
+  - `src/__tests__/arca.test.ts`
+  - `src/compartido/lib/arca.ts`
+  - `tests/fixtures/arca-responses/padron-a13-activo.json`
+  - `tests/fixtures/arca-responses/padron-a13-baja.json`
+  - `tests/fixtures/arca-responses/padron-a13-inactivo.json`
+  - `tests/fixtures/arca-responses/padron-a13-monotributo.json`
+  - `tests/fixtures/arca-responses/padron-a13-sin-actividad.json`
+
 - **00:41** `81702bf` — temp: debug endpoint con consulta ARCA raw
   - `src/app/api/debug-arca/route.ts`
 
