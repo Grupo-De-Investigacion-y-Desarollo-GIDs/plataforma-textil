@@ -3,6 +3,9 @@
 ## 2026-05-03
 
 ### Gerardo Breard
+- **00:27** `d1d7612` — chore: redeploy develop con AFIP_SDK_ENV=production corregido
+
+
 - **00:01** `b408f1d` — chore: trigger redeploy with AFIP_SDK_ENV=production
 
 
