@@ -310,13 +310,19 @@ function logAfipVerificacion(tallerId: string | undefined, cuit: string, exitosa
 
 function clasificarError(error: unknown): CodigoErrorArca {
   const msg = error instanceof Error ? error.message : String(error)
-  if (msg.includes('Unauthorized') || msg.includes('401') || msg.includes('token')) {
+  // A13 tira excepción con mensaje SOAP cuando el CUIT no existe
+  const dataMsg = (error as { data?: { message?: string } })?.data?.message ?? ''
+  const fullMsg = `${msg} ${dataMsg}`.toLowerCase()
+  if (fullMsg.includes('inexistente') || fullMsg.includes('not found')) {
+    return 'CUIT_INEXISTENTE'
+  }
+  if (fullMsg.includes('unauthorized') || fullMsg.includes('401') || fullMsg.includes('token')) {
     return 'AFIPSDK_ERROR'
   }
-  if (msg.includes('ECONNREFUSED') || msg.includes('timeout') || msg.includes('ETIMEDOUT') || msg.includes('503')) {
+  if (fullMsg.includes('econnrefused') || fullMsg.includes('timeout') || fullMsg.includes('etimedout') || fullMsg.includes('503')) {
     return 'ARCA_NO_RESPONDE'
   }
-  if (msg.includes('No existe') || msg.includes('not found')) {
+  if (fullMsg.includes('no existe')) {
     return 'CUIT_INEXISTENTE'
   }
   return 'AFIPSDK_ERROR'
