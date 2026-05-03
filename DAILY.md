@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-05-03
+
+### Gerardo Breard
+- **00:01** `b408f1d` — chore: trigger redeploy with AFIP_SDK_ENV=production
+
+
+
 ## 2026-05-02
 
 ### Gerardo Breard
