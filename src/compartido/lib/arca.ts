@@ -92,7 +92,13 @@ export async function consultarPadron(cuit: string, tallerId?: string): Promise<
     const sdk = getCliente()
     const cuitNumero = parseInt(cuit.replace(/-/g, ''), 10)
 
-    const respuesta = await sdk.RegisterScopeTen.getTaxpayerDetails(cuitNumero)
+    // Timeout de 10 segundos para no bloquear registro si ARCA tarda
+    const respuesta = await Promise.race([
+      sdk.RegisterScopeTen.getTaxpayerDetails(cuitNumero),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('timeout: ARCA no respondio en 10s')), 10_000)
+      ),
+    ])
 
     if (!respuesta) {
       await registrarConsulta(tallerId, cuit, 'padron-a10', false, null, 'CUIT_INEXISTENTE', inicio)
