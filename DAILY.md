@@ -3,6 +3,21 @@
 ## 2026-05-02
 
 ### Gerardo Breard
+- **23:24** `88d2cca` — fix: cambiar de A10 a A13, agregar soporte cert/key para AFIP
+  - `.env.example`
+  - `src/__tests__/arca.test.ts`
+  - `src/compartido/lib/arca.ts`
+  - `tests/fixtures/arca-responses/padron-a10-activo.json`
+  - `tests/fixtures/arca-responses/padron-a10-baja.json`
+  - `tests/fixtures/arca-responses/padron-a10-inactivo.json`
+  - `tests/fixtures/arca-responses/padron-a10-monotributo.json`
+  - `tests/fixtures/arca-responses/padron-a10-sin-actividad.json`
+  - `tests/fixtures/arca-responses/padron-a13-activo.json`
+  - `tests/fixtures/arca-responses/padron-a13-baja.json`
+  - `tests/fixtures/arca-responses/padron-a13-inactivo.json`
+  - `tests/fixtures/arca-responses/padron-a13-monotributo.json`
+  - `tests/fixtures/arca-responses/padron-a13-sin-actividad.json`
+
 - **22:15** `612f4d2` — fix: timeout de 10s en consultarPadron para no bloquear registro
   - `src/compartido/lib/arca.ts`
 
