@@ -3,6 +3,12 @@
 ## 2026-05-04
 
 ### Gerardo Breard
+- **18:27** `f2dbaed` — fix: dashboard Puntaje strict mode + 3 fixme con causa real
+  - `tests/e2e/acceso-verificado.spec.ts`
+  - `tests/e2e/configuracion-niveles.spec.ts`
+  - `tests/e2e/registro-marca.spec.ts`
+  - `tests/e2e/registro-taller.spec.ts`
+
 - **18:07** `bbfc18b` — chore: trigger redeploy — DATABASE_URL configurado para preview
 
 
