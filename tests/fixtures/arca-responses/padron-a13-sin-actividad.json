@@ -1,0 +1,15 @@
+{
+  "apellido": "PEREZ",
+  "domicilio": [
+    {
+      "descripcionProvincia": "TUCUMAN",
+      "direccion": "LAPRIDA 300",
+      "tipoDomicilio": "FISCAL"
+    }
+  ],
+  "estadoClave": "ACTIVO",
+  "idPersona": 20333333333,
+  "nombre": "JUAN MANUEL",
+  "tipoClave": "CUIT",
+  "tipoPersona": "FISICA"
+}

@@ -57,6 +57,20 @@ enum TipoAuditoria {
   RE_AUDITORIA
 }
 
+enum TipoInscripcionAfip {
+  RESPONSABLE_INSCRIPTO
+  MONOTRIBUTO
+  EXENTO
+  NO_INSCRIPTO
+}
+
+enum EstadoCuit {
+  ACTIVO
+  INACTIVO
+  BAJA
+  SUSPENDIDO
+}
+
 enum EstadoAuditoria {
   PROGRAMADA
   EN_CURSO
@@ -192,6 +206,18 @@ model Taller {
   trabajadoresRegistrados Int       @default(0)
   fundado               Int?
   verificadoAfip        Boolean     @default(false)
+
+  // INT-01: datos verificados por ARCA
+  verificadoAfipAt              DateTime?
+  tipoInscripcionAfip           TipoInscripcionAfip?
+  categoriaMonotributo          String?
+  estadoCuitAfip                EstadoCuit?
+  fechaInscripcionAfip          DateTime?
+  actividadesAfip               String[]
+  domicilioFiscalAfip           Json?
+  empleadosRegistradosSipa      Int?
+  empleadosSipaActualizadoAt    DateTime?
+
   pedidosCompletados    Int         @default(0)
   ontimeRate            Float       @default(0)
   retrabajoRate         Float       @default(0)
@@ -228,6 +254,7 @@ model Taller {
   notasInternas         NotaInterna[]
   cotizaciones          Cotizacion[]
   pedidosInvitado       PedidoInvitacion[]
+  consultasArca         ConsultaArca[]
 
   @@map("talleres")
 }
@@ -777,6 +804,31 @@ model NotaInterna {
   marca     Marca?   @relation(fields: [marcaId], references: [id], onDelete: Cascade)
 
   @@map("notas_internas")
+}
+
+// ============================================
+// CONSULTAS ARCA (trazabilidad de verificaciones)
+// ============================================
+
+model ConsultaArca {
+  id            String   @id @default(cuid())
+  tallerId      String?
+  taller        Taller?  @relation(fields: [tallerId], references: [id], onDelete: Cascade)
+
+  cuit          String
+  endpoint      String   // 'padron-a10' | 'padron-a13' | 'sipa'
+
+  exitosa       Boolean
+  respuesta     Json?
+  error         String?
+
+  duracionMs    Int
+
+  createdAt     DateTime @default(now())
+
+  @@index([tallerId])
+  @@index([createdAt])
+  @@map("consultas_arca")
 }
 
 // ============================================

@@ -7,6 +7,7 @@ import { getFeatureFlag } from '@/compartido/lib/features'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Star, MapPin, Users, ArrowRight, Factory, ShieldCheck } from 'lucide-react'
+import { BadgeArca } from '@/compartido/componentes/badge-arca'
 
 export default async function DirectorioPage({
   searchParams,
@@ -55,7 +56,7 @@ export default async function DirectorioPage({
           select: { tipoDocumento: { select: { nombre: true } } },
         },
       },
-      orderBy: { puntaje: 'desc' },
+      orderBy: [{ verificadoAfip: 'desc' }, { puntaje: 'desc' }],
       skip: (page - 1) * PAGE_SIZE,
       take: PAGE_SIZE,
     }),
@@ -144,6 +145,7 @@ export default async function DirectorioPage({
                 <div className="p-4">
                 <div className="mb-3">
                   <h2 className="font-overpass font-bold text-lg text-brand-blue">{taller.nombre}</h2>
+                  {taller.verificadoAfip && <BadgeArca verificado={true} />}
                   {taller.validaciones.length > 0 && (
                     <div className="flex items-center gap-1 mt-1">
                       <ShieldCheck className="w-3.5 h-3.5 text-green-600 shrink-0" />

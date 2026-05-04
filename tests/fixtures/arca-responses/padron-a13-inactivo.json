@@ -1,0 +1,16 @@
+{
+  "descripcionActividadPrincipal": "CONFECCION DE PRENDAS DE VESTIR",
+  "domicilio": [
+    {
+      "descripcionProvincia": "SALTA",
+      "direccion": "MITRE 567",
+      "tipoDomicilio": "FISCAL"
+    }
+  ],
+  "estadoClave": "INACTIVO",
+  "idActividadPrincipal": 181000,
+  "idPersona": 20111111111,
+  "tipoClave": "CUIT",
+  "tipoPersona": "JURIDICA",
+  "razonSocial": "TALLER INACTIVO SRL"
+}

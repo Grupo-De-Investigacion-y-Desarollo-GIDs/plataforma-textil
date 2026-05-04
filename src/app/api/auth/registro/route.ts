@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { Prisma } from '@prisma/client'
 import { logActividad } from '@/compartido/lib/log'
-import { verificarCuit } from '@/compartido/lib/afip'
+import { consultarPadron, errorBloqueaRegistro, mensajeErrorArca, type DatosArca } from '@/compartido/lib/arca'
 import { sendEmail, buildBienvenidaEmail } from '@/compartido/lib/email'
 import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
 import { apiHandler, errorResponse, errorConflict } from '@/compartido/lib/api-errors'
@@ -59,25 +59,19 @@ export const POST = apiHandler(async (req: NextRequest) => {
 
   const data = parsed.data
 
-  // Verificar CUIT con AfipSDK server-side
-  const ERRORES_CUIT_INVALIDO = ['inexistente', 'inactivo', 'invalido']
+  // Verificar CUIT con ARCA via arca.ts
   let cuitVerificado = false
+  let datosArca: DatosArca | undefined
   const cuitToVerify = data.tallerData?.cuit || data.marcaData?.cuit
   if (cuitToVerify) {
-    try {
-      const afipResult = await verificarCuit(cuitToVerify)
-      if (afipResult.valid) {
-        cuitVerificado = true
-      } else if (afipResult.error) {
-        const errorLower = afipResult.error.toLowerCase()
-        const esCuitInvalido = ERRORES_CUIT_INVALIDO.some(e => errorLower.includes(e))
-        if (esCuitInvalido) {
-          return errorResponse({ code: 'INVALID_INPUT', message: afipResult.error, status: 400 })
-        }
-      }
-    } catch {
-      console.error('AFIP no disponible durante registro, permitiendo continuar')
+    const resultado = await consultarPadron(cuitToVerify)
+    if (resultado.exitosa && resultado.datos) {
+      cuitVerificado = true
+      datosArca = resultado.datos
+    } else if (resultado.error && errorBloqueaRegistro(resultado.error)) {
+      return errorResponse({ code: 'INVALID_INPUT', message: mensajeErrorArca(resultado.error), status: 400 })
     }
+    // ARCA_NO_RESPONDE / AFIPSDK_ERROR → continuar sin verificación (modo defensivo)
   }
 
   const exists = await prisma.user.findUnique({ where: { email: data.email } })
@@ -99,11 +93,18 @@ export const POST = apiHandler(async (req: NextRequest) => {
           ? {
               taller: {
                 create: {
-                  nombre: data.tallerData.nombre,
+                  nombre: datosArca?.nombre || data.tallerData.nombre,
                   cuit: data.tallerData.cuit,
                   ubicacion: data.tallerData.ubicacion || null,
                   capacidadMensual: data.tallerData.capacidadMensual || 0,
                   verificadoAfip: cuitVerificado,
+                  verificadoAfipAt: cuitVerificado ? new Date() : null,
+                  tipoInscripcionAfip: datosArca?.tipoInscripcion ?? null,
+                  categoriaMonotributo: datosArca?.categoriaMonotributo ?? null,
+                  estadoCuitAfip: datosArca?.estadoCuit ?? null,
+                  fechaInscripcionAfip: datosArca?.fechaInscripcion ?? null,
+                  actividadesAfip: datosArca?.actividades ?? [],
+                  domicilioFiscalAfip: datosArca?.domicilioFiscal ?? undefined,
                 },
               },
             }
@@ -112,7 +113,7 @@ export const POST = apiHandler(async (req: NextRequest) => {
           ? {
               marca: {
                 create: {
-                  nombre: data.marcaData.nombre,
+                  nombre: datosArca?.nombre || data.marcaData.nombre,
                   cuit: data.marcaData.cuit,
                   ubicacion: data.marcaData.ubicacion || null,
                   tipo: data.marcaData.tipo || null,

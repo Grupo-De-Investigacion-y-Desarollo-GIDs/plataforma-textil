@@ -1,0 +1,16 @@
+{
+  "descripcionActividadPrincipal": "CONFECCION DE PRENDAS DE VESTIR",
+  "domicilio": [
+    {
+      "descripcionProvincia": "CORDOBA",
+      "direccion": "DEAN FUNES 100",
+      "tipoDomicilio": "FISCAL"
+    }
+  ],
+  "estadoClave": "BAJA",
+  "idActividadPrincipal": 181000,
+  "idPersona": 20222222222,
+  "tipoClave": "CUIT",
+  "tipoPersona": "JURIDICA",
+  "razonSocial": "TALLER CERRADO SA"
+}

@@ -12,6 +12,8 @@ import { Badge } from '@/compartido/componentes/ui/badge'
 import { SubmitButton } from '@/compartido/componentes/ui/button'
 import { ChecklistItem } from '@/compartido/componentes/ui/checklist-item'
 import { ArrowLeft, MapPin, Mail, Phone, FileText, Award } from 'lucide-react'
+import { BadgeArca } from '@/compartido/componentes/badge-arca'
+import { ReverificarButton } from './reverificar-button'
 
 const estadoToStatus: Record<string, 'completed' | 'pending' | 'warning' | 'optional'> = {
   COMPLETADO: 'completed',
@@ -164,7 +166,10 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
           </div>
           <div className="flex-1">
             <h1 className="font-overpass font-bold text-xl text-brand-blue">{taller.nombre}</h1>
-            <p className="text-sm text-gray-500">CUIT: {taller.cuit} {taller.verificadoAfip && <span className="text-green-500">&#10003;</span>}</p>
+            <div className="flex items-center gap-2 mt-0.5">
+              <p className="text-sm text-gray-500">CUIT: {taller.cuit}</p>
+              <BadgeArca verificado={taller.verificadoAfip} fecha={taller.verificadoAfipAt} />
+            </div>
             <div className="flex flex-wrap gap-3 mt-2 text-sm text-gray-500">
               {taller.provincia && <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {taller.provincia}{taller.partido ? `, ${taller.partido}` : ''}</span>}
               {taller.user.email && <span className="flex items-center gap-1"><Mail className="w-3.5 h-3.5" /> {taller.user.email}</span>}
@@ -361,13 +366,70 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
               <p className="font-medium text-gray-800">{taller.capacidadMensual} unidades</p>
             </div>
             <div>
-              <p className="text-gray-500">Trabajadores registrados</p>
+              <p className="text-gray-500">Trabajadores (autodeclarado)</p>
               <p className="font-medium text-gray-800">{taller.trabajadoresRegistrados}</p>
             </div>
-            <div>
-              <p className="text-gray-500">Verificado AFIP</p>
-              <p className="font-medium text-gray-800">{taller.verificadoAfip ? 'Si' : 'No'}</p>
+            {taller.empleadosRegistradosSipa != null && (
+              <div>
+                <p className="text-gray-500">Empleados SIPA (verificado)</p>
+                <p className="font-medium text-gray-800">{taller.empleadosRegistradosSipa}</p>
+              </div>
+            )}
+          </div>
+
+          {/* ARCA data */}
+          <div className="mt-4 pt-4 border-t">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-sm font-semibold text-gray-700">Datos verificados por ARCA</p>
+              {!soloLectura && <ReverificarButton tallerId={taller.id} />}
             </div>
+            {taller.verificadoAfip ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                {taller.tipoInscripcionAfip && (
+                  <div>
+                    <p className="text-gray-500">Tipo de inscripcion</p>
+                    <p className="font-medium text-gray-800">{taller.tipoInscripcionAfip.replace(/_/g, ' ')}</p>
+                  </div>
+                )}
+                {taller.categoriaMonotributo && (
+                  <div>
+                    <p className="text-gray-500">Categoria monotributo</p>
+                    <p className="font-medium text-gray-800">{taller.categoriaMonotributo}</p>
+                  </div>
+                )}
+                {taller.estadoCuitAfip && (
+                  <div>
+                    <p className="text-gray-500">Estado CUIT</p>
+                    <p className="font-medium text-gray-800">{taller.estadoCuitAfip}</p>
+                  </div>
+                )}
+                {taller.actividadesAfip.length > 0 && (
+                  <div>
+                    <p className="text-gray-500">Actividades AFIP</p>
+                    <p className="font-medium text-gray-800">{taller.actividadesAfip.join(', ')}</p>
+                  </div>
+                )}
+                {taller.domicilioFiscalAfip && (
+                  <div>
+                    <p className="text-gray-500">Domicilio fiscal</p>
+                    <p className="font-medium text-gray-800">
+                      {(() => {
+                        const d = taller.domicilioFiscalAfip as { calle?: string; localidad?: string; provincia?: string }
+                        return [d.calle, d.localidad, d.provincia].filter(Boolean).join(', ') || '-'
+                      })()}
+                    </p>
+                  </div>
+                )}
+                {taller.verificadoAfipAt && (
+                  <div>
+                    <p className="text-gray-500">Ultima verificacion</p>
+                    <p className="font-medium text-gray-800">{new Date(taller.verificadoAfipAt).toLocaleDateString('es-AR')}</p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p className="text-sm text-amber-600">Este taller no tiene verificacion de ARCA. Usa el boton para re-verificar.</p>
+            )}
           </div>
 
           {taller.maquinaria.length > 0 && (

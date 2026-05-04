@@ -1,5 +1,112 @@
 # Daily Log
 
+## 2026-05-04
+
+### Gerardo Breard
+- **07:47** `52a15c0` — feat: INT-02 — migrar email de SendGrid a Resend + cerrar [contacto-pdt]
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-email-resend.md`
+  - `.claude/auditorias/REVIEW_v3-email-resend.md`
+  - `.env.example`
+  - `package-lock.json`
+  - `package.json`
+  - `src/__tests__/arca.test.ts`
+  - `src/__tests__/email-resend.test.ts`
+  - `src/compartido/lib/arca.ts`
+  - `src/compartido/lib/auth.ts`
+  - `src/compartido/lib/email.ts`
+
+
+## 2026-05-03
+
+### Gerardo Breard
+- **00:53** `acc0db1` — chore: eliminar endpoint debug-arca temporal
+  - `src/app/api/debug-arca/route.ts`
+
+- **00:51** `d901d4d` — fix: clasificarError detecta CUIT inexistente de excepcion SOAP A13
+  - `src/compartido/lib/arca.ts`
+
+- **00:47** `1de3af4` — fix: adaptar mapearRespuesta a estructura real de A13
+  - `src/__tests__/arca.test.ts`
+  - `src/compartido/lib/arca.ts`
+  - `tests/fixtures/arca-responses/padron-a13-activo.json`
+  - `tests/fixtures/arca-responses/padron-a13-baja.json`
+  - `tests/fixtures/arca-responses/padron-a13-inactivo.json`
+  - `tests/fixtures/arca-responses/padron-a13-monotributo.json`
+  - `tests/fixtures/arca-responses/padron-a13-sin-actividad.json`
+
+- **00:41** `81702bf` — temp: debug endpoint con consulta ARCA raw
+  - `src/app/api/debug-arca/route.ts`
+
+- **00:37** `933e813` — chore: redeploy con AFIP_SDK_ENV sin newline
+
+
+- **00:34** `636881e` — fix: trim AFIP_SDK_ENV para manejar newline de Vercel CLI
+  - `src/compartido/lib/arca.ts`
+
+- **00:30** `8a5d1f0` — chore: redeploy con AFIP_SDK_ENV limpio via CLI
+
+
+- **00:27** `d1d7612` — chore: redeploy develop con AFIP_SDK_ENV=production corregido
+
+
+- **00:01** `b408f1d` — chore: trigger redeploy with AFIP_SDK_ENV=production
+
+
+
+## 2026-05-02
+
+### Gerardo Breard
+- **23:40** `b3f929a` — temp: debug endpoint para verificar env vars ARCA en Vercel
+  - `src/app/api/debug-arca/route.ts`
+
+- **23:24** `88d2cca` — fix: cambiar de A10 a A13, agregar soporte cert/key para AFIP
+  - `.env.example`
+  - `src/__tests__/arca.test.ts`
+  - `src/compartido/lib/arca.ts`
+  - `tests/fixtures/arca-responses/padron-a10-activo.json`
+  - `tests/fixtures/arca-responses/padron-a10-baja.json`
+  - `tests/fixtures/arca-responses/padron-a10-inactivo.json`
+  - `tests/fixtures/arca-responses/padron-a10-monotributo.json`
+  - `tests/fixtures/arca-responses/padron-a10-sin-actividad.json`
+  - `tests/fixtures/arca-responses/padron-a13-activo.json`
+  - `tests/fixtures/arca-responses/padron-a13-baja.json`
+  - `tests/fixtures/arca-responses/padron-a13-inactivo.json`
+  - `tests/fixtures/arca-responses/padron-a13-monotributo.json`
+  - `tests/fixtures/arca-responses/padron-a13-sin-actividad.json`
+
+- **22:15** `612f4d2` — fix: timeout de 10s en consultarPadron para no bloquear registro
+  - `src/compartido/lib/arca.ts`
+
+- **22:02** `015b742` — feat: INT-01 — integracion completa con ARCA/AFIP
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-arca-completo.md`
+  - `.claude/auditorias/REVIEW_v3-arca-completo.md`
+  - `.claude/specs/V4_BACKLOG.md`
+  - `.env.example`
+  - `prisma/schema.prisma`
+  - `src/__tests__/arca.test.ts`
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/(estado)/estado/talleres/[id]/reverificar-button.tsx`
+  - `src/app/(estado)/estado/talleres/page.tsx`
+  - `src/app/(estado)/estado/talleres/sync-arca-button.tsx`
+  - `src/app/(marca)/marca/directorio/page.tsx`
+  - `src/app/(public)/directorio/page.tsx`
+  - `src/app/(public)/perfil/[id]/page.tsx`
+  - `src/app/api/auth/registro/route.ts`
+  - `src/app/api/auth/verificar-cuit/route.ts`
+  - `src/app/api/estado/arca/reverificar/[id]/route.ts`
+  - `src/app/api/estado/arca/route.ts`
+  - `src/compartido/componentes/badge-arca.tsx`
+  - `src/compartido/lib/arca.ts`
+  - `tests/fixtures/arca-responses/padron-a10-activo.json`
+  - `tests/fixtures/arca-responses/padron-a10-baja.json`
+  - `tests/fixtures/arca-responses/padron-a10-inactivo.json`
+  - `tests/fixtures/arca-responses/padron-a10-monotributo.json`
+  - `tests/fixtures/arca-responses/padron-a10-sin-actividad.json`
+  - `tools/sincronizar-arca.ts`
+
+
 ## 2026-04-30
 
 ### Gerardo Breard

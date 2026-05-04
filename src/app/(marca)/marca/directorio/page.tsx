@@ -7,6 +7,7 @@ import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import Link from 'next/link'
 import { MapPin, Star, MessageCircle, Factory, ShieldCheck } from 'lucide-react'
+import { BadgeArca } from '@/compartido/componentes/badge-arca'
 
 type SearchParams = {
   q?: string
@@ -64,7 +65,7 @@ export default async function DirectorioPage({
         select: { tipoDocumento: { select: { nombre: true } } },
       },
     },
-    orderBy: { puntaje: 'desc' },
+    orderBy: [{ verificadoAfip: 'desc' }, { puntaje: 'desc' }],
   })
 
   const hasFilters = query || procesoId || prendaId
@@ -185,6 +186,7 @@ export default async function DirectorioPage({
                   <h3 className="font-overpass font-bold text-xl text-brand-blue">
                     {taller.nombre}
                   </h3>
+                  {taller.verificadoAfip && <BadgeArca verificado={true} />}
                   {taller.validaciones.length > 0 && (
                     <div className="flex items-center gap-1 mt-1">
                       <ShieldCheck className="w-3.5 h-3.5 text-green-600 shrink-0" />

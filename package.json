@@ -36,7 +36,6 @@
     "lucide-react": "^0.563.0",
     "next": "16.1.6",
     "next-auth": "^5.0.0-beta.30",
-    "nodemailer": "^7.0.13",
     "prisma": "^6.19.2",
     "qrcode": "^1.5.4",
     "react": "19.2.3",
@@ -45,6 +44,7 @@
     "react-hook-form": "^7.71.1",
     "react-markdown": "^10.1.0",
     "recharts": "^3.7.0",
+    "resend": "^6.12.2",
     "tailwind-merge": "^3.4.0",
     "zod": "^4.3.6"
   },

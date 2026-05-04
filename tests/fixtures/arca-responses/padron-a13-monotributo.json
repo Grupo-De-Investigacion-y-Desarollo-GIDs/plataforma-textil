@@ -1,0 +1,17 @@
+{
+  "apellido": "GIMENEZ",
+  "descripcionActividadPrincipal": "CONFECCION DE PRENDAS DE VESTIR",
+  "domicilio": [
+    {
+      "descripcionProvincia": "BUENOS AIRES",
+      "direccion": "AV. CROVARA 2150",
+      "tipoDomicilio": "FISCAL"
+    }
+  ],
+  "estadoClave": "ACTIVO",
+  "idActividadPrincipal": 181000,
+  "idPersona": 20282165733,
+  "nombre": "ROBERTO CARLOS",
+  "tipoClave": "CUIT",
+  "tipoPersona": "FISICA"
+}

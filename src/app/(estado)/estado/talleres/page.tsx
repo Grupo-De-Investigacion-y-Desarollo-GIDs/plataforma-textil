@@ -7,6 +7,8 @@ import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { StatCard } from '@/compartido/componentes/ui/stat-card'
 import { Eye } from 'lucide-react'
+import { BadgeArca } from '@/compartido/componentes/badge-arca'
+import { SyncArcaButton } from './sync-arca-button'
 
 export default async function EstadoTalleresPage({
   searchParams,
@@ -29,7 +31,7 @@ export default async function EstadoTalleresPage({
       user: { select: { email: true, active: true } },
       validaciones: { select: { estado: true } },
     },
-    orderBy: { nombre: 'asc' },
+    orderBy: [{ verificadoAfip: 'desc' }, { nombre: 'asc' }],
   })
 
   // Enriquecer con conteo de docs pendientes
@@ -50,6 +52,7 @@ export default async function EstadoTalleresPage({
   const provincias = [...new Set(talleres.map(t => t.provincia).filter(Boolean))].sort()
   const byNivel = (n: string) => talleres.filter(t => t.nivel === n).length
   const sinVerificar = talleres.filter(t => !t.verificadoAfip).length
+  const verificadosArca = talleres.filter(t => t.verificadoAfip).length
 
   return (
     <div className="max-w-5xl mx-auto py-6 px-4">
@@ -63,6 +66,19 @@ export default async function EstadoTalleresPage({
         <StatCard value={String(byNivel('BRONCE'))} label="Bronce" variant="warning" />
         <StatCard value={String(sinVerificar)} label="Sin verificar" variant={sinVerificar > 0 ? 'warning' : 'muted'} />
       </div>
+
+      {/* ARCA verification stats */}
+      <Card className="mb-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-6">
+            <div>
+              <p className="text-sm font-semibold text-gray-700">Verificacion ARCA</p>
+              <p className="text-xs text-gray-500">{verificadosArca} verificados · {sinVerificar} pendientes</p>
+            </div>
+          </div>
+          <SyncArcaButton />
+        </div>
+      </Card>
 
       {/* Filtros */}
       <Card className="mb-4">
@@ -118,7 +134,7 @@ export default async function EstadoTalleresPage({
                   <td className="px-4 py-3">
                     <p className="font-semibold text-sm">{t.nombre}</p>
                     <p className="text-xs text-gray-400">{t.cuit}</p>
-                    {!t.verificadoAfip && <Badge variant="error" className="mt-0.5 text-[10px]">Sin verificar</Badge>}
+                    <BadgeArca verificado={t.verificadoAfip} fecha={t.verificadoAfipAt} />
                   </td>
                   <td className="px-4 py-3">
                     <Badge variant={t.nivel === 'ORO' ? 'success' : t.nivel === 'PLATA' ? 'default' : 'warning'}>{t.nivel}</Badge>

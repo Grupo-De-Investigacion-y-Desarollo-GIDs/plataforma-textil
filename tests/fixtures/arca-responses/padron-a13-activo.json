@@ -1,0 +1,22 @@
+{
+  "descripcionActividadPrincipal": "CONFECCION DE PRENDAS DE VESTIR",
+  "domicilio": [
+    {
+      "calle": "SAN MARTIN",
+      "codigoPostal": "1878",
+      "descripcionProvincia": "BUENOS AIRES",
+      "direccion": "SAN MARTIN 1234",
+      "idProvincia": 1,
+      "numero": 1234,
+      "tipoDomicilio": "FISCAL"
+    }
+  ],
+  "estadoClave": "ACTIVO",
+  "idActividadPrincipal": 181000,
+  "idPersona": 20301234567,
+  "mesCierre": 12,
+  "periodoActividadPrincipal": 201501,
+  "tipoClave": "CUIT",
+  "tipoPersona": "JURIDICA",
+  "razonSocial": "COOPERATIVA DE TRABAJO TEXTIL PROGRESO LTDA"
+}
