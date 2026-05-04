@@ -1,0 +1,1748 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="qa-slug" content="QA_v3-demanda-insatisfecha">
+  <title>QA: F-05 Dashboard de demanda insatisfecha</title>
+  <style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #f5f7fa;
+    color: #1a1a2e;
+    line-height: 1.5;
+    padding: 20px;
+    padding-bottom: 80px;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  .header {
+    background: #1e3a5f;
+    color: white;
+    padding: 24px 28px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  .header h1 { font-size: 22px; margin-bottom: 12px; }
+  .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 13px; opacity: 0.9; }
+  .meta-label { font-weight: 600; }
+  .meta-item a { color: #7fb3ff; }
+  .meta-item code { background: rgba(255,255,255,0.15); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+  .section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .section h2 {
+    font-size: 17px;
+    color: #1e3a5f;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e8ecf1;
+    cursor: default;
+  }
+  .collapsible { cursor: pointer; }
+  .collapsible h2 { cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+  .collapse-icon { font-size: 12px; color: #999; transition: transform 0.2s; }
+  .collapsed .collapse-content { display: none; }
+  .collapsed .collapse-icon { transform: rotate(0deg); }
+  .collapsible:not(.collapsed) .collapse-icon { transform: rotate(90deg); }
+  .readonly-block {
+    background: #f8f9fa;
+    border: 1px solid #e2e5ea;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 13px;
+    white-space: pre-wrap;
+    color: #555;
+  }
+  .cred-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .cred-table th { background: #f0f2f5; padding: 8px 10px; text-align: left; font-weight: 600; color: #444; }
+  .cred-table td { padding: 6px 10px; border-bottom: 1px solid #eee; }
+  .cred-table code { background: #f0f2f5; padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+  .radio-group { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .radio-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 14px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.15s;
+  }
+  .radio-btn:hover { border-color: #1e3a5f; }
+  .radio-btn.selected { border-color: #1e3a5f; background: #eef3f9; }
+  .radio-btn input { display: none; }
+  .field-group { margin-bottom: 10px; }
+  .field-group label { font-size: 13px; font-weight: 600; color: #555; display: block; margin-bottom: 4px; }
+  .text-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  .text-input:focus, .obs-input:focus, .obs-textarea:focus, .large-textarea:focus {
+    outline: none;
+    border-color: #1e3a5f;
+    box-shadow: 0 0 0 2px rgba(30,58,95,0.15);
+  }
+  .item-card {
+    border: 1px solid #e8ecf1;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    transition: border-color 0.15s;
+  }
+  .item-card.status-ok { border-left: 4px solid #27ae60; }
+  .item-card.status-bug { border-left: 4px solid #f39c12; }
+  .item-card.status-fail { border-left: 4px solid #c0392b; }
+  .item-header { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+  .item-num { font-weight: 700; color: #1e3a5f; min-width: 30px; font-size: 14px; }
+  .item-text { font-size: 14px; flex: 1; }
+  .item-details { margin-bottom: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; font-size: 13px; }
+  .detail-row { margin-bottom: 4px; }
+  .detail-label { font-weight: 600; color: #666; }
+  .item-controls { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+  .status-btns { display: flex; gap: 4px; flex-shrink: 0; }
+  .status-btn {
+    width: 36px; height: 36px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .status-btn:hover { transform: scale(1.1); }
+  .status-btn.active { border-color: #1e3a5f; background: #eef3f9; transform: scale(1.1); }
+  .obs-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 7px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .obs-textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    resize: vertical;
+  }
+  .large-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+  }
+  .paso-card {
+    border: 1px solid #e8ecf1;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .paso-card.status-ok { border-left: 4px solid #27ae60; }
+  .paso-card.status-bug { border-left: 4px solid #f39c12; }
+  .paso-card.status-fail { border-left: 4px solid #c0392b; }
+  .paso-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px;
+    cursor: pointer;
+    background: #fafbfc;
+    border-bottom: 1px solid transparent;
+  }
+  .paso-header:hover { background: #f0f2f5; }
+  .paso-header-right { display: flex; align-items: center; gap: 8px; }
+  .paso-status-indicator { font-size: 16px; }
+  .paso-title { font-weight: 600; font-size: 14px; color: #1e3a5f; }
+  .paso-body { display: none; padding: 16px; }
+  .paso-card.expanded .paso-body { display: block; }
+  .paso-card.expanded .paso-header { border-bottom: 1px solid #e8ecf1; }
+  .paso-card.expanded .collapse-icon { transform: rotate(90deg); }
+  .paso-fields { margin-bottom: 12px; }
+  .paso-field { margin-bottom: 6px; font-size: 13px; }
+  .paso-label { font-weight: 600; color: #555; }
+  .paso-value { margin-top: 2px; padding-left: 0; white-space: pre-wrap; }
+  .checklist-items { display: flex; flex-direction: column; gap: 8px; }
+  .checklist-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .checklist-item:hover { background: #f5f7fa; }
+  .checklist-item input { margin-top: 3px; width: 16px; height: 16px; cursor: pointer; }
+  .unknown { border-left: 3px solid #f39c12; }
+  .text-muted { color: #999; font-size: 13px; }
+  .sticky-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 2px solid #1e3a5f;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    z-index: 100;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  }
+  .btn-copiar {
+    background: #1e3a5f;
+    color: white;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-copiar:hover { background: #2a4f7f; }
+  .btn-copiar.copiado { background: #27ae60; }
+  .progress-summary { font-size: 13px; color: #666; }
+  .btn-issue {
+    display: none;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    border: 1px solid #c0392b;
+    border-radius: 6px;
+    background: white;
+    color: #c0392b;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn-issue:hover { background: #fdf0ef; }
+  .btn-issue.visible { display: inline-flex; }
+  .btn-issue.enviado { border-color: #27ae60; color: #27ae60; cursor: default; }
+  .btn-issue.error { border-color: #e74c3c; color: #e74c3c; }
+  .btn-issue:disabled { opacity: 0.6; cursor: not-allowed; }
+  .badge-qa {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+    background: #e3f2fd;
+    color: #1565c0;
+    margin-left: 8px;
+    flex-shrink: 0;
+  }
+  .badge-dev {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+    background: #f3e5f5;
+    color: #7b1fa2;
+    margin-left: 8px;
+    flex-shrink: 0;
+  }
+  .badge-perfil {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+    background: #fff3e0;
+    color: #e65100;
+    margin-left: 8px;
+    flex-shrink: 0;
+    text-transform: capitalize;
+  }
+  .filter-bar {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    background: white;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .filter-label { font-size: 13px; font-weight: 600; color: #555; margin-right: 4px; }
+  .filter-btn {
+    padding: 5px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    transition: all 0.15s;
+  }
+  .filter-btn:hover { border-color: #1e3a5f; color: #1e3a5f; }
+  .filter-btn.active { background: #1e3a5f; color: white; border-color: #1e3a5f; }
+  .item-badges { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 4px; }
+  .issue-badge {
+    display: inline-block; font-size: 11px; padding: 2px 8px;
+    border-radius: 4px; font-weight: 600; text-decoration: none;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .issue-badge:hover { opacity: 0.8; }
+  .issue-open { background: #fce4e4; color: #c0392b; }
+  .issue-resolved { background: #e8f5e9; color: #2e7d32; }
+  .issue-discarded { background: #f0f0f0; color: #888; }
+  .issue-stats { display: flex; gap: 12px; margin: 8px 0 12px; }
+  .issue-stat {
+    font-size: 13px; font-weight: 600; padding: 4px 12px;
+    border-radius: 6px;
+  }
+  .stat-open { background: #fce4e4; color: #c0392b; }
+  .stat-resolved { background: #e8f5e9; color: #2e7d32; }
+  .stat-discarded { background: #f0f0f0; color: #888; }
+  .issues-list { margin-top: 8px; }
+  .issue-row { padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+  .issue-link { color: #1e3a5f; font-weight: 600; text-decoration: none; }
+  .issue-link:hover { text-decoration: underline; }
+  .issue-title { flex: 1; color: #555; }
+  .issue-badge-small { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; }
+  @media (max-width: 600px) {
+    body { padding: 10px; padding-bottom: 80px; }
+    .meta-grid { grid-template-columns: 1fr; }
+    .item-controls { flex-direction: column; }
+    .obs-input { min-width: 100%; }
+    .radio-group { flex-direction: column; }
+    .filter-bar { flex-direction: column; align-items: flex-start; }
+    .issue-stats { flex-direction: column; gap: 4px; }
+  }
+</style>
+</head>
+<body data-spec="v3-demanda-insatisfecha.md" data-url="https://plataforma-textil-dev.vercel.app" data-api-url="https://plataforma-textil.vercel.app/api/feedback">
+  <div class="container">
+    
+    <div style="margin-bottom: 12px;">
+      <a href="index.html" style="display: inline-flex; align-items: center; gap: 6px; color: #1e3a5f; text-decoration: none; font-size: 14px; font-weight: 600;">
+        <span style="font-size: 18px;">&#8592;</span> Volver al indice
+      </a>
+    </div>
+    <div class="header">
+      <h1>F-05 Dashboard de demanda insatisfecha</h1>
+      <div class="meta-grid">
+        <div class="meta-item"><span class="meta-label">Spec:</span> <code>v3-demanda-insatisfecha.md</code></div>
+        
+        <div class="meta-item"><span class="meta-label">URL:</span> <a href="https://plataforma-textil-dev.vercel.app" target="_blank">https://plataforma-textil-dev.vercel.app</a></div>
+        <div class="meta-item"><span class="meta-label">Fecha:</span> 2026-05-04</div>
+        <div class="meta-item"><span class="meta-label">Auditor:</span> Sergio (tecnico) + politologo + economista + sociologo + contador</div>
+      </div>
+    </div><div class="filter-bar" id="filter-bar">
+    <span class="filter-label">Filtrar:</span>
+    <button class="filter-btn active" data-filter="todos" onclick="filtrarPor('todos')">Todos</button>
+    <button class="filter-btn" data-filter="QA" onclick="filtrarPor('QA')">QA tecnico</button>
+    <button class="filter-btn" data-filter="DEV" onclick="filtrarPor('DEV')">DEV</button>
+    <button class="filter-btn" data-filter="politologo" onclick="filtrarPor('politologo')">politologo</button><button class="filter-btn" data-filter="economista" onclick="filtrarPor('economista')">economista</button><button class="filter-btn" data-filter="sociologo" onclick="filtrarPor('sociologo')">sociologo</button><button class="filter-btn" data-filter="contador" onclick="filtrarPor('contador')">contador</button>
+  </div><div class="section" id="contexto-institucional">
+    <h2>Contexto institucional</h2>
+    <div class="readonly-block">Cuando una marca publica un pedido y no hay talleres formales compatibles, el sistema antes simplemente no hacia nada. Esa &quot;demanda insatisfecha&quot; es el dato mas valioso para politica publica: muestra donde no llega la oferta formal del sector textil. Este dashboard permite al ESTADO/OIT ver cuantos pedidos quedan sin cotizaciones, por que motivo, y que intervenciones concretas se pueden hacer (capacitacion, formalizacion, apoyo a crecimiento).
+
+---</div>
+  </div><div class="section" id="objetivo-qa">
+    <h2>Objetivo de este QA</h2>
+    <div class="readonly-block">Verificar que el dashboard de demanda insatisfecha funciona correctamente: muestra stats, motivos, recomendaciones, vistas detalladas, y exporta a CSV. Verificar que el registro automatico de motivos funciona cuando un pedido no matchea, y que las recomendaciones heuristicas son accionables.
+
+---</div>
+  </div><div class="section collapsible collapsed" onclick="toggleCollapse(this)">
+    <h2>Como trabajar con este documento <span class="collapse-icon">&#9654;</span></h2>
+    <div class="collapse-content"><div class="readonly-block">1. Abri este archivo y la plataforma en paralelo
+2. Identifica que items te corresponden segun tu perfil (columna Verificador)
+3. Segui los pasos en orden — cada paso depende del anterior
+4. Marca cada resultado con ok, bug o bloqueante
+5. Si el resultado no es ok → abri el widget azul &quot;Feedback&quot; → describí que paso
+6. Al terminar, completa el resultado global y commitea este archivo actualizado
+
+---</div></div>
+  </div><div class="section" id="resultado-global"><h2>Resultado global</h2><div class="radio-group"><label class="radio-btn" data-value="aprobado">
+      <input type="radio" name="resultado-global" value="aprobado">
+      <span class="radio-label">✅ Aprobado</span>
+    </label><label class="radio-btn" data-value="aprobado-fixes">
+      <input type="radio" name="resultado-global" value="aprobado-fixes">
+      <span class="radio-label">🔧 Aprobado con fixes</span>
+    </label><label class="radio-btn" data-value="rechazado">
+      <input type="radio" name="resultado-global" value="rechazado">
+      <span class="radio-label">❌ Rechazado</span>
+    </label></div>
+    <div class="field-group">
+      <label>Decision:</label>
+      <input type="text" id="decision-global" placeholder="cerrar v2 / fix inmediato / abrir item v3" class="text-input">
+    </div>
+    <div class="field-group">
+      <label>Issues abiertos:</label>
+      <input type="text" id="issues-global" placeholder="#" class="text-input">
+    </div>
+  </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="DEV" data-item-selector="eje-1-item-1">
+      <div class="item-header">
+        <span class="item-num">#1</span>
+        <span class="item-text">Migracion con tabla `MotivoNoMatch` y enum `MotivoCategoria` (4 categorias)</span>
+        <span class="badge-dev">DEV</span>
+      </div>
+      <div class="item-badges"></div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="2" data-verificador="DEV" data-item-selector="eje-1-item-2">
+      <div class="item-header">
+        <span class="item-num">#2</span>
+        <span class="item-text">Funcion `registrarMotivoNoMatch` integrada en `notificarTalleresCompatibles` (linea 106)</span>
+        <span class="badge-dev">DEV</span>
+      </div>
+      <div class="item-badges"></div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="3" data-verificador="DEV" data-item-selector="eje-1-item-3">
+      <div class="item-header">
+        <span class="item-num">#3</span>
+        <span class="item-text">Helper `buscarTalleresCerca` retorna talleres BRONCE a un paso de matchear</span>
+        <span class="badge-dev">DEV</span>
+      </div>
+      <div class="item-badges"></div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="4" data-verificador="DEV" data-item-selector="eje-1-item-4">
+      <div class="item-header">
+        <span class="item-num">#4</span>
+        <span class="item-text">`buscarTalleresCerca` usa `calcularProximoNivel()` de D-02 para detalle</span>
+        <span class="badge-dev">DEV</span>
+      </div>
+      <div class="item-badges"></div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="5" data-verificador="QA" data-item-selector="eje-1-item-5">
+      <div class="item-header">
+        <span class="item-num">#5</span>
+        <span class="item-text">Dashboard `/estado/demanda-insatisfecha` con vista principal (stats + breakdown)</span>
+        <span class="badge-qa">QA</span>
+      </div>
+      <div class="item-badges"></div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="6" data-verificador="QA" data-item-selector="eje-1-item-6">
+      <div class="item-header">
+        <span class="item-num">#6</span>
+        <span class="item-text">Vista detallada por categoria: SIN_TALLERES_NIVEL</span>
+        <span class="badge-qa">QA</span>
+      </div>
+      <div class="item-badges"></div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="7" data-verificador="QA" data-item-selector="eje-1-item-7">
+      <div class="item-header">
+        <span class="item-num">#7</span>
+        <span class="item-text">Vista detallada por categoria: SIN_TALLERES_CAPACIDAD</span>
+        <span class="badge-qa">QA</span>
+      </div>
+      <div class="item-badges"></div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="8" data-verificador="QA" data-item-selector="eje-1-item-8">
+      <div class="item-header">
+        <span class="item-num">#8</span>
+        <span class="item-text">Vista detallada por categoria: SIN_TALLERES_PROCESO</span>
+        <span class="badge-qa">QA</span>
+      </div>
+      <div class="item-badges"></div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="9" data-verificador="QA" data-item-selector="eje-1-item-9">
+      <div class="item-header">
+        <span class="item-num">#9</span>
+        <span class="item-text">Vista de &quot;talleres cerca&quot; con detalle de que les falta</span>
+        <span class="badge-qa">QA</span>
+      </div>
+      <div class="item-badges"></div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="10" data-verificador="QA" data-item-selector="eje-1-item-10">
+      <div class="item-header">
+        <span class="item-num">#10</span>
+        <span class="item-text">Recomendaciones automaticas segun reglas heuristicas</span>
+        <span class="badge-qa">QA</span>
+      </div>
+      <div class="item-badges"></div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="11" data-verificador="QA" data-item-selector="eje-1-item-11">
+      <div class="item-header">
+        <span class="item-num">#11</span>
+        <span class="item-text">Metrica principal: unidades de produccion (no pesos)</span>
+        <span class="badge-qa">QA</span>
+      </div>
+      <div class="item-badges"></div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="12" data-verificador="QA" data-item-selector="eje-1-item-12">
+      <div class="item-header">
+        <span class="item-num">#12</span>
+        <span class="item-text">Metrica secundaria: demanda en pesos (solo con presupuesto declarado, con aclaracion)</span>
+        <span class="badge-qa">QA</span>
+      </div>
+      <div class="item-badges"></div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="13" data-verificador="QA" data-item-selector="eje-1-item-13">
+      <div class="item-header">
+        <span class="item-num">#13</span>
+        <span class="item-text">Export a CSV con rate limit</span>
+        <span class="badge-qa">QA</span>
+      </div>
+      <div class="item-badges"></div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="14" data-verificador="QA" data-item-selector="eje-1-item-14">
+      <div class="item-header">
+        <span class="item-num">#14</span>
+        <span class="item-text">Filtro por fecha (desde/hasta en URL)</span>
+        <span class="badge-qa">QA</span>
+      </div>
+      <div class="item-badges"></div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="15" data-verificador="QA" data-item-selector="eje-1-item-15">
+      <div class="item-header">
+        <span class="item-num">#15</span>
+        <span class="item-text">Item &quot;Demanda insatisfecha&quot; en navegacion ESTADO</span>
+        <span class="badge-qa">QA</span>
+      </div>
+      <div class="item-badges"></div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="16" data-verificador="DEV" data-item-selector="eje-1-item-16">
+      <div class="item-header">
+        <span class="item-num">#16</span>
+        <span class="item-text">Build sin errores de TypeScript</span>
+        <span class="badge-dev">DEV</span>
+      </div>
+      <div class="item-badges"></div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div><div class="item-card" data-eje="1" data-num="17" data-verificador="DEV" data-item-selector="eje-1-item-17">
+      <div class="item-header">
+        <span class="item-num">#17</span>
+        <span class="item-text">Matching ahora filtra por procesosRequeridos (fix incluido en F-05)</span>
+        <span class="badge-dev">DEV</span>
+      </div>
+      <div class="item-badges"></div>
+      <div class="item-controls">
+        <div class="status-btns">
+          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+        </div>
+        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+      </div>
+    </div></div><div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2><div class="paso-card" data-eje="2" data-num="1" data-item-selector="eje-2-paso-1">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 1 — Acceder al dashboard como ESTADO</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="item-badges"></div>
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> ESTADO (anabelen.torres@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/estado`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">Hacer login como ESTADO. Buscar el tab &quot;Demanda insatisfecha&quot; en la barra de navegacion. Hacer click.</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Se muestra el dashboard con titulo &quot;Demanda insatisfecha&quot;, 3 cards de stats (pedidos sin cotizaciones, unidades, marcas), y la seccion de motivos principales.</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="2" data-item-selector="eje-2-paso-2">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 2 — Ver motivos por categoria</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="item-badges"></div>
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> ESTADO</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/estado/demanda-insatisfecha`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">Click en cualquiera de los 4 motivos (barras de progreso). Si no hay datos, las barras estaran en 0%.</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Se navega a la vista detallada con tabla de pedidos filtrados por esa categoria. Boton &quot;Volver al resumen&quot; visible.</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="3" data-item-selector="eje-2-paso-3">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 3 — Exportar CSV</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="item-badges"></div>
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> ESTADO</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/estado/demanda-insatisfecha`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">Click en &quot;Exportar CSV&quot;.</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Se descarga un archivo .csv con headers: omId, tipoPrenda, cantidad, presupuesto, marca, motivoCategoria, talleresCerca, fecha.</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="4" data-item-selector="eje-2-paso-4">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 4 — Ver talleres cerca de matchear</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="item-badges"></div>
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> ESTADO</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/estado/demanda-insatisfecha`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">Si hay recomendaciones de formalizacion, click en &quot;Ver detalles&quot;. Alternativamente, navegar directo a `/estado/demanda-insatisfecha?vista=talleres-cerca`.</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Tabla con talleres, columnas: nombre, &quot;falta para&quot;, detalle, pedidos que matchearia.</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div><div class="paso-card" data-eje="2" data-num="5" data-item-selector="eje-2-paso-5">
+      <div class="paso-header" onclick="togglePaso(this)">
+        <span class="paso-title">Paso 5 — Verificar acceso denegado para TALLER</span>
+        <div class="paso-header-right">
+          <span class="paso-status-indicator"></span>
+          <span class="collapse-icon">&#9654;</span>
+        </div>
+      </div>
+      <div class="paso-body">
+        <div class="item-badges"></div>
+        <div class="paso-fields">
+          <div class="paso-field"><span class="paso-label">Rol:</span> TALLER (roberto.gimenez@pdt.org.ar / pdt2026)</div>
+          <div class="paso-field"><span class="paso-label">URL:</span> <code>`/taller`</code></div>
+          <div class="paso-field"><span class="paso-label">Accion:</span><div class="paso-value">Intentar navegar a `/estado/demanda-insatisfecha` directamente.</div></div>
+          <div class="paso-field"><span class="paso-label">Esperado:</span><div class="paso-value">Redirige a `/unauthorized` o muestra pagina de error de permisos.</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">---</textarea>
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>
+    </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1" data-verificador="QA" data-item-selector="eje-3-caso-1">
+        <div class="item-header">
+          <span class="item-num">#1</span>
+          <span class="item-text">Sin motivos registrados (DB vacia)</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Accion:</span> Acceder al dashboard con DB sin MotivoNoMatch</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> Muestra estado vacio con mensaje explicativo, no crash</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card" data-eje="3" data-num="2" data-verificador="DEV" data-item-selector="eje-3-caso-2">
+        <div class="item-header">
+          <span class="item-num">#2</span>
+          <span class="item-text">Pedido cancelado no aparece</span>
+          <span class="badge-dev">DEV</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Accion:</span> Cancelar un pedido que tenia MotivoNoMatch</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> El pedido no aparece en la vista activa</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card" data-eje="3" data-num="3" data-verificador="DEV" data-item-selector="eje-3-caso-3">
+        <div class="item-header">
+          <span class="item-num">#3</span>
+          <span class="item-text">Error en calcularProximoNivel</span>
+          <span class="badge-dev">DEV</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Accion:</span> Taller sin ReglaNivel configurada</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> buscarTalleresCerca no crashea, muestra &quot;sin datos&quot;</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card" data-eje="3" data-num="4" data-verificador="DEV" data-item-selector="eje-3-caso-4">
+        <div class="item-header">
+          <span class="item-num">#4</span>
+          <span class="item-text">Rate limit en exportacion</span>
+          <span class="badge-dev">DEV</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Accion:</span> Descargar CSV 6 veces en 1 hora</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> Las primeras 5 funcionan, la 6ta retorna 429</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card" data-eje="3" data-num="5" data-verificador="QA" data-item-selector="eje-3-caso-5">
+        <div class="item-header">
+          <span class="item-num">#5</span>
+          <span class="item-text">ADMIN tambien puede acceder</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Accion:</span> Login como ADMIN, navegar a /estado/demanda-insatisfecha</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> Carga normalmente</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1" data-verificador="QA" data-item-selector="eje-4-item-1">
+        <div class="item-header">
+          <span class="item-text">Pagina carga en menos de 3 segundos</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details"><span class="detail-label">Metodo:</span> DevTools &gt; Network &gt; recargar</div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="4" data-num="2" data-verificador="QA" data-item-selector="eje-4-item-2">
+        <div class="item-header">
+          <span class="item-text">Sin errores en consola del browser</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details"><span class="detail-label">Metodo:</span> DevTools &gt; Console &gt; revisar</div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="4" data-num="3" data-verificador="QA" data-item-selector="eje-4-item-3">
+        <div class="item-header">
+          <span class="item-text">Funciona en movil (responsive)</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details"><span class="detail-label">Metodo:</span> DevTools &gt; Toggle device toolbar</div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="4" data-num="4" data-verificador="QA" data-item-selector="eje-4-item-4">
+        <div class="item-header">
+          <span class="item-text">Loading skeleton visible mientras carga</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details"><span class="detail-label">Metodo:</span> Recargar pagina con network throttling</div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card compact" data-eje="5" data-num="1" data-item-selector="eje-5-item-1">
+        <div class="item-header">
+          <span class="item-text">Tipografias consistentes (Overpass para titulos)</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="2" data-item-selector="eje-5-item-2">
+        <div class="item-header">
+          <span class="item-text">Colores del design system (brand-blue, brand-red)</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="3" data-item-selector="eje-5-item-3">
+        <div class="item-header">
+          <span class="item-text">Estados vacios tienen mensaje descriptivo</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="4" data-item-selector="eje-5-item-4">
+        <div class="item-header">
+          <span class="item-text">Textos en espanol argentino (vos/tenes)</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="5" data-item-selector="eje-5-item-5">
+        <div class="item-header">
+          <span class="item-text">Barras de progreso de motivos son clickeables</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="5" data-num="6" data-item-selector="eje-5-item-6">
+        <div class="item-header">
+          <span class="item-text">Boton Exportar CSV es visible y accesible</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div></div><div class="section" id="eje6"><h2>Eje 6 — Validacion de dominio</h2><div class="section collapsible collapsed" onclick="toggleCollapse(this)" data-perfil="todos">
+      <h2> <span class="collapse-icon">&#9654;</span></h2>
+      <div class="collapse-content"></div></div><div class="section collapsible collapsed" onclick="toggleCollapse(this)" data-perfil="politologo">
+      <h2>Politologo — Relacion con el Estado <span class="collapse-icon">&#9654;</span></h2>
+      <div class="collapse-content"><div class="item-card" data-eje="6" data-num="1" data-verificador="perfil" data-perfil="politologo" data-item-selector="eje-6-politologo-1">
+          <div class="item-header">
+            <span class="item-num">#1</span>
+            <span class="item-text">La presentacion de &quot;demanda insatisfecha&quot; como dato accionable es la correcta para una politica publica textil?</span>
+            <span class="badge-perfil">politologo</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card" data-eje="6" data-num="2" data-verificador="perfil" data-perfil="politologo" data-item-selector="eje-6-politologo-2">
+          <div class="item-header">
+            <span class="item-num">#2</span>
+            <span class="item-text">Hay riesgo de que ESTADO use estos datos para presionar a talleres individuales?</span>
+            <span class="badge-perfil">politologo</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card" data-eje="6" data-num="3" data-verificador="perfil" data-perfil="politologo" data-item-selector="eje-6-politologo-3">
+          <div class="item-header">
+            <span class="item-num">#3</span>
+            <span class="item-text">El framing constructivo (&quot;oportunidades de acompanamiento&quot;) es adecuado o resulta demasiado suave?</span>
+            <span class="badge-perfil">politologo</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card" data-eje="6" data-num="4" data-verificador="perfil" data-perfil="politologo" data-item-selector="eje-6-politologo-4">
+          <div class="item-header">
+            <span class="item-num">#4</span>
+            <span class="item-text">Los datos exportados en CSV son utiles para informes institucionales?</span>
+            <span class="badge-perfil">politologo</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div></div></div><div class="section collapsible collapsed" onclick="toggleCollapse(this)" data-perfil="economista">
+      <h2>Economista — Incentivos y metricas <span class="collapse-icon">&#9654;</span></h2>
+      <div class="collapse-content"><div class="item-card" data-eje="6" data-num="1" data-verificador="perfil" data-perfil="economista" data-item-selector="eje-6-economista-1">
+          <div class="item-header">
+            <span class="item-num">#1</span>
+            <span class="item-text">El calculo de unidades de produccion potencial es una metrica util para medir demanda?</span>
+            <span class="badge-perfil">economista</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card" data-eje="6" data-num="2" data-verificador="perfil" data-perfil="economista" data-item-selector="eje-6-economista-2">
+          <div class="item-header">
+            <span class="item-num">#2</span>
+            <span class="item-text">El dato de presupuesto (parcial) es suficiente para informes, o genera mas confusion que valor?</span>
+            <span class="badge-perfil">economista</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card" data-eje="6" data-num="3" data-verificador="perfil" data-perfil="economista" data-item-selector="eje-6-economista-3">
+          <div class="item-header">
+            <span class="item-num">#3</span>
+            <span class="item-text">Los thresholds de las recomendaciones (&gt;=3 pedidos mismo proceso, &gt;=2000 piezas) son razonables para el piloto?</span>
+            <span class="badge-perfil">economista</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card" data-eje="6" data-num="4" data-verificador="perfil" data-perfil="economista" data-item-selector="eje-6-economista-4">
+          <div class="item-header">
+            <span class="item-num">#4</span>
+            <span class="item-text">Falta alguna metrica economica clave que un decisor de politica publica necesitaria?</span>
+            <span class="badge-perfil">economista</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div></div></div><div class="section collapsible collapsed" onclick="toggleCollapse(this)" data-perfil="sociologo">
+      <h2>Sociologo — Lenguaje y accesibilidad <span class="collapse-icon">&#9654;</span></h2>
+      <div class="collapse-content"><div class="item-card" data-eje="6" data-num="1" data-verificador="perfil" data-perfil="sociologo" data-item-selector="eje-6-sociologo-1">
+          <div class="item-header">
+            <span class="item-num">#1</span>
+            <span class="item-text">Los talleres &quot;cerca de matchear&quot; deben ser contactados proactivamente o esperar a que ellos se acerquen?</span>
+            <span class="badge-perfil">sociologo</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card" data-eje="6" data-num="2" data-verificador="perfil" data-perfil="sociologo" data-item-selector="eje-6-sociologo-2">
+          <div class="item-header">
+            <span class="item-num">#2</span>
+            <span class="item-text">Hay riesgo de que esta visibilidad genere stress sobre talleres que ya estan sobrecargados?</span>
+            <span class="badge-perfil">sociologo</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card" data-eje="6" data-num="3" data-verificador="perfil" data-perfil="sociologo" data-item-selector="eje-6-sociologo-3">
+          <div class="item-header">
+            <span class="item-num">#3</span>
+            <span class="item-text">El lenguaje del dashboard evita estigmatizar a talleres BRONCE?</span>
+            <span class="badge-perfil">sociologo</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card" data-eje="6" data-num="4" data-verificador="perfil" data-perfil="sociologo" data-item-selector="eje-6-sociologo-4">
+          <div class="item-header">
+            <span class="item-num">#4</span>
+            <span class="item-text">El taller individual NO ve que hubo pedidos que no pudo matchear — es correcto protegerlo de esa frustracion?</span>
+            <span class="badge-perfil">sociologo</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div></div></div><div class="section collapsible collapsed" onclick="toggleCollapse(this)" data-perfil="contador">
+      <h2>Contador — Flujos fiscales y operativos <span class="collapse-icon">&#9654;</span></h2>
+      <div class="collapse-content"><div class="item-card" data-eje="6" data-num="1" data-verificador="perfil" data-perfil="contador" data-item-selector="eje-6-contador-1">
+          <div class="item-header">
+            <span class="item-num">#1</span>
+            <span class="item-text">Los datos exportados sirven para reportes formales que el ESTADO presentaria a OIT?</span>
+            <span class="badge-perfil">contador</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card" data-eje="6" data-num="2" data-verificador="perfil" data-perfil="contador" data-item-selector="eje-6-contador-2">
+          <div class="item-header">
+            <span class="item-num">#2</span>
+            <span class="item-text">La metrica de unidades es suficiente o OIT necesita valoracion monetaria?</span>
+            <span class="badge-perfil">contador</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card" data-eje="6" data-num="3" data-verificador="perfil" data-perfil="contador" data-item-selector="eje-6-contador-3">
+          <div class="item-header">
+            <span class="item-num">#3</span>
+            <span class="item-text">El CSV incluye suficientes columnas para auditorias?</span>
+            <span class="badge-perfil">contador</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card" data-eje="6" data-num="4" data-verificador="perfil" data-perfil="contador" data-item-selector="eje-6-contador-4">
+          <div class="item-header">
+            <span class="item-num">#4</span>
+            <span class="item-text">El rate limit de 5 exportaciones/hora es razonable para el uso esperado?</span>
+            <span class="badge-perfil">contador</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div></div></div></div><div class="section" id="resumen-issues">
+    <h2>Resumen de issues abiertos</h2>
+    <textarea class="large-textarea" id="textarea-resumen-issues" placeholder="Listar issues abiertos con # y descripcion breve" rows="4"></textarea>
+  </div><div class="section" id="notas-auditores">
+    <h2>Notas de los auditores</h2>
+    <div class="field-group">
+      <label>Sergio (tecnico):</label>
+      <textarea class="large-textarea" id="textarea-notas-tecnico" placeholder="Observaciones tecnicas..." rows="4"></textarea>
+    </div>
+    <div class="field-group">
+      <label>Perfiles interdisciplinarios:</label>
+      <textarea class="large-textarea" id="textarea-notas-perfiles" placeholder="Observaciones de dominio..." rows="4"></textarea>
+    </div>
+  </div><div class="section" id="checklist"><h2>Checklist de cierre</h2><div class="checklist-items"><label class="checklist-item">
+      <input type="checkbox" data-checklist="0">
+      <span>Todos los criterios de aceptacion del spec verificados</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="1">
+      <span>Casos borde probados</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="2">
+      <span>Performance revisada en desktop y movil</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="3">
+      <span>Eje 6 completado por cada perfil aplicable</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="4">
+      <span>Issues abiertos en GitHub con labels correctos</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="5">
+      <span>Resultado global definido</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="6">
+      <span>Documento commiteado a develop</span>
+    </label></div></div>
+  </div>
+  <div class="section" id="panel-resumen">
+    <h2>Resumen de issues</h2>
+    <div id="github-status" class="text-muted"></div>
+    <div class="issue-stats">
+      <span class="issue-stat stat-open" id="stat-abiertos">0 abiertos</span>
+      <span class="issue-stat stat-resolved" id="stat-resueltos">0 resueltos</span>
+      <span class="issue-stat stat-discarded" id="stat-descartados">0 descartados</span>
+    </div>
+    <div id="issues-list" class="issues-list"></div>
+  </div>
+  </div>
+  <div class="sticky-bar">
+    <span class="progress-summary" id="progress-text"></span>
+    <button class="btn-copiar" id="btn-copiar" onclick="copiarResultados()">Copiar resultados como markdown</button>
+  </div>
+  <script>
+  function filtrarPor(tipo) {
+    // Reset todos los botones de filtro
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.filter-btn[data-filter="' + tipo + '"]').classList.add('active');
+
+    document.querySelectorAll('.item-card, .paso-card').forEach(c => {
+      if (tipo === 'todos') { c.style.display = ''; return; }
+      const verif = c.dataset.verificador || 'QA';
+      const perfil = c.dataset.perfil || '';
+      if (tipo === 'QA' || tipo === 'DEV') {
+        c.style.display = verif === tipo ? '' : 'none';
+      } else {
+        // Filtro por perfil interdisciplinario
+        c.style.display = perfil === tipo ? '' : 'none';
+      }
+    });
+    // Ocultar/mostrar secciones de ejes vacias
+    document.querySelectorAll('.section[id^="eje"]').forEach(s => {
+      const visible = s.querySelectorAll('.item-card:not([style*="none"]), .paso-card:not([style*="none"])');
+      s.style.display = visible.length === 0 ? 'none' : '';
+    });
+    // Secciones dentro de eje6 (colapsables de perfil)
+    document.querySelectorAll('#eje6 .collapsible').forEach(s => {
+      const visible = s.querySelectorAll('.item-card:not([style*="none"])');
+      s.style.display = visible.length === 0 ? 'none' : '';
+    });
+  }
+
+  function toggleCollapse(el) {
+    if (el.querySelector('.collapse-content')) {
+      el.classList.toggle('collapsed');
+    }
+  }
+
+  function togglePaso(header) {
+    header.closest('.paso-card').classList.toggle('expanded');
+  }
+
+  function setStatus(btn, emoji) {
+    const card = btn.closest('.item-card, .paso-card');
+    const btns = card.querySelectorAll('.status-btn');
+    const wasActive = btn.classList.contains('active');
+    btns.forEach(b => b.classList.remove('active'));
+    card.classList.remove('status-ok', 'status-bug', 'status-fail');
+
+    if (!wasActive) {
+      btn.classList.add('active');
+      if (emoji === '✅') card.classList.add('status-ok');
+      else if (emoji === '🐛') card.classList.add('status-bug');
+      else if (emoji === '❌') card.classList.add('status-fail');
+    }
+
+    // Update paso status indicator
+    const indicator = card.querySelector('.paso-status-indicator');
+    if (indicator) {
+      indicator.textContent = wasActive ? '' : emoji;
+    }
+
+    // Show/hide issue button for bug/fail
+    const issueBtn = card.querySelector('.btn-issue');
+    if (issueBtn && !issueBtn.classList.contains('enviado')) {
+      if (!wasActive && (emoji === '🐛' || emoji === '❌')) {
+        issueBtn.classList.add('visible');
+      } else {
+        issueBtn.classList.remove('visible');
+      }
+    }
+
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const cards = document.querySelectorAll('.item-card, .paso-card');
+    let total = 0, done = 0;
+    cards.forEach(c => {
+      total++;
+      if (c.querySelector('.status-btn.active')) done++;
+    });
+    const el = document.getElementById('progress-text');
+    if (el) el.textContent = done + ' / ' + total + ' completados';
+  }
+
+  function getCardStatus(card) {
+    const active = card.querySelector('.status-btn.active');
+    if (!active) return '—';
+    if (active.classList.contains('ok')) return '✅';
+    if (active.classList.contains('bug')) return '🐛';
+    if (active.classList.contains('fail')) return '❌';
+    return '—';
+  }
+
+  function getCardObs(card) {
+    const input = card.querySelector('.obs-input, .obs-textarea');
+    return input ? input.value.trim() : '';
+  }
+
+  function copiarResultados() {
+    const titulo = document.querySelector('.header h1')?.textContent || 'QA';
+    const fecha = new Date().toISOString().split('T')[0];
+    let md = '';
+
+    // Resultado global
+    const globalRadio = document.querySelector('input[name="resultado-global"]:checked');
+    const globalLabel = globalRadio ? globalRadio.closest('.radio-btn').querySelector('.radio-label').textContent.trim() : '—';
+    const decision = document.getElementById('decision-global')?.value.trim() || '—';
+    const issues = document.getElementById('issues-global')?.value.trim() || '#';
+
+    md += '## Resultados — ' + titulo + '\n';
+    md += '**Fecha de auditoria:** ' + fecha + '\n';
+    md += '**Auditor:** Sergio\n\n';
+    md += '### Resultado global\n';
+    md += globalLabel + '\n';
+    md += '**Decision:** ' + decision + '\n';
+    md += '**Issues abiertos:** ' + issues + '\n\n';
+
+    // Eje 1
+    const eje1Cards = document.querySelectorAll('#eje1 .item-card');
+    if (eje1Cards.length > 0) {
+      md += '### Eje 1 — Funcionalidad\n';
+      md += '| # | Criterio | Resultado | Observaciones |\n';
+      md += '|---|----------|-----------|---------------|\n';
+      eje1Cards.forEach(c => {
+        const num = c.dataset.num;
+        const criterio = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + num + ' | ' + criterio + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 2
+    const eje2Cards = document.querySelectorAll('#eje2 .paso-card');
+    if (eje2Cards.length > 0) {
+      md += '### Eje 2 — Navegabilidad\n';
+      eje2Cards.forEach(c => {
+        const num = c.dataset.num;
+        const titulo = c.querySelector('.paso-title')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '**' + titulo + ':** ' + status;
+        if (obs) md += ' — ' + obs;
+        md += '\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 3
+    const eje3Cards = document.querySelectorAll('#eje3 .item-card');
+    if (eje3Cards.length > 0) {
+      md += '### Eje 3 — Casos borde\n';
+      md += '| # | Caso | Resultado | Observaciones |\n';
+      md += '|---|------|-----------|---------------|\n';
+      eje3Cards.forEach(c => {
+        const num = c.dataset.num;
+        const caso = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + num + ' | ' + caso + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 4
+    const eje4Cards = document.querySelectorAll('#eje4 .item-card');
+    if (eje4Cards.length > 0) {
+      md += '### Eje 4 — Performance\n';
+      md += '| Verificacion | Resultado | Notas |\n';
+      md += '|-------------|-----------|-------|\n';
+      eje4Cards.forEach(c => {
+        const verif = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + verif + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 5
+    const eje5Cards = document.querySelectorAll('#eje5 .item-card');
+    if (eje5Cards.length > 0) {
+      md += '### Eje 5 — Consistencia visual\n';
+      md += '| Verificacion | Resultado | Notas |\n';
+      md += '|-------------|-----------|-------|\n';
+      eje5Cards.forEach(c => {
+        const verif = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + verif + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 6
+    const eje6Cards = document.querySelectorAll('#eje6 .item-card');
+    if (eje6Cards.length > 0) {
+      md += '### Eje 6 — Validacion de dominio\n';
+      md += '| # | Pregunta | Perfil | Resultado | Notas |\n';
+      md += '|---|----------|--------|-----------|-------|\n';
+      eje6Cards.forEach(c => {
+        const num = c.dataset.num;
+        const pregunta = c.querySelector('.item-text')?.textContent.trim() || '';
+        const perfil = c.dataset.perfil || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + num + ' | ' + pregunta + ' | ' + perfil + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Resumen issues
+    const resumenIssues = document.getElementById('textarea-resumen-issues')?.value.trim();
+    if (resumenIssues) {
+      md += '### Resumen de issues abiertos\n';
+      md += resumenIssues + '\n\n';
+    }
+
+    // Notas (V2: textarea-notas, V3: textarea-notas-tecnico + textarea-notas-perfiles)
+    const notas = document.getElementById('textarea-notas')?.value.trim();
+    if (notas) {
+      md += '### Notas del auditor\n';
+      md += notas + '\n\n';
+    }
+    const notasTecnico = document.getElementById('textarea-notas-tecnico')?.value.trim();
+    const notasPerfiles = document.getElementById('textarea-notas-perfiles')?.value.trim();
+    if (notasTecnico || notasPerfiles) {
+      md += '### Notas de los auditores\n';
+      if (notasTecnico) md += '**Sergio (tecnico):** ' + notasTecnico + '\n';
+      if (notasPerfiles) md += '**Perfiles interdisciplinarios:** ' + notasPerfiles + '\n';
+      md += '\n';
+    }
+
+    // Checklist
+    const checkItems = document.querySelectorAll('#checklist input[type="checkbox"]');
+    if (checkItems.length > 0) {
+      md += '### Checklist de cierre\n';
+      checkItems.forEach(cb => {
+        const label = cb.closest('.checklist-item')?.querySelector('span')?.textContent.trim() || '';
+        md += '- [' + (cb.checked ? 'x' : ' ') + '] ' + label + '\n';
+      });
+    }
+
+    navigator.clipboard.writeText(md).then(() => {
+      const btn = document.getElementById('btn-copiar');
+      btn.textContent = 'Copiado!';
+      btn.classList.add('copiado');
+      setTimeout(() => {
+        btn.textContent = 'Copiar resultados como markdown';
+        btn.classList.remove('copiado');
+      }, 2000);
+    });
+  }
+
+  function crearIssue(btn) {
+    const card = btn.closest('.item-card, .paso-card');
+    const obs = getCardObs(card);
+    if (!obs || obs.length < 10) {
+      btn.title = 'Escribi una observacion primero (min 10 caracteres)';
+      btn.classList.add('error');
+      btn.textContent = 'Escribi una observacion';
+      setTimeout(() => { btn.classList.remove('error'); btn.textContent = '📋 Crear issue'; }, 2000);
+      return;
+    }
+
+    const status = getCardStatus(card);
+    const tipo = status === '❌' ? 'bloqueante' : 'bug';
+    const eje = card.closest('.section')?.querySelector('h2')?.textContent.trim() || '';
+    const itemText = card.querySelector('.item-text, .paso-title')?.textContent.trim() || '';
+    const num = card.dataset.num || '';
+    const spec = document.body.dataset.spec || '';
+    const pagina = document.body.dataset.url || '';
+    const slugMeta = document.querySelector('meta[name="qa-slug"]');
+    const qaSlug = slugMeta ? slugMeta.content : '';
+
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    const apiUrl = document.body.dataset.apiUrl;
+
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tipo: tipo,
+        mensaje: obs,
+        pagina: pagina,
+        auditorNombre: 'Sergio',
+        auditorRol: 'QA',
+        contextoQA: {
+          spec: spec,
+          eje: eje,
+          item: '#' + num + ' ' + itemText,
+          resultado: status,
+          qaSlug: qaSlug,
+          itemSelector: card.dataset.itemSelector || '',
+          verificador: card.dataset.verificador || 'QA',
+          perfil: card.dataset.perfil || 'tecnico'
+        }
+      })
+    }).then(r => {
+      if (r.ok) {
+        btn.textContent = '✅ Issue creado';
+        btn.classList.add('enviado');
+      } else {
+        throw new Error();
+      }
+    }).catch(() => {
+      btn.textContent = '❌ Error — reintenta';
+      btn.classList.add('error');
+      btn.disabled = false;
+      setTimeout(() => { btn.classList.remove('error'); btn.textContent = '📋 Crear issue'; }, 3000);
+    });
+  }
+
+  // Init radio buttons
+  document.querySelectorAll('.radio-btn').forEach(label => {
+    label.addEventListener('click', () => {
+      const radio = label.querySelector('input[type="radio"]');
+      radio.checked = true;
+      label.closest('.radio-group').querySelectorAll('.radio-btn').forEach(l => l.classList.remove('selected'));
+      label.classList.add('selected');
+    });
+  });
+
+  updateProgress();
+</script>
+  <script>
+  (function() {
+    var apiBase = document.body.dataset.apiUrl;
+    if (!apiBase) return;
+    // apiUrl apunta a .../api/feedback — by-qa es relativo a eso
+    var feedbackBase = apiBase.replace('/api/feedback', '/api/feedback/by-qa/');
+    var slugMeta = document.querySelector('meta[name="qa-slug"]');
+    if (!slugMeta) return;
+    var qaSlug = slugMeta.content;
+
+    function crearBadgeIssue(issue) {
+      var a = document.createElement('a');
+      a.href = issue.url;
+      a.target = '_blank';
+      a.className = 'issue-badge issue-' + (
+        issue.state === 'open' ? 'open' :
+        issue.stateReason === 'completed' ? 'resolved' : 'discarded'
+      );
+      a.textContent = '#' + issue.number + ' — ' + (
+        issue.state === 'open' ? 'Abierto' :
+        issue.stateReason === 'completed' ? 'Resuelto' : 'Descartado'
+      );
+      return a;
+    }
+
+    function actualizarResumen(issues) {
+      var open = 0, resolved = 0, discarded = 0;
+      issues.forEach(function(i) {
+        if (i.state === 'open') open++;
+        else if (i.stateReason === 'completed') resolved++;
+        else discarded++;
+      });
+      var el;
+      el = document.getElementById('stat-abiertos'); if (el) el.textContent = open + ' abiertos';
+      el = document.getElementById('stat-resueltos'); if (el) el.textContent = resolved + ' resueltos';
+      el = document.getElementById('stat-descartados'); if (el) el.textContent = discarded + ' descartados';
+
+      var list = document.getElementById('issues-list');
+      if (list) {
+        list.innerHTML = '';
+        if (issues.length === 0) {
+          list.innerHTML = '<p class="text-muted">Sin issues reportados</p>';
+        } else {
+          issues.forEach(function(issue) {
+            var row = document.createElement('div');
+            row.className = 'issue-row';
+            row.innerHTML = '<a href="' + issue.url + '" target="_blank" class="issue-link">#' + issue.number + '</a> ' +
+              '<span class="issue-title">' + (issue.title || '') + '</span> ' +
+              '<span class="issue-badge-small issue-' + (issue.state === 'open' ? 'open' : issue.stateReason === 'completed' ? 'resolved' : 'discarded') + '">' +
+              (issue.state === 'open' ? 'Abierto' : issue.stateReason === 'completed' ? 'Resuelto' : 'Descartado') + '</span>';
+            list.appendChild(row);
+          });
+        }
+      }
+    }
+
+    function cargarIssues() {
+      fetch(feedbackBase + qaSlug)
+        .then(function(res) { if (!res.ok) throw new Error(); return res.json(); })
+        .then(function(data) {
+          document.querySelectorAll('.issue-badge').forEach(function(b) { b.remove(); });
+
+          data.issues.forEach(function(issue) {
+            if (!issue.itemSelector) return;
+            var item = document.querySelector('[data-item-selector="' + issue.itemSelector + '"]');
+            if (!item) return;
+            var container = item.querySelector('.item-badges');
+            if (container) container.appendChild(crearBadgeIssue(issue));
+          });
+
+          actualizarResumen(data.issues);
+
+          var status = document.getElementById('github-status');
+          if (status) status.textContent = 'Actualizado: ' + new Date(data.lastUpdated).toLocaleString('es-AR');
+        })
+        .catch(function() {
+          var status = document.getElementById('github-status');
+          if (status) status.textContent = 'No se pudo cargar estado de issues';
+        });
+    }
+
+    cargarIssues();
+    setInterval(cargarIssues, 2 * 60 * 1000);
+  })();
+</script>
+</body>
+</html>
