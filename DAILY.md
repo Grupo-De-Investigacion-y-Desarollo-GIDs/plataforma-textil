@@ -3,6 +3,9 @@
 ## 2026-05-04
 
 ### Gerardo Breard
+- **16:56** `953398a` — fix: revert functionMaxDuration — no soportado en plan Hobby
+  - `vercel.json`
+
 - **16:29** `b7c1636` — fix: cold start — connection_limit=1, loading.tsx per-page, timeouts
   - `.claude/specs/V4_BACKLOG.md`
   - `playwright.config.ts`
