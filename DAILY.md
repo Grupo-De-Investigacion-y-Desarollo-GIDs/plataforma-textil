@@ -3,6 +3,32 @@
 ## 2026-05-04
 
 ### Gerardo Breard
+- **18:27** `f2dbaed` — fix: dashboard Puntaje strict mode + 3 fixme con causa real
+  - `tests/e2e/acceso-verificado.spec.ts`
+  - `tests/e2e/configuracion-niveles.spec.ts`
+  - `tests/e2e/registro-marca.spec.ts`
+  - `tests/e2e/registro-taller.spec.ts`
+
+- **18:07** `bbfc18b` — chore: trigger redeploy — DATABASE_URL configurado para preview
+
+
+- **17:41** `b46d922` — revert: connection_limit=1 rompe queries en preview
+  - `src/compartido/lib/prisma.ts`
+
+- **16:56** `953398a` — fix: revert functionMaxDuration — no soportado en plan Hobby
+  - `vercel.json`
+
+- **16:29** `b7c1636` — fix: cold start — connection_limit=1, loading.tsx per-page, timeouts
+  - `.claude/specs/V4_BACKLOG.md`
+  - `playwright.config.ts`
+  - `src/app/(estado)/estado/talleres/loading.tsx`
+  - `src/app/(marca)/marca/directorio/loading.tsx`
+  - `src/app/(public)/directorio/loading.tsx`
+  - `src/app/(taller)/taller/loading.tsx`
+  - `src/compartido/lib/prisma.ts`
+  - `tests/e2e/_helpers/auth.ts`
+  - `vercel.json`
+
 - **15:52** `6918643` — fix: warm-up de funciones en E2E + reactivar 8 tests fixme
   - `.claude/specs/V4_BACKLOG.md`
   - `.github/workflows/e2e.yml`
