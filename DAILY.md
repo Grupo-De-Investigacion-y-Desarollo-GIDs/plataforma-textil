@@ -3,6 +3,9 @@
 ## 2026-05-04
 
 ### Gerardo Breard
+- **17:41** `b46d922` — revert: connection_limit=1 rompe queries en preview
+  - `src/compartido/lib/prisma.ts`
+
 - **16:56** `953398a` — fix: revert functionMaxDuration — no soportado en plan Hobby
   - `vercel.json`
 
