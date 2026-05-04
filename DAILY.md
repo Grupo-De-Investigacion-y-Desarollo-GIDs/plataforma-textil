@@ -3,6 +3,9 @@
 ## 2026-05-04
 
 ### Gerardo Breard
+- **12:03** `4e8d4ee` — fix: ignorar branch gh-pages en builds de Vercel
+  - `vercel.json`
+
 - **11:15** `5fd0b47` — feat: F-01 Tu proximo nivel — guia de formalizacion en dashboard taller
   - `.claude/auditorias/QA_v3-proximo-nivel-dashboard.md`
   - `.claude/auditorias/REVIEW_v3-proximo-nivel-dashboard.md`
