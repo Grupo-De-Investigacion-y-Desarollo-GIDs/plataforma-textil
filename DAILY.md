@@ -3,6 +3,14 @@
 ## 2026-05-04
 
 ### Gerardo Breard
+- **14:40** `8650768` — fix: marcar 7 E2E como fixme — streaming SSR no resuelve en preview
+  - `tests/e2e/acceso-verificado.spec.ts`
+  - `tests/e2e/admin-no-regression.spec.ts`
+  - `tests/e2e/configuracion-niveles.spec.ts`
+  - `tests/e2e/registro-marca.spec.ts`
+  - `tests/e2e/registro-taller.spec.ts`
+  - `tests/e2e/roles-estado.spec.ts`
+
 - **14:19** `ad1d473` — fix: ProximoNivelCard guard + E2E timeouts para streaming SSR
   - `.claude/auditorias/REVIEW_v3-proximo-nivel-dashboard.md`
   - `src/__tests__/proximo-nivel-card.test.ts`
