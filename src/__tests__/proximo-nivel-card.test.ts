@@ -1,6 +1,12 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { ordenarPasos, type Paso } from '@/taller/componentes/proximo-nivel-card'
 import type { ProximoNivelInfo } from '@/compartido/lib/nivel'
+
+// Mock para test de resiliencia del componente
+vi.mock('@/compartido/lib/nivel', async (importOriginal) => {
+  const original = await importOriginal<typeof import('@/compartido/lib/nivel')>()
+  return { ...original }
+})
 
 function infoBase(overrides: Partial<ProximoNivelInfo> = {}): ProximoNivelInfo {
   return {
@@ -100,5 +106,25 @@ describe('ordenarPasos', () => {
     const info = infoBase({ puntosActuales: 60, puntosObjetivo: 50 })
     const porcentaje = Math.min(100, Math.round((info.puntosActuales / info.puntosObjetivo) * 100))
     expect(porcentaje).toBe(100)
+  })
+})
+
+describe('ProximoNivelCard resiliencia', () => {
+  it('componente no crashea cuando calcularProximoNivel lanza error (DB sin ReglaNivel)', async () => {
+    // Simulamos el escenario: importamos el componente con la funcion mockeada
+    vi.doMock('@/compartido/lib/nivel', () => ({
+      calcularProximoNivel: vi.fn().mockRejectedValue(new Error('findUniqueOrThrow: ReglaNivel not found')),
+    }))
+
+    const { ProximoNivelCard } = await import('@/taller/componentes/proximo-nivel-card')
+
+    // El componente es async server component — lo llamamos directamente
+    const result = await ProximoNivelCard({ tallerId: 'taller-inexistente' })
+
+    // Debe retornar el fallback, no lanzar
+    expect(result).toBeDefined()
+    expect(result).not.toBeNull()
+
+    vi.doUnmock('@/compartido/lib/nivel')
   })
 })

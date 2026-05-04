@@ -172,10 +172,25 @@ function ListaVaciaMensaje() {
   )
 }
 
+function ProximoNivelFallback() {
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <p className="text-sm text-zinc-500">
+        Estamos cargando tu informacion de nivel. Si esto persiste, contacta al soporte.
+      </p>
+    </div>
+  )
+}
+
 // --- Componente principal (server) ---
 
 export async function ProximoNivelCard({ tallerId }: { tallerId: string }) {
-  const info = await calcularProximoNivel(tallerId)
+  let info: Awaited<ReturnType<typeof calcularProximoNivel>>
+  try {
+    info = await calcularProximoNivel(tallerId)
+  } catch {
+    return <ProximoNivelFallback />
+  }
 
   if (info.nivelProximo === null) {
     return <NivelOroCelebracion />

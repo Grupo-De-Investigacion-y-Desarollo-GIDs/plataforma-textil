@@ -66,11 +66,11 @@ test.describe('D-01 Roles ESTADO — flujos principales', () => {
     await ensureNotProduction(page)
     await loginAs(page, 'admin')
     await page.goto('/estado/talleres')
-    // Click en el primer taller
-    await page.locator('table tbody tr').first().locator('a').click()
-    await page.waitForURL(/\/estado\/talleres\//)
+    // Timeout 30s: streaming SSR + cold start en preview
+    await page.locator('table tbody tr').first().locator('a').click({ timeout: 30000 })
+    await page.waitForURL(/\/estado\/talleres\//, { timeout: 30000 })
     // Debe ver el banner de modo lectura
-    await expect(page.locator('text=Modo lectura')).toBeVisible()
+    await expect(page.locator('text=Modo lectura')).toBeVisible({ timeout: 30000 })
     // NO debe ver botones de Aprobar/Rechazar/Revocar
     await expect(page.getByRole('button', { name: 'Aprobar' })).not.toBeVisible()
     await expect(page.getByRole('button', { name: 'Rechazar' })).not.toBeVisible()

@@ -57,8 +57,16 @@ Cuando T-03 (checklist onboarding) se implemente, tendra prioridad sobre Proximo
 
 ## Testing
 
-- 8 tests Vitest cubriendo logica de `ordenarPasos`: array vacio, prioridad CUIT, AFIP ya verificado, requeridos antes que opcionales, certificados, orden completo, porcentaje correcto, cap en 100%
+- 9 tests Vitest cubriendo logica de `ordenarPasos` + resiliencia ante DB sin ReglaNivel
 - Tests funcionales manuales pendientes (ver QA)
+
+## Bug encontrado post-merge (corregido 2026-05-04)
+
+**Severidad:** Alta — crasheaba toda la pagina `/taller` si la DB no tenia registros en `ReglaNivel`.
+
+**Causa:** `calcularProximoNivel()` usa `reglas.find(...)!` que retorna `undefined` si no hay ReglaNivel en DB. El server component no tenia guard y propagaba el error al error boundary.
+
+**Fix:** try/catch en `ProximoNivelCard` con fallback gracioso ("Estamos cargando tu informacion de nivel"). Test Vitest agregado para este caso.
 
 ## Riesgos conocidos
 
