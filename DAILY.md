@@ -3,6 +3,9 @@
 ## 2026-05-04
 
 ### Gerardo Breard
+- **18:07** `bbfc18b` — chore: trigger redeploy — DATABASE_URL configurado para preview
+
+
 - **17:41** `b46d922` — revert: connection_limit=1 rompe queries en preview
   - `src/compartido/lib/prisma.ts`
 
