@@ -3,6 +3,9 @@
 ## 2026-05-04
 
 ### Gerardo Breard
+- **13:02** `d2131fb` — fix: E2E solo en push a develop (no main)
+  - `.github/workflows/e2e.yml`
+
 - **12:38** `cd5fa66` — fix: E2E timeout 5min→10min + exit 1 on timeout (Opcion C)
   - `.claude/specs/V4_BACKLOG.md`
   - `.github/workflows/e2e.yml`
