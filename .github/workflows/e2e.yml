@@ -38,16 +38,17 @@ jobs:
         run: |
           EXPECTED_SHA="${{ github.sha }}"
           echo "Waiting for deploy with SHA: $EXPECTED_SHA"
-          for i in {1..30}; do
+          for i in {1..60}; do
             ACTUAL_SHA=$(curl -s "${{ secrets.TEST_BASE_URL }}/api/health/version" 2>/dev/null | jq -r '.sha // empty' || echo "")
             if [ "$ACTUAL_SHA" = "$EXPECTED_SHA" ]; then
               echo "Deploy ready (attempt $i)"
               exit 0
             fi
-            echo "Attempt $i/30: not ready (got: ${ACTUAL_SHA:0:12}, want: ${EXPECTED_SHA:0:12})"
+            echo "Attempt $i/60: not ready (got: ${ACTUAL_SHA:0:12}, want: ${EXPECTED_SHA:0:12})"
             sleep 10
           done
-          echo "::warning::Timeout waiting for Vercel deploy — running tests against current deploy"
+          echo "::error::Deploy not ready after 10 min — aborting. This is an infra issue (Vercel deploy queue), not a code problem."
+          exit 1
 
       - run: npx playwright install --with-deps chromium
 

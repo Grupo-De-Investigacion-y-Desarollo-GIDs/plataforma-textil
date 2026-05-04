@@ -67,10 +67,11 @@ Origen: decisiones tomadas durante V3 que conviene revisar.
 | T-04 | Migrar bypass token a JWT firmado | El `CI_BYPASS_TOKEN` actual es un secreto compartido. Migrar a JWT firmado con clave pública/privada para que no requiera env var en runtime | 4h |
 | T-05 | Cambiar `redis.keys()` a `redis.scan()` en cleanup | El helper de cleanup de tests usa `KEYS` que es peligroso en Redis con DBs grandes. Migrar a `SCAN` cuando la DB de tests crezca | 2h |
 | T-06 | Reactivar Vercel Authentication con bypass para CI | Hoy desactivamos Vercel Auth porque bloqueaba el CI. Reactivarlo con un bypass token específico para tener una capa más de protección | 4h |
-| T-07 | Endpoint `/api/health/version` con cache headers explícitos | Confirmar que el endpoint usado por el polling del CI tiene `Cache-Control: no-store` correctamente configurado | 1h |
+| ~~T-07~~ | ~~Endpoint `/api/health/version` con cache headers explícitos~~ | ~~Cerrado en V3 (2026-05-04): verificado que devuelve `Cache-Control: max-age=0, must-revalidate` y `x-vercel-cache: MISS`. El problema de E2E no era cache sino timeout insuficiente (5 min) + fallo silencioso. Resuelto con Opción C: timeout a 10 min + exit 1 explícito + `ignoreCommand` para gh-pages~~ | ~~1h~~ |
 | T-08 | Migrar ~57 endpoints restantes al formato de error consistente | Q-03 migró 11 endpoints críticos al formato `{ error: { code, message, digest } }` con `apiHandler`. Quedan ~57 endpoints con formato legacy `{ error: "string" }`. Incluye migrar los ~18 frontends que consumen esos endpoints para usar `getErrorMessage()` | 10h |
+| T-09 | Migrar polling E2E a Vercel Deployment API | Si el volumen crece y los deploys tardan más, reemplazar el polling de `/api/health/version` por consulta directa a `api.vercel.com/v6/deployments` buscando SHA + state=READY. Requiere VERCEL_TOKEN como GitHub secret | 3h |
 
-**Total estimado Bloque D:** ~21h
+**Total estimado Bloque D:** ~23h (T-07 cerrado, T-09 nuevo)
 
 ---
 
