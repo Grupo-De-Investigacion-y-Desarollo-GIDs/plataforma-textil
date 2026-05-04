@@ -46,7 +46,7 @@ Verificar que: (1) emails se envian via Resend, (2) magic links funcionan, (3) e
 | 7 | [contacto-pdt] reemplazado por EMAIL_SUPPORT en mensajes ARCA | DEV | ok | |
 | 8 | 12 templates HTML existentes se mantienen sin cambios | DEV | ok | |
 | 9 | 8 consumidores existentes no se tocaron | DEV | ok | |
-| 10 | nodemailer eliminado de dependencies | DEV | ok | |
+| 10 | nodemailer presente en dependencies (peer dep de NextAuth EmailProvider) | DEV | ok | |
 | 11 | Dry-run: magic link llega a gbreard@gmail.com | QA (Gerardo) | | # |
 | 12 | Dry-run: email de bienvenida llega post-registro | QA (Gerardo) | | # |
 | 13 | Dry-run: contenido del email es correcto (subject, body, boton) | QA (Gerardo) | | # |

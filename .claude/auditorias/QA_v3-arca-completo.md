@@ -54,15 +54,15 @@ Verificar que: (1) el registro usa datos de ARCA correctamente, (2) los mensajes
 | 6 | consultarPadron retorna CUIT_SIN_ACTIVIDAD para actividades vacias | DEV | ok | |
 | 7 | consultarPadron retorna ARCA_NO_RESPONDE en timeout | DEV | ok | |
 | 8 | consultarPadron retorna AFIPSDK_ERROR en error 401 | DEV | ok | |
-| 9 | Cada consulta se registra en ConsultaArca (con y sin tallerId) | DEV | ok | |
-| 10 | Cada consulta se loguea con accion AFIP_VERIFICACION | DEV | ok | |
+| 9 | Cada consulta se registra en ConsultaArca (con y sin tallerId) — verificar en Supabase despues de registro real | QA | | # |
+| 10 | Cada consulta se loguea con accion AFIP_VERIFICACION — verificar en /admin/logs | QA | | # |
 | 11 | Mock funciona con ARCA_ENABLED=false | DEV | ok | |
 | 12 | sincronizarTaller actualiza campos ARCA al verificar | DEV | ok | |
 | 13 | sincronizarTaller respeta ventana de 30 dias | DEV | ok | |
 | 14 | Errores bloqueantes (INEXISTENTE/INACTIVO/SIN_ACTIVIDAD) bloquean registro | DEV | ok | |
 | 15 | Errores no bloqueantes (ARCA_NO_RESPONDE/AFIPSDK_ERROR) permiten continuar | DEV | ok | |
-| 16 | Registro crea taller con datos ARCA extendidos (tipoInscripcion, actividades, domicilio) | DEV | ok | |
-| 17 | Registro usa nombre de ARCA preferido sobre autodeclarado | DEV | ok | |
+| 16 | Registro crea taller con datos ARCA extendidos (tipoInscripcion, actividades, domicilio) — registrar taller real en dev y verificar campos en DB | QA | | # |
+| 17 | Registro usa nombre de ARCA preferido sobre autodeclarado — registrar con CUIT real y verificar que nombre en DB viene de ARCA | QA | | # |
 | 18 | GET /api/auth/verificar-cuit retorna datos extendidos (tipoInscripcion, estadoCuit) | QA | | # |
 | 19 | GET /api/auth/verificar-cuit retorna mensaje de error legible para cada codigo | QA | | # |
 | 20 | POST /api/estado/arca sincroniza todos los talleres | QA | | # |
