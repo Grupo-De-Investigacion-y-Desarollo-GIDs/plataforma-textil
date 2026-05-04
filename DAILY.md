@@ -3,6 +3,17 @@
 ## 2026-05-04
 
 ### Gerardo Breard
+- **16:29** `b7c1636` — fix: cold start — connection_limit=1, loading.tsx per-page, timeouts
+  - `.claude/specs/V4_BACKLOG.md`
+  - `playwright.config.ts`
+  - `src/app/(estado)/estado/talleres/loading.tsx`
+  - `src/app/(marca)/marca/directorio/loading.tsx`
+  - `src/app/(public)/directorio/loading.tsx`
+  - `src/app/(taller)/taller/loading.tsx`
+  - `src/compartido/lib/prisma.ts`
+  - `tests/e2e/_helpers/auth.ts`
+  - `vercel.json`
+
 - **15:52** `6918643` — fix: warm-up de funciones en E2E + reactivar 8 tests fixme
   - `.claude/specs/V4_BACKLOG.md`
   - `.github/workflows/e2e.yml`
