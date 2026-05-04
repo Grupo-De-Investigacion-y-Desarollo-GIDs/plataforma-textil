@@ -3,6 +3,9 @@
 ## 2026-05-04
 
 ### Gerardo Breard
+- **19:58** `56c7542` — fix: E2E demanda-insatisfecha tolera ESTADO login timeout
+  - `tests/e2e/demanda-insatisfecha.spec.ts`
+
 - **19:34** `bd9d4dc` — feat: F-05 dashboard de demanda insatisfecha
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `.claude/auditorias/QA_v3-demanda-insatisfecha.md`
