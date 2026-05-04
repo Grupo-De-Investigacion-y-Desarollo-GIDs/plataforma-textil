@@ -70,6 +70,7 @@ Origen: decisiones tomadas durante V3 que conviene revisar.
 | ~~T-07~~ | ~~Endpoint `/api/health/version` con cache headers explícitos~~ | ~~Cerrado en V3 (2026-05-04): verificado que devuelve `Cache-Control: max-age=0, must-revalidate` y `x-vercel-cache: MISS`. El problema de E2E no era cache sino timeout insuficiente (5 min) + fallo silencioso. Resuelto con Opción C: timeout a 10 min + exit 1 explícito + `ignoreCommand` para gh-pages~~ | ~~1h~~ |
 | T-08 | Migrar ~57 endpoints restantes al formato de error consistente | Q-03 migró 11 endpoints críticos al formato `{ error: { code, message, digest } }` con `apiHandler`. Quedan ~57 endpoints con formato legacy `{ error: "string" }`. Incluye migrar los ~18 frontends que consumen esos endpoints para usar `getErrorMessage()` | 10h |
 | T-09 | Migrar polling E2E a Vercel Deployment API | Si el volumen crece y los deploys tardan más, reemplazar el polling de `/api/health/version` por consulta directa a `api.vercel.com/v6/deployments` buscando SHA + state=READY. Requiere VERCEL_TOKEN como GitHub secret | 3h |
+| T-10 | Pre-warming continuo de funciones críticas | La causa raíz de los 17 fixme era cold start + streaming SSR (no latencia de red, ni región de función, ni pooling — `regions: ["gru1"]` ya aplicaba a preview, y PgBouncer ya estaba activo). Solución V3: warm-up de 2 pasadas en E2E workflow antes de correr tests. V4 puede investigar pre-warming continuo (cron en producción, warm-up en CI para preview) si el problema reaparece | 3h |
 
 **Total estimado Bloque D:** ~23h (T-07 cerrado, T-09 nuevo)
 
