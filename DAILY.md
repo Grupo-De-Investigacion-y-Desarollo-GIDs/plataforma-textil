@@ -3,6 +3,10 @@
 ## 2026-05-04
 
 ### Gerardo Breard
+- **12:38** `cd5fa66` — fix: E2E timeout 5min→10min + exit 1 on timeout (Opcion C)
+  - `.claude/specs/V4_BACKLOG.md`
+  - `.github/workflows/e2e.yml`
+
 - **12:03** `4e8d4ee` — fix: ignorar branch gh-pages en builds de Vercel
   - `vercel.json`
 
