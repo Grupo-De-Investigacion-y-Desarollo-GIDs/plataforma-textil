@@ -3,6 +3,10 @@
 ## 2026-05-04
 
 ### Gerardo Breard
+- **08:34** `b849db6` — fix: reinstalar nodemailer — peer dependency de NextAuth EmailProvider
+  - `package-lock.json`
+  - `package.json`
+
 - **08:29** `e1a96c1` — fix: reorganizar index QA — specs nuevos dentro de bloques tematicos
   - `tools/generate-qa.js`
 
