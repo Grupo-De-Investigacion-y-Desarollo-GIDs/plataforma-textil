@@ -2,6 +2,7 @@ import { Prisma } from '@prisma/client'
 import { prisma } from './prisma'
 import { getFeatureFlag } from './features'
 import { sendEmail, buildCotizacionRecibidaEmail, buildCotizacionAceptadaEmail, buildCotizacionRechazadaEmail, buildPedidoDisponibleEmail } from './email'
+import { registrarMotivoNoMatch } from './demanda-insatisfecha'
 
 interface NotificacionData {
   cotizacion: { id: string; precio: number; plazoDias: number; proceso: string }
@@ -96,14 +97,34 @@ export async function notificarTalleresCompatibles(pedidoId: string): Promise<vo
       : {}),
   }
 
-  const talleres = await prisma.taller.findMany({
+  // Incluir procesos para filtrar por procesosRequeridos
+  const talleresQuery = await prisma.taller.findMany({
     where: whereClause,
-    include: { user: { select: { id: true, email: true } } },
+    include: {
+      user: { select: { id: true, email: true } },
+      procesos: { select: { proceso: { select: { nombre: true } } } },
+    },
     orderBy: { puntaje: 'desc' },
-    take: 20,
+    take: 50, // traer mas para filtrar por proceso luego
   })
 
-  if (talleres.length === 0) return
+  // Filtrar por procesosRequeridos (si el pedido los tiene)
+  const talleres = pedido.procesosRequeridos.length > 0
+    ? talleresQuery.filter(t => {
+        const procesosDelTaller = t.procesos.map(p => p.proceso.nombre.toUpperCase())
+        return pedido.procesosRequeridos.every(pr =>
+          procesosDelTaller.some(pt => pt.includes(pr.toUpperCase()))
+        )
+      }).slice(0, 20)
+    : talleresQuery.slice(0, 20)
+
+  if (talleres.length === 0) {
+    // F-05: registrar motivo de no-match (fire-and-forget)
+    registrarMotivoNoMatch(pedido).catch(err =>
+      console.error('[F-05] Error registrando motivo no-match:', err)
+    )
+    return
+  }
 
   for (const taller of talleres) {
     prisma.notificacion.create({

@@ -296,6 +296,37 @@ Este archivo acumula TODAS las verificaciones manuales que requieren ojos humano
 
 ---
 
+## Spec F-05 — Dashboard de demanda insatisfecha
+
+### Tests automatizados
+
+- [x] 11 Vitest tests (demanda-insatisfecha.test.ts) — Gerardo 4/5
+- [x] 6 Vitest tests (notificaciones-matching.test.ts) — Gerardo 4/5
+- [x] TypeScript 0 errores — Gerardo 4/5
+- [x] 259/259 tests pasan en suite completo — Gerardo 4/5
+- [ ] 6 E2E tests (demanda-insatisfecha.spec.ts) — pendiente CI
+- [ ] Verificar que CI (GitHub Actions) pasa con los tests nuevos
+
+### Verificacion funcional en plataforma-textil-dev.vercel.app (DEV)
+
+- [ ] /estado/demanda-insatisfecha carga sin error (login ESTADO)
+- [ ] Tab "Demanda insatisfecha" visible en nav ESTADO
+- [ ] Stats cards muestran datos correctos (o 0 si no hay motivos)
+- [ ] Barras de motivos clickeables, llevan a vista detallada
+- [ ] Vista detallada por categoria muestra tabla con pedidos
+- [ ] Vista "talleres cerca" muestra tabla con talleres y detalle
+- [ ] Export CSV descarga archivo con headers correctos
+- [ ] TALLER no puede acceder a /estado/demanda-insatisfecha (403/redirect)
+- [ ] ADMIN puede acceder a /estado/demanda-insatisfecha (lectura)
+- [ ] Loading skeleton visible durante carga
+
+### Verificacion de integracion matching
+
+- [ ] Publicar pedido que no encuentre talleres PLATA/ORO → verificar en DB que se creo MotivoNoMatch
+- [ ] Publicar pedido con procesosRequeridos inexistentes → verificar que motivo es SIN_TALLERES_PROCESO
+
+---
+
 ## Nota tecnica: E2E tests crean issues reales en GitHub
 
 Los tests E2E de rate limiting (S-02) envian requests POST a `/api/feedback` que crea issues reales en GitHub. Cada corrida de CI genera ~11 issues basura con titulo "Test rate limit intento N". Esto contamina el panel de issues y el conteo del QA index.

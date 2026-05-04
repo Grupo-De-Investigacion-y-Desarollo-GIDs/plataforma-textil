@@ -104,6 +104,13 @@ enum EstadoAccionCorrectiva {
   VENCIDA
 }
 
+enum MotivoCategoria {
+  SIN_TALLERES_NIVEL
+  SIN_TALLERES_CAPACIDAD
+  SIN_TALLERES_PROCESO
+  OTROS
+}
+
 enum EstadoEscrow {
   BLOQUEADO
   PENDIENTE
@@ -116,29 +123,29 @@ enum EstadoEscrow {
 // ============================================
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  emailVerified DateTime?
-  password      String?
-  name          String?
-  phone         String?
-  avatar        String?
-  role          UserRole  @default(TALLER)
+  id               String    @id @default(cuid())
+  email            String    @unique
+  emailVerified    DateTime?
+  password         String?
+  name             String?
+  phone            String?
+  avatar           String?
+  role             UserRole  @default(TALLER)
   active           Boolean   @default(true)
   registroCompleto Boolean   @default(true)
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
-  taller        Taller?
-  marca         Marca?
-  accounts      Account[]
-  sessions      Session[]
+  taller                  Taller?
+  marca                   Marca?
+  accounts                Account[]
+  sessions                Session[]
   notificacionesRecibidas Notificacion[] @relation("NotificacionDestinatario")
   notificacionesEnviadas  Notificacion[] @relation("NotificacionCreador")
-  logs          LogActividad[]
-  auditorias    Auditoria[]    @relation("AuditoriaInspector")
-  notasAdmin    NotaInterna[]  @relation("NotasAdmin")
-  validacionesAprobadas Validacion[] @relation("validacionesAprobadas")
+  logs                    LogActividad[]
+  auditorias              Auditoria[]    @relation("AuditoriaInspector")
+  notasAdmin              NotaInterna[]  @relation("NotasAdmin")
+  validacionesAprobadas   Validacion[]   @relation("validacionesAprobadas")
 
   @@map("users")
 }
@@ -189,72 +196,72 @@ model VerificationToken {
 // ============================================
 
 model Taller {
-  id                    String      @id @default(cuid())
-  userId                String      @unique
-  nombre                String
-  cuit                  String      @unique
-  nivel                 NivelTaller @default(BRONCE)
-  puntaje               Int         @default(0)
-  rating                Float       @default(0)
-  ubicacion             String?
-  website               String?
-  provincia             String?
-  partido               String?
-  ubicacionDetalle      String?
-  descripcion           String?     @db.Text
-  capacidadMensual      Int         @default(0)
-  trabajadoresRegistrados Int       @default(0)
-  fundado               Int?
-  verificadoAfip        Boolean     @default(false)
+  id                      String      @id @default(cuid())
+  userId                  String      @unique
+  nombre                  String
+  cuit                    String      @unique
+  nivel                   NivelTaller @default(BRONCE)
+  puntaje                 Int         @default(0)
+  rating                  Float       @default(0)
+  ubicacion               String?
+  website                 String?
+  provincia               String?
+  partido                 String?
+  ubicacionDetalle        String?
+  descripcion             String?     @db.Text
+  capacidadMensual        Int         @default(0)
+  trabajadoresRegistrados Int         @default(0)
+  fundado                 Int?
+  verificadoAfip          Boolean     @default(false)
 
   // INT-01: datos verificados por ARCA
-  verificadoAfipAt              DateTime?
-  tipoInscripcionAfip           TipoInscripcionAfip?
-  categoriaMonotributo          String?
-  estadoCuitAfip                EstadoCuit?
-  fechaInscripcionAfip          DateTime?
-  actividadesAfip               String[]
-  domicilioFiscalAfip           Json?
-  empleadosRegistradosSipa      Int?
-  empleadosSipaActualizadoAt    DateTime?
+  verificadoAfipAt           DateTime?
+  tipoInscripcionAfip        TipoInscripcionAfip?
+  categoriaMonotributo       String?
+  estadoCuitAfip             EstadoCuit?
+  fechaInscripcionAfip       DateTime?
+  actividadesAfip            String[]
+  domicilioFiscalAfip        Json?
+  empleadosRegistradosSipa   Int?
+  empleadosSipaActualizadoAt DateTime?
 
-  pedidosCompletados    Int         @default(0)
-  ontimeRate            Float       @default(0)
-  retrabajoRate         Float       @default(0)
-  portfolioFotos        String[]
+  pedidosCompletados Int      @default(0)
+  ontimeRate         Float    @default(0)
+  retrabajoRate      Float    @default(0)
+  portfolioFotos     String[]
 
   // Wizard perfil (pasos 1-11)
-  sam                   Int?
-  prendaPrincipal       String?
-  organizacion          String?
-  metrosCuadrados       Int?
-  areas                 String[]
-  experienciaPromedio   String?
-  polivalencia          String?
-  horario               String?
-  registroProduccion    String?
-  escalabilidad         String?
-  paradasFrecuencia     String?
+  sam                 Int?
+  prendaPrincipal     String?
+  organizacion        String?
+  metrosCuadrados     Int?
+  areas               String[]
+  experienciaPromedio String?
+  polivalencia        String?
+  horario             String?
+  registroProduccion  String?
+  escalabilidad       String?
+  paradasFrecuencia   String?
 
-  createdAt             DateTime    @default(now())
-  updatedAt             DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  user                  User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  procesos              TallerProceso[]
-  prendas               TallerPrenda[]
-  maquinaria            Maquinaria[]
-  certificaciones       TallerCertificacion[]
-  validaciones          Validacion[]
-  ordenesManufactura    OrdenManufactura[]
-  auditorias            Auditoria[]
-  denuncias             Denuncia[]
-  progresoCapacitacion  ProgresoCapacitacion[]
-  certificados          Certificado[]
-  intentosEvaluacion    IntentoEvaluacion[]
-  notasInternas         NotaInterna[]
-  cotizaciones          Cotizacion[]
-  pedidosInvitado       PedidoInvitacion[]
-  consultasArca         ConsultaArca[]
+  user                 User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  procesos             TallerProceso[]
+  prendas              TallerPrenda[]
+  maquinaria           Maquinaria[]
+  certificaciones      TallerCertificacion[]
+  validaciones         Validacion[]
+  ordenesManufactura   OrdenManufactura[]
+  auditorias           Auditoria[]
+  denuncias            Denuncia[]
+  progresoCapacitacion ProgresoCapacitacion[]
+  certificados         Certificado[]
+  intentosEvaluacion   IntentoEvaluacion[]
+  notasInternas        NotaInterna[]
+  cotizaciones         Cotizacion[]
+  pedidosInvitado      PedidoInvitacion[]
+  consultasArca        ConsultaArca[]
 
   @@map("talleres")
 }
@@ -279,9 +286,9 @@ model Marca {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  pedidos           Pedido[]
-  notasInternas     NotaInterna[]
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pedidos       Pedido[]
+  notasInternas NotaInterna[]
 
   @@map("marcas")
 }
@@ -291,12 +298,12 @@ model Marca {
 // ============================================
 
 model ProcesoProductivo {
-  id          String   @id @default(cuid())
-  nombre      String   @unique
-  descripcion String?  @db.Text
-  maquinaria  String[]
+  id                 String   @id @default(cuid())
+  nombre             String   @unique
+  descripcion        String?  @db.Text
+  maquinaria         String[]
   tiempoEstimado500u String?
-  activo      Boolean  @default(true)
+  activo             Boolean  @default(true)
 
   talleres       TallerProceso[]
   prendaProcesos PrendaProceso[]
@@ -306,15 +313,15 @@ model ProcesoProductivo {
 }
 
 model TipoPrenda {
-  id              String   @id @default(cuid())
-  nombre          String   @unique
+  id               String   @id @default(cuid())
+  nombre           String   @unique
   precioReferencia Float?
-  variantes       String[]
-  activo          Boolean  @default(true)
+  variantes        String[]
+  activo           Boolean  @default(true)
 
-  talleres        TallerPrenda[]
-  procesos        PrendaProceso[]
-  pedidos         Pedido[]
+  talleres TallerPrenda[]
+  procesos PrendaProceso[]
+  pedidos  Pedido[]
 
   @@map("tipos_prenda")
 }
@@ -325,7 +332,7 @@ model PrendaProceso {
   procesoId String
   orden     Int    @default(0)
 
-  prenda  TipoPrenda       @relation(fields: [prendaId], references: [id], onDelete: Cascade)
+  prenda  TipoPrenda        @relation(fields: [prendaId], references: [id], onDelete: Cascade)
   proceso ProcesoProductivo @relation(fields: [procesoId], references: [id], onDelete: Cascade)
 
   @@unique([prendaId, procesoId])
@@ -358,10 +365,10 @@ model TallerPrenda {
 }
 
 model Maquinaria {
-  id       String @id @default(cuid())
+  id       String  @id @default(cuid())
   tallerId String
   nombre   String
-  cantidad Int    @default(1)
+  cantidad Int     @default(1)
   tipo     String?
 
   taller Taller @relation(fields: [tallerId], references: [id], onDelete: Cascade)
@@ -386,31 +393,32 @@ model TallerCertificacion {
 // ============================================
 
 model Pedido {
-  id            String       @id @default(cuid())
-  omId          String       @unique
+  id            String            @id @default(cuid())
+  omId          String            @unique
   marcaId       String
   tipoPrenda    String
   tipoPrendaId  String?
   cantidad      Int
-  fechaCreacion DateTime     @default(now())
+  fechaCreacion DateTime          @default(now())
   fechaObjetivo DateTime?
-  estado        EstadoPedido @default(BORRADOR)
+  estado        EstadoPedido      @default(BORRADOR)
   visibilidad   VisibilidadPedido @default(PUBLICO)
-  progresoTotal Float        @default(0)
-  montoTotal    Float        @default(0)
-  descripcion   String?      @db.Text
+  progresoTotal Float             @default(0)
+  montoTotal    Float             @default(0)
+  descripcion   String?           @db.Text
   presupuesto   Float?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
 
   imagenes           String[]
   procesosRequeridos String[]
 
-  marca         Marca        @relation(fields: [marcaId], references: [id])
-  tipoPrendaRel TipoPrenda?  @relation(fields: [tipoPrendaId], references: [id])
-  ordenes       OrdenManufactura[]
-  cotizaciones  Cotizacion[]
-  invitaciones  PedidoInvitacion[]
+  marca          Marca              @relation(fields: [marcaId], references: [id])
+  tipoPrendaRel  TipoPrenda?        @relation(fields: [tipoPrendaId], references: [id])
+  ordenes        OrdenManufactura[]
+  cotizaciones   Cotizacion[]
+  invitaciones   PedidoInvitacion[]
+  motivosNoMatch MotivoNoMatch[]
 
   @@map("pedidos")
 }
@@ -423,22 +431,22 @@ enum EstadoCotizacion {
 }
 
 model Cotizacion {
-  id          String            @id @default(cuid())
-  pedidoId    String
-  tallerId    String
-  precio      Float
-  plazoDias   Int
-  proceso     String
-  mensaje     String?           @db.Text
-  estado      EstadoCotizacion  @default(ENVIADA)
-  venceEn     DateTime
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  id        String           @id @default(cuid())
+  pedidoId  String
+  tallerId  String
+  precio    Float
+  plazoDias Int
+  proceso   String
+  mensaje   String?          @db.Text
+  estado    EstadoCotizacion @default(ENVIADA)
+  venceEn   DateTime
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
 
-  imagenes    String[]
+  imagenes String[]
 
-  pedido      Pedido            @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
-  taller      Taller            @relation(fields: [tallerId], references: [id], onDelete: Cascade)
+  pedido           Pedido            @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+  taller           Taller            @relation(fields: [tallerId], references: [id], onDelete: Cascade)
   ordenManufactura OrdenManufactura?
 
   @@unique([pedidoId, tallerId])
@@ -446,28 +454,28 @@ model Cotizacion {
 }
 
 model OrdenManufactura {
-  id              String                   @id @default(cuid())
-  moId            String                   @unique
-  pedidoId        String
-  tallerId        String
-  proceso         String
-  procesoId       String?
-  estado          EstadoOrdenManufactura   @default(PENDIENTE)
-  progreso        Float                    @default(0)
-  precio          Float                    @default(0)
-  plazoDias       Int?
+  id                String                 @id @default(cuid())
+  moId              String                 @unique
+  pedidoId          String
+  tallerId          String
+  proceso           String
+  procesoId         String?
+  estado            EstadoOrdenManufactura @default(PENDIENTE)
+  progreso          Float                  @default(0)
+  precio            Float                  @default(0)
+  plazoDias         Int?
   diasTranscurridos Int                    @default(0)
-  verificacionSst Boolean                  @default(false)
-  alertaTiempo    String?
-  cotizacionId    String?                  @unique
-  createdAt       DateTime                 @default(now())
-  updatedAt       DateTime                 @updatedAt
+  verificacionSst   Boolean                @default(false)
+  alertaTiempo      String?
+  cotizacionId      String?                @unique
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
 
-  pedido          Pedido            @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
-  taller          Taller            @relation(fields: [tallerId], references: [id])
-  procesoRel      ProcesoProductivo? @relation(fields: [procesoId], references: [id])
-  cotizacion      Cotizacion?       @relation(fields: [cotizacionId], references: [id], onDelete: SetNull)
-  escrowHitos     EscrowHito[]
+  pedido      Pedido             @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+  taller      Taller             @relation(fields: [tallerId], references: [id])
+  procesoRel  ProcesoProductivo? @relation(fields: [procesoId], references: [id])
+  cotizacion  Cotizacion?        @relation(fields: [cotizacionId], references: [id], onDelete: SetNull)
+  escrowHitos EscrowHito[]
 
   @@map("ordenes_manufactura")
 }
@@ -503,9 +511,9 @@ model Validacion {
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
 
-  taller            Taller         @relation(fields: [tallerId], references: [id], onDelete: Cascade)
-  tipoDocumento     TipoDocumento  @relation(fields: [tipoDocumentoId], references: [id])
-  usuarioAprobador  User?          @relation("validacionesAprobadas", fields: [aprobadoPor], references: [id], onDelete: SetNull)
+  taller           Taller        @relation(fields: [tallerId], references: [id], onDelete: Cascade)
+  tipoDocumento    TipoDocumento @relation(fields: [tipoDocumentoId], references: [id])
+  usuarioAprobador User?         @relation("validacionesAprobadas", fields: [aprobadoPor], references: [id], onDelete: SetNull)
 
   @@unique([tallerId, tipo])
   @@index([estado])
@@ -576,12 +584,12 @@ model Coleccion {
 }
 
 model Video {
-  id          String @id @default(cuid())
+  id          String  @id @default(cuid())
   coleccionId String
   titulo      String
   youtubeUrl  String
   duracion    String?
-  orden       Int    @default(0)
+  orden       Int     @default(0)
 
   coleccion Coleccion @relation(fields: [coleccionId], references: [id], onDelete: Cascade)
 
@@ -589,10 +597,10 @@ model Video {
 }
 
 model Evaluacion {
-  id          String @id @default(cuid())
-  coleccionId String @unique
-  preguntas   Json
-  puntajeMinimo Int  @default(60)
+  id            String @id @default(cuid())
+  coleccionId   String @unique
+  preguntas     Json
+  puntajeMinimo Int    @default(60)
 
   coleccion Coleccion @relation(fields: [coleccionId], references: [id], onDelete: Cascade)
 
@@ -600,15 +608,15 @@ model Evaluacion {
 }
 
 model Certificado {
-  id          String   @id @default(cuid())
-  tallerId    String
-  coleccionId String
-  codigo      String   @unique
-  fecha       DateTime @default(now())
+  id           String   @id @default(cuid())
+  tallerId     String
+  coleccionId  String
+  codigo       String   @unique
+  fecha        DateTime @default(now())
   calificacion Int
-  revocado    Boolean  @default(false)
-  pdfUrl      String?
-  qrCode      String?
+  revocado     Boolean  @default(false)
+  pdfUrl       String?
+  qrCode       String?
 
   taller    Taller    @relation(fields: [tallerId], references: [id], onDelete: Cascade)
   coleccion Coleccion @relation(fields: [coleccionId], references: [id])
@@ -618,12 +626,12 @@ model Certificado {
 }
 
 model ProgresoCapacitacion {
-  id                  String @id @default(cuid())
-  tallerId            String
-  coleccionId         String
-  porcentajeCompletado Float  @default(0)
-  videosVistos        Int    @default(0)
-  updatedAt           DateTime @updatedAt
+  id                   String   @id @default(cuid())
+  tallerId             String
+  coleccionId          String
+  porcentajeCompletado Float    @default(0)
+  videosVistos         Int      @default(0)
+  updatedAt            DateTime @updatedAt
 
   taller    Taller    @relation(fields: [tallerId], references: [id], onDelete: Cascade)
   coleccion Coleccion @relation(fields: [coleccionId], references: [id], onDelete: Cascade)
@@ -633,13 +641,13 @@ model ProgresoCapacitacion {
 }
 
 model IntentoEvaluacion {
-  id          String   @id @default(cuid())
-  tallerId    String
-  coleccionId String
-  respuestas  Json
+  id           String   @id @default(cuid())
+  tallerId     String
+  coleccionId  String
+  respuestas   Json
   calificacion Int
-  aprobado    Boolean
-  createdAt   DateTime @default(now())
+  aprobado     Boolean
+  createdAt    DateTime @default(now())
 
   taller    Taller    @relation(fields: [tallerId], references: [id], onDelete: Cascade)
   coleccion Coleccion @relation(fields: [coleccionId], references: [id], onDelete: Cascade)
@@ -652,31 +660,31 @@ model IntentoEvaluacion {
 // ============================================
 
 model Auditoria {
-  id          String           @id @default(cuid())
+  id          String          @id @default(cuid())
   tallerId    String
   inspectorId String?
   fecha       DateTime?
-  tipo        TipoAuditoria    @default(PRIMERA_VISITA)
+  tipo        TipoAuditoria   @default(PRIMERA_VISITA)
   prioridad   String?
-  estado      EstadoAuditoria  @default(PROGRAMADA)
+  estado      EstadoAuditoria @default(PROGRAMADA)
   resultado   String?
   hallazgos   Json?
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 
-  taller      Taller  @relation(fields: [tallerId], references: [id])
-  inspector   User?   @relation("AuditoriaInspector", fields: [inspectorId], references: [id])
-  acciones    AccionCorrectiva[]
+  taller    Taller             @relation(fields: [tallerId], references: [id])
+  inspector User?              @relation("AuditoriaInspector", fields: [inspectorId], references: [id])
+  acciones  AccionCorrectiva[]
 
   @@map("auditorias")
 }
 
 model AccionCorrectiva {
-  id          String                   @id @default(cuid())
-  auditoriaId String
-  descripcion String
-  estado      EstadoAccionCorrectiva   @default(PENDIENTE)
-  plazo       DateTime?
+  id           String                 @id @default(cuid())
+  auditoriaId  String
+  descripcion  String
+  estado       EstadoAccionCorrectiva @default(PENDIENTE)
+  plazo        DateTime?
   evidenciaUrl String?
 
   auditoria Auditoria @relation(fields: [auditoriaId], references: [id], onDelete: Cascade)
@@ -689,16 +697,16 @@ model AccionCorrectiva {
 // ============================================
 
 model Denuncia {
-  id          String          @id @default(cuid())
-  tipo        String
-  tallerId    String?
-  descripcion String          @db.Text
-  estado      EstadoDenuncia  @default(RECIBIDA)
-  anonima     Boolean         @default(false)
-  codigo      String          @unique
+  id           String         @id @default(cuid())
+  tipo         String
+  tallerId     String?
+  descripcion  String         @db.Text
+  estado       EstadoDenuncia @default(RECIBIDA)
+  anonima      Boolean        @default(false)
+  codigo       String         @unique
   evidenciaUrl String?
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 
   taller Taller? @relation(fields: [tallerId], references: [id])
 
@@ -723,8 +731,8 @@ model Notificacion {
   link        String?
   createdAt   DateTime          @default(now())
 
-  user      User  @relation("NotificacionDestinatario", fields: [userId],      references: [id], onDelete: Cascade)
-  creadaPor User? @relation("NotificacionCreador",      fields: [createdById], references: [id], onDelete: SetNull)
+  user      User  @relation("NotificacionDestinatario", fields: [userId], references: [id], onDelete: Cascade)
+  creadaPor User? @relation("NotificacionCreador", fields: [createdById], references: [id], onDelete: SetNull)
 
   @@index([batchId])
   @@map("notificaciones")
@@ -735,39 +743,39 @@ model Notificacion {
 // ============================================
 
 model ConfiguracionSistema {
-  id    String @id @default(cuid())
-  clave String @unique
-  valor String @db.Text
+  id    String  @id @default(cuid())
+  clave String  @unique
+  valor String  @db.Text
   grupo String?
 
   @@map("configuracion_sistema")
 }
 
 model ConfiguracionUpload {
-  id                String   @id @default(cuid())
-  contexto          String   @unique
-  nombre            String
-  descripcion       String?
-  tiposPermitidos   String[]
-  tamanoMaximoMB    Int
-  activo            Boolean  @default(true)
-  actualizadoPor    String?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id              String   @id @default(cuid())
+  contexto        String   @unique
+  nombre          String
+  descripcion     String?
+  tiposPermitidos String[]
+  tamanoMaximoMB  Int
+  activo          Boolean  @default(true)
+  actualizadoPor  String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@map("configuraciones_upload")
 }
 
 model DocumentoRAG {
-  id         String   @id @default(cuid())
-  titulo     String
-  contenido  String   @db.Text
-  categoria  String
-  fuente     String?
-  activo     Boolean  @default(true)
-  embedding  Unsupported("vector(512)")?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        String                      @id @default(cuid())
+  titulo    String
+  contenido String                      @db.Text
+  categoria String
+  fuente    String?
+  activo    Boolean                     @default(true)
+  embedding Unsupported("vector(512)")?
+  createdAt DateTime                    @default(now())
+  updatedAt DateTime                    @updatedAt
 
   @@map("documentos_rag")
 }
@@ -799,9 +807,9 @@ model NotaInterna {
   marcaId   String?
   createdAt DateTime @default(now())
 
-  admin     User     @relation("NotasAdmin", fields: [adminId], references: [id])
-  taller    Taller?  @relation(fields: [tallerId], references: [id], onDelete: Cascade)
-  marca     Marca?   @relation(fields: [marcaId], references: [id], onDelete: Cascade)
+  admin  User    @relation("NotasAdmin", fields: [adminId], references: [id])
+  taller Taller? @relation(fields: [tallerId], references: [id], onDelete: Cascade)
+  marca  Marca?  @relation(fields: [marcaId], references: [id], onDelete: Cascade)
 
   @@map("notas_internas")
 }
@@ -811,20 +819,20 @@ model NotaInterna {
 // ============================================
 
 model ConsultaArca {
-  id            String   @id @default(cuid())
-  tallerId      String?
-  taller        Taller?  @relation(fields: [tallerId], references: [id], onDelete: Cascade)
+  id       String  @id @default(cuid())
+  tallerId String?
+  taller   Taller? @relation(fields: [tallerId], references: [id], onDelete: Cascade)
 
-  cuit          String
-  endpoint      String   // 'padron-a10' | 'padron-a13' | 'sipa'
+  cuit     String
+  endpoint String // 'padron-a10' | 'padron-a13' | 'sipa'
 
-  exitosa       Boolean
-  respuesta     Json?
-  error         String?
+  exitosa   Boolean
+  respuesta Json?
+  error     String?
 
-  duracionMs    Int
+  duracionMs Int
 
-  createdAt     DateTime @default(now())
+  createdAt DateTime @default(now())
 
   @@index([tallerId])
   @@index([createdAt])
@@ -846,4 +854,24 @@ model EscrowHito {
   ordenManufactura OrdenManufactura @relation(fields: [ordenManufacturaId], references: [id], onDelete: Cascade)
 
   @@map("escrow_hitos")
+}
+
+// ============================================
+// DEMANDA INSATISFECHA (F-05)
+// ============================================
+
+model MotivoNoMatch {
+  id              String          @id @default(cuid())
+  pedidoId        String
+  motivoCategoria MotivoCategoria
+  detalle         Json
+  resueltoEn      DateTime?
+  createdAt       DateTime        @default(now())
+
+  pedido Pedido @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+
+  @@index([pedidoId])
+  @@index([motivoCategoria])
+  @@index([createdAt])
+  @@map("motivos_no_match")
 }
