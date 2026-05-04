@@ -3,6 +3,10 @@
 ## 2026-05-04
 
 ### Gerardo Breard
+- **08:36** `f6966ab` — fix: nodemailer@7 para compatibilidad con next-auth peer dep
+  - `package-lock.json`
+  - `package.json`
+
 - **08:34** `b849db6` — fix: reinstalar nodemailer — peer dependency de NextAuth EmailProvider
   - `package-lock.json`
   - `package.json`
