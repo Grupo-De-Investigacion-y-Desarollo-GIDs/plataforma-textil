@@ -1,9 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { ensureNotProduction } from './_helpers/safety'
 
-// Preview: CUIT verificacion + email + cold start exceden timeout consistentemente.
-// Funciona localmente y en produccion. Flakiness de entorno preview.
-test.fixme('Marca se registra y hace primer login', async ({ page }) => {
+test('Marca se registra y hace primer login', async ({ page }) => {
   await ensureNotProduction(page)
 
   const ts = Date.now()

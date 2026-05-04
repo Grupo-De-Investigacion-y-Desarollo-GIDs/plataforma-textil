@@ -3,9 +3,7 @@ import { ensureNotProduction } from './_helpers/safety'
 import { loginAs } from './_helpers/auth'
 
 test.describe('Acceso pre-formalizacion y niveles privados', () => {
-  // Preview streaming SSR: Suspense no resuelve en cold start (DB connection hang).
-  // Funciona en produccion. Mover a non-fixme cuando preview tenga region cercana a DB.
-  test.fixme('Directorio publico no muestra badges de nivel BRONCE/PLATA/ORO', async ({ page }) => {
+  test('Directorio publico no muestra badges de nivel BRONCE/PLATA/ORO', async ({ page }) => {
     await ensureNotProduction(page)
 
     await page.goto('/directorio')
@@ -32,8 +30,7 @@ test.describe('Acceso pre-formalizacion y niveles privados', () => {
     expect(await credenciales.count()).toBeGreaterThanOrEqual(0)
   })
 
-  // Preview streaming SSR: Suspense no resuelve en cold start (DB connection hang).
-  test.fixme('Marca directorio no muestra badges de nivel', async ({ page }) => {
+  test('Marca directorio no muestra badges de nivel', async ({ page }) => {
     await ensureNotProduction(page)
     await loginAs(page, 'marca')
 
@@ -49,9 +46,7 @@ test.describe('Acceso pre-formalizacion y niveles privados', () => {
     await expect(nivelBadges).toHaveCount(0)
   })
 
-  // Login ESTADO falla consistentemente en CI (30s+ login, 10+ tests flaky por el mismo patron).
-  // El test funciona localmente. Marcado fixme hasta resolver la flakiness general de ESTADO en CI.
-  test.fixme('ESTADO talleres tiene filtro de verificacion AFIP', async ({ page }) => {
+  test('ESTADO talleres tiene filtro de verificacion AFIP', async ({ page }) => {
     await ensureNotProduction(page)
     await loginAs(page, 'estado')
 

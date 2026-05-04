@@ -30,9 +30,7 @@ test.describe('D-02 Configuracion de niveles y tipos de documento', () => {
     await expect(page.getByText('pts').first()).toBeVisible()
   })
 
-  // Preview streaming SSR: Suspense no resuelve en cold start (DB connection hang).
-  // ProximoNivelCard ya tiene guard (try/catch) — verificado con Vitest.
-  test.fixme('Dashboard taller carga sin error (constantes PTS_* eliminadas)', async ({ page }) => {
+  test('Dashboard taller carga sin error (constantes PTS_* eliminadas)', async ({ page }) => {
     await ensureNotProduction(page)
     await loginAs(page, 'taller')
     // El dashboard del taller debe cargar sin error

@@ -50,6 +50,18 @@ jobs:
           echo "::error::Deploy not ready after 10 min — aborting. This is an infra issue (Vercel deploy queue), not a code problem."
           exit 1
 
+      - name: Warm up preview functions
+        run: |
+          echo "Warming up serverless functions (2 passes)..."
+          for pass in 1 2; do
+            echo "--- Pass $pass ---"
+            for path in / /login /registro /directorio /estado/talleres /estado/documentos /estado/configuracion-niveles /taller /marca/directorio /admin/talleres; do
+              code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "${{ secrets.TEST_BASE_URL }}${path}" || echo "ERR")
+              echo "  $path → $code"
+            done
+          done
+          echo "Warm-up complete"
+
       - run: npx playwright install --with-deps chromium
 
       - run: npx playwright test

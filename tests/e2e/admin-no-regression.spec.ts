@@ -40,8 +40,7 @@ test.describe('D-01 Admin no-regression — verificar que ADMIN no se rompio', (
     await page.waitForSelector('table', { timeout: 10000 })
   })
 
-  // Preview streaming SSR: Suspense no resuelve en cold start (DB connection hang).
-  test.fixme('ADMIN puede acceder a /estado/talleres (lectura)', async ({ page }) => {
+  test('ADMIN puede acceder a /estado/talleres (lectura)', async ({ page }) => {
     await ensureNotProduction(page)
     await loginAs(page, 'admin')
     await page.goto('/estado/talleres')

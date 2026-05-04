@@ -3,6 +3,16 @@
 ## 2026-05-04
 
 ### Gerardo Breard
+- **15:52** `6918643` — fix: warm-up de funciones en E2E + reactivar 8 tests fixme
+  - `.claude/specs/V4_BACKLOG.md`
+  - `.github/workflows/e2e.yml`
+  - `tests/e2e/acceso-verificado.spec.ts`
+  - `tests/e2e/admin-no-regression.spec.ts`
+  - `tests/e2e/configuracion-niveles.spec.ts`
+  - `tests/e2e/registro-marca.spec.ts`
+  - `tests/e2e/registro-taller.spec.ts`
+  - `tests/e2e/roles-estado.spec.ts`
+
 - **14:40** `8650768` — fix: marcar 7 E2E como fixme — streaming SSR no resuelve en preview
   - `tests/e2e/acceso-verificado.spec.ts`
   - `tests/e2e/admin-no-regression.spec.ts`
