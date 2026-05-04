@@ -43,7 +43,8 @@ test('Taller se registra y hace primer login', async ({ page }) => {
   await crearCuentaBtn.click()
 
   // Debe redirigir al dashboard del taller
-  await expect(page).toHaveURL(/\/taller/, { timeout: 30000 })
+  // Timeout 60s: registro + CUIT verificacion + email + redirect en preview con cold start
+  await expect(page).toHaveURL(/\/taller/, { timeout: 60000 })
 
   // Verificar que la pagina del dashboard cargo (cualquier contenido)
   await page.waitForLoadState('domcontentloaded')

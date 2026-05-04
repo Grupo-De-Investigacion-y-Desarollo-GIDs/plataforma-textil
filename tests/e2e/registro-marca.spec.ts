@@ -34,5 +34,6 @@ test('Marca se registra y hace primer login', async ({ page }) => {
   await crearCuentaBtn.click()
 
   // Debe redirigir al dashboard de marca
-  await expect(page).toHaveURL(/\/marca/, { timeout: 30000 })
+  // Timeout 60s: registro + CUIT verificacion + email + redirect en preview con cold start
+  await expect(page).toHaveURL(/\/marca/, { timeout: 60000 })
 })
