@@ -3,6 +3,10 @@
 ## 2026-05-04
 
 ### Gerardo Breard
+- **08:45** `3db4726` — fix: corregir clasificacion DEV/QA en QAs INT-01 e INT-02
+  - `.claude/auditorias/QA_v3-arca-completo.md`
+  - `.claude/auditorias/QA_v3-email-resend.md`
+
 - **08:36** `f6966ab` — fix: nodemailer@7 para compatibilidad con next-auth peer dep
   - `package-lock.json`
   - `package.json`
