@@ -1689,9 +1689,9 @@ function generarIndex(dirPath) {
     { id: 'b0', nombre: 'Bloque 0 — Infraestructura QA', slugs: ['QA_v3-formato-ampliado', 'QA_v3-qa-estado-issues'] },
     { id: 'b1', nombre: 'Bloque 1 — Infraestructura base', slugs: ['QA_v3-separar-ambientes', 'QA_v3-logs-admin-auditoria'] },
     { id: 'b2', nombre: 'Bloque 2 — Seguridad', slugs: ['QA_v3-cookies-seguridad', 'QA_v3-rate-limiting', 'QA_v3-validacion-archivos'] },
-    { id: 'b3', nombre: 'Bloque 3 — Roles ESTADO', slugs: ['QA_v3-redefinicion-roles-estado', 'QA_v3-tipos-documento-db'] },
+    { id: 'b3', nombre: 'Bloque 3 — Roles ESTADO', slugs: ['QA_v3-redefinicion-roles-estado', 'QA_v3-tipos-documento-db', 'QA_v3-acceso-pre-formalizacion'] },
     { id: 'b4', nombre: 'Bloque 4 — Calidad y errores', slugs: ['QA_v3-tests-e2e', 'QA_v3-error-boundaries', 'QA_v3-errores-consistentes-apis'] },
-    { id: 'b5', nombre: 'Bloque 5 — Integraciones externas', slugs: ['QA_v3-arca-verificacion-cuit', 'QA_v3-whatsapp-magic-link', 'QA_v3-rag-asistente'] },
+    { id: 'b5', nombre: 'Bloque 5 — Integraciones externas', slugs: ['QA_v3-arca-verificacion-cuit', 'QA_v3-whatsapp-magic-link', 'QA_v3-rag-asistente', 'QA_v3-arca-completo', 'QA_v3-email-resend'] },
     { id: 'b6', nombre: 'Bloque 6 — Features de marca', slugs: ['QA_v3-proximo-nivel-dashboard', 'QA_v3-exportes-estado', 'QA_v3-demanda-insatisfecha', 'QA_v3-mensajes-individuales'] },
     { id: 'b7', nombre: 'Bloque 7 — UX/Onboarding', slugs: ['QA_v3-protocolos-onboarding', 'QA_v3-reporte-campo', 'QA_v3-ux-mejoras'] },
   ]

@@ -3,6 +3,9 @@
 ## 2026-05-04
 
 ### Gerardo Breard
+- **08:29** `e1a96c1` — fix: reorganizar index QA — specs nuevos dentro de bloques tematicos
+  - `tools/generate-qa.js`
+
 - **07:47** `52a15c0` — feat: INT-02 — migrar email de SendGrid a Resend + cerrar [contacto-pdt]
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `.claude/auditorias/QA_v3-email-resend.md`
