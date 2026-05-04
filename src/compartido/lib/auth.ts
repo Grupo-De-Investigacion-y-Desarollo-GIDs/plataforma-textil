@@ -62,17 +62,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         })]
       : []),
     EmailProvider({
-      server: {
-        host: 'smtp.sendgrid.net',
-        port: 587,
-        auth: {
-          user: 'apikey',
-          pass: process.env.SENDGRID_API_KEY || 'placeholder',
-        },
-      },
-      from: process.env.EMAIL_FROM || 'noreply@plataformatextil.ar',
+      server: 'smtp://placeholder', // No se usa — sendVerificationRequest override
+      from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
       sendVerificationRequest: async ({ identifier, url }) => {
-        // Override: usa SendGrid REST API en vez de SMTP
         await sendEmail({
           to: identifier,
           ...buildMagicLinkEmail(url),

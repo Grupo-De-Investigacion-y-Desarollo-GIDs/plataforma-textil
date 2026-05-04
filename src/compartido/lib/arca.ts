@@ -59,17 +59,22 @@ export interface ResultadoConsulta {
   duracionMs: number
 }
 
-// Placeholder para mensajes al usuario — se define [contacto-pdt] después
-const CONTACTO_PDT = '[contacto-pdt]'
+// Email de soporte para mensajes de error al usuario
+function contactoPdt(): string {
+  return process.env.EMAIL_SUPPORT || 'soporte@plataformatextil.ar'
+}
 
 // Mensajes de error orientados al usuario
-export const MENSAJES_ERROR = {
-  CUIT_INEXISTENTE: 'No encontramos este CUIT en ARCA. Verifica los numeros — son 11 digitos sin guiones.',
-  CUIT_INACTIVO: `Tu CUIT figura como inactivo o dado de baja en ARCA. Si necesitas regularizar tu situacion fiscal, escribinos a ${CONTACTO_PDT} y te acompanamos.`,
-  CUIT_SIN_ACTIVIDAD: `Tu CUIT existe pero no tiene actividad economica registrada en ARCA. Para usar la plataforma como taller, necesitas tener actividad economica vigente. Escribinos a ${CONTACTO_PDT} para asesorarte.`,
-  ARCA_NO_RESPONDE: 'ARCA no esta respondiendo en este momento. Te dejamos continuar con el registro — vamos a verificar tu CUIT automaticamente cuando ARCA este disponible. Mientras tanto, podes navegar la plataforma y subir documentos.',
-  AFIPSDK_ERROR: 'No se pudo verificar el CUIT en este momento. Te dejamos continuar — vamos a verificar automaticamente mas tarde.',
-} as const
+export function getMensajesError() {
+  const contacto = contactoPdt()
+  return {
+    CUIT_INEXISTENTE: 'No encontramos este CUIT en ARCA. Verifica los numeros — son 11 digitos sin guiones.',
+    CUIT_INACTIVO: `Tu CUIT figura como inactivo o dado de baja en ARCA. Si necesitas regularizar tu situacion fiscal, escribinos a ${contacto} y te acompanamos.`,
+    CUIT_SIN_ACTIVIDAD: `Tu CUIT existe pero no tiene actividad economica registrada en ARCA. Para usar la plataforma como taller, necesitas tener actividad economica vigente. Escribinos a ${contacto} para asesorarte.`,
+    ARCA_NO_RESPONDE: 'ARCA no esta respondiendo en este momento. Te dejamos continuar con el registro — vamos a verificar tu CUIT automaticamente cuando ARCA este disponible. Mientras tanto, podes navegar la plataforma y subir documentos.',
+    AFIPSDK_ERROR: 'No se pudo verificar el CUIT en este momento. Te dejamos continuar — vamos a verificar automaticamente mas tarde.',
+  } as const
+}
 
 // Códigos de error internos
 export type CodigoErrorArca =
@@ -369,7 +374,8 @@ function mockConsulta(cuit: string): ResultadoConsulta {
 
 // Helpers para obtener mensaje de error orientado al usuario
 export function mensajeErrorArca(codigo: string): string {
-  return MENSAJES_ERROR[codigo as keyof typeof MENSAJES_ERROR] ?? MENSAJES_ERROR.AFIPSDK_ERROR
+  const msgs = getMensajesError()
+  return msgs[codigo as keyof typeof msgs] ?? msgs.AFIPSDK_ERROR
 }
 
 // Helper para verificar si el error bloquea el registro

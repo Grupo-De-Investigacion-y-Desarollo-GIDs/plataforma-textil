@@ -254,7 +254,7 @@ Este archivo acumula TODAS las verificaciones manuales que requieren ojos humano
 
 - [ ] Registro taller: verificar que al ingresar CUIT valido, el campo "Razon social" se autocompleta desde ARCA
 - [ ] Registro taller: ingresar CUIT inexistente (ej: 99-99999999-9), verificar mensaje "No encontramos este CUIT en ARCA"
-- [ ] Registro taller: verificar que CUIT inactivo muestra mensaje con link a [contacto-pdt]
+- [ ] Registro taller: verificar que CUIT inactivo muestra mensaje con email de soporte (gbreard@gmail.com)
 - [ ] ESTADO > Talleres: card "Verificacion ARCA" muestra conteos correctos
 - [ ] ESTADO > Talleres: boton "Sincronizar todos con ARCA" funciona y muestra resultado
 - [ ] ESTADO > Talleres > [taller]: tab "Datos del taller" muestra seccion ARCA con tipo inscripcion, actividades, domicilio
@@ -275,6 +275,24 @@ Este archivo acumula TODAS las verificaciones manuales que requieren ojos humano
 > **Importante:** esta spec usa AfipSDK con plan Pro. En dev/preview el provider puede ser 'mock' o 'afipsdk' segun ARCA_ENABLED.
 > 1. Para probar con mock: verificar que ARCA_ENABLED=true y ARCA_PROVIDER=mock en Vercel
 > 2. Para probar con ARCA real: ARCA_ENABLED=true y ARCA_PROVIDER=afipsdk (requiere las 3 vars AFIP_*)
+
+---
+
+## Spec INT-02 — Email Resend
+
+### Pruebas en plataforma-textil-dev.vercel.app (DEV)
+
+- [ ] Magic link: ir a /login, ingresar gbreard@gmail.com, verificar que llega el email en menos de 30s
+- [ ] Magic link: click en el boton del email, verificar que redirige a la plataforma logueado
+- [ ] Bienvenida taller: registrar taller nuevo con gbreard@gmail.com, verificar email de bienvenida
+- [ ] Bienvenida marca: registrar marca nueva con gbreard@gmail.com, verificar email de bienvenida
+- [ ] Contenido: verificar que emails tienen header azul PDT, boton funcional, footer correcto
+- [ ] Spam: verificar que emails NO caen en carpeta spam
+- [ ] Error silencioso: si Resend falla, el registro/login debe completarse igual (solo falla el email)
+
+### Limitaciones conocidas
+
+> **Dominio testing:** `onboarding@resend.dev` solo envia a `gbreard@gmail.com`. Para el piloto se necesita dominio propio verificado con DKIM/SPF.
 
 ---
 

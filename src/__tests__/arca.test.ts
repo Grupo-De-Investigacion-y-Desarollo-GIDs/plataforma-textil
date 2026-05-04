@@ -48,6 +48,7 @@ import {
 beforeEach(() => {
   vi.clearAllMocks()
   mockCreate.mockReturnValue({ catch: vi.fn() })
+  process.env.EMAIL_SUPPORT = 'test@example.com'
   process.env.ARCA_ENABLED = 'true'
   process.env.ARCA_PROVIDER = 'afipsdk'
   process.env.AFIP_CUIT_PLATAFORMA = '20282165733'

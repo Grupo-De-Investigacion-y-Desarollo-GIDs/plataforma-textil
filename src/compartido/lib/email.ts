@@ -1,33 +1,61 @@
+import { Resend } from 'resend'
+
 interface EmailOptions {
   to: string
   subject: string
   html: string
 }
 
-export async function sendEmail({ to, subject, html }: EmailOptions): Promise<void> {
-  if (process.env.NODE_ENV === 'production' && process.env.SENDGRID_API_KEY) {
-    const res = await fetch('https://api.sendgrid.com/v3/mail/send', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.SENDGRID_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        personalizations: [{ to: [{ email: to }] }],
-        from: { email: process.env.EMAIL_FROM || 'noreply@plataformatextil.ar', name: 'PDT' },
-        subject,
-        content: [{ type: 'text/html', value: html }],
-      }),
-    })
-    if (!res.ok) {
-      throw new Error(`SendGrid error: ${res.status} ${await res.text()}`)
-    }
-    return
+let _resend: Resend | null = null
+function getResend(): Resend {
+  if (!_resend) {
+    _resend = new Resend(process.env.RESEND_API_KEY)
+  }
+  return _resend
+}
+
+export async function sendEmail({ to, subject, html }: EmailOptions): Promise<{ exito: boolean; id?: string; error?: string }> {
+  if (!process.env.RESEND_API_KEY) {
+    console.log(`[EMAIL-DEV] To: ${to} | Subject: ${subject}`)
+    console.log(`[EMAIL-DEV] Body: ${html.substring(0, 200)}...`)
+    return { exito: true }
   }
 
-  // Dev stub
-  console.log(`[EMAIL] To: ${to} | Subject: ${subject}`)
-  console.log(`[EMAIL] Body: ${html.substring(0, 200)}...`)
+  const from = `${process.env.EMAIL_FROM_NAME || 'Plataforma Textil'} <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`
+  const replyTo = process.env.EMAIL_REPLY_TO || undefined
+
+  for (let intento = 0; intento < 2; intento++) {
+    try {
+      const { data, error } = await getResend().emails.send({
+        from,
+        to,
+        subject,
+        html,
+        replyTo,
+      })
+
+      if (error) {
+        if (intento === 0) {
+          await new Promise(r => setTimeout(r, 1000))
+          continue
+        }
+        console.error('[EMAIL] Resend error:', error)
+        return { exito: false, error: error.message }
+      }
+
+      return { exito: true, id: data?.id }
+    } catch (err) {
+      if (intento === 0) {
+        await new Promise(r => setTimeout(r, 1000))
+        continue
+      }
+      const msg = err instanceof Error ? err.message : String(err)
+      console.error('[EMAIL] Exception:', msg)
+      return { exito: false, error: msg }
+    }
+  }
+
+  return { exito: false, error: 'Agotados los reintentos' }
 }
 
 // Helpers de layout compartido
