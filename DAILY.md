@@ -1,5 +1,22 @@
 # Daily Log
 
+## 2026-05-04
+
+### Gerardo Breard
+- **07:47** `52a15c0` — feat: INT-02 — migrar email de SendGrid a Resend + cerrar [contacto-pdt]
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-email-resend.md`
+  - `.claude/auditorias/REVIEW_v3-email-resend.md`
+  - `.env.example`
+  - `package-lock.json`
+  - `package.json`
+  - `src/__tests__/arca.test.ts`
+  - `src/__tests__/email-resend.test.ts`
+  - `src/compartido/lib/arca.ts`
+  - `src/compartido/lib/auth.ts`
+  - `src/compartido/lib/email.ts`
+
+
 ## 2026-05-03
 
 ### Gerardo Breard
