@@ -3,6 +3,15 @@
 ## 2026-05-04
 
 ### Gerardo Breard
+- **11:15** `5fd0b47` — feat: F-01 Tu proximo nivel — guia de formalizacion en dashboard taller
+  - `.claude/auditorias/QA_v3-proximo-nivel-dashboard.md`
+  - `.claude/auditorias/REVIEW_v3-proximo-nivel-dashboard.md`
+  - `src/__tests__/proximo-nivel-card.test.ts`
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/taller/componentes/proximo-nivel-card.tsx`
+  - `src/taller/componentes/sincronizar-nivel-action.ts`
+  - `src/taller/componentes/sincronizar-nivel.tsx`
+
 - **08:45** `3db4726` — fix: corregir clasificacion DEV/QA en QAs INT-01 e INT-02
   - `.claude/auditorias/QA_v3-arca-completo.md`
   - `.claude/auditorias/QA_v3-email-resend.md`

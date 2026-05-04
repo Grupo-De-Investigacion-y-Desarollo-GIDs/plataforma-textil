@@ -5,6 +5,8 @@ import { prisma } from '@/compartido/lib/prisma'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ProgressRing } from '@/compartido/componentes/ui/progress-ring'
+import { ProximoNivelCard } from '@/taller/componentes/proximo-nivel-card'
+import { SincronizarNivel } from '@/taller/componentes/sincronizar-nivel'
 const PTS_VERIFICADO_AFIP = 10 // bonus AFIP fijo
 const PTS_POR_CERTIFICADO = 15 // bonus por certificado fijo
 
@@ -155,32 +157,9 @@ export default async function TallerDashboardPage() {
     ? Math.round((completadas / totalValidaciones) * 100)
     : 0
 
-  // Nivel siguiente
   const nivel = taller?.nivel ?? 'BRONCE'
-  const nivelSiguiente = nivel === 'BRONCE' ? 'PLATA' : nivel === 'PLATA' ? 'ORO' : null
 
-  // Detectar si tiene todos los docs de PLATA pero falta certificado
-  const tiposPlata = tiposRequeridos.filter(t => t.nivelMinimo === 'PLATA').map(t => t.nombre)
-  const tieneDocsPlata = taller ? tiposPlata.every(t => completadasSet.has(t)) : false
-  const faltaCertificado = taller ? certificadosActivos === 0 : false
-
-  // Banner contextual según estado
-  let bannerMensaje = ''
-  let bannerLink = ''
-  if (!taller) {
-    bannerMensaje = 'Completá tu perfil para aparecer en el directorio de talleres.'
-  } else if (nivel === 'BRONCE' && tieneDocsPlata && faltaCertificado) {
-    bannerMensaje = 'Tenés los documentos para PLATA — solo te falta completar un curso de la academia y obtener tu certificado.'
-    bannerLink = '/taller/aprender'
-  } else if (porcentajeFormal < 50) {
-    bannerMensaje = `Subí tus documentos de formalización para avanzar hacia nivel ${nivelSiguiente ?? 'siguiente'}.`
-  } else if (nivelSiguiente) {
-    bannerMensaje = `¡Buen avance! Completá tu capacitación para subir a nivel ${nivelSiguiente} y aparecer primero en búsquedas.`
-  } else {
-    bannerMensaje = '¡Sos ORO! Seguí manteniendo tus documentos al día para conservar tu nivel.'
-  }
-
-  // Íconos por nivel
+  // Iconos por nivel
   const nivelIcono: Record<string, string> = { BRONCE: '🥉', PLATA: '🥈', ORO: '🥇' }
 
   return (
@@ -244,6 +223,14 @@ export default async function TallerDashboardPage() {
         )
       )}
 
+      {/* Tu proximo nivel — guia de formalizacion (F-01) */}
+      {taller && (
+        <>
+          <ProximoNivelCard tallerId={taller.id} />
+          <SincronizarNivel tallerId={taller.id} nivelActual={taller.nivel} />
+        </>
+      )}
+
       {/* Progreso principal */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Ring formalización */}
@@ -276,33 +263,6 @@ export default async function TallerDashboardPage() {
           >
             Ver detalle →
           </Link>
-          {taller && taller.nivel === 'BRONCE' && porcentajeFormal < 100 && (
-            <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm">
-              <p className="font-medium text-amber-800">
-                Te faltan {totalValidaciones - completadas} documentos para ser PLATA
-              </p>
-              <p className="text-amber-600 text-xs mt-1">
-                Con PLATA apareces mas arriba en el directorio y accedes a marcas mas grandes
-              </p>
-            </div>
-          )}
-          {taller && taller.nivel === 'PLATA' && porcentajeFormal < 100 && (
-            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
-              <p className="font-medium text-yellow-800">
-                Te faltan {totalValidaciones - completadas} documentos para ser ORO
-              </p>
-              <p className="text-yellow-600 text-xs mt-1">
-                Con ORO apareces primero en el directorio y podes recibir pedidos grandes
-              </p>
-            </div>
-          )}
-          {taller && taller.nivel === 'ORO' && (
-            <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-sm">
-              <p className="font-medium text-green-800">
-                Estas en el nivel maximo! Sos un taller verificado ORO
-              </p>
-            </div>
-          )}
         </div>
 
         {/* Stats secundarios */}
@@ -368,16 +328,6 @@ export default async function TallerDashboardPage() {
           </div>
         </div>
       )}
-
-      {/* Banner contextual */}
-      <div className="bg-brand-bg-light rounded-xl p-5 border-l-4 border-brand-blue">
-        <p className="text-brand-blue font-medium">🚀 {bannerMensaje}</p>
-        {bannerLink && (
-          <Link href={bannerLink} className="text-sm text-brand-blue font-semibold hover:underline mt-2 inline-block">
-            Ir a la academia →
-          </Link>
-        )}
-      </div>
 
       {/* Acciones rápidas */}
       <div>
