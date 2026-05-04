@@ -3,6 +3,24 @@
 ## 2026-05-04
 
 ### Gerardo Breard
+- **19:34** `bd9d4dc` — feat: F-05 dashboard de demanda insatisfecha
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-demanda-insatisfecha.md`
+  - `.claude/auditorias/REVIEW_v3-demanda-insatisfecha.md`
+  - `prisma/schema.prisma`
+  - `src/__tests__/demanda-insatisfecha.test.ts`
+  - `src/__tests__/notificaciones-matching.test.ts`
+  - `src/app/(estado)/estado/demanda-insatisfecha/loading.tsx`
+  - `src/app/(estado)/estado/demanda-insatisfecha/page.tsx`
+  - `src/app/api/estado/demanda-insatisfecha/detalle/route.ts`
+  - `src/app/api/estado/demanda-insatisfecha/exportar/route.ts`
+  - `src/app/api/estado/demanda-insatisfecha/route.ts`
+  - `src/compartido/componentes/layout/header.tsx`
+  - `src/compartido/lib/demanda-insatisfecha.ts`
+  - `src/compartido/lib/notificaciones.ts`
+  - `src/compartido/lib/ratelimit.ts`
+  - `tests/e2e/demanda-insatisfecha.spec.ts`
+
 - **18:55** `69b57e5` — docs: T-10 cerrado, T-11 health check de env vars críticas
   - `.claude/specs/V4_BACKLOG.md`
 
