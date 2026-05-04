@@ -3,6 +3,9 @@
 ## 2026-05-04
 
 ### Gerardo Breard
+- **18:55** `69b57e5` — docs: T-10 cerrado, T-11 health check de env vars críticas
+  - `.claude/specs/V4_BACKLOG.md`
+
 - **18:27** `f2dbaed` — fix: dashboard Puntaje strict mode + 3 fixme con causa real
   - `tests/e2e/acceso-verificado.spec.ts`
   - `tests/e2e/configuracion-niveles.spec.ts`
