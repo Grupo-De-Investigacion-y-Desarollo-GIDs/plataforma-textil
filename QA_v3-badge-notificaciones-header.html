@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="qa-slug" content="QA_v3-badge-notificaciones-header">
+  <title>QA: Badge de notificaciones en header global</title>
+  <style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #f5f7fa;
+    color: #1a1a2e;
+    line-height: 1.5;
+    padding: 20px;
+    padding-bottom: 80px;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  .header {
+    background: #1e3a5f;
+    color: white;
+    padding: 24px 28px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  .header h1 { font-size: 22px; margin-bottom: 12px; }
+  .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 13px; opacity: 0.9; }
+  .meta-label { font-weight: 600; }
+  .meta-item a { color: #7fb3ff; }
+  .meta-item code { background: rgba(255,255,255,0.15); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+  .section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .section h2 {
+    font-size: 17px;
+    color: #1e3a5f;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e8ecf1;
+    cursor: default;
+  }
+  .collapsible { cursor: pointer; }
+  .collapsible h2 { cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+  .collapse-icon { font-size: 12px; color: #999; transition: transform 0.2s; }
+  .collapsed .collapse-content { display: none; }
+  .collapsed .collapse-icon { transform: rotate(0deg); }
+  .collapsible:not(.collapsed) .collapse-icon { transform: rotate(90deg); }
+  .readonly-block {
+    background: #f8f9fa;
+    border: 1px solid #e2e5ea;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 13px;
+    white-space: pre-wrap;
+    color: #555;
+  }
+  .cred-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .cred-table th { background: #f0f2f5; padding: 8px 10px; text-align: left; font-weight: 600; color: #444; }
+  .cred-table td { padding: 6px 10px; border-bottom: 1px solid #eee; }
+  .cred-table code { background: #f0f2f5; padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+  .radio-group { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .radio-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 14px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.15s;
+  }
+  .radio-btn:hover { border-color: #1e3a5f; }
+  .radio-btn.selected { border-color: #1e3a5f; background: #eef3f9; }
+  .radio-btn input { display: none; }
+  .field-group { margin-bottom: 10px; }
+  .field-group label { font-size: 13px; font-weight: 600; color: #555; display: block; margin-bottom: 4px; }
+  .text-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  .text-input:focus, .obs-input:focus, .obs-textarea:focus, .large-textarea:focus {
+    outline: none;
+    border-color: #1e3a5f;
+    box-shadow: 0 0 0 2px rgba(30,58,95,0.15);
+  }
+  .item-card {
+    border: 1px solid #e8ecf1;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    transition: border-color 0.15s;
+  }
+  .item-card.status-ok { border-left: 4px solid #27ae60; }
+  .item-card.status-bug { border-left: 4px solid #f39c12; }
+  .item-card.status-fail { border-left: 4px solid #c0392b; }
+  .item-header { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+  .item-num { font-weight: 700; color: #1e3a5f; min-width: 30px; font-size: 14px; }
+  .item-text { font-size: 14px; flex: 1; }
+  .item-details { margin-bottom: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; font-size: 13px; }
+  .detail-row { margin-bottom: 4px; }
+  .detail-label { font-weight: 600; color: #666; }
+  .item-controls { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+  .status-btns { display: flex; gap: 4px; flex-shrink: 0; }
+  .status-btn {
+    width: 36px; height: 36px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .status-btn:hover { transform: scale(1.1); }
+  .status-btn.active { border-color: #1e3a5f; background: #eef3f9; transform: scale(1.1); }
+  .obs-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 7px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .obs-textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    resize: vertical;
+  }
+  .large-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+  }
+  .paso-card {
+    border: 1px solid #e8ecf1;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .paso-card.status-ok { border-left: 4px solid #27ae60; }
+  .paso-card.status-bug { border-left: 4px solid #f39c12; }
+  .paso-card.status-fail { border-left: 4px solid #c0392b; }
+  .paso-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px;
+    cursor: pointer;
+    background: #fafbfc;
+    border-bottom: 1px solid transparent;
+  }
+  .paso-header:hover { background: #f0f2f5; }
+  .paso-header-right { display: flex; align-items: center; gap: 8px; }
+  .paso-status-indicator { font-size: 16px; }
+  .paso-title { font-weight: 600; font-size: 14px; color: #1e3a5f; }
+  .paso-body { display: none; padding: 16px; }
+  .paso-card.expanded .paso-body { display: block; }
+  .paso-card.expanded .paso-header { border-bottom: 1px solid #e8ecf1; }
+  .paso-card.expanded .collapse-icon { transform: rotate(90deg); }
+  .paso-fields { margin-bottom: 12px; }
+  .paso-field { margin-bottom: 6px; font-size: 13px; }
+  .paso-label { font-weight: 600; color: #555; }
+  .paso-value { margin-top: 2px; padding-left: 0; white-space: pre-wrap; }
+  .checklist-items { display: flex; flex-direction: column; gap: 8px; }
+  .checklist-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .checklist-item:hover { background: #f5f7fa; }
+  .checklist-item input { margin-top: 3px; width: 16px; height: 16px; cursor: pointer; }
+  .unknown { border-left: 3px solid #f39c12; }
+  .text-muted { color: #999; font-size: 13px; }
+  .sticky-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 2px solid #1e3a5f;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    z-index: 100;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  }
+  .btn-copiar {
+    background: #1e3a5f;
+    color: white;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-copiar:hover { background: #2a4f7f; }
+  .btn-copiar.copiado { background: #27ae60; }
+  .progress-summary { font-size: 13px; color: #666; }
+  .btn-issue {
+    display: none;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    border: 1px solid #c0392b;
+    border-radius: 6px;
+    background: white;
+    color: #c0392b;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn-issue:hover { background: #fdf0ef; }
+  .btn-issue.visible { display: inline-flex; }
+  .btn-issue.enviado { border-color: #27ae60; color: #27ae60; cursor: default; }
+  .btn-issue.error { border-color: #e74c3c; color: #e74c3c; }
+  .btn-issue:disabled { opacity: 0.6; cursor: not-allowed; }
+  .badge-qa {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+    background: #e3f2fd;
+    color: #1565c0;
+    margin-left: 8px;
+    flex-shrink: 0;
+  }
+  .badge-dev {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+    background: #f3e5f5;
+    color: #7b1fa2;
+    margin-left: 8px;
+    flex-shrink: 0;
+  }
+  .badge-perfil {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+    background: #fff3e0;
+    color: #e65100;
+    margin-left: 8px;
+    flex-shrink: 0;
+    text-transform: capitalize;
+  }
+  .filter-bar {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    background: white;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .filter-label { font-size: 13px; font-weight: 600; color: #555; margin-right: 4px; }
+  .filter-btn {
+    padding: 5px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    transition: all 0.15s;
+  }
+  .filter-btn:hover { border-color: #1e3a5f; color: #1e3a5f; }
+  .filter-btn.active { background: #1e3a5f; color: white; border-color: #1e3a5f; }
+  .item-badges { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 4px; }
+  .issue-badge {
+    display: inline-block; font-size: 11px; padding: 2px 8px;
+    border-radius: 4px; font-weight: 600; text-decoration: none;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .issue-badge:hover { opacity: 0.8; }
+  .issue-open { background: #fce4e4; color: #c0392b; }
+  .issue-resolved { background: #e8f5e9; color: #2e7d32; }
+  .issue-discarded { background: #f0f0f0; color: #888; }
+  .issue-stats { display: flex; gap: 12px; margin: 8px 0 12px; }
+  .issue-stat {
+    font-size: 13px; font-weight: 600; padding: 4px 12px;
+    border-radius: 6px;
+  }
+  .stat-open { background: #fce4e4; color: #c0392b; }
+  .stat-resolved { background: #e8f5e9; color: #2e7d32; }
+  .stat-discarded { background: #f0f0f0; color: #888; }
+  .issues-list { margin-top: 8px; }
+  .issue-row { padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+  .issue-link { color: #1e3a5f; font-weight: 600; text-decoration: none; }
+  .issue-link:hover { text-decoration: underline; }
+  .issue-title { flex: 1; color: #555; }
+  .issue-badge-small { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; }
+  @media (max-width: 600px) {
+    body { padding: 10px; padding-bottom: 80px; }
+    .meta-grid { grid-template-columns: 1fr; }
+    .item-controls { flex-direction: column; }
+    .obs-input { min-width: 100%; }
+    .radio-group { flex-direction: column; }
+    .filter-bar { flex-direction: column; align-items: flex-start; }
+    .issue-stats { flex-direction: column; gap: 4px; }
+  }
+</style>
+</head>
+<body data-spec="v3-badge-notificaciones-header" data-url="https://plataforma-textil-dev.vercel.app" data-api-url="https://plataforma-textil.vercel.app/api/feedback">
+  <div class="container">
+    
+    <div style="margin-bottom: 12px;">
+      <a href="index.html" style="display: inline-flex; align-items: center; gap: 6px; color: #1e3a5f; text-decoration: none; font-size: 14px; font-weight: 600;">
+        <span style="font-size: 18px;">&#8592;</span> Volver al indice
+      </a>
+    </div>
+    <div class="header">
+      <h1>Badge de notificaciones en header global</h1>
+      <div class="meta-grid">
+        <div class="meta-item"><span class="meta-label">Spec:</span> <code>v3-badge-notificaciones-header</code></div>
+        
+        <div class="meta-item"><span class="meta-label">URL:</span> <a href="https://plataforma-textil-dev.vercel.app" target="_blank">https://plataforma-textil-dev.vercel.app</a></div>
+        <div class="meta-item"><span class="meta-label">Fecha:</span> 2026-05-05</div>
+        <div class="meta-item"><span class="meta-label">Auditor:</span> Sergio (tecnico) + politologo + economista + sociologo</div>
+      </div>
+    </div><div class="filter-bar" id="filter-bar">
+    <span class="filter-label">Filtrar:</span>
+    <button class="filter-btn active" data-filter="todos" onclick="filtrarPor('todos')">Todos</button>
+    <button class="filter-btn" data-filter="QA" onclick="filtrarPor('QA')">QA tecnico</button>
+    <button class="filter-btn" data-filter="DEV" onclick="filtrarPor('DEV')">DEV</button>
+    
+  </div><div class="section" id="contexto-institucional">
+    <h2>Contexto institucional</h2>
+    <div class="readonly-block">Los talleres textiles informales reciben notificaciones de la plataforma (comunicaciones masivas, mensajes individuales del Estado, actualizaciones de pedidos) pero hasta ahora no tenian forma de saber que habia notificaciones nuevas sin entrar manualmente a /cuenta/notificaciones. Esto hacia que mensajes importantes del Estado — como recordatorios de documentacion pendiente o seguimiento de formalizacion — pasaran desapercibidos. El badge en el header resuelve esto mostrando un indicador numerico rojo en la campana del header, con un dropdown de acceso rapido a las ultimas 5 notificaciones.
+
+---</div>
+  </div><div class="section" id="objetivo-qa">
+    <h2>Objetivo de este QA</h2>
+    <div class="readonly-block">Verificar que: (1) el badge rojo aparece cuando hay notificaciones sin leer, (2) el dropdown muestra las ultimas 5 notificaciones correctamente, (3) marcar como leida actualiza el badge sin refresh, (4) funciona en todos los roles (TALLER, MARCA, ESTADO, ADMIN), (5) el sidebar muestra badge real, (6) el polling actualiza el count cada 30s.
+
+---</div>
+  </div><div class="section collapsible collapsed" onclick="toggleCollapse(this)">
+    <h2>Como trabajar con este documento <span class="collapse-icon">&#9654;</span></h2>
+    <div class="collapse-content"><div class="readonly-block">1. Abri este archivo y la plataforma en paralelo
+2. Identifica que items te corresponden segun tu perfil (columna Verificador)
+3. Segui los pasos en orden — cada paso depende del anterior
+4. Marca cada resultado con ok, bug o bloqueante
+
+---</div></div>
+  </div><div class="section unknown">
+    <h2>Checklist de verificacion</h2>
+    <pre class="readonly-block">### Bloque 1 — Badge visible en header
+
+| # | Paso | Resultado esperado | Verificador | Estado |
+|---|------|--------------------|-------------|--------|
+| 1 | Login como TALLER. Ir a /taller | Header visible con icono de campana | QA | |
+| 2 | Si hay notificaciones sin leer, verificar badge rojo con numero | Badge rojo con count visible junto a la campana | QA | |
+| 3 | Si no hay notificaciones sin leer, verificar que NO hay badge | Solo campana sin numero | QA | |
+| 4 | Login como MARCA. Ir a /marca | Campana con badge visible en header | QA | |
+| 5 | Login como ESTADO. Ir a /estado | Campana con badge visible en header | QA | |
+| 6 | Login como ADMIN. Ir a /admin | Campana con badge visible en barra superior del admin | QA | |
+
+### Bloque 2 — Dropdown de notificaciones
+
+| # | Paso | Resultado esperado | Verificador | Estado |
+|---|------|--------------------|-------------|--------|
+| 7 | Click en la campana | Dropdown se abre debajo de la campana con lista de notificaciones | QA | |
+| 8 | Verificar que muestra maximo 5 notificaciones | No mas de 5 items en el dropdown | QA | |
+| 9 | Cada notificacion muestra titulo, mensaje truncado, y tiempo relativo | Formato: titulo en negrita, mensaje en gris, &quot;hace Xm/Xh/Xd&quot; | QA | |
+| 10 | Notificaciones no leidas tienen borde azul y punto azul | Diferenciacion visual clara entre leidas y no leidas | QA | |
+| 11 | Boton &quot;Ver todas las notificaciones&quot; visible al final | Link azul centrado en el footer del dropdown | QA | |
+| 12 | Click en &quot;Ver todas las notificaciones&quot; | Navega a /cuenta/notificaciones y cierra dropdown | QA | |
+
+### Bloque 3 — Mensajes individuales en dropdown
+
+| # | Paso | Resultado esperado | Verificador | Estado |
+|---|------|--------------------|-------------|--------|
+| 13 | Enviar mensaje individual desde admin (F-07) a un taller | Mensaje enviado exitosamente | QA | |
+| 14 | Login como el taller receptor. Verificar badge en campana | Badge muestra count actualizado (o aparece si era 0) | QA | |
+| 15 | Click en campana. Verificar mensaje individual en dropdown | Badge &quot;Mensaje del equipo&quot; azul + &quot;De: {nombre admin}&quot; visible | QA | |
+
+### Bloque 4 — Interaccion y reactividad
+
+| # | Paso | Resultado esperado | Verificador | Estado |
+|---|------|--------------------|-------------|--------|
+| 16 | Click en notificacion con link en el dropdown | Marca como leida + navega al destino. Badge decrementa | QA | |
+| 17 | Click en notificacion sin link en el dropdown | Marca como leida + cierra dropdown. Badge decrementa | QA | |
+| 18 | Click fuera del dropdown (en cualquier parte de la pagina) | Dropdown se cierra | QA | |
+| 19 | Presionar ESC con dropdown abierto | Dropdown se cierra | QA | |
+| 20 | Marcar todas como leidas desde /cuenta/notificaciones, volver al header | Badge desaparece (0 sin leer) | QA | |
+
+### Bloque 5 — Skeleton y estados vacios
+
+| # | Paso | Resultado esperado | Verificador | Estado |
+|---|------|--------------------|-------------|--------|
+| 21 | Click en campana mientras carga (primera vez) | Skeleton loading (3 barras animadas) visible brevemente | QA | |
+| 22 | Si no hay notificaciones, click en campana | Texto &quot;Estas al dia — Sin notificaciones nuevas&quot; centrado | QA | |
+
+### Bloque 6 — Sidebar (menu lateral)
+
+| # | Paso | Resultado esperado | Verificador | Estado |
+|---|------|--------------------|-------------|--------|
+| 23 | Login como TALLER. Click en &quot;Menu&quot; (hamburguesa) | Sidebar se abre | QA | |
+| 24 | Verificar item &quot;Notificaciones&quot; en el sidebar | Badge rojo con count real (no 0 hardcodeado) si hay no leidas | QA | |
+| 25 | Si no hay no leidas, badge no se muestra en sidebar | Sin badge numerico | QA | |
+
+### Bloque 7 — Polling y actualizacion
+
+| # | Paso | Resultado esperado | Verificador | Estado |
+|---|------|--------------------|-------------|--------|
+| 26 | Abrir plataforma en 2 pestanas. Marcar leida en una | Volver a la otra pestana: badge se actualiza automaticamente | QA | |
+| 27 | Dejar la pagina abierta 30+ segundos | Badge se actualiza solo (polling cada 30s) | DEV | |
+
+### Bloque 8 — Mobile responsive
+
+| # | Paso | Resultado esperado | Verificador | Estado |
+|---|------|--------------------|-------------|--------|
+| 28 | Abrir en celular o viewport angosto (&lt;768px). Menu mobile | Campana visible en el menu mobile con badge | QA | |
+| 29 | Click en campana en mobile | Dropdown se abre y es usable (no se corta ni desborda) | QA | |
+
+### Bloque 9 — Tests automatizados
+
+| # | Verificacion | Verificador | Estado |
+|---|-------------|-------------|--------|
+| 30 | 18 Vitest tests pasan (npx vitest run src/__tests__/notificaciones-bell.test.ts) | DEV | |
+| 31 | TypeScript compila sin errores (npx tsc --noEmit) | DEV | |
+| 32 | 5 E2E tests pasan en CI (tests/e2e/notificaciones-bell.spec.ts) | DEV | |
+
+---</pre>
+  </div><div class="section unknown">
+    <h2>Validacion de dominio (seccion 12 del spec)</h2>
+    <pre class="readonly-block">### Politologo
+
+| # | Pregunta | Respuesta | Estado |
+|---|----------|-----------|--------|
+| P1 | El badge de notificaciones puede generar ansiedad o sensacion de vigilancia en talleres informales? | | |
+| P2 | El indicador numerico rojo tiene connotaciones negativas en el contexto de notificaciones estatales? | | |
+
+### Economista
+
+| # | Pregunta | Respuesta | Estado |
+|---|----------|-----------|--------|
+| E1 | El fetch adicional en cada carga de pagina (+ polling cada 30s) tiene impacto en costos de hosting? | | |
+
+### Sociologo
+
+| # | Pregunta | Respuesta | Estado |
+|---|----------|-----------|--------|
+| S1 | El dropdown de 5 notificaciones es suficiente como primer contacto, o genera frustracion por no ver el historial completo? | | |
+| S2 | El badge &quot;Mensaje del equipo&quot; en el dropdown refuerza la sensacion de cercania o de control? | | |
+
+---</pre>
+  </div><div class="section unknown">
+    <h2>Resumen</h2>
+    <pre class="readonly-block">| Bloque | Items | Verificador principal |
+|--------|-------|----------------------|
+| 1. Badge visible | 6 | QA |
+| 2. Dropdown | 6 | QA |
+| 3. Mensajes individuales | 3 | QA |
+| 4. Interaccion | 5 | QA |
+| 5. Skeleton/empty | 2 | QA |
+| 6. Sidebar | 3 | QA |
+| 7. Polling | 2 | QA + DEV |
+| 8. Mobile | 2 | QA |
+| 9. Tests | 3 | DEV |
+| **Total** | **32** | |
+| Validacion dominio | 5 preguntas | politologo, economista, sociologo |</pre>
+  </div>
+  </div>
+  <div class="section" id="panel-resumen">
+    <h2>Resumen de issues</h2>
+    <div id="github-status" class="text-muted"></div>
+    <div class="issue-stats">
+      <span class="issue-stat stat-open" id="stat-abiertos">0 abiertos</span>
+      <span class="issue-stat stat-resolved" id="stat-resueltos">0 resueltos</span>
+      <span class="issue-stat stat-discarded" id="stat-descartados">0 descartados</span>
+    </div>
+    <div id="issues-list" class="issues-list"></div>
+  </div>
+  </div>
+  <div class="sticky-bar">
+    <span class="progress-summary" id="progress-text"></span>
+    <button class="btn-copiar" id="btn-copiar" onclick="copiarResultados()">Copiar resultados como markdown</button>
+  </div>
+  <script>
+  function filtrarPor(tipo) {
+    // Reset todos los botones de filtro
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.filter-btn[data-filter="' + tipo + '"]').classList.add('active');
+
+    document.querySelectorAll('.item-card, .paso-card').forEach(c => {
+      if (tipo === 'todos') { c.style.display = ''; return; }
+      const verif = c.dataset.verificador || 'QA';
+      const perfil = c.dataset.perfil || '';
+      if (tipo === 'QA' || tipo === 'DEV') {
+        c.style.display = verif === tipo ? '' : 'none';
+      } else {
+        // Filtro por perfil interdisciplinario
+        c.style.display = perfil === tipo ? '' : 'none';
+      }
+    });
+    // Ocultar/mostrar secciones de ejes vacias
+    document.querySelectorAll('.section[id^="eje"]').forEach(s => {
+      const visible = s.querySelectorAll('.item-card:not([style*="none"]), .paso-card:not([style*="none"])');
+      s.style.display = visible.length === 0 ? 'none' : '';
+    });
+    // Secciones dentro de eje6 (colapsables de perfil)
+    document.querySelectorAll('#eje6 .collapsible').forEach(s => {
+      const visible = s.querySelectorAll('.item-card:not([style*="none"])');
+      s.style.display = visible.length === 0 ? 'none' : '';
+    });
+  }
+
+  function toggleCollapse(el) {
+    if (el.querySelector('.collapse-content')) {
+      el.classList.toggle('collapsed');
+    }
+  }
+
+  function togglePaso(header) {
+    header.closest('.paso-card').classList.toggle('expanded');
+  }
+
+  function setStatus(btn, emoji) {
+    const card = btn.closest('.item-card, .paso-card');
+    const btns = card.querySelectorAll('.status-btn');
+    const wasActive = btn.classList.contains('active');
+    btns.forEach(b => b.classList.remove('active'));
+    card.classList.remove('status-ok', 'status-bug', 'status-fail');
+
+    if (!wasActive) {
+      btn.classList.add('active');
+      if (emoji === '✅') card.classList.add('status-ok');
+      else if (emoji === '🐛') card.classList.add('status-bug');
+      else if (emoji === '❌') card.classList.add('status-fail');
+    }
+
+    // Update paso status indicator
+    const indicator = card.querySelector('.paso-status-indicator');
+    if (indicator) {
+      indicator.textContent = wasActive ? '' : emoji;
+    }
+
+    // Show/hide issue button for bug/fail
+    const issueBtn = card.querySelector('.btn-issue');
+    if (issueBtn && !issueBtn.classList.contains('enviado')) {
+      if (!wasActive && (emoji === '🐛' || emoji === '❌')) {
+        issueBtn.classList.add('visible');
+      } else {
+        issueBtn.classList.remove('visible');
+      }
+    }
+
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const cards = document.querySelectorAll('.item-card, .paso-card');
+    let total = 0, done = 0;
+    cards.forEach(c => {
+      total++;
+      if (c.querySelector('.status-btn.active')) done++;
+    });
+    const el = document.getElementById('progress-text');
+    if (el) el.textContent = done + ' / ' + total + ' completados';
+  }
+
+  function getCardStatus(card) {
+    const active = card.querySelector('.status-btn.active');
+    if (!active) return '—';
+    if (active.classList.contains('ok')) return '✅';
+    if (active.classList.contains('bug')) return '🐛';
+    if (active.classList.contains('fail')) return '❌';
+    return '—';
+  }
+
+  function getCardObs(card) {
+    const input = card.querySelector('.obs-input, .obs-textarea');
+    return input ? input.value.trim() : '';
+  }
+
+  function copiarResultados() {
+    const titulo = document.querySelector('.header h1')?.textContent || 'QA';
+    const fecha = new Date().toISOString().split('T')[0];
+    let md = '';
+
+    // Resultado global
+    const globalRadio = document.querySelector('input[name="resultado-global"]:checked');
+    const globalLabel = globalRadio ? globalRadio.closest('.radio-btn').querySelector('.radio-label').textContent.trim() : '—';
+    const decision = document.getElementById('decision-global')?.value.trim() || '—';
+    const issues = document.getElementById('issues-global')?.value.trim() || '#';
+
+    md += '## Resultados — ' + titulo + '\n';
+    md += '**Fecha de auditoria:** ' + fecha + '\n';
+    md += '**Auditor:** Sergio\n\n';
+    md += '### Resultado global\n';
+    md += globalLabel + '\n';
+    md += '**Decision:** ' + decision + '\n';
+    md += '**Issues abiertos:** ' + issues + '\n\n';
+
+    // Eje 1
+    const eje1Cards = document.querySelectorAll('#eje1 .item-card');
+    if (eje1Cards.length > 0) {
+      md += '### Eje 1 — Funcionalidad\n';
+      md += '| # | Criterio | Resultado | Observaciones |\n';
+      md += '|---|----------|-----------|---------------|\n';
+      eje1Cards.forEach(c => {
+        const num = c.dataset.num;
+        const criterio = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + num + ' | ' + criterio + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 2
+    const eje2Cards = document.querySelectorAll('#eje2 .paso-card');
+    if (eje2Cards.length > 0) {
+      md += '### Eje 2 — Navegabilidad\n';
+      eje2Cards.forEach(c => {
+        const num = c.dataset.num;
+        const titulo = c.querySelector('.paso-title')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '**' + titulo + ':** ' + status;
+        if (obs) md += ' — ' + obs;
+        md += '\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 3
+    const eje3Cards = document.querySelectorAll('#eje3 .item-card');
+    if (eje3Cards.length > 0) {
+      md += '### Eje 3 — Casos borde\n';
+      md += '| # | Caso | Resultado | Observaciones |\n';
+      md += '|---|------|-----------|---------------|\n';
+      eje3Cards.forEach(c => {
+        const num = c.dataset.num;
+        const caso = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + num + ' | ' + caso + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 4
+    const eje4Cards = document.querySelectorAll('#eje4 .item-card');
+    if (eje4Cards.length > 0) {
+      md += '### Eje 4 — Performance\n';
+      md += '| Verificacion | Resultado | Notas |\n';
+      md += '|-------------|-----------|-------|\n';
+      eje4Cards.forEach(c => {
+        const verif = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + verif + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 5
+    const eje5Cards = document.querySelectorAll('#eje5 .item-card');
+    if (eje5Cards.length > 0) {
+      md += '### Eje 5 — Consistencia visual\n';
+      md += '| Verificacion | Resultado | Notas |\n';
+      md += '|-------------|-----------|-------|\n';
+      eje5Cards.forEach(c => {
+        const verif = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + verif + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 6
+    const eje6Cards = document.querySelectorAll('#eje6 .item-card');
+    if (eje6Cards.length > 0) {
+      md += '### Eje 6 — Validacion de dominio\n';
+      md += '| # | Pregunta | Perfil | Resultado | Notas |\n';
+      md += '|---|----------|--------|-----------|-------|\n';
+      eje6Cards.forEach(c => {
+        const num = c.dataset.num;
+        const pregunta = c.querySelector('.item-text')?.textContent.trim() || '';
+        const perfil = c.dataset.perfil || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + num + ' | ' + pregunta + ' | ' + perfil + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Resumen issues
+    const resumenIssues = document.getElementById('textarea-resumen-issues')?.value.trim();
+    if (resumenIssues) {
+      md += '### Resumen de issues abiertos\n';
+      md += resumenIssues + '\n\n';
+    }
+
+    // Notas (V2: textarea-notas, V3: textarea-notas-tecnico + textarea-notas-perfiles)
+    const notas = document.getElementById('textarea-notas')?.value.trim();
+    if (notas) {
+      md += '### Notas del auditor\n';
+      md += notas + '\n\n';
+    }
+    const notasTecnico = document.getElementById('textarea-notas-tecnico')?.value.trim();
+    const notasPerfiles = document.getElementById('textarea-notas-perfiles')?.value.trim();
+    if (notasTecnico || notasPerfiles) {
+      md += '### Notas de los auditores\n';
+      if (notasTecnico) md += '**Sergio (tecnico):** ' + notasTecnico + '\n';
+      if (notasPerfiles) md += '**Perfiles interdisciplinarios:** ' + notasPerfiles + '\n';
+      md += '\n';
+    }
+
+    // Checklist
+    const checkItems = document.querySelectorAll('#checklist input[type="checkbox"]');
+    if (checkItems.length > 0) {
+      md += '### Checklist de cierre\n';
+      checkItems.forEach(cb => {
+        const label = cb.closest('.checklist-item')?.querySelector('span')?.textContent.trim() || '';
+        md += '- [' + (cb.checked ? 'x' : ' ') + '] ' + label + '\n';
+      });
+    }
+
+    navigator.clipboard.writeText(md).then(() => {
+      const btn = document.getElementById('btn-copiar');
+      btn.textContent = 'Copiado!';
+      btn.classList.add('copiado');
+      setTimeout(() => {
+        btn.textContent = 'Copiar resultados como markdown';
+        btn.classList.remove('copiado');
+      }, 2000);
+    });
+  }
+
+  function crearIssue(btn) {
+    const card = btn.closest('.item-card, .paso-card');
+    const obs = getCardObs(card);
+    if (!obs || obs.length < 10) {
+      btn.title = 'Escribi una observacion primero (min 10 caracteres)';
+      btn.classList.add('error');
+      btn.textContent = 'Escribi una observacion';
+      setTimeout(() => { btn.classList.remove('error'); btn.textContent = '📋 Crear issue'; }, 2000);
+      return;
+    }
+
+    const status = getCardStatus(card);
+    const tipo = status === '❌' ? 'bloqueante' : 'bug';
+    const eje = card.closest('.section')?.querySelector('h2')?.textContent.trim() || '';
+    const itemText = card.querySelector('.item-text, .paso-title')?.textContent.trim() || '';
+    const num = card.dataset.num || '';
+    const spec = document.body.dataset.spec || '';
+    const pagina = document.body.dataset.url || '';
+    const slugMeta = document.querySelector('meta[name="qa-slug"]');
+    const qaSlug = slugMeta ? slugMeta.content : '';
+
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    const apiUrl = document.body.dataset.apiUrl;
+
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tipo: tipo,
+        mensaje: obs,
+        pagina: pagina,
+        auditorNombre: 'Sergio',
+        auditorRol: 'QA',
+        contextoQA: {
+          spec: spec,
+          eje: eje,
+          item: '#' + num + ' ' + itemText,
+          resultado: status,
+          qaSlug: qaSlug,
+          itemSelector: card.dataset.itemSelector || '',
+          verificador: card.dataset.verificador || 'QA',
+          perfil: card.dataset.perfil || 'tecnico'
+        }
+      })
+    }).then(r => {
+      if (r.ok) {
+        btn.textContent = '✅ Issue creado';
+        btn.classList.add('enviado');
+      } else {
+        throw new Error();
+      }
+    }).catch(() => {
+      btn.textContent = '❌ Error — reintenta';
+      btn.classList.add('error');
+      btn.disabled = false;
+      setTimeout(() => { btn.classList.remove('error'); btn.textContent = '📋 Crear issue'; }, 3000);
+    });
+  }
+
+  // Init radio buttons
+  document.querySelectorAll('.radio-btn').forEach(label => {
+    label.addEventListener('click', () => {
+      const radio = label.querySelector('input[type="radio"]');
+      radio.checked = true;
+      label.closest('.radio-group').querySelectorAll('.radio-btn').forEach(l => l.classList.remove('selected'));
+      label.classList.add('selected');
+    });
+  });
+
+  updateProgress();
+</script>
+  <script>
+  (function() {
+    var apiBase = document.body.dataset.apiUrl;
+    if (!apiBase) return;
+    // apiUrl apunta a .../api/feedback — by-qa es relativo a eso
+    var feedbackBase = apiBase.replace('/api/feedback', '/api/feedback/by-qa/');
+    var slugMeta = document.querySelector('meta[name="qa-slug"]');
+    if (!slugMeta) return;
+    var qaSlug = slugMeta.content;
+
+    function crearBadgeIssue(issue) {
+      var a = document.createElement('a');
+      a.href = issue.url;
+      a.target = '_blank';
+      a.className = 'issue-badge issue-' + (
+        issue.state === 'open' ? 'open' :
+        issue.stateReason === 'completed' ? 'resolved' : 'discarded'
+      );
+      a.textContent = '#' + issue.number + ' — ' + (
+        issue.state === 'open' ? 'Abierto' :
+        issue.stateReason === 'completed' ? 'Resuelto' : 'Descartado'
+      );
+      return a;
+    }
+
+    function actualizarResumen(issues) {
+      var open = 0, resolved = 0, discarded = 0;
+      issues.forEach(function(i) {
+        if (i.state === 'open') open++;
+        else if (i.stateReason === 'completed') resolved++;
+        else discarded++;
+      });
+      var el;
+      el = document.getElementById('stat-abiertos'); if (el) el.textContent = open + ' abiertos';
+      el = document.getElementById('stat-resueltos'); if (el) el.textContent = resolved + ' resueltos';
+      el = document.getElementById('stat-descartados'); if (el) el.textContent = discarded + ' descartados';
+
+      var list = document.getElementById('issues-list');
+      if (list) {
+        list.innerHTML = '';
+        if (issues.length === 0) {
+          list.innerHTML = '<p class="text-muted">Sin issues reportados</p>';
+        } else {
+          issues.forEach(function(issue) {
+            var row = document.createElement('div');
+            row.className = 'issue-row';
+            row.innerHTML = '<a href="' + issue.url + '" target="_blank" class="issue-link">#' + issue.number + '</a> ' +
+              '<span class="issue-title">' + (issue.title || '') + '</span> ' +
+              '<span class="issue-badge-small issue-' + (issue.state === 'open' ? 'open' : issue.stateReason === 'completed' ? 'resolved' : 'discarded') + '">' +
+              (issue.state === 'open' ? 'Abierto' : issue.stateReason === 'completed' ? 'Resuelto' : 'Descartado') + '</span>';
+            list.appendChild(row);
+          });
+        }
+      }
+    }
+
+    function cargarIssues() {
+      fetch(feedbackBase + qaSlug)
+        .then(function(res) { if (!res.ok) throw new Error(); return res.json(); })
+        .then(function(data) {
+          document.querySelectorAll('.issue-badge').forEach(function(b) { b.remove(); });
+
+          data.issues.forEach(function(issue) {
+            if (!issue.itemSelector) return;
+            var item = document.querySelector('[data-item-selector="' + issue.itemSelector + '"]');
+            if (!item) return;
+            var container = item.querySelector('.item-badges');
+            if (container) container.appendChild(crearBadgeIssue(issue));
+          });
+
+          actualizarResumen(data.issues);
+
+          var status = document.getElementById('github-status');
+          if (status) status.textContent = 'Actualizado: ' + new Date(data.lastUpdated).toLocaleString('es-AR');
+        })
+        .catch(function() {
+          var status = document.getElementById('github-status');
+          if (status) status.textContent = 'No se pudo cargar estado de issues';
+        });
+    }
+
+    cargarIssues();
+    setInterval(cargarIssues, 2 * 60 * 1000);
+  })();
+</script>
+</body>
+</html>
