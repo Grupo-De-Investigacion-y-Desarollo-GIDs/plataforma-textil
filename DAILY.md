@@ -3,6 +3,9 @@
 ## 2026-05-05
 
 ### Gerardo Breard
+- **13:29** `d9fb390` — qa: marcar items DEV verificados en QA UX-mejoras
+  - `.claude/auditorias/QA_v3-ux-mejoras.md`
+
 - **12:59** `8703481` — feat: UX mejoras — Loading, EmptyState, Breadcrumbs, Toast extendido
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `.claude/auditorias/QA_v3-ux-mejoras.md`
