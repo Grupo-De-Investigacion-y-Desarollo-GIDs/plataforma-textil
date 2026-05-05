@@ -1,7 +1,7 @@
 # QA: Mejoras UX agrupadas (UX-01 a UX-04)
 
 **Spec:** `v3-ux-mejoras.md`
-**Commit de implementacion:** pendiente (primer commit de UX-01 a UX-04)
+**Commit de implementacion:** 8703481 (feat: UX mejoras)
 **URL de prueba:** https://plataforma-textil-dev.vercel.app
 **Fecha:** 2026-05-05
 **Auditor(es):** Sergio (tecnico) + sociologo
@@ -52,20 +52,20 @@ Verificar que los 4 ejes de mejora UX estan implementados correctamente: compone
 
 | # | Criterio | Verificador | Resultado | Issue |
 |---|----------|-------------|-----------|-------|
-| 1 | Componente Loading con 3 variantes (spinner, fullPage, inline) | DEV | | # |
-| 2 | Componentes Skeleton, SkeletonCard, SkeletonTable | DEV | | # |
+| 1 | Componente Loading con 3 variantes (spinner, fullPage, inline) | DEV | ok — Gerardo 5/5 | # |
+| 2 | Componentes Skeleton, SkeletonCard, SkeletonTable | DEV | ok — Gerardo 5/5 | # |
 | 3 | Suspense con fallback en taller/pedidos/disponibles | QA | | # |
 | 4 | Suspense con fallback en taller/pedidos | QA | | # |
 | 5 | Suspense con fallback en admin/auditorias | QA | | # |
 | 6 | Suspense con fallback en marca/pedidos | QA | | # |
-| 7 | admin/dashboard NO tocado (excepcion client component) | DEV | | # |
-| 8 | estado/page NO tocado (excluido por complejidad) | DEV | | # |
+| 7 | admin/dashboard NO tocado (excepcion client component) | DEV | ok — Gerardo 5/5 | # |
+| 8 | estado/page NO tocado (excluido por complejidad) | DEV | ok — Gerardo 5/5 | # |
 
 ### UX-02 — Estados vacios con guia
 
 | # | Criterio | Verificador | Resultado | Issue |
 |---|----------|-------------|-----------|-------|
-| 9 | Componente EmptyState reutilizable | DEV | | # |
+| 9 | Componente EmptyState reutilizable | DEV | ok — Gerardo 5/5 | # |
 | 10 | EmptyState en taller/pedidos/disponibles | QA | | # |
 | 11 | EmptyState en taller/pedidos | QA | | # |
 | 12 | EmptyState en marca/pedidos | QA | | # |
@@ -78,10 +78,10 @@ Verificar que los 4 ejes de mejora UX estan implementados correctamente: compone
 
 | # | Criterio | Verificador | Resultado | Issue |
 |---|----------|-------------|-----------|-------|
-| 17 | Toast con variantes warning/info | DEV | | # |
-| 18 | Toast con description y action button | DEV | | # |
-| 19 | Firma retrocompatible (14 call sites existentes) | DEV | | # |
-| 20 | Max 3 toasts visibles | DEV | | # |
+| 17 | Toast con variantes warning/info | DEV | ok — Gerardo 5/5 | # |
+| 18 | Toast con description y action button | DEV | ok — Gerardo 5/5 | # |
+| 19 | Firma retrocompatible (14 call sites existentes) | DEV | ok — Gerardo 5/5 | # |
+| 20 | Max 3 toasts visibles | DEV | ok — Gerardo 5/5 | # |
 | 21 | alert() migrado en completar/page.tsx | QA | | # |
 | 22 | alert() migrado en contactar-taller.tsx | QA | | # |
 | 23 | alert() migrado en publicar-pedido.tsx (2 alerts) | QA | | # |
@@ -96,7 +96,7 @@ Verificar que los 4 ejes de mejora UX estan implementados correctamente: compone
 
 | # | Criterio | Verificador | Resultado | Issue |
 |---|----------|-------------|-----------|-------|
-| 30 | Componente Breadcrumbs reutilizable | DEV | | # |
+| 30 | Componente Breadcrumbs reutilizable | DEV | ok — Gerardo 5/5 | # |
 | 31 | Breadcrumbs mobile responsive (solo padre en mobile) | QA | | # |
 | 32 | Breadcrumbs en admin/talleres/[id] | QA | | # |
 | 33 | Breadcrumbs en admin/marcas/[id] | QA | | # |
@@ -105,14 +105,14 @@ Verificar que los 4 ejes de mejora UX estan implementados correctamente: compone
 | 36 | Breadcrumbs en taller/pedidos/[id] | QA | | # |
 | 37 | Breadcrumbs en admin/auditorias/[id] | QA | | # |
 | 38 | Breadcrumbs en estado/talleres/[id] | QA | | # |
-| 39 | ArrowLeft/Volver eliminado de todas las paginas con breadcrumbs | DEV | | # |
+| 39 | ArrowLeft/Volver eliminado de todas las paginas con breadcrumbs | DEV | ok — Gerardo 5/5 | # |
 
 ### General
 
 | # | Criterio | Verificador | Resultado | Issue |
 |---|----------|-------------|-----------|-------|
-| 40 | Build sin errores TypeScript | DEV | | # |
-| 41 | Suite Vitest completa (276 tests) | DEV | | # |
+| 40 | Build sin errores TypeScript | DEV | ok — Gerardo 5/5 | # |
+| 41 | Suite Vitest completa (276 tests) | DEV | ok — Gerardo 5/5 | # |
 
 ---
 
@@ -176,7 +176,7 @@ Verificar que los 4 ejes de mejora UX estan implementados correctamente: compone
 |---|------|--------|----------|-------------|-----------|
 | 1 | Loading rapido (<200ms) - no flicker | Navegar a una pagina con Suspense con buena conexion | No hay flicker perceptible del skeleton/spinner. La pagina carga directamente o muestra loading por un instante sin parpadeo molesto | QA | |
 | 2 | Empty state durante loading | Navegar a un listado vacio con throttling (Slow 3G) | Se ve el Loading/Skeleton primero, y cuando termina de cargar se muestra el EmptyState. No se muestra EmptyState durante la carga | QA | |
-| 3 | 4+ toasts simultaneos | Provocar 4 o mas acciones que generen toast rapidamente (ej: publicar, cotizar, etc. en sucesion rapida) | Solo 3 toasts visibles a la vez, los mas viejos se descartan automaticamente | DEV | |
+| 3 | 4+ toasts simultaneos | Provocar 4 o mas acciones que generen toast rapidamente (ej: publicar, cotizar, etc. en sucesion rapida) | Solo 3 toasts visibles a la vez, los mas viejos se descartan automaticamente | DEV | ok — Gerardo 5/5 |
 | 4 | Breadcrumbs con labels largos | Navegar a una pagina de detalle cuyo titulo tenga mas de 30 caracteres | El label del breadcrumb se trunca a 30 caracteres con "..." sin romper el layout | QA | |
 | 5 | Mobile - breadcrumbs solo padre | Abrir una pagina con breadcrumbs en viewport mobile (< 640px) | Solo se muestra el link al nivel padre (ej: "< Pedidos"), no la ruta completa | QA | |
 
