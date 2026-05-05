@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react'
 import { EmptyState } from '@/compartido/componentes/ui/empty-state'
+import { Badge } from '@/compartido/componentes/ui/badge'
 
 interface Notificacion {
   id: string
@@ -13,6 +14,7 @@ interface Notificacion {
   leida: boolean
   link: string | null
   createdAt: string | Date
+  creadaPor?: { name: string | null } | null
 }
 
 const labelPorTipo: Record<string, string> = {
@@ -20,6 +22,7 @@ const labelPorTipo: Record<string, string> = {
   PEDIDO_DISPONIBLE: 'Ver pedido disponible',
   PEDIDO_INVITACION: 'Ver pedido',
   ADMIN_ENVIO: 'Ir al enlace',
+  mensaje_individual: 'Ver detalles',
 }
 
 function marcarLeida(notificacionId: string) {
@@ -93,10 +96,17 @@ export function NotificacionesLista({ notificaciones: initial, emptyMessage }: {
                 : 'border-brand-blue/30 bg-brand-blue/5'
             }`
 
+            const esMensajeIndividual = n.tipo === 'mensaje_individual'
+
             const header = (
               <div className="flex items-center justify-between gap-2 mb-1">
-                <h2 className="font-overpass font-semibold text-brand-blue">{n.titulo}</h2>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  {esMensajeIndividual && (
+                    <Badge variant="default" className="!text-xs !px-2 !py-0.5 shrink-0">Mensaje del equipo</Badge>
+                  )}
+                  <h2 className="font-overpass font-semibold text-brand-blue truncate">{n.titulo}</h2>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
                   {!n.leida && (
                     <span className="text-xs font-overpass font-semibold text-brand-red">NUEVA</span>
                   )}
@@ -109,10 +119,13 @@ export function NotificacionesLista({ notificaciones: initial, emptyMessage }: {
               </div>
             )
 
-            const fecha = (
-              <p className="text-xs text-gray-500 mt-1">
-                {new Date(n.createdAt).toLocaleString('es-AR')}
-              </p>
+            const meta = (
+              <div className="flex items-center gap-3 text-xs text-gray-500 mt-1">
+                {esMensajeIndividual && n.creadaPor?.name && (
+                  <span>De: {n.creadaPor.name}</span>
+                )}
+                <span>{new Date(n.createdAt).toLocaleString('es-AR')}</span>
+              </div>
             )
 
             // Notificaciones sin link: click expande/colapsa el mensaje
@@ -133,7 +146,7 @@ export function NotificacionesLista({ notificaciones: initial, emptyMessage }: {
                   ) : (
                     <p className="text-sm text-gray-700 mb-1 line-clamp-1">{n.mensaje}</p>
                   )}
-                  {fecha}
+                  {meta}
                 </button>
               )
             }
@@ -146,7 +159,7 @@ export function NotificacionesLista({ notificaciones: initial, emptyMessage }: {
                 <span className="text-xs text-brand-blue font-medium">
                   {labelPorTipo[n.tipo] ?? 'Ver'} →
                 </span>
-                {fecha}
+                {meta}
               </>
             )
 

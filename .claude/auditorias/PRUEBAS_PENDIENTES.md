@@ -443,6 +443,54 @@ Este archivo acumula TODAS las verificaciones manuales que requieren ojos humano
 
 ---
 
+## Spec F-07 — Mensajes individuales
+
+### Envio de mensaje
+
+- [ ] ADMIN envia mensaje individual desde /admin/talleres/[id] → taller lo ve en /cuenta/notificaciones
+- [ ] Mensaje aparece con badge "Mensaje del equipo" y nombre del remitente
+- [ ] Preview en vivo del editor muestra titulo y mensaje mientras se escribe
+- [ ] Sugerencias de link cambian segun rol (TALLER: 3 sugerencias, MARCA: 2)
+- [ ] Checkbox "Adjuntar link" muestra campo con sugerencias
+
+### WhatsApp
+
+- [ ] Checkbox "Enviar por WhatsApp" visible solo si destinatario tiene phone
+- [ ] Checkbox no visible si destinatario no tiene phone (muestra texto explicativo)
+- [ ] Envio con WhatsApp crea MensajeWhatsapp en DB
+
+### Rate limit
+
+- [ ] Admin puede enviar hasta 50 mensajes/hora sin error
+- [ ] Mensaje 51 retorna toast "Limite de envio alcanzado"
+
+### Integracion en paginas
+
+- [ ] Boton "Enviar mensaje" visible en modal de /admin/usuarios
+- [ ] Boton "Enviar mensaje" visible en /admin/talleres/[id] (junto a badges)
+- [ ] Boton "Enviar mensaje" visible en /admin/marcas/[id] (junto a badges)
+
+### Tabs admin
+
+- [ ] /admin/notificaciones tiene tabs "Comunicaciones masivas" y "Mensajes individuales"
+- [ ] Tab "Mensajes individuales" muestra tabla con fecha, destinatario, titulo, via, leido
+- [ ] EmptyState visible si no hay mensajes individuales
+
+### Seguridad
+
+- [ ] URL `javascript:alert(1)` rechazada por validacion
+- [ ] Destinatario inactivo retorna 404
+- [ ] TALLER no puede enviar mensajes (403)
+
+### Tests automatizados
+
+- [x] 23 Vitest tests (mensajes-individuales.test.ts) — Gerardo 5/5
+- [x] TypeScript 0 errores — Gerardo 5/5
+- [ ] 5 E2E tests (mensajes-individuales.spec.ts) — pendiente CI
+- [ ] Verificar que CI (GitHub Actions) pasa con los tests nuevos
+
+---
+
 ## Nota tecnica: E2E tests crean issues reales en GitHub
 
 Los tests E2E de rate limiting (S-02) envian requests POST a `/api/feedback` que crea issues reales en GitHub. Cada corrida de CI genera ~11 issues basura con titulo "Test rate limit intento N". Esto contamina el panel de issues y el conteo del QA index.

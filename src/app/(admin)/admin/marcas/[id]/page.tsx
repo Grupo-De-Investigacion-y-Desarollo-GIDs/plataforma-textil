@@ -10,6 +10,7 @@ import { StatCard } from '@/compartido/componentes/ui/stat-card'
 import { Button } from '@/compartido/componentes/ui/button'
 import { MapPin, Mail, Phone, Globe, Calendar, AlertTriangle } from 'lucide-react'
 import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
+import { BotonEnviarMensaje } from '@/admin/componentes/boton-enviar-mensaje'
 
 export default async function AdminDetalleMarcaPage({ params }: {
   params: Promise<{ id: string }>
@@ -24,7 +25,7 @@ export default async function AdminDetalleMarcaPage({ params }: {
   const marca = await prisma.marca.findUnique({
     where: { id },
     include: {
-      user: { select: { email: true, phone: true, name: true, active: true, createdAt: true } },
+      user: { select: { id: true, email: true, phone: true, name: true, active: true, createdAt: true } },
       pedidos: {
         orderBy: { createdAt: 'desc' },
         take: 10,
@@ -131,6 +132,12 @@ export default async function AdminDetalleMarcaPage({ params }: {
               {marca.frecuenciaCompra && (
                 <Badge variant="muted">Compra: {marca.frecuenciaCompra}</Badge>
               )}
+              <BotonEnviarMensaje
+                destinatarioId={marca.user.id}
+                destinatarioNombre={marca.user.name ?? marca.nombre}
+                destinatarioRol="MARCA"
+                destinatarioTienePhone={!!marca.user.phone}
+              />
             </div>
           </div>
         </div>

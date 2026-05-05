@@ -9,7 +9,8 @@ import { DataTable } from '@/compartido/componentes/ui/data-table'
 import { Modal } from '@/compartido/componentes/ui/modal'
 import { Select } from '@/compartido/componentes/ui/select'
 import { StatCard } from '@/compartido/componentes/ui/stat-card'
-import { Eye, Edit, UserX } from 'lucide-react'
+import { Eye, Edit, UserX, MessageSquare } from 'lucide-react'
+import { EditorMensajeIndividual } from '@/admin/componentes/editor-mensaje-individual'
 
 interface Usuario {
   id: string
@@ -37,6 +38,7 @@ export default function AdminUsuariosPage() {
   const [editModal, setEditModal] = useState<Usuario | null>(null)
   const [editRole, setEditRole] = useState('')
   const [confirmAction, setConfirmAction] = useState<{ user: Usuario; action: 'suspend' | 'resetPassword' } | null>(null)
+  const [mensajeTarget, setMensajeTarget] = useState<Usuario | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [toast, setToast] = useState('')
@@ -209,7 +211,8 @@ export default function AdminUsuariosPage() {
               <div><span className="text-gray-500">Registrado:</span> {new Date(detalleModal.createdAt).toLocaleDateString('es-AR')}</div>
               <div><span className="text-gray-500">Telefono:</span> {detalleModal.phone || '-'}</div>
             </div>
-            <div className="flex gap-2 pt-4 border-t">
+            <div className="flex gap-2 pt-4 border-t flex-wrap">
+              <Button size="sm" variant="secondary" icon={<MessageSquare className="w-4 h-4" />} onClick={() => setMensajeTarget(detalleModal)}>Enviar mensaje</Button>
               <Button size="sm" variant="secondary" onClick={() => { setEditModal(detalleModal); setEditRole(detalleModal.role) }}>Cambiar rol</Button>
               <Button size="sm" variant="secondary" onClick={() => setConfirmAction({ user: detalleModal, action: 'resetPassword' })}>Resetear contrasena</Button>
               <Button size="sm" variant="danger" onClick={() => setConfirmAction({ user: detalleModal, action: 'suspend' })}>Suspender cuenta</Button>
@@ -267,6 +270,16 @@ export default function AdminUsuariosPage() {
           </div>
         )}
       </Modal>
+
+      {mensajeTarget && (
+        <EditorMensajeIndividual
+          destinatarioId={mensajeTarget.id}
+          destinatarioNombre={mensajeTarget.name || mensajeTarget.email}
+          destinatarioRol={mensajeTarget.role as 'TALLER' | 'MARCA' | 'ADMIN' | 'ESTADO' | 'CONTENIDO'}
+          destinatarioTienePhone={!!mensajeTarget.phone}
+          onCerrar={() => setMensajeTarget(null)}
+        />
+      )}
 
       {toast && (
         <div className="fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg text-sm z-50">
