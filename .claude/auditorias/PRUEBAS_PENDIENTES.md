@@ -368,6 +368,45 @@ Este archivo acumula TODAS las verificaciones manuales que requieren ojos humano
 
 ---
 
+## Spec F-04 — Exportes del Estado
+
+### Exportes individuales
+
+- [ ] Descargar talleres CSV — verificar columnas ARCA (verificadoAfip, tipoInscripcion, categoriaMonotributo, estadoCuit)
+- [ ] Descargar talleres Excel — verificar formato (headers bold, filas alternadas, columnas auto-ajustadas)
+- [ ] Descargar marcas CSV — verificar campos nuevos (verificado ARCA, pedidos sin cotizaciones)
+- [ ] Descargar validaciones CSV — verificar historial aprobaciones/rechazos con aprobador
+- [ ] Descargar demanda insatisfecha CSV — verificar motivos y talleres cerca
+
+### Informe mensual
+
+- [ ] Generar informe mensual completo (Excel con 7 hojas)
+- [ ] Verificar portada con titulo y fecha
+- [ ] Verificar que cada hoja tiene headers formateados y datos del mes
+- [ ] Verificar que se puede abrir en Excel y LibreOffice sin errores
+
+### Filtros
+
+- [ ] Filtro por provincia en talleres — verificar que CSV solo contiene talleres de esa provincia
+- [ ] Filtro por nivel en talleres — verificar que CSV solo contiene talleres de ese nivel
+- [ ] Filtro por periodo (mes actual) — verificar que CSV solo contiene registros del mes
+
+### UI y feedback
+
+- [ ] Breadcrumbs en /estado/exportar (Estado > Exportar)
+- [ ] Toast de exito al descargar reporte
+- [ ] Toast de error si hay problema de conexion
+- [ ] Tarjetas por tipo de reporte visibles
+- [ ] Seccion destacada para informe mensual visible
+
+### Seguridad
+
+- [ ] TALLER no puede acceder a /api/estado/exportar (403)
+- [ ] MARCA no puede acceder a /api/estado/exportar (403)
+- [ ] Caracteres especiales (ñ, tildes) se muestran correctamente en CSV abierto con Excel
+
+---
+
 ## Nota tecnica: E2E tests crean issues reales en GitHub
 
 Los tests E2E de rate limiting (S-02) envian requests POST a `/api/feedback` que crea issues reales en GitHub. Cada corrida de CI genera ~11 issues basura con titulo "Test rate limit intento N". Esto contamina el panel de issues y el conteo del QA index.
