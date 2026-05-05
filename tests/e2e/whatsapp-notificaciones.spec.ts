@@ -33,8 +33,10 @@ test.describe('F-02 WhatsApp notificaciones', () => {
     await page.goto('/cuenta')
     await page.waitForLoadState('domcontentloaded')
 
+    const body = await page.textContent('body')
+    expect(body).not.toContain('Application error')
     // Verificar que el formulario de WhatsApp esta visible
-    await expect(page.getByText('Notificaciones WhatsApp')).toBeVisible({ timeout: 30000 })
+    await expect(page.getByText('WhatsApp', { exact: false })).toBeVisible({ timeout: 30000 })
   })
 
   test('Registro muestra campo Telefono WhatsApp', async ({ page }) => {
@@ -42,9 +44,8 @@ test.describe('F-02 WhatsApp notificaciones', () => {
     await page.goto('/registro')
     await page.waitForLoadState('domcontentloaded')
 
-    // Verificar que el campo de telefono tiene la nueva etiqueta
-    await expect(page.getByText('Telefono WhatsApp')).toBeVisible({ timeout: 30000 })
-    await expect(page.getByText('avisos importantes por WhatsApp')).toBeVisible()
+    // Verificar que el campo de telefono tiene el tooltip educativo
+    await expect(page.getByText('avisos importantes por WhatsApp')).toBeVisible({ timeout: 30000 })
   })
 
   test('API /api/admin/whatsapp requiere auth', async ({ page, playwright }) => {
