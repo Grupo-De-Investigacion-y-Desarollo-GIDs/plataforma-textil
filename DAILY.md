@@ -3,6 +3,12 @@
 ## 2026-05-05
 
 ### Gerardo Breard
+- **18:01** `ee7e364` — perf: resolver ESTADO login lento — indice + warm-up + test resiliente
+  - `.claude/specs/V4_BACKLOG.md`
+  - `.github/workflows/e2e.yml`
+  - `prisma/schema.prisma`
+  - `tests/e2e/roles-estado.spec.ts`
+
 - **17:06** `b5d3194` — fix: E2E whatsapp tests toleran timeout en preview
   - `tests/e2e/whatsapp-notificaciones.spec.ts`
 
