@@ -3,6 +3,29 @@
 ## 2026-05-05
 
 ### Gerardo Breard
+- **16:28** `8233a7d` — feat: F-02 WhatsApp como canal de notificacion con magic links
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-whatsapp-notificaciones.md`
+  - `.claude/auditorias/REVIEW_v3-whatsapp-notificaciones.md`
+  - `prisma/schema.prisma`
+  - `src/__tests__/nivel.test.ts`
+  - `src/__tests__/whatsapp.test.ts`
+  - `src/app/(auth)/registro/page.tsx`
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/(public)/cuenta/page.tsx`
+  - `src/app/api/admin/notificaciones/route.ts`
+  - `src/app/api/admin/whatsapp/route.ts`
+  - `src/app/api/cuenta/route.ts`
+  - `src/app/n/[token]/route.ts`
+  - `src/compartido/componentes/cuenta-whatsapp-form.tsx`
+  - `src/compartido/componentes/whatsapp-wizard.tsx`
+  - `src/compartido/lib/magic-link.ts`
+  - `src/compartido/lib/nivel.ts`
+  - `src/compartido/lib/notificaciones.ts`
+  - `src/compartido/lib/whatsapp-templates.ts`
+  - `src/compartido/lib/whatsapp.ts`
+  - `tests/e2e/whatsapp-notificaciones.spec.ts`
+
 - **14:39** `686742e` — feat: F-04 exportes del Estado — Excel, ARCA, filtros, informe mensual
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `.claude/auditorias/QA_v3-exportes-estado.md`
