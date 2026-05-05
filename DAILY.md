@@ -3,6 +3,10 @@
 ## 2026-05-05
 
 ### Gerardo Breard
+- **16:45** `10377e7` — fix: magic link /n/ excluido de middleware auth + E2E tests robustos
+  - `src/middleware.ts`
+  - `tests/e2e/whatsapp-notificaciones.spec.ts`
+
 - **16:28** `8233a7d` — feat: F-02 WhatsApp como canal de notificacion con magic links
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `.claude/auditorias/QA_v3-whatsapp-notificaciones.md`
