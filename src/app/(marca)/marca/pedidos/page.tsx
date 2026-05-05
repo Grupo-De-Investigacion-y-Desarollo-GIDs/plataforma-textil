@@ -1,10 +1,13 @@
 export const dynamic = 'force-dynamic'
 
+import { Suspense } from 'react'
 import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { redirect } from 'next/navigation'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
+import { EmptyState } from '@/compartido/componentes/ui/empty-state'
+import { SkeletonTable } from '@/compartido/componentes/ui/skeleton'
 import Link from 'next/link'
 
 const statusVariant: Record<string, 'default' | 'success' | 'warning' | 'muted' | 'error'> = {
@@ -33,20 +36,7 @@ type SearchParams = {
   created?: string
 }
 
-export default async function MarcaPedidosPage({
-  searchParams,
-}: {
-  searchParams?: Promise<SearchParams> | SearchParams
-}) {
-  const resolvedSearchParams = await Promise.resolve(searchParams ?? {})
-  const query = (resolvedSearchParams.q || '').trim()
-  const estadoRaw = (resolvedSearchParams.estado || '').trim().toUpperCase()
-  const estado =
-    allowedEstados.includes(estadoRaw as (typeof allowedEstados)[number])
-      ? (estadoRaw as (typeof allowedEstados)[number])
-      : ''
-  const created = resolvedSearchParams.created === '1'
-
+async function PedidosContent({ query, estado, created }: { query: string; estado: string; created: boolean }) {
   const session = await auth()
   if (!session?.user) redirect('/login?callbackUrl=%2Fmarca%2Fpedidos')
 
@@ -73,7 +63,7 @@ export default async function MarcaPedidosPage({
   const pedidos = await prisma.pedido.findMany({
     where: {
       marcaId: marca.id,
-      ...(estado ? { estado } : {}),
+      ...(estado ? { estado: estado as (typeof allowedEstados)[number] } : {}),
       ...(query
         ? {
             OR: [
@@ -181,11 +171,11 @@ export default async function MarcaPedidosPage({
 
       <Card>
         {pedidos.length === 0 ? (
-          <div className="py-8 text-center">
-            <p className="text-gray-600">
-              {query || estado ? 'No hay pedidos para esos filtros.' : 'Todavia no tenes pedidos creados.'}
-            </p>
-          </div>
+          <EmptyState
+            titulo={query || estado ? 'Sin resultados' : 'Sin pedidos'}
+            mensaje={query || estado ? 'No hay pedidos para esos filtros. Proba cambiando los criterios.' : 'Todavia no tenes pedidos creados. Crea tu primer pedido para empezar.'}
+            accion={!query && !estado ? { texto: 'Crear pedido', href: '/marca/pedidos/nuevo' } : undefined}
+          />
         ) : (
           <div className="space-y-3">
             {pedidos.map((pedido) => (
@@ -215,5 +205,26 @@ export default async function MarcaPedidosPage({
         )}
       </Card>
     </div>
+  )
+}
+
+export default async function MarcaPedidosPage({
+  searchParams,
+}: {
+  searchParams?: Promise<SearchParams> | SearchParams
+}) {
+  const resolvedSearchParams = await Promise.resolve(searchParams ?? {})
+  const query = (resolvedSearchParams.q || '').trim()
+  const estadoRaw = (resolvedSearchParams.estado || '').trim().toUpperCase()
+  const estado =
+    allowedEstados.includes(estadoRaw as (typeof allowedEstados)[number])
+      ? (estadoRaw as (typeof allowedEstados)[number])
+      : ''
+  const created = resolvedSearchParams.created === '1'
+
+  return (
+    <Suspense fallback={<SkeletonTable rows={5} />}>
+      <PedidosContent query={query} estado={estado} created={created} />
+    </Suspense>
   )
 }

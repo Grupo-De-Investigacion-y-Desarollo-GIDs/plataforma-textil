@@ -5,7 +5,8 @@ import { calcularStatsAgregadas, generarRecomendaciones, obtenerDetallePorCatego
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import Link from 'next/link'
-import { TrendingDown, Users, Factory, Lightbulb, Download, ArrowLeft } from 'lucide-react'
+import { TrendingDown, Users, Factory, Lightbulb, Download } from 'lucide-react'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 import type { MotivoCategoria } from '@prisma/client'
 
 const CATEGORIA_LABELS: Record<string, { label: string; color: string }> = {
@@ -47,10 +48,12 @@ export default async function DemandaInsatisfechaPage({ searchParams }: PageProp
     return (
       <div className="space-y-6">
         <div>
-          <Link href="/estado/demanda-insatisfecha" className="text-sm text-brand-blue hover:underline flex items-center gap-1 mb-2">
-            <ArrowLeft className="w-4 h-4" /> Volver al resumen
-          </Link>
-          <h1 className="font-overpass font-bold text-2xl text-brand-blue">
+          <Breadcrumbs items={[
+            { label: 'Estado', href: '/estado' },
+            { label: 'Demanda insatisfecha', href: '/estado/demanda-insatisfecha' },
+            { label: catInfo.label },
+          ]} />
+          <h1 className="font-overpass font-bold text-2xl text-brand-blue mt-2">
             Pedidos sin matchear: {catInfo.label}
           </h1>
           <p className="text-gray-500 text-sm mt-1">
@@ -127,10 +130,12 @@ export default async function DemandaInsatisfechaPage({ searchParams }: PageProp
     return (
       <div className="space-y-6">
         <div>
-          <Link href="/estado/demanda-insatisfecha" className="text-sm text-brand-blue hover:underline flex items-center gap-1 mb-2">
-            <ArrowLeft className="w-4 h-4" /> Volver al resumen
-          </Link>
-          <h1 className="font-overpass font-bold text-2xl text-brand-blue">
+          <Breadcrumbs items={[
+            { label: 'Estado', href: '/estado' },
+            { label: 'Demanda insatisfecha', href: '/estado/demanda-insatisfecha' },
+            { label: 'Talleres cerca' },
+          ]} />
+          <h1 className="font-overpass font-bold text-2xl text-brand-blue mt-2">
             Talleres cerca de poder matchear
           </h1>
           <p className="text-gray-500 text-sm mt-1">

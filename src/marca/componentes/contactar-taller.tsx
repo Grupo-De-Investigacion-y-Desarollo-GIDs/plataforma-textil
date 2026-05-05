@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { Modal } from '@/compartido/componentes/ui/modal'
 import { MessageCircle } from 'lucide-react'
+import { useToast } from '@/compartido/componentes/ui/toast'
 
 interface ContactarTallerProps {
   taller: {
@@ -18,6 +19,7 @@ interface ContactarTallerProps {
 }
 
 export function ContactarTaller({ taller, marca }: ContactarTallerProps) {
+  const { toast } = useToast()
   const [modalAbierto, setModalAbierto] = useState(false)
   const [tipo, setTipo] = useState(marca.tipo ?? '')
   const [ubicacion, setUbicacion] = useState(marca.ubicacion ?? '')
@@ -36,7 +38,7 @@ export function ContactarTaller({ taller, marca }: ContactarTallerProps) {
 
   function abrirWhatsApp() {
     if (!taller.phone) {
-      alert('Este taller no tiene telefono registrado. Intenta contactarlo por otro medio.')
+      toast({ mensaje: 'Este taller no tiene telefono registrado', tipo: 'warning', description: 'Intenta contactarlo por otro medio.' })
       return
     }
     const phoneClean = taller.phone.replace(/\D/g, '')

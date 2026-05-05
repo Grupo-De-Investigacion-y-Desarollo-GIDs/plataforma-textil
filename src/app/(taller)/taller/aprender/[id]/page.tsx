@@ -3,8 +3,7 @@ export const dynamic = 'force-dynamic'
 import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { redirect, notFound } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 import { AcademiaCliente } from '@/taller/componentes/academia-cliente'
 import { AsistenteChat } from '@/taller/componentes/asistente-chat'
 import { getFeatureFlag } from '@/compartido/lib/features'
@@ -50,14 +49,13 @@ export default async function AcademiaDetallePage({
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <Link
-        href="/taller/aprender"
-        className="inline-flex items-center gap-1 text-sm text-brand-blue hover:underline"
-      >
-        <ArrowLeft className="w-4 h-4" /> Volver a Academia
-      </Link>
+      <Breadcrumbs items={[
+        { label: 'Taller', href: '/taller' },
+        { label: 'Academia', href: '/taller/aprender' },
+        { label: coleccion.titulo },
+      ]} />
 
-      <div>
+      <div className="mt-2">
         <h1 className="font-overpass font-bold text-2xl text-brand-blue">{coleccion.titulo}</h1>
         {coleccion.institucion && (
           <p className="text-sm text-gray-500 mt-0.5">Contenido curado por {coleccion.institucion}</p>

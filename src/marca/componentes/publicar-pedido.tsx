@@ -5,9 +5,11 @@ import { useRouter } from 'next/navigation'
 import { Send } from 'lucide-react'
 import { Button } from '@/compartido/componentes/ui/button'
 import { getErrorMessage } from '@/compartido/lib/api-client'
+import { useToast } from '@/compartido/componentes/ui/toast'
 
 export function PublicarPedido({ pedidoId }: { pedidoId: string }) {
   const router = useRouter()
+  const { toast } = useToast()
   const [loading, setLoading] = useState(false)
 
   async function handlePublicar() {
@@ -20,13 +22,14 @@ export function PublicarPedido({ pedidoId }: { pedidoId: string }) {
         body: JSON.stringify({ estado: 'PUBLICADO' }),
       })
       if (res.ok) {
+        toast('Pedido publicado', 'success')
         router.refresh()
       } else {
         const data = await res.json()
-        alert(getErrorMessage(data, 'Error al publicar el pedido'))
+        toast(getErrorMessage(data, 'Error al publicar el pedido'), 'error')
       }
     } catch {
-      alert('Error de conexion')
+      toast('Error de conexion', 'error')
     }
     setLoading(false)
   }

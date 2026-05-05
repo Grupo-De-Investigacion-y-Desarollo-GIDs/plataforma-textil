@@ -7,6 +7,7 @@ import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
 import { Input } from '@/compartido/componentes/ui/input'
 import { Badge } from '@/compartido/componentes/ui/badge'
+import { useToast } from '@/compartido/componentes/ui/toast'
 
 const STEPS = [
   { key: 'bienvenida', label: 'Inicio', icon: Factory },
@@ -50,6 +51,7 @@ interface TipoPrenda {
 
 export default function WizardPage() {
   const router = useRouter()
+  const { toast } = useToast()
   const [step, setStep] = useState(0)
   const [tallerId, setTallerId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
@@ -184,7 +186,7 @@ export default function WizardPage() {
       if (!res.ok) throw new Error('Error del servidor')
       router.push(redirectTo)
     } catch {
-      alert('Error al guardar. Intentá de nuevo.')
+      toast('Error al guardar. Intenta de nuevo.', 'error')
       setSaving(false)
     }
   }

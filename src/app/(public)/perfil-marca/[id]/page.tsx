@@ -5,7 +5,8 @@ import { prisma } from '@/compartido/lib/prisma'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import Link from 'next/link'
-import { MapPin, Star, Package, ArrowLeft } from 'lucide-react'
+import { MapPin, Star, Package } from 'lucide-react'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 
 const estadoVariant: Record<string, 'success' | 'warning' | 'default'> = {
   COMPLETADO: 'success',
@@ -55,15 +56,13 @@ export default async function PerfilMarcaPage({
 
   return (
     <div className="max-w-2xl mx-auto py-6 px-4 space-y-6">
-      <Link
-        href="/directorio"
-        className="inline-flex items-center gap-1 text-sm text-brand-blue hover:underline"
-      >
-        <ArrowLeft className="w-4 h-4" /> Volver
-      </Link>
+      <Breadcrumbs items={[
+        { label: 'Directorio', href: '/directorio' },
+        { label: marca.nombre },
+      ]} />
 
       {/* Encabezado */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 mt-4">
         <div className="w-16 h-16 rounded-xl bg-brand-blue flex items-center justify-center flex-shrink-0">
           <span className="text-white font-overpass font-bold text-xl">{iniciales}</span>
         </div>

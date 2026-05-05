@@ -1,10 +1,12 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { getErrorMessage } from '@/compartido/lib/api-client'
+import { getErrorMessage, getErrorCode } from '@/compartido/lib/api-client'
+import { useToast } from '@/compartido/componentes/ui/toast'
 
 export function AceptarCotizacion({ cotizacionId }: { cotizacionId: string }) {
   const router = useRouter()
+  const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const [confirmar, setConfirmar] = useState(false)
   const [error, setError] = useState('')
@@ -20,9 +22,15 @@ export function AceptarCotizacion({ cotizacionId }: { cotizacionId: string }) {
       })
       if (!res.ok) {
         const data = await res.json()
-        setError(getErrorMessage(data, 'Error al aceptar'))
+        const code = getErrorCode(data)
+        if (code === 'CONFLICT') {
+          toast({ mensaje: 'Esta cotizacion ya fue procesada', tipo: 'warning', description: 'Recarga la pagina para ver el estado actualizado.' })
+        } else {
+          setError(getErrorMessage(data, 'Error al aceptar'))
+        }
         return
       }
+      toast('Cotizacion aceptada', 'success')
       router.refresh()
     } catch {
       setError('Error de conexion')

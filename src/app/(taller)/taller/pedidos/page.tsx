@@ -1,10 +1,13 @@
 export const dynamic = 'force-dynamic'
 
+import { Suspense } from 'react'
 import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { redirect } from 'next/navigation'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
+import { EmptyState } from '@/compartido/componentes/ui/empty-state'
+import { SkeletonTable } from '@/compartido/componentes/ui/skeleton'
 import Link from 'next/link'
 import { Package } from 'lucide-react'
 
@@ -22,7 +25,7 @@ const statusVariant: Record<string, 'default' | 'success' | 'warning'> = {
   CANCELADO: 'warning',
 }
 
-export default async function TallerPedidosPage() {
+async function ListaOrdenes() {
   const session = await auth()
   if (!session?.user) redirect('/login')
 
@@ -33,30 +36,31 @@ export default async function TallerPedidosPage() {
 
   if (!taller) redirect('/login')
 
-  const disponiblesCount = await prisma.pedido.count({
-    where: {
-      estado: 'PUBLICADO',
-      OR: [
-        { visibilidad: 'PUBLICO' },
-        { invitaciones: { some: { tallerId: taller.id } } },
-      ],
-    },
-  })
-
-  const ordenes = await prisma.ordenManufactura.findMany({
-    where: { tallerId: taller.id },
-    include: {
-      pedido: {
-        select: {
-          omId: true,
-          tipoPrenda: true,
-          cantidad: true,
-          marca: { select: { nombre: true } },
+  const [disponiblesCount, ordenes] = await Promise.all([
+    prisma.pedido.count({
+      where: {
+        estado: 'PUBLICADO',
+        OR: [
+          { visibilidad: 'PUBLICO' },
+          { invitaciones: { some: { tallerId: taller.id } } },
+        ],
+      },
+    }),
+    prisma.ordenManufactura.findMany({
+      where: { tallerId: taller.id },
+      include: {
+        pedido: {
+          select: {
+            omId: true,
+            tipoPrenda: true,
+            cantidad: true,
+            marca: { select: { nombre: true } },
+          },
         },
       },
-    },
-    orderBy: { createdAt: 'desc' },
-  })
+      orderBy: { createdAt: 'desc' },
+    }),
+  ])
 
   const total = ordenes.length
   const enEjecucion = ordenes.filter(o => o.estado === 'EN_EJECUCION').length
@@ -64,7 +68,7 @@ export default async function TallerPedidosPage() {
   const pendientes = ordenes.filter(o => o.estado === 'PENDIENTE').length
 
   return (
-    <div className="space-y-6">
+    <>
       <div className="flex items-start justify-between">
         <div>
           <h1 className="font-overpass font-bold text-3xl text-brand-blue">Pedidos Recibidos</h1>
@@ -103,9 +107,11 @@ export default async function TallerPedidosPage() {
 
       <Card>
         {ordenes.length === 0 ? (
-          <div className="py-8 text-center">
-            <p className="text-gray-600">No tenes ordenes de manufactura asignadas todavia.</p>
-          </div>
+          <EmptyState
+            titulo="Sin ordenes de manufactura"
+            mensaje="Todavia no tenes ordenes asignadas. Explora los pedidos disponibles para cotizar."
+            accion={{ texto: 'Ver pedidos disponibles', href: '/taller/pedidos/disponibles' }}
+          />
         ) : (
           <div className="space-y-3">
             {ordenes.map((orden) => (
@@ -152,6 +158,16 @@ export default async function TallerPedidosPage() {
           </div>
         )}
       </Card>
+    </>
+  )
+}
+
+export default function TallerPedidosPage() {
+  return (
+    <div className="space-y-6">
+      <Suspense fallback={<SkeletonTable rows={5} />}>
+        <ListaOrdenes />
+      </Suspense>
     </div>
   )
 }

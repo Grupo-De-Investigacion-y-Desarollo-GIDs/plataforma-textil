@@ -1,19 +1,21 @@
 'use client'
 
-import Link from 'next/link'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Input } from '@/compartido/componentes/ui/input'
 import { Badge } from '@/compartido/componentes/ui/badge'
-import { ArrowLeft, AlertTriangle } from 'lucide-react'
+import { AlertTriangle } from 'lucide-react'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 
 export default function AdminIntegracionEmailPage() {
   return (
     <div className="max-w-3xl mx-auto py-6 px-4">
-      <Link href="/admin/integraciones" className="inline-flex items-center gap-1 text-sm text-brand-blue hover:underline mb-4">
-        <ArrowLeft className="w-4 h-4" /> Volver a integraciones
-      </Link>
+      <Breadcrumbs items={[
+        { label: 'Admin', href: '/admin' },
+        { label: 'Integraciones', href: '/admin/integraciones' },
+        { label: 'Email' },
+      ]} />
 
-      <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Configuracion SendGrid</h1>
+      <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1 mt-4">Configuracion SendGrid</h1>
       <p className="text-gray-500 text-sm mb-6">Envio de emails transaccionales y masivos</p>
 
       <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-center gap-3">

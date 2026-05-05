@@ -2,11 +2,11 @@
 
 import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
 import { Input } from '@/compartido/componentes/ui/input'
-import { ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react'
+import { CheckCircle, AlertCircle } from 'lucide-react'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 
 function getYoutubeId(url: string) {
   const match = url.match(/(?:v=|youtu\.be\/)([^&\s]+)/)
@@ -54,11 +54,13 @@ export default function AdminAgregarVideoPage() {
 
   return (
     <div className="max-w-3xl mx-auto py-6 px-4">
-      <Link href={`/admin/colecciones/${coleccionId}`} className="inline-flex items-center gap-1 text-sm text-brand-blue hover:underline mb-4">
-        <ArrowLeft className="w-4 h-4" /> Volver a colección
-      </Link>
+      <Breadcrumbs items={[
+        { label: 'Admin', href: '/admin' },
+        { label: 'Colecciones', href: '/admin/colecciones' },
+        { label: 'Videos' },
+      ]} />
 
-      <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-6">Agregar Video</h1>
+      <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-6 mt-4">Agregar Video</h1>
 
       {error && (
         <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 flex items-center gap-2">

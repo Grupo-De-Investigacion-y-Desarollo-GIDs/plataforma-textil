@@ -7,9 +7,11 @@ import { Button } from '@/compartido/componentes/ui/button'
 import { FileUpload } from '@/compartido/componentes/ui/file-upload'
 import { uploadImagen } from '@/compartido/lib/upload-imagen'
 import { Send } from 'lucide-react'
+import { useToast } from '@/compartido/componentes/ui/toast'
 
 export function CotizarForm({ pedidoId }: { pedidoId: string }) {
   const router = useRouter()
+  const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [precio, setPrecio] = useState('')
@@ -45,11 +47,16 @@ export function CotizarForm({ pedidoId }: { pedidoId: string }) {
       })
       const data = await res.json()
       if (!res.ok) {
-        const msg = typeof data.error === 'string' ? data.error : data.error?.message
-        setError(res.status === 409 ? 'Ya tenes una cotizacion activa para este pedido.' : (msg || 'Error al enviar la cotizacion.'))
+        if (res.status === 409) {
+          toast({ mensaje: 'Ya tenes una cotizacion activa', tipo: 'warning', description: 'Si queres actualizarla, editala desde tu lista de pedidos.' })
+        } else {
+          const msg = typeof data.error === 'string' ? data.error : data.error?.message
+          setError(msg || 'Error al enviar la cotizacion.')
+        }
         setLoading(false)
         return
       }
+      toast('Cotizacion enviada', 'success')
       router.push('/taller/pedidos')
       router.refresh()
     } catch {

@@ -8,7 +8,8 @@ import { logAccionAdmin } from '@/compartido/lib/log'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Button } from '@/compartido/componentes/ui/button'
-import { ArrowLeft, MapPin, Mail, Phone, AlertTriangle, Award } from 'lucide-react'
+import { MapPin, Mail, Phone, AlertTriangle, Award } from 'lucide-react'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 
 export default async function AdminDetalleTallerPage({ params, searchParams }: {
   params: Promise<{ id: string }>
@@ -87,9 +88,11 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
 
   return (
     <div className="max-w-4xl mx-auto py-6 px-4">
-      <Link href="/admin/talleres" className="inline-flex items-center gap-1 text-sm text-brand-blue hover:underline mb-4">
-        <ArrowLeft className="w-4 h-4" /> Volver a talleres
-      </Link>
+      <Breadcrumbs items={[
+        { label: 'Admin', href: '/admin' },
+        { label: 'Talleres', href: '/admin/talleres' },
+        { label: taller.nombre },
+      ]} />
 
       {/* Header */}
       <Card className="mb-6">

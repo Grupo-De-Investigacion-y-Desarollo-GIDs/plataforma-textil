@@ -6,7 +6,9 @@ import { redirect, notFound } from 'next/navigation'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import Link from 'next/link'
-import { ArrowLeft, Package, Clock, DollarSign, TrendingUp, CheckCircle, MessageCircle } from 'lucide-react'
+import { Package, Clock, DollarSign, TrendingUp, CheckCircle, MessageCircle } from 'lucide-react'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
+import { EmptyState } from '@/compartido/componentes/ui/empty-state'
 import { GaleriaFotos } from '@/taller/componentes/galeria-fotos'
 import { CotizacionImagenes } from '@/marca/componentes/cotizacion-imagenes'
 import { CancelarPedido } from '@/marca/componentes/cancelar-pedido'
@@ -120,9 +122,11 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <Link href="/marca/pedidos" className="inline-flex items-center gap-1 text-sm text-brand-blue hover:underline">
-        <ArrowLeft className="w-4 h-4" /> Volver a pedidos
-      </Link>
+      <Breadcrumbs items={[
+        { label: 'Marca', href: '/marca' },
+        { label: 'Pedidos', href: '/marca/pedidos' },
+        { label: `Pedido ${pedido.omId}` },
+      ]} />
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
@@ -232,8 +236,13 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
       </div>
 
       {/* Cotizaciones */}
-      {cotizaciones.length > 0 && (
-        <Card title={`Cotizaciones (${cotizaciones.length})`}>
+      <Card title={`Cotizaciones (${cotizaciones.length})`}>
+        {cotizaciones.length === 0 ? (
+          <EmptyState
+            titulo="Sin cotizaciones"
+            mensaje="Todavia no recibiste cotizaciones para este pedido. Los talleres compatibles ya fueron notificados."
+          />
+        ) : (
           <div className="space-y-3">
             {cotizaciones.map(cot => (
               <div
@@ -275,8 +284,8 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
               </div>
             ))}
           </div>
-        </Card>
-      )}
+        )}
+      </Card>
 
       {/* Ordenes de manufactura */}
       <Card title={`Órdenes de manufactura (${pedido.ordenes.length})`}>

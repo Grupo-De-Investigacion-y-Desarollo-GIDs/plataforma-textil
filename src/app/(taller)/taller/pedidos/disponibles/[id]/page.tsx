@@ -5,7 +5,7 @@ import { prisma } from '@/compartido/lib/prisma'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Card } from '@/compartido/componentes/ui/card'
-import { ArrowLeft } from 'lucide-react'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 import { CotizarForm } from '@/taller/componentes/cotizar-form'
 import { GaleriaFotos } from '@/taller/componentes/galeria-fotos'
 
@@ -32,9 +32,11 @@ export default async function PedidoDisponibleDetallePage({ params }: { params: 
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <Link href="/taller/pedidos/disponibles" className="inline-flex items-center gap-1 text-sm text-brand-blue hover:underline">
-        <ArrowLeft className="w-4 h-4" /> Volver a pedidos disponibles
-      </Link>
+      <Breadcrumbs items={[
+        { label: 'Taller', href: '/taller' },
+        { label: 'Pedidos disponibles', href: '/taller/pedidos/disponibles' },
+        { label: pedido.tipoPrenda },
+      ]} />
 
       <div>
         <h1 className="font-overpass font-bold text-3xl text-brand-blue">{pedido.tipoPrenda}</h1>

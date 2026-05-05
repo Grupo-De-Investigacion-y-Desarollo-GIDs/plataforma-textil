@@ -4,7 +4,8 @@ import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Download } from 'lucide-react'
+import { Download } from 'lucide-react'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 import { OrdenActions } from '@/taller/componentes/orden-actions'
 import { Card } from '@/compartido/componentes/ui/card'
 import { ActivityTimeline } from '@/compartido/componentes/activity-timeline'
@@ -72,12 +73,11 @@ export default async function TallerOrdenDetallePage({
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      <Link
-        href="/taller/pedidos"
-        className="inline-flex items-center gap-1 text-sm text-brand-blue hover:underline"
-      >
-        <ArrowLeft className="w-4 h-4" /> Volver a pedidos
-      </Link>
+      <Breadcrumbs items={[
+        { label: 'Taller', href: '/taller' },
+        { label: 'Mis ordenes', href: '/taller/pedidos' },
+        { label: orden.moId },
+      ]} />
 
       {/* Encabezado */}
       <div className="flex items-start justify-between gap-4">

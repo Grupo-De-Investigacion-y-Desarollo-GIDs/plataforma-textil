@@ -5,6 +5,7 @@ import { auth } from '@/compartido/lib/auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Mail, Bell, BellOff, Send, Users } from 'lucide-react'
+import { EmptyState } from '@/compartido/componentes/ui/empty-state'
 import NotificacionesClient from './notificaciones-client'
 
 const canalLabels: Record<string, string> = {
@@ -117,10 +118,10 @@ async function ComunicacionesTab({ batches }: { batches: { batchId: string | nul
 
   if (comunicaciones.length === 0) {
     return (
-      <div className="bg-white rounded-xl shadow-sm p-8 border border-gray-100 text-center">
-        <Mail className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-        <p className="text-sm text-gray-500">Todavia no enviaste ninguna comunicacion</p>
-      </div>
+      <EmptyState
+        titulo="Sin comunicaciones enviadas"
+        mensaje="Todavia no enviaste ninguna comunicacion. Usa el formulario de arriba para enviar la primera."
+      />
     )
   }
 
