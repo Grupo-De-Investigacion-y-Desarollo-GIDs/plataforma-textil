@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { Bell, User, ShieldCheck } from 'lucide-react'
+import { CuentaWhatsappForm } from '@/compartido/componentes/cuenta-whatsapp-form'
 
 export default async function CuentaPage() {
   const session = await auth()
@@ -22,6 +23,7 @@ export default async function CuentaPage() {
       phone: true,
       role: true,
       createdAt: true,
+      notificacionesWhatsapp: true,
       notificacionesRecibidas: { where: { leida: false }, select: { id: true } },
     },
   })
@@ -45,6 +47,11 @@ export default async function CuentaPage() {
           <p><span className="text-gray-500">No leidas:</span> <span className="font-medium text-gray-800">{user.notificacionesRecibidas.length}</span></p>
         </div>
       </section>
+
+      <CuentaWhatsappForm
+        phoneInicial={user.phone}
+        whatsappActivo={user.notificacionesWhatsapp}
+      />
 
       <section className="grid gap-4 sm:grid-cols-2">
         <Link href="/mi-cuenta" className="rounded-xl border border-gray-200 bg-white p-5 hover:border-brand-blue hover:shadow-card transition-all">

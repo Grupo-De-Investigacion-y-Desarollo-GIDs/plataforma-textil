@@ -7,6 +7,7 @@ import { requiereRol } from '@/compartido/lib/permisos'
 import { aplicarNivel } from '@/compartido/lib/nivel'
 import { logAccionAdmin } from '@/compartido/lib/log'
 import { sendEmail, buildDocAprobadoEmail, buildDocRechazadoEmail } from '@/compartido/lib/email'
+import { generarMensajeWhatsapp } from '@/compartido/lib/whatsapp'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { SubmitButton } from '@/compartido/componentes/ui/button'
@@ -98,6 +99,26 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
       to: taller!.user.email,
       ...buildDocAprobadoEmail({ nombreTaller: taller!.nombre, tipoDoc: validacion.tipo }),
     }).catch(() => {})
+
+    // F-02: Notificacion in-app + WhatsApp
+    prisma.notificacion.create({
+      data: {
+        userId: taller!.userId,
+        tipo: 'VALIDACION',
+        titulo: `Documento aprobado: ${validacion.tipo}`,
+        mensaje: `El Estado aprobo tu ${validacion.tipo}.`,
+        canal: 'PLATAFORMA',
+        link: '/taller/formalizacion',
+      },
+    }).catch(() => {})
+
+    generarMensajeWhatsapp({
+      userId: taller!.userId,
+      template: 'documento_aprobado',
+      datos: { tipoDocumento: validacion.tipo, puntos: '10' },
+      destino: '/taller/formalizacion',
+    }).catch(err => console.error('[F-02] Error WhatsApp doc_aprobado:', err))
+
     redirect(`/estado/talleres/${id}?tab=formalizacion`)
   }
 
@@ -120,6 +141,26 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
       to: taller!.user.email,
       ...buildDocRechazadoEmail({ nombreTaller: taller!.nombre, tipoDoc: validacion.tipo, motivo: motivo || 'Documentación insuficiente' }),
     }).catch(() => {})
+
+    // F-02: Notificacion in-app + WhatsApp
+    prisma.notificacion.create({
+      data: {
+        userId: taller!.userId,
+        tipo: 'VALIDACION',
+        titulo: `Documento rechazado: ${validacion.tipo}`,
+        mensaje: `Tu ${validacion.tipo} necesita correcciones.`,
+        canal: 'PLATAFORMA',
+        link: '/taller/formalizacion',
+      },
+    }).catch(() => {})
+
+    generarMensajeWhatsapp({
+      userId: taller!.userId,
+      template: 'documento_rechazado',
+      datos: { tipoDocumento: validacion.tipo, motivo: motivo || 'Ver detalles en la plataforma' },
+      destino: '/taller/formalizacion',
+    }).catch(err => console.error('[F-02] Error WhatsApp doc_rechazado:', err))
+
     redirect(`/estado/talleres/${id}?tab=formalizacion`)
   }
 

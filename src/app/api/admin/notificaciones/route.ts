@@ -5,6 +5,7 @@ import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { logActividad } from '@/compartido/lib/log'
 import { sendEmail, buildComunicacionAdminEmail } from '@/compartido/lib/email'
+import { generarMensajeWhatsapp } from '@/compartido/lib/whatsapp'
 
 export async function POST(req: NextRequest) {
   try {
@@ -90,6 +91,16 @@ export async function POST(req: NextRequest) {
       }).catch(err => {
         console.error('[notificaciones] Error global enviando emails:', err)
       })
+    }
+
+    // F-02: WhatsApp para cada destinatario (fire-and-forget)
+    for (const u of usuarios) {
+      generarMensajeWhatsapp({
+        userId: u.id,
+        template: 'mensaje_admin',
+        datos: { texto: mensaje },
+        destino: link ?? '/taller',
+      }).catch(err => console.error('[F-02] Error WhatsApp mensaje_admin:', err))
     }
 
     await logActividad(session.user!.id!, 'NOTIFICACION_MASIVA', {

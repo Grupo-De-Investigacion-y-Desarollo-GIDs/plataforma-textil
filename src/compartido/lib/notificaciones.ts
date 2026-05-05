@@ -3,6 +3,7 @@ import { prisma } from './prisma'
 import { getFeatureFlag } from './features'
 import { sendEmail, buildCotizacionRecibidaEmail, buildCotizacionAceptadaEmail, buildCotizacionRechazadaEmail, buildPedidoDisponibleEmail } from './email'
 import { registrarMotivoNoMatch } from './demanda-insatisfecha'
+import { generarMensajeWhatsapp } from './whatsapp'
 
 interface NotificacionData {
   cotizacion: { id: string; precio: number; plazoDias: number; proceso: string }
@@ -77,6 +78,16 @@ export function notificarCotizacion(
     }
     sendEmail({ to: user.email, ...builders[tipo]() }).catch(() => {})
   }).catch(() => {})
+
+  // 3. WhatsApp solo para ACEPTADA (F-02)
+  if (tipo === 'ACEPTADA' && data.taller.userId) {
+    generarMensajeWhatsapp({
+      userId: data.taller.userId,
+      template: 'cotizacion_aceptada',
+      datos: { marca: data.marca.nombre, pedido: data.pedido.omId },
+      destino: '/taller/pedidos',
+    }).catch(err => console.error('[F-02] Error WhatsApp cotizacion_aceptada:', err))
+  }
 }
 
 export async function notificarTalleresCompatibles(pedidoId: string): Promise<void> {
@@ -148,5 +159,13 @@ export async function notificarTalleresCompatibles(pedidoId: string): Promise<vo
         pedidoUrl: `${process.env.NEXTAUTH_URL}/taller/pedidos/disponibles/${pedido.id}`,
       }),
     }).catch(() => {})
+
+    // F-02: WhatsApp
+    generarMensajeWhatsapp({
+      userId: taller.user.id,
+      template: 'pedido_nuevo',
+      datos: { marca: pedido.marca.nombre, resumen: `${pedido.cantidad} ${pedido.tipoPrenda}` },
+      destino: `/taller/pedidos/disponibles/${pedidoId}`,
+    }).catch(err => console.error('[F-02] Error WhatsApp pedido_nuevo:', err))
   }
 }

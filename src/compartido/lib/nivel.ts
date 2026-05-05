@@ -1,5 +1,6 @@
 import { prisma } from '@/compartido/lib/prisma'
 import { logActividad } from './log'
+import { generarMensajeWhatsapp } from './whatsapp'
 import type { NivelTaller, ReglaNivel } from '@prisma/client'
 
 export type { NivelTaller }
@@ -148,6 +149,33 @@ export async function aplicarNivel(tallerId: string, userId?: string): Promise<R
       nivelAnterior,
       nivelNuevo: resultado.nivel,
     })
+
+    // F-02: Notificacion + WhatsApp solo si SUBIO
+    if (accion === 'NIVEL_SUBIDO') {
+      const tallerUser = await prisma.taller.findUnique({
+        where: { id: tallerId },
+        select: { userId: true },
+      })
+      if (tallerUser) {
+        prisma.notificacion.create({
+          data: {
+            userId: tallerUser.userId,
+            tipo: 'NIVEL',
+            titulo: `Subiste a nivel ${resultado.nivel}!`,
+            mensaje: `Felicitaciones! Ahora sos nivel ${resultado.nivel}.`,
+            canal: 'PLATAFORMA',
+            link: '/taller',
+          },
+        }).catch(() => {})
+
+        generarMensajeWhatsapp({
+          userId: tallerUser.userId,
+          template: 'nivel_subido',
+          datos: { nivel: resultado.nivel, beneficios: [] },
+          destino: '/taller',
+        }).catch(err => console.error('[F-02] Error WhatsApp nivel_subido:', err))
+      }
+    }
   }
 
   return resultado
