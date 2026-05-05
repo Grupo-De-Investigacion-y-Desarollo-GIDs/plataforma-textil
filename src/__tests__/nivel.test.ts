@@ -6,7 +6,12 @@ vi.mock('@/compartido/lib/prisma', () => ({
     tipoDocumento: { findMany: vi.fn() },
     taller: { findUniqueOrThrow: vi.fn(), findUnique: vi.fn(), update: vi.fn() },
     logActividad: { create: vi.fn().mockResolvedValue({ id: 'log-1' }) },
+    notificacion: { create: vi.fn().mockReturnValue({ catch: vi.fn() }) },
   },
+}))
+
+vi.mock('@/compartido/lib/whatsapp', () => ({
+  generarMensajeWhatsapp: vi.fn().mockReturnValue({ catch: vi.fn() }),
 }))
 
 import { calcularNivel, aplicarNivel, calcularProximoNivel, invalidarCacheNivel } from '@/compartido/lib/nivel'

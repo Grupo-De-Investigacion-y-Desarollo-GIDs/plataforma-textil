@@ -55,7 +55,7 @@ jobs:
           echo "Warming up serverless functions (2 passes)..."
           for pass in 1 2; do
             echo "--- Pass $pass ---"
-            for path in / /login /registro /directorio /estado/talleres /estado/documentos /estado/configuracion-niveles /taller /marca/directorio /admin/talleres; do
+            for path in / /login /registro /directorio /estado /estado/talleres /estado/documentos /estado/configuracion-niveles /taller /marca/directorio /admin/talleres; do
               code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "${{ secrets.TEST_BASE_URL }}${path}" || echo "ERR")
               echo "  $path → $code"
             done

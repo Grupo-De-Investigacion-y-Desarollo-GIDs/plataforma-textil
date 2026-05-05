@@ -407,6 +407,42 @@ Este archivo acumula TODAS las verificaciones manuales que requieren ojos humano
 
 ---
 
+## Spec F-02 — WhatsApp notificaciones
+
+### Magic links
+
+- [ ] Magic link valido auto-loguea y redirige al destino correcto
+- [ ] Magic link expirado (>24h) redirige a /login?error=link_expirado
+- [ ] Magic link usado dos veces: primera auto-loguea, segunda redirige sin login
+- [ ] Magic link invalido redirige a /login?error=link_invalido
+- [ ] Sesion creada por magic link tiene role y registroCompleto correctos
+
+### WhatsApp triggers
+
+- [ ] Pedido nuevo genera MensajeWhatsapp en DB para talleres compatibles
+- [ ] Cotizacion aceptada genera MensajeWhatsapp
+- [ ] Documento aprobado genera Notificacion in-app + MensajeWhatsapp
+- [ ] Documento rechazado genera Notificacion in-app + MensajeWhatsapp
+- [ ] Nivel subido genera Notificacion in-app + MensajeWhatsapp
+- [ ] Mensaje admin genera MensajeWhatsapp para cada destinatario
+
+### UI
+
+- [ ] Wizard secuencial en admin/notificaciones — 1 chat por click
+- [ ] Boton "Abrir chat" abre wa.me en nueva pestana
+- [ ] Boton "Copiar mensaje" copia al clipboard
+- [ ] Checkbox "Marcar como enviado" actualiza estado en DB
+- [ ] Formulario /cuenta phone + toggle WhatsApp funcional
+- [ ] Campo "Telefono WhatsApp" en registro con tooltip educativo
+
+### Casos borde
+
+- [ ] User sin phone: evento dispara, WhatsApp NO se genera, Notificacion in-app SI
+- [ ] Phone invalido rechazado con error en /cuenta
+- [ ] Toggle WhatsApp desactivado: no se generan MensajeWhatsapp
+
+---
+
 ## Nota tecnica: E2E tests crean issues reales en GitHub
 
 Los tests E2E de rate limiting (S-02) envian requests POST a `/api/feedback` que crea issues reales en GitHub. Cada corrida de CI genera ~11 issues basura con titulo "Test rate limit intento N". Esto contamina el panel de issues y el conteo del QA index.

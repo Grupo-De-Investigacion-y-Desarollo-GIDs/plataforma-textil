@@ -174,7 +174,8 @@ function StepPersonalInfo({
           <Lock className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
         <div className="relative">
-          <Input label="Telefono (opcional)" type="tel" placeholder="+54 11 1234-5678" error={errors.phone?.message} {...register('phone')} />
+          <Input label="Telefono WhatsApp (opcional)" type="tel" placeholder="Ej: 11 2345 6789" error={errors.phone?.message} {...register('phone')} />
+          <p className="text-xs text-gray-400 mt-1 ml-1">Te enviamos avisos importantes por WhatsApp (pedidos, aprobaciones)</p>
           <Phone className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
 

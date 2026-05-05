@@ -146,6 +146,9 @@ model User {
   auditorias              Auditoria[]    @relation("AuditoriaInspector")
   notasAdmin              NotaInterna[]  @relation("NotasAdmin")
   validacionesAprobadas   Validacion[]   @relation("validacionesAprobadas")
+  notificacionesWhatsapp  Boolean        @default(true)
+  mensajesWhatsapp        MensajeWhatsapp[]
+  magicLinks              MagicLink[]
 
   @@map("users")
 }
@@ -731,8 +734,9 @@ model Notificacion {
   link        String?
   createdAt   DateTime          @default(now())
 
-  user      User  @relation("NotificacionDestinatario", fields: [userId], references: [id], onDelete: Cascade)
-  creadaPor User? @relation("NotificacionCreador", fields: [createdById], references: [id], onDelete: SetNull)
+  user              User              @relation("NotificacionDestinatario", fields: [userId], references: [id], onDelete: Cascade)
+  creadaPor         User?             @relation("NotificacionCreador", fields: [createdById], references: [id], onDelete: SetNull)
+  mensajeWhatsapp   MensajeWhatsapp?
 
   @@index([batchId])
   @@map("notificaciones")
@@ -792,6 +796,7 @@ model LogActividad {
 
   @@index([accion, timestamp])
   @@index([userId])
+  @@index([userId, timestamp])
   @@map("log_actividad")
 }
 
@@ -874,4 +879,54 @@ model MotivoNoMatch {
   @@index([motivoCategoria])
   @@index([createdAt])
   @@map("motivos_no_match")
+}
+
+// ============================================
+// WHATSAPP & MAGIC LINKS (F-02)
+// ============================================
+
+enum EstadoMensajeWhatsapp {
+  GENERADO
+  ENVIADO
+  ENTREGADO
+  FALLIDO
+}
+
+model MensajeWhatsapp {
+  id              String                @id @default(cuid())
+  userId          String
+  phone           String
+  template        String
+  mensaje         String                @db.Text
+  enlaceProfundo  String?
+  estado          EstadoMensajeWhatsapp @default(GENERADO)
+  proveedor       String
+  proveedorId     String?
+  notificacionId  String?               @unique
+  enviadoPor      String?
+  createdAt       DateTime              @default(now())
+  enviadoAt       DateTime?
+
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notificacion  Notificacion? @relation(fields: [notificacionId], references: [id])
+
+  @@index([userId])
+  @@index([estado])
+  @@map("mensajes_whatsapp")
+}
+
+model MagicLink {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  userId    String
+  destino   String
+  usadoEn   DateTime?
+  expira    DateTime
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+  @@map("magic_links")
 }
