@@ -796,6 +796,7 @@ model LogActividad {
 
   @@index([accion, timestamp])
   @@index([userId])
+  @@index([userId, timestamp])
   @@map("log_actividad")
 }
 
