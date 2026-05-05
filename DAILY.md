@@ -1,5 +1,54 @@
 # Daily Log
 
+## 2026-05-05
+
+### Gerardo Breard
+- **12:59** `8703481` — feat: UX mejoras — Loading, EmptyState, Breadcrumbs, Toast extendido
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-ux-mejoras.md`
+  - `.claude/auditorias/REVIEW_v3-ux-mejoras.md`
+  - `.claude/specs/V4_BACKLOG.md`
+  - `docs/03_tecnico/componentes-ux.md`
+  - `src/__tests__/ux-mejoras.test.ts`
+  - `src/app/(admin)/admin/auditorias/[id]/page.tsx`
+  - `src/app/(admin)/admin/auditorias/page.tsx`
+  - `src/app/(admin)/admin/colecciones/[id]/page.tsx`
+  - `src/app/(admin)/admin/colecciones/[id]/videos/page.tsx`
+  - `src/app/(admin)/admin/colecciones/nueva/page.tsx`
+  - `src/app/(admin)/admin/integraciones/email/page.tsx`
+  - `src/app/(admin)/admin/integraciones/llm/page.tsx`
+  - `src/app/(admin)/admin/marcas/[id]/page.tsx`
+  - `src/app/(admin)/admin/notificaciones/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(admin)/admin/talleres/page.tsx`
+  - `src/app/(auth)/olvide-contrasena/page.tsx`
+  - `src/app/(estado)/estado/demanda-insatisfecha/page.tsx`
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/(marca)/marca/directorio/[id]/page.tsx`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(marca)/marca/pedidos/page.tsx`
+  - `src/app/(public)/cuenta/notificaciones/notificaciones-lista.tsx`
+  - `src/app/(public)/perfil-marca/[id]/page.tsx`
+  - `src/app/(taller)/taller/aprender/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+  - `src/app/(taller)/taller/pedidos/page.tsx`
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+  - `src/compartido/componentes/ui/breadcrumbs.tsx`
+  - `src/compartido/componentes/ui/empty-state.tsx`
+  - `src/compartido/componentes/ui/loading.tsx`
+  - `src/compartido/componentes/ui/skeleton.tsx`
+  - `src/compartido/componentes/ui/toast.tsx`
+  - `src/marca/componentes/aceptar-cotizacion.tsx`
+  - `src/marca/componentes/cancelar-pedido.tsx`
+  - `src/marca/componentes/contactar-taller.tsx`
+  - `src/marca/componentes/publicar-pedido.tsx`
+  - `src/marca/componentes/rechazar-cotizacion.tsx`
+  - `src/taller/componentes/cotizar-form.tsx`
+  - `tests/e2e/ux-mejoras.spec.ts`
+
+
 ## 2026-05-04
 
 ### Gerardo Breard
