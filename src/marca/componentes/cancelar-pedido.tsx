@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { XCircle } from 'lucide-react'
 import { getErrorMessage } from '@/compartido/lib/api-client'
+import { useToast } from '@/compartido/componentes/ui/toast'
 
 interface CancelarPedidoProps {
   pedidoId: string
@@ -11,6 +12,7 @@ interface CancelarPedidoProps {
 
 export function CancelarPedido({ pedidoId }: CancelarPedidoProps) {
   const router = useRouter()
+  const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -31,6 +33,7 @@ export function CancelarPedido({ pedidoId }: CancelarPedidoProps) {
         setError(getErrorMessage(data, 'Error al cancelar el pedido'))
         return
       }
+      toast('Pedido cancelado')
       router.refresh()
     } catch {
       setError('Error de conexión')

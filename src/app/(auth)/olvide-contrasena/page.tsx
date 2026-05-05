@@ -5,7 +5,8 @@ import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Mail, ArrowLeft, CheckCircle } from 'lucide-react'
+import { Mail, CheckCircle } from 'lucide-react'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 import { Input } from '@/compartido/componentes/ui/input'
 import { Button } from '@/compartido/componentes/ui/button'
 import { Card } from '@/compartido/componentes/ui/card'
@@ -82,11 +83,12 @@ export default function OlvideContrasenaPage() {
         </Button>
       </form>
 
-      <p className="mt-6 text-center">
-        <Link href="/login" className="inline-flex items-center gap-1 text-sm text-brand-blue hover:underline">
-          <ArrowLeft className="w-4 h-4" /> Volver a iniciar sesión
-        </Link>
-      </p>
+      <div className="mt-6">
+        <Breadcrumbs items={[
+          { label: 'Login', href: '/login' },
+          { label: 'Olvidé contraseña' },
+        ]} />
+      </div>
     </Card>
   )
 }

@@ -1,10 +1,13 @@
 export const dynamic = 'force-dynamic'
 
+import { Suspense } from 'react'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Calendar, AlertTriangle, ClipboardCheck, Clock } from 'lucide-react'
+import { EmptyState } from '@/compartido/componentes/ui/empty-state'
+import { SkeletonTable } from '@/compartido/componentes/ui/skeleton'
 import AuditoriasClient from './auditorias-client'
 
 const tipoLabels: Record<string, string> = {
@@ -21,10 +24,7 @@ const estadoConfig: Record<string, { label: string; bg: string; text: string }> 
   CANCELADA: { label: 'Cancelada', bg: 'bg-gray-100', text: 'text-gray-500' },
 }
 
-export default async function AdminAuditoriasPage() {
-  const session = await auth()
-  if (!session?.user) redirect('/login')
-
+async function AuditoriasContent() {
   const [auditorias, talleres, countByEstado] = await Promise.all([
     prisma.auditoria.findMany({
       include: {
@@ -99,9 +99,11 @@ export default async function AdminAuditoriasPage() {
       {/* Proximas auditorias */}
       <h2 className="font-overpass font-bold text-lg text-brand-blue mb-3">Proximas Auditorias</h2>
       {proximas.length === 0 ? (
-        <div className="bg-white rounded-xl shadow-sm p-8 border border-gray-100 text-center mb-6">
-          <Calendar className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-          <p className="text-sm text-gray-500">No hay auditorias programadas</p>
+        <div className="mb-6">
+          <EmptyState
+            titulo="Sin auditorias programadas"
+            mensaje="No hay auditorias pendientes. Programa una nueva desde el boton de arriba."
+          />
         </div>
       ) : (
         <div className="space-y-3 mb-6">
@@ -186,5 +188,16 @@ export default async function AdminAuditoriasPage() {
         </>
       )}
     </div>
+  )
+}
+
+export default async function AdminAuditoriasPage() {
+  const session = await auth()
+  if (!session?.user) redirect('/login')
+
+  return (
+    <Suspense fallback={<div className="max-w-4xl mx-auto py-6 px-4"><SkeletonTable rows={5} /></div>}>
+      <AuditoriasContent />
+    </Suspense>
   )
 }

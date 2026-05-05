@@ -1,20 +1,22 @@
 export const dynamic = 'force-dynamic'
 
+import { Suspense } from 'react'
 import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
-import { Package, MapPin, Calendar, ImageIcon, ArrowLeft } from 'lucide-react'
+import { EmptyState } from '@/compartido/componentes/ui/empty-state'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
+import { SkeletonTable } from '@/compartido/componentes/ui/skeleton'
+import { Package, MapPin, Calendar } from 'lucide-react'
 
 const PAGE_SIZE = 20
 
-export default async function PedidosDisponiblesPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
-  const [session, { page: pageParam }] = await Promise.all([auth(), searchParams])
+async function ListaPedidosDisponibles({ page }: { page: number }) {
+  const session = await auth()
   if (!session?.user) redirect('/login')
-
-  const page = Math.max(1, parseInt(pageParam || '1'))
 
   const taller = await prisma.taller.findFirst({ where: { userId: session.user.id }, select: { id: true, verificadoAfip: true } })
 
@@ -48,18 +50,7 @@ export default async function PedidosDisponiblesPage({ searchParams }: { searchP
   const totalPages = Math.ceil(totalCount / PAGE_SIZE)
 
   return (
-    <div className="space-y-6">
-      <div>
-        <Link
-          href="/taller/pedidos"
-          className="inline-flex items-center gap-1 text-sm text-brand-blue hover:underline"
-        >
-          <ArrowLeft className="w-4 h-4" /> Volver a mis pedidos
-        </Link>
-        <h1 className="font-overpass font-bold text-3xl text-brand-blue mt-2">Pedidos disponibles</h1>
-        <p className="text-gray-500 mt-1">Pedidos publicados por marcas que buscan talleres</p>
-      </div>
-
+    <>
       {taller && !taller.verificadoAfip && (
         <div className="rounded-lg bg-amber-50 border border-amber-200 px-4 py-3">
           <p className="text-sm text-amber-800">
@@ -71,9 +62,10 @@ export default async function PedidosDisponiblesPage({ searchParams }: { searchP
       )}
 
       {pedidosDisponibles.length === 0 ? (
-        <Card>
-          <p className="text-center text-gray-500 py-8">No hay pedidos disponibles por ahora.</p>
-        </Card>
+        <EmptyState
+          titulo="No hay pedidos disponibles"
+          mensaje="Por ahora no hay pedidos compatibles con tu taller. Te avisamos cuando aparezcan."
+        />
       ) : (
         <div className="space-y-4">
           {pedidosDisponibles.map((pedido) => (
@@ -149,6 +141,28 @@ export default async function PedidosDisponiblesPage({ searchParams }: { searchP
           )}
         </div>
       )}
+    </>
+  )
+}
+
+export default async function PedidosDisponiblesPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+  const { page: pageParam } = await searchParams
+  const page = Math.max(1, parseInt(pageParam || '1'))
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <Breadcrumbs items={[
+          { label: 'Taller', href: '/taller' },
+          { label: 'Pedidos disponibles' },
+        ]} />
+        <h1 className="font-overpass font-bold text-3xl text-brand-blue mt-2">Pedidos disponibles</h1>
+        <p className="text-gray-500 mt-1">Pedidos publicados por marcas que buscan talleres</p>
+      </div>
+
+      <Suspense fallback={<SkeletonTable rows={5} />}>
+        <ListaPedidosDisponibles page={page} />
+      </Suspense>
     </div>
   )
 }

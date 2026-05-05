@@ -10,6 +10,7 @@ import { DataTable } from '@/compartido/componentes/ui/data-table'
 import { StatCard } from '@/compartido/componentes/ui/stat-card'
 import { Select } from '@/compartido/componentes/ui/select'
 import { Eye, Edit } from 'lucide-react'
+import { EmptyState } from '@/compartido/componentes/ui/empty-state'
 
 interface TallerRow {
   id: string
@@ -101,7 +102,10 @@ export default function AdminTalleresPage() {
       )}
 
       {!loading && filtered.length === 0 && (
-        <div className="text-center py-8 text-gray-400">No se encontraron talleres.</div>
+        <EmptyState
+          titulo="Sin talleres"
+          mensaje="No se encontraron talleres con esos filtros."
+        />
       )}
 
       {!loading && filtered.length > 0 && (

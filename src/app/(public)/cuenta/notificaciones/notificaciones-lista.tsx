@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Bell, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react'
+import { CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react'
+import { EmptyState } from '@/compartido/componentes/ui/empty-state'
 
 interface Notificacion {
   id: string
@@ -77,10 +78,10 @@ export function NotificacionesLista({ notificaciones: initial, emptyMessage }: {
       </p>
 
       {notificaciones.length === 0 ? (
-        <div className="rounded-xl border border-gray-200 bg-white p-8 text-center">
-          <Bell className="w-8 h-8 text-gray-400 mx-auto mb-3" />
-          <p className="text-gray-600">{emptyMessage ?? 'No tenes notificaciones por ahora.'}</p>
-        </div>
+        <EmptyState
+          titulo="Estas al dia"
+          mensaje={emptyMessage ?? 'No tenes notificaciones por ahora.'}
+        />
       ) : (
         <div className="space-y-3">
           {notificaciones.map(n => {

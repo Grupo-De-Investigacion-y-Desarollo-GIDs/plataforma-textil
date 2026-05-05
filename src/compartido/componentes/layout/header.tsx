@@ -29,6 +29,7 @@ const tabsByRole: Record<string, Tab[]> = {
   ],
   ESTADO: [
     { id: 'dashboard', label: 'Dashboard', href: '/estado' },
+    { id: 'demanda', label: 'Demanda insatisfecha', href: '/estado/demanda-insatisfecha' },
     { id: 'sector', label: 'Diagnóstico del sector', href: '/estado/sector' },
     { id: 'exportar', label: 'Exportar', href: '/estado/exportar' },
   ],

@@ -6,7 +6,8 @@ import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
 import { Input } from '@/compartido/componentes/ui/input'
 import { Select } from '@/compartido/componentes/ui/select'
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react'
+import { Plus, Trash2 } from 'lucide-react'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 
 interface Config {
   clave: string
@@ -106,11 +107,13 @@ export default function AdminIntegracionLlmPage() {
 
   return (
     <div className="max-w-3xl mx-auto py-6 px-4">
-      <Link href="/admin/integraciones" className="inline-flex items-center gap-1 text-sm text-brand-blue hover:underline mb-4">
-        <ArrowLeft className="w-4 h-4" /> Volver a integraciones
-      </Link>
+      <Breadcrumbs items={[
+        { label: 'Admin', href: '/admin' },
+        { label: 'Integraciones', href: '/admin/integraciones' },
+        { label: 'LLM' },
+      ]} />
 
-      <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Configuracion LLM</h1>
+      <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1 mt-4">Configuracion LLM</h1>
       <p className="text-gray-500 text-sm mb-6">Asistente virtual con IA para talleres</p>
 
       <Card className="mb-6">

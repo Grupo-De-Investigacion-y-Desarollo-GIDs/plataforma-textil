@@ -7,7 +7,8 @@ import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
-import { ArrowLeft, Star, MapPin, Users, TrendingUp, Clock, Award, ShieldCheck } from 'lucide-react'
+import { Star, MapPin, Users, TrendingUp, Clock, Award, ShieldCheck } from 'lucide-react'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 import { ContactarTaller } from '@/marca/componentes/contactar-taller'
 
 export default async function TallerPerfilMarcaPage({ params }: { params: Promise<{ id: string }> }) {
@@ -40,11 +41,13 @@ export default async function TallerPerfilMarcaPage({ params }: { params: Promis
 
   return (
     <div className="max-w-3xl mx-auto py-6 px-4">
-      <Link href="/marca/directorio" className="inline-flex items-center gap-1 text-sm text-brand-blue hover:underline mb-4">
-        <ArrowLeft className="w-4 h-4" /> Volver al directorio
-      </Link>
+      <Breadcrumbs items={[
+        { label: 'Marca', href: '/marca' },
+        { label: 'Directorio', href: '/marca/directorio' },
+        { label: taller.nombre },
+      ]} />
 
-      <Card className="mb-6">
+      <Card className="mb-6 mt-4">
         <div className="flex items-start gap-4">
           <div className="w-16 h-16 rounded-full bg-brand-blue/10 flex items-center justify-center shrink-0">
             <span className="font-overpass font-bold text-brand-blue text-xl">{taller.nombre.charAt(0)}</span>

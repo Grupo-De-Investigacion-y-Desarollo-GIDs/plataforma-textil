@@ -79,6 +79,12 @@ function crearLimiters() {
       analytics: false,
       prefix: `rl:${env}:chat`,
     }),
+    exportar: new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(5, '1 h'),
+      analytics: false,
+      prefix: `rl:${env}:exp`,
+    }),
   } as const
 }
 

@@ -8,7 +8,8 @@ import { Button } from '@/compartido/componentes/ui/button'
 import { Input } from '@/compartido/componentes/ui/input'
 import { Select } from '@/compartido/componentes/ui/select'
 import { Badge } from '@/compartido/componentes/ui/badge'
-import { ArrowLeft, Trash2, Plus, CheckCircle, AlertCircle } from 'lucide-react'
+import { Trash2, Plus, CheckCircle, AlertCircle } from 'lucide-react'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 
 const categorias = ['Formalización', 'Costos', 'Calidad', 'Plataforma', 'Otro']
 const instituciones = ['OIT', 'INTI', 'FACTA', 'OIT + INTI', 'PDT']
@@ -107,11 +108,13 @@ export default function AdminEditarColeccionPage() {
 
   return (
     <div className="max-w-3xl mx-auto py-6 px-4">
-      <Link href="/admin/colecciones" className="inline-flex items-center gap-1 text-sm text-brand-blue hover:underline mb-4">
-        <ArrowLeft className="w-4 h-4" /> Volver a colecciones
-      </Link>
+      <Breadcrumbs items={[
+        { label: 'Admin', href: '/admin' },
+        { label: 'Colecciones', href: '/admin/colecciones' },
+        { label: titulo || 'Editar' },
+      ]} />
 
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 mt-4">
         <h1 className="font-overpass font-bold text-2xl text-brand-blue">Editar Colección</h1>
         <Badge variant={activa ? 'success' : 'default'}>{activa ? 'Publicada' : 'Borrador'}</Badge>
       </div>

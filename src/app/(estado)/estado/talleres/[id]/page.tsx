@@ -11,7 +11,8 @@ import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { SubmitButton } from '@/compartido/componentes/ui/button'
 import { ChecklistItem } from '@/compartido/componentes/ui/checklist-item'
-import { ArrowLeft, MapPin, Mail, Phone, FileText, Award } from 'lucide-react'
+import { MapPin, Mail, Phone, FileText, Award } from 'lucide-react'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { ReverificarButton } from './reverificar-button'
 
@@ -148,9 +149,11 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
 
   return (
     <div className="max-w-4xl mx-auto py-6 px-4">
-      <Link href="/estado/talleres" className="inline-flex items-center gap-1 text-sm text-brand-blue hover:underline mb-4">
-        <ArrowLeft className="w-4 h-4" /> Volver a talleres
-      </Link>
+      <Breadcrumbs items={[
+        { label: 'Estado', href: '/estado' },
+        { label: 'Talleres', href: '/estado/talleres' },
+        { label: taller.nombre },
+      ]} />
 
       {soloLectura && (
         <div className="mb-4 rounded-lg bg-blue-50 border border-blue-200 px-4 py-3 text-sm text-blue-700">

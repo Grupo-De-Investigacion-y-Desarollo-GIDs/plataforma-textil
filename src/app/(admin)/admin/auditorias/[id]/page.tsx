@@ -2,6 +2,7 @@ import { auth } from '@/compartido/lib/auth'
 import { redirect, notFound } from 'next/navigation'
 import { prisma } from '@/compartido/lib/prisma'
 import { AuditoriaInformeClient } from './informe-client'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 
 export default async function AuditoriaDetallePage({
   params,
@@ -26,11 +27,11 @@ export default async function AuditoriaDetallePage({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <a href="/admin/auditorias" className="text-brand-blue hover:underline text-sm">
-          ← Volver a auditorias
-        </a>
-      </div>
+      <Breadcrumbs items={[
+        { label: 'Admin', href: '/admin' },
+        { label: 'Auditorias', href: '/admin/auditorias' },
+        { label: `${auditoria.taller.nombre}` },
+      ]} />
 
       <div>
         <h1 className="text-3xl font-bold font-overpass text-brand-blue">

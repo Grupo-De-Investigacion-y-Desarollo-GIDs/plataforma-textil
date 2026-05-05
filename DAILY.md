@@ -1,8 +1,84 @@
 # Daily Log
 
+## 2026-05-05
+
+### Gerardo Breard
+- **13:29** `d9fb390` — qa: marcar items DEV verificados en QA UX-mejoras
+  - `.claude/auditorias/QA_v3-ux-mejoras.md`
+
+- **12:59** `8703481` — feat: UX mejoras — Loading, EmptyState, Breadcrumbs, Toast extendido
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-ux-mejoras.md`
+  - `.claude/auditorias/REVIEW_v3-ux-mejoras.md`
+  - `.claude/specs/V4_BACKLOG.md`
+  - `docs/03_tecnico/componentes-ux.md`
+  - `src/__tests__/ux-mejoras.test.ts`
+  - `src/app/(admin)/admin/auditorias/[id]/page.tsx`
+  - `src/app/(admin)/admin/auditorias/page.tsx`
+  - `src/app/(admin)/admin/colecciones/[id]/page.tsx`
+  - `src/app/(admin)/admin/colecciones/[id]/videos/page.tsx`
+  - `src/app/(admin)/admin/colecciones/nueva/page.tsx`
+  - `src/app/(admin)/admin/integraciones/email/page.tsx`
+  - `src/app/(admin)/admin/integraciones/llm/page.tsx`
+  - `src/app/(admin)/admin/marcas/[id]/page.tsx`
+  - `src/app/(admin)/admin/notificaciones/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(admin)/admin/talleres/page.tsx`
+  - `src/app/(auth)/olvide-contrasena/page.tsx`
+  - `src/app/(estado)/estado/demanda-insatisfecha/page.tsx`
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/(marca)/marca/directorio/[id]/page.tsx`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(marca)/marca/pedidos/page.tsx`
+  - `src/app/(public)/cuenta/notificaciones/notificaciones-lista.tsx`
+  - `src/app/(public)/perfil-marca/[id]/page.tsx`
+  - `src/app/(taller)/taller/aprender/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+  - `src/app/(taller)/taller/pedidos/page.tsx`
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+  - `src/compartido/componentes/ui/breadcrumbs.tsx`
+  - `src/compartido/componentes/ui/empty-state.tsx`
+  - `src/compartido/componentes/ui/loading.tsx`
+  - `src/compartido/componentes/ui/skeleton.tsx`
+  - `src/compartido/componentes/ui/toast.tsx`
+  - `src/marca/componentes/aceptar-cotizacion.tsx`
+  - `src/marca/componentes/cancelar-pedido.tsx`
+  - `src/marca/componentes/contactar-taller.tsx`
+  - `src/marca/componentes/publicar-pedido.tsx`
+  - `src/marca/componentes/rechazar-cotizacion.tsx`
+  - `src/taller/componentes/cotizar-form.tsx`
+  - `tests/e2e/ux-mejoras.spec.ts`
+
+
 ## 2026-05-04
 
 ### Gerardo Breard
+- **19:58** `56c7542` — fix: E2E demanda-insatisfecha tolera ESTADO login timeout
+  - `tests/e2e/demanda-insatisfecha.spec.ts`
+
+- **19:34** `bd9d4dc` — feat: F-05 dashboard de demanda insatisfecha
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-demanda-insatisfecha.md`
+  - `.claude/auditorias/REVIEW_v3-demanda-insatisfecha.md`
+  - `prisma/schema.prisma`
+  - `src/__tests__/demanda-insatisfecha.test.ts`
+  - `src/__tests__/notificaciones-matching.test.ts`
+  - `src/app/(estado)/estado/demanda-insatisfecha/loading.tsx`
+  - `src/app/(estado)/estado/demanda-insatisfecha/page.tsx`
+  - `src/app/api/estado/demanda-insatisfecha/detalle/route.ts`
+  - `src/app/api/estado/demanda-insatisfecha/exportar/route.ts`
+  - `src/app/api/estado/demanda-insatisfecha/route.ts`
+  - `src/compartido/componentes/layout/header.tsx`
+  - `src/compartido/lib/demanda-insatisfecha.ts`
+  - `src/compartido/lib/notificaciones.ts`
+  - `src/compartido/lib/ratelimit.ts`
+  - `tests/e2e/demanda-insatisfecha.spec.ts`
+
+- **18:55** `69b57e5` — docs: T-10 cerrado, T-11 health check de env vars críticas
+  - `.claude/specs/V4_BACKLOG.md`
+
 - **18:27** `f2dbaed` — fix: dashboard Puntaje strict mode + 3 fixme con causa real
   - `tests/e2e/acceso-verificado.spec.ts`
   - `tests/e2e/configuracion-niveles.spec.ts`
