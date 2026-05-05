@@ -3,6 +3,9 @@
 ## 2026-05-05
 
 ### Gerardo Breard
+- **17:06** `b5d3194` — fix: E2E whatsapp tests toleran timeout en preview
+  - `tests/e2e/whatsapp-notificaciones.spec.ts`
+
 - **16:45** `10377e7` — fix: magic link /n/ excluido de middleware auth + E2E tests robustos
   - `src/middleware.ts`
   - `tests/e2e/whatsapp-notificaciones.spec.ts`
