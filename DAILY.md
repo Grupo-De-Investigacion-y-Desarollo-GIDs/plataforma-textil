@@ -3,6 +3,19 @@
 ## 2026-05-05
 
 ### Gerardo Breard
+- **14:39** `686742e` — feat: F-04 exportes del Estado — Excel, ARCA, filtros, informe mensual
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-exportes-estado.md`
+  - `.claude/auditorias/REVIEW_v3-exportes-estado.md`
+  - `package-lock.json`
+  - `package.json`
+  - `src/__tests__/exportes.test.ts`
+  - `src/app/(estado)/estado/exportar/page.tsx`
+  - `src/app/api/estado/exportar/data.ts`
+  - `src/app/api/estado/exportar/route.ts`
+  - `src/compartido/lib/exportes.ts`
+  - `tests/e2e/exportes-estado.spec.ts`
+
 - **13:29** `d9fb390` — qa: marcar items DEV verificados en QA UX-mejoras
   - `.claude/auditorias/QA_v3-ux-mejoras.md`
 
