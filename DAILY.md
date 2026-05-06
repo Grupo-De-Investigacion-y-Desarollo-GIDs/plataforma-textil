@@ -3,6 +3,9 @@
 ## 2026-05-06
 
 ### Gerardo Breard
+- **15:11** `04d9115` — audit: INT-02 rechazado — RESEND_API_KEY vacia en produccion
+  - `.claude/auditorias/QA_v3-email-resend.md`
+
 - **14:42** `ffd2940` — audit: QA INT-02 email-resend completo (code review)
   - `.claude/auditorias/QA_v3-email-resend.md`
 
