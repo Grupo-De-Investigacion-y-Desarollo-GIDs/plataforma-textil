@@ -39,7 +39,7 @@ function ordenarPasos(info: ProximoNivelInfo): Paso[] {
   for (const doc of docsOrdenados) {
     pasos.push({
       id: `documento-${doc.id}`,
-      titulo: `Subi tu ${doc.label.toLowerCase()}`,
+      titulo: `Subi tu ${doc.nombre}`,
       descripcion: doc.requerido
         ? 'Documento requerido para tu proximo nivel'
         : 'Documento opcional — suma puntos extras',

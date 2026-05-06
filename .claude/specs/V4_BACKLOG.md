@@ -74,8 +74,10 @@ Origen: decisiones tomadas durante V3 que conviene revisar.
 | T-11 | Health check de variables de entorno críticas | Validar al inicio de la app que DATABASE_URL, DIRECT_URL, NEXTAUTH_SECRET, RESEND_API_KEY y otras vars críticas no estén vacías/ausentes. Mostrar error claro en server startup y/o `/api/health/version`. Lección aprendida: I-01 dejó vars vacías 8 días sin detectarse, rompiendo toda la preview silenciosamente | 2h |
 | T-12 | estado/page Suspense refactor | Splitear las 15 queries de `prisma.$transaction` en `/estado/page.tsx` a child components async con Suspense boundaries. Excluido de UX V3 por complejidad: romper la transacción requiere verificar atomicidad de lectura. **Nota V3 (2026-05-05):** Diagnóstico de ESTADO login lento resuelto con índice compuesto `LogActividad[userId, timestamp]` + warm-up de `/estado` en CI. Causa raíz era query `talleresInactivos` haciendo table scan en logs. T-12 sigue válido para reducir bundle inicial pero NO es bloqueante. | 2.5h |
 | T-13 | Migrar 4 confirm() nativos a dialogs custom | Reemplazar `confirm()` en admin/colecciones/[id] (x2), marca/cancelar-pedido, y marca/publicar-pedido con modal de confirmación consistente con el design system | 1h |
+| T-14 | Mejorar detalle de logs de auditoría | La tabla de logs muestra la acción (ej: `VALIDACION_APROBADA`) pero no indica sobre qué usuario/recurso se realizó. Agregar columna o tooltip con detalle del recurso afectado. Origen: QA issue #144 | 3h |
+| T-15 | Filtro de usuario asociado en logs | Agregar filtro por usuario afectado (no solo el que ejecuta la acción) en `/admin/logs`. Origen: QA issue #145 | 2h |
 
-**Total estimado Bloque D:** ~26.5h (T-07 cerrado, T-09 nuevo, T-12 y T-13 nuevos)
+**Total estimado Bloque D:** ~31.5h (T-07 cerrado, T-09 nuevo, T-12 a T-15 nuevos)
 
 ---
 

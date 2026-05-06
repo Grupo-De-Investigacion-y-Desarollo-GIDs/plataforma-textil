@@ -85,6 +85,12 @@ function crearLimiters() {
       analytics: false,
       prefix: `rl:${env}:exp`,
     }),
+    verificarEmail: new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(10, '1 m'),
+      analytics: false,
+      prefix: `rl:${env}:vemail`,
+    }),
   } as const
 }
 

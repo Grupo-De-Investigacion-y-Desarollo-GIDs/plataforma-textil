@@ -134,11 +134,13 @@ function StepPersonalInfo({
   onBack,
   showBack,
   defaultValues,
+  loading,
 }: {
   onNext: (data: PersonalInfoData) => void
   onBack: () => void
   showBack: boolean
   defaultValues?: Partial<PersonalInfoData>
+  loading?: boolean
 }) {
   const { register, handleSubmit, formState: { errors }, watch } = useForm<PersonalInfoData>({
     resolver: zodResolver(personalInfoSchema),
@@ -195,7 +197,7 @@ function StepPersonalInfo({
               Atras
             </Button>
           )}
-          <Button type="submit" icon={<ArrowRight className="w-4 h-4" />} className="flex-1">
+          <Button type="submit" loading={loading} icon={<ArrowRight className="w-4 h-4" />} className="flex-1">
             Siguiente
           </Button>
         </div>
@@ -344,6 +346,7 @@ function RegistroContent() {
   const [entidadInfo, setEntidadInfo] = useState<EntidadInfoData | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [checkingEmail, setCheckingEmail] = useState(false)
 
   const totalSteps = rolParam ? 2 : 3
   const indicatorStep = rolParam ? step : step + 1
@@ -353,7 +356,21 @@ function RegistroContent() {
     setStep(1)
   }
 
-  function handlePersonalInfoNext(data: PersonalInfoData) {
+  async function handlePersonalInfoNext(data: PersonalInfoData) {
+    setError(null)
+    setCheckingEmail(true)
+    try {
+      const res = await fetch(`/api/auth/verificar-email?email=${encodeURIComponent(data.email)}`)
+      const body = await res.json()
+      if (!body.disponible) {
+        setError('El email ya esta registrado. Si ya tenes cuenta, podes iniciar sesion.')
+        return
+      }
+    } catch {
+      // Si falla la verificacion, dejamos continuar — el API de registro lo atrapara
+    } finally {
+      setCheckingEmail(false)
+    }
     setPersonalInfo(data)
     setStep(2)
   }
@@ -422,6 +439,7 @@ function RegistroContent() {
           onBack={() => setStep(0)}
           showBack={!rolParam}
           defaultValues={personalInfo ?? undefined}
+          loading={checkingEmail}
         />
       )}
 
