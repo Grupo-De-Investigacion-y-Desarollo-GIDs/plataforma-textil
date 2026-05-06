@@ -3,6 +3,10 @@
 ## 2026-05-06
 
 ### Gerardo Breard
+- **11:08** `e195aca` — chore: agregar .certs/ y *.key a .gitignore + mover issues #208-#210 a V4
+  - `.claude/specs/V4_BACKLOG.md`
+  - `.gitignore`
+
 - **10:48** `e7b3d29` — fix: resolver bugs QA pre-piloto (#193 #199 #201) + limpiar 41 issues
   - `.claude/specs/V4_BACKLOG.md`
   - `src/app/(auth)/registro/page.tsx`
