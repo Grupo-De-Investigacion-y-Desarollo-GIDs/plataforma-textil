@@ -3,6 +3,9 @@
 ## 2026-05-06
 
 ### Gerardo Breard
+- **14:42** `ffd2940` — audit: QA INT-02 email-resend completo (code review)
+  - `.claude/auditorias/QA_v3-email-resend.md`
+
 - **13:56** `53f6298` — fix: 5 hallazgos QA INT-00 — seguridad, paginacion, UX
   - `src/__tests__/acceso-verificado.test.ts`
   - `src/app/(marca)/marca/directorio/page.tsx`
