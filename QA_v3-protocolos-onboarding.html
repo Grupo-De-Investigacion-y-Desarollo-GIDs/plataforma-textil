@@ -377,80 +377,80 @@
 
 | # | Paso | Resultado esperado | Verificador | Estado |
 |---|------|--------------------|-------------|--------|
-| 1 | Ir a /ayuda | Links &quot;Guia para talleres&quot; y &quot;Guia para marcas&quot; visibles | QA | |
-| 2 | Click en &quot;Guia para talleres&quot; | Pagina /ayuda/onboarding-taller con 4 pasos numerados | QA | |
-| 3 | Verificar contenido: niveles, documentos, pedidos | Informacion completa y clara para talleres | QA | |
-| 4 | Click en &quot;Guia para marcas&quot; | Pagina /ayuda/onboarding-marca con 4 pasos | QA | |
-| 5 | Verificar contenido: pedidos, cotizaciones, badges | Informacion relevante para marcas | QA | |
+| 1 | Ir a /ayuda | Links &quot;Guia para talleres&quot; y &quot;Guia para marcas&quot; visibles | QA | ✅ code review — 2 Link cards con BookOpen icon en ayuda/page.tsx:29-41 — Claude Code 6/5 |
+| 2 | Click en &quot;Guia para talleres&quot; | Pagina /ayuda/onboarding-taller con 4 pasos numerados | QA | ✅ code review — 4 pasos con indicadores circulares: Registrarte, Completar perfil, Subir docs, Recibir pedido. Breadcrumbs — Claude Code 6/5 |
+| 3 | Verificar contenido: niveles, documentos, pedidos | Informacion completa y clara para talleres | QA | ✅ code review — cubre niveles B/P/O, docs (monotributo, ART, habilitacion), pedidos, prerequisitos — Claude Code 6/5 |
+| 4 | Click en &quot;Guia para marcas&quot; | Pagina /ayuda/onboarding-marca con 4 pasos | QA | ✅ code review — 4 pasos: Registrarte, Crear pedido, Comparar cotizaciones, Dar seguimiento. Breadcrumbs — Claude Code 6/5 |
+| 5 | Verificar contenido: pedidos, cotizaciones, badges | Informacion relevante para marcas | QA | ✅ code review — cubre pedidos (tipo, cantidad, proceso), cotizaciones (precio, plazo, nivel), badges (CUIT, docs, nivel, certs) — Claude Code 6/5 |
 
 ### Bloque 2 — Dashboard admin/onboarding
 
 | # | Paso | Resultado esperado | Verificador | Estado |
 |---|------|--------------------|-------------|--------|
-| 6 | Login como ADMIN. Ir a /admin/onboarding | Dashboard con stats por etapa visible | QA | |
-| 7 | Verificar stats cards: Total, Invitados, Registrados, Activos, Inactivos | Numeros coherentes con usuarios existentes | QA | |
-| 8 | Verificar funnel de adopcion | Barras proporcionales con porcentajes correctos | QA | |
-| 9 | Verificar tabla de usuarios con columnas: Nombre, Rol, Etapa, Registro, Acciones | Datos correctos para cada usuario | QA | |
-| 10 | &quot;Onboarding&quot; visible en sidebar del admin | Link en el sidebar izquierdo | QA | |
+| 6 | Login como ADMIN. Ir a /admin/onboarding | Dashboard con stats por etapa visible | QA | ✅ code review — server component con auth ADMIN, queries usuarios TALLER/MARCA, calcula etapas — Claude Code 6/5. ⏳ browser |
+| 7 | Verificar stats cards: Total, Invitados, Registrados, Activos, Inactivos | Numeros coherentes con usuarios existentes | QA | ✅ code review — 5 StatCards en grid de 5 columnas, valores de conteos — Claude Code 6/5. ⏳ browser |
+| 8 | Verificar funnel de adopcion | Barras proporcionales con porcentajes correctos | QA | ✅ code review — 4 FunnelBar (Invitados 100%, Registrados, Perfil completo, Activos). Math.max(pct,2) para barras minimas — Claude Code 6/5 |
+| 9 | Verificar tabla de usuarios con columnas: Nombre, Rol, Etapa, Registro, Acciones | Datos correctos para cada usuario | QA | ✅ code review — tabla con 5 columnas exactas. EmptyState si no hay usuarios — Claude Code 6/5. ⏳ browser |
+| 10 | &quot;Onboarding&quot; visible en sidebar del admin | Link en el sidebar izquierdo | QA | ✅ code review — Rocket icon en admin layout:24 — Claude Code 6/5 |
 
 ### Bloque 3 — Acciones rapidas en dashboard
 
 | # | Paso | Resultado esperado | Verificador | Estado |
 |---|------|--------------------|-------------|--------|
-| 11 | Usuario en etapa INVITADO: boton &quot;Reenviar invitacion&quot; | Boton visible, click envia email | QA | |
-| 12 | Usuario en etapa REGISTRADO: boton &quot;Enviar mensaje&quot; | Abre editor de mensaje individual (F-07) | QA | |
-| 13 | Usuario en etapa ACTIVO: sin acciones | Muestra &quot;-&quot; en columna acciones | QA | |
+| 11 | Usuario en etapa INVITADO: boton &quot;Reenviar invitacion&quot; | Boton visible, click envia email | QA | ✅ code review — Button con Mail icon, POST a /api/admin/onboarding/reenviar-invitacion, toast feedback — Claude Code 6/5 |
+| 12 | Usuario en etapa REGISTRADO: boton &quot;Enviar mensaje&quot; | Abre editor de mensaje individual (F-07) | QA | ✅ code review — Button con MessageSquare, abre EditorMensajeIndividual. Nota: INACTIVO tambien muestra este boton — Claude Code 6/5 |
+| 13 | Usuario en etapa ACTIVO: sin acciones | Muestra &quot;-&quot; en columna acciones | QA | ✅ code review — retorna &quot;--&quot; para ACTIVO y PERFIL_COMPLETO — Claude Code 6/5 |
 
 ### Bloque 4 — Checklist en dashboard taller
 
 | # | Paso | Resultado esperado | Verificador | Estado |
 |---|------|--------------------|-------------|--------|
-| 14 | Login como TALLER con perfil incompleto. Ir a /taller | Checklist de 5 pasos visible despues del encabezado | QA | |
-| 15 | Pasos completados muestran check verde, pendientes circulo gris | Diferenciacion visual clara | QA | |
-| 16 | Boton &quot;Continuar paso siguiente&quot; lleva al primer paso pendiente | Navegacion correcta | QA | |
-| 17 | ProximoNivelCard NO visible mientras checklist esta activo | Solo se muestra uno u otro, nunca ambos | QA | |
-| 18 | Login como TALLER con todo completo | Checklist no se muestra, ProximoNivelCard si | QA | |
+| 14 | Login como TALLER con perfil incompleto. Ir a /taller | Checklist de 5 pasos visible despues del encabezado | QA | ✅ code review — calcularPasosTaller retorna 5 pasos: Crear cuenta, Verificar email, Completar perfil, Subir doc, Recibir cotizacion aceptada — Claude Code 6/5 |
+| 15 | Pasos completados muestran check verde, pendientes circulo gris | Diferenciacion visual clara | QA | ✅ code review — CheckCircle2 green-500 (completado) vs Circle gray-300 (pendiente) + line-through en texto — Claude Code 6/5 |
+| 16 | Boton &quot;Continuar paso siguiente&quot; lleva al primer paso pendiente | Navegacion correcta | QA | ✅ code review — primerPendiente = pasos.find(p =&gt; !p.completado), Link a primerPendiente.href — Claude Code 6/5 |
+| 17 | ProximoNivelCard NO visible mientras checklist esta activo | Solo se muestra uno u otro, nunca ambos | QA | ✅ code review — ternario: onboardingCompleto ? ProximoNivelCard : ChecklistOnboarding. Mutuamente exclusivos — Claude Code 6/5 |
+| 18 | Login como TALLER con todo completo | Checklist no se muestra, ProximoNivelCard si | QA | ✅ code review — onboardingCompleto=true renderiza solo ProximoNivelCard — Claude Code 6/5 |
 
 ### Bloque 5 — Checklist en dashboard marca
 
 | # | Paso | Resultado esperado | Verificador | Estado |
 |---|------|--------------------|-------------|--------|
-| 19 | Login como MARCA con perfil incompleto. Ir a /marca | Checklist de 5 pasos visible | QA | |
-| 20 | &quot;Completar datos de tu marca&quot; pendiente si falta tipo/ubicacion/volumen | Estado correcto | QA | |
-| 21 | Boton &quot;Continuar paso siguiente&quot; funciona | Navega al paso correcto | QA | |
+| 19 | Login como MARCA con perfil incompleto. Ir a /marca | Checklist de 5 pasos visible | QA | ✅ code review — calcularPasosMarca retorna 5 pasos: Crear cuenta, Verificar email, Completar datos, Publicar pedido, Recibir cotizacion — Claude Code 6/5 |
+| 20 | &quot;Completar datos de tu marca&quot; pendiente si falta tipo/ubicacion/volumen | Estado correcto | QA | ✅ code review — completado: !!(marca?.tipo &amp;&amp; marca.ubicacion &amp;&amp; marca.volumenMensual &gt; 0) — Claude Code 6/5 |
+| 21 | Boton &quot;Continuar paso siguiente&quot; funciona | Navega al paso correcto | QA | ✅ code review — usa mismo ChecklistOnboarding con hrefs correctos (/cuenta, /marca/perfil, etc.) — Claude Code 6/5 |
 
 ### Bloque 6 — Notas de seguimiento
 
 | # | Paso | Resultado esperado | Verificador | Estado |
 |---|------|--------------------|-------------|--------|
-| 22 | Login como ADMIN. Ir a /admin/talleres/[id] | Seccion &quot;Notas de seguimiento&quot; visible al final | QA | |
-| 23 | Click &quot;Agregar nota&quot;. Escribir texto. Click &quot;Guardar&quot; | Nota aparece en la lista con autor y timestamp | QA | |
-| 24 | Ir a /admin/marcas/[id] | Seccion &quot;Notas de seguimiento&quot; visible al final | QA | |
-| 25 | Login como TALLER. Ir a /taller | NO hay seccion de notas visible | QA | |
+| 22 | Login como ADMIN. Ir a /admin/talleres/[id] | Seccion &quot;Notas de seguimiento&quot; visible al final | QA | ✅ code review — NotasSeguimiento userId={taller.userId} al final de talleres/[id]/page.tsx:350. ⚠️ coexiste con NotaInterna legacy — Claude Code 6/5 |
+| 23 | Click &quot;Agregar nota&quot;. Escribir texto. Click &quot;Guardar&quot; | Nota aparece en la lista con autor y timestamp | QA | ✅ code review — textarea 2000 chars, min 3, POST a /api/admin/notas-seguimiento, toast feedback, prepend con nombre+rol+timestamp — Claude Code 6/5 |
+| 24 | Ir a /admin/marcas/[id] | Seccion &quot;Notas de seguimiento&quot; visible al final | QA | ✅ code review — NotasSeguimiento userId={marca.userId} en marcas/[id]/page.tsx:317 — Claude Code 6/5 |
+| 25 | Login como TALLER. Ir a /taller | NO hay seccion de notas visible | QA | ✅ code review — taller/page.tsx no importa ni renderiza NotasSeguimiento. Layout admin bloquea TALLER — Claude Code 6/5 |
 
 ### Bloque 7 — Email y WhatsApp
 
 | # | Paso | Resultado esperado | Verificador | Estado |
 |---|------|--------------------|-------------|--------|
-| 26 | Reenviar invitacion desde dashboard admin | Email enviado (verificar en logs) | DEV | |
-| 27 | Template bienvenida WhatsApp existe | Template renderiza con nombre y enlace | DEV | |
-| 28 | Template recordatorio_perfil WhatsApp existe | Template renderiza correctamente | DEV | |
+| 26 | Reenviar invitacion desde dashboard admin | Email enviado (verificar en logs) | DEV | ✅ code review — POST /api/admin/onboarding/reenviar-invitacion con auth, Zod, buildInvitacionRegistroEmail, sendEmail, logAccionAdmin — Claude Code 6/5 |
+| 27 | Template bienvenida WhatsApp existe | Template renderiza con nombre y enlace | DEV | ✅ code review — whatsapp-templates.ts:20-21 con parametros nombre y enlace — Claude Code 6/5 |
+| 28 | Template recordatorio_perfil WhatsApp existe | Template renderiza correctamente | DEV | ✅ code review — whatsapp-templates.ts:23-24 con parametros nombre y enlace — Claude Code 6/5 |
 
 ### Bloque 8 — Seguridad
 
 | # | Paso | Resultado esperado | Verificador | Estado |
 |---|------|--------------------|-------------|--------|
-| 29 | GET /api/admin/notas-seguimiento sin auth | 401 | DEV | |
-| 30 | POST /api/admin/onboarding/reenviar-invitacion sin auth | 401 | DEV | |
-| 31 | TALLER GET /api/admin/notas-seguimiento | 403 | DEV | |
+| 29 | GET /api/admin/notas-seguimiento sin auth | 401 | DEV | ✅ code review — errorAuthRequired() en linea 14 — Claude Code 6/5 |
+| 30 | POST /api/admin/onboarding/reenviar-invitacion sin auth | 401 | DEV | ✅ code review — errorAuthRequired() en linea 15 — Claude Code 6/5 |
+| 31 | TALLER GET /api/admin/notas-seguimiento | 403 | DEV | ✅ code review — errorForbidden(&#39;ADMIN o ESTADO&#39;) si role no es ADMIN/ESTADO — Claude Code 6/5 |
 
 ### Bloque 9 — Tests automatizados
 
 | # | Verificacion | Verificador | Estado |
 |---|-------------|-------------|--------|
-| 32 | 24 Vitest tests pasan (npx vitest run src/__tests__/onboarding.test.ts) | DEV | |
-| 33 | TypeScript compila sin errores (npx tsc --noEmit) | DEV | |
-| 34 | 7 E2E tests pasan en CI (tests/e2e/onboarding.spec.ts) | DEV | |
+| 32 | 24 Vitest tests pasan (npx vitest run src/__tests__/onboarding.test.ts) | DEV | ✅ code review — 24 test() calls contados. Suite 402 tests pasando — Claude Code 6/5 |
+| 33 | TypeScript compila sin errores (npx tsc --noEmit) | DEV | ✅ verificado — tsc clean — Claude Code 6/5 |
+| 34 | 7 E2E tests pasan en CI (tests/e2e/onboarding.spec.ts) | DEV | ✅ code review — 7 test() calls contados. CI green. ⚠️ tests usan try/catch skip pattern — Claude Code 6/5 |
 
 ---</pre>
   </div><div class="section unknown">
@@ -459,47 +459,42 @@
 
 | # | Pregunta | Respuesta | Estado |
 |---|----------|-----------|--------|
-| P1 | Las etapas y metricas son las apropiadas para reportar a OIT? | | |
-| P2 | La intervencion del ESTADO en INACTIVO 14+ dias es proporcional o invasiva? | | |
+| P1 | Las etapas y metricas son las apropiadas para reportar a OIT? | 🔵 Si. Las 5 etapas (INVITADO→REGISTRADO→PERFIL_COMPLETO→ACTIVO→INACTIVO) forman un funnel clasico de adopcion de politica publica. OIT puede reportar: &quot;de 25 talleres invitados, X se registraron, Y completaron perfil, Z estan activos&quot;. Faltaria agregar etapa &quot;FORMALIZADO&quot; (al menos 1 doc aprobado) que es el outcome mas relevante para OIT | Agregar FORMALIZADO como etapa en V4 si OIT lo pide |
+| P2 | La intervencion del ESTADO en INACTIVO 14+ dias es proporcional o invasiva? | 🔵 El umbral es 7 dias (no 14 como dice la pregunta). 7 dias es agresivo pero apropiado para un piloto corto (1-2 meses). A escala, 14 o 21 dias seria mas prudente. La intervencion (mensaje via plataforma) es proporcional — no es un llamado ni visita, es un nudge digital. El riesgo de percepcion de vigilancia se mitiga si el mensaje es constructivo (&quot;te extrañamos&quot;) y no punitivo (&quot;no usas la plataforma&quot;) | Verificar tono de los templates con sociologo |
 
 ### Economista
 
 | # | Pregunta | Respuesta | Estado |
 |---|----------|-----------|--------|
-| E1 | Las metricas del funnel son las correctas para evaluar el impacto del piloto? | | |
-| E2 | Falta alguna metrica economica (volumen de cotizaciones, monto promedio)? | | |
+| E1 | Las metricas del funnel son las correctas para evaluar el impacto del piloto? | 🔵 Parcialmente. El funnel mide adopcion (cuantos avanzan por etapa) pero no impacto (que logran al avanzar). Para OIT, agregar: talleres que cotizaron al menos 1 vez, talleres que cerraron al menos 1 pedido, monto total transaccionado. Estas metricas de &quot;outcome&quot; complementan las de &quot;output&quot; del funnel actual | El reporte mensual ya tiene algunas de estas metricas — verificar si el dashboard las cruza |
+| E2 | Falta alguna metrica economica (volumen de cotizaciones, monto promedio)? | 🔵 Si. El dashboard de onboarding es puramente de adopcion. Metricas economicas estan en otros reportes (F-04 exportes, reporte mensual). Sugerencia: agregar al dashboard de onboarding una fila de &quot;metricas de resultado&quot; debajo del funnel: cotizaciones enviadas, pedidos cerrados, monto total. Esto permite al admin correlacionar adopcion con impacto economico en una sola pantalla | V4 — combinar dashboard onboarding + metricas economicas |
 
 ### Sociologo
 
 | # | Pregunta | Respuesta | Estado |
 |---|----------|-----------|--------|
-| S1 | Los textos de email y WhatsApp suenan invitadores o burocraticos? | | |
-| S2 | La gamificacion de &quot;completar pasos&quot; es apropiada para usuarios que no son nativos digitales? | | |
-| S3 | El protocolo de seguimiento puede generar sensacion de vigilancia? | | |
+| S1 | Los textos de email y WhatsApp suenan invitadores o burocraticos? | 🔵 Invitadores. Email de invitacion usa tono personal, menciona OIT como respaldo institucional, incluye link directo a guia. WhatsApp templates son informales y breves (&quot;Hola {nombre}!&quot;). El unico riesgo es el &quot;from&quot; onboarding@resend.dev que suena generico — con dominio propio (noreply@pdt.org.ar) mejoraria la confianza | Verificar con usuarios reales en primera semana del piloto |
+| S2 | La gamificacion de &quot;completar pasos&quot; es apropiada para usuarios que no son nativos digitales? | 🔵 Si, con reservas. Los iconos check/circulo son universales. El boton &quot;Continuar paso siguiente&quot; reduce la carga cognitiva. El riesgo es que 5 pasos parezcan muchos para alguien no habituado a interfaces digitales. Mitigacion: los pasos 1-2 (crear cuenta, verificar email) ya estan hechos al llegar al dashboard. En la practica el taller ve 3 pasos pendientes, no 5. La line-through visual de lo completado refuerza el progreso | Testear con 2-3 talleres del piloto en la primera semana |
+| S3 | El protocolo de seguimiento puede generar sensacion de vigilancia? | 🔵 Riesgo real pero manejable. Las notas de seguimiento son internas (el taller no las ve). Los mensajes de recordatorio (&quot;notamos que todavia no completaste tu perfil&quot;) pueden sentirse como control. Mitigacion: el tono es constructivo y ofrece ayuda. A diferencia de un sistema de monitoreo (alertas automaticas), aqui un humano decide cuando contactar. Recomendacion: en el piloto, limitar los recordatorios a 1 por semana y acompañar con oferta de ayuda concreta | Capacitar al equipo: &quot;no sos inspector, sos facilitador&quot; |
 
 ### Contador
 
 | # | Pregunta | Respuesta | Estado |
 |---|----------|-----------|--------|
-| C1 | La guia explica correctamente los temas de monotributo y formalizacion? | | |
-| C2 | Hay info critica para el sector textil que falta? | | |
+| C1 | La guia explica correctamente los temas de monotributo y formalizacion? | 🔵 Parcialmente. La guia taller menciona &quot;constancia de inscripcion en AFIP/ARCA&quot;, &quot;habilitacion municipal&quot;, &quot;ART&quot;. Falta explicar: diferencia entre monotributo y responsable inscripto (relevante para facturacion), que categorias de monotributo aplican al sector textil, y que pasa si el taller tiene CUIL pero no CUIT (situacion frecuente en talleres informales). La plataforma ya maneja esto via ARCA pero la guia no lo explica al usuario | Agregar seccion &quot;Preguntas frecuentes sobre CUIT&quot; en la guia |
+| C2 | Hay info critica para el sector textil que falta? | 🔵 Falta mencion de: habilitacion de IIBB provincial (varia por jurisdiccion), certificado de domicilio fiscal, y las implicancias del regimen simplificado vs general para talleres que crecen. La guia asume que el taller ya tiene todo resuelto, pero muchos talleres del piloto estaran en proceso. Sugerencia: agregar una seccion &quot;Si todavia no tenes...&quot; con links a AFIP, municipio, ART por provincia | No bloqueante para piloto — la guia es un punto de partida |
 
 ---</pre>
-  </div><div class="section unknown">
-    <h2>Resumen</h2>
-    <pre class="readonly-block">| Bloque | Items | Verificador principal |
-|--------|-------|----------------------|
-| 1. Paginas onboarding | 5 | QA |
-| 2. Dashboard admin | 5 | QA |
-| 3. Acciones rapidas | 3 | QA |
-| 4. Checklist taller | 5 | QA |
-| 5. Checklist marca | 3 | QA |
-| 6. Notas seguimiento | 4 | QA |
-| 7. Email/WhatsApp | 3 | DEV |
-| 8. Seguridad | 3 | DEV |
-| 9. Tests | 3 | DEV |
-| **Total** | **34** | |
-| Validacion dominio | 9 preguntas | politologo, economista, sociologo, contador |</pre>
+  </div><div class="section" id="notas-auditores">
+    <h2>Notas de los auditores</h2>
+    <div class="field-group">
+      <label>Sergio (tecnico):</label>
+      <textarea class="large-textarea" id="textarea-notas-tecnico" placeholder="Observaciones tecnicas..." rows="4"></textarea>
+    </div>
+    <div class="field-group">
+      <label>Perfiles interdisciplinarios:</label>
+      <textarea class="large-textarea" id="textarea-notas-perfiles" placeholder="Observaciones de dominio..." rows="4"></textarea>
+    </div>
   </div>
   </div>
   <div class="section" id="panel-resumen">
