@@ -3,6 +3,11 @@
 ## 2026-05-06
 
 ### Gerardo Breard
+- **01:02** `68df91e` — chore: ocultar rol CONTENIDO de UI admin + documentar como deuda V4
+  - `.claude/specs/V4_BACKLOG.md`
+  - `src/app/(admin)/admin/usuarios/page.tsx`
+  - `src/app/(auth)/acceso-rapido/page.tsx`
+
 - **00:11** `c60113b` — feat: T-02 reporte de campo del piloto — observaciones cualitativas + reportes Excel OIT
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `.claude/auditorias/QA_v3-reporte-campo.md`
