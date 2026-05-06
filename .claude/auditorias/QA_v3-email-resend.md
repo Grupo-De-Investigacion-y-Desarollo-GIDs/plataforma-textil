@@ -25,12 +25,12 @@ Verificar que: (1) emails se envian via Resend, (2) magic links funcionan, (3) e
 
 ## Resultado global
 
-- [ ] Aprobado — todo funciona
+- [x] Aprobado — todo funciona
 - [ ] Aprobado con fixes — funciona pero hay bugs menores
 - [ ] Rechazado — falta funcionalidad o hay bugs bloqueantes
 
-**Decision:** pendiente dry-run de Gerardo para confirmar
-**Nota 2026-05-06:** Diagnostico erroneo previo (RESEND_API_KEY vacia) — fue falso positivo del CLI v50.38.3 que no puede desencriptar variables tipo `sensitive`. Verificado via API: variables tienen valor (value_present=True, type=sensitive). Gerardo confirma que emails llegan. Esperando dry-run formal para cerrar.
+**Decision:** cerrar INT-02
+**Nota 2026-05-06:** Dry-runs completados por Gerardo. Magic link, bienvenida y visual OK. Diagnostico erroneo previo (RESEND_API_KEY vacia) fue falso positivo del CLI v50.38.3 — leccion documentada en V4_BACKLOG L-01.
 
 ---
 
@@ -48,9 +48,9 @@ Verificar que: (1) emails se envian via Resend, (2) magic links funcionan, (3) e
 | 8 | 12 templates HTML existentes se mantienen sin cambios | DEV | ok | |
 | 9 | 8 consumidores existentes no se tocaron | DEV | ok | |
 | 10 | nodemailer presente en dependencies (peer dep de NextAuth EmailProvider) | DEV | ok | |
-| 11 | Dry-run: magic link llega a gbreard@gmail.com | QA (Gerardo) | ⏳ requiere dry-run manual — sendVerificationRequest llama sendEmail con buildMagicLinkEmail(url). Subject: "Tu link de acceso a PDT". Boton: "Ingresar a PDT". Limitacion: con dominio onboarding@resend.dev solo llega a gbreard@gmail.com | # |
-| 12 | Dry-run: email de bienvenida llega post-registro | QA (Gerardo) | ⏳ requiere dry-run manual — registro/route.ts:150 llama sendEmail con buildBienvenidaEmail(). Subject: "Bienvenido/a a la Plataforma Digital Textil". Patron fire-and-forget (.catch) | # |
-| 13 | Dry-run: contenido del email es correcto (subject, body, boton) | QA (Gerardo) | ✅ code review parcial + ⏳ dry-run visual — por codigo: header azul #1e3a5f "Plataforma Digital Textil", boton "Ir a mi panel" en bienvenida, boton "Ingresar a PDT" en magic link, footer "Plataforma Digital Textil". Requiere dry-run para confirmar rendering real — Claude Code 6/5 | # |
+| 11 | Dry-run: magic link llega a gbreard@gmail.com | QA (Gerardo) | ✅ dry-run exitoso — Gerardo 6/5 | |
+| 12 | Dry-run: email de bienvenida llega post-registro | QA (Gerardo) | ✅ dry-run exitoso — Gerardo 6/5 | |
+| 13 | Dry-run: contenido del email es correcto (subject, body, boton) | QA (Gerardo) | ✅ dry-run exitoso + code review — Gerardo 6/5 | |
 
 ---
 
@@ -63,8 +63,8 @@ Verificar que: (1) emails se envian via Resend, (2) magic links funcionan, (3) e
 - **Verificador:** Gerardo (dry-run)
 - **Accion:** Ingresar gbreard@gmail.com en el campo de magic link, enviar, verificar que llega el email, click en el link
 - **Esperado:** Email llega en menos de 30 segundos. Link redirige a la plataforma logueado.
-- **Resultado:** ✅ code review — auth.ts:64-73 usa EmailProvider con sendVerificationRequest custom que llama sendEmail(buildMagicLinkEmail(url)). ⏳ dry-run manual pendiente (Gerardo) — Claude Code 6/5
-- **Notas:** Limitacion conocida: dominio onboarding@resend.dev solo envia a gbreard@gmail.com
+- **Resultado:** ✅ code review + dry-run exitoso — Gerardo 6/5
+- **Notas:**
 
 ### Paso 2 — Registro de taller con email de bienvenida
 
@@ -73,7 +73,7 @@ Verificar que: (1) emails se envian via Resend, (2) magic links funcionan, (3) e
 - **Verificador:** Gerardo (dry-run)
 - **Accion:** Registrar taller nuevo con gbreard@gmail.com, verificar que llega email de bienvenida
 - **Esperado:** Email de bienvenida llega con subject "Bienvenido/a a la Plataforma Digital Textil"
-- **Resultado:** ✅ code review — registro/route.ts:150 llama sendEmail(buildBienvenidaEmail()) con fire-and-forget. ⏳ dry-run manual pendiente (Gerardo) — Claude Code 6/5
+- **Resultado:** ✅ code review + dry-run exitoso — Gerardo 6/5
 - **Notas:**
 
 ---
@@ -92,8 +92,8 @@ Verificar que: (1) emails se envian via Resend, (2) magic links funcionan, (3) e
 
 | Verificacion | Metodo | Verificador | Resultado |
 |-------------|--------|-------------|-----------|
-| Email llega en menos de 30 segundos | Medir tiempo entre submit y recepcion | Gerardo | ⏳ dry-run — Resend API typical latency es <5s. sendEmail tiene retry con 1s wait. No hay timeout explicito (Resend SDK usa default) |
-| Registro no tarda mas de lo habitual | Comparar con registro sin email | Gerardo | ⏳ dry-run — sendEmail es fire-and-forget (.catch()) en registro, no bloquea la respuesta al usuario |
+| Email llega en menos de 30 segundos | Medir tiempo entre submit y recepcion | Gerardo | ✅ dry-run exitoso — Gerardo 6/5 |
+| Registro no tarda mas de lo habitual | Comparar con registro sin email | Gerardo | ✅ dry-run exitoso — Gerardo 6/5 |
 
 ---
 
@@ -101,11 +101,11 @@ Verificar que: (1) emails se envian via Resend, (2) magic links funcionan, (3) e
 
 | Verificacion | Resultado | Notas |
 |-------------|-----------|-------|
-| Email de bienvenida tiene header azul PDT | ✅ code review — emailWrapper() usa background: #1e3a5f (brand-blue) con texto blanco "Plataforma Digital Textil" — Claude Code 6/5 | ⏳ dry-run visual |
-| Boton "Ir a mi panel" funciona | ✅ code review — buildBienvenidaEmail() usa btnPrimario(dashUrl, 'Ir a mi panel') con href a /taller o /marca segun rol — Claude Code 6/5 | ⏳ dry-run click |
-| Magic link tiene boton "Ingresar a PDT" | ✅ code review — buildMagicLinkEmail() usa btnPrimario(url, 'Ingresar a PDT') — Claude Code 6/5 | ⏳ dry-run visual |
-| Footer muestra "Plataforma Digital Textil" | ✅ code review — emailWrapper() linea 71: texto "Plataforma Digital Textil" en color #94a3b8 — Claude Code 6/5 | |
-| Emails no caen en spam (verificar carpeta spam) | ⏳ dry-run — imposible verificar desde codigo. Con dominio testing onboarding@resend.dev la deliverability es limitada | |
+| Email de bienvenida tiene header azul PDT | ✅ code review + dry-run — Gerardo 6/5 | |
+| Boton "Ir a mi panel" funciona | ✅ code review + dry-run — Gerardo 6/5 | |
+| Magic link tiene boton "Ingresar a PDT" | ✅ code review + dry-run — Gerardo 6/5 | |
+| Footer muestra "Plataforma Digital Textil" | ✅ code review + dry-run — Gerardo 6/5 | |
+| Emails no caen en spam (verificar carpeta spam) | ✅ dry-run — Gerardo 6/5 | |
 
 ---
 
@@ -143,9 +143,9 @@ Verificar que: (1) emails se envian via Resend, (2) magic links funcionan, (3) e
 
 ## Checklist de cierre
 
-- [ ] Dry-run magic link exitoso (Gerardo)
-- [ ] Dry-run bienvenida exitoso (Gerardo)
+- [x] Dry-run magic link exitoso (Gerardo 6/5)
+- [x] Dry-run bienvenida exitoso (Gerardo 6/5)
 - [x] 6 tests Vitest nuevos pasan — verificado, 402 tests totales pasando
 - [x] CI verde — E2E success en develop
-- [ ] Issues abiertos en GitHub si aplica
-- [ ] Resultado global definido
+- [x] Sin issues abiertos
+- [x] Resultado global: Aprobado
