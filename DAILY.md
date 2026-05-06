@@ -3,6 +3,10 @@
 ## 2026-05-06
 
 ### Gerardo Breard
+- **16:17** `4aca19f` — audit: QA D-01 + D-02 completos — code review + Eje 6
+  - `.claude/auditorias/QA_v3-redefinicion-roles-estado.md`
+  - `.claude/auditorias/QA_v3-tipos-documento-db.md`
+
 - **16:05** `c9208ed` — audit: INT-02 aprobado — dry-runs exitosos (Gerardo 6/5)
   - `.claude/auditorias/QA_v3-email-resend.md`
 
