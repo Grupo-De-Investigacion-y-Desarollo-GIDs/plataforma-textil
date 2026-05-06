@@ -484,7 +484,7 @@
     </div><div class="item-card" data-eje="1" data-num="9" data-verificador="QA" data-item-selector="eje-1-item-9" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#9</span>
-        <span class="item-text">Click &quot;Ver impacto del cambio&quot; → ver preview de talleres afectados — ✅ code review: handlePreview POST a /api/.../preview, muestra totalTalleres, talleresAfectados, suben, bajan, detalle. ⚠️ BUG: suben/bajan usan string comparison en vez de numeric — ORO/PLATA se invierten — Claude Code 6/5</span>
+        <span class="item-text">Click &quot;Ver impacto del cambio&quot; → ver preview de talleres afectados — ✅ code review + fixeado: suben/bajan ahora usan ORDEN_NIVEL numerico {BRONCE:0, PLATA:1, ORO:2} — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -564,7 +564,7 @@
     </div><div class="item-card" data-eje="1" data-num="14" data-verificador="QA" data-item-selector="eje-1-item-14" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#14</span>
-        <span class="item-text">Guardar → toast de confirmacion — ✅ code review: post-save muestra toast &quot;Regla ${nivel} actualizada&quot; (linea 96). ⚠️ usa toast inline en vez de useToast del design system — Claude Code 6/5</span>
+        <span class="item-text">Guardar → toast de confirmacion — ✅ code review + fixeado: migrado de toast inline a useToast del design system — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -676,7 +676,7 @@
     </div><div class="item-card" data-eje="2" data-num="3" data-verificador="QA" data-item-selector="eje-2-item-3" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#3</span>
-        <span class="item-text">No puede editar (no tiene boton editar o el PUT retorna 403) — ✅ code review: PUT /api/.../[id] restringe a [&#39;ESTADO&#39;] solo, ADMIN recibe 403. ⚠️ UX: boton editar visible para ADMIN pero acciones fallan silenciosamente — Claude Code 6/5</span>
+        <span class="item-text">No puede editar (no tiene boton editar o el PUT retorna 403) — ✅ code review + fixeado: boton editar ahora oculto para ADMIN (soloLectura=true cuando role!==&#39;ESTADO&#39;). PUT sigue retornando 403 como backup — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>

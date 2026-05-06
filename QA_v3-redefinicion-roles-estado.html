@@ -740,7 +740,7 @@
     </div><div class="item-card" data-eje="1" data-num="25" data-verificador="QA" data-item-selector="eje-1-item-25" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#25</span>
-        <span class="item-text">Click Nuevo Requisito -&gt; completar nombre y guardar -&gt; aparece en la lista — ❌ BUG: el form no envia campos `label` ni `nivelMinimo` pero el POST API los requiere (400). Crear nuevo requisito falla silenciosamente — Claude Code 6/5</span>
+        <span class="item-text">Click Nuevo Requisito -&gt; completar nombre y guardar -&gt; aparece en la lista — ✅ fixeado: form ahora incluye campos label y nivelMinimo para nuevos requisitos — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -820,7 +820,7 @@
     </div><div class="item-card" data-eje="1" data-num="30" data-verificador="QA" data-item-selector="eje-1-item-30" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#30</span>
-        <span class="item-text">Exportar CSV funciona (abre nueva tab con descarga) — ❌ BUG: export linkea a /api/admin/logs?export=csv que requiere role ADMIN (retorna 401 para ESTADO). ESTADO puede ver auditorias pero no exportarlas — Claude Code 6/5</span>
+        <span class="item-text">Exportar CSV funciona (abre nueva tab con descarga) — ✅ fixeado: /api/admin/logs ahora acepta roles ADMIN y ESTADO — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -1476,7 +1476,7 @@
         </div><div class="item-card" data-eje="6" data-num="3" data-verificador="perfil" data-perfil="6" data-item-selector="eje-6-6-3">
           <div class="item-header">
             <span class="item-num">#3</span>
-            <span class="item-text">VERIFICAR: La UI del taller (/taller/formalizacion) muestra quien aprobo cada documento — ❌ NO IMPLEMENTADO. La pagina de formalizacion del taller no incluye usuarioAprobador en el Prisma query (lineas 50-54). Solo muestra &quot;Documentacion verificada&quot; para COMPLETADO (linea 119). El taller no ve quien aprobo — Claude Code 6/5</span>
+            <span class="item-text">VERIFICAR: La UI del taller (/taller/formalizacion) muestra quien aprobo cada documento — ✅ fixeado: query ahora incluye usuarioAprobador, muestra &quot;Verificado por el Estado (nombre)&quot; o &quot;Verificado por el equipo de PDT&quot; segun rol — Claude Code 6/5</span>
             <span class="badge-perfil">6</span>
           </div>
           <div class="item-badges"></div>
