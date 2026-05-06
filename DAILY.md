@@ -1,5 +1,33 @@
 # Daily Log
 
+## 2026-05-06
+
+### Gerardo Breard
+- **00:11** `c60113b` — feat: T-02 reporte de campo del piloto — observaciones cualitativas + reportes Excel OIT
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-reporte-campo.md`
+  - `.claude/auditorias/REVIEW_v3-reporte-campo.md`
+  - `prisma/migrations/20260505160000_add_observacion_campo/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/__tests__/observaciones-campo.test.ts`
+  - `src/__tests__/whatsapp.test.ts`
+  - `src/app/(admin)/admin/observaciones/[id]/editar/eliminar-observacion.tsx`
+  - `src/app/(admin)/admin/observaciones/[id]/editar/loading.tsx`
+  - `src/app/(admin)/admin/observaciones/[id]/editar/page.tsx`
+  - `src/app/(admin)/admin/observaciones/formulario-observacion.tsx`
+  - `src/app/(admin)/admin/observaciones/loading.tsx`
+  - `src/app/(admin)/admin/observaciones/nueva/loading.tsx`
+  - `src/app/(admin)/admin/observaciones/nueva/page.tsx`
+  - `src/app/(admin)/admin/observaciones/page.tsx`
+  - `src/app/(admin)/layout.tsx`
+  - `src/app/api/admin/observaciones/[id]/route.ts`
+  - `src/app/api/admin/observaciones/route.ts`
+  - `src/app/api/admin/reporte-mensual/route.ts`
+  - `src/app/api/admin/reporte-piloto/route.ts`
+  - `src/app/api/admin/usuarios-buscar/route.ts`
+  - `tests/e2e/observaciones-campo.spec.ts`
+
+
 ## 2026-05-05
 
 ### Gerardo Breard
