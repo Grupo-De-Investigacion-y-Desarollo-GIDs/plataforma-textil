@@ -27,6 +27,8 @@
 # misc
 .DS_Store
 *.pem
+*.key
+.certs/
 
 # hook state/logs
 .claude/hooks/.last_daily_commit

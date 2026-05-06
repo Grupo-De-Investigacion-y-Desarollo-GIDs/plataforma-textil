@@ -151,7 +151,8 @@ Origen: cosas que vamos a aprender durante el piloto. **Este bloque está vacío
 |----|------|-------------|------------|
 | G-01 | Boton filtro "Ver pendientes" en dashboard ESTADO | Agregar boton `data-filter="con-pendientes"` en dashboard ESTADO que linkee a `/estado/talleres?pendientes=con`. Hoy la ruta de filtro existe pero no hay acceso directo desde el dashboard | 1h |
 | G-02 | Control granular de credenciales exhibidas | Permitir al taller decidir que credenciales verificadas exhibir en su perfil publico (control granular). Hoy (v3) todas las credenciales COMPLETADO se muestran automaticamente. Si el feedback del piloto lo justifica, agregar toggle por credencial en /taller/perfil/editar | 4h |
-| (TBD) | (Pendiente de feedback de talleres) | | |
+| G-03 | Opción "No tengo áreas separadas" en evaluación de infraestructura | En `/taller/perfil/completar`, la pregunta "¿Tenés áreas separadas para cada proceso?" no ofrece opción negativa. Agregar "No tengo áreas separadas" como opción válida. Origen: QA issue #208 | 1h |
+| G-04 | Explicación contextual del SAM en onboarding | En `/taller/perfil/completar` se menciona "qué es el SAM" sin brindar detalle ni contexto. Agregar descripción breve del Sistema de Auto-evaluación y Mejora al inicio del proceso. Origen: QA issues #209, #210 | 2h |
 | (TBD) | (Pendiente de feedback de marcas) | | |
 | (TBD) | (Pendiente de feedback de OIT) | | |
 | (TBD) | (Pendiente de feedback de Sergio sobre auditorías) | | |
