@@ -27,10 +27,10 @@ Verificar que: (1) emails se envian via Resend, (2) magic links funcionan, (3) e
 
 - [ ] Aprobado — todo funciona
 - [ ] Aprobado con fixes — funciona pero hay bugs menores
-- [x] Rechazado — falta funcionalidad o hay bugs bloqueantes
+- [ ] Rechazado — falta funcionalidad o hay bugs bloqueantes
 
-**Decision:** fix inmediato — RESEND_API_KEY vacia en Production. Emails van a console.log en vez de enviarse.
-**Bug critico encontrado 2026-05-06:** Variables de email en Vercel Production tienen valor vacio "". sendEmail() activa guard de dev y retorna exito:true sin enviar.
+**Decision:** pendiente dry-run de Gerardo para confirmar
+**Nota 2026-05-06:** Diagnostico erroneo previo (RESEND_API_KEY vacia) — fue falso positivo del CLI v50.38.3 que no puede desencriptar variables tipo `sensitive`. Verificado via API: variables tienen valor (value_present=True, type=sensitive). Gerardo confirma que emails llegan. Esperando dry-run formal para cerrar.
 
 ---
 
@@ -130,19 +130,13 @@ Verificar que: (1) emails se envian via Resend, (2) magic links funcionan, (3) e
 4. No hay logging a LogActividad (spec lo pedia) — se usa console.error. Aceptable para piloto
 5. No hay timeout explicito de 5s (spec lo pedia) — se confía en el default de Resend SDK
 
-**BUG CRITICO (encontrado 2026-05-06):**
-RESEND_API_KEY en Vercel Production tiene valor vacio "". JavaScript evalua !"" como true, activando el guard de dev en email.ts:18. TODOS los emails en produccion van a console.log y retornan {exito: true} sin enviar nada por Resend.
+**CORRECCION (2026-05-06):** Diagnostico previo de "RESEND_API_KEY vacia" fue falso positivo.
+- `vercel env pull` (CLI v50.38.3) no puede desencriptar variables tipo `sensitive` y muestra `""`
+- La API de Vercel confirma `value_present=True` pero `decrypted=False` (por diseno de seguridad)
+- Gerardo confirma que emails llegan en produccion
+- Leccion: actualizar CLI (`npm i -g vercel@latest`) y no confiar en `env pull` para vars `sensitive`
 
-Variables afectadas (todas vacias en Production):
-- RESEND_API_KEY="" → guard de dev se activa
-- EMAIL_FROM → NO EXISTE en Production (solo en Preview develop)
-- EMAIL_FROM_NAME="" → fallback a "Plataforma Textil"
-- EMAIL_SUPPORT="" → fallback a "soporte@plataformatextil.ar"
-- EMAIL_REPLY_TO="" → undefined
-
-Fix requerido: configurar valores reales en Vercel Production. No es bug de codigo.
-
-**Dry-runs pendientes (Gerardo) — bloqueados hasta fix de env vars:**
+**Dry-runs pendientes (Gerardo):**
 - Magic link → gbreard@gmail.com
 - Email bienvenida post-registro
 - Verificar que no caen a spam
