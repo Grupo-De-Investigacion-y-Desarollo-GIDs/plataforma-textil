@@ -3,6 +3,9 @@
 ## 2026-05-06
 
 ### Gerardo Breard
+- **16:01** `77c7289` — chore: agregar Bloque L (Documentacion/Operaciones) a V4_BACKLOG
+  - `.claude/specs/V4_BACKLOG.md`
+
 - **15:55** `64ba7cb` — audit: corregir diagnostico erroneo INT-02 env vars
   - `.claude/auditorias/QA_v3-email-resend.md`
 
