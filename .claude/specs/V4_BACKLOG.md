@@ -212,6 +212,24 @@ Este bloque transforma la PDT de un sistema transaccional a una plataforma con i
 
 ---
 
+## Bloque K — Seguridad
+
+Origen: Hallazgo critico de auditoria QA INT-00 (2026-05-06) — `/api/talleres` expuesto sin auth, leakea nivel (privado) + PII (email, phone). Tambien `/api/pedidos/[id]/ordenes` leakea nivel a marcas.
+
+| ID | Spec | Descripcion | Estimacion |
+|----|------|-------------|------------|
+| K-01 | Auditoria de seguridad de endpoints | Auditar TODOS los endpoints del proyecto (~75 rutas en /api). Verificar auth check + role check en cada uno. Documentar: endpoint, metodo, auth requerida, roles permitidos, datos expuestos | 4h |
+| K-02 | Test pattern reutilizable de auth | Crear helper de test que para cada endpoint verifique: 401 sin auth, 403 con rol incorrecto, 200 con rol correcto. Aplicar a los ~75 endpoints existentes | 6h |
+| K-03 | Fix inmediato /api/talleres | Agregar requiereRolApi, usar select en vez de include para excluir nivel/PII, remover parametro ?nivel | 1h |
+| K-04 | Fix /api/pedidos/[id]/ordenes nivel leak | Remover `nivel: true` del Prisma select en la query de ordenes | 0.5h |
+| K-05 | Revisitar endpoints con datos sensibles | Post-auditoria K-01: aplicar select explicito (no include) en todos los endpoints que retornan datos de taller/user para evitar leaks futuros por campos nuevos en schema | 4h |
+
+**Total estimado Bloque K:** ~15.5h
+
+**Prioridad:** Alta — K-03 y K-04 son fixes pre-piloto. K-01/K-02/K-05 pueden ir post-piloto pero antes de produccion abierta.
+
+---
+
 ## Resumen ejecutivo de V4
 
 | Bloque | Specs | Estimación | Prioridad |
@@ -226,8 +244,9 @@ Este bloque transforma la PDT de un sistema transaccional a una plataforma con i
 | H — Mercado y transparencia | 7 specs | 66h | Post-piloto (junio) |
 | I — Servicios y catálogo | 7 specs | 62h | Post-piloto (después de H) |
 | J — Rol CONTENIDO completo | 5 specs | 14h | Media (no bloquea piloto) |
+| K — Seguridad | 5 specs | 15.5h | Alta (K-03/K-04 pre-piloto) |
 
-**Total estimado V4 (sin Bloque G):** ~336h ≈ 8-9 semanas de trabajo
+**Total estimado V4 (sin Bloque G):** ~351.5h ≈ 9 semanas de trabajo
 
 ---
 
