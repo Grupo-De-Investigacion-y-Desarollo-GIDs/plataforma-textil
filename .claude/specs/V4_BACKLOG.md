@@ -77,7 +77,10 @@ Origen: decisiones tomadas durante V3 que conviene revisar.
 | T-14 | Mejorar detalle de logs de auditoría | La tabla de logs muestra la acción (ej: `VALIDACION_APROBADA`) pero no indica sobre qué usuario/recurso se realizó. Agregar columna o tooltip con detalle del recurso afectado. Origen: QA issue #144 | 3h |
 | T-15 | Filtro de usuario asociado en logs | Agregar filtro por usuario afectado (no solo el que ejecuta la acción) en `/admin/logs`. Origen: QA issue #145 | 2h |
 
-**Total estimado Bloque D:** ~31.5h (T-07 cerrado, T-09 nuevo, T-12 a T-15 nuevos)
+| T-16 | Migrar NotaInterna → NotaSeguimiento | 2 sistemas de notas coexisten en admin talleres/marcas detail (legacy NotaInterna + T-03 NotaSeguimiento). Decidir cual es canonical, migrar datos del legacy, eliminar el deprecated. Origen: T-03 audit | 4h |
+| T-17 | Refactor E2E tests sin skip silencioso | Tests E2E usan try/catch { test.skip() } que enmascara fallos reales. Reemplazar por expect + assertions que fallen explicitamente. Incluye fix de test flaky `ux-mejoras.spec.ts:34` (EmptyState breadcrumb timeout — falla intermitente confirmada 1/2 runs). Origen: T-03 audit | 6h |
+
+**Total estimado Bloque D:** ~41.5h (T-07/T-10 cerrados, T-16/T-17 nuevos)
 
 ---
 
@@ -265,7 +268,7 @@ Origen: lecciones aprendidas durante QA V3 y operacion del piloto.
 | A — Cumplimiento OIT | 10 specs | 43h + docs | Alta (bloquea escalamiento) |
 | B — Mobile y UX | 3 specs | 22h | Alta (talleres usan celular) |
 | C — Mejoras de QA | 4 specs | 20h | Media |
-| D — Deuda técnica V3 | 5 specs | 21h | Baja |
+| D — Deuda técnica V3 | 7 specs | 41.5h | Baja |
 | E — Integraciones | 3 specs | 36h | Variable según piloto |
 | F — Internacionalización | 3 specs | 52h | Solo si se escala |
 | G — Feedback del piloto | TBD | TBD | Variable |

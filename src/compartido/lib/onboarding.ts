@@ -1,5 +1,9 @@
 import { prisma } from './prisma'
 
+// Dias sin actividad para considerar al usuario como INACTIVO.
+// Decision institucional OIT (2026-05-06): 14 dias.
+const DIAS_INACTIVIDAD = 14
+
 export type EtapaOnboarding =
   | 'INVITADO'
   | 'REGISTRADO'
@@ -33,10 +37,10 @@ export async function calcularEtapa(userId: string, role: string): Promise<Etapa
     })
     if (!taller || !taller.capacidadMensual) return 'REGISTRADO'
     if (taller._count.cotizaciones > 0) {
-      if (diasDesde(ultimoLogin.timestamp) > 7) return 'INACTIVO'
+      if (diasDesde(ultimoLogin.timestamp) > DIAS_INACTIVIDAD) return 'INACTIVO'
       return 'ACTIVO'
     }
-    if (diasDesde(ultimoLogin.timestamp) > 7) return 'INACTIVO'
+    if (diasDesde(ultimoLogin.timestamp) > DIAS_INACTIVIDAD) return 'INACTIVO'
     return 'PERFIL_COMPLETO'
   }
 
@@ -47,10 +51,10 @@ export async function calcularEtapa(userId: string, role: string): Promise<Etapa
     })
     if (!marca) return 'REGISTRADO'
     if (marca._count.pedidos > 0) {
-      if (diasDesde(ultimoLogin.timestamp) > 7) return 'INACTIVO'
+      if (diasDesde(ultimoLogin.timestamp) > DIAS_INACTIVIDAD) return 'INACTIVO'
       return 'ACTIVO'
     }
-    if (diasDesde(ultimoLogin.timestamp) > 7) return 'INACTIVO'
+    if (diasDesde(ultimoLogin.timestamp) > DIAS_INACTIVIDAD) return 'INACTIVO'
     return 'PERFIL_COMPLETO'
   }
 
