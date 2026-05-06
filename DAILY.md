@@ -3,6 +3,9 @@
 ## 2026-05-06
 
 ### Gerardo Breard
+- **19:38** `8dfdade` — audit: QA F-04 exportes estado completo
+  - `.claude/auditorias/QA_v3-exportes-estado.md`
+
 - **19:26** `d3bbe08` — fix: threshold inactividad 7→14 dias + V4 entries + decisiones OIT
   - `.claude/specs/V4_BACKLOG.md`
   - `docs/decisiones-pendientes-OIT.md`
