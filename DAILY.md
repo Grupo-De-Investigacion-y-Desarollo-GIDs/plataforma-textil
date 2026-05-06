@@ -3,6 +3,15 @@
 ## 2026-05-06
 
 ### Gerardo Breard
+- **16:32** `cfce2b0` — fix: 6 hallazgos QA D-01 + D-02
+  - `.claude/auditorias/QA_v3-redefinicion-roles-estado.md`
+  - `.claude/auditorias/QA_v3-tipos-documento-db.md`
+  - `src/app/(estado)/estado/configuracion-niveles/page.tsx`
+  - `src/app/(estado)/estado/documentos/page.tsx`
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+  - `src/app/api/admin/logs/route.ts`
+  - `src/app/api/estado/configuracion-niveles/preview/route.ts`
+
 - **16:17** `4aca19f` — audit: QA D-01 + D-02 completos — code review + Eje 6
   - `.claude/auditorias/QA_v3-redefinicion-roles-estado.md`
   - `.claude/auditorias/QA_v3-tipos-documento-db.md`
