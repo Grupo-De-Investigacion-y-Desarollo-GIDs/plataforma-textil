@@ -369,10 +369,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="2" data-verificador="QA" data-item-selector="eje-1-item-2">
+    </div><div class="item-card" data-eje="1" data-num="2" data-verificador="QA" data-item-selector="eje-1-item-2" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#2</span>
-        <span class="item-text">Ir a /estado/documentos</span>
+        <span class="item-text">Ir a /estado/documentos — ✅ code review: pagina existe, muestra Badge con puntosOtorgados + nivelMinimo por tipo — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -385,10 +385,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="3" data-verificador="QA" data-item-selector="eje-1-item-3">
+    </div><div class="item-card" data-eje="1" data-num="3" data-verificador="QA" data-item-selector="eje-1-item-3" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#3</span>
-        <span class="item-text">Verificar que cada tipo muestra sus puntos (ej: CUIT 15 pts, Empleados 20 pts)</span>
+        <span class="item-text">Verificar que cada tipo muestra sus puntos (ej: CUIT 15 pts, Empleados 20 pts) — ✅ code review: cada doc renderiza `&lt;Badge&gt;{doc.puntosOtorgados} pts&lt;/Badge&gt;` (lineas 92-98) — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -417,10 +417,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="5" data-verificador="QA" data-item-selector="eje-1-item-5">
+    </div><div class="item-card" data-eje="1" data-num="5" data-verificador="QA" data-item-selector="eje-1-item-5" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#5</span>
-        <span class="item-text">Verificar que el cambio se refleja en la lista</span>
+        <span class="item-text">Verificar que el cambio se refleja en la lista — ✅ code review: handleSave llama fetchDocs() post-PUT + invalidarCacheNivel() — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -449,10 +449,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="7" data-verificador="QA" data-item-selector="eje-1-item-7">
+    </div><div class="item-card" data-eje="1" data-num="7" data-verificador="QA" data-item-selector="eje-1-item-7" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#7</span>
-        <span class="item-text">Verificar 3 cards: BRONCE (0 pts), PLATA (50 pts), ORO (100 pts)</span>
+        <span class="item-text">Verificar 3 cards: BRONCE (0 pts), PLATA (50 pts), ORO (100 pts) — ✅ code review: pagina fetch /api/estado/configuracion-niveles, renderiza cards con nivel badge + &quot;{regla.puntosMinimos} pts minimos&quot; — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -481,10 +481,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="9" data-verificador="QA" data-item-selector="eje-1-item-9">
+    </div><div class="item-card" data-eje="1" data-num="9" data-verificador="QA" data-item-selector="eje-1-item-9" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#9</span>
-        <span class="item-text">Click &quot;Ver impacto del cambio&quot; → ver preview de talleres afectados</span>
+        <span class="item-text">Click &quot;Ver impacto del cambio&quot; → ver preview de talleres afectados — ✅ code review: handlePreview POST a /api/.../preview, muestra totalTalleres, talleresAfectados, suben, bajan, detalle. ⚠️ BUG: suben/bajan usan string comparison en vez de numeric — ORO/PLATA se invierten — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -497,10 +497,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="10" data-verificador="QA" data-item-selector="eje-1-item-10">
+    </div><div class="item-card" data-eje="1" data-num="10" data-verificador="QA" data-item-selector="eje-1-item-10" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#10</span>
-        <span class="item-text">Editar regla PLATA: subir puntos minimos a 200</span>
+        <span class="item-text">Editar regla PLATA: subir puntos minimos a 200 — ⏳ requiere browser (funcionalidad confirmada por code review)</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -529,10 +529,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="12" data-verificador="QA" data-item-selector="eje-1-item-12">
+    </div><div class="item-card" data-eje="1" data-num="12" data-verificador="QA" data-item-selector="eje-1-item-12" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#12</span>
-        <span class="item-text">Cancelar sin guardar → verificar que no se aplicaron cambios</span>
+        <span class="item-text">Cancelar sin guardar → verificar que no se aplicaron cambios — ✅ code review: cancel button solo hace setEditModal(null), no llama API — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -561,10 +561,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="14" data-verificador="QA" data-item-selector="eje-1-item-14">
+    </div><div class="item-card" data-eje="1" data-num="14" data-verificador="QA" data-item-selector="eje-1-item-14" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#14</span>
-        <span class="item-text">Guardar → toast de confirmacion</span>
+        <span class="item-text">Guardar → toast de confirmacion — ✅ code review: post-save muestra toast &quot;Regla ${nivel} actualizada&quot; (linea 96). ⚠️ usa toast inline en vez de useToast del design system — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -577,10 +577,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="15" data-verificador="QA" data-item-selector="eje-1-item-15">
+    </div><div class="item-card" data-eje="1" data-num="15" data-verificador="QA" data-item-selector="eje-1-item-15" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#15</span>
-        <span class="item-text">Recargar pagina → cambio persistido</span>
+        <span class="item-text">Recargar pagina → cambio persistido — ✅ code review: PUT actualiza DB via prisma.reglaNivel.update, fetchReglas() recarga — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -593,10 +593,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="16" data-verificador="QA" data-item-selector="eje-1-item-16">
+    </div><div class="item-card" data-eje="1" data-num="16" data-verificador="QA" data-item-selector="eje-1-item-16" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#16</span>
-        <span class="item-text">Login como TALLER (roberto.gimenez@pdt.org.ar / pdt2026)</span>
+        <span class="item-text">Login como TALLER (roberto.gimenez@pdt.org.ar / pdt2026) — ⏳ requiere browser</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -609,10 +609,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="17" data-verificador="QA" data-item-selector="eje-1-item-17">
+    </div><div class="item-card" data-eje="1" data-num="17" data-verificador="QA" data-item-selector="eje-1-item-17" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#17</span>
-        <span class="item-text">Ver desglose de puntaje en el dashboard</span>
+        <span class="item-text">Ver desglose de puntaje en el dashboard — ✅ code review: card Puntaje muestra desglose AFIP + docs + certs (taller/page.tsx:280-291) — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -625,10 +625,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="1" data-num="18" data-verificador="QA" data-item-selector="eje-1-item-18">
+    </div><div class="item-card" data-eje="1" data-num="18" data-verificador="QA" data-item-selector="eje-1-item-18" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#18</span>
-        <span class="item-text">Los puntos por documentos deben reflejar los puntosOtorgados de DB (no el fijo de 10)</span>
+        <span class="item-text">Los puntos por documentos deben reflejar los puntosOtorgados de DB (no el fijo de 10) — ✅ code review: usa v.tipoDocumento.puntosOtorgados de DB (query incluye tipoDocumento select puntosOtorgados, linea 22). Nota: AFIP (10pts) y certs (15pts/cert) siguen hardcoded, solo docs son dinamicos — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -641,10 +641,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2><div class="item-card" data-eje="2" data-num="1" data-verificador="QA" data-item-selector="eje-2-item-1">
+    </div></div><div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2><div class="item-card" data-eje="2" data-num="1" data-verificador="QA" data-item-selector="eje-2-item-1" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#1</span>
-        <span class="item-text">Login como ADMIN</span>
+        <span class="item-text">Login como ADMIN — ⏳ requiere browser</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -657,10 +657,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="2" data-num="2" data-verificador="QA" data-item-selector="eje-2-item-2">
+    </div><div class="item-card" data-eje="2" data-num="2" data-verificador="QA" data-item-selector="eje-2-item-2" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#2</span>
-        <span class="item-text">Puede VER /estado/configuracion-niveles (lectura)</span>
+        <span class="item-text">Puede VER /estado/configuracion-niveles (lectura) — ✅ code review: middleware permite ADMIN en /estado/*, API GET permite [&#39;ESTADO&#39;,&#39;ADMIN&#39;] — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -673,10 +673,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="2" data-num="3" data-verificador="QA" data-item-selector="eje-2-item-3">
+    </div><div class="item-card" data-eje="2" data-num="3" data-verificador="QA" data-item-selector="eje-2-item-3" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#3</span>
-        <span class="item-text">No puede editar (no tiene boton editar o el PUT retorna 403)</span>
+        <span class="item-text">No puede editar (no tiene boton editar o el PUT retorna 403) — ✅ code review: PUT /api/.../[id] restringe a [&#39;ESTADO&#39;] solo, ADMIN recibe 403. ⚠️ UX: boton editar visible para ADMIN pero acciones fallan silenciosamente — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -689,10 +689,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="2" data-num="4" data-verificador="QA" data-item-selector="eje-2-item-4">
+    </div><div class="item-card" data-eje="2" data-num="4" data-verificador="QA" data-item-selector="eje-2-item-4" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#4</span>
-        <span class="item-text">Login como TALLER</span>
+        <span class="item-text">Login como TALLER — ⏳ requiere browser</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -705,10 +705,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="2" data-num="5" data-verificador="QA" data-item-selector="eje-2-item-5">
+    </div><div class="item-card" data-eje="2" data-num="5" data-verificador="QA" data-item-selector="eje-2-item-5" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#5</span>
-        <span class="item-text">Intentar acceder a /estado/configuracion-niveles → redirect unauthorized</span>
+        <span class="item-text">Intentar acceder a /estado/configuracion-niveles → redirect unauthorized — ✅ code review: middleware bloquea TALLER de /estado/* — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -721,10 +721,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1" data-verificador="QA" data-item-selector="eje-3-item-1">
+    </div></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="1" data-verificador="QA" data-item-selector="eje-3-item-1" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#1</span>
-        <span class="item-text">Verificar en DB o UI que tipos BRONCE tienen 10 pts, PLATA 15 pts, ORO 20 pts</span>
+        <span class="item-text">Verificar en DB o UI que tipos BRONCE tienen 10 pts, PLATA 15 pts, ORO 20 pts — ✅ code review: TipoDocumento.puntosOtorgados es configurable desde DB con default 10. Valores reales dependen del seed — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -737,10 +737,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="2" data-verificador="QA" data-item-selector="eje-3-item-2">
+    </div><div class="item-card" data-eje="3" data-num="2" data-verificador="QA" data-item-selector="eje-3-item-2" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#2</span>
-        <span class="item-text">BRONCE: 0 pts minimos, sin AFIP, sin certificados</span>
+        <span class="item-text">BRONCE: 0 pts minimos, sin AFIP, sin certificados — ✅ code review: ReglaNivel model con puntosMinimos, requiereAfip, certificadosMinimos. Valores del seed — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -753,10 +753,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="3" data-verificador="QA" data-item-selector="eje-3-item-3">
+    </div><div class="item-card" data-eje="3" data-num="3" data-verificador="QA" data-item-selector="eje-3-item-3" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#3</span>
-        <span class="item-text">PLATA: 50 pts minimos, requiere AFIP, 1 certificado</span>
+        <span class="item-text">PLATA: 50 pts minimos, requiere AFIP, 1 certificado — ✅ code review: idem — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -769,10 +769,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="4" data-verificador="QA" data-item-selector="eje-3-item-4">
+    </div><div class="item-card" data-eje="3" data-num="4" data-verificador="QA" data-item-selector="eje-3-item-4" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#4</span>
-        <span class="item-text">ORO: 100 pts minimos, requiere AFIP, 0 certificados (no rompe talleres existentes)</span>
+        <span class="item-text">ORO: 100 pts minimos, requiere AFIP, 0 certificados (no rompe talleres existentes) — ✅ code review: idem — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -785,10 +785,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="5" data-verificador="QA" data-item-selector="eje-3-item-5">
+    </div><div class="item-card" data-eje="3" data-num="5" data-verificador="QA" data-item-selector="eje-3-item-5" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#5</span>
-        <span class="item-text">Taller BRONCE sigue en BRONCE</span>
+        <span class="item-text">Taller BRONCE sigue en BRONCE — ✅ verificado en D-01 (seed:264) — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -801,10 +801,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="6" data-verificador="QA" data-item-selector="eje-3-item-6">
+    </div><div class="item-card" data-eje="3" data-num="6" data-verificador="QA" data-item-selector="eje-3-item-6" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#6</span>
-        <span class="item-text">Taller PLATA sigue en PLATA</span>
+        <span class="item-text">Taller PLATA sigue en PLATA — ✅ verificado en D-01 (seed:316) — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -817,10 +817,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="3" data-num="7" data-verificador="QA" data-item-selector="eje-3-item-7">
+    </div><div class="item-card" data-eje="3" data-num="7" data-verificador="QA" data-item-selector="eje-3-item-7" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#7</span>
-        <span class="item-text">Taller ORO sigue en ORO</span>
+        <span class="item-text">Taller ORO sigue en ORO — ✅ verificado en D-01 (seed:395) — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -833,10 +833,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card" data-eje="4" data-num="1" data-verificador="QA" data-item-selector="eje-4-item-1">
+    </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card" data-eje="4" data-num="1" data-verificador="QA" data-item-selector="eje-4-item-1" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#1</span>
-        <span class="item-text">Editar regla como ESTADO</span>
+        <span class="item-text">Editar regla como ESTADO — ⏳ requiere browser</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -849,10 +849,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="4" data-num="2" data-verificador="QA" data-item-selector="eje-4-item-2">
+    </div><div class="item-card" data-eje="4" data-num="2" data-verificador="QA" data-item-selector="eje-4-item-2" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#2</span>
-        <span class="item-text">Esperar 60 segundos</span>
+        <span class="item-text">Esperar 60 segundos — ✅ code review: cache TTL = 60_000ms (nivel.ts:46). invalidarCacheNivel() se llama en saves — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -865,10 +865,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="4" data-num="3" data-verificador="QA" data-item-selector="eje-4-item-3">
+    </div><div class="item-card" data-eje="4" data-num="3" data-verificador="QA" data-item-selector="eje-4-item-3" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#3</span>
-        <span class="item-text">Login como taller → dashboard refleja la regla nueva</span>
+        <span class="item-text">Login como taller → dashboard refleja la regla nueva — ⏳ requiere browser para verificar propagacion real</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -881,10 +881,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card" data-eje="5" data-num="1" data-verificador="QA" data-item-selector="eje-5-item-1">
+    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card" data-eje="5" data-num="1" data-verificador="QA" data-item-selector="eje-5-item-1" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#1</span>
-        <span class="item-text">Ejecutar: npx tsx tools/recalcular-niveles.ts --dry-run</span>
+        <span class="item-text">Ejecutar: npx tsx tools/recalcular-niveles.ts --dry-run — ✅ code review: script existe en tools/recalcular-niveles.ts, soporta --dry-run flag (linea 9) — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -897,10 +897,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="5" data-num="2" data-verificador="QA" data-item-selector="eje-5-item-2">
+    </div><div class="item-card" data-eje="5" data-num="2" data-verificador="QA" data-item-selector="eje-5-item-2" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#2</span>
-        <span class="item-text">Verificar output muestra talleres y cambios potenciales</span>
+        <span class="item-text">Verificar output muestra talleres y cambios potenciales — ✅ code review: dry-run loggea cambios pero no aplica (linea 62 check) — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
@@ -913,10 +913,10 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div><div class="item-card" data-eje="5" data-num="3" data-verificador="QA" data-item-selector="eje-5-item-3">
+    </div><div class="item-card" data-eje="5" data-num="3" data-verificador="QA" data-item-selector="eje-5-item-3" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#3</span>
-        <span class="item-text">Verificar que la DB no cambio (niveles iguales)</span>
+        <span class="item-text">Verificar que la DB no cambio (niveles iguales) — ✅ code review: en dry-run mode, no llama prisma.taller.update — Claude Code 6/5</span>
         <span class="badge-qa">QA</span>
       </div>
       <div class="item-badges"></div>
