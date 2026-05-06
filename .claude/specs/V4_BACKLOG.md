@@ -107,6 +107,40 @@ Origen: posible escalamiento a otros países (Uruguay, Paraguay, Bolivia).
 
 ---
 
+## Bloque J — Rol CONTENIDO completo
+
+Origen: durante V3 se identifico que el rol CONTENIDO esta parcialmente implementado. Tiene layout propio y 4 paginas pero con links rotos a `/admin/colecciones/`, sin sidebar correcto, sin notificaciones propias. En V3 se oculto de la UI administrativa para evitar que se vea roto en el piloto.
+
+**Workaround V3:** ADMIN carga contenido directamente. Si OIT/UNTREF pregunta por el rol, esta reservado para V4.
+
+### Analisis funcional pendiente (antes de implementar)
+
+| # | Pregunta | Respuesta |
+|---|----------|-----------|
+| 1 | Que hace exactamente un contenidista en la PDT? | |
+| 2 | Tiene rol de moderacion o solo carga de cursos? | |
+| 3 | OIT/UNTREF carga contenido o es un rol externo (ej: INTI, universidades)? | |
+| 4 | Que relacion tiene con ADMIN: jerarquica (subordinado) o complementaria (par)? | |
+| 5 | Necesita ver observaciones de campo (T-02)? | |
+| 6 | Necesita notificaciones propias o comparte con ADMIN? | |
+| 7 | Puede editar/eliminar colecciones que creo otro usuario? | |
+
+### Implementacion
+
+| ID | Spec | Descripcion | Estimacion |
+|----|------|-------------|------------|
+| J-01 | Spec funcional CONTENIDO | Definir flujos completos basados en respuestas del analisis | 3h |
+| J-02 | Sidebar propio | No compartir con admin — sidebar dedicado con items relevantes | 2h |
+| J-03 | Rutas propias /contenido/** | Resolver links rotos: /admin/colecciones/ → /contenido/colecciones/nueva, /contenido/colecciones/[id], /contenido/colecciones/[id]/videos | 4h |
+| J-04 | Permisos granulares | Revisar middleware + APIs para que CONTENIDO solo acceda a lo que necesita | 2h |
+| J-05 | Notificaciones y panel propio | Dashboard basico con metricas de academia + acceso a notificaciones | 3h |
+
+**Total estimado Bloque J:** 14h (incluye analisis funcional)
+
+**Prioridad V4:** Media (no bloquea piloto)
+
+---
+
 ## Bloque G — Mejoras del piloto (post-feedback)
 
 Origen: cosas que vamos a aprender durante el piloto. **Este bloque está vacío hoy y se llena con feedback real.**
@@ -188,8 +222,9 @@ Este bloque transforma la PDT de un sistema transaccional a una plataforma con i
 | G — Feedback del piloto | TBD | TBD | Variable |
 | H — Mercado y transparencia | 7 specs | 66h | Post-piloto (junio) |
 | I — Servicios y catálogo | 7 specs | 62h | Post-piloto (después de H) |
+| J — Rol CONTENIDO completo | 5 specs | 14h | Media (no bloquea piloto) |
 
-**Total estimado V4 (sin Bloque G):** ~322h ≈ 8-9 semanas de trabajo
+**Total estimado V4 (sin Bloque G):** ~336h ≈ 8-9 semanas de trabajo
 
 ---
 

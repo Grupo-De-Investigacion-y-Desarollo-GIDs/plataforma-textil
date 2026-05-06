@@ -178,7 +178,6 @@ export default function AdminUsuariosPage() {
             { value: 'TALLER', label: 'Taller' },
             { value: 'MARCA', label: 'Marca' },
             { value: 'ESTADO', label: 'Estado' },
-            { value: 'CONTENIDO', label: 'Contenido' },
             { value: 'ADMIN', label: 'Admin' },
           ]}
         />
@@ -232,7 +231,6 @@ export default function AdminUsuariosPage() {
                 { value: 'TALLER', label: 'Taller' },
                 { value: 'MARCA', label: 'Marca' },
                 { value: 'ESTADO', label: 'Estado' },
-                { value: 'CONTENIDO', label: 'Contenido' },
                 { value: 'ADMIN', label: 'Admin' },
               ]}
             />
