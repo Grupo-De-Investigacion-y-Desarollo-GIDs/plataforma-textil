@@ -613,7 +613,7 @@ Limitacion conocida: con dominio onboarding@resend.dev solo se puede enviar a gb
             <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
             <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
           </div>
-          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">Limitacion conocida: dominio onboarding@resend.dev solo envia a gbreard@gmail.com</textarea>
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
@@ -798,7 +798,17 @@ Limitacion conocida: con dominio onboarding@resend.dev solo se puede enviar a gb
           <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
-      </div></div><div class="section" id="checklist"><h2>Checklist de cierre</h2><div class="checklist-items"><label class="checklist-item">
+      </div></div><div class="section" id="notas-auditores">
+    <h2>Notas de los auditores</h2>
+    <div class="field-group">
+      <label>Sergio (tecnico):</label>
+      <textarea class="large-textarea" id="textarea-notas-tecnico" placeholder="Observaciones tecnicas..." rows="4"></textarea>
+    </div>
+    <div class="field-group">
+      <label>Perfiles interdisciplinarios:</label>
+      <textarea class="large-textarea" id="textarea-notas-perfiles" placeholder="Observaciones de dominio..." rows="4"></textarea>
+    </div>
+  </div><div class="section" id="checklist"><h2>Checklist de cierre</h2><div class="checklist-items"><label class="checklist-item">
       <input type="checkbox" data-checklist="0">
       <span>Dry-run magic link exitoso (Gerardo)</span>
     </label><label class="checklist-item">
@@ -806,10 +816,10 @@ Limitacion conocida: con dominio onboarding@resend.dev solo se puede enviar a gb
       <span>Dry-run bienvenida exitoso (Gerardo)</span>
     </label><label class="checklist-item">
       <input type="checkbox" data-checklist="2">
-      <span>6 tests Vitest nuevos pasan</span>
+      <span>6 tests Vitest nuevos pasan — verificado, 402 tests totales pasando</span>
     </label><label class="checklist-item">
       <input type="checkbox" data-checklist="3">
-      <span>CI verde</span>
+      <span>CI verde — E2E success en develop</span>
     </label><label class="checklist-item">
       <input type="checkbox" data-checklist="4">
       <span>Issues abiertos en GitHub si aplica</span>
