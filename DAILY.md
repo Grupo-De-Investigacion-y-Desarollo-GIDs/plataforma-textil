@@ -3,6 +3,9 @@
 ## 2026-05-06
 
 ### Gerardo Breard
+- **17:54** `45b5e62` — audit: QA T-03 protocolos onboarding completo
+  - `.claude/auditorias/QA_v3-protocolos-onboarding.md`
+
 - **17:43** `ebd3cd9` — fix: 2 hallazgos T-02 + Bloque M gobernanza en V4_BACKLOG
   - `.claude/specs/V4_BACKLOG.md`
   - `src/app/(admin)/admin/observaciones/formulario-observacion.tsx`
