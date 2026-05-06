@@ -3,6 +3,14 @@
 ## 2026-05-06
 
 ### Gerardo Breard
+- **13:56** `53f6298` — fix: 5 hallazgos QA INT-00 — seguridad, paginacion, UX
+  - `src/__tests__/acceso-verificado.test.ts`
+  - `src/app/(marca)/marca/directorio/page.tsx`
+  - `src/app/(marca)/marca/page.tsx`
+  - `src/app/(public)/directorio/page.tsx`
+  - `src/app/api/pedidos/[id]/ordenes/route.ts`
+  - `src/app/api/talleres/route.ts`
+
 - **13:34** `c7c1ef2` — chore: agregar Bloque K (Seguridad) a V4_BACKLOG
   - `.claude/specs/V4_BACKLOG.md`
 
