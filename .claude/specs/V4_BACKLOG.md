@@ -230,6 +230,22 @@ Origen: Hallazgo critico de auditoria QA INT-00 (2026-05-06) — `/api/talleres`
 
 ---
 
+## Bloque M — Gobernanza y validacion interdisciplinaria
+
+Origen: Hallazgo Eje 6 sociologo en QA T-02 (2026-05-06) — riesgo de extractivismo de conocimiento sin consentimiento del taller observado. Tambien faltan categorias de genero (eje transversal OIT).
+
+| ID | Spec | Descripcion | Estimacion |
+|----|------|-------------|------------|
+| M-01 | Protocolo etico de observaciones de campo | Disenar protocolo de uso etico: se le comunica al taller que esta siendo observado? Tienen derecho a ver/objetar observaciones sobre ellos? Quien accede (solo ESTADO/ADMIN o tambien el taller observado)? Hay anonimizacion en reportes? Coordinar con OIT/UNTREF — decision institucional, no solo tecnica | 4h analisis + impl segun decision |
+| M-02 | Tipo de observacion GENERO | Agregar GENERO al enum TipoObservacion + tag "genero" en sugeridos. Eje transversal de OIT. En sector textil argentino la mayoria de trabajadores/as son mujeres — las observaciones de campo deben poder capturar esta dimension | 1h |
+| M-03 | Guia para el equipo observador | Documento con lineamientos: cuando usar cada tipo de observacion, como registrar contexto cultural sin simplificar, uso de citas textuales, etica de observacion participante. Entregable para capacitacion pre-piloto | 2h (doc, no codigo) |
+
+**Total estimado Bloque M:** ~7h + decision institucional OIT/UNTREF
+
+**Prioridad:** Media-alta — M-01 es decision institucional que deberia arrancar antes o durante el piloto. M-02 y M-03 son rapidos post-decision.
+
+---
+
 ## Bloque L — Documentacion y operaciones
 
 Origen: lecciones aprendidas durante QA V3 y operacion del piloto.
@@ -258,8 +274,9 @@ Origen: lecciones aprendidas durante QA V3 y operacion del piloto.
 | J — Rol CONTENIDO completo | 5 specs | 14h | Media (no bloquea piloto) |
 | K — Seguridad | 5 specs | 15.5h | Alta (K-03/K-04 pre-piloto) |
 | L — Documentacion y operaciones | 1 spec | 0.5h | Baja |
+| M — Gobernanza e interdisciplinaria | 3 specs | 7h | Media-alta (decision institucional) |
 
-**Total estimado V4 (sin Bloque G):** ~352h ≈ 9 semanas de trabajo
+**Total estimado V4 (sin Bloque G):** ~359h ≈ 9 semanas de trabajo
 
 ---
 

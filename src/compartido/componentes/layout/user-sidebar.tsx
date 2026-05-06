@@ -21,6 +21,7 @@ import {
   ClipboardList,
   Download,
   Sliders,
+  Eye,
 } from 'lucide-react'
 import { cn } from '@/compartido/lib/utils'
 
@@ -74,6 +75,7 @@ const menuItemsByRole: Record<string, MenuItem[]> = {
   ADMIN: [
     { id: 'dashboard', label: 'Dashboard', href: '/admin', icon: Home },
     { id: 'usuarios', label: 'Usuarios', href: '/admin/usuarios', icon: User },
+    { id: 'observaciones', label: 'Observaciones', href: '/admin/observaciones', icon: Eye },
     { id: 'configuracion', label: 'Configuración', href: '/admin/configuracion', icon: Settings },
   ]
 }

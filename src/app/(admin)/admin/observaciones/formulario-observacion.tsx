@@ -66,7 +66,7 @@ export function FormularioObservacion({ initial, observacionId }: Props) {
   const [userId, setUserId] = useState(initial?.userId ?? '')
   const [tipo, setTipo] = useState(initial?.tipo ?? 'RESISTENCIA')
   const [fuente, setFuente] = useState(initial?.fuente ?? 'VISITA')
-  const [sentimiento, setSentimiento] = useState<string>(initial?.sentimiento ?? 'NEUTRAL')
+  const [sentimiento, setSentimiento] = useState<string | null>(initial?.sentimiento ?? null)
   const [importancia, setImportancia] = useState(initial?.importancia ?? 3)
   const [titulo, setTitulo] = useState(initial?.titulo ?? '')
   const [contenido, setContenido] = useState(initial?.contenido ?? '')
@@ -132,7 +132,7 @@ export function FormularioObservacion({ initial, observacionId }: Props) {
         userId: userId || undefined,
         tipo,
         fuente,
-        sentimiento: sentimiento || undefined,
+        sentimiento: sentimiento || null,
         importancia,
         titulo: titulo.trim(),
         contenido: contenido.trim(),
@@ -254,7 +254,18 @@ export function FormularioObservacion({ initial, observacionId }: Props) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-overpass font-semibold text-gray-700 mb-1">Sentimiento</label>
-          <div className="flex gap-4 mt-1">
+          <div className="flex flex-wrap gap-4 mt-1">
+            <label className="flex items-center gap-1.5 text-sm cursor-pointer">
+              <input
+                type="radio"
+                name="sentimiento"
+                value=""
+                checked={sentimiento === null}
+                onChange={() => setSentimiento(null)}
+                className="accent-brand-blue"
+              />
+              Sin clasificar
+            </label>
             {(['POSITIVO', 'NEUTRAL', 'NEGATIVO'] as const).map(s => (
               <label key={s} className="flex items-center gap-1.5 text-sm cursor-pointer">
                 <input
