@@ -260,6 +260,39 @@ export function buildInvitacionCotizarEmail(data: {
   }
 }
 
+export function buildInvitacionRegistroEmail(data: {
+  nombreDestinatario: string
+  nombreReferente: string
+  cargoReferente: string
+}): { subject: string; html: string } {
+  const registroUrl = `${process.env.NEXTAUTH_URL ?? ''}/registro`
+  const guiaUrl = `${process.env.NEXTAUTH_URL ?? ''}/ayuda/onboarding-taller`
+  return {
+    subject: 'Te invitamos a la Plataforma Digital Textil — OIT',
+    html: emailWrapper(`
+      <h2 style="margin: 0 0 12px;">Hola ${data.nombreDestinatario}</h2>
+      <p>Soy <strong>${data.nombreReferente}</strong> de ${data.cargoReferente}. Estamos lanzando la <strong>Plataforma Digital Textil</strong>, una herramienta gratuita que conecta talleres como el tuyo con marcas formales.</p>
+      <p>Tu taller fue identificado por OIT como referente del sector y queremos invitarte a sumarte al piloto.</p>
+      <h3 style="color: #1e3a5f; margin: 20px 0 8px;">Que te ofrece la plataforma?</h3>
+      <ul style="color: #475569; padding-left: 20px;">
+        <li>Acceso a pedidos de marcas formales</li>
+        <li>Visibilidad institucional (sello "Verificado por ARCA")</li>
+        <li>Acompanamiento gratuito para formalizacion</li>
+        <li>Capacitaciones gratuitas</li>
+      </ul>
+      <h3 style="color: #1e3a5f; margin: 20px 0 8px;">Que necesitas para empezar?</h3>
+      <ul style="color: #475569; padding-left: 20px;">
+        <li>30 minutos de tu tiempo</li>
+        <li>Tu CUIT y un documento que lo respalde</li>
+      </ul>
+      <p><a href="${guiaUrl}" style="color: #1e3a5f; font-weight: 600;">Lee la guia completa aqui</a></p>
+      ${btnPrimario(registroUrl, 'Registrarme en la plataforma')}
+      <p style="color: #94a3b8; font-size: 13px; margin-top: 16px;">Estoy disponible para una llamada de 15 minutos para acompanarte en el primer paso si lo necesitas.</p>
+      <p style="color: #64748b;"><strong>${data.nombreReferente}</strong><br>${data.cargoReferente}</p>
+    `),
+  }
+}
+
 export function buildPedidoDisponibleEmail(data: {
   nombreTaller: string
   nombreMarca: string

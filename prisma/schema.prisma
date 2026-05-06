@@ -149,6 +149,8 @@ model User {
   notificacionesWhatsapp  Boolean        @default(true)
   mensajesWhatsapp        MensajeWhatsapp[]
   magicLinks              MagicLink[]
+  notasSeguimientoRecibidas NotaSeguimiento[] @relation("userNotas")
+  notasSeguimientoCreadas   NotaSeguimiento[] @relation("autorNotas")
 
   @@map("users")
 }
@@ -818,6 +820,24 @@ model NotaInterna {
   marca  Marca?  @relation(fields: [marcaId], references: [id], onDelete: Cascade)
 
   @@map("notas_internas")
+}
+
+// ============================================
+// NOTAS DE SEGUIMIENTO (Onboarding T-03)
+// ============================================
+
+model NotaSeguimiento {
+  id        String   @id @default(cuid())
+  userId    String
+  autorId   String
+  contenido String   @db.Text
+  createdAt DateTime @default(now())
+
+  user  User @relation(name: "userNotas", fields: [userId], references: [id], onDelete: Cascade)
+  autor User @relation(name: "autorNotas", fields: [autorId], references: [id])
+
+  @@index([userId])
+  @@map("notas_seguimiento")
 }
 
 // ============================================

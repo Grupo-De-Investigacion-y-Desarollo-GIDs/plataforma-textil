@@ -548,3 +548,59 @@ Los tests E2E de rate limiting (S-02) envian requests POST a `/api/feedback` que
 ### Pruebas manuales — multi-pestana
 
 - [ ] Abrir en 2 pestanas, marcar leida en una, volver a la otra — badge se actualiza
+
+---
+
+## Spec T-03 — Protocolos de onboarding
+
+### Pruebas automatizadas
+- [ ] 24 Vitest tests pasan: `npx vitest run src/__tests__/onboarding.test.ts`
+- [ ] 7 Playwright E2E tests pasan: `npx playwright test tests/e2e/onboarding.spec.ts`
+- [ ] TypeScript compila sin errores: `npx tsc --noEmit`
+
+### Pruebas manuales — paginas de onboarding
+
+- [ ] /ayuda muestra links "Guia para talleres" y "Guia para marcas"
+- [ ] /ayuda/onboarding-taller muestra 4 pasos con contenido correcto
+- [ ] /ayuda/onboarding-marca muestra 4 pasos con contenido para marcas
+
+### Pruebas manuales — dashboard admin/onboarding
+
+- [ ] Login como ADMIN. /admin/onboarding muestra stats por etapa
+- [ ] Funnel de adopcion con barras proporcionales
+- [ ] Tabla de usuarios con etapa correcta para cada uno
+- [ ] "Onboarding" visible en sidebar del admin
+- [ ] Boton "Reenviar invitacion" para usuarios INVITADO
+- [ ] Boton "Enviar mensaje" para usuarios REGISTRADO/INACTIVO
+
+### Pruebas manuales — checklist taller
+
+- [ ] Login como TALLER con perfil incompleto → checklist visible
+- [ ] Checklist muestra 5 pasos con checks verdes y circulos grises
+- [ ] "Continuar paso siguiente" navega al primer paso pendiente
+- [ ] ProximoNivelCard NO se muestra mientras checklist esta activo
+- [ ] Con todo completado: checklist desaparece, ProximoNivelCard aparece
+
+### Pruebas manuales — checklist marca
+
+- [ ] Login como MARCA con perfil incompleto → checklist visible
+- [ ] "Completar datos de tu marca" pendiente si falta tipo/ubicacion/volumen
+- [ ] "Continuar paso siguiente" funciona
+
+### Pruebas manuales — notas de seguimiento
+
+- [ ] Login como ADMIN. /admin/talleres/[id] → seccion "Notas de seguimiento"
+- [ ] Agregar nota → aparece con autor y timestamp
+- [ ] /admin/marcas/[id] → seccion "Notas de seguimiento" visible
+- [ ] Login como TALLER → NO hay notas de seguimiento visibles
+
+### Pruebas manuales — email y WhatsApp
+
+- [ ] Reenviar invitacion desde dashboard → email enviado (verificar logs)
+- [ ] Templates bienvenida y recordatorio_perfil renderizn correctamente
+
+### Pruebas manuales — seguridad
+
+- [ ] GET /api/admin/notas-seguimiento sin auth → 401
+- [ ] POST /api/admin/onboarding/reenviar-invitacion sin auth → 401
+- [ ] TALLER GET /api/admin/notas-seguimiento → 403

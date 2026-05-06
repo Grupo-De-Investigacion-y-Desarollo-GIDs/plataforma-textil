@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Mail, MessageCircle, ShieldCheck, FileText, User } from 'lucide-react'
+import { Mail, MessageCircle, ShieldCheck, FileText, User, BookOpen } from 'lucide-react'
 
 const faqItems = [
   {
@@ -26,6 +26,22 @@ export default function AyudaPage() {
       <h1 className="font-overpass font-bold text-3xl text-brand-blue">Ayuda y Soporte</h1>
 
       <div className="grid gap-4 sm:grid-cols-2">
+        <Link href="/ayuda/onboarding-taller" className="rounded-xl border border-gray-200 bg-white p-5 hover:border-brand-blue hover:shadow-card transition-all">
+          <div className="flex items-center gap-3 mb-2">
+            <BookOpen className="w-5 h-5 text-brand-blue" />
+            <h2 className="font-overpass font-semibold text-brand-blue">Guia para talleres</h2>
+          </div>
+          <p className="text-sm text-gray-600">Como registrarte, completar tu perfil y recibir pedidos.</p>
+        </Link>
+
+        <Link href="/ayuda/onboarding-marca" className="rounded-xl border border-gray-200 bg-white p-5 hover:border-brand-blue hover:shadow-card transition-all">
+          <div className="flex items-center gap-3 mb-2">
+            <BookOpen className="w-5 h-5 text-brand-blue" />
+            <h2 className="font-overpass font-semibold text-brand-blue">Guia para marcas</h2>
+          </div>
+          <p className="text-sm text-gray-600">Como crear pedidos, recibir cotizaciones y gestionar produccion.</p>
+        </Link>
+
         <Link href="/registro" className="rounded-xl border border-gray-200 bg-white p-5 hover:border-brand-blue hover:shadow-card transition-all">
           <div className="flex items-center gap-3 mb-2">
             <User className="w-5 h-5 text-brand-blue" />
