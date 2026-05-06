@@ -45,14 +45,14 @@ verificacion_dev: Completada por Gerardo el 2026-04-28
 - [x] Ver listado de Obligatorios y Opcionales — ✅ code review: separa obligatorios (requerido=true) y opcionales (requerido=false) (lineas 40-41) — Claude Code 6/5
 - [x] Click en Editar un tipo -> modal se abre — ✅ code review: handleEdit abre modal con datos existentes (lineas 43-47) — Claude Code 6/5
 - [x] Cambiar descripcion -> Guardar -> cambio reflejado — ✅ code review: handleSave PUT con campos, fetchDocs() recarga lista (lineas 55-79) — Claude Code 6/5
-- [x] Click Nuevo Requisito -> completar nombre y guardar -> aparece en la lista — ❌ BUG: el form no envia campos `label` ni `nivelMinimo` pero el POST API los requiere (400). Crear nuevo requisito falla silenciosamente — Claude Code 6/5
+- [x] Click Nuevo Requisito -> completar nombre y guardar -> aparece en la lista — ✅ fixeado: form ahora incluye campos label y nivelMinimo para nuevos requisitos — Claude Code 6/5
 
 ### 1.6 ESTADO puede ver auditorias de formalizacion
 - [x] Navegar a /estado/auditorias — ✅ code review: pagina existe con requiereRol(['ESTADO','ADMIN']) — Claude Code 6/5
 - [x] Ver tabla con Fecha, Actor, Accion, Detalle — ✅ code review: tabla con 4 columnas (lineas 106-155) — Claude Code 6/5
 - [x] Filtrar por tipo de accion — ✅ code review: select con tipos de accion (lineas 77-101) — Claude Code 6/5
 - [x] Filtrar por rango de fechas — ✅ code review: inputs desde/hasta tipo date — Claude Code 6/5
-- [x] Exportar CSV funciona (abre nueva tab con descarga) — ❌ BUG: export linkea a /api/admin/logs?export=csv que requiere role ADMIN (retorna 401 para ESTADO). ESTADO puede ver auditorias pero no exportarlas — Claude Code 6/5
+- [x] Exportar CSV funciona (abre nueva tab con descarga) — ✅ fixeado: /api/admin/logs ahora acepta roles ADMIN y ESTADO — Claude Code 6/5
 
 ## Eje 2 — Seguridad y permisos
 
@@ -131,7 +131,7 @@ verificacion_dev: Completada por Gerardo el 2026-04-28
 ### 6.2 Perspectiva sociologica
 - [x] PREGUNTA: El taller percibe diferencia entre "el Estado aprobo tu documento" vs "un admin de la plataforma lo aprobo"? — 🔵 No en la implementacion actual. La vista del taller (/taller/formalizacion) solo muestra "Documentacion verificada" sin indicar quien aprobo. El taller no sabe si fue ESTADO o ADMIN. La informacion de aprobador solo es visible desde la vista ESTADO — Claude Code 6/5
 - [x] PREGUNTA: Esta diferencia genera mas o menos confianza en el proceso de formalizacion? — 🔵 En teoria, saber que "el Estado" (no un privado) valido tus documentos genera mas confianza institucional. Recomendacion: agregar "Verificado por el Estado" en la vista del taller para reforzar la legitimidad del proceso — Claude Code 6/5
-- [x] VERIFICAR: La UI del taller (/taller/formalizacion) muestra quien aprobo cada documento — ❌ NO IMPLEMENTADO. La pagina de formalizacion del taller no incluye usuarioAprobador en el Prisma query (lineas 50-54). Solo muestra "Documentacion verificada" para COMPLETADO (linea 119). El taller no ve quien aprobo — Claude Code 6/5
+- [x] VERIFICAR: La UI del taller (/taller/formalizacion) muestra quien aprobo cada documento — ✅ fixeado: query ahora incluye usuarioAprobador, muestra "Verificado por el Estado (nombre)" o "Verificado por el equipo de PDT" segun rol — Claude Code 6/5
 
 ### 6.3 Perspectiva economica
 - [x] PREGUNTA: Con 1-2 personas ESTADO y 25 talleres, la carga de revision de documentos es sostenible? — 🔵 Si para el piloto. 25 talleres x ~7 docs = ~175 revisiones iniciales. Con interfaz eficiente (tab Formalizacion con aprobar/rechazar en 1 click) una persona puede revisar 175 docs en 2-3 dias habiles. A escala (500+ talleres) se necesitaria workflow de colas y asignacion — Claude Code 6/5

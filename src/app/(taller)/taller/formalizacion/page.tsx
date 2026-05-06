@@ -49,6 +49,7 @@ export default async function TallerFormalizacionPage() {
     }),
     prisma.validacion.findMany({
       where: { tallerId: taller.id },
+      include: { usuarioAprobador: { select: { name: true, role: true } } },
       orderBy: { createdAt: 'asc' },
     }),
   ])
@@ -115,7 +116,7 @@ export default async function TallerFormalizacionPage() {
                   title={td.label}
                   status={status}
                   description={
-                    estado === 'COMPLETADO'   ? 'Documentación verificada'
+                    estado === 'COMPLETADO'   ? `Verificado por ${validacion?.usuarioAprobador?.role === 'ESTADO' ? 'el Estado' : 'el equipo de PDT'}${validacion?.usuarioAprobador?.name ? ` (${validacion.usuarioAprobador.name})` : ''}`
                   : estado === 'PENDIENTE'    ? 'En revisión por el equipo de PDT'
                   : estado === 'VENCIDO'      ? 'Documento vencido — requiere actualización'
                   : estado === 'RECHAZADO'    ? `Rechazado: ${validacion?.detalle || 'Revisá la documentación'}`

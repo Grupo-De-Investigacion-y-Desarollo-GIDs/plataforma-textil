@@ -3,6 +3,8 @@ import { prisma } from '@/compartido/lib/prisma'
 import { requiereRolApi } from '@/compartido/lib/permisos'
 import type { NivelTaller } from '@prisma/client'
 
+const ORDEN_NIVEL: Record<NivelTaller, number> = { BRONCE: 0, PLATA: 1, ORO: 2 }
+
 function nivelesIncluyenHasta(nivel: NivelTaller): NivelTaller[] {
   if (nivel === 'BRONCE') return ['BRONCE']
   if (nivel === 'PLATA') return ['BRONCE', 'PLATA']
@@ -84,8 +86,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       totalTalleres: talleres.length,
       talleresAfectados: cambios.length,
-      suben: cambios.filter(c => c.nivelNuevo > c.nivelActual).length,
-      bajan: cambios.filter(c => c.nivelNuevo < c.nivelActual).length,
+      suben: cambios.filter(c => ORDEN_NIVEL[c.nivelNuevo] > ORDEN_NIVEL[c.nivelActual]).length,
+      bajan: cambios.filter(c => ORDEN_NIVEL[c.nivelNuevo] < ORDEN_NIVEL[c.nivelActual]).length,
       detalle: cambios,
     })
   } catch (error) {

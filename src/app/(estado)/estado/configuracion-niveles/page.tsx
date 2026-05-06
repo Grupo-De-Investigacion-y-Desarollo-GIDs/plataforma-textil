@@ -5,6 +5,7 @@ import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Modal } from '@/compartido/componentes/ui/modal'
+import { useToast } from '@/compartido/componentes/ui/toast'
 import { Edit, AlertTriangle } from 'lucide-react'
 
 interface ReglaNivel {
@@ -39,12 +40,20 @@ export default function EstadoConfiguracionNivelesPage() {
   const [saving, setSaving] = useState(false)
   const [preview, setPreview] = useState<PreviewResult | null>(null)
   const [loadingPreview, setLoadingPreview] = useState(false)
-  const [toast, setToast] = useState('')
+  const { toast } = useToast()
+  const [soloLectura, setSoloLectura] = useState(true)
 
   const fetchReglas = useCallback(async () => {
     try {
-      const res = await fetch('/api/estado/configuracion-niveles')
-      if (res.ok) setReglas(await res.json())
+      const [reglasRes, sessionRes] = await Promise.all([
+        fetch('/api/estado/configuracion-niveles'),
+        fetch('/api/auth/session'),
+      ])
+      if (reglasRes.ok) setReglas(await reglasRes.json())
+      if (sessionRes.ok) {
+        const session = await sessionRes.json()
+        setSoloLectura(session?.user?.role !== 'ESTADO')
+      }
     } finally {
       setLoading(false)
     }
@@ -92,14 +101,13 @@ export default function EstadoConfiguracionNivelesPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editData),
       })
-      if (!res.ok) { setToast('Error al guardar'); return }
-      setToast(`Regla ${editModal.nivel} actualizada`)
+      if (!res.ok) { toast({ mensaje: 'Error al guardar', tipo: 'error' }); return }
+      toast({ mensaje: `Regla ${editModal.nivel} actualizada`, tipo: 'success' })
       setEditModal(null)
       fetchReglas()
     } finally {
       setSaving(false)
     }
-    setTimeout(() => setToast(''), 3000)
   }
 
   return (
@@ -133,9 +141,11 @@ export default function EstadoConfiguracionNivelesPage() {
                     </div>
                   )}
                 </div>
-                <button onClick={() => openEdit(regla)} className="p-2 hover:bg-gray-100 rounded" aria-label="Editar regla">
-                  <Edit className="w-4 h-4 text-gray-500" />
-                </button>
+                {!soloLectura && (
+                  <button onClick={() => openEdit(regla)} className="p-2 hover:bg-gray-100 rounded" aria-label="Editar regla">
+                    <Edit className="w-4 h-4 text-gray-500" />
+                  </button>
+                )}
               </div>
             </Card>
           ))}
@@ -207,11 +217,6 @@ export default function EstadoConfiguracionNivelesPage() {
         )}
       </Modal>
 
-      {toast && (
-        <div className="fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg text-sm z-50">
-          {toast}
-        </div>
-      )}
     </div>
   )
 }

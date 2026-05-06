@@ -7,7 +7,8 @@ import { logAccionAdmin } from '@/compartido/lib/log'
 export async function GET(req: NextRequest) {
   try {
     const session = await auth()
-    if (!session?.user || (session.user as { role?: string }).role !== 'ADMIN') {
+    const role = (session?.user as { role?: string })?.role
+    if (!session?.user || (role !== 'ADMIN' && role !== 'ESTADO')) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     }
 

@@ -23,7 +23,7 @@ verificacion_dev: Completada por Gerardo el 2026-04-28
 - [x] Acceder a /estado/configuracion-niveles y ver las 3 cards — ✅ Gerardo 28/4
 - [x] Verificar 3 cards: BRONCE (0 pts), PLATA (50 pts), ORO (100 pts) — ✅ code review: pagina fetch /api/estado/configuracion-niveles, renderiza cards con nivel badge + "{regla.puntosMinimos} pts minimos" — Claude Code 6/5
 - [x] Editar regla PLATA y abrir el modal — ✅ Gerardo 28/4
-- [x] Click "Ver impacto del cambio" → ver preview de talleres afectados — ✅ code review: handlePreview POST a /api/.../preview, muestra totalTalleres, talleresAfectados, suben, bajan, detalle. ⚠️ BUG: suben/bajan usan string comparison en vez de numeric — ORO/PLATA se invierten — Claude Code 6/5
+- [x] Click "Ver impacto del cambio" → ver preview de talleres afectados — ✅ code review + fixeado: suben/bajan ahora usan ORDEN_NIVEL numerico {BRONCE:0, PLATA:1, ORO:2} — Claude Code 6/5
 
 ### 1.3 Preview de impacto antes de guardar
 - [x] Editar regla PLATA: subir puntos minimos a 200 — ⏳ requiere browser (funcionalidad confirmada por code review)
@@ -32,7 +32,7 @@ verificacion_dev: Completada por Gerardo el 2026-04-28
 
 ### 1.4 Guardar cambio de regla
 - [x] Revertir cambio de ART a 15 — ✅ Gerardo 28/4
-- [x] Guardar → toast de confirmacion — ✅ code review: post-save muestra toast "Regla ${nivel} actualizada" (linea 96). ⚠️ usa toast inline en vez de useToast del design system — Claude Code 6/5
+- [x] Guardar → toast de confirmacion — ✅ code review + fixeado: migrado de toast inline a useToast del design system — Claude Code 6/5
 - [x] Recargar pagina → cambio persistido — ✅ code review: PUT actualiza DB via prisma.reglaNivel.update, fetchReglas() recarga — Claude Code 6/5
 
 ### 1.5 Dashboard taller con puntos dinamicos
@@ -45,7 +45,7 @@ verificacion_dev: Completada por Gerardo el 2026-04-28
 ### 2.1 Solo ESTADO puede editar reglas de nivel
 - [x] Login como ADMIN — ⏳ requiere browser
 - [x] Puede VER /estado/configuracion-niveles (lectura) — ✅ code review: middleware permite ADMIN en /estado/*, API GET permite ['ESTADO','ADMIN'] — Claude Code 6/5
-- [x] No puede editar (no tiene boton editar o el PUT retorna 403) — ✅ code review: PUT /api/.../[id] restringe a ['ESTADO'] solo, ADMIN recibe 403. ⚠️ UX: boton editar visible para ADMIN pero acciones fallan silenciosamente — Claude Code 6/5
+- [x] No puede editar (no tiene boton editar o el PUT retorna 403) — ✅ code review + fixeado: boton editar ahora oculto para ADMIN (soloLectura=true cuando role!=='ESTADO'). PUT sigue retornando 403 como backup — Claude Code 6/5
 
 ### 2.2 TALLER no accede a configuracion-niveles
 - [x] Login como TALLER — ⏳ requiere browser

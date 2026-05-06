@@ -24,7 +24,7 @@ export default function EstadoDocumentosPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-  const [editando, setEditando] = useState<{ id: string; nombre: string; descripcion: string; requerido: boolean; activo: boolean; puntosOtorgados: number } | null>(null)
+  const [editando, setEditando] = useState<{ id: string; nombre: string; label: string; descripcion: string; requerido: boolean; activo: boolean; puntosOtorgados: number; nivelMinimo: string } | null>(null)
 
   const fetchDocs = useCallback(async () => {
     try {
@@ -41,13 +41,13 @@ export default function EstadoDocumentosPage() {
   const opcionales = docs.filter(d => !d.requerido)
 
   function handleEdit(d: TipoDocumento) {
-    setEditando({ id: d.id, nombre: d.nombre, descripcion: d.descripcion ?? '', requerido: d.requerido, activo: d.activo, puntosOtorgados: d.puntosOtorgados })
+    setEditando({ id: d.id, nombre: d.nombre, label: '', descripcion: d.descripcion ?? '', requerido: d.requerido, activo: d.activo, puntosOtorgados: d.puntosOtorgados, nivelMinimo: d.nivelMinimo })
     setError('')
     setModalOpen(true)
   }
 
   function handleNew() {
-    setEditando({ id: '', nombre: '', descripcion: '', requerido: true, activo: true, puntosOtorgados: 10 })
+    setEditando({ id: '', nombre: '', label: '', descripcion: '', requerido: true, activo: true, puntosOtorgados: 10, nivelMinimo: 'BRONCE' })
     setError('')
     setModalOpen(true)
   }
@@ -137,6 +137,20 @@ export default function EstadoDocumentosPage() {
           <div className="space-y-4">
             {error && <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded">{error}</p>}
             <Input label="Nombre del requisito *" value={editando.nombre} onChange={e => setEditando({ ...editando, nombre: e.target.value })} />
+            {!editando.id && (
+              <Input label="Label (frase para el checklist) *" value={editando.label} onChange={e => setEditando({ ...editando, label: e.target.value })} placeholder="Ej: Registrate en ARCA" />
+            )}
+            {!editando.id && (
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Nivel minimo</label>
+                <select value={editando.nivelMinimo} onChange={e => setEditando({ ...editando, nivelMinimo: e.target.value })}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent">
+                  <option value="BRONCE">Bronce</option>
+                  <option value="PLATA">Plata</option>
+                  <option value="ORO">Oro</option>
+                </select>
+              </div>
+            )}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">Descripcion</label>
               <textarea value={editando.descripcion} onChange={e => setEditando({ ...editando, descripcion: e.target.value })} rows={2}
