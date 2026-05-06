@@ -3,6 +3,11 @@
 ## 2026-05-06
 
 ### Gerardo Breard
+- **17:43** `ebd3cd9` — fix: 2 hallazgos T-02 + Bloque M gobernanza en V4_BACKLOG
+  - `.claude/specs/V4_BACKLOG.md`
+  - `src/app/(admin)/admin/observaciones/formulario-observacion.tsx`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+
 - **17:25** `8aecec0` — audit: QA T-02 reporte de campo completo
   - `.claude/auditorias/QA_v3-reporte-campo.md`
 
