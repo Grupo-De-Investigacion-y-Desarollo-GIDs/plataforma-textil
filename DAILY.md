@@ -3,6 +3,14 @@
 ## 2026-05-05
 
 ### Gerardo Breard
+- **22:25** `1a0e850` — fix: layout (public) condicional — Header global para usuarios logueados
+  - `CLAUDE.md`
+  - `src/app/(public)/ayuda/onboarding-marca/page.tsx`
+  - `src/app/(public)/ayuda/onboarding-taller/page.tsx`
+  - `src/app/(public)/cuenta/notificaciones/page.tsx`
+  - `src/app/(public)/layout.tsx`
+  - `tests/e2e/layout-consistency.spec.ts`
+
 - **21:42** `f59946b` — feat: T-03 protocolos de onboarding — guias, dashboard, checklist, notas, email
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `.claude/auditorias/QA_v3-protocolos-onboarding.md`
