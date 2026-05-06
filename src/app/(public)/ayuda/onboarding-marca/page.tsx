@@ -1,10 +1,14 @@
 import Link from 'next/link'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 
 export default function OnboardingMarcaPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       <div>
-        <Link href="/ayuda" className="text-sm text-brand-blue hover:underline">&larr; Volver a Ayuda</Link>
+        <Breadcrumbs items={[
+          { label: 'Ayuda', href: '/ayuda' },
+          { label: 'Guia para marcas' },
+        ]} />
         <h1 className="font-overpass font-bold text-3xl text-brand-blue mt-4">
           Como empezar como Marca en la Plataforma Digital Textil
         </h1>

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 
 export default function OnboardingTallerPage() {
   const registroUrl = process.env.NEXTAUTH_URL ?? 'https://plataforma-textil.vercel.app'
@@ -6,7 +7,10 @@ export default function OnboardingTallerPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       <div>
-        <Link href="/ayuda" className="text-sm text-brand-blue hover:underline">&larr; Volver a Ayuda</Link>
+        <Breadcrumbs items={[
+          { label: 'Ayuda', href: '/ayuda' },
+          { label: 'Guia para talleres' },
+        ]} />
         <h1 className="font-overpass font-bold text-3xl text-brand-blue mt-4">
           Como empezar en la Plataforma Digital Textil
         </h1>
