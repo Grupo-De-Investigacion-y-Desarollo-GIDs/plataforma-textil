@@ -27,9 +27,10 @@ Verificar que: (1) emails se envian via Resend, (2) magic links funcionan, (3) e
 
 - [ ] Aprobado — todo funciona
 - [ ] Aprobado con fixes — funciona pero hay bugs menores
-- [ ] Rechazado — falta funcionalidad o hay bugs bloqueantes
+- [x] Rechazado — falta funcionalidad o hay bugs bloqueantes
 
-**Decision:** [ cerrar INT-02 / fix inmediato / abrir item v4 ]
+**Decision:** fix inmediato — RESEND_API_KEY vacia en Production. Emails van a console.log en vez de enviarse.
+**Bug critico encontrado 2026-05-06:** Variables de email en Vercel Production tienen valor vacio "". sendEmail() activa guard de dev y retorna exito:true sin enviar.
 
 ---
 
@@ -129,7 +130,19 @@ Verificar que: (1) emails se envian via Resend, (2) magic links funcionan, (3) e
 4. No hay logging a LogActividad (spec lo pedia) — se usa console.error. Aceptable para piloto
 5. No hay timeout explicito de 5s (spec lo pedia) — se confía en el default de Resend SDK
 
-**Dry-runs pendientes (Gerardo):**
+**BUG CRITICO (encontrado 2026-05-06):**
+RESEND_API_KEY en Vercel Production tiene valor vacio "". JavaScript evalua !"" como true, activando el guard de dev en email.ts:18. TODOS los emails en produccion van a console.log y retornan {exito: true} sin enviar nada por Resend.
+
+Variables afectadas (todas vacias en Production):
+- RESEND_API_KEY="" → guard de dev se activa
+- EMAIL_FROM → NO EXISTE en Production (solo en Preview develop)
+- EMAIL_FROM_NAME="" → fallback a "Plataforma Textil"
+- EMAIL_SUPPORT="" → fallback a "soporte@plataformatextil.ar"
+- EMAIL_REPLY_TO="" → undefined
+
+Fix requerido: configurar valores reales en Vercel Production. No es bug de codigo.
+
+**Dry-runs pendientes (Gerardo) — bloqueados hasta fix de env vars:**
 - Magic link → gbreard@gmail.com
 - Email bienvenida post-registro
 - Verificar que no caen a spam
