@@ -28,6 +28,9 @@ export default async function NotificacionesPage({
 
   const notificaciones = await prisma.notificacion.findMany({
     where,
+    include: {
+      creadaPor: { select: { name: true } },
+    },
     orderBy: { createdAt: 'desc' },
     take: 50,
   })

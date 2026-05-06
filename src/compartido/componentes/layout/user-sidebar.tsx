@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
@@ -49,7 +49,7 @@ const menuItemsByRole: Record<string, MenuItem[]> = {
     { id: 'academia', label: 'Academia', href: '/taller/aprender', icon: BookOpen },
     { id: 'pedidos', label: 'Mis Pedidos', href: '/taller/pedidos', icon: ClipboardList },
     { id: 'disponibles', label: 'Pedidos disponibles', href: '/taller/pedidos/disponibles', icon: Search },
-    { id: 'notificaciones', label: 'Notificaciones', href: '/cuenta/notificaciones', icon: Bell, badge: 0 },
+    { id: 'notificaciones', label: 'Notificaciones', href: '/cuenta/notificaciones', icon: Bell },
     { id: 'cuenta', label: 'Mi Cuenta', href: '/cuenta', icon: Settings },
   ],
   MARCA: [
@@ -57,7 +57,7 @@ const menuItemsByRole: Record<string, MenuItem[]> = {
     { id: 'directorio', label: 'Directorio Talleres', href: '/marca/directorio', icon: Search },
     { id: 'pedidos', label: 'Mis Pedidos', href: '/marca/pedidos', icon: ClipboardList },
     { id: 'perfil', label: 'Mi Perfil', href: '/marca/perfil', icon: Building2 },
-    { id: 'notificaciones', label: 'Notificaciones', href: '/cuenta/notificaciones', icon: Bell, badge: 0 },
+    { id: 'notificaciones', label: 'Notificaciones', href: '/cuenta/notificaciones', icon: Bell },
     { id: 'cuenta', label: 'Mi Cuenta', href: '/cuenta', icon: Settings },
   ],
   ESTADO: [
@@ -68,7 +68,7 @@ const menuItemsByRole: Record<string, MenuItem[]> = {
     { id: 'niveles', label: 'Niveles', href: '/estado/configuracion-niveles', icon: Sliders },
     { id: 'sector', label: 'Diagnostico Sector', href: '/estado/sector', icon: BarChart3 },
     { id: 'exportar', label: 'Exportar Datos', href: '/estado/exportar', icon: Download },
-    { id: 'notificaciones', label: 'Notificaciones', href: '/cuenta/notificaciones', icon: Bell, badge: 0 },
+    { id: 'notificaciones', label: 'Notificaciones', href: '/cuenta/notificaciones', icon: Bell },
     { id: 'cuenta', label: 'Mi Cuenta', href: '/cuenta', icon: Settings },
   ],
   ADMIN: [
@@ -88,6 +88,21 @@ export function UserSidebar({
 }: UserSidebarProps) {
   const pathname = usePathname()
   const menuItems = menuItemsByRole[userRole] || menuItemsByRole.TALLER
+  const [badgeCount, setBadgeCount] = useState(0)
+
+  // Fetch unread count when sidebar opens
+  useEffect(() => {
+    if (isOpen) {
+      fetch('/api/notificaciones?limit=1')
+        .then(r => r.json())
+        .then(data => setBadgeCount(data.sinLeer ?? 0))
+        .catch(() => {})
+    }
+  }, [isOpen])
+
+  const menuItemsConBadge = menuItems.map(item =>
+    item.id === 'notificaciones' ? { ...item, badge: badgeCount } : item
+  )
 
   // Bloquear scroll del body cuando está abierto
   useEffect(() => {
@@ -181,7 +196,7 @@ export function UserSidebar({
           {/* Navigation menu */}
           <nav className="flex-1 overflow-y-auto p-4">
             <ul className="space-y-1">
-              {menuItems.map((item) => {
+              {menuItemsConBadge.map((item) => {
                 const Icon = item.icon
                 const isActive = pathname === item.href
 

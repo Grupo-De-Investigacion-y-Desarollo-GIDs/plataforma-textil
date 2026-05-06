@@ -443,8 +443,108 @@ Este archivo acumula TODAS las verificaciones manuales que requieren ojos humano
 
 ---
 
+## Spec F-07 — Mensajes individuales
+
+### Envio de mensaje
+
+- [ ] ADMIN envia mensaje individual desde /admin/talleres/[id] → taller lo ve en /cuenta/notificaciones
+- [ ] Mensaje aparece con badge "Mensaje del equipo" y nombre del remitente
+- [ ] Preview en vivo del editor muestra titulo y mensaje mientras se escribe
+- [ ] Sugerencias de link cambian segun rol (TALLER: 3 sugerencias, MARCA: 2)
+- [ ] Checkbox "Adjuntar link" muestra campo con sugerencias
+
+### WhatsApp
+
+- [ ] Checkbox "Enviar por WhatsApp" visible solo si destinatario tiene phone
+- [ ] Checkbox no visible si destinatario no tiene phone (muestra texto explicativo)
+- [ ] Envio con WhatsApp crea MensajeWhatsapp en DB
+
+### Rate limit
+
+- [ ] Admin puede enviar hasta 50 mensajes/hora sin error
+- [ ] Mensaje 51 retorna toast "Limite de envio alcanzado"
+
+### Integracion en paginas
+
+- [ ] Boton "Enviar mensaje" visible en modal de /admin/usuarios
+- [ ] Boton "Enviar mensaje" visible en /admin/talleres/[id] (junto a badges)
+- [ ] Boton "Enviar mensaje" visible en /admin/marcas/[id] (junto a badges)
+
+### Tabs admin
+
+- [ ] /admin/notificaciones tiene tabs "Comunicaciones masivas" y "Mensajes individuales"
+- [ ] Tab "Mensajes individuales" muestra tabla con fecha, destinatario, titulo, via, leido
+- [ ] EmptyState visible si no hay mensajes individuales
+
+### Seguridad
+
+- [ ] URL `javascript:alert(1)` rechazada por validacion
+- [ ] Destinatario inactivo retorna 404
+- [ ] TALLER no puede enviar mensajes (403)
+
+### Tests automatizados
+
+- [x] 23 Vitest tests (mensajes-individuales.test.ts) — Gerardo 5/5
+- [x] TypeScript 0 errores — Gerardo 5/5
+- [ ] 5 E2E tests (mensajes-individuales.spec.ts) — pendiente CI
+- [ ] Verificar que CI (GitHub Actions) pasa con los tests nuevos
+
+---
+
 ## Nota tecnica: E2E tests crean issues reales en GitHub
 
 Los tests E2E de rate limiting (S-02) envian requests POST a `/api/feedback` que crea issues reales en GitHub. Cada corrida de CI genera ~11 issues basura con titulo "Test rate limit intento N". Esto contamina el panel de issues y el conteo del QA index.
 
 **Solucion pendiente (Bloque 4 o V4):** cambiar el E2E de rate limiting para que use un endpoint que no cree issues reales, o mockear la creacion de issues en el handler de feedback cuando detecta body invalido.
+
+---
+
+## Spec — Badge de notificaciones en header global
+
+### Pruebas automatizadas
+- [ ] 18 Vitest tests pasan: `npx vitest run src/__tests__/notificaciones-bell.test.ts`
+- [ ] 5 Playwright E2E tests pasan: `npx playwright test tests/e2e/notificaciones-bell.spec.ts`
+- [ ] TypeScript compila sin errores: `npx tsc --noEmit`
+
+### Pruebas manuales — badge y dropdown
+
+- [ ] Login como TALLER — campana visible en header con badge rojo si hay no leidas
+- [ ] Login como MARCA — campana visible en header con badge rojo si hay no leidas
+- [ ] Login como ESTADO — campana visible en header con badge rojo si hay no leidas
+- [ ] Login como ADMIN — campana visible en barra superior del admin con badge
+- [ ] Click en campana abre dropdown con ultimas 5 notificaciones
+- [ ] Notificaciones no leidas tienen borde azul y punto azul
+- [ ] Click en notificacion con link marca leida + navega al destino
+- [ ] Click en notificacion sin link marca leida + cierra dropdown
+- [ ] Badge decrementa al marcar como leida (sin refresh de pagina)
+- [ ] Badge desaparece cuando count llega a 0
+- [ ] Badge muestra "99+" si hay mas de 99 no leidas
+- [ ] "Ver todas las notificaciones" navega a /cuenta/notificaciones
+
+### Pruebas manuales — mensajes individuales en dropdown
+
+- [ ] Enviar mensaje individual desde admin (F-07) a un taller
+- [ ] Login como taller receptor — badge "Mensaje del equipo" visible en dropdown
+- [ ] Sender "De: {nombre}" visible en el item del dropdown
+
+### Pruebas manuales — sidebar
+
+- [ ] Abrir sidebar (hamburguesa) — item Notificaciones muestra badge con count real
+- [ ] Si no hay no leidas, badge no se muestra en sidebar
+
+### Pruebas manuales — estados especiales
+
+- [ ] Dropdown muestra skeleton loading durante fetch inicial
+- [ ] Si no hay notificaciones, dropdown muestra "Estas al dia"
+- [ ] Click fuera del dropdown lo cierra
+- [ ] ESC cierra el dropdown
+- [ ] Polling: dejar abierto 30+ segundos, verificar que badge se actualiza
+
+### Pruebas manuales — mobile
+
+- [ ] Viewport angosto (<768px) — campana visible en menu mobile
+- [ ] Dropdown usable en mobile (no se corta ni desborda)
+
+### Pruebas manuales — multi-pestana
+
+- [ ] Abrir en 2 pestanas, marcar leida en una, volver a la otra — badge se actualiza

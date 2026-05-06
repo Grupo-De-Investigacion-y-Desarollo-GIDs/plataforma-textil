@@ -739,6 +739,7 @@ model Notificacion {
   mensajeWhatsapp   MensajeWhatsapp?
 
   @@index([batchId])
+  @@index([userId, leida])
   @@map("notificaciones")
 }
 

@@ -10,6 +10,7 @@ import { Badge } from '@/compartido/componentes/ui/badge'
 import { Button } from '@/compartido/componentes/ui/button'
 import { MapPin, Mail, Phone, AlertTriangle, Award } from 'lucide-react'
 import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
+import { BotonEnviarMensaje } from '@/admin/componentes/boton-enviar-mensaje'
 
 export default async function AdminDetalleTallerPage({ params, searchParams }: {
   params: Promise<{ id: string }>
@@ -27,7 +28,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
     prisma.taller.findUnique({
       where: { id },
       include: {
-        user: { select: { email: true, phone: true, name: true, active: true, createdAt: true } },
+        user: { select: { id: true, email: true, phone: true, name: true, active: true, createdAt: true } },
         validaciones: { orderBy: { createdAt: 'asc' } },
         maquinaria: true,
         certificados: { include: { coleccion: { select: { titulo: true } } } },
@@ -112,6 +113,12 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
               <Badge variant={nivelVariant}>{taller.nivel}</Badge>
               <Badge variant="outline">{taller.puntaje} pts</Badge>
               <Badge variant={taller.user.active ? 'success' : 'warning'}>{taller.user.active ? 'Activo' : 'Inactivo'}</Badge>
+              <BotonEnviarMensaje
+                destinatarioId={taller.user.id}
+                destinatarioNombre={taller.user.name ?? taller.nombre}
+                destinatarioRol="TALLER"
+                destinatarioTienePhone={!!taller.user.phone}
+              />
             </div>
           </div>
         </div>

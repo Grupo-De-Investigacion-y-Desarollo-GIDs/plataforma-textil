@@ -18,6 +18,7 @@ export async function GET(req: NextRequest) {
         skip: (page - 1) * limit,
         take: limit,
         orderBy: { createdAt: 'desc' },
+        include: { creadaPor: { select: { name: true } } },
       }),
       prisma.notificacion.count({ where: { userId } }),
       prisma.notificacion.count({ where: { userId, leida: false } }),

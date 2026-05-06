@@ -7,6 +7,7 @@ import {
   Plug, UserCheck, Briefcase, MessageSquare
 } from 'lucide-react'
 import { LogoutButton } from '@/compartido/componentes/ui/logout-button'
+import { NotificacionesBell } from '@/compartido/componentes/layout/notificaciones-bell'
 
 const sidebarItems = [
   { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
@@ -48,6 +49,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <span className="font-overpass font-bold text-lg">Admin Panel</span>
           </div>
           <div className="flex items-center gap-4">
+            <NotificacionesBell />
             <span className="text-sm text-blue-200">{session.user.name}</span>
             <Link href="/" className="text-sm hover:text-blue-200 transition-colors">Volver al sitio</Link>
             <LogoutButton />

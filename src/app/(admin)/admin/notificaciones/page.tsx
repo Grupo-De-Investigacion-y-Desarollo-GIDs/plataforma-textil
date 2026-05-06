@@ -4,8 +4,9 @@ import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Mail, Bell, BellOff, Send, Users } from 'lucide-react'
+import { Mail, Bell, BellOff, Send, Users, MessageSquare } from 'lucide-react'
 import { EmptyState } from '@/compartido/componentes/ui/empty-state'
+import { Badge } from '@/compartido/componentes/ui/badge'
 import NotificacionesClient from './notificaciones-client'
 
 const canalLabels: Record<string, string> = {
@@ -15,11 +16,18 @@ const canalLabels: Record<string, string> = {
   PLATAFORMA: 'In-app',
 }
 
-export default async function AdminNotificacionesPage() {
+export default async function AdminNotificacionesPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ tab?: string }> | { tab?: string }
+}) {
   const session = await auth()
   if (!session?.user) redirect('/login')
   const role = (session.user as { role?: string }).role
   if (role !== 'ADMIN') redirect('/unauthorized')
+
+  const params = await Promise.resolve(searchParams ?? {})
+  const tab = params.tab === 'individuales' ? 'individuales' : 'masivas'
 
   const adminWhere = { createdById: { not: null } }
   const [total, sinLeer, batches] = await Promise.all([
@@ -76,7 +84,28 @@ export default async function AdminNotificacionesPage() {
         </div>
       </div>
 
-      <ComunicacionesTab batches={batches} />
+      {/* Tabs */}
+      <div className="flex gap-2 mb-6">
+        <Link
+          href="/admin/notificaciones?tab=masivas"
+          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
+            tab === 'masivas' ? 'bg-brand-blue text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          }`}
+        >
+          Comunicaciones masivas
+        </Link>
+        <Link
+          href="/admin/notificaciones?tab=individuales"
+          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
+            tab === 'individuales' ? 'bg-brand-blue text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          }`}
+        >
+          Mensajes individuales
+        </Link>
+      </div>
+
+      {tab === 'masivas' && <ComunicacionesTab batches={batches} />}
+      {tab === 'individuales' && <MensajesIndividualesTab />}
 
       <p className="text-xs text-gray-400 mt-6 text-center">
         Para ver la actividad del sistema, ir a{' '}
@@ -150,3 +179,71 @@ async function ComunicacionesTab({ batches }: { batches: { batchId: string | nul
   )
 }
 
+async function MensajesIndividualesTab() {
+  const mensajes = await prisma.notificacion.findMany({
+    where: { tipo: 'mensaje_individual' },
+    include: {
+      user: { select: { name: true, email: true } },
+      creadaPor: { select: { name: true } },
+      mensajeWhatsapp: { select: { estado: true } },
+    },
+    orderBy: { createdAt: 'desc' },
+    take: 50,
+  })
+
+  if (mensajes.length === 0) {
+    return (
+      <EmptyState
+        titulo="Sin mensajes individuales"
+        mensaje="Todavia no enviaste ningun mensaje individual. Podes enviar desde el detalle de un usuario, taller o marca."
+      />
+    )
+  }
+
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b text-left text-gray-500">
+            <th className="px-4 py-3 font-medium">Fecha</th>
+            <th className="px-4 py-3 font-medium">Destinatario</th>
+            <th className="px-4 py-3 font-medium">Titulo</th>
+            <th className="px-4 py-3 font-medium">Via</th>
+            <th className="px-4 py-3 font-medium">Leido</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-100">
+          {mensajes.map(m => (
+            <tr key={m.id} className="hover:bg-gray-50">
+              <td className="px-4 py-3 text-gray-400 whitespace-nowrap">
+                {m.createdAt.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+                {' '}
+                {m.createdAt.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
+              </td>
+              <td className="px-4 py-3">
+                <p className="font-medium text-gray-800">{m.user.name ?? m.user.email}</p>
+                {m.creadaPor && (
+                  <p className="text-xs text-gray-400">por {m.creadaPor.name}</p>
+                )}
+              </td>
+              <td className="px-4 py-3 text-gray-700 max-w-xs truncate">{m.titulo}</td>
+              <td className="px-4 py-3">
+                <div className="flex items-center gap-1">
+                  <Badge variant="muted" className="!text-xs !px-2 !py-0.5">Plataforma</Badge>
+                  {m.mensajeWhatsapp && (
+                    <Badge variant="muted" className="!text-xs !px-2 !py-0.5">WhatsApp</Badge>
+                  )}
+                </div>
+              </td>
+              <td className="px-4 py-3">
+                <Badge variant={m.leida ? 'success' : 'warning'} className="!text-xs !px-2 !py-0.5">
+                  {m.leida ? 'Si' : 'No'}
+                </Badge>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}

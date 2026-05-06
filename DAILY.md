@@ -3,6 +3,37 @@
 ## 2026-05-05
 
 ### Gerardo Breard
+- **20:19** `f35e18b` — feat: badge de notificaciones en header global — campana con count, dropdown, polling 30s
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-badge-notificaciones-header.md`
+  - `.claude/auditorias/REVIEW_v3-badge-notificaciones-header.md`
+  - `.claude/specs/v3-badge-notificaciones-header.md`
+  - `prisma/migrations/20260505120000_add_notificacion_userId_leida_index/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/__tests__/notificaciones-bell.test.ts`
+  - `src/app/(admin)/layout.tsx`
+  - `src/app/api/notificaciones/route.ts`
+  - `src/compartido/componentes/layout/header.tsx`
+  - `src/compartido/componentes/layout/notificaciones-bell.tsx`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+  - `tests/e2e/notificaciones-bell.spec.ts`
+
+- **19:02** `6a0a3a1` — feat: F-07 mensajes individuales a taller/marca desde admin
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-mensajes-individuales.md`
+  - `.claude/auditorias/REVIEW_v3-mensajes-individuales.md`
+  - `src/__tests__/mensajes-individuales.test.ts`
+  - `src/admin/componentes/boton-enviar-mensaje.tsx`
+  - `src/admin/componentes/editor-mensaje-individual.tsx`
+  - `src/app/(admin)/admin/marcas/[id]/page.tsx`
+  - `src/app/(admin)/admin/notificaciones/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(admin)/admin/usuarios/page.tsx`
+  - `src/app/(public)/cuenta/notificaciones/notificaciones-lista.tsx`
+  - `src/app/(public)/cuenta/notificaciones/page.tsx`
+  - `src/app/api/admin/mensajes-individuales/route.ts`
+  - `tests/e2e/mensajes-individuales.spec.ts`
+
 - **18:01** `ee7e364` — perf: resolver ESTADO login lento — indice + warm-up + test resiliente
   - `.claude/specs/V4_BACKLOG.md`
   - `.github/workflows/e2e.yml`
