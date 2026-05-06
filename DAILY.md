@@ -3,6 +3,11 @@
 ## 2026-05-06
 
 ### Gerardo Breard
+- **19:26** `d3bbe08` — fix: threshold inactividad 7→14 dias + V4 entries + decisiones OIT
+  - `.claude/specs/V4_BACKLOG.md`
+  - `docs/decisiones-pendientes-OIT.md`
+  - `src/compartido/lib/onboarding.ts`
+
 - **17:54** `45b5e62` — audit: QA T-03 protocolos onboarding completo
   - `.claude/auditorias/QA_v3-protocolos-onboarding.md`
 
