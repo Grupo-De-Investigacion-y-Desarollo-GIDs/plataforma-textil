@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import {
   LayoutDashboard, BookOpen, Users, Building2, ShoppingCart, ClipboardCheck,
   Settings, Shield, BarChart3, FileText, Bell, Award,
-  Plug, UserCheck, Briefcase, MessageSquare, Rocket
+  Plug, UserCheck, Briefcase, MessageSquare, Rocket, Eye
 } from 'lucide-react'
 import { LogoutButton } from '@/compartido/componentes/ui/logout-button'
 import { NotificacionesBell } from '@/compartido/componentes/layout/notificaciones-bell'
@@ -22,6 +22,7 @@ const sidebarItems = [
   { label: 'Auditorías', href: '/admin/auditorias', icon: ClipboardCheck },
   { label: 'Documentos', href: '/admin/documentos', icon: FileText },
   { label: 'Onboarding', href: '/admin/onboarding', icon: Rocket },
+  { label: 'Observaciones', href: '/admin/observaciones', icon: Eye },
   { label: 'Reportes', href: '/admin/reportes', icon: BarChart3 },
   { label: 'Notificaciones', href: '/admin/notificaciones', icon: Bell },
   { label: 'Integraciones', href: '/admin/integraciones', icon: Plug },
