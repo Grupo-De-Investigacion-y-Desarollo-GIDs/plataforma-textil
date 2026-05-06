@@ -3,6 +3,9 @@
 ## 2026-05-06
 
 ### Gerardo Breard
+- **17:25** `8aecec0` — audit: QA T-02 reporte de campo completo
+  - `.claude/auditorias/QA_v3-reporte-campo.md`
+
 - **16:32** `cfce2b0` — fix: 6 hallazgos QA D-01 + D-02
   - `.claude/auditorias/QA_v3-redefinicion-roles-estado.md`
   - `.claude/auditorias/QA_v3-tipos-documento-db.md`
