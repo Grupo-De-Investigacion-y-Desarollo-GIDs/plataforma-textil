@@ -6,6 +6,8 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Search, ShoppingBag, ClipboardList, User } from 'lucide-react'
+import { calcularPasosMarca } from '@/compartido/lib/onboarding'
+import { ChecklistOnboarding } from '@/compartido/componentes/ui/checklist-onboarding'
 
 export default async function MarcaDashboardPage() {
   const session = await auth()
@@ -31,6 +33,9 @@ export default async function MarcaDashboardPage() {
 
   const perfilCompleto = !!(marca?.tipo && marca?.ubicacion && marca?.volumenMensual > 0)
 
+  const pasosOnboarding = await calcularPasosMarca(session.user.id!)
+  const onboardingCompleto = pasosOnboarding.every(p => p.completado)
+
   return (
     <div className="space-y-6">
       <div>
@@ -40,7 +45,10 @@ export default async function MarcaDashboardPage() {
         <p className="text-gray-500 mt-1">Tu panel de gestion de produccion</p>
       </div>
 
-      {!perfilCompleto && (
+      {/* Checklist onboarding (T-03) */}
+      {!onboardingCompleto && <ChecklistOnboarding pasos={pasosOnboarding} />}
+
+      {!perfilCompleto && onboardingCompleto && (
         <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
           <p className="text-sm font-medium text-amber-800">Completa tu perfil para poder contactar talleres</p>
           <p className="text-xs text-amber-600 mt-1">Te faltan: {!marca?.tipo ? 'tipo de marca, ' : ''}{!marca?.ubicacion ? 'ubicacion, ' : ''}{!marca?.volumenMensual ? 'volumen mensual' : ''}</p>

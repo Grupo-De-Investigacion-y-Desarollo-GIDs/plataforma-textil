@@ -7,6 +7,8 @@ import Link from 'next/link'
 import { ProgressRing } from '@/compartido/componentes/ui/progress-ring'
 import { ProximoNivelCard } from '@/taller/componentes/proximo-nivel-card'
 import { SincronizarNivel } from '@/taller/componentes/sincronizar-nivel'
+import { calcularPasosTaller } from '@/compartido/lib/onboarding'
+import { ChecklistOnboarding } from '@/compartido/componentes/ui/checklist-onboarding'
 const PTS_VERIFICADO_AFIP = 10 // bonus AFIP fijo
 const PTS_POR_CERTIFICADO = 15 // bonus por certificado fijo
 
@@ -75,6 +77,9 @@ export default async function TallerDashboardPage() {
         })
       : [],
   ])
+
+  const pasosOnboarding = await calcularPasosTaller(session.user.id!)
+  const onboardingCompleto = pasosOnboarding.every(p => p.completado)
 
   const cambioNivel = logNivelReciente
     ? {
@@ -223,10 +228,14 @@ export default async function TallerDashboardPage() {
         )
       )}
 
-      {/* Tu proximo nivel — guia de formalizacion (F-01) */}
+      {/* Checklist onboarding (T-03) o ProximoNivelCard (F-01) */}
       {taller && (
         <>
-          <ProximoNivelCard tallerId={taller.id} />
+          {onboardingCompleto ? (
+            <ProximoNivelCard tallerId={taller.id} />
+          ) : (
+            <ChecklistOnboarding pasos={pasosOnboarding} />
+          )}
           <SincronizarNivel tallerId={taller.id} nivelActual={taller.nivel} />
         </>
       )}

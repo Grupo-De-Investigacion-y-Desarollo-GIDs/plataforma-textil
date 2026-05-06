@@ -11,6 +11,7 @@ import { Button } from '@/compartido/componentes/ui/button'
 import { MapPin, Mail, Phone, AlertTriangle, Award } from 'lucide-react'
 import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 import { BotonEnviarMensaje } from '@/admin/componentes/boton-enviar-mensaje'
+import { NotasSeguimiento } from '@/admin/componentes/notas-seguimiento'
 
 export default async function AdminDetalleTallerPage({ params, searchParams }: {
   params: Promise<{ id: string }>
@@ -344,6 +345,9 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
           </div>
         )}
       </Card>
+
+      {/* Notas de seguimiento (T-03) */}
+      <NotasSeguimiento userId={taller.userId} />
     </div>
   )
 }

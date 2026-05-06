@@ -11,6 +11,7 @@ import { Button } from '@/compartido/componentes/ui/button'
 import { MapPin, Mail, Phone, Globe, Calendar, AlertTriangle } from 'lucide-react'
 import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 import { BotonEnviarMensaje } from '@/admin/componentes/boton-enviar-mensaje'
+import { NotasSeguimiento } from '@/admin/componentes/notas-seguimiento'
 
 export default async function AdminDetalleMarcaPage({ params }: {
   params: Promise<{ id: string }>
@@ -311,6 +312,9 @@ export default async function AdminDetalleMarcaPage({ params }: {
           </div>
         )}
       </Card>
+
+      {/* Notas de seguimiento (T-03) */}
+      <NotasSeguimiento userId={marca.userId} />
     </div>
   )
 }

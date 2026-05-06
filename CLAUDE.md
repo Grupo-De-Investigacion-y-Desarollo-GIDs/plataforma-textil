@@ -64,6 +64,20 @@ src/
 ## Handover OIT
 Durante el desarrollo, cada decision tecnica importante, cambio de infraestructura o funcionalidad completada debe documentarse en `.claude/specs/handover/`. Gerardo es responsable de mantener esta documentacion actualizada. No esperar al final del proyecto para completarla.
 
+## Checklist obligatoria — paginas nuevas
+
+Antes de mergear cualquier pagina nueva, verificar:
+
+1. **Layout correcto:** la pagina esta en el grupo de layout que corresponde
+   - Paginas de un solo rol → `(admin)/`, `(taller)/`, `(marca)/`, `(estado)/`
+   - Paginas accesibles por multiples roles → `(public)/` (layout condicional: Header global si logueado, header minimo si anonimo)
+   - Paginas de auth → `(auth)/`
+2. **Breadcrumbs:** sub-paginas de detalle usan `<Breadcrumbs>` de `@/compartido/componentes/ui/breadcrumbs` (NO `<Link>&larr; Volver</Link>` manual)
+3. **Toast V3:** feedback de acciones usa `useToast` de `@/compartido/componentes/ui/toast` (NO `alert()`)
+4. **EmptyState:** listados que pueden estar vacios usan `<EmptyState>` de `@/compartido/componentes/ui/empty-state`
+5. **Loading/Skeleton:** paginas con data async tienen `loading.tsx` o skeleton inline del sistema
+6. **Verificacion visual:** confirmar que sidebar y header estan presentes segun el contexto del rol
+
 ## Decisiones tomadas
 - Middleware separado de Prisma para no exceder 1MB Edge limit
 - Navegacion: tabs activos detectados por pathname (no hardcodeados)

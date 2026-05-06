@@ -3,6 +3,40 @@
 ## 2026-05-05
 
 ### Gerardo Breard
+- **22:25** `1a0e850` — fix: layout (public) condicional — Header global para usuarios logueados
+  - `CLAUDE.md`
+  - `src/app/(public)/ayuda/onboarding-marca/page.tsx`
+  - `src/app/(public)/ayuda/onboarding-taller/page.tsx`
+  - `src/app/(public)/cuenta/notificaciones/page.tsx`
+  - `src/app/(public)/layout.tsx`
+  - `tests/e2e/layout-consistency.spec.ts`
+
+- **21:42** `f59946b` — feat: T-03 protocolos de onboarding — guias, dashboard, checklist, notas, email
+  - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
+  - `.claude/auditorias/QA_v3-protocolos-onboarding.md`
+  - `.claude/auditorias/REVIEW_v3-protocolos-onboarding.md`
+  - `prisma/migrations/20260505140000_add_nota_seguimiento/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/__tests__/onboarding.test.ts`
+  - `src/admin/componentes/notas-seguimiento.tsx`
+  - `src/app/(admin)/admin/marcas/[id]/page.tsx`
+  - `src/app/(admin)/admin/onboarding/acciones-rapidas.tsx`
+  - `src/app/(admin)/admin/onboarding/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(admin)/layout.tsx`
+  - `src/app/(marca)/marca/page.tsx`
+  - `src/app/(public)/ayuda/onboarding-marca/page.tsx`
+  - `src/app/(public)/ayuda/onboarding-taller/page.tsx`
+  - `src/app/(public)/ayuda/page.tsx`
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/app/api/admin/notas-seguimiento/route.ts`
+  - `src/app/api/admin/onboarding/reenviar-invitacion/route.ts`
+  - `src/compartido/componentes/ui/checklist-onboarding.tsx`
+  - `src/compartido/lib/email.ts`
+  - `src/compartido/lib/onboarding.ts`
+  - `src/compartido/lib/whatsapp-templates.ts`
+  - `tests/e2e/onboarding.spec.ts`
+
 - **20:19** `f35e18b` — feat: badge de notificaciones en header global — campana con count, dropdown, polling 30s
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `.claude/auditorias/QA_v3-badge-notificaciones-header.md`

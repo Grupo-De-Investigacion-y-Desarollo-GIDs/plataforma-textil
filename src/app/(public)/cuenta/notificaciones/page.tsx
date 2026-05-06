@@ -5,6 +5,7 @@ import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import Link from 'next/link'
 import { NotificacionesLista } from './notificaciones-lista'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 
 type Tab = 'comunicaciones' | 'historial'
 
@@ -37,6 +38,10 @@ export default async function NotificacionesPage({
 
   return (
     <div className="space-y-6">
+      <Breadcrumbs items={[
+        { label: 'Mi cuenta', href: '/cuenta' },
+        { label: 'Notificaciones' },
+      ]} />
       <div className="flex gap-2">
         <Link
           href="?tab=comunicaciones"

@@ -16,6 +16,12 @@ export const TEMPLATES = {
 
   mensaje_admin: ({ texto, enlace }: { texto: string; enlace: string }) =>
     `PDT — ${texto}\n\nIngresa -> ${enlace}`,
+
+  bienvenida: ({ nombre, enlace }: { nombre: string; enlace: string }) =>
+    `Hola ${nombre}! Bienvenido/a a la Plataforma Digital Textil. Tu cuenta fue creada con exito. Ingresa para completar tu perfil -> ${enlace}`,
+
+  recordatorio_perfil: ({ nombre, enlace }: { nombre: string; enlace: string }) =>
+    `Hola ${nombre}, notamos que todavia no completaste tu perfil en la Plataforma Digital Textil. Completarlo te permite recibir pedidos de marcas formales. Ingresa -> ${enlace}`,
 } as const
 
 export type TemplateName = keyof typeof TEMPLATES
