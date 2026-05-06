@@ -3,6 +3,9 @@
 ## 2026-05-06
 
 ### Gerardo Breard
+- **15:55** `64ba7cb` — audit: corregir diagnostico erroneo INT-02 env vars
+  - `.claude/auditorias/QA_v3-email-resend.md`
+
 - **15:11** `04d9115` — audit: INT-02 rechazado — RESEND_API_KEY vacia en produccion
   - `.claude/auditorias/QA_v3-email-resend.md`
 
