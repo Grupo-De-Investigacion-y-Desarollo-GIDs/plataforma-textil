@@ -230,6 +230,18 @@ Origen: Hallazgo critico de auditoria QA INT-00 (2026-05-06) — `/api/talleres`
 
 ---
 
+## Bloque L — Documentacion y operaciones
+
+Origen: lecciones aprendidas durante QA V3 y operacion del piloto.
+
+| ID | Spec | Descripcion | Estimacion |
+|----|------|-------------|------------|
+| L-01 | Verificacion correcta de env vars Vercel | Documentar en `docs/operaciones/verificar-env-vars.md` como chequear variables `sensitive` en Vercel. Actualizar Vercel CLI a version actual. Regla: NUNCA confiar en `vercel env pull` para variables sensitive — usar dashboard o API con `value_present` check. Origen: falso diagnostico INT-02, CLI v50.38.3 mostraba variables vacias cuando en realidad tenian valor | 0.5h |
+
+**Total estimado Bloque L:** ~0.5h
+
+---
+
 ## Resumen ejecutivo de V4
 
 | Bloque | Specs | Estimación | Prioridad |
@@ -245,8 +257,9 @@ Origen: Hallazgo critico de auditoria QA INT-00 (2026-05-06) — `/api/talleres`
 | I — Servicios y catálogo | 7 specs | 62h | Post-piloto (después de H) |
 | J — Rol CONTENIDO completo | 5 specs | 14h | Media (no bloquea piloto) |
 | K — Seguridad | 5 specs | 15.5h | Alta (K-03/K-04 pre-piloto) |
+| L — Documentacion y operaciones | 1 spec | 0.5h | Baja |
 
-**Total estimado V4 (sin Bloque G):** ~351.5h ≈ 9 semanas de trabajo
+**Total estimado V4 (sin Bloque G):** ~352h ≈ 9 semanas de trabajo
 
 ---
 
