@@ -85,7 +85,7 @@ export default async function MarcaDashboardPage() {
               </div>
               <div>
                 <p className="font-overpass font-bold text-brand-blue">Buscar talleres</p>
-                <p className="text-sm text-gray-500">Encontra proveedores verificados por nivel y proceso</p>
+                <p className="text-sm text-gray-500">Encontra proveedores verificados por proceso y tipo de prenda</p>
               </div>
             </div>
           </Card>

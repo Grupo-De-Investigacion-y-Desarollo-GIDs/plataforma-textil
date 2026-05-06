@@ -89,7 +89,18 @@ describe('POST /api/cotizaciones — verificadoAfip guard', () => {
 // ─── GET /api/talleres — solo verificados ────────────────────────────────────
 
 describe('GET /api/talleres — filtro verificadoAfip', () => {
-  it('pasa verificadoAfip: true en el where', async () => {
+  it('rechaza requests sin autenticacion', async () => {
+    mockAuth.mockResolvedValue(null)
+
+    const { GET } = await import('@/app/api/talleres/route')
+    const req = makeRequest('http://localhost/api/talleres')
+
+    const res = await GET(req)
+    expect(res.status).toBe(401)
+  })
+
+  it('pasa verificadoAfip: true en el where (MARCA)', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'mu1', role: 'MARCA' } })
     mockPrisma.taller.findMany.mockResolvedValue([])
     mockPrisma.taller.count.mockResolvedValue(0)
 
@@ -102,7 +113,8 @@ describe('GET /api/talleres — filtro verificadoAfip', () => {
     expect(callArgs.where.verificadoAfip).toBe(true)
   })
 
-  it('mantiene otros filtros junto con verificadoAfip', async () => {
+  it('ADMIN puede filtrar por nivel', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'au1', role: 'ADMIN' } })
     mockPrisma.taller.findMany.mockResolvedValue([])
     mockPrisma.taller.count.mockResolvedValue(0)
 
@@ -115,6 +127,20 @@ describe('GET /api/talleres — filtro verificadoAfip', () => {
     expect(callArgs.where.verificadoAfip).toBe(true)
     expect(callArgs.where.nivel).toBe('ORO')
     expect(callArgs.where.nombre).toEqual({ contains: 'Test', mode: 'insensitive' })
+  })
+
+  it('MARCA no puede filtrar por nivel', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'mu1', role: 'MARCA' } })
+    mockPrisma.taller.findMany.mockResolvedValue([])
+    mockPrisma.taller.count.mockResolvedValue(0)
+
+    const { GET } = await import('@/app/api/talleres/route')
+    const req = makeRequest('http://localhost/api/talleres?nivel=ORO')
+
+    await GET(req)
+
+    const callArgs = mockPrisma.taller.findMany.mock.calls[0][0]
+    expect(callArgs.where.nivel).toBeUndefined()
   })
 })
 

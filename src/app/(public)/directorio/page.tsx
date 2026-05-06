@@ -8,6 +8,7 @@ import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Star, MapPin, Users, ArrowRight, Factory, ShieldCheck } from 'lucide-react'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
+import { EmptyState } from '@/compartido/componentes/ui/empty-state'
 
 export default async function DirectorioPage({
   searchParams,
@@ -115,14 +116,11 @@ export default async function DirectorioPage({
       </p>
 
       {talleres.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">
-          <p className="text-lg">No encontramos talleres con esos filtros</p>
-          {hasFilters && (
-            <a href="/directorio" className="text-brand-blue underline text-sm mt-2 block">
-              Ver todos los talleres
-            </a>
-          )}
-        </div>
+        <EmptyState
+          titulo={hasFilters ? 'No encontramos talleres con esos filtros' : 'No hay talleres registrados aun'}
+          mensaje={hasFilters ? 'Proba cambiando los filtros de busqueda.' : 'Cuando se registren talleres verificados, van a aparecer aca.'}
+          accion={hasFilters ? { texto: 'Ver todos los talleres', href: '/directorio' } : undefined}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {talleres.map((taller) => (

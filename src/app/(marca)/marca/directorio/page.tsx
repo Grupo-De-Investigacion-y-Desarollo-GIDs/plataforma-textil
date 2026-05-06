@@ -8,11 +8,15 @@ import { Badge } from '@/compartido/componentes/ui/badge'
 import Link from 'next/link'
 import { MapPin, Star, MessageCircle, Factory, ShieldCheck } from 'lucide-react'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
+import { EmptyState } from '@/compartido/componentes/ui/empty-state'
+
+const PAGE_SIZE = 12
 
 type SearchParams = {
   q?: string
   proceso?: string
   prenda?: string
+  page?: string
 }
 
 export default async function DirectorioPage({
@@ -27,6 +31,7 @@ export default async function DirectorioPage({
   const query = (resolvedSearchParams.q || '').trim()
   const procesoId = (resolvedSearchParams.proceso || '').trim()
   const prendaId = (resolvedSearchParams.prenda || '').trim()
+  const page = Math.max(1, parseInt(resolvedSearchParams.page || '1'))
 
   // Cargar opciones para los selects
   const [procesos, prendas] = await Promise.all([
@@ -43,31 +48,39 @@ export default async function DirectorioPage({
   ])
 
   // Query principal con filtros dinámicos — solo talleres verificados
-  const talleres = await prisma.taller.findMany({
-    where: {
-      verificadoAfip: true,
-      ...(query
-        ? {
-            OR: [
-              { nombre: { contains: query, mode: 'insensitive' } },
-              { ubicacion: { contains: query, mode: 'insensitive' } },
-            ],
-          }
-        : {}),
-      ...(procesoId ? { procesos: { some: { procesoId } } } : {}),
-      ...(prendaId ? { prendas: { some: { prendaId } } } : {}),
-    },
-    include: {
-      procesos: { include: { proceso: true } },
-      prendas: { include: { prenda: true } },
-      validaciones: {
-        where: { estado: 'COMPLETADO' },
-        select: { tipoDocumento: { select: { nombre: true } } },
-      },
-    },
-    orderBy: [{ verificadoAfip: 'desc' }, { puntaje: 'desc' }],
-  })
+  const where = {
+    verificadoAfip: true as const,
+    ...(query
+      ? {
+          OR: [
+            { nombre: { contains: query, mode: 'insensitive' as const } },
+            { ubicacion: { contains: query, mode: 'insensitive' as const } },
+          ],
+        }
+      : {}),
+    ...(procesoId ? { procesos: { some: { procesoId } } } : {}),
+    ...(prendaId ? { prendas: { some: { prendaId } } } : {}),
+  }
 
+  const [talleres, total] = await Promise.all([
+    prisma.taller.findMany({
+      where,
+      include: {
+        procesos: { include: { proceso: true } },
+        prendas: { include: { prenda: true } },
+        validaciones: {
+          where: { estado: 'COMPLETADO' },
+          select: { tipoDocumento: { select: { nombre: true } } },
+        },
+      },
+      orderBy: [{ verificadoAfip: 'desc' }, { puntaje: 'desc' }],
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    }),
+    prisma.taller.count({ where }),
+  ])
+
+  const totalPages = Math.ceil(total / PAGE_SIZE)
   const hasFilters = query || procesoId || prendaId
 
   return (
@@ -149,18 +162,17 @@ export default async function DirectorioPage({
       </Card>
 
       <p className="text-sm text-gray-500">
-        Mostrando {talleres.length} {talleres.length === 1 ? 'taller' : 'talleres'}
+        Mostrando {talleres.length} de {total} {total === 1 ? 'taller' : 'talleres'}
+        {totalPages > 1 && ` — pagina ${page} de ${totalPages}`}
       </p>
 
       {talleres.length === 0 ? (
         <Card>
-          <div className="py-8 text-center">
-            <p className="text-gray-600">
-              {hasFilters
-                ? 'No hay talleres para esos filtros.'
-                : 'No hay talleres registrados aun.'}
-            </p>
-          </div>
+          <EmptyState
+            titulo={hasFilters ? 'No encontramos talleres con esos filtros' : 'No hay talleres registrados aun'}
+            mensaje={hasFilters ? 'Proba cambiando los filtros de busqueda.' : 'Cuando se registren talleres verificados, van a aparecer aca.'}
+            accion={hasFilters ? { texto: 'Limpiar filtros', href: '/marca/directorio' } : undefined}
+          />
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -245,6 +257,28 @@ export default async function DirectorioPage({
               </div>
             </Card>
           ))}
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-3 mt-2">
+          {page > 1 && (
+            <Link
+              href={`/marca/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), page: String(page - 1) }).toString()}`}
+              className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50"
+            >
+              Anterior
+            </Link>
+          )}
+          <span className="text-sm text-gray-500">Pagina {page} de {totalPages}</span>
+          {page < totalPages && (
+            <Link
+              href={`/marca/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), page: String(page + 1) }).toString()}`}
+              className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50"
+            >
+              Siguiente
+            </Link>
+          )}
         </div>
       )}
     </div>

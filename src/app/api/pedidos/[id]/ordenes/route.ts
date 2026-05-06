@@ -26,7 +26,7 @@ export const GET = apiHandler(async (_req: NextRequest, ctx) => {
   const ordenes = await prisma.ordenManufactura.findMany({
     where: { pedidoId: id as string },
     include: {
-      taller: { select: { id: true, nombre: true, nivel: true } },
+      taller: { select: { id: true, nombre: true } },
     },
     orderBy: { createdAt: 'asc' },
   })
