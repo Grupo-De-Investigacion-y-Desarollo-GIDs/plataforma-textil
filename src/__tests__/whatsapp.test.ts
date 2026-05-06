@@ -139,15 +139,17 @@ describe('WhatsApp templates', () => {
     expect(msg).toContain('Nuevo curso disponible')
   })
 
-  it('todos los 6 templates estan definidos', async () => {
+  it('todos los 8 templates estan definidos', async () => {
     const { TEMPLATES } = await import('@/compartido/lib/whatsapp-templates')
-    expect(Object.keys(TEMPLATES)).toHaveLength(6)
+    expect(Object.keys(TEMPLATES)).toHaveLength(8)
     expect(TEMPLATES).toHaveProperty('pedido_nuevo')
     expect(TEMPLATES).toHaveProperty('cotizacion_aceptada')
     expect(TEMPLATES).toHaveProperty('documento_aprobado')
     expect(TEMPLATES).toHaveProperty('documento_rechazado')
     expect(TEMPLATES).toHaveProperty('nivel_subido')
     expect(TEMPLATES).toHaveProperty('mensaje_admin')
+    expect(TEMPLATES).toHaveProperty('bienvenida')
+    expect(TEMPLATES).toHaveProperty('recordatorio_perfil')
   })
 })
 

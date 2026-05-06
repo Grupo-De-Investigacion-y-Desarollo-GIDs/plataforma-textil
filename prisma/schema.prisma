@@ -151,6 +151,8 @@ model User {
   magicLinks              MagicLink[]
   notasSeguimientoRecibidas NotaSeguimiento[] @relation("userNotas")
   notasSeguimientoCreadas   NotaSeguimiento[] @relation("autorNotas")
+  observacionesCreadas      ObservacionCampo[] @relation("ObservacionAutor")
+  observacionesRecibidas    ObservacionCampo[] @relation("ObservacionUser")
 
   @@map("users")
 }
@@ -900,6 +902,67 @@ model MotivoNoMatch {
   @@index([motivoCategoria])
   @@index([createdAt])
   @@map("motivos_no_match")
+}
+
+// ============================================
+// OBSERVACIONES DE CAMPO (T-02)
+// ============================================
+
+enum TipoObservacion {
+  RESISTENCIA
+  EXPECTATIVA
+  DIFICULTAD_TECNICA
+  DIFICULTAD_PROCESO
+  OPORTUNIDAD
+  EXITO
+  CONTEXTO_TALLER
+  CONTEXTO_MARCA
+  POLITICA_PUBLICA
+}
+
+enum FuenteObservacion {
+  VISITA
+  LLAMADA
+  WHATSAPP
+  PLATAFORMA
+  ENTREVISTA
+  OTROS
+}
+
+enum Sentimiento {
+  POSITIVO
+  NEUTRAL
+  NEGATIVO
+}
+
+model ObservacionCampo {
+  id        String @id @default(cuid())
+
+  autorId   String?
+  autor     User?  @relation(name: "ObservacionAutor", fields: [autorId], references: [id], onDelete: SetNull)
+
+  userId    String?
+  user      User?  @relation(name: "ObservacionUser", fields: [userId], references: [id], onDelete: SetNull)
+
+  tipo        TipoObservacion
+  tags        String[]
+  titulo      String
+  contenido   String @db.Text
+
+  fechaEvento DateTime
+  ubicacion   String?
+  fuente      FuenteObservacion @default(VISITA)
+
+  sentimiento Sentimiento?
+  importancia Int @default(3)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([tipo])
+  @@index([fechaEvento])
+  @@map("observaciones_campo")
 }
 
 // ============================================

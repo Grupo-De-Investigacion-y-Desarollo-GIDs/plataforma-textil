@@ -604,3 +604,58 @@ Los tests E2E de rate limiting (S-02) envian requests POST a `/api/feedback` que
 - [ ] GET /api/admin/notas-seguimiento sin auth → 401
 - [ ] POST /api/admin/onboarding/reenviar-invitacion sin auth → 401
 - [ ] TALLER GET /api/admin/notas-seguimiento → 403
+
+---
+
+## Spec T-02 — Reporte de campo del piloto
+
+### Pruebas automatizadas
+- [x] 26 Vitest tests pasan: `npx vitest run src/__tests__/observaciones-campo.test.ts` — Gerardo 6/5
+- [ ] 10 Playwright E2E tests: `npx playwright test tests/e2e/observaciones-campo.spec.ts` — pendiente CI
+- [x] TypeScript compila sin errores: `npx tsc --noEmit` — Gerardo 6/5
+- [x] 400/400 tests pasan en suite completo — Gerardo 6/5
+
+### Pruebas manuales — CRUD observaciones
+
+- [ ] Login como ADMIN → /admin/observaciones → "Observaciones de campo" visible con sidebar item "Observaciones"
+- [ ] "+ Nueva observacion" → formulario con 10 campos (usuario, tipo, fuente, sentimiento, importancia, titulo, contenido, tags, fecha, ubicacion)
+- [ ] Buscar usuario en autocomplete → seleccionar → se muestra nombre y boton "Quitar"
+- [ ] Tags sugeridos clickeables (11 tags) → toggle on/off, se destacan en azul
+- [ ] Importancia con estrellas interactivas (1-5)
+- [ ] Sentimiento con radio buttons (Positivo/Neutral/Negativo)
+- [ ] Guardar → toast "Observacion registrada" → redirige al listado
+- [ ] Observacion aparece con badge de tipo, estrellas, tags, nombre del autor
+- [ ] Click en observacion → /admin/observaciones/[id]/editar con Breadcrumbs
+- [ ] Editar importancia → guardar → toast "Observacion actualizada"
+- [ ] Eliminar → confirmar → toast "Observacion eliminada" → no aparece en listado
+
+### Pruebas manuales — filtros
+
+- [ ] Filtro por Tipo → solo observaciones de ese tipo
+- [ ] Filtro por Fuente → solo observaciones de esa fuente
+- [ ] Filtro por Sentimiento → funciona
+- [ ] Filtro por Periodo (7d, 30d, 90d, 6m, todos) → filtra por fechaEvento
+- [ ] Filtro por Tags → usa hasSome (OR, no AND)
+- [ ] EmptyState visible cuando filtros no devuelven resultados
+
+### Pruebas manuales — reportes Excel
+
+- [ ] Boton "Reporte mensual" descarga .xlsx con 6 hojas: Portada, Metricas plataforma, Etapas onboarding, Demanda insatisfecha, Observaciones, Resumen ejecutivo
+- [ ] GET /api/admin/reporte-piloto descarga .xlsx con 9 hojas: Portada, Resumen ejecutivo, Talleres, Marcas, Metricas finales, Demanda insatisfecha, Aprendizajes cualitativos, Recomendaciones, Anexo
+- [ ] Abrir Excel en LibreOffice o Google Sheets sin errores
+
+### Pruebas manuales — permisos
+
+- [ ] ESTADO puede crear y ver observaciones
+- [ ] ESTADO no puede editar observacion de otro usuario
+- [ ] ADMIN puede editar cualquier observacion
+- [ ] TALLER accede a /admin/observaciones → redirect /unauthorized
+- [ ] MARCA accede a /admin/observaciones → redirect /unauthorized
+
+### Pruebas manuales — UX checklist
+
+- [ ] Skeleton loading visible al cargar cada pagina (3 loading.tsx)
+- [ ] Breadcrumbs en /admin/observaciones/nueva y /admin/observaciones/[id]/editar
+- [ ] EmptyState con CTA "Nueva observacion" cuando listado vacio
+- [ ] Toast para todas las acciones (crear, editar, eliminar, errores)
+- [ ] Sidebar admin muestra "Observaciones" con icono ojo
