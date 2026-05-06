@@ -3,6 +3,9 @@
 ## 2026-05-06
 
 ### Gerardo Breard
+- **13:34** `c7c1ef2` — chore: agregar Bloque K (Seguridad) a V4_BACKLOG
+  - `.claude/specs/V4_BACKLOG.md`
+
 - **13:23** `dfeb6a7` — audit: QA INT-00 acceso pre-formalizacion completo
   - `.claude/auditorias/QA_v3-acceso-pre-formalizacion.md`
 
