@@ -1323,7 +1323,7 @@
             <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
             <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
           </div>
-          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">Solo talleres soporta los 3 filtros (provincia+nivel+periodo). Resto solo periodo.</textarea>
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
@@ -1361,7 +1361,7 @@
         </div>
         <div class="item-badges"></div>
         <div class="item-details">
-          <div class="detail-row"><span class="detail-label">Accion:</span> Aplicar filtros que no coincidan con ningun registro (ej: provincia + nivel muy especificos) y descargar</div>
+          <div class="detail-row"><span class="detail-label">Accion:</span> Aplicar filtros que no coincidan con ningun registro</div>
           <div class="detail-row"><span class="detail-label">Esperado:</span> Se genera archivo con 0 filas de datos (solo headers), no error</div>
         </div>
         <div class="item-controls">
@@ -1381,8 +1381,8 @@
         </div>
         <div class="item-badges"></div>
         <div class="item-details">
-          <div class="detail-row"><span class="detail-label">Accion:</span> Descargar reporte CSV que contenga datos con ñ, tildes y caracteres especiales. Abrir con Excel</div>
-          <div class="detail-row"><span class="detail-label">Esperado:</span> Los caracteres se muestran correctamente gracias al BOM UTF-8, sin caracteres rotos</div>
+          <div class="detail-row"><span class="detail-label">Accion:</span> Descargar CSV con ñ, tildes</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> Caracteres correctos gracias al BOM UTF-8</div>
         </div>
         <div class="item-controls">
           <div class="status-btns">
@@ -1401,8 +1401,8 @@
         </div>
         <div class="item-badges"></div>
         <div class="item-details">
-          <div class="detail-row"><span class="detail-label">Accion:</span> Descargar 6 reportes en rapida sucesion (menos de 1 minuto)</div>
-          <div class="detail-row"><span class="detail-label">Esperado:</span> Las primeras 5 descargas funcionan. La 6ta retorna error 429 con mensaje claro de rate limit</div>
+          <div class="detail-row"><span class="detail-label">Accion:</span> Descargar 6 reportes en &lt;1 min</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> 5 OK, 6ta → 429</div>
         </div>
         <div class="item-controls">
           <div class="status-btns">
@@ -1421,8 +1421,8 @@
         </div>
         <div class="item-badges"></div>
         <div class="item-details">
-          <div class="detail-row"><span class="detail-label">Accion:</span> Seleccionar filtro de periodo &quot;semestre&quot; en un periodo con pocos registros</div>
-          <div class="detail-row"><span class="detail-label">Esperado:</span> Archivo generado con pocas filas pero sin errores, headers presentes</div>
+          <div class="detail-row"><span class="detail-label">Accion:</span> Filtro semestre con pocos registros</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> Archivo con pocas filas, headers presentes</div>
         </div>
         <div class="item-controls">
           <div class="status-btns">
@@ -1441,8 +1441,8 @@
         </div>
         <div class="item-badges"></div>
         <div class="item-details">
-          <div class="detail-row"><span class="detail-label">Accion:</span> Generar informe mensual para un periodo donde no hubo actividad</div>
-          <div class="detail-row"><span class="detail-label">Esperado:</span> Las 7 hojas estan presentes con solo headers (sin filas de datos). La portada muestra la informacion correcta</div>
+          <div class="detail-row"><span class="detail-label">Accion:</span> Generar informe en mes vacio</div>
+          <div class="detail-row"><span class="detail-label">Esperado:</span> 7 hojas con solo headers, portada correcta</div>
         </div>
         <div class="item-controls">
           <div class="status-btns">
@@ -1519,7 +1519,7 @@
           <span class="badge-qa">QA</span>
         </div>
         <div class="item-badges"></div>
-        <div class="item-details"><span class="detail-label">Metodo:</span> Medir tiempo desde click hasta descarga del XLSX multi-hoja</div>
+        <div class="item-details"><span class="detail-label">Metodo:</span> Medir tiempo desde click hasta descarga</div>
         <div class="item-controls">
           <div class="status-btns">
             <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
