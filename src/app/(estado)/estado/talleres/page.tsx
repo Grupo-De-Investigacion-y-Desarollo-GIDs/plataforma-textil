@@ -101,7 +101,7 @@ export default async function EstadoTalleresPage({
             <option value="sin">Sin docs pendientes</option>
           </select>
           <select name="verificacion" defaultValue={verificacion || ''} className="rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue">
-            <option value="">Verificacion AFIP</option>
+            <option value="">Verificacion ARCA</option>
             <option value="verificados">Verificados</option>
             <option value="sin-verificar">Sin verificar</option>
           </select>

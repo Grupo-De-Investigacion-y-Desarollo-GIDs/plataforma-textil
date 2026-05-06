@@ -88,7 +88,7 @@ export type CodigoErrorArca =
 // Función principal: consultarPadron
 // ---------------------------------------------------------------------------
 
-export async function consultarPadron(cuit: string, tallerId?: string): Promise<ResultadoConsulta> {
+export async function consultarPadron(cuit: string, tallerId?: string, userId?: string | null): Promise<ResultadoConsulta> {
   const inicio = Date.now()
   const config = getConfig()
 
@@ -110,7 +110,7 @@ export async function consultarPadron(cuit: string, tallerId?: string): Promise<
 
     if (!respuesta) {
       await registrarConsulta(tallerId, cuit, 'padron-a13', false, null, 'CUIT_INEXISTENTE', inicio)
-      logAfipVerificacion(tallerId, cuit, false, 'CUIT_INEXISTENTE')
+      logAfipVerificacion(tallerId, cuit, false, 'CUIT_INEXISTENTE', userId)
       return { exitosa: false, error: 'CUIT_INEXISTENTE', duracionMs: Date.now() - inicio }
     }
 
@@ -123,25 +123,25 @@ export async function consultarPadron(cuit: string, tallerId?: string): Promise<
     // Verificar estado del CUIT
     if (datos.estadoCuit === 'INACTIVO' || datos.estadoCuit === 'BAJA') {
       await registrarConsulta(tallerId, cuit, 'padron-a13', true, limpiarDatosSensibles(respuesta), 'CUIT_INACTIVO', inicio)
-      logAfipVerificacion(tallerId, cuit, false, 'CUIT_INACTIVO')
+      logAfipVerificacion(tallerId, cuit, false, 'CUIT_INACTIVO', userId)
       return { exitosa: false, error: 'CUIT_INACTIVO', datos, duracionMs: Date.now() - inicio }
     }
 
     // Verificar actividades económicas
     if (datos.actividades.length === 0) {
       await registrarConsulta(tallerId, cuit, 'padron-a13', true, limpiarDatosSensibles(respuesta), 'CUIT_SIN_ACTIVIDAD', inicio)
-      logAfipVerificacion(tallerId, cuit, false, 'CUIT_SIN_ACTIVIDAD')
+      logAfipVerificacion(tallerId, cuit, false, 'CUIT_SIN_ACTIVIDAD', userId)
       return { exitosa: false, error: 'CUIT_SIN_ACTIVIDAD', datos, duracionMs: Date.now() - inicio }
     }
 
     await registrarConsulta(tallerId, cuit, 'padron-a13', true, limpiarDatosSensibles(respuesta), null, inicio)
-    logAfipVerificacion(tallerId, cuit, true, null)
+    logAfipVerificacion(tallerId, cuit, true, null, userId)
 
     return { exitosa: true, datos, duracionMs: Date.now() - inicio }
   } catch (error: unknown) {
     const codigo = clasificarError(error)
     await registrarConsulta(tallerId, cuit, 'padron-a13', false, null, codigo, inicio)
-    logAfipVerificacion(tallerId, cuit, false, codigo)
+    logAfipVerificacion(tallerId, cuit, false, codigo, userId)
 
     return {
       exitosa: false,
@@ -155,7 +155,7 @@ export async function consultarPadron(cuit: string, tallerId?: string): Promise<
 // Sincronización de taller existente
 // ---------------------------------------------------------------------------
 
-export async function sincronizarTaller(tallerId: string, force = false): Promise<ResultadoConsulta> {
+export async function sincronizarTaller(tallerId: string, force = false, userId?: string | null): Promise<ResultadoConsulta> {
   const taller = await prisma.taller.findUnique({
     where: { id: tallerId },
     select: { id: true, cuit: true, verificadoAfipAt: true },
@@ -173,7 +173,7 @@ export async function sincronizarTaller(tallerId: string, force = false): Promis
     }
   }
 
-  const resultado = await consultarPadron(taller.cuit, taller.id)
+  const resultado = await consultarPadron(taller.cuit, taller.id, userId)
 
   if (resultado.exitosa && resultado.datos) {
     await prisma.taller.update({
@@ -287,7 +287,7 @@ async function registrarConsulta(
   error: string | null,
   inicio: number,
 ) {
-  prisma.consultaArca.create({
+  await prisma.consultaArca.create({
     data: {
       tallerId: tallerId ?? null,
       cuit,
@@ -297,11 +297,11 @@ async function registrarConsulta(
       error,
       duracionMs: Date.now() - inicio,
     },
-  }).catch((err) => console.error('Error registrando consulta ARCA:', err))
+  })
 }
 
-function logAfipVerificacion(tallerId: string | undefined, cuit: string, exitosa: boolean, error: string | null) {
-  logActividad('AFIP_VERIFICACION', null, {
+function logAfipVerificacion(tallerId: string | undefined, cuit: string, exitosa: boolean, error: string | null, userId?: string | null) {
+  logActividad('AFIP_VERIFICACION', userId ?? null, {
     tallerId: tallerId ?? null,
     cuit,
     exitosa,

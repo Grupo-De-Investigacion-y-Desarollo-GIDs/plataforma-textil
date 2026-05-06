@@ -3,19 +3,20 @@ import { requiereRolApi } from '@/compartido/lib/permisos'
 import { sincronizarTaller } from '@/compartido/lib/arca'
 import { prisma } from '@/compartido/lib/prisma'
 import { logActividad } from '@/compartido/lib/log'
+import { apiHandler } from '@/compartido/lib/api-errors'
 
 // POST /api/estado/arca/reverificar/[id] — Re-verificar un taller individual contra ARCA
-export async function POST(
+export const POST = apiHandler(async (
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
+  { params },
+) => {
   const sesion = await requiereRolApi(['ESTADO', 'ADMIN'])
   if (sesion instanceof NextResponse) return sesion
 
-  const { id } = await params
+  const { id } = await params!
 
   const taller = await prisma.taller.findUnique({
-    where: { id },
+    where: { id: id as string },
     select: { id: true, nombre: true, cuit: true },
   })
 
@@ -23,7 +24,7 @@ export async function POST(
     return NextResponse.json({ error: 'Taller no encontrado' }, { status: 404 })
   }
 
-  const resultado = await sincronizarTaller(taller.id, true)
+  const resultado = await sincronizarTaller(taller.id, true, sesion.userId)
 
   logActividad('ARCA_REVERIFICACION', sesion.userId, {
     tallerId: taller.id,
@@ -35,7 +36,7 @@ export async function POST(
 
   if (resultado.exitosa) {
     const actualizado = await prisma.taller.findUnique({
-      where: { id },
+      where: { id: id as string },
       select: {
         verificadoAfip: true,
         verificadoAfipAt: true,
@@ -53,4 +54,4 @@ export async function POST(
     error: resultado.error,
     duracionMs: resultado.duracionMs,
   })
-}
+})

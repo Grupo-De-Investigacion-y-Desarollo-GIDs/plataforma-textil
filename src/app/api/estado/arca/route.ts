@@ -20,13 +20,22 @@ export async function POST(req: NextRequest) {
   const resultados: { tallerId: string; nombre: string; exitosa: boolean; error?: string }[] = []
 
   for (const taller of talleres) {
-    const resultado = await sincronizarTaller(taller.id, force)
-    resultados.push({
-      tallerId: taller.id,
-      nombre: taller.nombre,
-      exitosa: resultado.exitosa,
-      error: resultado.error,
-    })
+    try {
+      const resultado = await sincronizarTaller(taller.id, force, sesion.userId)
+      resultados.push({
+        tallerId: taller.id,
+        nombre: taller.nombre,
+        exitosa: resultado.exitosa,
+        error: resultado.error,
+      })
+    } catch (err) {
+      resultados.push({
+        tallerId: taller.id,
+        nombre: taller.nombre,
+        exitosa: false,
+        error: err instanceof Error ? err.message : 'Error inesperado',
+      })
+    }
   }
 
   const verificados = resultados.filter(r => r.exitosa).length
