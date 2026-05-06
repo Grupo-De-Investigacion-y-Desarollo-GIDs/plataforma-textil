@@ -3,6 +3,9 @@
 ## 2026-05-06
 
 ### Gerardo Breard
+- **13:23** `dfeb6a7` — audit: QA INT-00 acceso pre-formalizacion completo
+  - `.claude/auditorias/QA_v3-acceso-pre-formalizacion.md`
+
 - **12:26** `2b6a695` — fix: 5 hallazgos QA INT-01 ARCA + auditoria completa
   - `.claude/auditorias/QA_v3-arca-completo.md`
   - `src/app/(estado)/estado/talleres/page.tsx`
