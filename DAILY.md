@@ -3,6 +3,13 @@
 ## 2026-05-06
 
 ### Gerardo Breard
+- **10:48** `e7b3d29` — fix: resolver bugs QA pre-piloto (#193 #199 #201) + limpiar 41 issues
+  - `.claude/specs/V4_BACKLOG.md`
+  - `src/app/(auth)/registro/page.tsx`
+  - `src/app/api/auth/verificar-email/route.ts`
+  - `src/compartido/lib/ratelimit.ts`
+  - `src/taller/componentes/proximo-nivel-card.tsx`
+
 - **01:02** `68df91e` — chore: ocultar rol CONTENIDO de UI admin + documentar como deuda V4
   - `.claude/specs/V4_BACKLOG.md`
   - `src/app/(admin)/admin/usuarios/page.tsx`
