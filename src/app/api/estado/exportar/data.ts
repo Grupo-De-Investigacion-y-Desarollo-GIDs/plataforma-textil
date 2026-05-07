@@ -186,13 +186,14 @@ async function obtenerDemanda(filtros: Filtros): Promise<DataExporte> {
 
   const headers = [
     'Fecha', 'Marca', 'Tipo prenda', 'Cantidad', 'Presupuesto',
-    'Motivo no-match', 'Talleres cerca',
+    'Motivo no-match', 'Procesos requeridos', 'Talleres cerca', 'Accion sugerida',
   ]
 
   const filas = motivos.map(m => [
     String(m.fecha), String(m.marca), String(m.tipoPrenda),
     String(m.cantidad), String(m.presupuesto),
-    String(m.motivoCategoria), String(m.talleresCerca),
+    String(m.motivoCategoria), String(m.procesosRequeridos),
+    String(m.talleresCerca), String(m.accionSugerida),
   ])
 
   return {

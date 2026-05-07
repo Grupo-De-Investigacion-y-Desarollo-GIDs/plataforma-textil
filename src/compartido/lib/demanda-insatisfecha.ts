@@ -382,6 +382,7 @@ export async function exportarMotivosCSV(desde: Date, hasta: Date) {
           tipoPrenda: true,
           cantidad: true,
           presupuesto: true,
+          procesosRequeridos: true,
           marca: { select: { nombre: true } },
         },
       },
@@ -393,6 +394,13 @@ export async function exportarMotivosCSV(desde: Date, hasta: Date) {
     const detalle = m.detalle as Record<string, unknown>
     const talleresCerca = (detalle?.talleresCerca ?? []) as Array<{ nombre: string }>
 
+    const accionSugerida: Record<string, string> = {
+      SIN_TALLERES_NIVEL: 'Acompanar talleres a subir de nivel',
+      SIN_TALLERES_CAPACIDAD: 'Buscar talleres con mayor capacidad o dividir pedido',
+      SIN_TALLERES_PROCESO: 'Capacitar talleres en procesos faltantes',
+      OTROS: 'Evaluar caso individualmente',
+    }
+
     return {
       omId: m.pedido.omId,
       tipoPrenda: m.pedido.tipoPrenda,
@@ -400,7 +408,9 @@ export async function exportarMotivosCSV(desde: Date, hasta: Date) {
       presupuesto: m.pedido.presupuesto ?? '',
       marca: m.pedido.marca.nombre,
       motivoCategoria: m.motivoCategoria,
+      procesosRequeridos: m.pedido.procesosRequeridos.join('; '),
       talleresCerca: talleresCerca.map(t => t.nombre).join('; '),
+      accionSugerida: accionSugerida[m.motivoCategoria] ?? '',
       fecha: m.createdAt.toISOString().split('T')[0],
     }
   })

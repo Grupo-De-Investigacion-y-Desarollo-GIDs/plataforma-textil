@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
-import { EmptyState } from '@/compartido/componentes/ui/empty-state'
 import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 import { Loading } from '@/compartido/componentes/ui/loading'
 import { useToast } from '@/compartido/componentes/ui/toast'
