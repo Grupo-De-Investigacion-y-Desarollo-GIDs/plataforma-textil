@@ -36,11 +36,11 @@ Verificar que: (1) talleres no verificados no pueden cotizar ni aparecer en dire
 ## Resultado global
 
 - [ ] Aprobado — todo funciona
-- [ ] Aprobado con fixes — funciona pero hay bugs menores
+- [x] Aprobado con fixes — funciona pero hay bugs menores
 - [ ] Rechazado — falta funcionalidad o hay bugs bloqueantes
 
-**Decision:** [ cerrar v3 / fix inmediato / abrir item v4 ]
-**Issues abiertos:** # (links a GitHub)
+**Decision:** cerrado — 5 fixes mergeados a main. 7 items browser pendientes para Sergio.
+**Cerrado por:** Claude Code 7/5/2026
 
 ---
 

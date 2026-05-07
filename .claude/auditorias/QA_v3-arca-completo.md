@@ -34,11 +34,11 @@ Verificar que: (1) el registro usa datos de ARCA correctamente, (2) los mensajes
 ## Resultado global
 
 - [ ] Aprobado — todo funciona
-- [ ] Aprobado con fixes — funciona pero hay bugs menores
+- [x] Aprobado con fixes — funciona pero hay bugs menores
 - [ ] Rechazado — falta funcionalidad o hay bugs bloqueantes
 
-**Decision:** [ cerrar INT-01 / fix inmediato / abrir item v4 ]
-**Issues abiertos:** # (links a GitHub)
+**Decision:** cerrado — 5 fixes mergeados a main. 8 items browser pendientes para Sergio.
+**Cerrado por:** Claude Code 7/5/2026
 
 ---
 

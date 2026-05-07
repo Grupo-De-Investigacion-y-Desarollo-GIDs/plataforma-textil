@@ -6,6 +6,7 @@ titulo: "Tipos de documento gestionados desde la base de datos"
 fecha: 2026-04-28
 autor: Gerardo (Claude Code)
 verificacion_dev: Completada por Gerardo el 2026-04-28
+resultado_global: Aprobado con fixes — 3 fixes mergeados. 4 items browser para Sergio. Cerrado Claude Code 7/5/2026
 ---
 
 # QA: Tipos de documento DB (D-02)

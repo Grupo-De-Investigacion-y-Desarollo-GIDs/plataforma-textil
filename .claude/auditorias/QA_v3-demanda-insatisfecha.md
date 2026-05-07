@@ -36,11 +36,11 @@ Verificar que el dashboard de demanda insatisfecha funciona correctamente: muest
 ## Resultado global
 
 - [ ] Aprobado — todo funciona
-- [ ] Aprobado con fixes — funciona pero hay bugs menores
+- [x] Aprobado con fixes — funciona pero hay bugs menores
 - [ ] Rechazado — falta funcionalidad o hay bugs bloqueantes
 
-**Decision:** [ cerrar v3 / fix inmediato / abrir item v4 ]
-**Issues abiertos:** # (links a GitHub)
+**Decision:** cerrado — 2 fixes mergeados a main (deprecar export dedicado, sidebar mobile). 5 items browser para Sergio.
+**Cerrado por:** Claude Code 7/5/2026
 
 ---
 

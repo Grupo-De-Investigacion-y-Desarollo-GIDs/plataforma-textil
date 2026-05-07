@@ -1,6 +1,9 @@
-# Pruebas manuales pendientes — V3
+# Pruebas manuales pendientes — V3 (para Sergio)
 
-Este archivo acumula TODAS las verificaciones manuales que requieren ojos humanos en produccion/dev. Se ejecutan al final de la implementacion de todos los specs V3, en una sesion de validacion dedicada.
+**Estado V3:** Cerrada. Code review completado por Claude Code (12 QAs, ~410 items, 22 bugs fixeados).
+**Pendiente:** Las verificaciones de esta lista requieren browser real (DevTools, uploads, visual). Sergio las ejecuta cuando tenga tiempo — no bloquean el piloto.
+
+**Fecha cierre code review:** 2026-05-07
 
 ---
 

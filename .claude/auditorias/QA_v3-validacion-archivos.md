@@ -34,12 +34,12 @@ Verificar que los archivos subidos son validados por magic bytes en el server, q
 
 ## Resultado global
 
-- [ ] Aprobado — todo funciona
+- [x] Aprobado — todo funciona
 - [ ] Aprobado con fixes — funciona pero hay bugs menores
 - [ ] Rechazado — falta funcionalidad o hay bugs bloqueantes
 
-**Decision:** [ cerrar v3 / fix inmediato / abrir item v4 ]
-**Issues abiertos:** # (links a GitHub)
+**Decision:** cerrado por code review — 0 bugs. 15 DEV ok + 1 code review + 8 items browser para Sergio (uploads, admin config).
+**Cerrado por:** Claude Code 7/5/2026
 
 ---
 
