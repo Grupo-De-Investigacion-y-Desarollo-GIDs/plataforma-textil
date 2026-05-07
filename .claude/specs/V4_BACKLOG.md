@@ -261,6 +261,87 @@ Origen: lecciones aprendidas durante QA V3 y operacion del piloto.
 
 ---
 
+## Bloque N — Hallazgos interdisciplinarios Fase 2 (consolidado Eje 6)
+
+Origen: auditoria QA Fase 2 (2026-05-06/07). 69 items de primera pasada Eje 6 a traves de 8 QAs, con 4 perfiles: politologo, economista, sociologo, contador. Los hallazgos transversales se consolidan aqui; los accionables se enlazan a otros bloques.
+
+### Politologo — Hallazgos transversales
+
+| Hallazgo | QA origen | Accion V4 | Bloque enlazado |
+|----------|-----------|-----------|-----------------|
+| Falta tipo GENERO en observaciones — eje transversal OIT | T-02 | Agregar enum + tag + indicadores | M-02 |
+| Separacion ADMIN/ESTADO refleja bien la realidad institucional argentina | D-01 | Mantener — validado | — |
+| Funnel onboarding falta etapa FORMALIZADO (outcome OIT) | T-03 | Agregar etapa post-piloto | G (feedback) |
+| Demanda insatisfecha como dato accionable: framing correcto | F-05 | Mantener — validado | — |
+| Talleres cerca: riesgo de lista negra informal si ESTADO no es sensible | F-05 | Capacitar equipo | P-01 |
+| Reporte piloto 8 hojas compatible con formato OIT, falta Metodologia | F-04 | Agregar hoja Metodologia + Glosario | G (feedback) |
+
+### Economista — Hallazgos transversales
+
+| Hallazgo | QA origen | Accion V4 | Bloque enlazado |
+|----------|-----------|-----------|-----------------|
+| Credenciales granulares > etiqueta unica para evaluacion comercial | INT-00 | Mantener — validado | — |
+| Barrera del CUIT es significativa pero justificada | INT-00 | Documentar trade-off | O-01 |
+| Tasa aceptacion insuficiente sola — faltan monto promedio, tendencias | F-04 | Agregar metricas economicas | H-01, H-02 |
+| Discrepancia empleados tiene riesgo de malinterpretacion | F-04 | Agregar nota al pie en export | G (feedback) |
+| Thresholds recomendaciones conservadores para piloto, bajar post-piloto | F-05 | Hacer configurables | G (feedback) |
+| Sesgo del observador via sentimiento — mitigado por contenido libre | T-02 | Documentar en guia | P-01 |
+| Funnel mide adopcion pero no impacto economico | T-03 | Combinar con metricas outcome | H-04 |
+
+### Sociologo — Hallazgos transversales
+
+| Hallazgo | QA origen | Accion V4 | Bloque enlazado |
+|----------|-----------|-----------|-----------------|
+| Riesgo de extractivismo de conocimiento sin consentimiento | T-02 | Protocolo etico | O-02, M-01 |
+| Tono constructivo bien calibrado en banners y mensajes | INT-00 | Mantener — validado | — |
+| Separacion de registros linguisticos taller vs ESTADO: correcta | INT-00, D-01 | Mantener — validado | — |
+| Gamificacion checklist apropiada con reservas (no nativos digitales) | T-03 | Testear en primera semana piloto | P-01 |
+| Talleres NO ven demanda que no pudieron cubrir — correcto para piloto | F-05 | V4: notificacion constructiva cuando puedan actuar | G (feedback) |
+| Protocolo seguimiento puede sentirse como vigilancia | T-03 | Capacitar equipo: "facilitador, no inspector" | P-01 |
+
+### Contador — Hallazgos transversales
+
+| Hallazgo | QA origen | Accion V4 | Bloque enlazado |
+|----------|-----------|-----------|-----------------|
+| PDF de orden: CUIT suficiente, podria faltar tipo inscripcion | INT-00 | Nice-to-have, no bloqueante | G (feedback) |
+| Credenciales individuales cubren 80% evaluacion riesgo comercial | INT-00 | Mantener — validado | — |
+| Guia taller falta explicar monotributo vs RI, categorias textil | T-03 | Agregar FAQ fiscal | P-02 |
+| Falta IIBB provincial, formulario 960 en tipos de documento | D-01 | ESTADO puede agregar via /estado/documentos | — |
+| Exportes faltan facturacion estimada y tipo comprobante | F-04 | V4 campo "facturacion estimada" en perfil taller | H-01 |
+
+---
+
+## Bloque O — Decisiones institucionales V4
+
+Origen: puntos que surgieron de la auditoria Fase 2 que requieren decision de negocio/gobernanza, no solo tecnica. Se discuten al inicio de V4. Referencia completa: `docs/v4-input-institucional.md`.
+
+| ID | Decision | Contexto | Impacto tecnico |
+|----|----------|----------|-----------------|
+| O-01 | Barrera del CUIT: documentar trade-off formalizacion vs inclusion | INT-00 economista: talleres informales excluidos. Justificado pero debe documentarse | Ninguno (decision de producto) |
+| O-02 | Protocolo etico de observaciones de campo | T-02 sociologo: consentimiento, transparencia, anonimizacion | M-01 (vista taller o filtro exportes) |
+| O-03 | Dominio propio para emails transaccionales | INT-02: onboarding@resend.dev limita deliverability | ~1h tecnica + decision de dominio |
+| O-04 | Corpus real para RAG (asistente IA) | Implementado con placeholder, necesita contenido real | Carga de documentos |
+| O-05 | Definicion funcional rol CONTENIDO | Parcialmente implementado, oculto en V3 | Bloque J completo |
+| O-06 | Genero como eje transversal | T-02 politologo: indicadores + tipo observacion | M-02 (~1h) + indicadores en exportes |
+| O-07 | Modelo de la PDT: institucional vs marketplace | Nota en V4_BACKLOG: impacta Bloques H e I | Decisiones de diseno en H e I |
+
+**Prioridad:** Discutir O-01 a O-07 en la primera reunion de planificacion V4. No requieren codigo inmediato.
+
+---
+
+## Bloque P — Capacitacion y protocolos operativos
+
+Origen: hallazgos Eje 6 que no son codigo sino preparacion del equipo humano para el piloto y V4.
+
+| ID | Spec | Descripcion | Estimacion |
+|----|------|-------------|------------|
+| P-01 | Guia del equipo de campo | Lineamientos para observaciones: cuando usar cada tipo, como registrar contexto cultural, citas textuales, etica de observacion, sentimiento como primera impresion no como veredicto. "Sos facilitador, no inspector." Incluye: no crear listas negras con talleres cerca, limitar recordatorios a 1/semana | 3h (doc) |
+| P-02 | FAQ fiscal para talleres | Seccion en la guia de onboarding: diferencia monotributo/RI, categorias textil, que pasa con CUIL vs CUIT, IIBB por provincia, links utiles AFIP/municipio/ART | 2h (doc) |
+
+**Total estimado Bloque P:** ~5h (documentacion, no codigo)
+
+---
+
 ## Resumen ejecutivo de V4
 
 | Bloque | Specs | Estimación | Prioridad |
@@ -268,27 +349,42 @@ Origen: lecciones aprendidas durante QA V3 y operacion del piloto.
 | A — Cumplimiento OIT | 10 specs | 43h + docs | Alta (bloquea escalamiento) |
 | B — Mobile y UX | 3 specs | 22h | Alta (talleres usan celular) |
 | C — Mejoras de QA | 4 specs | 20h | Media |
-| D — Deuda técnica V3 | 7 specs | 41.5h | Baja |
-| E — Integraciones | 3 specs | 36h | Variable según piloto |
-| F — Internacionalización | 3 specs | 52h | Solo si se escala |
+| D — Deuda técnica V3 | 9 specs | 41.5h | Baja-media |
+| E — Integraciones | 3 specs | 36h | Variable segun piloto |
+| F — Internacionalizacion | 3 specs | 52h | Solo si se escala |
 | G — Feedback del piloto | TBD | TBD | Variable |
-| H — Mercado y transparencia | 7 specs | 66h | Post-piloto (junio) |
-| I — Servicios y catálogo | 7 specs | 62h | Post-piloto (después de H) |
-| J — Rol CONTENIDO completo | 5 specs | 14h | Media (no bloquea piloto) |
-| K — Seguridad | 5 specs | 15.5h | Alta (K-03/K-04 pre-piloto) |
+| H — Mercado y transparencia | 7 specs | 66h | Post-piloto |
+| I — Servicios y catalogo | 7 specs | 62h | Post-piloto (despues de H) |
+| J — Rol CONTENIDO completo | 5 specs | 14h | Media (depende O-05) |
+| K — Seguridad | 5 specs | 15.5h | Alta (K-03/K-04 ya fixeados) |
 | L — Documentacion y operaciones | 1 spec | 0.5h | Baja |
-| M — Gobernanza e interdisciplinaria | 3 specs | 7h | Media-alta (decision institucional) |
+| M — Gobernanza e interdisciplinaria | 3 specs | 7h | Media-alta |
+| N — Hallazgos interdisciplinarios | consolidado | (referencia) | Input para V4 |
+| O — Decisiones institucionales | 7 decisiones | (analisis) | Primera reunion V4 |
+| P — Capacitacion y protocolos | 2 specs | 5h | Pre-piloto o semana 1 |
 
-**Total estimado V4 (sin Bloque G):** ~359h ≈ 9 semanas de trabajo
+**Total estimado V4 (sin Bloques G, N, O):** ~384h ≈ 10 semanas de trabajo
+
+**Nota K-03/K-04:** Ya fixeados en Fase 2 (INT-00). K-01/K-02/K-05 pendientes para V4.
 
 ---
 
-## Decisiones pendientes para arrancar V4
+## Como arrancar V4
 
-1. ¿Cuándo arranca V4? Propuesta: 2 semanas después de iniciado el piloto, una vez que veamos qué pide el feedback (Bloque G)
-2. ¿OIT pide ISRA antes del piloto o puede ir después? Definir prioridad de Bloque A
-3. ¿Hay presupuesto para integraciones de pago/envíos (Bloque E)? Si no, se descarta
-4. ¿La idea de escalar a otros países es real? Si no, descartar Bloque F
+V4 arranca con **rediseno**: analisis funcional + procesos definidos antes de codear.
+
+**Paso 1 — Primera reunion de planificacion:**
+- Revisar Bloque O (7 decisiones institucionales)
+- Priorizar bloques A-P segun feedback del piloto (Bloque G)
+- Descartar bloques no relevantes (F si no se escala internacionalmente, E si no hay presupuesto)
+
+**Paso 2 — Specs detallados:**
+- Cada bloque priorizado se desarrolla con specs formales (7 secciones obligatorias como V3)
+- Los hallazgos del Bloque N (Eje 6) alimentan cada spec
+
+**Paso 3 — Implementacion:**
+- Bloque P (capacitacion) puede empezar inmediatamente (es documentacion, no codigo)
+- Bloques tecnicos arrancan despues de definir procesos
 
 ---
 
