@@ -74,7 +74,7 @@ Verificar que los archivos subidos son validados por magic bytes en el server, q
 - **Verificador:** QA
 - **Accion:** Subir un PDF valido como documento de formalizacion
 - **Esperado:** Archivo se sube correctamente, estado cambia a PENDIENTE
-- **Resultado:** [ ]
+- **Resultado:** ⏳ requiere browser — code review: validarArchivo(file, 'documentos-formalizacion'), magic bytes PDF %PDF — Claude Code 7/5
 - **Notas:**
 
 ### Paso 2 — Subir imagen de portfolio como taller
@@ -84,7 +84,7 @@ Verificar que los archivos subidos son validados por magic bytes en el server, q
 - **Verificador:** QA
 - **Accion:** Subir una imagen JPG/PNG al portfolio del taller
 - **Esperado:** Imagen se sube y se muestra en el portfolio
-- **Resultado:** [ ]
+- **Resultado:** ⏳ requiere browser — code review: validarArchivo(file, 'imagenes-portfolio'), JPEG magic ffd8ff — Claude Code 7/5
 - **Notas:**
 
 ### Paso 3 — Ver configuracion de archivos como admin
@@ -94,7 +94,7 @@ Verificar que los archivos subidos son validados por magic bytes en el server, q
 - **Verificador:** QA
 - **Accion:** Click en tab "Archivos", verificar que se ve la tabla con 3 contextos
 - **Esperado:** Tabla con documentos-formalizacion, imagenes-portfolio, imagenes-pedido. Cada uno con badges de tipos y tamano maximo.
-- **Resultado:** [ ]
+- **Resultado:** ⏳ requiere browser — code review: pagina fetchea /api/admin/configuracion-upload, seed crea 3 configs — Claude Code 7/5
 - **Notas:**
 
 ### Paso 4 — Editar configuracion de upload como admin
@@ -104,7 +104,7 @@ Verificar que los archivos subidos son validados por magic bytes en el server, q
 - **Verificador:** QA
 - **Accion:** Click "Editar" en imagenes-portfolio, agregar WebP si no esta, cambiar tamano a 10 MB, guardar
 - **Esperado:** Toast de confirmacion, tabla actualizada con nuevos valores
-- **Resultado:** [ ]
+- **Resultado:** ⏳ requiere browser — code review: PUT a /api/admin/configuracion-upload/[id], invalidarCacheConfigs() — Claude Code 7/5
 - **Notas:**
 
 ---
@@ -117,8 +117,8 @@ Verificar que los archivos subidos son validados por magic bytes en el server, q
 | 2 | Archivo vacio rechazado | Subir un archivo de 0 bytes | 400 con "archivo esta vacio" | DEV | ok |
 | 3 | Nombre con path traversal rechazado | Subir archivo con nombre ../../hack.pdf | 400 con "caracteres no permitidos" | DEV | ok |
 | 4 | MIME spoofing: JPEG enviado como application/pdf | Enviar JPEG con content-type de PDF | Rechazado si pdf no esta en tipos, aceptado si jpeg si | DEV | ok |
-| 5 | Uso normal no se ve afectado | Subir 2-3 imagenes normales como taller | Todas suben correctamente | QA | |
-| 6 | Admin no puede guardar lista vacia de tipos | Intentar desmarcar todos los tipos y guardar | Boton deshabilitado o error de validacion | QA | |
+| 5 | Uso normal no se ve afectado | Subir 2-3 imagenes normales como taller | Todas suben correctamente | QA | ⏳ requiere browser |
+| 6 | Admin no puede guardar lista vacia de tipos | Intentar desmarcar todos los tipos y guardar | Boton deshabilitado o error de validacion | QA | ✅ code review — doble proteccion: frontend disabled button + "Debe haber al menos un tipo" + backend 400 si tiposPermitidos.length===0 — Claude Code 7/5 |
 
 ---
 
@@ -126,8 +126,8 @@ Verificar que los archivos subidos son validados por magic bytes en el server, q
 
 | # | Verificacion | Metodo | Verificador | Resultado |
 |---|-------------|--------|-------------|-----------|
-| 1 | Upload no agrega latencia notable vs antes | DevTools > Network > subir imagen | QA | |
-| 2 | Sin errores en consola del browser | DevTools > Console > despues del upload | QA | |
+| 1 | Upload no agrega latencia notable vs antes | DevTools > Network > subir imagen | QA | ⏳ requiere browser |
+| 2 | Sin errores en consola del browser | DevTools > Console > despues del upload | QA | ⏳ requiere browser |
 
 ---
 
@@ -135,9 +135,9 @@ Verificar que los archivos subidos son validados por magic bytes en el server, q
 
 | Verificacion | Resultado | Notas |
 |-------------|-----------|-------|
-| La plataforma se ve y funciona igual que antes | | |
-| Pagina /admin/configuracion/archivos tiene estilo consistente | | |
-| No hay mensajes de error nuevos o inesperados en uso normal | | |
+| La plataforma se ve y funciona igual que antes | ⏳ requiere browser | |
+| Pagina /admin/configuracion/archivos tiene estilo consistente | ⏳ requiere browser — code review: usa Card, Button, Badge, Modal, font-overpass, text-brand-blue | |
+| No hay mensajes de error nuevos o inesperados en uso normal | ⏳ requiere browser | |
 
 ---
 

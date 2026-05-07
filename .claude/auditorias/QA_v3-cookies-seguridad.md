@@ -71,7 +71,7 @@ Verificar que las cookies de sesion de la plataforma tienen los flags de segurid
 - **Verificador:** QA
 - **Accion:** Ingresar email y contrasena en el formulario de credenciales, click "Ingresar"
 - **Esperado:** Redirige a /admin/dashboard. El usuario ve su panel de administracion.
-- **Resultado:** [ ]
+- **Resultado:** ⏳ requiere browser — code review: middleware redirige ADMIN a /admin, auth valida bcrypt — Claude Code 7/5
 - **Notas:**
 
 ### Paso 2 — Verificar cookie en DevTools
@@ -91,7 +91,7 @@ Verificar que las cookies de sesion de la plataforma tienen los flags de segurid
 - **Verificador:** QA
 - **Accion:** Cerrar sesion del admin. Loguearse como taller.
 - **Esperado:** Redirige a /taller. La sesion funciona normalmente.
-- **Resultado:** [ ]
+- **Resultado:** ⏳ requiere browser — code review: middleware redirige TALLER a /taller — Claude Code 7/5
 - **Notas:**
 
 ### Paso 4 — Sesion persiste al recargar
@@ -101,7 +101,7 @@ Verificar que las cookies de sesion de la plataforma tienen los flags de segurid
 - **Verificador:** QA
 - **Accion:** Recargar la pagina (F5)
 - **Esperado:** Sigue logueado, no redirige a /login
-- **Resultado:** [ ]
+- **Resultado:** ⏳ requiere browser — code review: JWT maxAge 7d, updateAge 24h (auth.config.ts:29-32) — Claude Code 7/5
 - **Notas:**
 
 ---
@@ -111,9 +111,9 @@ Verificar que las cookies de sesion de la plataforma tienen los flags de segurid
 | # | Caso | Accion | Esperado | Verificador | Resultado |
 |---|------|--------|----------|-------------|-----------|
 | 1 | Cookie no accesible desde JS | En consola del browser ejecutar `document.cookie` | La cookie de sesion NO aparece en el resultado (httpOnly la oculta) | DEV | ok |
-| 2 | Logout limpia la cookie de sesion | Cerrar sesion y verificar cookies en DevTools | La cookie de sesion ya no esta presente | QA | |
-| 3 | Login despues de logout | Cerrar sesion y volver a loguearse | Login funciona, nueva cookie de sesion creada | QA | |
-| 4 | Acceso sin cookie a ruta protegida | En ventana de incognito, ir a /admin | Redirige a /login | QA | |
+| 2 | Logout limpia la cookie de sesion | Cerrar sesion y verificar cookies en DevTools | La cookie de sesion ya no esta presente | QA | ⏳ requiere browser (DevTools) |
+| 3 | Login despues de logout | Cerrar sesion y volver a loguearse | Login funciona, nueva cookie de sesion creada | QA | ⏳ requiere browser |
+| 4 | Acceso sin cookie a ruta protegida | En ventana de incognito, ir a /admin | Redirige a /login | QA | ✅ code review — middleware.ts:49-55 redirige !isLoggedIn a /login. /admin no esta en publicRoutes — Claude Code 7/5 |
 
 ---
 
@@ -121,8 +121,8 @@ Verificar que las cookies de sesion de la plataforma tienen los flags de segurid
 
 | # | Verificacion | Metodo | Verificador | Resultado |
 |---|-------------|--------|-------------|-----------|
-| 1 | Login carga en menos de 3 segundos | DevTools > Network > recargar /login | QA | |
-| 2 | Sin errores en consola del browser | DevTools > Console > revisar despues del login | QA | |
+| 1 | Login carga en menos de 3 segundos | DevTools > Network > recargar /login | QA | ⏳ requiere browser |
+| 2 | Sin errores en consola del browser | DevTools > Console > revisar despues del login | QA | ⏳ requiere browser |
 
 ---
 
@@ -130,8 +130,8 @@ Verificar que las cookies de sesion de la plataforma tienen los flags de segurid
 
 | Verificacion | Resultado | Notas |
 |-------------|-----------|-------|
-| Pagina de login se ve igual que antes del cambio | | |
-| No hay mensajes de error nuevos o inesperados | | |
+| Pagina de login se ve igual que antes del cambio | ⏳ requiere browser | |
+| No hay mensajes de error nuevos o inesperados | ⏳ requiere browser | |
 
 ---
 

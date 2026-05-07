@@ -71,7 +71,7 @@ Verificar que los endpoints sensibles tienen proteccion contra abuso (rate limit
 - **Verificador:** QA
 - **Accion:** Login con credenciales correctas
 - **Esperado:** Redirige a /admin normalmente, sin retraso ni error 429
-- **Resultado:** [ ]
+- **Resultado:** ⏳ requiere browser — code review: login limit 5/15min, 1 login no trigerea. Todos los limiters tienen analytics:false para performance — Claude Code 7/5
 - **Notas:**
 
 ### Paso 2 — Crear cotizacion como taller
@@ -81,7 +81,7 @@ Verificar que los endpoints sensibles tienen proteccion contra abuso (rate limit
 - **Verificador:** QA
 - **Accion:** Crear 1-2 cotizaciones desde un pedido existente
 - **Esperado:** Cotizaciones se crean sin error 429 (limite es 20/hora)
-- **Resultado:** [ ]
+- **Resultado:** ⏳ requiere browser — code review: cotizaciones limit 20/h. ADMIN/ESTADO exentos — Claude Code 7/5
 - **Notas:**
 
 ### Paso 3 — Enviar feedback con widget
@@ -91,7 +91,7 @@ Verificar que los endpoints sensibles tienen proteccion contra abuso (rate limit
 - **Verificador:** QA
 - **Accion:** Enviar 1-2 feedbacks con el widget azul
 - **Esperado:** Feedback se envia sin error 429 (limite es 10/15min)
-- **Resultado:** [ ]
+- **Resultado:** ⏳ requiere browser — code review: feedback limit 10/15min, no exencion (publico, pre-auth) — Claude Code 7/5
 - **Notas:**
 
 ---
@@ -101,8 +101,8 @@ Verificar que los endpoints sensibles tienen proteccion contra abuso (rate limit
 | # | Caso | Accion | Esperado | Verificador | Resultado |
 |---|------|--------|----------|-------------|-----------|
 | 1 | Mensaje 429 en español | Forzar 429 (ver pruebas manuales) | Body dice "Demasiadas solicitudes" y Retry-After header presente | DEV | ok |
-| 2 | Login normal no se ve afectado | Login 1-3 veces seguidas | No hay 429, login funciona normal | QA | |
-| 3 | Uso normal de la plataforma sin rate limit | Navegar por 5+ paginas, hacer acciones normales | Nada retorna 429 en uso normal | QA | |
+| 2 | Login normal no se ve afectado | Login 1-3 veces seguidas | No hay 429, login funciona normal | QA | ⏳ requiere browser — limit 5/15min, 1-3 OK |
+| 3 | Uso normal de la plataforma sin rate limit | Navegar por 5+ paginas, hacer acciones normales | Nada retorna 429 en uso normal | QA | ⏳ requiere browser — todos los limits generosos para uso normal |
 
 ---
 
@@ -110,8 +110,8 @@ Verificar que los endpoints sensibles tienen proteccion contra abuso (rate limit
 
 | # | Verificacion | Metodo | Verificador | Resultado |
 |---|-------------|--------|-------------|-----------|
-| 1 | Rate limiting no agrega latencia notable | DevTools > Network > verificar tiempos de respuesta | QA | |
-| 2 | Sin errores en consola del browser | DevTools > Console | QA | |
+| 1 | Rate limiting no agrega latencia notable | DevTools > Network > verificar tiempos de respuesta | QA | ⏳ requiere browser |
+| 2 | Sin errores en consola del browser | DevTools > Console | QA | ⏳ requiere browser |
 
 ---
 
@@ -119,8 +119,8 @@ Verificar que los endpoints sensibles tienen proteccion contra abuso (rate limit
 
 | Verificacion | Resultado | Notas |
 |-------------|-----------|-------|
-| La plataforma se ve y funciona igual que antes | | |
-| No hay mensajes de error nuevos o inesperados en uso normal | | |
+| La plataforma se ve y funciona igual que antes | ⏳ requiere browser | |
+| No hay mensajes de error nuevos o inesperados en uso normal | ⏳ requiere browser | |
 
 ---
 
