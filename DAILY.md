@@ -3,6 +3,10 @@
 ## 2026-05-07
 
 ### Gerardo Breard
+- **15:48** `91ea86e` — fix: actualizar E2E tests tras cambios de texto piloto
+  - `tests/e2e/acceso-verificado.spec.ts`
+  - `tests/e2e/roles-estado.spec.ts`
+
 - **14:57** `6807200` — fix: 7 cambios de texto feedback piloto (#216-#218 #223 #227 #232 #235)
   - `src/app/(auth)/registro/page.tsx`
   - `src/app/(estado)/estado/page.tsx`
