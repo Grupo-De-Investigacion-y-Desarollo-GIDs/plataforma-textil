@@ -44,9 +44,9 @@ test.describe('D-01 Roles ESTADO — flujos principales', () => {
       await menuBtn.click()
     }
     // Contar items de navegacion en el sidebar
-    // 9 items: Dashboard, Talleres, Documentos, Auditorias, Niveles, Diagnostico Sector, Exportar Datos, Notificaciones, Mi Cuenta
+    // 10 items: Dashboard, Talleres, Documentos, Auditorias, Niveles, Demanda insatisfecha, Datos sectoriales, Exportar Datos, Notificaciones, Mi Cuenta
     const navItems = page.locator('nav ul li')
-    await expect(navItems).toHaveCount(9)
+    await expect(navItems).toHaveCount(10)
   })
 
   test('ESTADO ve tabs Formalizacion/Historial/Datos en detalle taller', async ({ page }) => {

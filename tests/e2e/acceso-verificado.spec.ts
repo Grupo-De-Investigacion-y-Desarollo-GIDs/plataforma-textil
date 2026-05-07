@@ -10,7 +10,7 @@ test.describe('Acceso pre-formalizacion y niveles privados', () => {
 
     // El directorio deberia cargar sin error
     // Timeout 30s: streaming SSR + cold start en preview puede tardar >15s
-    await expect(page.getByText('Directorio de Talleres')).toBeVisible({ timeout: 30000 })
+    await expect(page.getByText('Directorio de Proveedores')).toBeVisible({ timeout: 30000 })
 
     // No deberia haber filtro de nivel
     await expect(page.locator('select[name="nivel"]')).toHaveCount(0)
@@ -36,7 +36,7 @@ test.describe('Acceso pre-formalizacion y niveles privados', () => {
 
     await page.goto('/marca/directorio')
     // Timeout 30s: streaming SSR + cold start en preview
-    await expect(page.getByRole('heading', { name: 'Explorar Talleres' })).toBeVisible({ timeout: 30000 })
+    await expect(page.getByRole('heading', { name: 'Explorar Proveedores' })).toBeVisible({ timeout: 30000 })
 
     // No deberia haber filtro de nivel
     await expect(page.locator('select[name="nivel"]')).toHaveCount(0)
