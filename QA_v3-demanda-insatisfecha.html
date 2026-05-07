@@ -737,7 +737,7 @@
             <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
             <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
           </div>
-          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2"></textarea>
+          <textarea class="obs-textarea" placeholder="Resultado / Notas..." data-field="obs" rows="2">El endpoint de F-04 (/api/estado/exportar) SI tiene las 9 columnas. Solo falta en este endpoint dedicado.</textarea>
           <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
         </div>
       </div>
@@ -1068,7 +1068,7 @@
         </div><div class="item-card" data-eje="6" data-num="3" data-verificador="perfil" data-perfil="politologo" data-item-selector="eje-6-politologo-3">
           <div class="item-header">
             <span class="item-num">#3</span>
-            <span class="item-text">El framing constructivo (&quot;oportunidades de acompanamiento&quot;) es adecuado o resulta demasiado suave?</span>
+            <span class="item-text">El framing constructivo es adecuado o demasiado suave?</span>
             <span class="badge-perfil">politologo</span>
           </div>
           <div class="item-badges"></div>
@@ -1115,7 +1115,7 @@
         </div><div class="item-card" data-eje="6" data-num="2" data-verificador="perfil" data-perfil="economista" data-item-selector="eje-6-economista-2">
           <div class="item-header">
             <span class="item-num">#2</span>
-            <span class="item-text">El dato de presupuesto (parcial) es suficiente para informes, o genera mas confusion que valor?</span>
+            <span class="item-text">El dato de presupuesto (parcial) es suficiente para informes?</span>
             <span class="badge-perfil">economista</span>
           </div>
           <div class="item-badges"></div>
@@ -1130,7 +1130,7 @@
         </div><div class="item-card" data-eje="6" data-num="3" data-verificador="perfil" data-perfil="economista" data-item-selector="eje-6-economista-3">
           <div class="item-header">
             <span class="item-num">#3</span>
-            <span class="item-text">Los thresholds de las recomendaciones (&gt;=3 pedidos mismo proceso, &gt;=2000 piezas) son razonables para el piloto?</span>
+            <span class="item-text">Los thresholds (&gt;=3 pedidos, &gt;=2000 piezas) son razonables para el piloto?</span>
             <span class="badge-perfil">economista</span>
           </div>
           <div class="item-badges"></div>
@@ -1145,7 +1145,7 @@
         </div><div class="item-card" data-eje="6" data-num="4" data-verificador="perfil" data-perfil="economista" data-item-selector="eje-6-economista-4">
           <div class="item-header">
             <span class="item-num">#4</span>
-            <span class="item-text">Falta alguna metrica economica clave que un decisor de politica publica necesitaria?</span>
+            <span class="item-text">Falta alguna metrica economica clave?</span>
             <span class="badge-perfil">economista</span>
           </div>
           <div class="item-badges"></div>
@@ -1162,7 +1162,7 @@
       <div class="collapse-content"><div class="item-card" data-eje="6" data-num="1" data-verificador="perfil" data-perfil="sociologo" data-item-selector="eje-6-sociologo-1">
           <div class="item-header">
             <span class="item-num">#1</span>
-            <span class="item-text">Los talleres &quot;cerca de matchear&quot; deben ser contactados proactivamente o esperar a que ellos se acerquen?</span>
+            <span class="item-text">Los talleres &quot;cerca de matchear&quot; deben ser contactados proactivamente o esperar?</span>
             <span class="badge-perfil">sociologo</span>
           </div>
           <div class="item-badges"></div>
@@ -1177,7 +1177,7 @@
         </div><div class="item-card" data-eje="6" data-num="2" data-verificador="perfil" data-perfil="sociologo" data-item-selector="eje-6-sociologo-2">
           <div class="item-header">
             <span class="item-num">#2</span>
-            <span class="item-text">Hay riesgo de que esta visibilidad genere stress sobre talleres que ya estan sobrecargados?</span>
+            <span class="item-text">Hay riesgo de stress sobre talleres sobrecargados?</span>
             <span class="badge-perfil">sociologo</span>
           </div>
           <div class="item-badges"></div>
@@ -1192,7 +1192,7 @@
         </div><div class="item-card" data-eje="6" data-num="3" data-verificador="perfil" data-perfil="sociologo" data-item-selector="eje-6-sociologo-3">
           <div class="item-header">
             <span class="item-num">#3</span>
-            <span class="item-text">El lenguaje del dashboard evita estigmatizar a talleres BRONCE?</span>
+            <span class="item-text">El lenguaje evita estigmatizar talleres BRONCE?</span>
             <span class="badge-perfil">sociologo</span>
           </div>
           <div class="item-badges"></div>
@@ -1207,7 +1207,7 @@
         </div><div class="item-card" data-eje="6" data-num="4" data-verificador="perfil" data-perfil="sociologo" data-item-selector="eje-6-sociologo-4">
           <div class="item-header">
             <span class="item-num">#4</span>
-            <span class="item-text">El taller individual NO ve que hubo pedidos que no pudo matchear — es correcto protegerlo de esa frustracion?</span>
+            <span class="item-text">El taller NO ve pedidos que no pudo matchear — es correcto?</span>
             <span class="badge-perfil">sociologo</span>
           </div>
           <div class="item-badges"></div>
@@ -1224,7 +1224,7 @@
       <div class="collapse-content"><div class="item-card" data-eje="6" data-num="1" data-verificador="perfil" data-perfil="contador" data-item-selector="eje-6-contador-1">
           <div class="item-header">
             <span class="item-num">#1</span>
-            <span class="item-text">Los datos exportados sirven para reportes formales que el ESTADO presentaria a OIT?</span>
+            <span class="item-text">Los datos exportados sirven para reportes formales a OIT?</span>
             <span class="badge-perfil">contador</span>
           </div>
           <div class="item-badges"></div>
@@ -1269,7 +1269,7 @@
         </div><div class="item-card" data-eje="6" data-num="4" data-verificador="perfil" data-perfil="contador" data-item-selector="eje-6-contador-4">
           <div class="item-header">
             <span class="item-num">#4</span>
-            <span class="item-text">El rate limit de 5 exportaciones/hora es razonable para el uso esperado?</span>
+            <span class="item-text">El rate limit de 5/hora es razonable?</span>
             <span class="badge-perfil">contador</span>
           </div>
           <div class="item-badges"></div>
