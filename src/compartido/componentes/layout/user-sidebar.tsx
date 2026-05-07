@@ -22,6 +22,7 @@ import {
   Download,
   Sliders,
   Eye,
+  AlertTriangle,
 } from 'lucide-react'
 import { cn } from '@/compartido/lib/utils'
 
@@ -67,6 +68,7 @@ const menuItemsByRole: Record<string, MenuItem[]> = {
     { id: 'documentos', label: 'Documentos', href: '/estado/documentos', icon: FileText },
     { id: 'auditorias', label: 'Auditorias', href: '/estado/auditorias', icon: ClipboardCheck },
     { id: 'niveles', label: 'Niveles', href: '/estado/configuracion-niveles', icon: Sliders },
+    { id: 'demanda', label: 'Demanda insatisfecha', href: '/estado/demanda-insatisfecha', icon: AlertTriangle },
     { id: 'sector', label: 'Diagnostico Sector', href: '/estado/sector', icon: BarChart3 },
     { id: 'exportar', label: 'Exportar Datos', href: '/estado/exportar', icon: Download },
     { id: 'notificaciones', label: 'Notificaciones', href: '/cuenta/notificaciones', icon: Bell },

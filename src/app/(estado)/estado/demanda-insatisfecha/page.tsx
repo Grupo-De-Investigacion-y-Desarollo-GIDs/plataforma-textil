@@ -113,7 +113,7 @@ export default async function DemandaInsatisfechaPage({ searchParams }: PageProp
 
         <div className="flex justify-end">
           <a
-            href={`/api/estado/demanda-insatisfecha/exportar?desde=${desde.toISOString()}&hasta=${hasta.toISOString()}`}
+            href={`/api/estado/exportar?tipo=demanda&formato=csv&desde=${desde.toISOString()}&hasta=${hasta.toISOString()}`}
             className="inline-flex items-center gap-2 px-4 py-2 bg-brand-blue text-white rounded-lg text-sm hover:bg-brand-blue/90 transition-colors"
           >
             <Download className="w-4 h-4" /> Exportar CSV
@@ -201,7 +201,7 @@ export default async function DemandaInsatisfechaPage({ searchParams }: PageProp
           </p>
         </div>
         <a
-          href={`/api/estado/demanda-insatisfecha/exportar?desde=${desde.toISOString()}&hasta=${hasta.toISOString()}`}
+          href={`/api/estado/exportar?tipo=demanda&formato=csv&desde=${desde.toISOString()}&hasta=${hasta.toISOString()}`}
           className="inline-flex items-center gap-2 px-4 py-2 bg-brand-blue text-white rounded-lg text-sm hover:bg-brand-blue/90 transition-colors"
         >
           <Download className="w-4 h-4" /> Exportar CSV
