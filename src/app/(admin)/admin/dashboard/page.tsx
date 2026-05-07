@@ -32,13 +32,10 @@ const menuItems = [
   { href: '/admin/reportes', icon: BarChart3, label: 'Reportes' },
   { href: '/admin/notificaciones', icon: Bell, label: 'Notificaciones' },
   { href: '/admin/logs', icon: Activity, label: 'Logs' },
-  { href: '/admin/roles', icon: Users, label: 'Roles' },
-  { href: '/admin/faq', icon: FileText, label: 'FAQ' },
   { href: '/admin/procesos', icon: Settings, label: 'Procesos' },
-  { href: '/admin/documentos', icon: FileText, label: 'Documentos' },
+  { href: '/estado/documentos', icon: FileText, label: 'Documentos' },
   { href: '/admin/configuracion', icon: Settings, label: 'Configuración' },
   { href: '/admin/integraciones', icon: Settings, label: 'Integraciones' },
-  { href: '/admin/database', icon: Settings, label: 'Base de Datos' },
 ]
 
 export default function AdminDashboardPage() {
