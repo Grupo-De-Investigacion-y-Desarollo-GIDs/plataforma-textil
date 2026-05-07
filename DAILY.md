@@ -3,6 +3,17 @@
 ## 2026-05-07
 
 ### Gerardo Breard
+- **14:57** `6807200` — fix: 7 cambios de texto feedback piloto (#216-#218 #223 #227 #232 #235)
+  - `src/app/(auth)/registro/page.tsx`
+  - `src/app/(estado)/estado/page.tsx`
+  - `src/app/(estado)/estado/sector/page.tsx`
+  - `src/app/(marca)/marca/directorio/page.tsx`
+  - `src/app/(marca)/marca/pedidos/page.tsx`
+  - `src/app/(public)/directorio/page.tsx`
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+  - `src/compartido/componentes/layout/header.tsx`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+
 - **11:25** `f4ed00b` — fix: limpiar 4 links rotos en dashboard admin (#211)
   - `src/app/(admin)/admin/dashboard/page.tsx`
 
