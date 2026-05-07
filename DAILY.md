@@ -3,6 +3,11 @@
 ## 2026-05-07
 
 ### Gerardo Breard
+- **10:51** `cbc1476` — chore: reestructurar V4_BACKLOG + consolidado Eje 6
+  - `.claude/specs/V4_BACKLOG.md`
+  - `docs/decisiones-pendientes-OIT.md`
+  - `docs/v4-input-institucional.md`
+
 - **10:19** `4ab798a` — audit: QA S-01/S-02/S-03 seguridad — final de Fase 2
   - `.claude/auditorias/QA_v3-cookies-seguridad.md`
   - `.claude/auditorias/QA_v3-rate-limiting.md`
