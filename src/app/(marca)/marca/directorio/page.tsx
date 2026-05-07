@@ -87,10 +87,10 @@ export default async function DirectorioPage({
     <div className="space-y-6">
       <div>
         <h1 className="font-overpass font-bold text-3xl text-brand-blue">
-          Explorar Talleres
+          Explorar Proveedores
         </h1>
         <p className="text-gray-600 mt-2">
-          Registro oficial de unidades productivas acreditadas
+          Registro de unidades productivas acreditadas
         </p>
       </div>
 

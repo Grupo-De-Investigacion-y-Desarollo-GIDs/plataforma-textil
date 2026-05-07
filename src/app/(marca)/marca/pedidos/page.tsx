@@ -123,13 +123,13 @@ async function PedidosContent({ query, estado, created }: { query: string; estad
         <form method="get" className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <div className="md:col-span-2">
             <label htmlFor="q" className="block text-sm font-medium text-brand-blue mb-1.5">
-              Buscar por OM o prenda
+              Buscar por codigo o prenda
             </label>
             <input
               id="q"
               name="q"
               defaultValue={query}
-              placeholder="Ej: OM-2025-00045 o Jean"
+              placeholder="Ej: OM-2025-00045 o Jeans"
               className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent"
             />
           </div>

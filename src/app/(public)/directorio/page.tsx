@@ -69,7 +69,7 @@ export default async function DirectorioPage({
   return (
     <div>
       <div className="text-center mb-8">
-        <h1 className="font-overpass font-bold text-3xl text-brand-blue mb-2">Directorio de Talleres</h1>
+        <h1 className="font-overpass font-bold text-3xl text-brand-blue mb-2">Directorio de Proveedores</h1>
         <p className="text-gray-600">Encontra talleres textiles registrados y verificados en la plataforma.</p>
       </div>
 

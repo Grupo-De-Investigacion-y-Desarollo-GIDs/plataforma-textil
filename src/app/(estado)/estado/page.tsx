@@ -117,7 +117,7 @@ export default async function EstadoDashboardPage() {
           </Card>
         </div>
 
-        <Card title="Distribucion por nivel">
+        <Card title="Progreso de formalizacion">
           <div className="space-y-3">
             {[
               { label: 'Bronce', count: bronce, color: 'bg-orange-400', textColor: 'text-orange-600' },

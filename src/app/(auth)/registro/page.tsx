@@ -294,8 +294,8 @@ function StepEntidadInfo({
 
         <div className="relative">
           <Input
-            label="CUIT"
-            placeholder="20-12345678-9"
+            label="CUIT (11 digitos, sin guiones)"
+            placeholder="20123456789"
             error={errors.cuit?.message || cuitError}
             {...register('cuit')}
             onBlur={verificarCuitOnBlur}

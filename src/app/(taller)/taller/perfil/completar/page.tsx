@@ -16,7 +16,7 @@ const STEPS = [
   { key: 'experiencia', label: 'Exp.', icon: TrendingUp },
   { key: 'organizacion', label: 'Org.', icon: LayoutGrid },
   { key: 'espacio', label: 'Espacio', icon: Ruler },
-  { key: 'sam', label: 'SAM', icon: Clock },
+  { key: 'sam', label: 'Tiempo', icon: Clock },
   { key: 'sam-quiz', label: 'Quiz', icon: Check },
   { key: 'eficiencia', label: 'Efic.', icon: TrendingUp },
   { key: 'resultado', label: 'Result.', icon: Trophy },
@@ -250,18 +250,18 @@ export default function WizardPage() {
             <p className="text-sm font-semibold mb-1">Vas a aprender:</p>
             <ul className="text-sm text-gray-600 space-y-1 ml-4 list-disc">
               <li>Cómo calcular tu capacidad REAL</li>
-              <li>Qué es el SAM y por qué importa</li>
+              <li>Qué es el tiempo estandar de confeccion y por qué importa</li>
               <li>Cómo mejorar tu eficiencia</li>
             </ul>
             <p className="text-sm font-semibold mt-3 mb-1">Al terminar vas a tener:</p>
             <ul className="text-sm text-gray-600 space-y-1 ml-4 list-disc">
               <li>Tu capacidad calculada con fórmula de industria</li>
-              <li>Un score que te compara con otros talleres</li>
+              <li>Tu posicion respecto al promedio del sector</li>
               <li>Recomendaciones personalizadas</li>
             </ul>
           </Card>
           <Card className="bg-blue-50/50 text-sm text-gray-600 mb-6">
-            Podés pausar y retomar después. Al terminar el wizard, tu perfil se guarda en la plataforma.
+            Podés pausar y retomar después. Al terminar, tu perfil se guarda en la plataforma.
           </Card>
           <Button onClick={next} size="lg">Empezar</Button>
           <button type="button" onClick={() => handleSave('/taller')} disabled={saving} className="block mx-auto mt-3 text-sm text-gray-500 hover:underline">
@@ -387,8 +387,8 @@ export default function WizardPage() {
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">¿Cuánto tardás en hacer una prenda?</h2>
           <Card className="bg-blue-50/50 text-sm mb-4">
-            <p className="font-semibold">¿Qué es el SAM?</p>
-            <p className="mb-2">SAM = &quot;Standard Allowed Minutes&quot;. Es el tiempo estándar para confeccionar una prenda.</p>
+            <p className="font-semibold">Tiempo estandar de confeccion</p>
+            <p className="mb-2">Es el tiempo promedio que tarda tu taller en confeccionar una prenda completa.</p>
             <p className="font-semibold mt-2">Ejemplos típicos en Argentina:</p>
             <ul className="mt-1 space-y-0.5">
               <li>Remera básica: 10-15 min</li>
@@ -399,7 +399,7 @@ export default function WizardPage() {
           </Card>
           <Input label="¿Qué prenda hacés más?" value={prendaPrincipal} onChange={e => setPrendaPrincipal(e.target.value)} />
           <div className="mt-3">
-            <Input label="¿Cuántos minutos tardás en promedio? (SAM)" type="number" value={sam} onChange={e => setSam(e.target.value)} />
+            <Input label="¿Cuántos minutos tardas en promedio por prenda?" type="number" value={sam} onChange={e => setSam(e.target.value)} />
           </div>
           {parseInt(sam) > 0 && (
             <Card className="bg-green-50 text-sm mt-3">
