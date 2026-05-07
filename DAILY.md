@@ -3,6 +3,9 @@
 ## 2026-05-07
 
 ### Gerardo Breard
+- **11:25** `f4ed00b` — fix: limpiar 4 links rotos en dashboard admin (#211)
+  - `src/app/(admin)/admin/dashboard/page.tsx`
+
 - **11:13** `a519638` — chore: mover issues #213 #214 a V4_BACKLOG (G-05, G-06)
   - `.claude/specs/V4_BACKLOG.md`
 
