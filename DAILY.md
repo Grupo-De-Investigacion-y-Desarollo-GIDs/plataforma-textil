@@ -3,6 +3,11 @@
 ## 2026-05-07
 
 ### Gerardo Breard
+- **10:19** `4ab798a` — audit: QA S-01/S-02/S-03 seguridad — final de Fase 2
+  - `.claude/auditorias/QA_v3-cookies-seguridad.md`
+  - `.claude/auditorias/QA_v3-rate-limiting.md`
+  - `.claude/auditorias/QA_v3-validacion-archivos.md`
+
 - **10:02** `613cf7d` — fix: 2 hallazgos F-05 — deprecar export dedicado + sidebar mobile
   - `src/app/(estado)/estado/demanda-insatisfecha/page.tsx`
   - `src/app/api/estado/demanda-insatisfecha/exportar/route.ts`
