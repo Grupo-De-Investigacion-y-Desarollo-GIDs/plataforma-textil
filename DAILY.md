@@ -3,6 +3,9 @@
 ## 2026-05-07
 
 ### Gerardo Breard
+- **11:13** `a519638` — chore: mover issues #213 #214 a V4_BACKLOG (G-05, G-06)
+  - `.claude/specs/V4_BACKLOG.md`
+
 - **10:59** `f9c3a04` — chore: cerrar V3 — marcar resultado global en 12 QAs
   - `.claude/auditorias/PRUEBAS_PENDIENTES.md`
   - `.claude/auditorias/QA_v3-acceso-pre-formalizacion.md`
