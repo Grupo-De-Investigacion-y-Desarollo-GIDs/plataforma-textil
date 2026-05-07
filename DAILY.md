@@ -3,6 +3,11 @@
 ## 2026-05-07
 
 ### Gerardo Breard
+- **10:02** `613cf7d` — fix: 2 hallazgos F-05 — deprecar export dedicado + sidebar mobile
+  - `src/app/(estado)/estado/demanda-insatisfecha/page.tsx`
+  - `src/app/api/estado/demanda-insatisfecha/exportar/route.ts`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+
 - **09:46** `10bb476` — audit: QA F-05 demanda insatisfecha completo
   - `.claude/auditorias/QA_v3-demanda-insatisfecha.md`
 
