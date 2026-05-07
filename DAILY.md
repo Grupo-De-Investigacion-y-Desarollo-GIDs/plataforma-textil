@@ -1,5 +1,14 @@
 # Daily Log
 
+## 2026-05-07
+
+### Gerardo Breard
+- **09:30** `973f9d9` — fix: 2 hallazgos F-04 — dead import + columnas demanda
+  - `src/app/(estado)/estado/exportar/page.tsx`
+  - `src/app/api/estado/exportar/data.ts`
+  - `src/compartido/lib/demanda-insatisfecha.ts`
+
+
 ## 2026-05-06
 
 ### Gerardo Breard
