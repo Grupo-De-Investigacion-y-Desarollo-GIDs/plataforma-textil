@@ -3,6 +3,9 @@
 ## 2026-05-07
 
 ### Gerardo Breard
+- **09:46** `10bb476` — audit: QA F-05 demanda insatisfecha completo
+  - `.claude/auditorias/QA_v3-demanda-insatisfecha.md`
+
 - **09:30** `973f9d9` — fix: 2 hallazgos F-04 — dead import + columnas demanda
   - `src/app/(estado)/estado/exportar/page.tsx`
   - `src/app/api/estado/exportar/data.ts`
