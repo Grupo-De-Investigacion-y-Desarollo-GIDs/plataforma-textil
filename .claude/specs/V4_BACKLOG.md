@@ -158,8 +158,16 @@ Origen: cosas que vamos a aprender durante el piloto. **Este bloque está vacío
 | G-04 | Explicación contextual del SAM en onboarding | En `/taller/perfil/completar` se menciona "qué es el SAM" sin brindar detalle ni contexto. Agregar descripción breve del Sistema de Auto-evaluación y Mejora al inicio del proceso. Origen: QA issues #209, #210 | 2h |
 | G-05 | Pedidos: campos adicionales (talles, terminaciones, segmento) | Ampliar formulario de publicar pedido: talles y cantidad por talle, unidades, terminaciones, segmento (masculino/femenino/unisex). Requiere analisis funcional con marcas reales. Origen: feedback piloto issue #213 | 6h |
 | G-06 | Pedidos: seccion "Molderia y aspectos tecnicos" | Agregar seccion para subir moldes, fichas tecnicas, o indicar si el taller debe generarlos. Definir formato: texto rico, archivos adjuntos, checklist. Origen: feedback piloto issue #214 | 4h |
-| (TBD) | (Pendiente de mas feedback de marcas/talleres) | | |
-| (TBD) | (Pendiente de feedback de Sergio sobre auditorías) | | |
+| G-07 | Texto certificado: reemplazar "OIT Argentina" | Definir texto correcto con OIT/consorcio. Afecta: certificado-pdf.tsx, certificados/page.tsx, orden-pdf.tsx, landing page (3 menciones). Origen: feedback piloto #212 | 1h |
+| G-08 | Nomenclatura "Marca" → "Marca/Empresa" | Cambiar en registro, headers, labels. Afecta toda la plataforma — decidir con equipo si aplica globalmente. Origen: feedback piloto #215 | 3h |
+| G-09 | Campos perfil marca (tipo, frecuencia, volumen) | Definir que se espera en cada campo, autocompletar segun performance. Requiere analisis funcional. Origen: feedback piloto #219 | 4h |
+| G-10 | Rediseño sistema niveles → "Progreso de formalizacion" | Reemplazar "Tu nivel actual" por propuesta de Alan. Incluye: renombrar UI, quitar puntaje repetido (#221), ajustar formalizacion (#222). Origen: feedback piloto #220, #221, #222 | 8h |
+| G-11 | Evaluar quitar seccion wizard perfil taller | Decision de producto: la seccion genera dudas, podria obviarse. Definir con equipo. Origen: feedback piloto #224 | 2h |
+| G-12 | Upload logo/imagen empresa-taller-marca | Permitir subir imagen/logo en perfil editar. Nuevo campo + upload a storage. Origen: feedback piloto #229 | 4h |
+| G-13 | Academia para marcas | Habilitar seccion Academia en perfil de marca. Hoy solo talleres tienen acceso. Origen: feedback piloto #230 | 3h |
+| G-14 | Evaluar deshabilitar denuncias | Decision institucional: el equipo cuestiona si la plataforma deberia tener sistema de denuncias. Definir con OIT. Origen: feedback piloto #233 | 1h (decision) |
+| G-15 | Monto transaccionado en dashboard ESTADO | Agregar metrica de monto en ultimo mes. Ya planificado parcialmente en H-04. Origen: feedback piloto #234 | 2h |
+| G-16 | Renombrar rol ESTADO → COORD/COORDINACION | Cambio estructural: afecta enum Prisma, middleware, sidebar, headers, seeds, tests. Requiere migracion de DB. Origen: feedback piloto #236 | 6h |
 
 ---
 
