@@ -26,7 +26,7 @@ export default async function PedidoDisponibleDetallePage({ params }: { params: 
   })
   const cotizacionExistente = taller
     ? await prisma.cotizacion.findFirst({
-        where: { pedidoId: id, tallerId: taller.id, estado: { in: ['ENVIADA', 'ACEPTADA'] } },
+        where: { pedidoId: id, tallerId: taller.id },
       })
     : null
 
@@ -102,9 +102,14 @@ export default async function PedidoDisponibleDetallePage({ params }: { params: 
       ) : cotizacionExistente ? (
         <Card>
           <div className="text-center py-4">
-            <p className="font-overpass font-semibold text-brand-blue">Ya enviaste una cotizacion para este pedido</p>
+            <p className="font-overpass font-semibold text-brand-blue">
+              {cotizacionExistente.estado === 'RECHAZADA'
+                ? 'Tu cotizacion fue rechazada para este pedido'
+                : 'Ya enviaste una cotizacion para este pedido'}
+            </p>
             <p className="text-sm text-gray-500 mt-1">
               Precio: ${cotizacionExistente.precio.toLocaleString('es-AR')} · Plazo: {cotizacionExistente.plazoDias} dias
+              {cotizacionExistente.estado === 'RECHAZADA' && ' · Estado: Rechazada'}
             </p>
           </div>
         </Card>

@@ -59,8 +59,8 @@ export function CotizarForm({ pedidoId }: { pedidoId: string }) {
       toast('Cotizacion enviada', 'success')
       router.push('/taller/pedidos')
       router.refresh()
-    } catch {
-      setError('Error de conexion. Intenta de nuevo.')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error de conexion. Intenta de nuevo.')
       setLoading(false)
     }
   }
