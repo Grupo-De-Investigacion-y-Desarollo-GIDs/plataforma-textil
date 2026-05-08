@@ -3,6 +3,12 @@
 ## 2026-05-08
 
 ### Gerardo Breard
+- **15:28** `02a8325` — fix: acentos faltantes en paginas estado (#291 #293 #294 #295 #296)
+  - `src/app/(estado)/estado/auditorias/page.tsx`
+  - `src/app/(estado)/estado/demanda-insatisfecha/page.tsx`
+  - `src/app/(estado)/estado/page.tsx`
+  - `src/app/(estado)/estado/talleres/page.tsx`
+
 - **15:04** `2bee11e` — fix: acentos faltantes en paginas marca (#275 #277 #278 #279 #281)
   - `src/app/(marca)/marca/directorio/page.tsx`
   - `src/app/(marca)/marca/page.tsx`
