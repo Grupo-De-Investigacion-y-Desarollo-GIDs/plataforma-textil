@@ -42,7 +42,7 @@ export default async function MarcaDashboardPage() {
         <h1 className="font-overpass font-bold text-3xl text-brand-blue">
           Bienvenido, {marca?.nombre ?? session.user.name}
         </h1>
-        <p className="text-gray-500 mt-1">Tu panel de gestion de produccion</p>
+        <p className="text-gray-500 mt-1">Tu panel de gestión de producción</p>
       </div>
 
       {/* Checklist onboarding (T-03) */}
@@ -108,7 +108,7 @@ export default async function MarcaDashboardPage() {
       {cotizacionesRecibidas > 0 && (
         <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
           <p className="text-sm font-medium text-blue-800">
-            Tenes {cotizacionesRecibidas} cotizacion{cotizacionesRecibidas > 1 ? 'es' : ''} pendiente{cotizacionesRecibidas > 1 ? 's' : ''} de revision
+            Tenés {cotizacionesRecibidas} cotización{cotizacionesRecibidas > 1 ? 'es' : ''} pendiente{cotizacionesRecibidas > 1 ? 's' : ''} de revisión
           </p>
           <Link href="/marca/pedidos" className="text-xs text-brand-blue font-semibold hover:underline mt-1 block">
             Ver mis pedidos →

@@ -98,7 +98,7 @@ export default async function DirectorioPage({
         <form method="get" className="space-y-3">
           <div>
             <label htmlFor="q" className="block text-sm font-medium text-brand-blue mb-1.5">
-              Buscar por nombre o ubicacion
+              Buscar por nombre o ubicación
             </label>
             <input
               id="q"

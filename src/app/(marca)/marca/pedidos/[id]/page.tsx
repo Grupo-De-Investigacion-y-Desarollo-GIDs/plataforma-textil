@@ -30,7 +30,7 @@ const statusVariant: Record<string, 'default' | 'success' | 'warning' | 'error' 
 const statusLabel: Record<string, string> = {
   BORRADOR: 'Borrador',
   PUBLICADO: 'Publicado',
-  EN_EJECUCION: 'En ejecucion',
+  EN_EJECUCION: 'En ejecución',
   ESPERANDO_ENTREGA: 'Esperando entrega',
   COMPLETADO: 'Completado',
   CANCELADO: 'Cancelado',
@@ -54,7 +54,7 @@ const ordenStatusVariant: Record<string, 'default' | 'success' | 'warning'> = {
 const FLOW_STEPS = [
   { key: 'BORRADOR', label: 'Borrador' },
   { key: 'PUBLICADO', label: 'Publicado' },
-  { key: 'EN_EJECUCION', label: 'En ejecucion' },
+  { key: 'EN_EJECUCION', label: 'En ejecución' },
   { key: 'ESPERANDO_ENTREGA', label: 'Esperando entrega' },
   { key: 'COMPLETADO', label: 'Completado' },
 ]

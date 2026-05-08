@@ -63,7 +63,7 @@ export function NuevoPedidoForm({ marcaId, procesos }: Props) {
         setError(msg ?? 'Error al crear el pedido')
       }
     } catch {
-      setError('Error de conexion')
+      setError('Error de conexión')
     } finally {
       setGuardando(false)
     }

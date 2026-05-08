@@ -22,7 +22,7 @@ const statusVariant: Record<string, 'default' | 'success' | 'warning' | 'muted' 
 const statusLabel: Record<string, string> = {
   BORRADOR: 'Borrador',
   PUBLICADO: 'Publicado',
-  EN_EJECUCION: 'En ejecucion',
+  EN_EJECUCION: 'En ejecución',
   ESPERANDO_ENTREGA: 'Esperando entrega',
   COMPLETADO: 'Completado',
   CANCELADO: 'Cancelado',
@@ -123,7 +123,7 @@ async function PedidosContent({ query, estado, created }: { query: string; estad
         <form method="get" className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <div className="md:col-span-2">
             <label htmlFor="q" className="block text-sm font-medium text-brand-blue mb-1.5">
-              Buscar por codigo o prenda
+              Buscar por código o prenda
             </label>
             <input
               id="q"
@@ -146,7 +146,7 @@ async function PedidosContent({ query, estado, created }: { query: string; estad
               <option value="">Todos</option>
               <option value="BORRADOR">Borrador</option>
               <option value="PUBLICADO">Publicado</option>
-              <option value="EN_EJECUCION">En ejecucion</option>
+              <option value="EN_EJECUCION">En ejecución</option>
               <option value="ESPERANDO_ENTREGA">Esperando entrega</option>
               <option value="COMPLETADO">Completado</option>
               <option value="CANCELADO">Cancelado</option>
@@ -173,7 +173,7 @@ async function PedidosContent({ query, estado, created }: { query: string; estad
         {pedidos.length === 0 ? (
           <EmptyState
             titulo={query || estado ? 'Sin resultados' : 'Sin pedidos'}
-            mensaje={query || estado ? 'No hay pedidos para esos filtros. Proba cambiando los criterios.' : 'Todavia no tenes pedidos creados. Crea tu primer pedido para empezar.'}
+            mensaje={query || estado ? 'No hay pedidos para esos filtros. Probá cambiando los criterios.' : 'Todavía no tenés pedidos creados. Creá tu primer pedido para empezar.'}
             accion={!query && !estado ? { texto: 'Crear pedido', href: '/marca/pedidos/nuevo' } : undefined}
           />
         ) : (
