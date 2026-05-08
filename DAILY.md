@@ -3,6 +3,12 @@
 ## 2026-05-08
 
 ### Gerardo Breard
+- **16:17** `181b73e` — fix: 10 issues feedback piloto (#215 #221 #247 #249 #250 #251 #265 #266 #284 #288)
+  - `src/app/(auth)/registro/page.tsx`
+  - `src/app/(marca)/marca/perfil/page.tsx`
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+
 - **15:34** `ce16843` — fix: catch generico en nuevo-pedido-form muestra error real (#280 #282)
   - `src/app/(marca)/marca/pedidos/nuevo/nuevo-pedido-form.tsx`
 
