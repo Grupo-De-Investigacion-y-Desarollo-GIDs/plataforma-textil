@@ -62,8 +62,8 @@ export function NuevoPedidoForm({ marcaId, procesos }: Props) {
         const msg = typeof data.error === 'string' ? data.error : data.error?.message
         setError(msg ?? 'Error al crear el pedido')
       }
-    } catch {
-      setError('Error de conexión')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error de conexión')
     } finally {
       setGuardando(false)
     }
