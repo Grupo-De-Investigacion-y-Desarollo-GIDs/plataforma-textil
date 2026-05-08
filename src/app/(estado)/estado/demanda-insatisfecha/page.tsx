@@ -220,7 +220,7 @@ export default async function DemandaInsatisfechaPage({ searchParams }: PageProp
           <p className="font-overpass font-bold text-3xl text-brand-blue">
             {stats.unidadesTotales.toLocaleString('es-AR')}
           </p>
-          <p className="text-xs text-gray-500">Unidades de produccion potencial</p>
+          <p className="text-xs text-gray-500">Unidades de producción potencial</p>
         </Card>
         <Card className="text-center">
           <Users className="w-6 h-6 text-brand-blue mx-auto mb-1" />
@@ -283,7 +283,7 @@ export default async function DemandaInsatisfechaPage({ searchParams }: PageProp
         <Card title={
           <span className="flex items-center gap-2">
             <Lightbulb className="w-5 h-5 text-amber-500" />
-            Oportunidades de intervencion
+            Oportunidades de intervención
           </span>
         }>
           <div className="space-y-4">

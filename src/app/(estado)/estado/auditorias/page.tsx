@@ -70,7 +70,7 @@ export default async function EstadoAuditoriasPage({
           </Button>
         </a>
       </div>
-      <p className="text-gray-500 text-sm mb-6">Historial de decisiones sobre documentos de formalizacion</p>
+      <p className="text-gray-500 text-sm mb-6">Historial de decisiones sobre documentos de formalización</p>
 
       {/* Filtros */}
       <Card className="mb-4">

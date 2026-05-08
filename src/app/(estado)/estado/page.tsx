@@ -108,17 +108,17 @@ export default async function EstadoDashboardPage() {
           <Card className="text-center">
             <TrendingUp className="w-6 h-6 text-green-600 mx-auto mb-1" />
             <p className="font-overpass font-bold text-3xl text-brand-blue">{progresoPromedio}%</p>
-            <p className="text-xs text-gray-500">Progreso promedio formalizacion</p>
+            <p className="text-xs text-gray-500">Progreso promedio formalización</p>
           </Card>
           <Card className="text-center">
             <ShoppingBag className="w-6 h-6 text-orange-500 mx-auto mb-1" />
             <p className="font-overpass font-bold text-3xl text-brand-blue">{pedidosActivos}</p>
-            <p className="text-xs text-gray-500">Pedidos en ejecucion</p>
+            <p className="text-xs text-gray-500">Pedidos en ejecución</p>
           </Card>
         </div>
 
-        <Card title="Progreso de formalizacion">
-          <p className="text-xs text-gray-400 mb-3">Porcentaje de documentos completados sobre el total requerido por nivel. Bronce = requisitos basicos, Plata = intermedios, Oro = avanzados.</p>
+        <Card title="Progreso de formalización">
+          <p className="text-xs text-gray-400 mb-3">Porcentaje de documentos completados sobre el total requerido por nivel. Bronce = requisitos básicos, Plata = intermedios, Oro = avanzados.</p>
           <div className="space-y-3">
             {[
               { label: 'Bronce', count: bronce, color: 'bg-orange-400', textColor: 'text-orange-600' },
