@@ -3,6 +3,9 @@
 ## 2026-05-08
 
 ### Gerardo Breard
+- **18:06** `a1b7c73` — fix: E2E test buscaba 'Puntaje' que fue reemplazado por 'Formalización'
+  - `tests/e2e/configuracion-niveles.spec.ts`
+
 - **16:17** `181b73e` — fix: 10 issues feedback piloto (#215 #221 #247 #249 #250 #251 #265 #266 #284 #288)
   - `src/app/(auth)/registro/page.tsx`
   - `src/app/(marca)/marca/perfil/page.tsx`
