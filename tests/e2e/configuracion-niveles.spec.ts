@@ -30,13 +30,12 @@ test.describe('D-02 Configuracion de niveles y tipos de documento', () => {
     await expect(page.getByText('pts').first()).toBeVisible()
   })
 
-  test('Dashboard taller carga sin error (constantes PTS_* eliminadas)', async ({ page }) => {
+  test('Dashboard taller carga sin error', async ({ page }) => {
     await ensureNotProduction(page)
     await loginAs(page, 'taller')
-    // El dashboard del taller debe cargar sin error
     await page.goto('/taller')
     // Timeout 30s: streaming SSR + cold start + ProximoNivelCard async
-    await expect(page.getByText('Puntaje').first()).toBeVisible({ timeout: 30000 })
+    await expect(page.getByText('Formalización').first()).toBeVisible({ timeout: 30000 })
   })
 
   test('ADMIN puede ver /estado/configuracion-niveles (lectura)', async ({ page }) => {
