@@ -162,7 +162,7 @@ export default function WizardPage() {
       escalabilidad: escalabilidad || undefined,
       paradasFrecuencia: paradas || undefined,
       capacidadMensual: capMensual || undefined,
-      trabajadoresRegistrados: totalRoles || (tamanoEquipo === '1-2' ? 2 : tamanoEquipo === '3-5' ? 4 : tamanoEquipo === '6-10' ? 8 : tamanoEquipo === '11-20' ? 15 : 25),
+      trabajadoresRegistrados: tamanoEquipo === '1-2' ? 2 : tamanoEquipo === '3-5' ? 4 : tamanoEquipo === '6-10' ? 8 : tamanoEquipo === '11-20' ? 15 : 25,
       maquinaria: Object.entries(maquinaria)
         .filter(([, c]) => c > 0)
         .map(([nombre, cantidad]) => ({ nombre, cantidad, tipo: numMaq > 0 ? 'confeccion' : undefined })),

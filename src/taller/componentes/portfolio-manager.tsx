@@ -6,6 +6,7 @@ import { ImageIcon, Plus } from 'lucide-react'
 import { FileUpload } from '@/compartido/componentes/ui/file-upload'
 import { ImageLightbox } from '@/compartido/componentes/ui/image-lightbox'
 import { Button } from '@/compartido/componentes/ui/button'
+import { useToast } from '@/compartido/componentes/ui/toast'
 import { uploadImagen } from '@/compartido/lib/upload-imagen'
 
 interface Props {
@@ -19,12 +20,15 @@ export function PortfolioManager({ tallerId, fotosActuales }: Props) {
   const [mostrarUploader, setMostrarUploader] = useState(false)
   const [imagenAmpliada, setImagenAmpliada] = useState<string | null>(null)
 
+  const { toast } = useToast()
+  const [error, setError] = useState('')
   const maxFotos = 10
   const puedeAgregar = fotosActuales.length < maxFotos
 
   async function handleUpload(files: File[]) {
     if (files.length === 0) return
     setSubiendo(true)
+    setError('')
     try {
       const nuevasUrls: string[] = []
       for (const file of files) {
@@ -38,9 +42,12 @@ export function PortfolioManager({ tallerId, fotosActuales }: Props) {
           portfolioFotos: [...fotosActuales, ...nuevasUrls],
         }),
       })
+      toast('Fotos subidas correctamente')
       router.refresh()
     } catch (err) {
-      console.error('[portfolio] Error subiendo fotos:', err)
+      const msg = err instanceof Error ? err.message : 'Error al subir fotos'
+      setError(msg)
+      toast({ mensaje: msg, tipo: 'error' })
     } finally {
       setSubiendo(false)
       setMostrarUploader(false)
@@ -113,6 +120,7 @@ export function PortfolioManager({ tallerId, fotosActuales }: Props) {
               onChange={handleUpload}
             />
             {subiendo && <p className="text-sm text-gray-500">Subiendo fotos...</p>}
+            {error && <p className="text-sm text-red-500">{error}</p>}
           </div>
         ) : (
           <Button

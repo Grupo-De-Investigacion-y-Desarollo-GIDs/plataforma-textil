@@ -84,7 +84,7 @@ export default async function TallerPerfilPage() {
 
       <Card>
         <div className="flex items-center gap-6">
-          <ProgressRing percentage={completitud} size={80} />
+          <ProgressRing percentage={completitud} size={100} />
           <div>
             <p className="font-overpass font-bold text-brand-blue text-lg">Perfil {completitud}% completo</p>
             <p className="text-sm text-gray-500">
