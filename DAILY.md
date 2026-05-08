@@ -3,6 +3,13 @@
 ## 2026-05-08
 
 ### Gerardo Breard
+- **15:04** `2bee11e` — fix: acentos faltantes en paginas marca (#275 #277 #278 #279 #281)
+  - `src/app/(marca)/marca/directorio/page.tsx`
+  - `src/app/(marca)/marca/page.tsx`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(marca)/marca/pedidos/nuevo/nuevo-pedido-form.tsx`
+  - `src/app/(marca)/marca/pedidos/page.tsx`
+
 - **12:54** `0a6ebbe` — fix: 3 issues feedback piloto (#269 #270 #271)
   - `src/app/(taller)/taller/perfil/completar/page.tsx`
   - `src/app/(taller)/taller/perfil/page.tsx`
