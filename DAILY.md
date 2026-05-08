@@ -3,6 +3,13 @@
 ## 2026-05-08
 
 ### Gerardo Breard
+- **12:43** `132fb50` — fix: 8 mejoras UX feedback piloto (#244 #248 #255 #261 #245 #246 #228 #231 #264)
+  - `src/app/(estado)/estado/page.tsx`
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+  - `src/compartido/componentes/ui/checklist-item.tsx`
+  - `src/taller/componentes/cotizar-form.tsx`
+
 - **12:31** `5664714` — fix: error conexion al cotizar + detectar cotizacion rechazada (#260 #263)
   - `src/app/(taller)/taller/pedidos/disponibles/[id]/page.tsx`
   - `src/taller/componentes/cotizar-form.tsx`
