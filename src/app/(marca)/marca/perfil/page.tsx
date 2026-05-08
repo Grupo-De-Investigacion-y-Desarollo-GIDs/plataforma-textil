@@ -120,8 +120,8 @@ export default async function MarcaPerfilPage() {
             <input id="frecuenciaCompra" name="frecuenciaCompra" defaultValue={marca.frecuenciaCompra || ''} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent" />
           </div>
           <div>
-            <label htmlFor="volumenMensual" className="block text-sm font-overpass font-medium text-brand-blue mb-1.5">Volumen mensual</label>
-            <input id="volumenMensual" name="volumenMensual" type="number" min="0" defaultValue={marca.volumenMensual} className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent" />
+            <label htmlFor="volumenMensual" className="block text-sm font-overpass font-medium text-brand-blue mb-1.5">Volumen mensual (prendas/mes)</label>
+            <input id="volumenMensual" name="volumenMensual" type="number" min="0" defaultValue={marca.volumenMensual} placeholder="Ej: 500" className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent" />
           </div>
         </div>
 

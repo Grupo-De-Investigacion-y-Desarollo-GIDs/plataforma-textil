@@ -277,19 +277,9 @@ export default async function TallerDashboardPage() {
         {/* Stats secundarios */}
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
-            <p className="text-xs uppercase text-gray-500 font-semibold mb-1">Puntaje</p>
-            <p className="text-3xl font-bold text-brand-red">{taller?.puntaje ?? 0}</p>
-            <div className="text-xs text-gray-400 space-y-0.5 mt-1">
-              {taller?.verificadoAfip && (
-                <p>+ {PTS_VERIFICADO_AFIP} pts CUIT verificado</p>
-              )}
-              {completadas > 0 && (
-                <p>+ {taller?.validaciones.filter(v => v.estado === 'COMPLETADO').reduce((s, v) => s + v.tipoDocumento.puntosOtorgados, 0)} pts documentos ({completadas})</p>
-              )}
-              {certificadosActivos > 0 && (
-                <p>+ {certificadosActivos * PTS_POR_CERTIFICADO} pts capacitaciones ({certificadosActivos})</p>
-              )}
-            </div>
+            <p className="text-xs uppercase text-gray-500 font-semibold mb-1">Formalización</p>
+            <p className="text-3xl font-bold text-brand-blue">{completadas}/{totalValidaciones}</p>
+            <p className="text-xs text-gray-400 mt-1">documentos completados</p>
           </div>
           <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
             <p className="text-xs uppercase text-gray-500 font-semibold mb-1">Capacidad</p>

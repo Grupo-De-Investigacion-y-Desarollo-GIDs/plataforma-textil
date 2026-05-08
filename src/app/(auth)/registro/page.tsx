@@ -118,8 +118,8 @@ function StepRole({ onSelect }: { onSelect: (role: Role) => void }) {
             <ShoppingBag className="w-6 h-6" />
           </div>
           <div>
-            <p className="font-overpass font-bold text-brand-blue text-lg">Marca</p>
-            <p className="text-sm text-gray-500">Soy una marca y busco talleres para producir</p>
+            <p className="font-overpass font-bold text-brand-blue text-lg">Marca / Empresa</p>
+            <p className="text-sm text-gray-500">Soy una marca o empresa y busco talleres para producir</p>
           </div>
         </button>
       </div>

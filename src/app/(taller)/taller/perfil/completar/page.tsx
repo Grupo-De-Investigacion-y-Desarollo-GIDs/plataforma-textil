@@ -404,7 +404,7 @@ export default function WizardPage() {
           </div>
           {parseInt(sam) > 0 && (
             <Card className="bg-green-50 text-sm mt-3">
-              Tu tiempo ({sam} min) para {prendaPrincipal} está en el rango esperado.
+              Tu tiempo ({sam} min) para {prendaPrincipal} está dentro del promedio del sector. Los rangos típicos son: remera 10-15 min, jean 25-35 min, camisa 20-30 min.
             </Card>
           )}
         </div>
@@ -440,13 +440,14 @@ export default function WizardPage() {
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">Calculemos tu eficiencia real</h2>
           <Card className="bg-blue-50/50 text-sm mb-4">
-            Tener 10 máquinas NO significa producir 10x. La eficiencia real en Argentina promedia 50%.
+            La eficiencia real de un taller depende de muchos factores: organizacion, mantenimiento, tiempos muertos, cambios de modelo. En Argentina, la eficiencia promedio del sector ronda el 50% — esto es normal y no significa que tu taller funcione mal.
           </Card>
           <Input label="¿Cuántas horas por día trabaja tu taller?" type="number" value={horasDia} onChange={e => setHorasDia(e.target.value)} />
           <div className="mt-3">
             <Input label="Cambios de modelo/color por día" value={cambiosModelo} onChange={e => setCambiosModelo(e.target.value)} placeholder="2-3" />
           </div>
-          <p className="text-sm font-semibold mt-3 mb-2">¿Tenés paradas frecuentes?</p>
+          <p className="text-sm font-semibold mt-3 mb-1">¿Tenés paradas frecuentes?</p>
+          <p className="text-xs text-gray-400 mb-2">Incluye: cortes de luz, esperas por insumos, mantenimiento de maquinas, descansos del equipo.</p>
           <div className="space-y-2">
             <RadioOption value="nunca" current={paradas} onChange={setParadas} label="Casi nunca" desc="Menos de 30 min/día" />
             <RadioOption value="a-veces" current={paradas} onChange={setParadas} label="A veces" desc="30-60 min/día" />
@@ -472,8 +473,9 @@ export default function WizardPage() {
             </div>
           </Card>
           <Card className="bg-blue-50/50 text-sm text-left mb-4">
-            <p className="font-semibold">¿Cómo mejorar?</p>
-            <p>Si mejorás tu eficiencia de {Math.round(eficiencia * 100)}% a {Math.round(eficiencia * 100) + 8}%: +{Math.round(capacidadDiaria * 0.15)} prendas/día</p>
+            <p className="font-semibold">¿Como mejorar?</p>
+            <p>Si mejoras tu eficiencia de {Math.round(eficiencia * 100)}% a {Math.round(eficiencia * 100) + 8}%: +{Math.round(capacidadDiaria * 0.15)} prendas/dia.</p>
+            <a href="/taller/aprender" className="text-brand-blue font-semibold hover:underline text-xs mt-1 block">Ver cursos de la academia que pueden ayudarte →</a>
           </Card>
           <p className="text-sm font-semibold mb-2">¿Este número te parece correcto?</p>
           <div className="space-y-2 text-left">
