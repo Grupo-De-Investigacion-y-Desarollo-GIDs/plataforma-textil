@@ -118,6 +118,7 @@ export default async function EstadoDashboardPage() {
         </div>
 
         <Card title="Progreso de formalizacion">
+          <p className="text-xs text-gray-400 mb-3">Porcentaje de documentos completados sobre el total requerido por nivel. Bronce = requisitos basicos, Plata = intermedios, Oro = avanzados.</p>
           <div className="space-y-3">
             {[
               { label: 'Bronce', count: bronce, color: 'bg-orange-400', textColor: 'text-orange-600' },

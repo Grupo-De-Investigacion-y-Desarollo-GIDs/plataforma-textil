@@ -31,8 +31,8 @@ export function ChecklistItem({ title, description, status, actionLabel, onActio
   return (
     <div className={cn('flex items-center justify-between py-4 border-b border-gray-100', className)}>
       <div className="flex items-center gap-3">
-        <div className={cn('w-8 h-8 rounded-full flex items-center justify-center', config.iconBg)}>
-          <Icon className={cn('w-5 h-5', config.iconColor)} />
+        <div className={cn('w-10 h-10 rounded-full flex items-center justify-center shrink-0', config.iconBg)}>
+          <Icon className={cn('w-6 h-6', config.iconColor)} />
         </div>
         <div>
           <div className="font-overpass font-semibold text-brand-blue">{title}</div>

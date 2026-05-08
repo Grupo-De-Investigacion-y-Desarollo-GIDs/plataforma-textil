@@ -60,7 +60,7 @@ export function CotizarForm({ pedidoId }: { pedidoId: string }) {
       router.push('/taller/pedidos')
       router.refresh()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error de conexion. Intenta de nuevo.')
+      setError(err instanceof Error ? err.message : 'Error de conexión. Intenta de nuevo.')
       setLoading(false)
     }
   }
@@ -94,7 +94,7 @@ export function CotizarForm({ pedidoId }: { pedidoId: string }) {
         />
       </div>
       <Button type="submit" loading={loading} icon={<Send className="w-4 h-4" />} className="w-full" data-action="enviar-cotizacion">
-        Enviar cotizacion
+        Enviar cotización
       </Button>
     </form>
   )

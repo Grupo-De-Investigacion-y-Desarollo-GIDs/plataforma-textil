@@ -307,7 +307,8 @@ export default function WizardPage() {
               </button>
             ))}
           </div>
-          <p className="text-sm font-semibold mb-2">¿Qué roles tenés en tu equipo?</p>
+          <p className="text-sm font-semibold mb-2">¿Que roles tenes en tu equipo?</p>
+          <p className="text-xs text-gray-400 mb-2">No es necesario que la suma coincida con el total de personas — una persona puede cumplir varios roles.</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {ROLES_EQUIPO.map(r => (
               <Card key={r} className="p-3">
@@ -340,7 +341,7 @@ export default function WizardPage() {
             <RadioOption value="parcial" current={polivalencia} onChange={setPolivalencia} label="Algunos pueden hacer varias tareas" desc="Polivalencia parcial" />
             <RadioOption value="total" current={polivalencia} onChange={setPolivalencia} label="Sí, todos pueden hacer de todo" desc="Polivalencia total" />
           </div>
-          <Input label="¿Cuánto tiempo lleva tu empleado más antiguo? (años)" type="number" value={antiguedad} onChange={e => setAntiguedad(e.target.value)} />
+          <Input label="¿Cuanto tiempo lleva tu trabajador/a mas antiguo/a? (años)" type="number" value={antiguedad} onChange={e => setAntiguedad(e.target.value)} />
         </div>
       )}
 
@@ -368,7 +369,7 @@ export default function WizardPage() {
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">¿Cómo es tu espacio de trabajo?</h2>
           <Input label="Metros cuadrados del área de producción" type="number" value={metrosCuadrados} onChange={e => setMetrosCuadrados(e.target.value)} />
           <Card className="bg-blue-50/50 text-sm my-4">
-            {parseInt(metrosCuadrados) > 0 && <p>{metrosCuadrados} m² con {tamanoEquipo} personas. Recomendado: 10-15 m² por persona (mínimo).</p>}
+            {parseInt(metrosCuadrados) > 0 && <p>{metrosCuadrados} m² con {tamanoEquipo} personas. Recomendado: 10-15 m² por persona. Si tenes menos, no te preocupes — esto es solo referencia, no bloquea tu perfil.</p>}
           </Card>
           <p className="text-sm font-semibold mb-2">¿Tenés áreas separadas para cada proceso?</p>
           <div className="space-y-2">
@@ -413,22 +414,22 @@ export default function WizardPage() {
       {step === 7 && (
         <div>
           <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">Verificamos que entendiste el concepto</h2>
-          <p className="text-sm font-semibold mb-3">¿Qué significa SAM?</p>
+          <p className="text-sm font-semibold mb-3">¿Que es el tiempo estandar de confeccion?</p>
           <div className="space-y-2 mb-4">
-            <RadioOption value="salario" current={samQuizResp} onChange={setSamQuizResp} label="Salario Anual Mínimo" />
-            <RadioOption value="correcto" current={samQuizResp} onChange={setSamQuizResp} label="Minutos estándar para confeccionar una prenda" />
-            <RadioOption value="sistema" current={samQuizResp} onChange={setSamQuizResp} label="Sistema de Acceso a Maquinaria" />
+            <RadioOption value="salario" current={samQuizResp} onChange={setSamQuizResp} label="El salario mensual de un operario" />
+            <RadioOption value="correcto" current={samQuizResp} onChange={setSamQuizResp} label="Los minutos promedio para confeccionar una prenda" />
+            <RadioOption value="sistema" current={samQuizResp} onChange={setSamQuizResp} label="La cantidad de maquinas del taller" />
           </div>
           {samQuizResp === 'correcto' && (
             <Card className="bg-green-50 text-sm">
-              <p className="font-semibold text-green-700">¡Correcto!</p>
-              <p>SAM (Standard Allowed Minutes) es el tiempo estándar para confeccionar una prenda.</p>
-              <p className="mt-1 font-mono text-xs">Capacidad = Minutos disponibles ÷ SAM × Eficiencia</p>
+              <p className="font-semibold text-green-700">Correcto!</p>
+              <p>El tiempo estandar de confeccion es la cantidad de minutos que tarda tu taller en hacer una prenda completa.</p>
+              <p className="mt-1 font-mono text-xs">Capacidad = Minutos disponibles / Tiempo por prenda x Eficiencia</p>
             </Card>
           )}
           {samQuizResp && samQuizResp !== 'correcto' && (
             <Card className="bg-red-50 text-sm">
-              <p className="font-semibold text-red-700">No es correcto. SAM significa &quot;Standard Allowed Minutes&quot;.</p>
+              <p className="font-semibold text-red-700">No es correcto. El tiempo estandar es la cantidad de minutos para confeccionar una prenda.</p>
             </Card>
           )}
         </div>
@@ -461,7 +462,7 @@ export default function WizardPage() {
           <Card className="mb-4">
             <p className="text-sm text-gray-500 mb-2">Basado en tus datos:</p>
             <div className="text-sm text-gray-600 space-y-0.5 mb-4">
-              <p>{numMaquinas} máquinas • {tamanoEquipo} operarios • SAM: {sam} min • {horasDia}h/día</p>
+              <p>{numMaquinas} maquinas · {tamanoEquipo} operarios · {sam} min/prenda · {horasDia}h/dia</p>
             </div>
             <p className="text-xs font-mono text-gray-500 mb-4">({horasNum * 60} min ÷ {samNum} min) × {Math.round(eficiencia * 100)}% × {numMaquinas} máq</p>
             <div className="bg-brand-blue/5 rounded-xl p-6">
@@ -612,9 +613,9 @@ export default function WizardPage() {
             </Card>
           )}
 
-          <Card title="Badges Desbloqueados" className="mb-6">
+          <Card title="Logros completados" className="mb-6">
             <div className="flex flex-wrap gap-3 justify-center">
-              {['Perfil técnico', 'Equipo identificado', 'Organización mapeada', 'SAM calculado', 'Capacidad calculada', 'Gestión evaluada'].map(b => (
+              {['Perfil tecnico', 'Equipo identificado', 'Organizacion mapeada', 'Tiempo calculado', 'Capacidad calculada', 'Gestion evaluada'].map(b => (
                 <Badge key={b} variant="success" className="text-xs">{b}</Badge>
               ))}
             </div>

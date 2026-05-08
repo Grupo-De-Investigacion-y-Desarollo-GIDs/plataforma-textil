@@ -136,7 +136,7 @@ export function UserSidebar({
       {/* Overlay */}
       <div
         className={cn(
-          'fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300',
+          'fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] transition-opacity duration-300',
           isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         )}
         onClick={onClose}
@@ -146,7 +146,7 @@ export function UserSidebar({
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-out',
+          'fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-[60] transform transition-transform duration-300 ease-out',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
         aria-label="Menú de navegación personal"
