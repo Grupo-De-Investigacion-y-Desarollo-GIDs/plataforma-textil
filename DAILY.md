@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-05-08
+
+### Gerardo Breard
+- **12:04** `6a1cc9d` — chore: mover 12 issues piloto a V4_BACKLOG (G-07 a G-16)
+  - `.claude/specs/V4_BACKLOG.md`
+
+
 ## 2026-05-07
 
 ### Gerardo Breard
