@@ -3,6 +3,11 @@
 ## 2026-05-08
 
 ### Gerardo Breard
+- **12:54** `0a6ebbe` — fix: 3 issues feedback piloto (#269 #270 #271)
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/taller/componentes/portfolio-manager.tsx`
+
 - **12:43** `132fb50` — fix: 8 mejoras UX feedback piloto (#244 #248 #255 #261 #245 #246 #228 #231 #264)
   - `src/app/(estado)/estado/page.tsx`
   - `src/app/(taller)/taller/perfil/completar/page.tsx`
