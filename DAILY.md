@@ -3,6 +3,9 @@
 ## 2026-05-08
 
 ### Gerardo Breard
+- **15:34** `ce16843` — fix: catch generico en nuevo-pedido-form muestra error real (#280 #282)
+  - `src/app/(marca)/marca/pedidos/nuevo/nuevo-pedido-form.tsx`
+
 - **15:28** `02a8325` — fix: acentos faltantes en paginas estado (#291 #293 #294 #295 #296)
   - `src/app/(estado)/estado/auditorias/page.tsx`
   - `src/app/(estado)/estado/demanda-insatisfecha/page.tsx`
