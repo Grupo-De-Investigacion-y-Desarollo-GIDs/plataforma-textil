@@ -3,6 +3,10 @@
 ## 2026-05-08
 
 ### Gerardo Breard
+- **12:31** `5664714` — fix: error conexion al cotizar + detectar cotizacion rechazada (#260 #263)
+  - `src/app/(taller)/taller/pedidos/disponibles/[id]/page.tsx`
+  - `src/taller/componentes/cotizar-form.tsx`
+
 - **12:04** `6a1cc9d` — chore: mover 12 issues piloto a V4_BACKLOG (G-07 a G-16)
   - `.claude/specs/V4_BACKLOG.md`
 
