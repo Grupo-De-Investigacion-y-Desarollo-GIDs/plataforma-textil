@@ -90,12 +90,12 @@ describe('T-03 Protocolos de onboarding', () => {
       const result = buildInvitacionRegistroEmail({
         nombreDestinatario: 'Roberto',
         nombreReferente: 'Lucia',
-        cargoReferente: 'OIT/UNTREF',
+        cargoReferente: 'UNTREF/OIT',
       })
       expect(result.subject).toContain('Plataforma Digital Textil')
       expect(result.html).toContain('Roberto')
       expect(result.html).toContain('Lucia')
-      expect(result.html).toContain('OIT/UNTREF')
+      expect(result.html).toContain('UNTREF/OIT')
       expect(result.html).toContain('/registro')
     })
   })

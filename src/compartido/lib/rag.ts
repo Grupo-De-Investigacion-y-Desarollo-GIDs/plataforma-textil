@@ -65,7 +65,7 @@ export async function generarRespuesta(
 
   const model = configMap['llm_model'] ?? 'claude-haiku-4-5-20251001'
   const maxTokens = parseInt(configMap['llm_max_tokens'] ?? '500')
-  const systemPrompt = configMap['llm_system_prompt'] ?? `Sos un asistente de la Plataforma Digital Textil (PDT) de OIT Argentina y UNTREF.
+  const systemPrompt = configMap['llm_system_prompt'] ?? `Sos un asistente de la Plataforma Digital Textil (PDT), desarrollada por UNTREF con el apoyo de la OIT.
 Ayudas a talleres textiles con preguntas sobre formalizacion, tramites y uso de la plataforma.
 Responde siempre en espanol, de forma clara y concisa.
 Si en el contexto hay links en formato markdown, incluílos en tu respuesta para que el usuario pueda navegar directamente.

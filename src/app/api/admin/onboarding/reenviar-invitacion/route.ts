@@ -33,7 +33,7 @@ export const POST = apiHandler(async (req: NextRequest) => {
   const { subject, html } = buildInvitacionRegistroEmail({
     nombreDestinatario: destinatario.name ?? 'Usuario',
     nombreReferente: session.user.name ?? 'Equipo PDT',
-    cargoReferente: 'OIT/UNTREF',
+    cargoReferente: 'UNTREF/OIT',
   })
 
   const resultado = await sendEmail({

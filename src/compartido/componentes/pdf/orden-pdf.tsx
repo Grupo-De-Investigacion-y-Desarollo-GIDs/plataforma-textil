@@ -35,7 +35,7 @@ export function OrdenPDF({ moId, nombreTaller, cuitTaller, nombreMarca, tipoPren
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           <Text style={styles.headerText}>Orden de Manufactura</Text>
-          <Text style={styles.subheader}>Plataforma Digital Textil · OIT Argentina · UNTREF</Text>
+          <Text style={styles.subheader}>Plataforma Digital Textil · Desarrollado por UNTREF con el apoyo de la OIT</Text>
           <Text style={styles.moId}>{moId}</Text>
         </View>
 

@@ -73,7 +73,7 @@ export default async function Home() {
       <section className="bg-gradient-to-b from-blue-50 to-white pt-16 pb-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-sm font-semibold text-brand-blue uppercase tracking-wider mb-4">
-            Una iniciativa de OIT Argentina y UNTREF
+            Desarrollado por UNTREF con el apoyo de la OIT
           </p>
           <h1 className="font-overpass font-bold text-4xl sm:text-5xl lg:text-6xl text-brand-blue leading-tight mb-6">
             Plataforma Digital Textil
@@ -412,7 +412,7 @@ export default async function Home() {
                 <span className="font-overpass font-bold text-white text-sm">Plataforma Digital Textil</span>
               </div>
               <p className="text-xs leading-relaxed">
-                Una iniciativa de OIT Argentina y UNTREF para la formalización del sector textil.
+                Desarrollado por UNTREF con el apoyo de la OIT para la formalización del sector textil.
               </p>
             </div>
             <div>
@@ -440,7 +440,7 @@ export default async function Home() {
             </div>
           </div>
           <div className="border-t border-gray-800 pt-6 text-xs text-center">
-            © 2026 Plataforma Digital Textil | OIT Argentina – UNTREF
+            © 2026 Plataforma Digital Textil | Desarrollado por UNTREF con el apoyo de la OIT
           </div>
         </div>
       </footer>

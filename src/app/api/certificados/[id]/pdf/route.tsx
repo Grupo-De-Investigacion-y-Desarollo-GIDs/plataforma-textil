@@ -43,7 +43,7 @@ export async function GET(
       calificacion={certificado.calificacion}
       codigo={certificado.codigo}
       fecha={certificado.fecha}
-      institucion={certificado.coleccion.institucion ?? 'OIT Argentina · UNTREF'}
+      institucion={certificado.coleccion.institucion ?? 'Desarrollado por UNTREF con el apoyo de la OIT'}
     />
   )
 

@@ -31,7 +31,7 @@ export function CertificadoPDF({ nombreTaller, nombreCurso, calificacion, codigo
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           <Text style={styles.headerText}>Plataforma Digital Textil</Text>
-          <Text style={styles.subheader}>OIT Argentina · UNTREF</Text>
+          <Text style={styles.subheader}>Desarrollado por UNTREF con el apoyo de la OIT</Text>
         </View>
         <View style={styles.body}>
           <Text style={styles.title}>Certificado de Capacitacion</Text>

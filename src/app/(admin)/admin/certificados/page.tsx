@@ -124,7 +124,7 @@ export default function AdminCertificadosPage() {
         {verModal && (
           <div className="text-center border rounded-lg p-8 bg-gray-50">
             <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">Plataforma Digital Textil</p>
-            <p className="text-xs text-gray-400 mb-6">OIT Argentina - UNTREF</p>
+            <p className="text-xs text-gray-400 mb-6">Desarrollado por UNTREF con el apoyo de la OIT</p>
             <h3 className="font-overpass font-bold text-xl text-brand-blue mb-4">CERTIFICADO</h3>
             <p className="text-sm text-gray-600 mb-1">Se certifica que</p>
             <p className="font-overpass font-bold text-lg">{verModal.taller.nombre}</p>
