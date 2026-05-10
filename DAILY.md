@@ -1,5 +1,20 @@
 # Daily Log
 
+## 2026-05-09
+
+### Gerardo Breard
+- **21:05** `aa0f198` — fix: reemplazar texto institucional "OIT Argentina" por mandato OIT
+  - `src/__tests__/onboarding.test.ts`
+  - `src/app/(admin)/admin/certificados/page.tsx`
+  - `src/app/api/admin/onboarding/reenviar-invitacion/route.ts`
+  - `src/app/api/certificados/[id]/pdf/route.tsx`
+  - `src/app/page.tsx`
+  - `src/compartido/componentes/pdf/certificado-pdf.tsx`
+  - `src/compartido/componentes/pdf/orden-pdf.tsx`
+  - `src/compartido/lib/email.ts`
+  - `src/compartido/lib/rag.ts`
+
+
 ## 2026-05-08
 
 ### Gerardo Breard
