@@ -19,6 +19,23 @@
 - **11:58** `7d5c473` — chore: trigger redeploy con variables de entorno corregidas
 
 
+## 2026-05-12
+
+### Gerardo Breard
+- **19:42** `bb8c8fa` — chore: handover básico V4 (README, LICENSE, docs, decisiones)
+  - `.claude/specs/handover/DECISIONS.md`
+  - `.claude/specs/handover/DEPLOY.md`
+  - `.claude/specs/handover/HOW_TO_ADD_SPEC.md`
+  - `.claude/specs/handover/HOW_TO_RUN_QA.md`
+  - `LICENSE`
+  - `README.md`
+  - `docs/AS_IS_MAP.md`
+  - `docs/GAP_MATRIX.md`
+  - `docs/README.md`
+  - `docs/ROADMAP_REMEDIACION.md`
+  - `docs/TO_BE_MAP.md`
+  - `package.json`
+
 
 ## 2026-05-09
 
