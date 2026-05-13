@@ -116,7 +116,7 @@ jobs:
             local LOGIN_RESULT=$(curl -s -o /dev/null -w "%{http_code} %{time_total}" \
               -c "$COOKIE_JAR" -b "$COOKIE_JAR" -L --max-redirs 5 --max-time 30 \
               -H "x-ci-bypass: $CI_BYPASS_TOKEN" \
-              -X POST "$BASE_URL/api/auth/callback/credentials" \
+              "$BASE_URL/api/auth/callback/credentials" \
               -d "email=${EMAIL}&password=${PASSWORD}&csrfToken=${CSRF_TOKEN}")
             local LOGIN_CODE=$(echo "$LOGIN_RESULT" | cut -d' ' -f1)
             local LOGIN_TIME=$(echo "$LOGIN_RESULT" | cut -d' ' -f2)

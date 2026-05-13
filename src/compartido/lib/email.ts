@@ -1,5 +1,8 @@
 import { Resend } from 'resend'
 
+const appBaseUrl = process.env.NEXTAUTH_URL
+  ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '')
+
 interface EmailOptions {
   to: string
   subject: string
@@ -83,7 +86,7 @@ export function buildComunicacionAdminEmail(data: {
   mensaje: string
   nombreUsuario: string
 }): { subject: string; html: string } {
-  const dashUrl = process.env.NEXTAUTH_URL ?? ''
+  const dashUrl = appBaseUrl
   return {
     subject: data.titulo,
     html: emailWrapper(`
@@ -96,7 +99,7 @@ export function buildComunicacionAdminEmail(data: {
 
 export function buildBienvenidaEmail(data: { nombre: string; role: 'TALLER' | 'MARCA' }): { subject: string; html: string } {
   const esTaller = data.role === 'TALLER'
-  const dashUrl = `${process.env.NEXTAUTH_URL ?? ''}/${esTaller ? 'taller' : 'marca/directorio'}`
+  const dashUrl = `${appBaseUrl}/${esTaller ? 'taller' : 'marca/directorio'}`
   return {
     subject: 'Bienvenido/a a la Plataforma Digital Textil',
     html: emailWrapper(`
@@ -118,7 +121,7 @@ export function buildDocAprobadoEmail(data: { nombreTaller: string; tipoDoc: str
       <h2 style="margin: 0 0 12px; color: #16a34a;">Documento aprobado</h2>
       <p>Hola <strong>${data.nombreTaller}</strong>, tu documento <strong>${data.tipoDoc}</strong> fue revisado y aprobado por el equipo de PDT.</p>
       <p>Tu nivel de formalización fue actualizado. Seguí cargando documentos para avanzar hacia el nivel Oro.</p>
-      ${btnPrimario(`${process.env.NEXTAUTH_URL ?? ''}/taller/formalizacion`, 'Ver mi formalización')}
+      ${btnPrimario(`${appBaseUrl}/taller/formalizacion`, 'Ver mi formalización')}
     `),
   }
 }
@@ -131,13 +134,13 @@ export function buildDocRechazadoEmail(data: { nombreTaller: string; tipoDoc: st
       <p>Hola <strong>${data.nombreTaller}</strong>, tu documento <strong>${data.tipoDoc}</strong> fue revisado y necesita correcciones.</p>
       <p style="background: #fef2f2; border-left: 4px solid #dc2626; padding: 12px 16px; border-radius: 4px;"><strong>Motivo:</strong> ${data.motivo}</p>
       <p>Podés volver a subir el documento corregido desde tu panel de formalización.</p>
-      ${btnPrimario(`${process.env.NEXTAUTH_URL ?? ''}/taller/formalizacion`, 'Volver a cargar el documento')}
+      ${btnPrimario(`${appBaseUrl}/taller/formalizacion`, 'Volver a cargar el documento')}
     `),
   }
 }
 
 export function buildCertificadoEmail(data: { nombreTaller: string; tituloColeccion: string; codigo: string; calificacion: number }): { subject: string; html: string } {
-  const verificarUrl = `${process.env.NEXTAUTH_URL ?? ''}/verificar?code=${data.codigo}`
+  const verificarUrl = `${appBaseUrl}/verificar?code=${data.codigo}`
   return {
     subject: `Certificado obtenido: ${data.tituloColeccion} - PDT`,
     html: emailWrapper(`
@@ -198,7 +201,7 @@ export function buildCotizacionRecibidaEmail(data: {
         <p style="margin: 4px 0;"><strong>Precio:</strong> $${data.precio.toLocaleString('es-AR')}</p>
         <p style="margin: 4px 0;"><strong>Plazo:</strong> ${data.plazoDias} dias</p>
       </div>
-      ${btnPrimario(`${process.env.NEXTAUTH_URL ?? ''}/marca/pedidos`, 'Ver cotizaciones')}
+      ${btnPrimario(`${appBaseUrl}/marca/pedidos`, 'Ver cotizaciones')}
     `),
   }
 }
@@ -221,7 +224,7 @@ export function buildCotizacionAceptadaEmail(data: {
         <p style="margin: 4px 0;"><strong>Plazo:</strong> ${data.plazoDias} dias</p>
       </div>
       <p>Ya se creo la orden de manufactura. Revisa los detalles en tu panel.</p>
-      ${btnPrimario(`${process.env.NEXTAUTH_URL ?? ''}/taller/pedidos`, 'Ver mis pedidos')}
+      ${btnPrimario(`${appBaseUrl}/taller/pedidos`, 'Ver mis pedidos')}
     `),
   }
 }
@@ -237,7 +240,7 @@ export function buildCotizacionRechazadaEmail(data: {
       <h2 style="margin: 0 0 12px;">Cotizacion no seleccionada</h2>
       <p>Hola <strong>${data.nombreTaller}</strong>, la marca <strong>${data.nombreMarca}</strong> selecciono otra cotizacion para el proceso <strong>${data.proceso}</strong>.</p>
       <p>Segui cotizando otros pedidos disponibles en la plataforma.</p>
-      ${btnPrimario(`${process.env.NEXTAUTH_URL ?? ''}/taller/pedidos`, 'Ver pedidos disponibles')}
+      ${btnPrimario(`${appBaseUrl}/taller/pedidos`, 'Ver pedidos disponibles')}
     `),
   }
 }
@@ -265,8 +268,8 @@ export function buildInvitacionRegistroEmail(data: {
   nombreReferente: string
   cargoReferente: string
 }): { subject: string; html: string } {
-  const registroUrl = `${process.env.NEXTAUTH_URL ?? ''}/registro`
-  const guiaUrl = `${process.env.NEXTAUTH_URL ?? ''}/ayuda/onboarding-taller`
+  const registroUrl = `${appBaseUrl}/registro`
+  const guiaUrl = `${appBaseUrl}/ayuda/onboarding-taller`
   return {
     subject: 'Te invitamos a la Plataforma Digital Textil — UNTREF/OIT',
     html: emailWrapper(`
