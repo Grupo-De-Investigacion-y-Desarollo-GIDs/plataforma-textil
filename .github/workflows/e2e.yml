@@ -12,7 +12,6 @@ jobs:
     timeout-minutes: 30
 
     env:
-      TEST_BASE_URL: ${{ secrets.TEST_BASE_URL }}
       TEST_TALLER_EMAIL: ${{ secrets.TEST_TALLER_EMAIL }}
       TEST_TALLER_PASSWORD: ${{ secrets.TEST_TALLER_PASSWORD }}
       TEST_MARCA_EMAIL: ${{ secrets.TEST_MARCA_EMAIL }}
@@ -35,28 +34,62 @@ jobs:
       - run: npm ci
 
       - name: Wait for Vercel deployment
+        id: wait-deploy
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          EXPECTED_SHA="${{ github.sha }}"
-          echo "Waiting for deploy with SHA: $EXPECTED_SHA"
-          for i in {1..60}; do
-            ACTUAL_SHA=$(curl -s "${{ secrets.TEST_BASE_URL }}/api/health/version" 2>/dev/null | jq -r '.sha // empty' || echo "")
-            if [ "$ACTUAL_SHA" = "$EXPECTED_SHA" ]; then
-              echo "Deploy ready (attempt $i)"
-              exit 0
-            fi
-            echo "Attempt $i/60: not ready (got: ${ACTUAL_SHA:0:12}, want: ${EXPECTED_SHA:0:12})"
-            sleep 10
-          done
-          echo "::error::Deploy not ready after 10 min — aborting. This is an infra issue (Vercel deploy queue), not a code problem."
+          if [ "${{ github.event_name }}" = "push" ]; then
+            # Push to develop: use fixed TEST_BASE_URL, poll until SHA matches
+            EXPECTED_SHA="${{ github.sha }}"
+            BASE_URL="${{ secrets.TEST_BASE_URL }}"
+            echo "Waiting for deploy at $BASE_URL with SHA: ${EXPECTED_SHA:0:12}"
+            for i in {1..60}; do
+              ACTUAL_SHA=$(curl -s "$BASE_URL/api/health/version" 2>/dev/null | jq -r '.sha // empty' || echo "")
+              if [ "$ACTUAL_SHA" = "$EXPECTED_SHA" ]; then
+                echo "Deploy ready (attempt $i)"
+                echo "deploy_url=$BASE_URL" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+              echo "Attempt $i/60: not ready (got: ${ACTUAL_SHA:0:12}, want: ${EXPECTED_SHA:0:12})"
+              sleep 10
+            done
+          else
+            # PR: find Vercel preview URL via GitHub Deployments API
+            EXPECTED_SHA="${{ github.event.pull_request.head.sha }}"
+            REPO="${{ github.repository }}"
+            echo "Waiting for Vercel preview for PR head SHA: ${EXPECTED_SHA:0:12}"
+            for i in {1..60}; do
+              DEPLOY_ID=$(curl -s -H "Authorization: token $GH_TOKEN" \
+                "https://api.github.com/repos/$REPO/deployments?sha=$EXPECTED_SHA&per_page=5" \
+                | jq -r '[.[] | select(.environment != "Production")][0].id // empty')
+              if [ -n "$DEPLOY_ID" ] && [ "$DEPLOY_ID" != "null" ]; then
+                TARGET_URL=$(curl -s -H "Authorization: token $GH_TOKEN" \
+                  "https://api.github.com/repos/$REPO/deployments/$DEPLOY_ID/statuses" \
+                  | jq -r '[.[] | select(.state == "success")][0].environment_url // empty')
+                if [ -n "$TARGET_URL" ] && [ "$TARGET_URL" != "null" ]; then
+                  ACTUAL_SHA=$(curl -s "$TARGET_URL/api/health/version" 2>/dev/null | jq -r '.sha // empty' || echo "")
+                  if [ "$ACTUAL_SHA" = "$EXPECTED_SHA" ]; then
+                    echo "Preview ready at $TARGET_URL (attempt $i)"
+                    echo "deploy_url=$TARGET_URL" >> "$GITHUB_OUTPUT"
+                    exit 0
+                  fi
+                fi
+              fi
+              echo "Attempt $i/60: waiting for Vercel preview deploy..."
+              sleep 10
+            done
+          fi
+          echo "::error::Deploy not ready after 10 min — aborting."
           exit 1
 
       - name: Warm up preview functions
         run: |
-          echo "Warming up serverless functions (2 passes)..."
+          BASE_URL="${{ steps.wait-deploy.outputs.deploy_url }}"
+          echo "Warming up serverless functions at $BASE_URL (2 passes)..."
           for pass in 1 2; do
             echo "--- Pass $pass ---"
             for path in / /login /registro /directorio /estado /estado/talleres /estado/documentos /estado/configuracion-niveles /taller /marca/directorio /admin/talleres; do
-              code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "${{ secrets.TEST_BASE_URL }}${path}" || echo "ERR")
+              code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "${BASE_URL}${path}" || echo "ERR")
               echo "  $path → $code"
             done
           done
@@ -64,8 +97,11 @@ jobs:
 
       - run: npx playwright install --with-deps chromium
 
-      - run: npx playwright test
+      - name: Run Playwright tests
+        run: npx playwright test
         continue-on-error: false
+        env:
+          TEST_BASE_URL: ${{ steps.wait-deploy.outputs.deploy_url }}
 
       - uses: actions/upload-artifact@v4
         if: failure()
