@@ -85,15 +85,70 @@ jobs:
       - name: Warm up preview functions
         run: |
           BASE_URL="${{ steps.wait-deploy.outputs.deploy_url }}"
-          echo "Warming up serverless functions at $BASE_URL (2 passes)..."
-          for pass in 1 2; do
-            echo "--- Pass $pass ---"
-            for path in / /login /registro /directorio /estado /estado/talleres /estado/documentos /estado/configuracion-niveles /taller /marca/directorio /admin/talleres; do
-              code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "${BASE_URL}${path}" || echo "ERR")
-              echo "  $path → $code"
-            done
+          echo "=== Phase 1: Anonymous warmup (public pages) ==="
+          for path in / /login /registro /directorio; do
+            RESULT=$(curl -s -o /dev/null -w "%{http_code} %{time_total}" --max-time 30 "${BASE_URL}${path}" || echo "ERR 0")
+            CODE=$(echo "$RESULT" | cut -d' ' -f1)
+            TIME=$(echo "$RESULT" | cut -d' ' -f2)
+            echo "  $path -> $CODE (${TIME}s)"
           done
-          echo "Warm-up complete"
+
+          echo ""
+          echo "=== Phase 2: Authenticated warmup (role pages) ==="
+
+          warmup_role() {
+            local ROLE="$1" EMAIL="$2" PASSWORD="$3"
+            shift 3
+            local PAGES=("$@")
+            local COOKIE_JAR=$(mktemp)
+
+            # 1. Get CSRF token
+            local CSRF_JSON=$(curl -s -c "$COOKIE_JAR" --max-time 15 "$BASE_URL/api/auth/csrf")
+            local CSRF_TOKEN=$(echo "$CSRF_JSON" | python3 -c "import json,sys; print(json.load(sys.stdin).get('csrfToken',''))" 2>/dev/null)
+
+            if [ -z "$CSRF_TOKEN" ]; then
+              echo "  [$ROLE] CSRF failed -- skipping"
+              rm -f "$COOKIE_JAR"
+              return 1
+            fi
+
+            # 2. Login (follow redirects to capture session cookie)
+            local LOGIN_RESULT=$(curl -s -o /dev/null -w "%{http_code} %{time_total}" \
+              -c "$COOKIE_JAR" -b "$COOKIE_JAR" -L --max-redirs 5 --max-time 30 \
+              -H "x-ci-bypass: $CI_BYPASS_TOKEN" \
+              -X POST "$BASE_URL/api/auth/callback/credentials" \
+              -d "email=${EMAIL}&password=${PASSWORD}&csrfToken=${CSRF_TOKEN}")
+            local LOGIN_CODE=$(echo "$LOGIN_RESULT" | cut -d' ' -f1)
+            local LOGIN_TIME=$(echo "$LOGIN_RESULT" | cut -d' ' -f2)
+            echo "  [$ROLE] login -> $LOGIN_CODE (${LOGIN_TIME}s)"
+
+            # 3. Visit role pages with session cookie
+            for PAGE in "${PAGES[@]}"; do
+              local RESULT=$(curl -s -o /dev/null -w "%{http_code} %{time_total}" \
+                -b "$COOKIE_JAR" -L --max-time 30 \
+                "$BASE_URL$PAGE")
+              local CODE=$(echo "$RESULT" | cut -d' ' -f1)
+              local TIME=$(echo "$RESULT" | cut -d' ' -f2)
+              echo "  [$ROLE] $PAGE -> $CODE (${TIME}s)"
+            done
+
+            rm -f "$COOKIE_JAR"
+          }
+
+          warmup_role "TALLER" "$TEST_TALLER_EMAIL" "$TEST_TALLER_PASSWORD" \
+            /taller /taller/pedidos
+
+          warmup_role "MARCA" "$TEST_MARCA_EMAIL" "$TEST_MARCA_PASSWORD" \
+            /marca /marca/directorio
+
+          warmup_role "ESTADO" "$TEST_ESTADO_EMAIL" "$TEST_ESTADO_PASSWORD" \
+            /estado /estado/talleres /estado/documentos /estado/configuracion-niveles
+
+          warmup_role "ADMIN" "$TEST_ADMIN_EMAIL" "$TEST_ADMIN_PASSWORD" \
+            /admin /admin/talleres
+
+          echo ""
+          echo "=== Warmup complete ==="
 
       - run: npx playwright install --with-deps chromium
 
