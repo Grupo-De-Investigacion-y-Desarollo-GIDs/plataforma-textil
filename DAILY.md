@@ -3,6 +3,9 @@
 ## 2026-05-13
 
 ### Gerardo Breard
+- **16:07** `4836ead` — fix(middleware): /unauthorized debe ser pública
+  - `src/middleware.ts`
+
 - **13:20** `6bbe557` — fix(ci): E2E workflow soporta preview deploys de PRs
   - `.github/workflows/e2e.yml`
 
