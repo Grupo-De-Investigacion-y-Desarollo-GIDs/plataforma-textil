@@ -3,6 +3,9 @@
 ## 2026-05-13
 
 ### Gerardo Breard
+- **15:21** `b3c28a1` — fix(ci): warmup programático con login real por rol
+  - `.github/workflows/e2e.yml`
+
 - **11:58** `7d5c473` — chore: trigger redeploy con variables de entorno corregidas
 
 
