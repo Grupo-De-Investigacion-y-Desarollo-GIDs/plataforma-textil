@@ -3,6 +3,9 @@
 ## 2026-05-13
 
 ### Gerardo Breard
+- **16:37** `44b65c9` — feat(ci): warmup programático con login real por rol
+  - `.github/workflows/e2e.yml`
+
 - **16:07** `4836ead` — fix(middleware): /unauthorized debe ser pública
   - `src/middleware.ts`
 
