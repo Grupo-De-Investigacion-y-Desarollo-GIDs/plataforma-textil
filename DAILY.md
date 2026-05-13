@@ -3,6 +3,10 @@
 ## 2026-05-13
 
 ### Gerardo Breard
+- **17:16** `cb66a4b` — fix(ci+auth): consolidar fixes E2E preview deploys
+  - `.github/workflows/e2e.yml`
+  - `src/compartido/lib/email.ts`
+
 - **16:37** `44b65c9` — feat(ci): warmup programático con login real por rol
   - `.github/workflows/e2e.yml`
 
