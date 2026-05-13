@@ -3,6 +3,9 @@
 ## 2026-05-13
 
 ### Gerardo Breard
+- **13:20** `6bbe557` — fix(ci): E2E workflow soporta preview deploys de PRs
+  - `.github/workflows/e2e.yml`
+
 - **11:58** `7d5c473` — chore: trigger redeploy con variables de entorno corregidas
 
 
