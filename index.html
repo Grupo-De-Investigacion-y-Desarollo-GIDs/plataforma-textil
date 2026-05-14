@@ -187,12 +187,13 @@
   <div class="container">
     <div class="index-header">
       <h1>Auditorias QA</h1>
-      <p>37 documentos de auditoria (23 V3 + 14 V2)</p>
+      <p>37 documentos de auditoria (0 V4 + 23 V3 + 14 V2)</p>
     </div>
 
     <div class="index-filter-bar">
       <span class="index-filter-label">Filtrar:</span>
       <button class="index-filter-btn active" data-filter="todos" onclick="filtrarIndex('todos')">Todos</button>
+      
       <button class="index-filter-btn" data-filter="v3" onclick="filtrarIndex('v3')">Solo V3</button>
       <button class="index-filter-btn" data-filter="v2" onclick="filtrarIndex('v2')">Solo V2</button>
     </div>
@@ -212,6 +213,8 @@
       <h3>Issues reportados V3</h3>
       <p class="estado-disabled-msg">Cargando...</p>
     </div>
+
+    
 
     <div class="qa-section" id="section-v3">
       <div class="qa-section-title">V3 — En curso</div>
@@ -894,11 +897,13 @@
     function filtrarIndex(tipo) {
       document.querySelectorAll('.index-filter-btn').forEach(b => b.classList.remove('active'));
       document.querySelector('.index-filter-btn[data-filter="' + tipo + '"]').classList.add('active');
+      var v4Section = document.getElementById('section-v4');
       var v3Section = document.getElementById('section-v3');
       var v2Section = document.getElementById('section-v2');
-      if (tipo === 'todos') { v3Section.style.display = ''; v2Section.style.display = ''; }
-      else if (tipo === 'v3') { v3Section.style.display = ''; v2Section.style.display = 'none'; }
-      else if (tipo === 'v2') { v3Section.style.display = 'none'; v2Section.style.display = ''; }
+      if (tipo === 'todos') { if(v4Section) v4Section.style.display = ''; v3Section.style.display = ''; v2Section.style.display = ''; }
+      else if (tipo === 'v4') { if(v4Section) v4Section.style.display = ''; v3Section.style.display = 'none'; v2Section.style.display = 'none'; }
+      else if (tipo === 'v3') { if(v4Section) v4Section.style.display = 'none'; v3Section.style.display = ''; v2Section.style.display = 'none'; }
+      else if (tipo === 'v2') { if(v4Section) v4Section.style.display = 'none'; v3Section.style.display = 'none'; v2Section.style.display = ''; }
     }
 
     (function() {

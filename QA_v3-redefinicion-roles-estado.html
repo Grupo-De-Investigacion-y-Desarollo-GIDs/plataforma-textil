@@ -348,12 +348,12 @@
         <div class="meta-item"><span class="meta-label">Auditor:</span> Gerardo (Claude Code)</div>
       </div>
     </div><div class="filter-bar" id="filter-bar">
-    <span class="filter-label">Filtrar:</span>
-    <button class="filter-btn active" data-filter="todos" onclick="filtrarPor('todos')">Todos</button>
-    <button class="filter-btn" data-filter="QA" onclick="filtrarPor('QA')">QA tecnico</button>
-    <button class="filter-btn" data-filter="DEV" onclick="filtrarPor('DEV')">DEV</button>
-    
-  </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="DEV" data-item-selector="eje-1-item-1" data-pre-status="✅">
+      <span class="filter-label">Filtrar:</span>
+      <button class="filter-btn active" data-filter="todos" onclick="filtrarPor('todos')">Todos</button>
+      <button class="filter-btn" data-filter="QA" onclick="filtrarPor('QA')">QA tecnico</button>
+      <button class="filter-btn" data-filter="DEV" onclick="filtrarPor('DEV')">DEV</button>
+      
+    </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="DEV" data-item-selector="eje-1-item-1" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#1</span>
         <span class="item-text">Login como ESTADO (anabelen.torres@pdt.org.ar / pdt2026) — ✅ Gerardo 28/4</span>
@@ -1297,87 +1297,7 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card" data-eje="5" data-num="1" data-verificador="QA" data-item-selector="eje-5-item-1" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#1</span>
-        <span class="item-text">Como ESTADO, aprobar un documento de un taller BRONCE — ✅ code review: aprobarValidacion llama `await aplicarNivel(id, session.user.id)` despues de aprobar (linea 92) — Claude Code 6/5</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="5" data-num="2" data-verificador="QA" data-item-selector="eje-5-item-2" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#2</span>
-        <span class="item-text">Verificar que el puntaje se actualiza correctamente — ✅ code review: aplicarNivel en nivel.ts (lineas 131-182) recalcula puntaje con docs + AFIP + certs y actualiza taller — Claude Code 6/5</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="5" data-num="3" data-verificador="QA" data-item-selector="eje-5-item-3" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#3</span>
-        <span class="item-text">Si sube de nivel, verificar que el log NIVEL_SUBIDO aparece — ✅ code review: aplicarNivel loggea NIVEL_SUBIDO o NIVEL_BAJADO si cambia (nivel.ts lineas 160-170) — Claude Code 6/5</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="5" data-num="4" data-verificador="QA" data-item-selector="eje-5-item-4" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#4</span>
-        <span class="item-text">Aprobar un documento como ESTADO — ✅ code review: post-aprobacion llama sendEmail con buildDocAprobadoEmail (lineas 98-101) fire-and-forget — Claude Code 6/5</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="5" data-num="5" data-verificador="DEV" data-item-selector="eje-5-item-5" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#5</span>
-        <span class="item-text">Verificar en logs del servidor que intento enviar email — ✅ code review: sendEmail loggea [EMAIL-DEV] sin API key, o envia via Resend con API key (email.ts:18-22) — Claude Code 6/5</span>
-        <span class="badge-dev">DEV</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div></div><div class="section" id="eje6"><h2>Eje 6 — Validacion de dominio</h2><div class="section collapsible collapsed" onclick="toggleCollapse(this)" data-perfil="todos">
+    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><h3 style="font-size:14px;color:#1e3a5f;font-weight:600;margin:16px 0 8px;padding-top:8px;border-top:1px solid #e8ecf1"></h3><h3 style="font-size:14px;color:#1e3a5f;font-weight:600;margin:16px 0 8px;padding-top:8px;border-top:1px solid #e8ecf1">5.1 Recalculo de nivel funciona post-D01</h3><h3 style="font-size:14px;color:#1e3a5f;font-weight:600;margin:16px 0 8px;padding-top:8px;border-top:1px solid #e8ecf1">5.2 Email de aprobacion se envia</h3></div><div class="section" id="eje6"><h2>Eje 6 — Validacion de dominio</h2><div class="section collapsible collapsed" onclick="toggleCollapse(this)" data-perfil="todos">
       <h2> <span class="collapse-icon">&#9654;</span></h2>
       <div class="collapse-content"></div></div><div class="section collapsible collapsed" onclick="toggleCollapse(this)" data-perfil="6">
       <h2>6.1 Perspectiva politologica <span class="collapse-icon">&#9654;</span></h2>

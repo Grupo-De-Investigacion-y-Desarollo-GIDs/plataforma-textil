@@ -348,12 +348,12 @@
         <div class="meta-item"><span class="meta-label">Auditor:</span> Gerardo (Claude Code)</div>
       </div>
     </div><div class="filter-bar" id="filter-bar">
-    <span class="filter-label">Filtrar:</span>
-    <button class="filter-btn active" data-filter="todos" onclick="filtrarPor('todos')">Todos</button>
-    <button class="filter-btn" data-filter="QA" onclick="filtrarPor('QA')">QA tecnico</button>
-    <button class="filter-btn" data-filter="DEV" onclick="filtrarPor('DEV')">DEV</button>
-    
-  </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="QA" data-item-selector="eje-1-item-1">
+      <span class="filter-label">Filtrar:</span>
+      <button class="filter-btn active" data-filter="todos" onclick="filtrarPor('todos')">Todos</button>
+      <button class="filter-btn" data-filter="QA" onclick="filtrarPor('QA')">QA tecnico</button>
+      <button class="filter-btn" data-filter="DEV" onclick="filtrarPor('DEV')">DEV</button>
+      
+    </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="QA" data-item-selector="eje-1-item-1">
       <div class="item-header">
         <span class="item-num">#1</span>
         <span class="item-text">Abrir https://plataforma-textil-dev.vercel.app/ruta-que-no-existe en incognito</span>
@@ -865,71 +865,7 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card" data-eje="5" data-num="1" data-verificador="QA" data-item-selector="eje-5-item-1">
-      <div class="item-header">
-        <span class="item-num">#1</span>
-        <span class="item-text">Abrir GitHub Actions y verificar que el ultimo CI en develop esta verde</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="5" data-num="2" data-verificador="QA" data-item-selector="eje-5-item-2">
-      <div class="item-header">
-        <span class="item-num">#2</span>
-        <span class="item-text">Verificar que existen estos archivos de test en GitHub:</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="5" data-num="3" data-verificador="QA" data-item-selector="eje-5-item-3">
-      <div class="item-header">
-        <span class="item-num">#3</span>
-        <span class="item-text">Abrir https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil/blob/develop/tests/e2e/error-boundaries.spec.ts</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="5" data-num="4" data-verificador="QA" data-item-selector="eje-5-item-4">
-      <div class="item-header">
-        <span class="item-num">#4</span>
-        <span class="item-text">Verificar que contiene tests para: ruta inexistente global, admin, taller, marca</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div></div><div class="section" id="eje6"><h2>Eje 6 — Validacion de dominio</h2><div class="section collapsible collapsed" onclick="toggleCollapse(this)" data-perfil="todos">
+    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><h3 style="font-size:14px;color:#1e3a5f;font-weight:600;margin:16px 0 8px;padding-top:8px;border-top:1px solid #e8ecf1"></h3><h3 style="font-size:14px;color:#1e3a5f;font-weight:600;margin:16px 0 8px;padding-top:8px;border-top:1px solid #e8ecf1">5.1 Tests Vitest pasan</h3><h3 style="font-size:14px;color:#1e3a5f;font-weight:600;margin:16px 0 8px;padding-top:8px;border-top:1px solid #e8ecf1">5.2 Tests E2E de 404 existen</h3></div><div class="section" id="eje6"><h2>Eje 6 — Validacion de dominio</h2><div class="section collapsible collapsed" onclick="toggleCollapse(this)" data-perfil="todos">
       <h2> <span class="collapse-icon">&#9654;</span></h2>
       <div class="collapse-content"></div></div></div>
   </div>

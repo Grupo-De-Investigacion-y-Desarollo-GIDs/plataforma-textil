@@ -348,12 +348,12 @@
         <div class="meta-item"><span class="meta-label">Auditor:</span> Sergio (tecnico)</div>
       </div>
     </div><div class="filter-bar" id="filter-bar">
-    <span class="filter-label">Filtrar:</span>
-    <button class="filter-btn active" data-filter="todos" onclick="filtrarPor('todos')">Todos</button>
-    <button class="filter-btn" data-filter="QA" onclick="filtrarPor('QA')">QA tecnico</button>
-    <button class="filter-btn" data-filter="DEV" onclick="filtrarPor('DEV')">DEV</button>
-    
-  </div><div class="section" id="contexto-institucional">
+      <span class="filter-label">Filtrar:</span>
+      <button class="filter-btn active" data-filter="todos" onclick="filtrarPor('todos')">Todos</button>
+      <button class="filter-btn" data-filter="QA" onclick="filtrarPor('QA')">QA tecnico</button>
+      <button class="filter-btn" data-filter="DEV" onclick="filtrarPor('DEV')">DEV</button>
+      
+    </div><div class="section" id="contexto-institucional">
     <h2>Contexto institucional</h2>
     <div class="readonly-block">La plataforma maneja documentos sensibles: certificados de ART, constancias de AFIP, habilitaciones municipales. Sin validacion server-side, un atacante puede subir un ejecutable disfrazado de PDF, un SVG con scripts maliciosos, o archivos excesivamente grandes que agotan el storage. Este spec valida archivos por magic bytes (no por extension ni MIME type declarado) y permite al admin configurar que tipos acepta cada contexto sin necesidad de deploy.
 

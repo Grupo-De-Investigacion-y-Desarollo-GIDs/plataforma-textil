@@ -348,12 +348,12 @@
         <div class="meta-item"><span class="meta-label">Auditor:</span> Sergio (tecnico) + Gerardo (dry-run)</div>
       </div>
     </div><div class="filter-bar" id="filter-bar">
-    <span class="filter-label">Filtrar:</span>
-    <button class="filter-btn active" data-filter="todos" onclick="filtrarPor('todos')">Todos</button>
-    <button class="filter-btn" data-filter="QA" onclick="filtrarPor('QA')">QA tecnico</button>
-    <button class="filter-btn" data-filter="DEV" onclick="filtrarPor('DEV')">DEV</button>
-    
-  </div><div class="section unknown">
+      <span class="filter-label">Filtrar:</span>
+      <button class="filter-btn active" data-filter="todos" onclick="filtrarPor('todos')">Todos</button>
+      <button class="filter-btn" data-filter="QA" onclick="filtrarPor('QA')">QA tecnico</button>
+      <button class="filter-btn" data-filter="DEV" onclick="filtrarPor('DEV')">DEV</button>
+      
+    </div><div class="section unknown">
     <h2>Contexto</h2>
     <pre class="readonly-block">La PDT tenia SendGrid configurado como provider de email transaccional pero nunca tuvo SENDGRID_API_KEY configurada en Vercel — todos los emails iban a console.log silenciosamente. Se migra a Resend (free tier 3.000/mes) manteniendo la misma interface sendEmail() y los 12 templates HTML existentes.
 

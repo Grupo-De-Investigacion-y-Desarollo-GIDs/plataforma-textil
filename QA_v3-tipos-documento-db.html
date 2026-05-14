@@ -348,12 +348,12 @@
         <div class="meta-item"><span class="meta-label">Auditor:</span> Gerardo (Claude Code)</div>
       </div>
     </div><div class="filter-bar" id="filter-bar">
-    <span class="filter-label">Filtrar:</span>
-    <button class="filter-btn active" data-filter="todos" onclick="filtrarPor('todos')">Todos</button>
-    <button class="filter-btn" data-filter="QA" onclick="filtrarPor('QA')">QA tecnico</button>
-    <button class="filter-btn" data-filter="DEV" onclick="filtrarPor('DEV')">DEV</button>
-    
-  </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="DEV" data-item-selector="eje-1-item-1" data-pre-status="✅">
+      <span class="filter-label">Filtrar:</span>
+      <button class="filter-btn active" data-filter="todos" onclick="filtrarPor('todos')">Todos</button>
+      <button class="filter-btn" data-filter="QA" onclick="filtrarPor('QA')">QA tecnico</button>
+      <button class="filter-btn" data-filter="DEV" onclick="filtrarPor('DEV')">DEV</button>
+      
+    </div><div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2><div class="item-card" data-eje="1" data-num="1" data-verificador="DEV" data-item-selector="eje-1-item-1" data-pre-status="✅">
       <div class="item-header">
         <span class="item-num">#1</span>
         <span class="item-text">Login como ESTADO y ver puntos por documento (10/15/20) — ✅ Gerardo 28/4</span>
@@ -881,55 +881,7 @@
         <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
         <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
       </div>
-    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><div class="item-card" data-eje="5" data-num="1" data-verificador="QA" data-item-selector="eje-5-item-1" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#1</span>
-        <span class="item-text">Ejecutar: npx tsx tools/recalcular-niveles.ts --dry-run — ✅ code review: script existe en tools/recalcular-niveles.ts, soporta --dry-run flag (linea 9) — Claude Code 6/5</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="5" data-num="2" data-verificador="QA" data-item-selector="eje-5-item-2" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#2</span>
-        <span class="item-text">Verificar output muestra talleres y cambios potenciales — ✅ code review: dry-run loggea cambios pero no aplica (linea 62 check) — Claude Code 6/5</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div><div class="item-card" data-eje="5" data-num="3" data-verificador="QA" data-item-selector="eje-5-item-3" data-pre-status="✅">
-      <div class="item-header">
-        <span class="item-num">#3</span>
-        <span class="item-text">Verificar que la DB no cambio (niveles iguales) — ✅ code review: en dry-run mode, no llama prisma.taller.update — Claude Code 6/5</span>
-        <span class="badge-qa">QA</span>
-      </div>
-      <div class="item-badges"></div>
-      <div class="item-controls">
-        <div class="status-btns">
-          <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
-          <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
-          <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
-        </div>
-        <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
-        <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
-      </div>
-    </div></div>
+    </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><h3 style="font-size:14px;color:#1e3a5f;font-weight:600;margin:16px 0 8px;padding-top:8px;border-top:1px solid #e8ecf1"></h3><h3 style="font-size:14px;color:#1e3a5f;font-weight:600;margin:16px 0 8px;padding-top:8px;border-top:1px solid #e8ecf1">5.1 Dry run no aplica cambios</h3></div>
   </div>
   <div class="section" id="panel-resumen">
     <h2>Resumen de issues</h2>
