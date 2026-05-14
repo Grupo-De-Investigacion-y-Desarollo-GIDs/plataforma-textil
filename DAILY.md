@@ -12,6 +12,10 @@
   - `src/app/api/admin/configuracion-upload/[id]/route.ts`
   - `src/compartido/lib/file-validation.ts`
 
+- **12:24** `52f6537` — chore(qa-pages): soportar QAs V4 en workflow y generador
+  - `.github/workflows/qa-pages.yml`
+  - `tools/generate-qa.js`
+
 
 ## 2026-05-13
 

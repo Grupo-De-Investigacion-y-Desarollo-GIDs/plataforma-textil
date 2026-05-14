@@ -57,6 +57,18 @@ function parsearMetadata(header) {
   const tituloMatch = header.match(/^#\s+QA:\s*(.+)$/m)
   if (tituloMatch) meta.titulo = tituloMatch[1].trim()
 
+  // V4: titulo desde # QA V4 — X-01: Tokens visuales V4
+  if (!meta.titulo) {
+    const tituloV4Match = header.match(/^#\s+(QA\s+V\d+\s*.+)$/m)
+    if (tituloV4Match) meta.titulo = tituloV4Match[1].trim()
+  }
+
+  // Fallback genérico: cualquier # Título
+  if (!meta.titulo) {
+    const tituloGenMatch = header.match(/^#\s+(.+)$/m)
+    if (tituloGenMatch) meta.titulo = tituloGenMatch[1].trim()
+  }
+
   // Fallback inline markdown (sobreescribe frontmatter si ambos existen)
   const specMatch = header.match(/\*\*Spec:\*\*\s*`([^`]+)`/m)
   if (specMatch) meta.spec = specMatch[1].trim()
@@ -82,6 +94,30 @@ function parsearMetadata(header) {
   const perfilesMatch = header.match(/\*\*Perfiles aplicables:\*\*\s*(.+)$/m)
   if (perfilesMatch) meta.perfiles = perfilesMatch[1].split(',').map(p => p.trim())
 
+  return meta
+}
+
+/**
+ * Parsea metadata de tabla V4 (| Campo | Valor |).
+ * Retorna objeto con los campos encontrados.
+ */
+function parsearMetadataV4(contenido) {
+  const meta = {}
+  const filas = parsearTabla(contenido)
+  for (const fila of filas) {
+    const campo = normalizar(fila.campo || '')
+    const valor = (fila.valor || '').trim().replace(/`/g, '')
+    if (campo.includes('spec')) meta.spec = valor
+    else if (campo.includes('commit')) meta.commit = valor
+    else if (campo.includes('url')) meta.url = valor
+    else if (campo.includes('fecha')) meta.fecha = valor
+    else if (campo.includes('auditor')) meta.auditor = valor
+    else if (campo.includes('pr vinculado')) meta.pr = valor
+    else if (campo.includes('version')) meta.version = valor
+    else if (campo.includes('tipo de qa')) meta.tipoQA = valor
+    else if (campo.includes('issue vinculado')) meta.issue = valor
+    else if (campo.includes('categoria')) meta.categoria = valor
+  }
   return meta
 }
 
@@ -202,6 +238,53 @@ function parsearPasos(contenido) {
 }
 
 /**
+ * Parsea flujos V4 del Eje 1 (### Flujo N: título)
+ * Campos: Rol, Precondiciones, Pasos ejecutados, Resultado, Bugs encontrados, Notas
+ */
+function parsearFlujos(contenido) {
+  const flujos = []
+  const bloques = contenido.split(/^### /m).filter(Boolean)
+
+  for (const bloque of bloques) {
+    const lineas = bloque.split('\n')
+    const tituloMatch = lineas[0].match(/Flujo\s+(\d+)\s*[—–:\-]\s*(.+)/)
+    if (!tituloMatch) continue
+
+    const flujo = {
+      numero: parseInt(tituloMatch[1]),
+      titulo: tituloMatch[2].trim(),
+      rol: '', precondiciones: '', pasos: '', resultado: '', bugs: '', notas: ''
+    }
+
+    let campoActual = null
+    for (let i = 1; i < lineas.length; i++) {
+      const l = lineas[i]
+      const campoMatch = l.match(/^-\s+\*\*(.+?):\*\*\s*(.*)$/)
+      if (campoMatch) {
+        const campo = normalizar(campoMatch[1])
+        const valor = campoMatch[2].trim()
+        if (campo.includes('rol')) { flujo.rol = valor; campoActual = 'rol' }
+        else if (campo.includes('precondicion')) { flujo.precondiciones = valor; campoActual = 'precondiciones' }
+        else if (campo.includes('pasos')) { flujo.pasos = valor; campoActual = 'pasos' }
+        else if (campo.includes('resultado')) { flujo.resultado = valor; campoActual = 'resultado' }
+        else if (campo.includes('bug')) { flujo.bugs = valor; campoActual = 'bugs' }
+        else if (campo.includes('nota')) { flujo.notas = valor; campoActual = 'notas' }
+      } else if (campoActual && l.match(/^\s{2,}/)) {
+        flujo[campoActual] += '\n' + l.trim()
+      } else if (campoActual && l.trim() !== '' && !l.startsWith('#') && !l.startsWith('>')) {
+        flujo[campoActual] += '\n' + l.trim()
+      }
+    }
+
+    for (const key of Object.keys(flujo)) {
+      if (typeof flujo[key] === 'string') flujo[key] = flujo[key].trim()
+    }
+    flujos.push(flujo)
+  }
+  return flujos
+}
+
+/**
  * Parsea el checklist de cierre (líneas que empiezan con - [ ])
  */
 function parsearChecklist(contenido) {
@@ -298,6 +381,33 @@ function renderComoTrabajar(contenido) {
 }
 
 function renderResultadoGlobal(contenido) {
+  // V4: detect **Estado:** format (pre-filled by auditor, read-only summary)
+  const estadoMatch = contenido.match(/\*\*Estado:\*\*\s*(.+)$/m)
+  if (estadoMatch) {
+    let html = `<div class="section" id="resultado-global"><h2>Resultado global</h2>`
+    const estado = estadoMatch[1].trim()
+    const decisionMatch = contenido.match(/\*\*Decisi[oó]n:\*\*\s*(.+)$/m)
+    const resumenMatch = contenido.match(/\*\*Resumen ejecutivo:\*\*\s*([\s\S]*?)(?=\n\*\*|\n---|\n$)/m)
+    const issuesMatch = contenido.match(/\*\*Issues abiertos[^:]*:\*\*\s*([\s\S]*?)(?=\n\*\*|\n---|\n$)/m)
+
+    const estadoClass = estado.includes('Aprobado') ? 'estado-badge-verde'
+      : estado.includes('Rechazado') ? 'estado-badge-rojo' : 'estado-badge-amarillo'
+    html += `<div style="margin-bottom:12px"><span class="estado-badge-resumen ${estadoClass}" style="font-size:14px;padding:6px 14px">${escapeHtml(estado)}</span></div>`
+
+    if (decisionMatch) {
+      html += `<div class="field-group"><label>Decision:</label><div class="readonly-block">${escapeHtml(decisionMatch[1].trim())}</div></div>`
+    }
+    if (resumenMatch) {
+      html += `<div class="field-group"><label>Resumen ejecutivo:</label><div class="readonly-block">${escapeHtml(resumenMatch[1].trim())}</div></div>`
+    }
+    if (issuesMatch) {
+      html += `<div class="field-group"><label>Issues abiertos:</label><div class="readonly-block">${escapeHtml(issuesMatch[1].trim())}</div></div>`
+    }
+    html += `</div>`
+    return html
+  }
+
+  // V2/V3: interactive radio buttons
   const { opciones, decision } = parsearResultadoGlobal(contenido)
   const ids = ['aprobado', 'aprobado-fixes', 'rechazado']
   const labels = ['Aprobado', 'Aprobado con fixes', 'Rechazado']
@@ -376,6 +486,48 @@ function renderItemCard(ejeId, num, texto, verificador, preStatus) {
 }
 
 function renderEje1(contenido) {
+  // V4: detect ### Flujo N format
+  const flujos = parsearFlujos(contenido)
+  if (flujos.length > 0) {
+    let html = `<div class="section" id="eje1"><h2>Eje 1 — Flujos funcionales</h2>`
+    for (const flujo of flujos) {
+      const resultadoEmoji = flujo.resultado.includes('✅') ? '✅'
+        : flujo.resultado.includes('❌') ? '❌'
+        : flujo.resultado.includes('⚠️') ? '⚠️' : ''
+      const statusClass = resultadoEmoji === '✅' ? ' status-ok'
+        : resultadoEmoji === '❌' ? ' status-fail' : ''
+
+      html += `<div class="item-card${statusClass}" data-eje="1" data-num="${flujo.numero}" data-item-selector="eje-1-flujo-${flujo.numero}">
+        <div class="item-header">
+          <span class="item-num">#${flujo.numero}</span>
+          <span class="item-text">${escapeHtml(flujo.titulo)}</span>
+          ${resultadoEmoji ? `<span class="badge-qa">${resultadoEmoji}</span>` : ''}
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          ${flujo.rol ? `<div class="detail-row"><span class="detail-label">Rol:</span> ${escapeHtml(flujo.rol)}</div>` : ''}
+          ${flujo.precondiciones ? `<div class="detail-row"><span class="detail-label">Precondiciones:</span> ${escapeHtml(flujo.precondiciones)}</div>` : ''}
+          ${flujo.pasos ? `<div class="detail-row"><span class="detail-label">Pasos ejecutados:</span> ${escapeHtml(flujo.pasos)}</div>` : ''}
+          ${flujo.resultado ? `<div class="detail-row"><span class="detail-label">Resultado auditor:</span> ${escapeHtml(flujo.resultado)}</div>` : ''}
+          ${flujo.bugs ? `<div class="detail-row"><span class="detail-label">Bugs encontrados:</span> ${escapeHtml(flujo.bugs)}</div>` : ''}
+          ${flujo.notas ? `<div class="detail-row"><span class="detail-label">Notas:</span><div style="white-space:pre-wrap;margin-top:4px">${escapeHtml(flujo.notas)}</div></div>` : ''}
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>`
+    }
+    html += `</div>`
+    return html
+  }
+
+  // V2/V3: tabla o checkboxes
   const filas = parsearTabla(contenido)
   let html = `<div class="section" id="eje1"><h2>Eje 1 — Funcionalidad</h2>`
 
@@ -528,6 +680,12 @@ function renderEje4(contenido) {
 }
 
 function renderEje5(contenido) {
+  // V4: detect ### subsections (e.g. "### Verificaciones heredadas de V3")
+  if (contenido.match(/^### /m)) {
+    return renderEje5Grouped(contenido)
+  }
+
+  // V2/V3: flat table
   const filas = parsearTabla(contenido)
   let html = `<div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2>`
 
@@ -560,6 +718,52 @@ function renderEje5(contenido) {
   return html
 }
 
+function renderEje5Grouped(contenido) {
+  const bloques = contenido.split(/^### /m).filter(Boolean)
+  let html = `<div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2>`
+  let globalNum = 0
+
+  for (const bloque of bloques) {
+    const lineas = bloque.split('\n')
+    const titulo = lineas[0].trim()
+    const restContent = lineas.slice(1).join('\n')
+    const filas = parsearTabla(restContent)
+
+    html += `<h3 style="font-size:14px;color:#1e3a5f;font-weight:600;margin:16px 0 8px;padding-top:8px;border-top:1px solid #e8ecf1">${escapeHtml(titulo)}</h3>`
+
+    if (filas.length > 0) {
+      for (const f of filas) {
+        globalNum++
+        const num = f['#'] || globalNum
+        const resultado = f.resultado || ''
+        const resultadoEmoji = resultado.includes('✅') ? '✅' : resultado.includes('⚠️') ? '⚠️' : resultado === 'N/A' ? 'N/A' : ''
+
+        html += `<div class="item-card compact" data-eje="5" data-num="${num}" data-item-selector="eje-5-item-${num}">
+          <div class="item-header">
+            <span class="item-num">#${escapeHtml(String(num))}</span>
+            <span class="item-text">${escapeHtml(f.verificacion || '')}</span>
+            ${resultadoEmoji ? `<span class="badge-qa">${escapeHtml(resultadoEmoji)}</span>` : ''}
+          </div>
+          <div class="item-badges"></div>
+          ${resultado ? `<div class="item-details"><span class="detail-label">Resultado auditor:</span> ${escapeHtml(resultado)}</div>` : ''}
+          ${f.notas ? `<div class="item-details"><span class="detail-label">Notas:</span> ${escapeHtml(f.notas)}</div>` : ''}
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            </div>
+            <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div>`
+      }
+    }
+  }
+
+  html += `</div>`
+  return html
+}
+
 function renderContextoInstitucional(contenido) {
   return `<div class="section" id="contexto-institucional">
     <h2>Contexto institucional</h2>
@@ -585,17 +789,55 @@ function renderEje6(contenido) {
   for (const bloque of bloques) {
     const lineas = bloque.split('\n')
     const titulo = lineas[0].trim()
-    // Extraer nombre del perfil (primera palabra antes del —)
-    const perfilMatch = titulo.match(/^(\w+)/)
-    const perfil = perfilMatch ? normalizar(perfilMatch[1]) : 'todos'
     const restContent = lineas.slice(1).join('\n')
     const filas = parsearTabla(restContent)
+
+    // V4: detect perspectiva-based table (column "perspectiva")
+    if (filas.length > 0 && filas[0].perspectiva !== undefined) {
+      html += `<h3 style="font-size:14px;color:#1e3a5f;font-weight:600;margin:12px 0 8px">${escapeHtml(titulo)}</h3>`
+      for (let i = 0; i < filas.length; i++) {
+        const f = filas[i]
+        const perspectiva = f.perspectiva || ''
+        const perfil = normalizar(perspectiva)
+        const aplicaba = f['¿aplicaba segun spec?'] || ''
+        const implementacion = f['¿implementacion respeta la decision?'] || ''
+        const notas = f.notas || ''
+        const resultadoEmoji = implementacion.includes('✅') ? '✅'
+          : implementacion.includes('❌') ? '❌' : implementacion === 'N/A' ? 'N/A' : ''
+
+        html += `<div class="item-card" data-eje="6" data-num="${i + 1}" data-verificador="perfil" data-perfil="${escapeHtml(perfil)}" data-item-selector="eje-6-${escapeHtml(perfil)}-${i + 1}">
+          <div class="item-header">
+            <span class="item-num">#${i + 1}</span>
+            <span class="item-text">${escapeHtml(perspectiva)}</span>
+            ${resultadoEmoji ? `<span class="badge-qa">${escapeHtml(resultadoEmoji)}</span>` : ''}
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details">
+            <div class="detail-row"><span class="detail-label">Aplicaba:</span> ${escapeHtml(aplicaba)}</div>
+            <div class="detail-row"><span class="detail-label">Implementacion:</span> ${escapeHtml(implementacion)}</div>
+            ${notas ? `<div class="detail-row"><span class="detail-label">Notas:</span> ${escapeHtml(notas)}</div>` : ''}
+          </div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div>`
+      }
+      continue
+    }
+
+    // V2/V3: per-profile subsections
+    const perfilMatch = titulo.match(/^(\w+)/)
+    const perfil = perfilMatch ? normalizar(perfilMatch[1]) : 'todos'
 
     html += `<div class="section collapsible collapsed" onclick="toggleCollapse(this)" data-perfil="${escapeHtml(perfil)}">
       <h2>${escapeHtml(titulo)} <span class="collapse-icon">&#9654;</span></h2>
       <div class="collapse-content">`
 
-    // Items de tabla (formato original)
     if (filas.length > 0) {
       for (let i = 0; i < filas.length; i++) {
         const f = filas[i]
@@ -619,7 +861,6 @@ function renderEje6(contenido) {
         </div>`
       }
     } else {
-      // Fallback: checkboxes bajo cada perfil
       const cbItems = parsearCheckboxes(restContent)
       for (const item of cbItems) {
         html += `<div class="item-card" data-eje="6" data-num="${item.num}" data-verificador="perfil" data-perfil="${escapeHtml(perfil)}" data-item-selector="eje-6-${escapeHtml(perfil)}-${item.num}">
@@ -687,6 +928,144 @@ function renderChecklist(contenido) {
   return html
 }
 
+// ============================================
+// V4-SPECIFIC RENDERERS
+// ============================================
+
+function renderHeaderDelQA(contenido) {
+  const filas = parsearTabla(contenido)
+  if (filas.length === 0) return ''
+
+  let html = `<div class="section collapsible collapsed" onclick="toggleCollapse(this)">
+    <h2>Ficha tecnica <span class="collapse-icon">&#9654;</span></h2>
+    <div class="collapse-content">
+    <table class="cred-table"><thead><tr><th>Campo</th><th>Valor</th></tr></thead><tbody>`
+
+  for (const f of filas) {
+    const campo = f.campo || ''
+    const valor = f.valor || ''
+    html += `<tr><td><strong>${escapeHtml(campo)}</strong></td><td>${escapeHtml(valor)}</td></tr>`
+  }
+  html += `</tbody></table></div></div>`
+  return html
+}
+
+function renderInstrucciones(contenido) {
+  return `<div class="section collapsible collapsed" onclick="toggleCollapse(this)">
+    <h2>Instrucciones de trabajo <span class="collapse-icon">&#9654;</span></h2>
+    <div class="collapse-content"><div class="readonly-block">${escapeHtml(contenido.trim())}</div></div>
+  </div>`
+}
+
+function renderVerificacionHandover(contenido) {
+  const filas = parsearTabla(contenido)
+  let html = `<div class="section" id="handover"><h2>Verificacion de handover</h2>`
+
+  if (filas.length > 0) {
+    for (let i = 0; i < filas.length; i++) {
+      const f = filas[i]
+      const documento = f.documento || ''
+      const indicado = f['indicado en spec'] || ''
+      const actualizado = f['actualizado en este merge'] || ''
+      const notas = f.notas || ''
+      const resultadoEmoji = actualizado.includes('✅') ? '✅'
+        : actualizado.includes('❌') ? '❌' : actualizado === 'N/A' ? 'N/A' : ''
+
+      html += `<div class="item-card compact" data-eje="handover" data-num="${i + 1}" data-item-selector="handover-${i + 1}">
+        <div class="item-header">
+          <span class="item-num">#${i + 1}</span>
+          <span class="item-text">${escapeHtml(documento)}</span>
+          ${resultadoEmoji ? `<span class="badge-qa">${escapeHtml(resultadoEmoji)}</span>` : ''}
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Indicado en spec:</span> ${escapeHtml(indicado)}</div>
+          <div class="detail-row"><span class="detail-label">Actualizado:</span> ${escapeHtml(actualizado)}</div>
+          ${notas ? `<div class="detail-row"><span class="detail-label">Notas:</span> ${escapeHtml(notas)}</div>` : ''}
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>`
+    }
+  } else {
+    html += `<div class="readonly-block">${escapeHtml(contenido.trim())}</div>`
+  }
+
+  html += `</div>`
+  return html
+}
+
+function renderItemsValidacionManual(contenido) {
+  // Parse intro text (URL, credenciales) and table
+  const introLines = []
+  const tablaStart = contenido.indexOf('|')
+  const intro = tablaStart > -1 ? contenido.slice(0, tablaStart) : contenido
+  const tablaContent = tablaStart > -1 ? contenido.slice(tablaStart) : ''
+
+  let html = `<div class="section" id="validacion-manual"><h2>Items pendientes de validacion manual</h2>`
+
+  // Parse intro for URL and credentials
+  const urlMatch = intro.match(/\*\*URL:\*\*\s*(\S+)/m)
+  const credMatch = intro.match(/\*\*Credenciales[^:]*:\*\*\s*(.+)/m)
+  if (urlMatch) {
+    html += `<div style="margin-bottom:10px;font-size:13px"><strong>URL:</strong> <a href="${escapeHtml(urlMatch[1])}" target="_blank">${escapeHtml(urlMatch[1])}</a></div>`
+  }
+  if (credMatch) {
+    html += `<div style="margin-bottom:12px;font-size:13px"><strong>Credenciales:</strong> <code>${escapeHtml(credMatch[1])}</code></div>`
+  }
+
+  const filas = parsearTabla(tablaContent)
+  if (filas.length > 0) {
+    for (let i = 0; i < filas.length; i++) {
+      const f = filas[i]
+      const num = f['#'] || (i + 1)
+      const verificar = f['que verificar'] || ''
+      const donde = f.donde || ''
+      const buscar = f['que buscar'] || ''
+
+      html += `<div class="item-card" data-eje="manual" data-num="${num}" data-item-selector="manual-${num}">
+        <div class="item-header">
+          <span class="item-num">#${escapeHtml(String(num))}</span>
+          <span class="item-text">${escapeHtml(verificar)}</span>
+          <span class="badge-perfil">manual</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          ${donde ? `<div class="detail-row"><span class="detail-label">Donde:</span> ${escapeHtml(donde)}</div>` : ''}
+          ${buscar ? `<div class="detail-row"><span class="detail-label">Que buscar:</span> ${escapeHtml(buscar)}</div>` : ''}
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div>`
+    }
+  } else {
+    html += `<div class="readonly-block">${escapeHtml(contenido.trim())}</div>`
+  }
+
+  html += `</div>`
+  return html
+}
+
+function renderNotasAdicionalesAuditor(contenido) {
+  return `<div class="section" id="notas-auditor">
+    <h2>Notas adicionales del auditor</h2>
+    <div class="readonly-block">${escapeHtml(contenido.trim())}</div>
+  </div>`
+}
+
 function renderSeccionDesconocida(nombre, contenido) {
   return `<div class="section unknown">
     <h2>${escapeHtml(nombre)}</h2>
@@ -702,6 +1081,7 @@ const SECCION_MAP = {
   'como trabajar con este documento': renderComoTrabajar,
   'contexto institucional': renderContextoInstitucional,
   'objetivo de este qa': renderObjetivo,
+  'objetivo del qa': renderObjetivo,                       // V4 alias
   'credenciales de prueba': renderCredenciales,
   'resultado global': renderResultadoGlobal,
   'eje 1': renderEje1,
@@ -711,9 +1091,16 @@ const SECCION_MAP = {
   'eje 5': renderEje5,
   'eje 6': renderEje6,
   'resumen de issues abiertos': renderResumenIssues,
+  'resumen de issues': renderResumenIssues,                // V4 shorter alias
   'notas del auditor': renderNotasAuditor,
   'notas de los auditores': renderNotasAuditores,
+  'notas adicionales del auditor': renderNotasAdicionalesAuditor, // V4
   'checklist de cierre': renderChecklist,
+  // V4-specific sections
+  'header del qa': renderHeaderDelQA,
+  'instrucciones de trabajo': renderInstrucciones,
+  'verificacion de handover': renderVerificacionHandover,
+  'items que requieren validacion': renderItemsValidacionManual,
 }
 
 function encontrarRenderer(nombreNorm) {
@@ -1482,21 +1869,36 @@ function generarHtml(mdPath) {
   const contenidoMd = fs.readFileSync(mdPath, 'utf-8')
   const { header, secciones } = dividirSecciones(contenidoMd)
   const meta = parsearMetadata(header)
+
+  // V4: extract metadata from "Header del QA" section (| Campo | Valor | table)
+  const headerSection = secciones.find(s => normalizar(s.nombre).startsWith('header del qa'))
+  if (headerSection) {
+    const v4Meta = parsearMetadataV4(headerSection.contenido)
+    if (v4Meta.spec) meta.spec = v4Meta.spec
+    if (v4Meta.commit) meta.commit = v4Meta.commit
+    if (v4Meta.url) meta.url = v4Meta.url
+    if (v4Meta.fecha) meta.fecha = v4Meta.fecha
+    if (v4Meta.auditor) meta.auditor = v4Meta.auditor
+    meta.isV4 = true
+  }
+
   const plataformaUrl = process.env.PLATAFORMA_URL || 'https://plataforma-textil.vercel.app'
   const apiUrl = plataformaUrl + '/api/feedback'
 
   let bodyHtml = renderMetaHeader(meta)
 
-  // V3: filtros por verificador/perfil
-  bodyHtml += `<div class="filter-bar" id="filter-bar">
-    <span class="filter-label">Filtrar:</span>
-    <button class="filter-btn active" data-filter="todos" onclick="filtrarPor('todos')">Todos</button>
-    <button class="filter-btn" data-filter="QA" onclick="filtrarPor('QA')">QA tecnico</button>
-    <button class="filter-btn" data-filter="DEV" onclick="filtrarPor('DEV')">DEV</button>
-    ${meta.incluyeEje6 && meta.perfiles.length > 0 ? meta.perfiles.map(p =>
-      `<button class="filter-btn" data-filter="${escapeHtml(normalizar(p))}" onclick="filtrarPor('${escapeHtml(normalizar(p))}')">${escapeHtml(p)}</button>`
-    ).join('') : ''}
-  </div>`
+  // V2/V3: filtros por verificador/perfil (V4 no usa DEV/QA split)
+  if (!meta.isV4) {
+    bodyHtml += `<div class="filter-bar" id="filter-bar">
+      <span class="filter-label">Filtrar:</span>
+      <button class="filter-btn active" data-filter="todos" onclick="filtrarPor('todos')">Todos</button>
+      <button class="filter-btn" data-filter="QA" onclick="filtrarPor('QA')">QA tecnico</button>
+      <button class="filter-btn" data-filter="DEV" onclick="filtrarPor('DEV')">DEV</button>
+      ${meta.incluyeEje6 && meta.perfiles.length > 0 ? meta.perfiles.map(p =>
+        `<button class="filter-btn" data-filter="${escapeHtml(normalizar(p))}" onclick="filtrarPor('${escapeHtml(normalizar(p))}')">${escapeHtml(p)}</button>`
+      ).join('') : ''}
+    </div>`
+  }
 
   for (const seccion of secciones) {
     const renderer = encontrarRenderer(seccion.nombreNorm)
@@ -1662,9 +2064,60 @@ function parsearProgreso(mdContent) {
   return { ...stats, total, verified }
 }
 
+/**
+ * Parsea progreso de un QA V4.
+ * V4 no tiene columnas DEV/QA. Cuenta items por ✅/⚠️/❌ en columna Resultado.
+ * También cuenta flujos (### Flujo N) y sus resultados.
+ */
+function parsearProgresoV4(mdContent) {
+  const stats = { ok: 0, pending: 0, bug: 0, na: 0, total: 0 }
+
+  const lineas = mdContent.split('\n')
+  let enChecklist = false
+  let enHeader = false
+
+  for (let i = 0; i < lineas.length; i++) {
+    const linea = lineas[i]
+
+    if (linea.match(/^##\s+/)) {
+      const norm = normalizar(linea)
+      enChecklist = norm.includes('checklist')
+      enHeader = norm.includes('header del qa')
+    }
+
+    // Skip header table and checklist
+    if (enChecklist || enHeader) continue
+
+    // Table rows with Resultado column: | ... | ✅/⚠️/❌/N/A | ... |
+    const tablaMatch = linea.match(/^\|\s*(.+?)\s*\|/)
+    if (tablaMatch && !linea.match(/^[\s|]*---/) && !linea.match(/Campo\s*\|\s*Valor/i)) {
+      const celdas = linea.split('|').map(c => c.trim()).filter(Boolean)
+      // Look for result cells containing ✅, ⚠️, ❌, or N/A
+      for (const celda of celdas) {
+        if (celda.startsWith('✅')) { stats.ok++; stats.total++; break }
+        if (celda.startsWith('⚠️')) { stats.pending++; stats.total++; break }
+        if (celda.startsWith('❌')) { stats.bug++; stats.total++; break }
+      }
+      continue
+    }
+
+    // Flujo results: - **Resultado:** ✅/⚠️/❌
+    const flujoRes = linea.match(/^-\s+\*\*Resultado:\*\*\s*(.+)/)
+    if (flujoRes) {
+      const res = flujoRes[1].trim()
+      stats.total++
+      if (res.startsWith('✅')) stats.ok++
+      else if (res.startsWith('⚠️')) stats.pending++
+      else if (res.startsWith('❌')) stats.bug++
+    }
+  }
+
+  return stats
+}
+
 function generarIndex(dirPath) {
   const archivos = fs.readdirSync(dirPath)
-    .filter(f => (f.startsWith('QA_v2-') || f.startsWith('QA_v3-')) && f.endsWith('.md'))
+    .filter(f => (f.startsWith('QA_v2-') || f.startsWith('QA_v3-') || f.startsWith('QA_v4-')) && f.endsWith('.md'))
     .sort()
 
   const qas = archivos.map(archivo => {
@@ -1672,15 +2125,27 @@ function generarIndex(dirPath) {
     const headerEnd = mdContent.indexOf('\n## ')
     const headerText = headerEnd > -1 ? mdContent.slice(0, headerEnd) : mdContent
     const meta = parsearMetadata(headerText)
+
+    // V4: also extract metadata from "Header del QA" section
+    const headerSectionMatch = mdContent.match(/^## Header del QA\n([\s\S]*?)(?=\n## )/m)
+    if (headerSectionMatch) {
+      const v4Meta = parsearMetadataV4(headerSectionMatch[1])
+      if (v4Meta.spec) meta.spec = v4Meta.spec
+      if (v4Meta.fecha) meta.fecha = v4Meta.fecha
+      if (v4Meta.auditor) meta.auditor = v4Meta.auditor
+    }
+
     const htmlFile = archivo.replace('.md', '.html')
     const htmlExists = fs.existsSync(path.join(dirPath, htmlFile))
-    const version = archivo.startsWith('QA_v3-') ? 'v3' : 'v2'
-    const progreso = version === 'v3' ? parsearProgreso(mdContent) : null
+    const version = archivo.startsWith('QA_v4-') ? 'v4' : archivo.startsWith('QA_v3-') ? 'v3' : 'v2'
+    const progreso = version === 'v3' ? parsearProgreso(mdContent)
+      : version === 'v4' ? parsearProgresoV4(mdContent) : null
     return { archivo, htmlFile, htmlExists, meta, version, progreso }
   })
 
   // Separar y ordenar por fecha (mas reciente primero)
   const sortByFecha = (a, b) => (b.meta.fecha || '').localeCompare(a.meta.fecha || '')
+  const v4Qas = qas.filter(q => q.version === 'v4').sort(sortByFecha)
   const v3Qas = qas.filter(q => q.version === 'v3').sort(sortByFecha)
   const v2Qas = qas.filter(q => q.version === 'v2').sort(sortByFecha)
 
@@ -1695,6 +2160,23 @@ function generarIndex(dirPath) {
     { id: 'b6', nombre: 'Bloque 6 — Features de marca', slugs: ['QA_v3-proximo-nivel-dashboard', 'QA_v3-exportes-estado', 'QA_v3-demanda-insatisfecha', 'QA_v3-mensajes-individuales'] },
     { id: 'b7', nombre: 'Bloque 7 — UX/Onboarding', slugs: ['QA_v3-protocolos-onboarding', 'QA_v3-reporte-campo', 'QA_v3-ux-mejoras'] },
   ]
+
+  // V4 bloques
+  const BLOQUES_V4 = [
+    { id: 'x', nombre: 'Bloque X — Identidad visual', slugs: ['QA_v4-x-01-tokens', 'QA_v4-x-02-componentes', 'QA_v4-x-03-cards', 'QA_v4-x-04-dashboards', 'QA_v4-x-05-landing', 'QA_v4-x-06-footer', 'QA_v4-x-07-responsive', 'QA_v4-x-08-a11y', 'QA_v4-x-09-dark', 'QA_v4-x-10-animaciones', 'QA_v4-x-11-polish'] },
+    { id: 'u', nombre: 'Bloque U — Multi-rol', slugs: [] },
+    { id: 'w', nombre: 'Bloque W — Refactor formulario taller', slugs: [] },
+  ]
+
+  // Clasificar V4 QAs en bloques
+  const allKnownSlugsV4 = new Set(BLOQUES_V4.flatMap(b => b.slugs))
+  const v4PorBloque = BLOQUES_V4.map(bloque => {
+    const bloqueQas = bloque.slugs
+      .map(slug => v4Qas.find(q => q.archivo.replace('.md', '') === slug))
+      .filter(Boolean)
+    return { ...bloque, qas: bloqueQas }
+  })
+  const v4Otros = v4Qas.filter(q => !allKnownSlugsV4.has(q.archivo.replace('.md', '')))
 
   // Clasificar V3 QAs en bloques
   const allKnownSlugs = new Set(BLOQUES_V3.flatMap(b => b.slugs))
@@ -1713,7 +2195,7 @@ function generarIndex(dirPath) {
     const cardTag = qa.htmlExists ? 'a' : 'div'
     const href = qa.htmlExists ? ` href="${escapeHtml(qa.htmlFile)}"` : ''
     const disabledClass = qa.htmlExists ? '' : ' disabled'
-    const qaSlugAttr = qa.version === 'v3' ? ` data-qa-slug="${escapeHtml(qa.archivo.replace('.md', ''))}"` : ''
+    const qaSlugAttr = (qa.version === 'v3' || qa.version === 'v4') ? ` data-qa-slug="${escapeHtml(qa.archivo.replace('.md', ''))}"` : ''
 
     // Chips de perfiles si tiene Eje 6
     let perfilesHtml = ''
@@ -1723,14 +2205,35 @@ function generarIndex(dirPath) {
       ).join('')}</div>`
     }
 
-    // Estado de issues (solo V3, inyectado por JS)
-    const estadoHtml = qa.version === 'v3' ? `
+    // Estado de issues (V3 y V4, inyectado por JS)
+    const estadoHtml = (qa.version === 'v3' || qa.version === 'v4') ? `
         <div class="estado-resumen"></div>
         <div class="estado-detalle" style="display:none"></div>` : ''
 
-    // Progreso de verificacion (solo V3)
+    // Progreso de verificacion (V3 y V4)
     let progresoHtml = ''
-    if (qa.progreso && qa.progreso.total > 0) {
+    if (qa.progreso && qa.version === 'v4' && qa.progreso.total > 0) {
+      // V4 progress: ok/pending/bug (no DEV/QA split)
+      const p = qa.progreso
+      const verified = p.ok + p.bug
+      const pct = Math.round((verified / p.total) * 100)
+      const okLabel = p.ok === p.total
+        ? `<span class="prog-complete">${p.ok}/${p.total} OK</span>`
+        : `<span class="prog-pending">${p.ok}/${p.total} OK</span>`
+      const pendingBadge = p.pending > 0 ? ` <span class="prog-pending">${p.pending} pendiente${p.pending > 1 ? 's' : ''}</span>` : ''
+      const bugBadge = p.bug > 0 ? ` <span class="prog-bugs">${p.bug} bug${p.bug > 1 ? 's' : ''}</span>` : ''
+      progresoHtml = `
+        <div class="qa-progreso">
+          <div class="prog-bar-container">
+            <div class="prog-bar" style="width:${pct}%"></div>
+          </div>
+          <div class="prog-info">
+            <span class="prog-pct">${verified}/${p.total} verificados (${pct}%)</span>
+            ${okLabel}${pendingBadge}${bugBadge}
+          </div>
+        </div>`
+    } else if (qa.progreso && qa.progreso.total > 0) {
+      // V3 progress: DEV/QA split
       const p = qa.progreso
       const pct = Math.round((p.verified / p.total) * 100)
       const devStatus = p.dev.total > 0
@@ -1953,11 +2456,13 @@ function generarIndex(dirPath) {
     function filtrarIndex(tipo) {
       document.querySelectorAll('.index-filter-btn').forEach(b => b.classList.remove('active'));
       document.querySelector('.index-filter-btn[data-filter="' + tipo + '"]').classList.add('active');
+      var v4Section = document.getElementById('section-v4');
       var v3Section = document.getElementById('section-v3');
       var v2Section = document.getElementById('section-v2');
-      if (tipo === 'todos') { v3Section.style.display = ''; v2Section.style.display = ''; }
-      else if (tipo === 'v3') { v3Section.style.display = ''; v2Section.style.display = 'none'; }
-      else if (tipo === 'v2') { v3Section.style.display = 'none'; v2Section.style.display = ''; }
+      if (tipo === 'todos') { if(v4Section) v4Section.style.display = ''; v3Section.style.display = ''; v2Section.style.display = ''; }
+      else if (tipo === 'v4') { if(v4Section) v4Section.style.display = ''; v3Section.style.display = 'none'; v2Section.style.display = 'none'; }
+      else if (tipo === 'v3') { if(v4Section) v4Section.style.display = 'none'; v3Section.style.display = ''; v2Section.style.display = 'none'; }
+      else if (tipo === 'v2') { if(v4Section) v4Section.style.display = 'none'; v3Section.style.display = 'none'; v2Section.style.display = ''; }
     }
 
     (function() {
@@ -2075,6 +2580,32 @@ function generarIndex(dirPath) {
     })();
   `
 
+  // Pre-build V4 section HTML (avoids nested template literal issues)
+  let v4SectionHtml = ''
+  if (v4Qas.length > 0) {
+    const v4BloquesHtml = v4PorBloque.map(bloque => {
+      const statsHtml = bloque.qas.length > 0
+        ? '<span class="bloque-stats">' + bloque.qas.length + ' QA' + (bloque.qas.length > 1 ? 's' : '') + '</span>'
+        : '<span class="bloque-stats" style="color:#aaa">vacio</span>'
+      const contentHtml = bloque.qas.length > 0
+        ? '<div class="qa-grid">' + bloque.qas.map(renderCard).join('') + '</div>'
+        : '<p class="bloque-placeholder">Aun no implementado</p>'
+      return '<div class="bloque-section"><details open><summary>' + escapeHtml(bloque.nombre) + ' ' + statsHtml + '</summary><div class="bloque-content">' + contentHtml + '</div></details></div>'
+    }).join('')
+
+    const v4OtrosHtml = v4Otros.length > 0
+      ? '<div class="bloque-section"><details open><summary>Otros V4 <span class="bloque-stats">' + v4Otros.length + ' QA' + (v4Otros.length > 1 ? 's' : '') + '</span></summary><div class="bloque-content"><div class="qa-grid">' + v4Otros.map(renderCard).join('') + '</div></div></details></div>'
+      : ''
+
+    v4SectionHtml = `
+    <div class="qa-section" id="section-v4">
+      <div class="qa-section-title">V4 — Rediseño visual + multi-rol</div>
+      <div class="qa-section-desc">Auditorias de specs V4 agrupadas por bloque del plan de implementacion</div>
+      ${v4BloquesHtml}
+      ${v4OtrosHtml}
+    </div>`
+  }
+
   const html = `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -2087,12 +2618,13 @@ function generarIndex(dirPath) {
   <div class="container">
     <div class="index-header">
       <h1>Auditorias QA</h1>
-      <p>${qas.length} documentos de auditoria (${v3Qas.length} V3 + ${v2Qas.length} V2)</p>
+      <p>${qas.length} documentos de auditoria (${v4Qas.length} V4 + ${v3Qas.length} V3 + ${v2Qas.length} V2)</p>
     </div>
 
     <div class="index-filter-bar">
       <span class="index-filter-label">Filtrar:</span>
       <button class="index-filter-btn active" data-filter="todos" onclick="filtrarIndex('todos')">Todos</button>
+      ${v4Qas.length > 0 ? '<button class="index-filter-btn" data-filter="v4" onclick="filtrarIndex(\'v4\')">Solo V4</button>' : ''}
       <button class="index-filter-btn" data-filter="v3" onclick="filtrarIndex('v3')">Solo V3</button>
       <button class="index-filter-btn" data-filter="v2" onclick="filtrarIndex('v2')">Solo V2</button>
     </div>
@@ -2135,6 +2667,8 @@ function generarIndex(dirPath) {
       <h3>Issues reportados V3</h3>
       <p class="estado-disabled-msg">Cargando...</p>
     </div>
+
+    ${v4SectionHtml}
 
     <div class="qa-section" id="section-v3">
       <div class="qa-section-title">V3 — En curso</div>
@@ -2236,13 +2770,16 @@ module.exports = {
   normalizar,
   parsearFrontmatter,
   parsearMetadata,
+  parsearMetadataV4,
   esResultadoVerificado,
   dividirSecciones,
   parsearTabla,
   parsearPasos,
+  parsearFlujos,
   parsearChecklist,
   parsearResultadoGlobal,
   parsearProgreso,
+  parsearProgresoV4,
   parsearCheckboxes,
   renderItemCard,
   generarHtml,
