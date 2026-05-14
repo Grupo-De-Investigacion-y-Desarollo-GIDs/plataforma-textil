@@ -187,13 +187,13 @@
   <div class="container">
     <div class="index-header">
       <h1>Auditorias QA</h1>
-      <p>37 documentos de auditoria (0 V4 + 23 V3 + 14 V2)</p>
+      <p>38 documentos de auditoria (1 V4 + 23 V3 + 14 V2)</p>
     </div>
 
     <div class="index-filter-bar">
       <span class="index-filter-label">Filtrar:</span>
       <button class="index-filter-btn active" data-filter="todos" onclick="filtrarIndex('todos')">Todos</button>
-      
+      <button class="index-filter-btn" data-filter="v4" onclick="filtrarIndex('v4')">Solo V4</button>
       <button class="index-filter-btn" data-filter="v3" onclick="filtrarIndex('v3')">Solo V3</button>
       <button class="index-filter-btn" data-filter="v2" onclick="filtrarIndex('v2')">Solo V2</button>
     </div>
@@ -215,6 +215,32 @@
     </div>
 
     
+    <div class="qa-section" id="section-v4">
+      <div class="qa-section-title">V4 — Rediseño visual + multi-rol</div>
+      <div class="qa-section-desc">Auditorias de specs V4 agrupadas por bloque del plan de implementacion</div>
+      <div class="bloque-section"><details open><summary>Bloque X — Identidad visual <span class="bloque-stats">1 QA</span></summary><div class="bloque-content"><div class="qa-grid">
+      <a href="QA_v4-x-01-tokens.html" class="qa-card" data-version="v4" data-qa-slug="QA_v4-x-01-tokens">
+        <div class="qa-title">QA V4 — X-01: Tokens visuales V4</div>
+        <div class="qa-meta">
+          <div class="qa-meta-item"><span class="qa-meta-label">Spec:</span> <code>v4-x-01-tokens.md</code></div>
+          <div class="qa-meta-item"><span class="qa-meta-label">Fecha:</span> 2026-05-14</div>
+          <div class="qa-meta-item"><span class="qa-badge badge-ready">HTML listo</span></div>
+        </div>
+        
+        <div class="qa-progreso">
+          <div class="prog-bar-container">
+            <div class="prog-bar" style="width:82%"></div>
+          </div>
+          <div class="prog-info">
+            <span class="prog-pct">23/28 verificados (82%)</span>
+            <span class="prog-pending">23/28 OK</span> <span class="prog-pending">5 pendientes</span>
+          </div>
+        </div>
+        <div class="estado-resumen"></div>
+        <div class="estado-detalle" style="display:none"></div>
+      </a></div></div></details></div><div class="bloque-section"><details open><summary>Bloque U — Multi-rol <span class="bloque-stats" style="color:#aaa">vacio</span></summary><div class="bloque-content"><p class="bloque-placeholder">Aun no implementado</p></div></details></div><div class="bloque-section"><details open><summary>Bloque W — Refactor formulario taller <span class="bloque-stats" style="color:#aaa">vacio</span></summary><div class="bloque-content"><p class="bloque-placeholder">Aun no implementado</p></div></details></div>
+      
+    </div>
 
     <div class="qa-section" id="section-v3">
       <div class="qa-section-title">V3 — En curso</div>

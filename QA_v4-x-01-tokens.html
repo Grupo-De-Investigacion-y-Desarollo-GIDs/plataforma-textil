@@ -1,0 +1,1704 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="qa-slug" content="QA_v4-x-01-tokens">
+  <title>QA: QA V4 — X-01: Tokens visuales V4</title>
+  <style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #f5f7fa;
+    color: #1a1a2e;
+    line-height: 1.5;
+    padding: 20px;
+    padding-bottom: 80px;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  .header {
+    background: #1e3a5f;
+    color: white;
+    padding: 24px 28px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  .header h1 { font-size: 22px; margin-bottom: 12px; }
+  .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 13px; opacity: 0.9; }
+  .meta-label { font-weight: 600; }
+  .meta-item a { color: #7fb3ff; }
+  .meta-item code { background: rgba(255,255,255,0.15); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+  .section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .section h2 {
+    font-size: 17px;
+    color: #1e3a5f;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e8ecf1;
+    cursor: default;
+  }
+  .collapsible { cursor: pointer; }
+  .collapsible h2 { cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+  .collapse-icon { font-size: 12px; color: #999; transition: transform 0.2s; }
+  .collapsed .collapse-content { display: none; }
+  .collapsed .collapse-icon { transform: rotate(0deg); }
+  .collapsible:not(.collapsed) .collapse-icon { transform: rotate(90deg); }
+  .readonly-block {
+    background: #f8f9fa;
+    border: 1px solid #e2e5ea;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 13px;
+    white-space: pre-wrap;
+    color: #555;
+  }
+  .cred-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .cred-table th { background: #f0f2f5; padding: 8px 10px; text-align: left; font-weight: 600; color: #444; }
+  .cred-table td { padding: 6px 10px; border-bottom: 1px solid #eee; }
+  .cred-table code { background: #f0f2f5; padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+  .radio-group { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .radio-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 14px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.15s;
+  }
+  .radio-btn:hover { border-color: #1e3a5f; }
+  .radio-btn.selected { border-color: #1e3a5f; background: #eef3f9; }
+  .radio-btn input { display: none; }
+  .field-group { margin-bottom: 10px; }
+  .field-group label { font-size: 13px; font-weight: 600; color: #555; display: block; margin-bottom: 4px; }
+  .text-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  .text-input:focus, .obs-input:focus, .obs-textarea:focus, .large-textarea:focus {
+    outline: none;
+    border-color: #1e3a5f;
+    box-shadow: 0 0 0 2px rgba(30,58,95,0.15);
+  }
+  .item-card {
+    border: 1px solid #e8ecf1;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    transition: border-color 0.15s;
+  }
+  .item-card.status-ok { border-left: 4px solid #27ae60; }
+  .item-card.status-bug { border-left: 4px solid #f39c12; }
+  .item-card.status-fail { border-left: 4px solid #c0392b; }
+  .item-header { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+  .item-num { font-weight: 700; color: #1e3a5f; min-width: 30px; font-size: 14px; }
+  .item-text { font-size: 14px; flex: 1; }
+  .item-details { margin-bottom: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; font-size: 13px; }
+  .detail-row { margin-bottom: 4px; }
+  .detail-label { font-weight: 600; color: #666; }
+  .item-controls { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+  .status-btns { display: flex; gap: 4px; flex-shrink: 0; }
+  .status-btn {
+    width: 36px; height: 36px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .status-btn:hover { transform: scale(1.1); }
+  .status-btn.active { border-color: #1e3a5f; background: #eef3f9; transform: scale(1.1); }
+  .obs-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 7px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .obs-textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    resize: vertical;
+  }
+  .large-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+  }
+  .paso-card {
+    border: 1px solid #e8ecf1;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .paso-card.status-ok { border-left: 4px solid #27ae60; }
+  .paso-card.status-bug { border-left: 4px solid #f39c12; }
+  .paso-card.status-fail { border-left: 4px solid #c0392b; }
+  .paso-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px;
+    cursor: pointer;
+    background: #fafbfc;
+    border-bottom: 1px solid transparent;
+  }
+  .paso-header:hover { background: #f0f2f5; }
+  .paso-header-right { display: flex; align-items: center; gap: 8px; }
+  .paso-status-indicator { font-size: 16px; }
+  .paso-title { font-weight: 600; font-size: 14px; color: #1e3a5f; }
+  .paso-body { display: none; padding: 16px; }
+  .paso-card.expanded .paso-body { display: block; }
+  .paso-card.expanded .paso-header { border-bottom: 1px solid #e8ecf1; }
+  .paso-card.expanded .collapse-icon { transform: rotate(90deg); }
+  .paso-fields { margin-bottom: 12px; }
+  .paso-field { margin-bottom: 6px; font-size: 13px; }
+  .paso-label { font-weight: 600; color: #555; }
+  .paso-value { margin-top: 2px; padding-left: 0; white-space: pre-wrap; }
+  .checklist-items { display: flex; flex-direction: column; gap: 8px; }
+  .checklist-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .checklist-item:hover { background: #f5f7fa; }
+  .checklist-item input { margin-top: 3px; width: 16px; height: 16px; cursor: pointer; }
+  .unknown { border-left: 3px solid #f39c12; }
+  .text-muted { color: #999; font-size: 13px; }
+  .sticky-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 2px solid #1e3a5f;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    z-index: 100;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  }
+  .btn-copiar {
+    background: #1e3a5f;
+    color: white;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-copiar:hover { background: #2a4f7f; }
+  .btn-copiar.copiado { background: #27ae60; }
+  .progress-summary { font-size: 13px; color: #666; }
+  .btn-issue {
+    display: none;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    border: 1px solid #c0392b;
+    border-radius: 6px;
+    background: white;
+    color: #c0392b;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn-issue:hover { background: #fdf0ef; }
+  .btn-issue.visible { display: inline-flex; }
+  .btn-issue.enviado { border-color: #27ae60; color: #27ae60; cursor: default; }
+  .btn-issue.error { border-color: #e74c3c; color: #e74c3c; }
+  .btn-issue:disabled { opacity: 0.6; cursor: not-allowed; }
+  .badge-qa {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+    background: #e3f2fd;
+    color: #1565c0;
+    margin-left: 8px;
+    flex-shrink: 0;
+  }
+  .badge-dev {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+    background: #f3e5f5;
+    color: #7b1fa2;
+    margin-left: 8px;
+    flex-shrink: 0;
+  }
+  .badge-perfil {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+    background: #fff3e0;
+    color: #e65100;
+    margin-left: 8px;
+    flex-shrink: 0;
+    text-transform: capitalize;
+  }
+  .filter-bar {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    background: white;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .filter-label { font-size: 13px; font-weight: 600; color: #555; margin-right: 4px; }
+  .filter-btn {
+    padding: 5px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    transition: all 0.15s;
+  }
+  .filter-btn:hover { border-color: #1e3a5f; color: #1e3a5f; }
+  .filter-btn.active { background: #1e3a5f; color: white; border-color: #1e3a5f; }
+  .item-badges { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 4px; }
+  .issue-badge {
+    display: inline-block; font-size: 11px; padding: 2px 8px;
+    border-radius: 4px; font-weight: 600; text-decoration: none;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .issue-badge:hover { opacity: 0.8; }
+  .issue-open { background: #fce4e4; color: #c0392b; }
+  .issue-resolved { background: #e8f5e9; color: #2e7d32; }
+  .issue-discarded { background: #f0f0f0; color: #888; }
+  .issue-stats { display: flex; gap: 12px; margin: 8px 0 12px; }
+  .issue-stat {
+    font-size: 13px; font-weight: 600; padding: 4px 12px;
+    border-radius: 6px;
+  }
+  .stat-open { background: #fce4e4; color: #c0392b; }
+  .stat-resolved { background: #e8f5e9; color: #2e7d32; }
+  .stat-discarded { background: #f0f0f0; color: #888; }
+  .issues-list { margin-top: 8px; }
+  .issue-row { padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+  .issue-link { color: #1e3a5f; font-weight: 600; text-decoration: none; }
+  .issue-link:hover { text-decoration: underline; }
+  .issue-title { flex: 1; color: #555; }
+  .issue-badge-small { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; }
+  @media (max-width: 600px) {
+    body { padding: 10px; padding-bottom: 80px; }
+    .meta-grid { grid-template-columns: 1fr; }
+    .item-controls { flex-direction: column; }
+    .obs-input { min-width: 100%; }
+    .radio-group { flex-direction: column; }
+    .filter-bar { flex-direction: column; align-items: flex-start; }
+    .issue-stats { flex-direction: column; gap: 4px; }
+  }
+</style>
+</head>
+<body data-spec="v4-x-01-tokens.md" data-url="https://plataforma-textil-bxmmm636c-gbreards-projects.vercel.app" data-api-url="https://plataforma-textil.vercel.app/api/feedback">
+  <div class="container">
+    
+    <div style="margin-bottom: 12px;">
+      <a href="index.html" style="display: inline-flex; align-items: center; gap: 6px; color: #1e3a5f; text-decoration: none; font-size: 14px; font-weight: 600;">
+        <span style="font-size: 18px;">&#8592;</span> Volver al indice
+      </a>
+    </div>
+    <div class="header">
+      <h1>QA V4 — X-01: Tokens visuales V4</h1>
+      <div class="meta-grid">
+        <div class="meta-item"><span class="meta-label">Spec:</span> <code>v4-x-01-tokens.md</code></div>
+        <div class="meta-item"><span class="meta-label">Commit:</span> <code>a82507b</code></div>
+        <div class="meta-item"><span class="meta-label">URL:</span> <a href="https://plataforma-textil-bxmmm636c-gbreards-projects.vercel.app" target="_blank">https://plataforma-textil-bxmmm636c-gbreards-projects.vercel.app</a></div>
+        <div class="meta-item"><span class="meta-label">Fecha:</span> 2026-05-14</div>
+        <div class="meta-item"><span class="meta-label">Auditor:</span> Claude Code</div>
+      </div>
+    </div><div class="section collapsible collapsed" onclick="toggleCollapse(this)">
+    <h2>Ficha tecnica <span class="collapse-icon">&#9654;</span></h2>
+    <div class="collapse-content">
+    <table class="cred-table"><thead><tr><th>Campo</th><th>Valor</th></tr></thead><tbody><tr><td><strong>**Versión**</strong></td><td>v4</td></tr><tr><td><strong>**Spec auditado**</strong></td><td>`v4-x-01-tokens.md`</td></tr><tr><td><strong>**Categoría**</strong></td><td>MVP no negociable</td></tr><tr><td><strong>**Auditor**</strong></td><td>Claude Code</td></tr><tr><td><strong>**Fecha**</strong></td><td>2026-05-14</td></tr><tr><td><strong>**URL auditada**</strong></td><td>`https://plataforma-textil-bxmmm636c-gbreards-projects.vercel.app`</td></tr><tr><td><strong>**Commit auditado**</strong></td><td>`a82507b`</td></tr><tr><td><strong>**PR vinculado**</strong></td><td>https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil/pull/314</td></tr><tr><td><strong>**Issue vinculado**</strong></td><td>N/A</td></tr><tr><td><strong>**Tipo de QA**</strong></td><td>mixto (code-review + browser-automatizado vía E2E + manual pendiente)</td></tr></tbody></table></div></div><div class="section" id="contexto-institucional">
+    <h2>Contexto institucional</h2>
+    <div class="readonly-block">Plataforma Digital Textil (PDT) — proyecto OIT-UNTREF para formalización del sector textil argentino.
+Modelo: Showcase + Match con backend institucional invisible.
+Versión actual: V4 (rediseño visual + multi-rol + nomenclador propio).
+
+---</div>
+  </div><div class="section" id="objetivo-qa">
+    <h2>Objetivo de este QA</h2>
+    <div class="readonly-block">Verificar que los tokens visuales V4 (paleta extendida con terracotta/pastels/ink, 3 fuentes nuevas, body color casi-negro, background gris claro) se aplican correctamente sin romper componentes existentes ni tests E2E.
+
+---</div>
+  </div><div class="section collapsible collapsed" onclick="toggleCollapse(this)">
+    <h2>Instrucciones de trabajo <span class="collapse-icon">&#9654;</span></h2>
+    <div class="collapse-content"><div class="readonly-block">1. Leer spec `v4-x-01-tokens.md` antes de auditar
+2. Verificar globals.css contra propuesta de Sergio (`docs/Diseño/propuesta-visual-pdt-v4/propuesta-visual-pdt-v4/propuesta-final/02-tokens.md`)
+3. Ejecutar los 3 flujos del spec (sección 10)
+4. Verificar Ejes 2-6 según corresponda
+5. Verificar handover (sección 11 del spec)
+6. Llenar resultado global
+
+---</div></div>
+  </div><div class="section" id="resultado-global"><h2>Resultado global</h2><div style="margin-bottom:12px"><span class="estado-badge-resumen estado-badge-verde" style="font-size:14px;padding:6px 14px">⚠️ Aprobado con validación manual pendiente</span></div><div class="field-group"><label>Decision:</label><div class="readonly-block">Mergear a develop tras validación visual de Gerardo</div></div><div class="field-group"><label>Resumen ejecutivo:</label><div class="readonly-block">Todos los tokens, fuentes, colores y animaciones definidos en el spec están correctamente implementados en `globals.css`. El build de Vercel pasa sin errores. Los 3 runs de E2E del PR pasaron (76 tests, 0 failed, 0 flaky). Las fuentes woff2 se sirven correctamente (HTTP 200) desde la preview. La propuesta de Sergio se implementó fielmente, con las 6 correcciones del análisis de factibilidad (tokens legacy preservados, animaciones mantenidas). Quedan 4 verificaciones que requieren browser para validar tipografía y colores visualmente.</div></div><div class="field-group"><label>Issues abiertos:</label><div class="readonly-block">Ninguno.</div></div></div><div class="section" id="eje1"><h2>Eje 1 — Flujos funcionales</h2><div class="item-card" data-eje="1" data-num="1" data-item-selector="eje-1-flujo-1">
+        <div class="item-header">
+          <span class="item-num">#1</span>
+          <span class="item-text">Verificación visual landing pública</span>
+          <span class="badge-qa">⚠️</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Rol:</span> no autenticado</div>
+          <div class="detail-row"><span class="detail-label">Precondiciones:</span> PR desplegado en preview URL de Vercel</div>
+          <div class="detail-row"><span class="detail-label">Pasos ejecutados:</span> WebFetch de la preview URL para verificar estructura y carga</div>
+          <div class="detail-row"><span class="detail-label">Resultado auditor:</span> ⚠️ Pendiente validación manual</div>
+          <div class="detail-row"><span class="detail-label">Bugs encontrados:</span> Ninguno</div>
+          <div class="detail-row"><span class="detail-label">Notas:</span><div style="white-space:pre-wrap;margin-top:4px">La landing carga correctamente. WebFetch confirma texto gris oscuro (`text-gray-600`, `text-gray-700`), sin errores ni elementos rotos. La landing usa clases explícitas (`font-overpass`, `bg-white`) que overridean los defaults del body — esto es esperado (los componentes de la landing fueron diseñados en V3 con clases explícitas). **Requiere browser para confirmar que Source Serif 4 renderiza en H1 y que Inter renderiza en body text.**</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card" data-eje="1" data-num="2" data-item-selector="eje-1-flujo-2">
+        <div class="item-header">
+          <span class="item-num">#2</span>
+          <span class="item-text">Verificación visual dashboard taller (logueado)</span>
+          <span class="badge-qa">⚠️</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Rol:</span> taller</div>
+          <div class="detail-row"><span class="detail-label">Precondiciones:</span> Usuario taller del seed logueado en preview URL</div>
+          <div class="detail-row"><span class="detail-label">Pasos ejecutados:</span> No ejecutable sin browser real</div>
+          <div class="detail-row"><span class="detail-label">Resultado auditor:</span> ⚠️ Pendiente validación manual</div>
+          <div class="detail-row"><span class="detail-label">Bugs encontrados:</span> N/A</div>
+          <div class="detail-row"><span class="detail-label">Notas:</span><div style="white-space:pre-wrap;margin-top:4px">Requiere login con `roberto.gimenez@pdt.org.ar` / `pdt2026` en browser real. Verificar body text en Inter, botones en Overpass, headings H2/H3 en Overpass, color gris oscuro.</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card status-ok" data-eje="1" data-num="3" data-item-selector="eje-1-flujo-3">
+        <div class="item-header">
+          <span class="item-num">#3</span>
+          <span class="item-text">Verificación de no regresión (E2E automático)</span>
+          <span class="badge-qa">✅</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Rol:</span> todos (TALLER, MARCA, ESTADO, ADMIN)</div>
+          <div class="detail-row"><span class="detail-label">Precondiciones:</span> PR desplegado en preview, CI corriendo</div>
+          <div class="detail-row"><span class="detail-label">Pasos ejecutados:</span> `gh run list --branch feature/v4-x-01-tokens --limit 3`</div>
+          <div class="detail-row"><span class="detail-label">Resultado auditor:</span> ✅ Pasó</div>
+          <div class="detail-row"><span class="detail-label">Bugs encontrados:</span> Ninguno</div>
+          <div class="detail-row"><span class="detail-label">Notas:</span><div style="white-space:pre-wrap;margin-top:4px">- 3 runs ejecutados en el PR, todos exitosos
+- Último run: ID `25841759258`, 14m41s, `success`
+- Step &quot;Run Playwright tests&quot;: `conclusion: success`
+- 0 tests failed, 0 flaky
+- Upload-artifact step skipped (no failures = no screenshots to upload)
+---</div></div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div></div><div class="section" id="eje2"><h2>Eje 2 — Navegabilidad</h2></div><div class="section" id="eje3"><h2>Eje 3 — Casos borde</h2><div class="item-card" data-eje="3" data-num="7.1" data-verificador="QA" data-item-selector="eje-3-caso-7.1">
+        <div class="item-header">
+          <span class="item-num">#7.1</span>
+          <span class="item-text"></span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          
+          <div class="detail-row"><span class="detail-label">Esperado:</span> `font-display: swap` en cada `@font-face`</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card" data-eje="3" data-num="7.2" data-verificador="QA" data-item-selector="eje-3-caso-7.2">
+        <div class="item-header">
+          <span class="item-num">#7.2</span>
+          <span class="item-text"></span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          
+          <div class="detail-row"><span class="detail-label">Esperado:</span> Archivos presentes en `public/`</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card" data-eje="3" data-num="7.3" data-verificador="QA" data-item-selector="eje-3-caso-7.3">
+        <div class="item-header">
+          <span class="item-num">#7.3</span>
+          <span class="item-text"></span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          
+          <div class="detail-row"><span class="detail-label">Esperado:</span> 76 tests, 0 failed</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card" data-eje="3" data-num="7.4" data-verificador="QA" data-item-selector="eje-3-caso-7.4">
+        <div class="item-header">
+          <span class="item-num">#7.4</span>
+          <span class="item-text"></span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          
+          <div class="detail-row"><span class="detail-label">Esperado:</span> Documentar hallazgos, NO arreglar</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card" data-eje="3" data-num="7.5" data-verificador="QA" data-item-selector="eje-3-caso-7.5">
+        <div class="item-header">
+          <span class="item-num">#7.5</span>
+          <span class="item-text"></span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          
+          <div class="detail-row"><span class="detail-label">Esperado:</span> Tailwind v4</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card" data-eje="3" data-num="7.6" data-verificador="QA" data-item-selector="eje-3-caso-7.6">
+        <div class="item-header">
+          <span class="item-num">#7.6</span>
+          <span class="item-text"></span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          
+          <div class="detail-row"><span class="detail-label">Esperado:</span> `background-color: #F8F9FB`</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card" data-eje="3" data-num="7.7" data-verificador="QA" data-item-selector="eje-3-caso-7.7">
+        <div class="item-header">
+          <span class="item-num">#7.7</span>
+          <span class="item-text"></span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          
+          <div class="detail-row"><span class="detail-label">Esperado:</span> `h1 { font-family: &#39;Source Serif 4&#39; }`</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug menor">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div></div><div class="section" id="eje4"><h2>Eje 4 — Performance</h2><div class="item-card compact" data-eje="4" data-num="1" data-verificador="QA" data-item-selector="eje-4-item-1">
+        <div class="item-header">
+          <span class="item-text">Health endpoint responde &lt; 3s</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="4" data-num="2" data-verificador="QA" data-item-selector="eje-4-item-2">
+        <div class="item-header">
+          <span class="item-text">Fuentes se sirven correctamente</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="4" data-num="3" data-verificador="QA" data-item-selector="eje-4-item-3">
+        <div class="item-header">
+          <span class="item-text">Fuentes con cache headers</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="4" data-num="4" data-verificador="QA" data-item-selector="eje-4-item-4">
+        <div class="item-header">
+          <span class="item-text">Tamaño total de fuentes razonable</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="4" data-num="5" data-verificador="QA" data-item-selector="eje-4-item-5">
+        <div class="item-header">
+          <span class="item-text">`SourceSerif4-Variable.woff2` HTTP 200</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="4" data-num="6" data-verificador="QA" data-item-selector="eje-4-item-6">
+        <div class="item-header">
+          <span class="item-text">Lighthouse</span>
+          <span class="badge-qa">QA</span>
+        </div>
+        <div class="item-badges"></div>
+        
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div></div><div class="section" id="eje5"><h2>Eje 5 — Consistencia visual</h2><h3 style="font-size:14px;color:#1e3a5f;font-weight:600;margin:16px 0 8px;padding-top:8px;border-top:1px solid #e8ecf1"></h3><h3 style="font-size:14px;color:#1e3a5f;font-weight:600;margin:16px 0 8px;padding-top:8px;border-top:1px solid #e8ecf1">Verificaciones heredadas de V3</h3><div class="item-card compact" data-eje="5" data-num="1" data-item-selector="eje-5-item-1">
+          <div class="item-header">
+            <span class="item-num">#1</span>
+            <span class="item-text">Tipografías correctas (no Times/Arial accidental)</span>
+            <span class="badge-qa">✅</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details"><span class="detail-label">Resultado auditor:</span> ✅</div>
+          <div class="item-details"><span class="detail-label">Notas:</span> globals.css declara Inter (body), Source Serif 4 (h1), Overpass (UI). Fallbacks: `sans-serif`, `serif`.</div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            </div>
+            <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card compact" data-eje="5" data-num="2" data-item-selector="eje-5-item-2">
+          <div class="item-header">
+            <span class="item-num">#2</span>
+            <span class="item-text">Colores consistentes con sistema semántico</span>
+            <span class="badge-qa">✅</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details"><span class="detail-label">Resultado auditor:</span> ✅</div>
+          <div class="item-details"><span class="detail-label">Notas:</span> 7 tokens brand, 5 terra, 6 pastel, 3 ink, 5 status — todos presentes en `@theme inline`.</div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            </div>
+            <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card compact" data-eje="5" data-num="3" data-item-selector="eje-5-item-3">
+          <div class="item-header">
+            <span class="item-num">#3</span>
+            <span class="item-text">Empty states implementados</span>
+            <span class="badge-qa">N/A</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details"><span class="detail-label">Resultado auditor:</span> N/A</div>
+          <div class="item-details"><span class="detail-label">Notas:</span> Spec no toca componentes.</div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            </div>
+            <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card compact" data-eje="5" data-num="4" data-item-selector="eje-5-item-4">
+          <div class="item-header">
+            <span class="item-num">#4</span>
+            <span class="item-text">Labels en español argentino</span>
+            <span class="badge-qa">N/A</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details"><span class="detail-label">Resultado auditor:</span> N/A</div>
+          <div class="item-details"><span class="detail-label">Notas:</span> Spec no toca texto.</div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            </div>
+            <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card compact" data-eje="5" data-num="5" data-item-selector="eje-5-item-5">
+          <div class="item-header">
+            <span class="item-num">#5</span>
+            <span class="item-text">Sin texto roto, sin lorem ipsum</span>
+            <span class="badge-qa">N/A</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details"><span class="detail-label">Resultado auditor:</span> N/A</div>
+          <div class="item-details"><span class="detail-label">Notas:</span> Spec no toca contenido.</div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            </div>
+            <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card compact" data-eje="5" data-num="6" data-item-selector="eje-5-item-6">
+          <div class="item-header">
+            <span class="item-num">#6</span>
+            <span class="item-text">Sin elementos de debug</span>
+            <span class="badge-qa">N/A</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details"><span class="detail-label">Resultado auditor:</span> N/A</div>
+          <div class="item-details"><span class="detail-label">Notas:</span> Spec no toca lógica.</div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            </div>
+            <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><h3 style="font-size:14px;color:#1e3a5f;font-weight:600;margin:16px 0 8px;padding-top:8px;border-top:1px solid #e8ecf1">Verificaciones nuevas V4 (rediseño Sergio)</h3><div class="item-card compact" data-eje="5" data-num="7" data-item-selector="eje-5-item-7">
+          <div class="item-header">
+            <span class="item-num">#7</span>
+            <span class="item-text">Tokens de paleta correctos (terracotta, pastels, ink)</span>
+            <span class="badge-qa">✅</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details"><span class="detail-label">Resultado auditor:</span> ✅</div>
+          <div class="item-details"><span class="detail-label">Notas:</span> `grep &quot;terra-&quot;`: 5 tokens. `grep &quot;pastel-&quot;`: 6 tokens. `grep &quot;ink-&quot;`: 3 tokens. Todos con valores hex exactos de la propuesta de Sergio.</div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            </div>
+            <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card compact" data-eje="5" data-num="8" data-item-selector="eje-5-item-8">
+          <div class="item-header">
+            <span class="item-num">#8</span>
+            <span class="item-text">Tipografía Source Serif 4 en H1 grandes</span>
+            <span class="badge-qa">✅</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details"><span class="detail-label">Resultado auditor:</span> ✅ (CSS) ⚠️ (visual)</div>
+          <div class="item-details"><span class="detail-label">Notas:</span> Regla `h1 { font-family: &#39;Source Serif 4&#39;, serif }` presente. Pendiente verificación visual en browser.</div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            </div>
+            <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card compact" data-eje="5" data-num="9" data-item-selector="eje-5-item-9">
+          <div class="item-header">
+            <span class="item-num">#9</span>
+            <span class="item-text">Tipografía Inter en body text</span>
+            <span class="badge-qa">✅</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details"><span class="detail-label">Resultado auditor:</span> ✅ (CSS) ⚠️ (visual)</div>
+          <div class="item-details"><span class="detail-label">Notas:</span> `body { font-family: &#39;Inter&#39;, sans-serif }` y `--font-sans: &#39;Inter&#39;`. Pendiente verificación visual.</div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            </div>
+            <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card compact" data-eje="5" data-num="10" data-item-selector="eje-5-item-10">
+          <div class="item-header">
+            <span class="item-num">#10</span>
+            <span class="item-text">Tipografía Overpass en UI</span>
+            <span class="badge-qa">✅</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details"><span class="detail-label">Resultado auditor:</span> ✅</div>
+          <div class="item-details"><span class="detail-label">Notas:</span> `h2-h6`, `nav`, `button`, `select`, `input`, `label` → `font-family: &#39;Overpass&#39;`. Sin cambios respecto a V3.</div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            </div>
+            <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card compact" data-eje="5" data-num="11" data-item-selector="eje-5-item-11">
+          <div class="item-header">
+            <span class="item-num">#11</span>
+            <span class="item-text">Body color casi-negro (#0F0F1E)</span>
+            <span class="badge-qa">✅</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details"><span class="detail-label">Resultado auditor:</span> ✅ (CSS) ⚠️ (visual)</div>
+          <div class="item-details"><span class="detail-label">Notas:</span> `body { color: #0F0F1E }` presente. Pendiente verificación visual que confirme gris oscuro y no azul brand.</div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            </div>
+            <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card compact" data-eje="5" data-num="12" data-item-selector="eje-5-item-12">
+          <div class="item-header">
+            <span class="item-num">#12</span>
+            <span class="item-text">Componentes nuevos (KpiCard, FilterPills, EmptyState)</span>
+            <span class="badge-qa">N/A</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details"><span class="detail-label">Resultado auditor:</span> N/A</div>
+          <div class="item-details"><span class="detail-label">Notas:</span> Spec X-01 no toca componentes — scope de X-02/X-03.</div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            </div>
+            <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card compact" data-eje="5" data-num="13" data-item-selector="eje-5-item-13">
+          <div class="item-header">
+            <span class="item-num">#13</span>
+            <span class="item-text">Footer institucional</span>
+            <span class="badge-qa">N/A</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details"><span class="detail-label">Resultado auditor:</span> N/A</div>
+          <div class="item-details"><span class="detail-label">Notas:</span> Spec X-01 no toca footer — scope de X-06.</div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            </div>
+            <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card compact" data-eje="5" data-num="14" data-item-selector="eje-5-item-14">
+          <div class="item-header">
+            <span class="item-num">#14</span>
+            <span class="item-text">Sin restos de BRONCE/PLATA/ORO</span>
+            <span class="badge-qa">N/A</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details"><span class="detail-label">Resultado auditor:</span> N/A</div>
+          <div class="item-details"><span class="detail-label">Notas:</span> Spec X-01 no toca nomenclatura de niveles.</div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            </div>
+            <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card compact" data-eje="5" data-num="15" data-item-selector="eje-5-item-15">
+          <div class="item-header">
+            <span class="item-num">#15</span>
+            <span class="item-text">Lenguaje no estigmatizante</span>
+            <span class="badge-qa">N/A</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details"><span class="detail-label">Resultado auditor:</span> N/A</div>
+          <div class="item-details"><span class="detail-label">Notas:</span> Spec X-01 no toca copy.</div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            </div>
+            <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card compact" data-eje="5" data-num="16" data-item-selector="eje-5-item-16">
+          <div class="item-header">
+            <span class="item-num">#16</span>
+            <span class="item-text">Etapas con nombres nuevos</span>
+            <span class="badge-qa">N/A</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details"><span class="detail-label">Resultado auditor:</span> N/A</div>
+          <div class="item-details"><span class="detail-label">Notas:</span> Spec X-01 no toca etapas.</div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            </div>
+            <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div></div><div class="section" id="eje6"><h2>Eje 6 — Validacion de dominio</h2><div class="section collapsible collapsed" onclick="toggleCollapse(this)" data-perfil="todos">
+      <h2> <span class="collapse-icon">&#9654;</span></h2>
+      <div class="collapse-content"></div></div><h3 style="font-size:14px;color:#1e3a5f;font-weight:600;margin:12px 0 8px">Verificación de perspectivas del spec</h3><div class="item-card" data-eje="6" data-num="1" data-verificador="perfil" data-perfil="politologo" data-item-selector="eje-6-politologo-1">
+          <div class="item-header">
+            <span class="item-num">#1</span>
+            <span class="item-text">Politólogo</span>
+            <span class="badge-qa">✅</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details">
+            <div class="detail-row"><span class="detail-label">Aplicaba:</span> SÍ — reducir dominancia visual del brand</div>
+            <div class="detail-row"><span class="detail-label">Implementacion:</span> ✅</div>
+            <div class="detail-row"><span class="detail-label">Notas:</span> Body color cambió de `#1e2dbe` (azul brand) a `#0F0F1E` (casi-negro). El contenido institucional ya no está teñido de azul.</div>
+          </div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card" data-eje="6" data-num="2" data-verificador="perfil" data-perfil="sociologo" data-item-selector="eje-6-sociologo-2">
+          <div class="item-header">
+            <span class="item-num">#2</span>
+            <span class="item-text">Sociólogo</span>
+            <span class="badge-qa">✅</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details">
+            <div class="detail-row"><span class="detail-label">Aplicaba:</span> SÍ — terracotta conecta con sector textil</div>
+            <div class="detail-row"><span class="detail-label">Implementacion:</span> ✅</div>
+            <div class="detail-row"><span class="detail-label">Notas:</span> 5 tokens terracotta disponibles (`terra-50` a `terra-700`). Valores idénticos a propuesta de Sergio.</div>
+          </div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card" data-eje="6" data-num="3" data-verificador="perfil" data-perfil="economista" data-item-selector="eje-6-economista-3">
+          <div class="item-header">
+            <span class="item-num">#3</span>
+            <span class="item-text">Economista</span>
+            <span class="badge-qa">N/A</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details">
+            <div class="detail-row"><span class="detail-label">Aplicaba:</span> N/A</div>
+            <div class="detail-row"><span class="detail-label">Implementacion:</span> N/A</div>
+            
+          </div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card" data-eje="6" data-num="4" data-verificador="perfil" data-perfil="contador" data-item-selector="eje-6-contador-4">
+          <div class="item-header">
+            <span class="item-num">#4</span>
+            <span class="item-text">Contador</span>
+            <span class="badge-qa">N/A</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details">
+            <div class="detail-row"><span class="detail-label">Aplicaba:</span> N/A</div>
+            <div class="detail-row"><span class="detail-label">Implementacion:</span> N/A</div>
+            
+          </div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div><div class="item-card" data-eje="6" data-num="5" data-verificador="perfil" data-perfil="sectorial" data-item-selector="eje-6-sectorial-5">
+          <div class="item-header">
+            <span class="item-num">#5</span>
+            <span class="item-text">Sectorial</span>
+            <span class="badge-qa">✅</span>
+          </div>
+          <div class="item-badges"></div>
+          <div class="item-details">
+            <div class="detail-row"><span class="detail-label">Aplicaba:</span> SÍ — valores de Sergio respetados</div>
+            <div class="detail-row"><span class="detail-label">Implementacion:</span> ✅</div>
+            <div class="detail-row"><span class="detail-label">Notas:</span> Comparación línea por línea entre `globals.css` y `02-tokens.md` de Sergio: todos los tokens, colores, fuentes, radios, sombras coinciden exactamente. Las únicas adiciones son los 5 tokens legacy preservados por el análisis de factibilidad (brand-red, brand-topbar, brand-tabnav, brand-bg-light, status-muted) + animaciones (progress-fill, slide-in-right).</div>
+          </div>
+          <div class="item-controls">
+            <div class="status-btns">
+              <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+              <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Observacion">🐛</button>
+            </div>
+            <textarea class="obs-textarea" placeholder="Notas del perfil..." data-field="obs" rows="2"></textarea>
+            <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+          </div>
+        </div></div><div class="section" id="handover"><h2>Verificacion de handover</h2><div class="item-card compact" data-eje="handover" data-num="1" data-item-selector="handover-1">
+        <div class="item-header">
+          <span class="item-num">#1</span>
+          <span class="item-text">ARCHITECTURE.md</span>
+          <span class="badge-qa">✅</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Indicado en spec:</span> SÍ — crear sección &quot;Design tokens V4&quot;</div>
+          <div class="detail-row"><span class="detail-label">Actualizado:</span> ✅</div>
+          <div class="detail-row"><span class="detail-label">Notas:</span> Creado con paleta, tipografía, self-hosting, variables legacy, sombras, radios</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="handover" data-num="2" data-item-selector="handover-2">
+        <div class="item-header">
+          <span class="item-num">#2</span>
+          <span class="item-text">DECISIONS.md</span>
+          <span class="badge-qa">✅</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Indicado en spec:</span> SÍ — agregar decisión de adopción</div>
+          <div class="detail-row"><span class="detail-label">Actualizado:</span> ✅</div>
+          <div class="detail-row"><span class="detail-label">Notas:</span> Decisión #22: &quot;Adopción del sistema de tokens V4&quot; con contexto, alternativas y razonamiento</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="handover" data-num="3" data-item-selector="handover-3">
+        <div class="item-header">
+          <span class="item-num">#3</span>
+          <span class="item-text">KNOWN_ISSUES.md</span>
+          <span class="badge-qa">N/A</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Indicado en spec:</span> N/A</div>
+          <div class="detail-row"><span class="detail-label">Actualizado:</span> N/A</div>
+          <div class="detail-row"><span class="detail-label">Notas:</span> Spec indica N/A</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="handover" data-num="4" data-item-selector="handover-4">
+        <div class="item-header">
+          <span class="item-num">#4</span>
+          <span class="item-text">DEPLOY.md</span>
+          <span class="badge-qa">N/A</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Indicado en spec:</span> N/A</div>
+          <div class="detail-row"><span class="detail-label">Actualizado:</span> N/A</div>
+          <div class="detail-row"><span class="detail-label">Notas:</span> Spec indica N/A</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card compact" data-eje="handover" data-num="5" data-item-selector="handover-5">
+        <div class="item-header">
+          <span class="item-num">#5</span>
+          <span class="item-text">HOW_TO_ADD_SPEC.md</span>
+          <span class="badge-qa">N/A</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Indicado en spec:</span> N/A</div>
+          <div class="detail-row"><span class="detail-label">Actualizado:</span> N/A</div>
+          <div class="detail-row"><span class="detail-label">Notas:</span> Spec indica N/A</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Notas..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div></div><div class="section" id="resumen-issues">
+    <h2>Resumen de issues abiertos</h2>
+    <textarea class="large-textarea" id="textarea-resumen-issues" placeholder="Listar issues abiertos con # y descripcion breve" rows="4"></textarea>
+  </div><div class="section" id="notas-auditor">
+    <h2>Notas adicionales del auditor</h2>
+    <div class="readonly-block">1. **Tamaño de fuentes mayor al estimado:** El spec estimaba ~80-100 KB (Source Serif 4) y ~100-130 KB (Inter). Los archivos reales son 420 KB y 344 KB respectivamente. Esto se debe a que son variable fonts con ejes optical-size + weight, que incluyen más glifos que las versiones estáticas. Aceptable para producción con `font-display: swap` — no bloquean el render.
+
+2. **URL de descarga incorrecta en el spec:** La URL original de Source Serif 4 (`SourceSerif4-VF.ttf.woff2`) daba 404. El archivo correcto es `SourceSerif4Variable-Roman.ttf.woff2` en el branch `release` de `adobe-fonts/source-serif`. Documentar en spec si se repite la necesidad.
+
+3. **Landing usa clases explícitas:** La landing actual (V3) usa `font-overpass` y `bg-white` explícitamente, por lo que los defaults de globals.css (Inter body, fondo gris claro) no se ven ahí. Esto es correcto — la landing se rediseña en specs X-05/X-06. El impacto visual de X-01 se ve más en páginas internas (dashboards, formularios, listados).
+
+4. **0 estilos inline hardcodeados:** No se encontró ningún `style={{ color: &#39;#1e2dbe&#39; }}` en el codebase. El TODO del spec para X-02 sobre esto puede cerrarse como resuelto.
+
+---</div>
+  </div><div class="section" id="validacion-manual"><h2>Items pendientes de validacion manual</h2><div style="margin-bottom:10px;font-size:13px"><strong>URL:</strong> <a href="https://plataforma-textil-bxmmm636c-gbreards-projects.vercel.app" target="_blank">https://plataforma-textil-bxmmm636c-gbreards-projects.vercel.app</a></div><div style="margin-bottom:12px;font-size:13px"><strong>Credenciales:</strong> <code>`roberto.gimenez@pdt.org.ar` / `pdt2026`</code></div><div class="item-card" data-eje="manual" data-num="1" data-item-selector="manual-1">
+        <div class="item-header">
+          <span class="item-num">#1</span>
+          <span class="item-text">Body text gris oscuro (no azul)</span>
+          <span class="badge-perfil">manual</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Donde:</span> Landing pública (sin login)</div>
+          <div class="detail-row"><span class="detail-label">Que buscar:</span> Texto principal debe ser gris casi-negro, no azul `#1e2dbe`</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card" data-eje="manual" data-num="2" data-item-selector="manual-2">
+        <div class="item-header">
+          <span class="item-num">#2</span>
+          <span class="item-text">H1 en Source Serif 4 (serif)</span>
+          <span class="badge-perfil">manual</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Donde:</span> Cualquier página con `&lt;h1&gt;` sin clase font-overpass explícita</div>
+          <div class="detail-row"><span class="detail-label">Que buscar:</span> El H1 debe verse en una fuente serif (con remates), no sans-serif</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card" data-eje="manual" data-num="3" data-item-selector="manual-3">
+        <div class="item-header">
+          <span class="item-num">#3</span>
+          <span class="item-text">Body text en Inter</span>
+          <span class="badge-perfil">manual</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Donde:</span> Dashboard taller (logueado)</div>
+          <div class="detail-row"><span class="detail-label">Que buscar:</span> Texto de párrafos/descripciones debe ser Inter (más delgada y moderna que Noto Sans)</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div><div class="item-card" data-eje="manual" data-num="4" data-item-selector="manual-4">
+        <div class="item-header">
+          <span class="item-num">#4</span>
+          <span class="item-text">Background gris claro</span>
+          <span class="badge-perfil">manual</span>
+        </div>
+        <div class="item-badges"></div>
+        <div class="item-details">
+          <div class="detail-row"><span class="detail-label">Donde:</span> Cualquier página interna</div>
+          <div class="detail-row"><span class="detail-label">Que buscar:</span> Fondo general debe ser gris muy claro `#F8F9FB`, no blanco puro</div>
+        </div>
+        <div class="item-controls">
+          <div class="status-btns">
+            <button class="status-btn ok" onclick="setStatus(this, '✅')" title="OK">✅</button>
+            <button class="status-btn bug" onclick="setStatus(this, '🐛')" title="Bug">🐛</button>
+            <button class="status-btn fail" onclick="setStatus(this, '❌')" title="Bloqueante">❌</button>
+          </div>
+          <input type="text" class="obs-input" placeholder="Observaciones..." data-field="obs">
+          <button class="btn-issue" onclick="crearIssue(this)">📋 Crear issue</button>
+        </div>
+      </div></div><div class="section" id="checklist"><h2>Checklist de cierre</h2><div class="checklist-items"><label class="checklist-item">
+      <input type="checkbox" data-checklist="0">
+      <span>Todos los flujos del Eje 1 ejecutados (1 automatizado ✅, 2 pendientes manual)</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="1">
+      <span>Ejes 2-5 verificados (los que aplican)</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="2">
+      <span>Eje 6 verificado contra perspectivas del spec</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="3">
+      <span>Verificación de handover completada</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="4">
+      <span>Issues abiertos para todos los bugs encontrados (0 bugs)</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="5">
+      <span>Resultado global completado</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="6">
+      <span>QA mergeado a `.claude/auditorias/` en develop</span>
+    </label><label class="checklist-item">
+      <input type="checkbox" data-checklist="7">
+      <span>HTML generado por workflow `qa-pages.yml` accesible en GitHub Pages</span>
+    </label></div></div>
+  </div>
+  <div class="section" id="panel-resumen">
+    <h2>Resumen de issues</h2>
+    <div id="github-status" class="text-muted"></div>
+    <div class="issue-stats">
+      <span class="issue-stat stat-open" id="stat-abiertos">0 abiertos</span>
+      <span class="issue-stat stat-resolved" id="stat-resueltos">0 resueltos</span>
+      <span class="issue-stat stat-discarded" id="stat-descartados">0 descartados</span>
+    </div>
+    <div id="issues-list" class="issues-list"></div>
+  </div>
+  </div>
+  <div class="sticky-bar">
+    <span class="progress-summary" id="progress-text"></span>
+    <button class="btn-copiar" id="btn-copiar" onclick="copiarResultados()">Copiar resultados como markdown</button>
+  </div>
+  <script>
+  function filtrarPor(tipo) {
+    // Reset todos los botones de filtro
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.filter-btn[data-filter="' + tipo + '"]').classList.add('active');
+
+    document.querySelectorAll('.item-card, .paso-card').forEach(c => {
+      if (tipo === 'todos') { c.style.display = ''; return; }
+      const verif = c.dataset.verificador || 'QA';
+      const perfil = c.dataset.perfil || '';
+      if (tipo === 'QA' || tipo === 'DEV') {
+        c.style.display = verif === tipo ? '' : 'none';
+      } else {
+        // Filtro por perfil interdisciplinario
+        c.style.display = perfil === tipo ? '' : 'none';
+      }
+    });
+    // Ocultar/mostrar secciones de ejes vacias
+    document.querySelectorAll('.section[id^="eje"]').forEach(s => {
+      const visible = s.querySelectorAll('.item-card:not([style*="none"]), .paso-card:not([style*="none"])');
+      s.style.display = visible.length === 0 ? 'none' : '';
+    });
+    // Secciones dentro de eje6 (colapsables de perfil)
+    document.querySelectorAll('#eje6 .collapsible').forEach(s => {
+      const visible = s.querySelectorAll('.item-card:not([style*="none"])');
+      s.style.display = visible.length === 0 ? 'none' : '';
+    });
+  }
+
+  function toggleCollapse(el) {
+    if (el.querySelector('.collapse-content')) {
+      el.classList.toggle('collapsed');
+    }
+  }
+
+  function togglePaso(header) {
+    header.closest('.paso-card').classList.toggle('expanded');
+  }
+
+  function setStatus(btn, emoji) {
+    const card = btn.closest('.item-card, .paso-card');
+    const btns = card.querySelectorAll('.status-btn');
+    const wasActive = btn.classList.contains('active');
+    btns.forEach(b => b.classList.remove('active'));
+    card.classList.remove('status-ok', 'status-bug', 'status-fail');
+
+    if (!wasActive) {
+      btn.classList.add('active');
+      if (emoji === '✅') card.classList.add('status-ok');
+      else if (emoji === '🐛') card.classList.add('status-bug');
+      else if (emoji === '❌') card.classList.add('status-fail');
+    }
+
+    // Update paso status indicator
+    const indicator = card.querySelector('.paso-status-indicator');
+    if (indicator) {
+      indicator.textContent = wasActive ? '' : emoji;
+    }
+
+    // Show/hide issue button for bug/fail
+    const issueBtn = card.querySelector('.btn-issue');
+    if (issueBtn && !issueBtn.classList.contains('enviado')) {
+      if (!wasActive && (emoji === '🐛' || emoji === '❌')) {
+        issueBtn.classList.add('visible');
+      } else {
+        issueBtn.classList.remove('visible');
+      }
+    }
+
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const cards = document.querySelectorAll('.item-card, .paso-card');
+    let total = 0, done = 0;
+    cards.forEach(c => {
+      total++;
+      if (c.querySelector('.status-btn.active')) done++;
+    });
+    const el = document.getElementById('progress-text');
+    if (el) el.textContent = done + ' / ' + total + ' completados';
+  }
+
+  function getCardStatus(card) {
+    const active = card.querySelector('.status-btn.active');
+    if (!active) return '—';
+    if (active.classList.contains('ok')) return '✅';
+    if (active.classList.contains('bug')) return '🐛';
+    if (active.classList.contains('fail')) return '❌';
+    return '—';
+  }
+
+  function getCardObs(card) {
+    const input = card.querySelector('.obs-input, .obs-textarea');
+    return input ? input.value.trim() : '';
+  }
+
+  function copiarResultados() {
+    const titulo = document.querySelector('.header h1')?.textContent || 'QA';
+    const fecha = new Date().toISOString().split('T')[0];
+    let md = '';
+
+    // Resultado global
+    const globalRadio = document.querySelector('input[name="resultado-global"]:checked');
+    const globalLabel = globalRadio ? globalRadio.closest('.radio-btn').querySelector('.radio-label').textContent.trim() : '—';
+    const decision = document.getElementById('decision-global')?.value.trim() || '—';
+    const issues = document.getElementById('issues-global')?.value.trim() || '#';
+
+    md += '## Resultados — ' + titulo + '\n';
+    md += '**Fecha de auditoria:** ' + fecha + '\n';
+    md += '**Auditor:** Sergio\n\n';
+    md += '### Resultado global\n';
+    md += globalLabel + '\n';
+    md += '**Decision:** ' + decision + '\n';
+    md += '**Issues abiertos:** ' + issues + '\n\n';
+
+    // Eje 1
+    const eje1Cards = document.querySelectorAll('#eje1 .item-card');
+    if (eje1Cards.length > 0) {
+      md += '### Eje 1 — Funcionalidad\n';
+      md += '| # | Criterio | Resultado | Observaciones |\n';
+      md += '|---|----------|-----------|---------------|\n';
+      eje1Cards.forEach(c => {
+        const num = c.dataset.num;
+        const criterio = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + num + ' | ' + criterio + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 2
+    const eje2Cards = document.querySelectorAll('#eje2 .paso-card');
+    if (eje2Cards.length > 0) {
+      md += '### Eje 2 — Navegabilidad\n';
+      eje2Cards.forEach(c => {
+        const num = c.dataset.num;
+        const titulo = c.querySelector('.paso-title')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '**' + titulo + ':** ' + status;
+        if (obs) md += ' — ' + obs;
+        md += '\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 3
+    const eje3Cards = document.querySelectorAll('#eje3 .item-card');
+    if (eje3Cards.length > 0) {
+      md += '### Eje 3 — Casos borde\n';
+      md += '| # | Caso | Resultado | Observaciones |\n';
+      md += '|---|------|-----------|---------------|\n';
+      eje3Cards.forEach(c => {
+        const num = c.dataset.num;
+        const caso = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + num + ' | ' + caso + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 4
+    const eje4Cards = document.querySelectorAll('#eje4 .item-card');
+    if (eje4Cards.length > 0) {
+      md += '### Eje 4 — Performance\n';
+      md += '| Verificacion | Resultado | Notas |\n';
+      md += '|-------------|-----------|-------|\n';
+      eje4Cards.forEach(c => {
+        const verif = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + verif + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 5
+    const eje5Cards = document.querySelectorAll('#eje5 .item-card');
+    if (eje5Cards.length > 0) {
+      md += '### Eje 5 — Consistencia visual\n';
+      md += '| Verificacion | Resultado | Notas |\n';
+      md += '|-------------|-----------|-------|\n';
+      eje5Cards.forEach(c => {
+        const verif = c.querySelector('.item-text')?.textContent.trim() || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + verif + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Eje 6
+    const eje6Cards = document.querySelectorAll('#eje6 .item-card');
+    if (eje6Cards.length > 0) {
+      md += '### Eje 6 — Validacion de dominio\n';
+      md += '| # | Pregunta | Perfil | Resultado | Notas |\n';
+      md += '|---|----------|--------|-----------|-------|\n';
+      eje6Cards.forEach(c => {
+        const num = c.dataset.num;
+        const pregunta = c.querySelector('.item-text')?.textContent.trim() || '';
+        const perfil = c.dataset.perfil || '';
+        const status = getCardStatus(c);
+        const obs = getCardObs(c);
+        md += '| ' + num + ' | ' + pregunta + ' | ' + perfil + ' | ' + status + ' | ' + obs + ' |\n';
+      });
+      md += '\n';
+    }
+
+    // Resumen issues
+    const resumenIssues = document.getElementById('textarea-resumen-issues')?.value.trim();
+    if (resumenIssues) {
+      md += '### Resumen de issues abiertos\n';
+      md += resumenIssues + '\n\n';
+    }
+
+    // Notas (V2: textarea-notas, V3: textarea-notas-tecnico + textarea-notas-perfiles)
+    const notas = document.getElementById('textarea-notas')?.value.trim();
+    if (notas) {
+      md += '### Notas del auditor\n';
+      md += notas + '\n\n';
+    }
+    const notasTecnico = document.getElementById('textarea-notas-tecnico')?.value.trim();
+    const notasPerfiles = document.getElementById('textarea-notas-perfiles')?.value.trim();
+    if (notasTecnico || notasPerfiles) {
+      md += '### Notas de los auditores\n';
+      if (notasTecnico) md += '**Sergio (tecnico):** ' + notasTecnico + '\n';
+      if (notasPerfiles) md += '**Perfiles interdisciplinarios:** ' + notasPerfiles + '\n';
+      md += '\n';
+    }
+
+    // Checklist
+    const checkItems = document.querySelectorAll('#checklist input[type="checkbox"]');
+    if (checkItems.length > 0) {
+      md += '### Checklist de cierre\n';
+      checkItems.forEach(cb => {
+        const label = cb.closest('.checklist-item')?.querySelector('span')?.textContent.trim() || '';
+        md += '- [' + (cb.checked ? 'x' : ' ') + '] ' + label + '\n';
+      });
+    }
+
+    navigator.clipboard.writeText(md).then(() => {
+      const btn = document.getElementById('btn-copiar');
+      btn.textContent = 'Copiado!';
+      btn.classList.add('copiado');
+      setTimeout(() => {
+        btn.textContent = 'Copiar resultados como markdown';
+        btn.classList.remove('copiado');
+      }, 2000);
+    });
+  }
+
+  function crearIssue(btn) {
+    const card = btn.closest('.item-card, .paso-card');
+    const obs = getCardObs(card);
+    if (!obs || obs.length < 10) {
+      btn.title = 'Escribi una observacion primero (min 10 caracteres)';
+      btn.classList.add('error');
+      btn.textContent = 'Escribi una observacion';
+      setTimeout(() => { btn.classList.remove('error'); btn.textContent = '📋 Crear issue'; }, 2000);
+      return;
+    }
+
+    const status = getCardStatus(card);
+    const tipo = status === '❌' ? 'bloqueante' : 'bug';
+    const eje = card.closest('.section')?.querySelector('h2')?.textContent.trim() || '';
+    const itemText = card.querySelector('.item-text, .paso-title')?.textContent.trim() || '';
+    const num = card.dataset.num || '';
+    const spec = document.body.dataset.spec || '';
+    const pagina = document.body.dataset.url || '';
+    const slugMeta = document.querySelector('meta[name="qa-slug"]');
+    const qaSlug = slugMeta ? slugMeta.content : '';
+
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    const apiUrl = document.body.dataset.apiUrl;
+
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tipo: tipo,
+        mensaje: obs,
+        pagina: pagina,
+        auditorNombre: 'Sergio',
+        auditorRol: 'QA',
+        contextoQA: {
+          spec: spec,
+          eje: eje,
+          item: '#' + num + ' ' + itemText,
+          resultado: status,
+          qaSlug: qaSlug,
+          itemSelector: card.dataset.itemSelector || '',
+          verificador: card.dataset.verificador || 'QA',
+          perfil: card.dataset.perfil || 'tecnico'
+        }
+      })
+    }).then(r => {
+      if (r.ok) {
+        btn.textContent = '✅ Issue creado';
+        btn.classList.add('enviado');
+      } else {
+        throw new Error();
+      }
+    }).catch(() => {
+      btn.textContent = '❌ Error — reintenta';
+      btn.classList.add('error');
+      btn.disabled = false;
+      setTimeout(() => { btn.classList.remove('error'); btn.textContent = '📋 Crear issue'; }, 3000);
+    });
+  }
+
+  // Init radio buttons
+  document.querySelectorAll('.radio-btn').forEach(label => {
+    label.addEventListener('click', () => {
+      const radio = label.querySelector('input[type="radio"]');
+      radio.checked = true;
+      label.closest('.radio-group').querySelectorAll('.radio-btn').forEach(l => l.classList.remove('selected'));
+      label.classList.add('selected');
+    });
+  });
+
+  updateProgress();
+</script>
+  <script>
+  (function() {
+    var apiBase = document.body.dataset.apiUrl;
+    if (!apiBase) return;
+    // apiUrl apunta a .../api/feedback — by-qa es relativo a eso
+    var feedbackBase = apiBase.replace('/api/feedback', '/api/feedback/by-qa/');
+    var slugMeta = document.querySelector('meta[name="qa-slug"]');
+    if (!slugMeta) return;
+    var qaSlug = slugMeta.content;
+
+    function crearBadgeIssue(issue) {
+      var a = document.createElement('a');
+      a.href = issue.url;
+      a.target = '_blank';
+      a.className = 'issue-badge issue-' + (
+        issue.state === 'open' ? 'open' :
+        issue.stateReason === 'completed' ? 'resolved' : 'discarded'
+      );
+      a.textContent = '#' + issue.number + ' — ' + (
+        issue.state === 'open' ? 'Abierto' :
+        issue.stateReason === 'completed' ? 'Resuelto' : 'Descartado'
+      );
+      return a;
+    }
+
+    function actualizarResumen(issues) {
+      var open = 0, resolved = 0, discarded = 0;
+      issues.forEach(function(i) {
+        if (i.state === 'open') open++;
+        else if (i.stateReason === 'completed') resolved++;
+        else discarded++;
+      });
+      var el;
+      el = document.getElementById('stat-abiertos'); if (el) el.textContent = open + ' abiertos';
+      el = document.getElementById('stat-resueltos'); if (el) el.textContent = resolved + ' resueltos';
+      el = document.getElementById('stat-descartados'); if (el) el.textContent = discarded + ' descartados';
+
+      var list = document.getElementById('issues-list');
+      if (list) {
+        list.innerHTML = '';
+        if (issues.length === 0) {
+          list.innerHTML = '<p class="text-muted">Sin issues reportados</p>';
+        } else {
+          issues.forEach(function(issue) {
+            var row = document.createElement('div');
+            row.className = 'issue-row';
+            row.innerHTML = '<a href="' + issue.url + '" target="_blank" class="issue-link">#' + issue.number + '</a> ' +
+              '<span class="issue-title">' + (issue.title || '') + '</span> ' +
+              '<span class="issue-badge-small issue-' + (issue.state === 'open' ? 'open' : issue.stateReason === 'completed' ? 'resolved' : 'discarded') + '">' +
+              (issue.state === 'open' ? 'Abierto' : issue.stateReason === 'completed' ? 'Resuelto' : 'Descartado') + '</span>';
+            list.appendChild(row);
+          });
+        }
+      }
+    }
+
+    function cargarIssues() {
+      fetch(feedbackBase + qaSlug)
+        .then(function(res) { if (!res.ok) throw new Error(); return res.json(); })
+        .then(function(data) {
+          document.querySelectorAll('.issue-badge').forEach(function(b) { b.remove(); });
+
+          data.issues.forEach(function(issue) {
+            if (!issue.itemSelector) return;
+            var item = document.querySelector('[data-item-selector="' + issue.itemSelector + '"]');
+            if (!item) return;
+            var container = item.querySelector('.item-badges');
+            if (container) container.appendChild(crearBadgeIssue(issue));
+          });
+
+          actualizarResumen(data.issues);
+
+          var status = document.getElementById('github-status');
+          if (status) status.textContent = 'Actualizado: ' + new Date(data.lastUpdated).toLocaleString('es-AR');
+        })
+        .catch(function() {
+          var status = document.getElementById('github-status');
+          if (status) status.textContent = 'No se pudo cargar estado de issues';
+        });
+    }
+
+    cargarIssues();
+    setInterval(cargarIssues, 2 * 60 * 1000);
+  })();
+</script>
+</body>
+</html>
