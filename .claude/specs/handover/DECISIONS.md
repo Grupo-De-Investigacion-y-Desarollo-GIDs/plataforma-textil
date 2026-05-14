@@ -400,6 +400,26 @@ Este documento registra las decisiones importantes tomadas durante el proyecto, 
 
 ---
 
+### 22. Adopción del sistema de tokens V4 — paleta extendida + tipografías Source Serif 4 e Inter
+
+- **Fecha:** Mayo 2026
+- **Categoría:** Técnica / Producto
+- **Contexto:** Spec X-01 implementa la primera fase del rediseño visual V4 (decisión 9). Se necesitaba definir el sistema de tokens CSS que heredan todas las pantallas automáticamente.
+- **Alternativas consideradas:**
+  - A) Mantener paleta V3 (brand-blue + brand-red + 2 fuentes)
+  - B) Adoptar paleta extendida V4 con terracotta, pastels, ink, 3 fuentes
+- **Decisión tomada:** B
+- **Razonamiento:** Implementa la propuesta visual aprobada en decisión 9. Body color cambia de azul brand (#1e2dbe) a casi-negro (#0F0F1E) para mejor legibilidad. Inter reemplaza Noto Sans como body font. Source Serif 4 en H1 para carácter editorial. Terracotta como acento textil.
+- **Implicancias:**
+  - `globals.css` reescrito con `@theme inline` de Tailwind v4
+  - 2 fuentes nuevas self-hosted en `public/fonts/`
+  - Tokens legacy preservados en `:root` para compatibilidad
+  - Animaciones existentes preservadas (progress-fill, slide-in-right)
+  - Noto Sans se mantiene pero ya no es body font (migración gradual)
+- **Estado:** Vigente
+
+---
+
 ## Decisiones revisadas o anuladas
 
 (Sin entradas por ahora. Esta sección se llena si una decisión vigente se modifica o anula.)
