@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
-import { invalidarCacheConfigs } from '@/compartido/lib/file-validation'
 import { logAccionAdmin } from '@/compartido/lib/log'
 
 const TIPOS_VALIDOS = ['pdf', 'jpeg', 'png', 'webp', 'xlsx', 'docx', 'mp4', 'mov']
@@ -50,8 +49,6 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         actualizadoPor: session.user.id,
       },
     })
-
-    invalidarCacheConfigs()
 
     logAccionAdmin('CONFIGURACION_UPLOAD_ACTUALIZADA', session.user.id!, {
       entidad: 'configuracion',

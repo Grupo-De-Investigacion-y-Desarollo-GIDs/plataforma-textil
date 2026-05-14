@@ -8,6 +8,10 @@
   - `tests/e2e/layout-consistency.spec.ts`
   - `tests/e2e/ux-mejoras.spec.ts`
 
+- **15:32** `4b6ff74` — fix(file-validation): eliminar cache in-memory cross-instance
+  - `src/app/api/admin/configuracion-upload/[id]/route.ts`
+  - `src/compartido/lib/file-validation.ts`
+
 
 ## 2026-05-13
 

@@ -44,27 +44,10 @@ export function detectarTipoArchivo(
   return null
 }
 
-// Cache de configuraciones en memoria (1 minuto)
-const cacheConfigs = new Map<string, { data: ConfiguracionUpload; expira: number }>()
-const CACHE_TTL_MS = 60 * 1000
-
 async function obtenerConfig(contexto: string): Promise<ConfiguracionUpload | null> {
-  const ahora = Date.now()
-  const cached = cacheConfigs.get(contexto)
-
-  if (cached && cached.expira > ahora) {
-    return cached.data
-  }
-
-  const config = await prisma.configuracionUpload.findUnique({
+  return prisma.configuracionUpload.findUnique({
     where: { contexto },
   })
-
-  if (config) {
-    cacheConfigs.set(contexto, { data: config, expira: ahora + CACHE_TTL_MS })
-  }
-
-  return config
 }
 
 export interface FileValidationResult {
@@ -145,10 +128,3 @@ export function esNombreSeguro(nombre: string): boolean {
   return true
 }
 
-/**
- * Invalida el cache de configuraciones.
- * Llamar desde el endpoint PUT despues de actualizar una config.
- */
-export function invalidarCacheConfigs() {
-  cacheConfigs.clear()
-}
