@@ -3,6 +3,19 @@
 ## 2026-05-13
 
 ### Gerardo Breard
+- **17:16** `cb66a4b` — fix(ci+auth): consolidar fixes E2E preview deploys
+  - `.github/workflows/e2e.yml`
+  - `src/compartido/lib/email.ts`
+
+- **16:37** `44b65c9` — feat(ci): warmup programático con login real por rol
+  - `.github/workflows/e2e.yml`
+
+- **16:07** `4836ead` — fix(middleware): /unauthorized debe ser pública
+  - `src/middleware.ts`
+
+- **13:20** `6bbe557` — fix(ci): E2E workflow soporta preview deploys de PRs
+  - `.github/workflows/e2e.yml`
+
 - **11:58** `7d5c473` — chore: trigger redeploy con variables de entorno corregidas
 
 

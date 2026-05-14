@@ -24,6 +24,7 @@ export default auth((req) => {
     '/denunciar',
     '/consultar-denuncia',
     '/directorio',
+    '/unauthorized',
     '/perfil/',        // Perfil público taller /perfil/[id]
     '/perfil-marca/',  // Perfil público marca /perfil-marca/[id]
     '/n/',             // Magic links WhatsApp (F-02)
