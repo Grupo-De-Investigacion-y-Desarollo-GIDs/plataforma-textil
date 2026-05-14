@@ -96,7 +96,7 @@ test.describe('F-04 Exportes del Estado', () => {
     await page.goto('/estado/exportar')
     await page.waitForLoadState('domcontentloaded')
 
-    const breadcrumb = page.locator('nav[aria-label="Breadcrumb"]')
+    const breadcrumb = page.locator('main nav[aria-label="Breadcrumb"]')
     await expect(breadcrumb).toBeVisible({ timeout: 30000 })
   })
 })

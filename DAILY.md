@@ -1,5 +1,14 @@
 # Daily Log
 
+## 2026-05-14
+
+### Gerardo Breard
+- **15:17** `0585e7b` — fix(e2e): scopear selector de Breadcrumb a <main>
+  - `tests/e2e/exportes-estado.spec.ts`
+  - `tests/e2e/layout-consistency.spec.ts`
+  - `tests/e2e/ux-mejoras.spec.ts`
+
+
 ## 2026-05-13
 
 ### Gerardo Breard
