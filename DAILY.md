@@ -16,6 +16,10 @@
   - `.github/workflows/qa-pages.yml`
   - `tools/generate-qa.js`
 
+- **00:48** `8213c0b` — feat(visual): tokens v4 (paleta extendida + tipografías Source Serif/Inter)
+  - `.claude/specs/v4-x-01-tokens.md`
+  - `src/app/globals.css`
+
 
 ## 2026-05-13
 

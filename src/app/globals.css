@@ -1,9 +1,11 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* --- Local @font-face declarations --- */
+/* ─────────────────────────────────────────── */
+/* @font-face — fuentes locales                */
+/* ─────────────────────────────────────────── */
 
-/* Noto Sans — latin-ext */
+/* Noto Sans — latin-ext (legacy, ir migrando a Inter) */
 @font-face {
   font-family: 'Noto Sans';
   font-style: normal;
@@ -14,7 +16,7 @@
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-/* Noto Sans — latin */
+/* Noto Sans — latin (legacy, ir migrando a Inter) */
 @font-face {
   font-family: 'Noto Sans';
   font-style: normal;
@@ -45,32 +47,134 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+/* NUEVAS — V4 */
+
+@font-face {
+  font-family: 'Source Serif 4';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/SourceSerif4-Variable.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/Inter-Variable.woff2') format('woff2');
+}
+
+/* ─────────────────────────────────────────── */
+/* @theme inline — tokens V4                   */
+/* ─────────────────────────────────────────── */
+
 @theme inline {
-  /* Brand Colors */
-  --color-brand-blue: #1e2dbe;
-  --color-brand-blue-hover: #161f8f;
-  --color-brand-red: #fa3c4b;
-  --color-brand-bg-light: #ebf5fd;
-  --color-brand-topbar: #161d8f;
-  --color-brand-tabnav: #1a27a8;
+  /* COLORES — paleta semántica */
 
-  /* Status Colors */
-  --color-status-success: #22c55e;
-  --color-status-warning: #f97316;
-  --color-status-error: #ef4444;
-  --color-status-muted: #9ca3af;
+  /* Brand */
+  --color-brand-blue: #1E2DBE;
+  --color-brand-blue-dark: #161D8F;
+  --color-brand-blue-hover: #1A27A8;
+  --color-brand-red: #FA3C4B;
+  --color-brand-bg-light: #EBF2FE;
+  --color-brand-topbar: #161D8F;
+  --color-brand-tabnav: #1A27A8;
 
-  /* Fonts */
-  --font-sans: 'Noto Sans', sans-serif;
-  --font-overpass: 'Overpass', sans-serif;
+  /* Acento NUEVO — terracotta (sector textil) */
+  --color-terra-50: #FFF4ED;
+  --color-terra-100: #FFE4D3;
+  --color-terra-300: #FDB088;
+  --color-terra-600: #C2410C;
+  --color-terra-700: #9A3412;
 
-  /* Shadows */
-  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.1);
-  --shadow-card-hover: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  /* Pastels (íconos circulares + backgrounds suaves) */
+  --color-pastel-blue: #EBF2FE;
+  --color-pastel-green: #E6F5EE;
+  --color-pastel-purple: #F0EBFA;
+  --color-pastel-yellow: #FEF6E5;
+  --color-pastel-terra: #FFF4ED;
+  --color-pastel-red: #FDECEC;
 
-  /* Animations */
+  /* Texto — IMPORTANTE: cambia de azul brand a casi-negro */
+  --color-ink-primary: #0F0F1E;
+  --color-ink-secondary: #4B5563;
+  --color-ink-muted: #9CA3AF;
+
+  /* Status (semántico) */
+  --color-status-success: #22C55E;
+  --color-status-warning: #F59E0B;
+  --color-status-error: #EF4444;
+  --color-status-info: #3B82F6;
+  --color-status-muted: #9CA3AF;
+
+  /* TIPOGRAFÍA */
+  --font-sans: 'Inter', sans-serif;          /* body text */
+  --font-overpass: 'Overpass', sans-serif;   /* UI: botones, labels, captions */
+  --font-serif: 'Source Serif 4', serif;     /* titulares: H1 grandes */
+
+  /* RADIOS */
+  --radius-card: 1rem;        /* rounded-card → 16px */
+  --radius-button: 0.625rem;  /* rounded-lg → 10px */
+  --radius-icon: 9999px;      /* rounded-full */
+  --radius-input: 0.5rem;     /* rounded-md → 8px */
+
+  /* SOMBRAS */
+  --shadow-soft: 0 2px 8px 0 rgb(15 15 30 / 0.04);
+  --shadow-card: 0 4px 20px 0 rgb(15 15 30 / 0.04);
+  --shadow-card-hover: 0 12px 32px 0 rgb(15 15 30 / 0.10);
+  --shadow-modal: 0 24px 48px 0 rgb(15 15 30 / 0.16);
+
+  /* ANIMACIONES */
   --animate-progress-fill: progress-fill 1s ease-out forwards;
 }
+
+/* ─────────────────────────────────────────── */
+/* COMPAT — mantener variables legacy          */
+/* ─────────────────────────────────────────── */
+
+:root {
+  /* Compat con código que use var(--brand-blue) o similares */
+  --brand-blue: #1E2DBE;
+  --brand-red: #FA3C4B;
+  --brand-bg-light: #EBF2FE;
+}
+
+/* ─────────────────────────────────────────── */
+/* RESETS Y BASE                               */
+/* ─────────────────────────────────────────── */
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #F8F9FB;
+  color: #0F0F1E;          /* IMPORTANTE: era #1e2dbe (azul brand). Ahora casi-negro. */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Jerarquía tipográfica */
+h1 {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 700;
+  font-optical-sizing: auto;
+}
+
+h2, h3, h4, h5, h6 {
+  font-family: 'Overpass', sans-serif;
+}
+
+nav, button, select, input, label {
+  font-family: 'Overpass', sans-serif;
+}
+
+/* Scrollbar refinado */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(15, 15, 30, 0.1); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(15, 15, 30, 0.2); }
+
+/* ─────────────────────────────────────────── */
+/* ANIMACIONES                                 */
+/* ─────────────────────────────────────────── */
 
 @keyframes progress-fill {
   0% { stroke-dashoffset: 440; }
@@ -86,25 +190,14 @@
   animation: slide-in-right 0.3s ease-out;
 }
 
-:root {
-  --brand-blue: #1e2dbe;
-  --brand-red: #fa3c4b;
-  --brand-bg-light: #ebf5fd;
+/* Pattern textil sutil — clase utilitaria opcional para futuros usos */
+.pattern-weave {
+  background-image:
+    linear-gradient(135deg, rgba(30, 45, 190, 0.04) 25%, transparent 25%),
+    linear-gradient(225deg, rgba(30, 45, 190, 0.04) 25%, transparent 25%),
+    linear-gradient(45deg, rgba(30, 45, 190, 0.04) 25%, transparent 25%),
+    linear-gradient(315deg, rgba(30, 45, 190, 0.04) 25%, transparent 25%);
+  background-position: 10px 0, 10px 0, 0 0, 0 0;
+  background-size: 20px 20px;
+  background-repeat: repeat;
 }
-
-body {
-  font-family: 'Noto Sans', sans-serif;
-  background-color: #fff;
-  color: #1e2dbe;
-  -webkit-font-smoothing: antialiased;
-}
-
-h1, h2, h3, h4, h5, h6,
-nav, button, select, input, label {
-  font-family: 'Overpass', sans-serif;
-}
-
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #f1f1f1; }
-::-webkit-scrollbar-thumb { background: #1e2dbe; }
-::-webkit-scrollbar-thumb:hover { background: #fa3c4b; }
