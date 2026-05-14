@@ -42,7 +42,7 @@ test.describe('UX Mejoras', () => {
     expect(body).not.toContain('Application error')
 
     // Verificar que la pagina tiene breadcrumbs (nav con aria-label)
-    const breadcrumb = page.locator('nav[aria-label="Breadcrumb"]')
+    const breadcrumb = page.locator('main nav[aria-label="Breadcrumb"]')
     await expect(breadcrumb).toBeVisible({ timeout: 30000 })
   })
 
