@@ -3,6 +3,9 @@
 ## 2026-05-15
 
 ### Gerardo Breard
+- **14:50** `208f950` — docs(handover): documentar flaky multi-rol en flujo-comercial
+  - `.claude/specs/handover/KNOWN_ISSUES.md`
+
 - **12:56** `bf34840` — fix(e2e): 4 bugs preexistentes en tests ESTADO destapados por storageState
   - `tests/e2e/demanda-insatisfecha.spec.ts`
   - `tests/e2e/exportes-estado.spec.ts`
