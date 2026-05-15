@@ -1,8 +1,40 @@
 # Daily Log
 
+## 2026-05-15
+
+### Gerardo Breard
+- **12:56** `bf34840` — fix(e2e): 4 bugs preexistentes en tests ESTADO destapados por storageState
+  - `tests/e2e/demanda-insatisfecha.spec.ts`
+  - `tests/e2e/exportes-estado.spec.ts`
+
+- **11:32** `afd40af` — fix(e2e): navegacion full-page despues de login para evitar RSC hang
+  - `tests/e2e/_helpers/auth.ts`
+  - `tests/e2e/auth.setup.ts`
+
+- **11:13** `7801f9f` — fix(e2e): usar browser real en auth.setup (no page.request)
+  - `tests/e2e/_helpers/auth.ts`
+  - `tests/e2e/auth.setup.ts`
+
+
 ## 2026-05-14
 
 ### Gerardo Breard
+- **23:17** `5f8b6c4` — debug: agregar logging diagnostico al auth setup
+  - `tests/e2e/auth.setup.ts`
+
+- **23:12** `ced67eb` — fix(e2e): auth setup via API directa en vez de browser form
+  - `tests/e2e/auth.setup.ts`
+
+- **22:56** `9ff8bb2` — fix(e2e): scopear locator de h1 con .first() para strict mode
+  - `tests/e2e/admin-no-regression.spec.ts`
+  - `tests/e2e/observaciones-campo.spec.ts`
+  - `tests/e2e/onboarding.spec.ts`
+
+- **22:55** `cf19216` — fix(e2e): resolver timeouts de tests ESTADO con storageState
+  - `playwright.config.ts`
+  - `tests/e2e/_helpers/auth.ts`
+  - `tests/e2e/auth.setup.ts`
+
 - **15:17** `0585e7b` — fix(e2e): scopear selector de Breadcrumb a <main>
   - `tests/e2e/exportes-estado.spec.ts`
   - `tests/e2e/layout-consistency.spec.ts`
