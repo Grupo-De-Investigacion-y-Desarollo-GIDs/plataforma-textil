@@ -3,6 +3,10 @@
 ## 2026-05-15
 
 ### Gerardo Breard
+- **12:56** `bf34840` — fix(e2e): 4 bugs preexistentes en tests ESTADO destapados por storageState
+  - `tests/e2e/demanda-insatisfecha.spec.ts`
+  - `tests/e2e/exportes-estado.spec.ts`
+
 - **11:32** `afd40af` — fix(e2e): navegacion full-page despues de login para evitar RSC hang
   - `tests/e2e/_helpers/auth.ts`
   - `tests/e2e/auth.setup.ts`
