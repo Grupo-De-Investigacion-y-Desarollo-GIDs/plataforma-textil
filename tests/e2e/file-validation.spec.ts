@@ -15,6 +15,8 @@ function exeBuffer(): Buffer {
   return Buffer.from([0x4d, 0x5a, 0x90, 0x00, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0xff, 0xff, 0x00, 0x00])
 }
 
+test.describe.configure({ mode: 'serial' })
+
 test.describe('File validation — S-03', () => {
   test('upload JPEG valido a imagenes (portfolio) retorna URL', async ({ page }) => {
     test.setTimeout(30000)
