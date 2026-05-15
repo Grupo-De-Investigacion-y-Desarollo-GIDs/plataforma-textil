@@ -118,6 +118,12 @@ enum EstadoEscrow {
   DISPUTADO
 }
 
+enum TipoNovedad {
+  NOTICIA
+  CASO
+  INDICADOR
+}
+
 // ============================================
 // AUTH & USERS
 // ============================================
@@ -1013,4 +1019,24 @@ model MagicLink {
   @@index([token])
   @@index([userId])
   @@map("magic_links")
+}
+
+// ============================================
+// CONTENIDO PÚBLICO
+// ============================================
+
+model Novedad {
+  id          String      @id @default(cuid())
+  tipo        TipoNovedad
+  titulo      String
+  descripcion String      @db.Text
+  imagenUrl   String?
+  slug        String      @unique
+  fecha       DateTime    @default(now())
+  publicado   Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([publicado, fecha])
+  @@map("novedades")
 }
