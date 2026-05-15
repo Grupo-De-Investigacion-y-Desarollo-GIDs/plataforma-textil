@@ -3,6 +3,14 @@
 ## 2026-05-15
 
 ### Gerardo Breard
+- **15:19** `47f7347` — chore(skills): infraestructura de skills V4
+  - `.claude/skills/README.md`
+  - `.claude/skills/debugging-methodology/SKILL.md`
+  - `.claude/skills/github-workflows/SKILL.md`
+  - `.claude/skills/playwright-e2e/SKILL.md`
+  - `.claude/skills/spec-v4-implementation/SKILL.md`
+  - `.claude/skills/vercel-nextauth/SKILL.md`
+
 - **14:50** `208f950` — docs(handover): documentar flaky multi-rol en flujo-comercial
   - `.claude/specs/handover/KNOWN_ISSUES.md`
 
