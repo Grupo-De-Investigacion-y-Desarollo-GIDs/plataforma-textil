@@ -54,7 +54,7 @@ test.describe('F-05 Dashboard de demanda insatisfecha', () => {
     await page.goto('/estado/demanda-insatisfecha')
     await expect(page.getByRole('heading', { name: 'Demanda insatisfecha' })).toBeVisible({ timeout: 30000 })
 
-    await expect(page.getByText('Exportar CSV')).toBeVisible()
+    await expect(page.locator('main').getByText('Exportar CSV')).toBeVisible()
   })
 
   test('TALLER no puede acceder a demanda-insatisfecha API', async ({ page, playwright }) => {
