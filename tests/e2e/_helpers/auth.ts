@@ -35,10 +35,19 @@ const envMap: Record<Rol, { emailVar: string; passwordVar: string }> = {
   estado: { emailVar: 'TEST_ESTADO_EMAIL', passwordVar: 'TEST_ESTADO_PASSWORD' },
 }
 
+// Rutas de navegacion post-login por rol.
+// ESTADO usa /estado/talleres (liviana) en vez de /estado (16 queries pesadas).
+const targetPaths: Record<Rol, string> = {
+  admin: '/admin',
+  taller: '/taller',
+  marca: '/marca',
+  estado: '/estado/talleres',
+}
+
 /**
  * Login como un rol. Si auth.setup.ts ya guardo storageState,
- * inyecta las cookies y navega via middleware redirect (~2-5s).
- * Si no existe, hace el login completo via browser (fallback local).
+ * inyecta las cookies y navega directo (~2-5s).
+ * Si no existe, hace login via browser form (fallback local).
  */
 export async function loginAs(page: Page, rol: Rol) {
   // Fast path: reusar storageState del setup project
@@ -47,11 +56,8 @@ export async function loginAs(page: Page, rol: Rol) {
     const state = JSON.parse(fs.readFileSync(authFile, 'utf-8'))
     if (state.cookies?.length > 0) {
       await page.context().addCookies(state.cookies)
-      // Navegar a / — middleware redirige al dashboard del rol.
-      // Usa waitUntil:'commit' para no esperar el render completo
-      // (evita esperar las 16 queries de /estado dashboard).
-      await page.goto('/', { waitUntil: 'commit' })
-      await page.waitForURL(defaults[rol].rutaEsperada, { timeout: 30_000, waitUntil: 'commit' })
+      // Navegacion full-page directa (evita middleware redirect → RSC hang)
+      await page.goto(targetPaths[rol], { waitUntil: 'load', timeout: 30_000 })
       return
     }
   }
@@ -67,7 +73,15 @@ export async function loginAs(page: Page, rol: Rol) {
   await page.locator('form:has(button:has-text("Ingresar")) input[name="email"]').fill(email)
   await page.locator('form:has(button:has-text("Ingresar")) input[name="password"]').fill(password)
   await page.getByRole('button', { name: 'Ingresar' }).click()
-  await page.waitForURL(def.rutaEsperada, { timeout: 90_000 })
+
+  // Esperar que URL salga de /login (login completó)
+  await page.waitForURL((url) => !url.pathname.startsWith('/login'), {
+    timeout: 30_000,
+    waitUntil: 'commit',
+  })
+
+  // Navegacion full-page al target (evita client-side RSC hang de /estado)
+  await page.goto(targetPaths[rol], { waitUntil: 'load', timeout: 60_000 })
 }
 
 export async function logout(page: Page) {
