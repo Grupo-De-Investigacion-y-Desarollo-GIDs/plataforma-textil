@@ -19,9 +19,9 @@ test.describe('F-05 Dashboard de demanda insatisfecha', () => {
     await expect(page.getByRole('heading', { name: 'Demanda insatisfecha' })).toBeVisible({ timeout: 30000 })
 
     // Stats cards deben estar visibles (aunque sean 0)
-    await expect(page.getByText('Pedidos sin cotizaciones')).toBeVisible()
-    await expect(page.getByText('Unidades de producción potencial')).toBeVisible()
-    await expect(page.getByText('Marcas afectadas')).toBeVisible()
+    await expect(page.locator('main').getByText('Pedidos sin cotizaciones')).toBeVisible()
+    await expect(page.locator('main').getByText('Unidades de producción potencial')).toBeVisible()
+    await expect(page.locator('main').getByText('Marcas afectadas')).toBeVisible()
   })
 
   test('Dashboard muestra estado vacio con mensaje explicativo', async ({ page }) => {
