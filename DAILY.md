@@ -3,6 +3,9 @@
 ## 2026-05-15
 
 ### Gerardo Breard
+- **15:59** `f91ea1c` — fix(e2e): resolver race condition en file-validation con serial mode
+  - `tests/e2e/file-validation.spec.ts`
+
 - **15:25** `f680b3f` — fix(e2e): strict mode y navigation race en demanda-insatisfecha y smoke
   - `tests/e2e/demanda-insatisfecha.spec.ts`
   - `tests/e2e/smoke.spec.ts`
