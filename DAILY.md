@@ -3,6 +3,9 @@
 ## 2026-05-14
 
 ### Gerardo Breard
+- **23:17** `5f8b6c4` — debug: agregar logging diagnostico al auth setup
+  - `tests/e2e/auth.setup.ts`
+
 - **23:12** `ced67eb` — fix(e2e): auth setup via API directa en vez de browser form
   - `tests/e2e/auth.setup.ts`
 
