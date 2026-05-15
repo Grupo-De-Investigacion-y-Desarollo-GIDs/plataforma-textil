@@ -3,6 +3,9 @@
 ## 2026-05-14
 
 ### Gerardo Breard
+- **23:12** `ced67eb` — fix(e2e): auth setup via API directa en vez de browser form
+  - `tests/e2e/auth.setup.ts`
+
 - **22:56** `9ff8bb2` — fix(e2e): scopear locator de h1 con .first() para strict mode
   - `tests/e2e/admin-no-regression.spec.ts`
   - `tests/e2e/observaciones-campo.spec.ts`
