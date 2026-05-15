@@ -3,6 +3,21 @@
 ## 2026-05-15
 
 ### Gerardo Breard
+- **15:25** `f680b3f` — fix(e2e): strict mode y navigation race en demanda-insatisfecha y smoke
+  - `tests/e2e/demanda-insatisfecha.spec.ts`
+  - `tests/e2e/smoke.spec.ts`
+
+- **15:19** `47f7347` — chore(skills): infraestructura de skills V4
+  - `.claude/skills/README.md`
+  - `.claude/skills/debugging-methodology/SKILL.md`
+  - `.claude/skills/github-workflows/SKILL.md`
+  - `.claude/skills/playwright-e2e/SKILL.md`
+  - `.claude/skills/spec-v4-implementation/SKILL.md`
+  - `.claude/skills/vercel-nextauth/SKILL.md`
+
+- **14:50** `208f950` — docs(handover): documentar flaky multi-rol en flujo-comercial
+  - `.claude/specs/handover/KNOWN_ISSUES.md`
+
 - **12:56** `bf34840` — fix(e2e): 4 bugs preexistentes en tests ESTADO destapados por storageState
   - `tests/e2e/demanda-insatisfecha.spec.ts`
   - `tests/e2e/exportes-estado.spec.ts`
