@@ -1,15 +1,14 @@
-import { test as setup } from '@playwright/test'
+import { test as setup, expect } from '@playwright/test'
 
 type Rol = 'admin' | 'taller' | 'marca' | 'estado'
 
-const roles: { rol: Rol; emailVar: string; passwordVar: string; email: string; password: string; rutaEsperada: RegExp }[] = [
+const roles: { rol: Rol; emailVar: string; passwordVar: string; email: string; password: string }[] = [
   {
     rol: 'admin',
     emailVar: 'TEST_ADMIN_EMAIL',
     passwordVar: 'TEST_ADMIN_PASSWORD',
     email: 'lucia.fernandez@pdt.org.ar',
     password: 'pdt2026',
-    rutaEsperada: /\/admin/,
   },
   {
     rol: 'taller',
@@ -17,7 +16,6 @@ const roles: { rol: Rol; emailVar: string; passwordVar: string; email: string; p
     passwordVar: 'TEST_TALLER_PASSWORD',
     email: 'roberto.gimenez@pdt.org.ar',
     password: 'pdt2026',
-    rutaEsperada: /\/taller/,
   },
   {
     rol: 'marca',
@@ -25,7 +23,6 @@ const roles: { rol: Rol; emailVar: string; passwordVar: string; email: string; p
     passwordVar: 'TEST_MARCA_PASSWORD',
     email: 'martin.echevarria@pdt.org.ar',
     password: 'pdt2026',
-    rutaEsperada: /\/marca/,
   },
   {
     rol: 'estado',
@@ -33,20 +30,27 @@ const roles: { rol: Rol; emailVar: string; passwordVar: string; email: string; p
     passwordVar: 'TEST_ESTADO_PASSWORD',
     email: 'anabelen.torres@pdt.org.ar',
     password: 'pdt2026',
-    rutaEsperada: /\/estado/,
   },
 ]
 
-for (const { rol, emailVar, passwordVar, email, password, rutaEsperada } of roles) {
+for (const { rol, emailVar, passwordVar, email, password } of roles) {
   setup(`authenticate as ${rol}`, async ({ page }) => {
     const e = process.env[emailVar] || email
     const p = process.env[passwordVar] || password
 
-    await page.goto('/login')
-    await page.locator('form:has(button:has-text("Ingresar")) input[name="email"]').fill(e)
-    await page.locator('form:has(button:has-text("Ingresar")) input[name="password"]').fill(p)
-    await page.getByRole('button', { name: 'Ingresar' }).click()
-    await page.waitForURL(rutaEsperada, { timeout: 120_000, waitUntil: 'commit' })
+    // Login via API directa — bypasa el form React y router.push()
+    // que causa race conditions con RSC payload fetch de paginas pesadas.
+    const csrfRes = await page.request.get('/api/auth/csrf')
+    const { csrfToken } = await csrfRes.json()
+
+    await page.request.post('/api/auth/callback/credentials', {
+      form: { email: e, password: p, csrfToken },
+    })
+
+    // Verificar que la sesion quedo establecida
+    const sessionRes = await page.request.get('/api/auth/session')
+    const session = await sessionRes.json()
+    expect(session?.user, `Login failed for ${rol} (email: ${e})`).toBeTruthy()
 
     await page.context().storageState({ path: `playwright/.auth/${rol}.json` })
   })
