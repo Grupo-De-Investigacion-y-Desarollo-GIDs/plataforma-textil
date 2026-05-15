@@ -3,6 +3,10 @@
 ## 2026-05-15
 
 ### Gerardo Breard
+- **11:32** `afd40af` — fix(e2e): navegacion full-page despues de login para evitar RSC hang
+  - `tests/e2e/_helpers/auth.ts`
+  - `tests/e2e/auth.setup.ts`
+
 - **11:13** `7801f9f` — fix(e2e): usar browser real en auth.setup (no page.request)
   - `tests/e2e/_helpers/auth.ts`
   - `tests/e2e/auth.setup.ts`
