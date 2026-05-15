@@ -3,6 +3,11 @@
 ## 2026-05-14
 
 ### Gerardo Breard
+- **22:55** `cf19216` — fix(e2e): resolver timeouts de tests ESTADO con storageState
+  - `playwright.config.ts`
+  - `tests/e2e/_helpers/auth.ts`
+  - `tests/e2e/auth.setup.ts`
+
 - **15:17** `0585e7b` — fix(e2e): scopear selector de Breadcrumb a <main>
   - `tests/e2e/exportes-estado.spec.ts`
   - `tests/e2e/layout-consistency.spec.ts`
