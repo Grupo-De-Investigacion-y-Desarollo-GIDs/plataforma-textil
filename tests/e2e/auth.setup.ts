@@ -39,18 +39,32 @@ for (const { rol, emailVar, passwordVar, email, password } of roles) {
     const p = process.env[passwordVar] || password
 
     // Login via API directa — bypasa el form React y router.push()
-    // que causa race conditions con RSC payload fetch de paginas pesadas.
     const csrfRes = await page.request.get('/api/auth/csrf')
-    const { csrfToken } = await csrfRes.json()
+    const csrfBody = await csrfRes.json()
+    const csrfToken = csrfBody.csrfToken
 
-    await page.request.post('/api/auth/callback/credentials', {
+    const loginRes = await page.request.post('/api/auth/callback/credentials', {
       form: { email: e, password: p, csrfToken },
     })
 
-    // Verificar que la sesion quedo establecida
+    // Diagnostico: verificar respuesta del login
+    const loginStatus = loginRes.status()
+    const loginUrl = loginRes.url()
+    console.log(`[auth.setup] ${rol}: POST status=${loginStatus}, finalUrl=${loginUrl}`)
+
+    // Verificar cookies despues del login
+    const cookies = await page.context().cookies()
+    const sessionCookie = cookies.find(c =>
+      c.name.includes('authjs.session-token') || c.name.includes('next-auth.session-token')
+    )
+    console.log(`[auth.setup] ${rol}: cookies=${cookies.length}, sessionCookie=${sessionCookie?.name ?? 'NONE'}`)
+
+    // Verificar sesion
     const sessionRes = await page.request.get('/api/auth/session')
     const session = await sessionRes.json()
-    expect(session?.user, `Login failed for ${rol} (email: ${e})`).toBeTruthy()
+    console.log(`[auth.setup] ${rol}: session.user=${JSON.stringify(session?.user ?? null)}`)
+
+    expect(session?.user, `Login failed for ${rol}: no session (status=${loginStatus}, url=${loginUrl})`).toBeTruthy()
 
     await page.context().storageState({ path: `playwright/.auth/${rol}.json` })
   })
