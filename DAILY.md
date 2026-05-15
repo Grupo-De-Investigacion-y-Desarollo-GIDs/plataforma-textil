@@ -3,6 +3,9 @@
 ## 2026-05-15
 
 ### Gerardo Breard
+- **20:32** `4da55c9` — docs(spec): X-04 modelo Novedad
+  - `.claude/specs/v4-x-04-modelo-novedad.md`
+
 - **15:59** `f91ea1c` — fix(e2e): resolver race condition en file-validation con serial mode
   - `tests/e2e/file-validation.spec.ts`
 
