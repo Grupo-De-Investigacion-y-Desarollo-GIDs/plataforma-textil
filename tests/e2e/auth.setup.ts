@@ -1,14 +1,15 @@
-import { test as setup, expect } from '@playwright/test'
+import { test as setup } from '@playwright/test'
 
 type Rol = 'admin' | 'taller' | 'marca' | 'estado'
 
-const roles: { rol: Rol; emailVar: string; passwordVar: string; email: string; password: string }[] = [
+const roles: { rol: Rol; emailVar: string; passwordVar: string; email: string; password: string; rutaEsperada: RegExp }[] = [
   {
     rol: 'admin',
     emailVar: 'TEST_ADMIN_EMAIL',
     passwordVar: 'TEST_ADMIN_PASSWORD',
     email: 'lucia.fernandez@pdt.org.ar',
     password: 'pdt2026',
+    rutaEsperada: /\/admin/,
   },
   {
     rol: 'taller',
@@ -16,6 +17,7 @@ const roles: { rol: Rol; emailVar: string; passwordVar: string; email: string; p
     passwordVar: 'TEST_TALLER_PASSWORD',
     email: 'roberto.gimenez@pdt.org.ar',
     password: 'pdt2026',
+    rutaEsperada: /\/taller/,
   },
   {
     rol: 'marca',
@@ -23,6 +25,7 @@ const roles: { rol: Rol; emailVar: string; passwordVar: string; email: string; p
     passwordVar: 'TEST_MARCA_PASSWORD',
     email: 'martin.echevarria@pdt.org.ar',
     password: 'pdt2026',
+    rutaEsperada: /\/marca/,
   },
   {
     rol: 'estado',
@@ -30,41 +33,23 @@ const roles: { rol: Rol; emailVar: string; passwordVar: string; email: string; p
     passwordVar: 'TEST_ESTADO_PASSWORD',
     email: 'anabelen.torres@pdt.org.ar',
     password: 'pdt2026',
+    rutaEsperada: /\/estado/,
   },
 ]
 
-for (const { rol, emailVar, passwordVar, email, password } of roles) {
+for (const { rol, emailVar, passwordVar, email, password, rutaEsperada } of roles) {
   setup(`authenticate as ${rol}`, async ({ page }) => {
     const e = process.env[emailVar] || email
     const p = process.env[passwordVar] || password
 
-    // Login via API directa — bypasa el form React y router.push()
-    const csrfRes = await page.request.get('/api/auth/csrf')
-    const csrfBody = await csrfRes.json()
-    const csrfToken = csrfBody.csrfToken
-
-    const loginRes = await page.request.post('/api/auth/callback/credentials', {
-      form: { email: e, password: p, csrfToken },
-    })
-
-    // Diagnostico: verificar respuesta del login
-    const loginStatus = loginRes.status()
-    const loginUrl = loginRes.url()
-    console.log(`[auth.setup] ${rol}: POST status=${loginStatus}, finalUrl=${loginUrl}`)
-
-    // Verificar cookies despues del login
-    const cookies = await page.context().cookies()
-    const sessionCookie = cookies.find(c =>
-      c.name.includes('authjs.session-token') || c.name.includes('next-auth.session-token')
-    )
-    console.log(`[auth.setup] ${rol}: cookies=${cookies.length}, sessionCookie=${sessionCookie?.name ?? 'NONE'}`)
-
-    // Verificar sesion
-    const sessionRes = await page.request.get('/api/auth/session')
-    const session = await sessionRes.json()
-    console.log(`[auth.setup] ${rol}: session.user=${JSON.stringify(session?.user ?? null)}`)
-
-    expect(session?.user, `Login failed for ${rol}: no session (status=${loginStatus}, url=${loginUrl})`).toBeTruthy()
+    await page.goto('/login')
+    await page.locator('form:has(button:has-text("Ingresar")) input[name="email"]').fill(e)
+    await page.locator('form:has(button:has-text("Ingresar")) input[name="password"]').fill(p)
+    await page.getByRole('button', { name: 'Ingresar' }).click()
+    // 90s: /estado tarda al cargar primera vez (16 queries en $transaction).
+    // Sin waitUntil — default 'load' para que Playwright detecte la
+    // navegacion client-side (router.push) correctamente.
+    await page.waitForURL(rutaEsperada, { timeout: 90_000 })
 
     await page.context().storageState({ path: `playwright/.auth/${rol}.json` })
   })

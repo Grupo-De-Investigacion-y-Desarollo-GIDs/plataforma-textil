@@ -67,7 +67,7 @@ export async function loginAs(page: Page, rol: Rol) {
   await page.locator('form:has(button:has-text("Ingresar")) input[name="email"]').fill(email)
   await page.locator('form:has(button:has-text("Ingresar")) input[name="password"]').fill(password)
   await page.getByRole('button', { name: 'Ingresar' }).click()
-  await page.waitForURL(def.rutaEsperada, { timeout: 60_000, waitUntil: 'commit' })
+  await page.waitForURL(def.rutaEsperada, { timeout: 90_000 })
 }
 
 export async function logout(page: Page) {
