@@ -20,7 +20,7 @@ test.describe('F-05 Dashboard de demanda insatisfecha', () => {
 
     // Stats cards deben estar visibles (aunque sean 0)
     await expect(page.getByText('Pedidos sin cotizaciones')).toBeVisible()
-    await expect(page.getByText('Unidades de produccion potencial')).toBeVisible()
+    await expect(page.getByText('Unidades de producción potencial')).toBeVisible()
     await expect(page.getByText('Marcas afectadas')).toBeVisible()
   })
 
@@ -44,7 +44,7 @@ test.describe('F-05 Dashboard de demanda insatisfecha', () => {
     await loginEstado(page)
 
     await page.goto('/estado')
-    await expect(page.getByText('Demanda insatisfecha')).toBeVisible({ timeout: 30000 })
+    await expect(page.locator('header').getByText('Demanda insatisfecha')).toBeVisible({ timeout: 30000 })
   })
 
   test('Boton Exportar CSV esta visible', async ({ page }) => {
@@ -97,13 +97,13 @@ test.describe('F-05 Dashboard de demanda insatisfecha', () => {
       extraHTTPHeaders: { Cookie: `${sessionCookie.name}=${sessionCookie.value}` },
     })
     try {
-      const res = await apiContext.get('/api/estado/demanda-insatisfecha/exportar')
+      const res = await apiContext.get('/api/estado/exportar?tipo=demanda&formato=csv')
       expect(res.status()).toBe(200)
       const contentType = res.headers()['content-type']
       expect(contentType).toContain('text/csv')
       const body = await res.text()
-      expect(body).toContain('omId')
-      expect(body).toContain('tipoPrenda')
+      expect(body).toContain('Tipo prenda')
+      expect(body).toContain('Marca')
     } finally {
       await apiContext.dispose()
     }
