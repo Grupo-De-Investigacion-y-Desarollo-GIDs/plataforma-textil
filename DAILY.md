@@ -3,6 +3,10 @@
 ## 2026-05-15
 
 ### Gerardo Breard
+- **15:25** `f680b3f` — fix(e2e): strict mode y navigation race en demanda-insatisfecha y smoke
+  - `tests/e2e/demanda-insatisfecha.spec.ts`
+  - `tests/e2e/smoke.spec.ts`
+
 - **15:19** `47f7347` — chore(skills): infraestructura de skills V4
   - `.claude/skills/README.md`
   - `.claude/skills/debugging-methodology/SKILL.md`
