@@ -3,6 +3,11 @@
 ## 2026-05-14
 
 ### Gerardo Breard
+- **22:56** `9ff8bb2` — fix(e2e): scopear locator de h1 con .first() para strict mode
+  - `tests/e2e/admin-no-regression.spec.ts`
+  - `tests/e2e/observaciones-campo.spec.ts`
+  - `tests/e2e/onboarding.spec.ts`
+
 - **22:55** `cf19216` — fix(e2e): resolver timeouts de tests ESTADO con storageState
   - `playwright.config.ts`
   - `tests/e2e/_helpers/auth.ts`
