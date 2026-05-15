@@ -5,7 +5,7 @@ import { useFormStatus } from 'react-dom'
 import { cn } from '@/compartido/lib/utils'
 import { Loader2 } from 'lucide-react'
 
-type ButtonVariant = 'primary' | 'secondary' | 'success' | 'danger' | 'ghost'
+type ButtonVariant = 'primary' | 'secondary' | 'success' | 'danger' | 'ghost' | 'outline-dark' | 'terra'
 type ButtonSize = 'sm' | 'md' | 'lg'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -16,11 +16,13 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
-  primary: 'bg-brand-blue hover:bg-blue-800 text-white',
-  secondary: 'bg-white hover:bg-gray-50 text-brand-blue border border-gray-300',
+  primary: 'bg-brand-blue hover:bg-brand-blue-hover text-white shadow-soft',
+  secondary: 'bg-white hover:bg-pastel-blue text-brand-blue border-2 border-brand-blue',
   success: 'bg-status-success hover:bg-green-600 text-white',
   danger: 'bg-status-error hover:bg-red-600 text-white',
-  ghost: 'bg-transparent hover:bg-gray-100 text-brand-blue',
+  ghost: 'bg-transparent hover:bg-pastel-blue text-brand-blue',
+  'outline-dark': 'bg-white hover:bg-gray-50 text-ink-primary border border-ink-secondary',
+  terra: 'bg-terra-600 hover:bg-terra-700 text-white',
 }
 
 const sizeStyles: Record<ButtonSize, string> = {
