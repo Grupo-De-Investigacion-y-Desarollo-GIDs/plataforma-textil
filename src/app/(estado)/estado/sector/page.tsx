@@ -11,11 +11,11 @@ const orgLabels: Record<string, string> = {
   completa: 'Prenda completa',
 }
 
-const expLabels: Record<string, string> = {
-  '5+': 'Más de 5 años',
-  '3-5': '3 a 5 años',
-  '1-3': '1 a 3 años',
-  '<1': 'Menos de 1 año',
+const catLabels: Record<string, string> = {
+  APRENDIZ: 'Aprendices',
+  MEDIO_OFICIAL: 'Medio oficial',
+  OFICIAL: 'Oficial',
+  OFICIAL_CALIFICADO: 'Oficial calificado',
 }
 
 const regLabels: Record<string, string> = {
@@ -33,14 +33,14 @@ const escLabels: Record<string, string> = {
   no: 'Sin capacidad',
 }
 
-function BarChart({ items, total }: { items: { label: string; count: number }[]; total: number }) {
+function BarChart({ items, total, unit = 'talleres' }: { items: { label: string; count: number }[]; total: number; unit?: string }) {
   return (
     <div className="space-y-3">
       {items.map(({ label, count }) => (
         <div key={label}>
           <div className="flex justify-between text-sm mb-1">
             <span className="font-medium text-gray-700">{label}</span>
-            <span className="text-gray-500">{count} talleres</span>
+            <span className="text-gray-500">{count} {unit}</span>
           </div>
           <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
             <div
@@ -62,7 +62,7 @@ export default async function DiagnosticoSectorPage() {
 
   const [
     distribucionOrganizacion,
-    distribucionExperiencia,
+    distribucionPlantilla,
     distribucionRegistro,
     distribucionEscalabilidad,
     capacidadTotalSector,
@@ -76,11 +76,9 @@ export default async function DiagnosticoSectorPage() {
       where: { organizacion: { not: null } },
       orderBy: { organizacion: 'asc' },
     }),
-    prisma.taller.groupBy({
-      by: ['experienciaPromedio'],
-      _count: { _all: true },
-      where: { experienciaPromedio: { not: null } },
-      orderBy: { experienciaPromedio: 'asc' },
+    prisma.tallerPlantilla.groupBy({
+      by: ['categoria'],
+      _sum: { cantidad: true },
     }),
     prisma.taller.groupBy({
       by: ['registroProduccion'],
@@ -145,6 +143,8 @@ export default async function DiagnosticoSectorPage() {
 
   const totalTalleres = await prisma.taller.count()
   const totalConWizard = distribucionOrganizacion.reduce((sum, d) => sum + d._count._all, 0)
+  const totalTrabajadoresPlantilla = distribucionPlantilla.reduce((sum, d) => sum + (d._sum.cantidad ?? 0), 0)
+  const talleresConPlantilla = await prisma.tallerPlantilla.groupBy({ by: ['tallerId'] }).then(r => r.length)
 
   return (
     <div className="space-y-6">
@@ -207,15 +207,26 @@ export default async function DiagnosticoSectorPage() {
         />
       </Card>
 
-      {/* Experiencia */}
-      <Card title="Experiencia promedio del equipo">
-        <BarChart
-          items={distribucionExperiencia.map(d => ({
-            label: expLabels[d.experienciaPromedio ?? ''] ?? d.experienciaPromedio ?? 'Desconocido',
-            count: d._count._all,
-          }))}
-          total={totalConWizard}
-        />
+      {/* Distribución de plantilla por categoría */}
+      <Card title="Distribución de la plantilla del sector">
+        {totalTrabajadoresPlantilla > 0 ? (
+          <>
+            <BarChart
+              items={distribucionPlantilla.map(d => ({
+                label: catLabels[d.categoria] ?? d.categoria,
+                count: d._sum.cantidad ?? 0,
+              }))}
+              total={totalTrabajadoresPlantilla}
+              unit="personas"
+            />
+            <p className="text-xs text-gray-400 mt-3">
+              {totalTrabajadoresPlantilla} trabajadores en {talleresConPlantilla} talleres con plantilla declarada.
+              {talleresConPlantilla < totalTalleres && ` ${talleresConPlantilla} de ${totalTalleres} talleres completaron el desglose.`}
+            </p>
+          </>
+        ) : (
+          <p className="text-sm text-gray-400 italic">Ningún taller completó el desglose de plantilla aún.</p>
+        )}
       </Card>
 
       {/* Procesos más comunes */}

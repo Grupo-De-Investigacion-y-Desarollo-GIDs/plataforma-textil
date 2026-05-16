@@ -34,6 +34,7 @@ async function main() {
   await prisma.pedido.deleteMany()
   await prisma.maquinaria.deleteMany()
   await prisma.tallerCertificacion.deleteMany()
+  await prisma.tallerPlantilla.deleteMany()
   await prisma.tallerPrenda.deleteMany()
   await prisma.tallerProceso.deleteMany()
   await prisma.prendaProceso.deleteMany()
@@ -339,7 +340,6 @@ async function main() {
       organizacion: 'linea',
       metrosCuadrados: 120,
       areas: ['Corte', 'Costura', 'Planchado', 'Depósito'],
-      experienciaPromedio: 'media',
       polivalencia: 'parcial',
       horario: '8',
       registroProduccion: 'planilla_papel',
@@ -419,7 +419,6 @@ async function main() {
       organizacion: 'modular',
       metrosCuadrados: 280,
       areas: ['Tizado', 'Corte', 'Costura', 'Acabado', 'Control de calidad', 'Depósito', 'Oficina'],
-      experienciaPromedio: 'alta',
       polivalencia: 'total',
       horario: '9',
       registroProduccion: 'planilla_digital',
@@ -498,6 +497,39 @@ async function main() {
   }
 
   console.log('  ✓ Post-seed: cada taller tiene 7 validaciones')
+
+  // ============================================
+  // PLANTILLA POR CATEGORÍA DE OFICIO TEXTIL
+  // ============================================
+  // Bronce: 3 trabajadores (equipo nuevo, mayoría aprendices)
+  await prisma.tallerPlantilla.createMany({
+    data: [
+      { tallerId: tallerBronce.id, categoria: 'APRENDIZ', cantidad: 2 },
+      { tallerId: tallerBronce.id, categoria: 'MEDIO_OFICIAL', cantidad: 1 },
+      { tallerId: tallerBronce.id, categoria: 'OFICIAL', cantidad: 0 },
+      { tallerId: tallerBronce.id, categoria: 'OFICIAL_CALIFICADO', cantidad: 0 },
+    ],
+  })
+  // Plata: 6 trabajadores (equipo en crecimiento)
+  await prisma.tallerPlantilla.createMany({
+    data: [
+      { tallerId: tallerPlata.id, categoria: 'APRENDIZ', cantidad: 1 },
+      { tallerId: tallerPlata.id, categoria: 'MEDIO_OFICIAL', cantidad: 2 },
+      { tallerId: tallerPlata.id, categoria: 'OFICIAL', cantidad: 2 },
+      { tallerId: tallerPlata.id, categoria: 'OFICIAL_CALIFICADO', cantidad: 1 },
+    ],
+  })
+  // Oro: 14 trabajadores (equipo experimentado)
+  await prisma.tallerPlantilla.createMany({
+    data: [
+      { tallerId: tallerOro.id, categoria: 'APRENDIZ', cantidad: 2 },
+      { tallerId: tallerOro.id, categoria: 'MEDIO_OFICIAL', cantidad: 3 },
+      { tallerId: tallerOro.id, categoria: 'OFICIAL', cantidad: 5 },
+      { tallerId: tallerOro.id, categoria: 'OFICIAL_CALIFICADO', cantidad: 4 },
+    ],
+  })
+
+  console.log('  ✓ Plantilla por categoría de oficio textil (3 talleres)')
 
   // ============================================
   // MARCAS
@@ -1164,6 +1196,7 @@ async function main() {
     prisma.denuncia.count(),
     prisma.notificacion.count(),
     prisma.novedad.count(),
+    prisma.tallerPlantilla.count(),
   ])
 
   console.log('\n✅ Seed completado:')
@@ -1171,7 +1204,7 @@ async function main() {
   console.log(`  ${counts[3]} pedidos | ${counts[4]} ordenes | ${counts[5]} colecciones | ${counts[6]} videos`)
   console.log(`  ${counts[7]} certificados | ${counts[8]} validaciones`)
   console.log(`  ${counts[9]} cotizaciones | ${counts[10]} auditorias | ${counts[11]} denuncias | ${counts[12]} notificaciones`)
-  console.log(`  ${counts[13]} novedades`)
+  console.log(`  ${counts[13]} novedades | ${counts[14]} filas plantilla`)
   console.log('\n  Feature flags E2: TODOS ACTIVADOS')
   console.log('  Credenciales: todas las cuentas usan password "pdt2026"')
 }

@@ -118,6 +118,14 @@ enum EstadoEscrow {
   DISPUTADO
 }
 
+enum CategoriaOficioTextil {
+  APRENDIZ
+  MEDIO_OFICIAL
+  OFICIAL
+  OFICIAL_CALIFICADO
+}
+
+
 enum TipoNovedad {
   NOTICIA
   CASO
@@ -249,7 +257,6 @@ model Taller {
   organizacion        String?
   metrosCuadrados     Int?
   areas               String[]
-  experienciaPromedio String?
   polivalencia        String?
   horario             String?
   registroProduccion  String?
@@ -262,6 +269,7 @@ model Taller {
   user                 User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
   procesos             TallerProceso[]
   prendas              TallerPrenda[]
+  plantilla            TallerPlantilla[]
   maquinaria           Maquinaria[]
   certificaciones      TallerCertificacion[]
   validaciones         Validacion[]
@@ -1039,4 +1047,23 @@ model Novedad {
 
   @@index([publicado, fecha])
   @@map("novedades")
+}
+
+// ============================================
+// PLANTILLA DEL TALLER (desglose por categoría de oficio)
+// ============================================
+
+model TallerPlantilla {
+  id        String                @id @default(cuid())
+  tallerId  String
+  categoria CategoriaOficioTextil
+  cantidad  Int                   @default(0)
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+
+  taller    Taller                @relation(fields: [tallerId], references: [id], onDelete: Cascade)
+
+  @@unique([tallerId, categoria])
+  @@index([tallerId])
+  @@map("taller_plantilla")
 }

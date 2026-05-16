@@ -13,7 +13,7 @@ const STEPS = [
   { key: 'bienvenida', label: 'Inicio', icon: Factory },
   { key: 'maquinaria', label: 'Máq.', icon: Settings },
   { key: 'equipo', label: 'Equipo', icon: Users },
-  { key: 'experiencia', label: 'Exp.', icon: TrendingUp },
+  { key: 'plantilla', label: 'Equipo', icon: TrendingUp },
   { key: 'organizacion', label: 'Org.', icon: LayoutGrid },
   { key: 'espacio', label: 'Espacio', icon: Ruler },
   { key: 'sam', label: 'Tiempo', icon: Clock },
@@ -64,9 +64,8 @@ export default function WizardPage() {
   const [maquinaria, setMaquinaria] = useState<Record<string, number>>({})
   const [tamanoEquipo, setTamanoEquipo] = useState('3-5')
   const [roles, setRoles] = useState<Record<string, number>>({})
-  const [experiencia, setExperiencia] = useState('3-5')
+  const [plantilla, setPlantilla] = useState({ APRENDIZ: 0, MEDIO_OFICIAL: 0, OFICIAL: 0, OFICIAL_CALIFICADO: 0 })
   const [polivalencia, setPolivalencia] = useState('parcial')
-  const [antiguedad, setAntiguedad] = useState('4')
   const [organizacion, setOrganizacion] = useState('modular')
   const [metrosCuadrados, setMetrosCuadrados] = useState('80')
   const [areas, setAreas] = useState<string[]>(['Área de corte', 'Área de confección'])
@@ -104,7 +103,13 @@ export default function WizardPage() {
         if (t.metrosCuadrados) setMetrosCuadrados(String(t.metrosCuadrados))
         if (t.areas?.length) setAreas(t.areas)
         if (t.sam) setSam(String(t.sam))
-        if (t.experienciaPromedio) setExperiencia(t.experienciaPromedio)
+        if (t.plantilla?.length) {
+          const p = { APRENDIZ: 0, MEDIO_OFICIAL: 0, OFICIAL: 0, OFICIAL_CALIFICADO: 0 }
+          for (const item of t.plantilla) {
+            if (item.categoria in p) p[item.categoria as keyof typeof p] = item.cantidad
+          }
+          setPlantilla(p)
+        }
         if (t.polivalencia) setPolivalencia(t.polivalencia)
         if (t.horario) setHorario(t.horario)
         if (t.registroProduccion) setRegistro(t.registroProduccion)
@@ -136,7 +141,10 @@ export default function WizardPage() {
   const capacidadDiaria = Math.round(((horasNum * 60) / samNum) * eficiencia * numMaquinas)
   const capacidadMensual = capacidadDiaria * 22
 
-  const scoreEquipo = experiencia === '5+' ? 90 : experiencia === '3-5' ? 75 : experiencia === '1-3' ? 50 : 30
+  const totalPlantilla = plantilla.APRENDIZ + plantilla.MEDIO_OFICIAL + plantilla.OFICIAL + plantilla.OFICIAL_CALIFICADO
+  const scoreEquipo = totalPlantilla > 0
+    ? Math.round((plantilla.APRENDIZ * 30 + plantilla.MEDIO_OFICIAL * 50 + plantilla.OFICIAL * 75 + plantilla.OFICIAL_CALIFICADO * 90) / totalPlantilla)
+    : 0
   const scoreOrg = organizacion === 'linea' ? 80 : organizacion === 'modular' ? 70 : 55
   const scoreMaq = Math.min(Object.values(maquinaria).reduce((a, b) => a + b, 0) * 12, 100)
   const scoreGestion = registro === 'software' ? 90 : registro === 'excel' ? 65 : registro === 'papel' ? 40 : 20
@@ -155,7 +163,7 @@ export default function WizardPage() {
       organizacion: organizacion || undefined,
       metrosCuadrados: parseInt(metrosCuadrados) || undefined,
       areas,
-      experienciaPromedio: experiencia || undefined,
+      plantilla,
       polivalencia: polivalencia || undefined,
       horario: horario || undefined,
       registroProduccion: registro || undefined,
@@ -169,7 +177,7 @@ export default function WizardPage() {
       procesosIds: procesosSeleccionados,
       prendasIds: prendasSeleccionadas,
     }
-  }, [maquinaria, sam, prendaPrincipal, organizacion, metrosCuadrados, areas, experiencia, polivalencia, horario, registro, escalabilidad, paradas, roles, tamanoEquipo, procesosSeleccionados, prendasSeleccionadas])
+  }, [maquinaria, sam, prendaPrincipal, organizacion, metrosCuadrados, areas, plantilla, polivalencia, horario, registro, escalabilidad, paradas, roles, tamanoEquipo, procesosSeleccionados, prendasSeleccionadas])
 
   async function handleSave(redirectTo: string) {
     if (!tallerId) {
@@ -322,26 +330,44 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* Paso 4: Experiencia */}
+      {/* Paso 4: Composición del equipo */}
       {step === 3 && (
         <div>
-          <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">¿Cuánta experiencia tiene tu equipo?</h2>
+          <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">¿Cómo se compone tu equipo?</h2>
           <Card className="bg-blue-50/50 text-sm mb-4">
-            La experiencia impacta directamente en velocidad y calidad. Un equipo experimentado puede producir hasta 30% más que uno nuevo.
+            Indicá cuántas personas tenés en cada categoría del oficio textil. Si no tenés trabajadores de alguna categoría, dejá en 0.
           </Card>
-          <p className="text-sm font-semibold mb-2">Experiencia promedio del equipo:</p>
-          <div className="space-y-2 mb-4">
-            {[{ v: '<1', l: 'Menos de 1 año (Novato)' }, { v: '1-3', l: '1-3 años (Junior)' }, { v: '3-5', l: '3-5 años (Intermedio)' }, { v: '5+', l: 'Más de 5 años (Experto)' }].map(o => (
-              <RadioOption key={o.v} value={o.v} current={experiencia} onChange={setExperiencia} label={o.l} />
+          <div className="space-y-3 mb-4">
+            {([
+              { key: 'APRENDIZ', label: 'Aprendices', desc: 'Menos de 1 año de experiencia' },
+              { key: 'MEDIO_OFICIAL', label: 'Medio oficial', desc: '1 a 3 años de experiencia' },
+              { key: 'OFICIAL', label: 'Oficial', desc: '3 a 5 años de experiencia' },
+              { key: 'OFICIAL_CALIFICADO', label: 'Oficial calificado', desc: 'Más de 5 años de experiencia' },
+            ] as const).map(cat => (
+              <Card key={cat.key} className="flex items-center justify-between p-3">
+                <div>
+                  <p className="font-medium text-gray-800 text-sm">{cat.label}</p>
+                  <p className="text-xs text-gray-500">{cat.desc}</p>
+                </div>
+                <input
+                  type="number"
+                  min={0}
+                  value={plantilla[cat.key] || ''}
+                  onChange={e => setPlantilla({ ...plantilla, [cat.key]: Math.max(0, parseInt(e.target.value) || 0) })}
+                  placeholder="0"
+                  className="w-16 border rounded py-1 text-center text-sm"
+                />
+              </Card>
             ))}
           </div>
+          <p className="text-sm text-gray-600 font-medium">Total: {totalPlantilla} personas</p>
+          <hr className="my-4" />
           <p className="text-sm font-semibold mb-2">¿Tu equipo puede rotar entre diferentes tareas?</p>
           <div className="space-y-2 mb-4">
             <RadioOption value="nada" current={polivalencia} onChange={setPolivalencia} label="No, cada uno hace SOLO su tarea" desc="Especialización total" />
             <RadioOption value="parcial" current={polivalencia} onChange={setPolivalencia} label="Algunos pueden hacer varias tareas" desc="Polivalencia parcial" />
             <RadioOption value="total" current={polivalencia} onChange={setPolivalencia} label="Sí, todos pueden hacer de todo" desc="Polivalencia total" />
           </div>
-          <Input label="¿Cuanto tiempo lleva tu trabajador/a mas antiguo/a? (años)" type="number" value={antiguedad} onChange={e => setAntiguedad(e.target.value)} />
         </div>
       )}
 

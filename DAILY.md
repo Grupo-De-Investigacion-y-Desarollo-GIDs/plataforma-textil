@@ -3,8 +3,30 @@
 ## 2026-05-16
 
 ### Gerardo Breard
-- **14:13** `b91dea6` — docs(handover): documentar incident config imagenes-portfolio desactivada
-  - `.claude/specs/handover/KNOWN_ISSUES.md`
+- **13:32** `baff23c` — feat(seed): plantillas de ejemplo + test E2E desglose
+  - `prisma/seed.ts`
+  - `tests/e2e/desglose-plantilla.spec.ts`
+
+- **13:26** `73ad698` — feat(api): guardado y lectura de plantilla en talleres
+  - `src/app/api/talleres/[id]/route.ts`
+  - `src/app/api/talleres/me/route.ts`
+
+- **13:25** `5e6ac69` — feat(reporte): distribucion de plantilla por categoria
+  - `src/app/(estado)/estado/sector/page.tsx`
+
+- **13:20** `2958e3f` — feat(perfil): vista de plantilla con desglose por categoria
+  - `src/app/(taller)/taller/perfil/page.tsx`
+
+- **13:20** `84a693a` — feat(form): wizard paso 4 con desglose por categoria
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+
+- **13:16** `38737c4` — feat(db): schema TallerPlantilla + helper oficio textil
+  - `prisma/migrations/20260516120000_desglose_plantilla_taller/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/compartido/lib/oficio-textil.ts`
+
+- **13:06** `053eb4a` — docs(spec): W-A1 desglose plantilla — spec inicial con correcciones
+  - `.claude/specs/v4-w-a1-desglose-plantilla.md`
 
 
 ## 2026-05-15

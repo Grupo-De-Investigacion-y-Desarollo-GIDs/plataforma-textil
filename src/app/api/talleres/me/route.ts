@@ -9,7 +9,7 @@ export const GET = apiHandler(async () => {
 
   const taller = await prisma.taller.findUnique({
     where: { userId: session.user.id! },
-    include: { maquinaria: true },
+    include: { maquinaria: true, plantilla: true },
   })
 
   if (!taller) return errorNotFound('taller')

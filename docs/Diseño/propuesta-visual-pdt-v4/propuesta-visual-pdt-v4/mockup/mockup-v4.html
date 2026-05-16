@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PDT — Mockup visual v4</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&family=Overpass:wght@600;700;800;900&display=swap" rel="stylesheet" />
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            blue: '#1E2DBE',
+            'blue-dark': '#161D8F',
+            'blue-hover': '#1A27A8',
+          },
+          pastel: {
+            blue: '#EBF2FE',
+            green: '#E6F5EE',
+            purple: '#F0EBFA',
+            yellow: '#FEF6E5',
+            red: '#FDECEC',
+          },
+          ink: {
+            primary: '#1A1A2E',
+            secondary: '#4B5563',
+            muted: '#9CA3AF',
+          },
+        },
+        fontFamily: {
+          sans: ['Noto Sans', 'sans-serif'],
+          overpass: ['Overpass', 'sans-serif'],
+        },
+        borderRadius: {
+          card: '1rem',
+        },
+        boxShadow: {
+          card: '0 4px 12px 0 rgb(0 0 0 / 0.04)',
+          'card-hover': '0 8px 24px 0 rgb(0 0 0 / 0.08)',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  body { font-family: 'Noto Sans', sans-serif; color: #1A1A2E; background: #f5f7fa; }
+  h1, h2, h3, h4, h5, h6, nav, button, .font-overpass { font-family: 'Overpass', sans-serif; }
+  .screen-marker {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: linear-gradient(90deg, #1E2DBE 0%, #161D8F 100%);
+    color: white;
+    padding: 8px 24px;
+    font-family: 'Overpass', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-bottom: 2px solid #FA3C4B;
+  }
+  .screen-frame {
+    background: white;
+    margin: 0 auto;
+    box-shadow: 0 0 40px rgba(0,0,0,0.08);
+  }
+</style>
+</head>
+<body class="text-ink-primary">
+
+<!-- ─────────────────────────────────────────────────────────────────── -->
+<!-- HEADER GUÍA (no es parte del mockup, es para Sergio)                 -->
+<!-- ─────────────────────────────────────────────────────────────────── -->
+<div class="bg-ink-primary text-white p-6">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="font-overpass font-bold text-2xl mb-2">Mockup visual PDT — v4</h1>
+    <p class="text-gray-300 text-sm">Vista previa del rediseño aplicado a 3 pantallas. Scrolleá para verlas. Cada pantalla tiene un marcador azul arriba que la identifica.</p>
+    <div class="mt-4 flex flex-wrap gap-3 text-xs">
+      <a href="#pantalla-1" class="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full">1 · Landing pública</a>
+      <a href="#pantalla-2" class="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full">2 · Dashboard taller</a>
+      <a href="#pantalla-3" class="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full">3 · Pedidos taller</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- PANTALLA 1 — LANDING PÚBLICA NUEVA                                    -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div id="pantalla-1">
+<div class="screen-marker">PANTALLA 1 · LANDING PÚBLICA · /</div>
+
+<div class="screen-frame">
+
+<!-- HEADER LANDING -->
+<header class="bg-white border-b border-gray-100">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-12 h-12 rounded-full bg-brand-blue flex items-center justify-center flex-shrink-0">
+        <span class="font-overpass font-bold text-white text-sm">PDT</span>
+      </div>
+      <div class="font-overpass font-bold text-brand-blue leading-tight">
+        Plataforma<br/>Digital Textil
+      </div>
+    </div>
+    <nav class="hidden lg:flex items-center gap-7 text-sm font-medium text-ink-secondary">
+      <a href="#" class="hover:text-brand-blue">¿Cómo funciona?</a>
+      <a href="#" class="hover:text-brand-blue">Para taller</a>
+      <a href="#" class="hover:text-brand-blue">Para marcas</a>
+      <a href="#" class="hover:text-brand-blue">Impacto</a>
+      <a href="#" class="hover:text-brand-blue">Recursos</a>
+    </nav>
+    <div class="flex items-center gap-2">
+      <a href="#" class="px-4 py-2 text-sm font-overpass font-semibold text-brand-blue hover:bg-pastel-blue rounded-lg">Iniciar sesión</a>
+      <a href="#" class="px-4 py-2 text-sm font-overpass font-semibold bg-brand-blue text-white rounded-lg hover:bg-brand-blue-hover">Soy taller</a>
+      <a href="#" class="px-4 py-2 text-sm font-overpass font-semibold border-2 border-brand-blue text-brand-blue rounded-lg hover:bg-pastel-blue">Soy marca</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="bg-white">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-24 grid lg:grid-cols-2 gap-12 items-center">
+    <div>
+      <p class="uppercase tracking-widest text-xs font-overpass font-bold text-ink-muted mb-4">Una iniciativa de OIT y UNTREF</p>
+      <h1 class="font-overpass font-extrabold text-4xl lg:text-5xl text-ink-primary leading-tight">
+        <span class="text-brand-blue">Formalizá</span>, conectá y trazá la producción textil en una sola plataforma
+      </h1>
+      <p class="text-ink-secondary text-lg mt-6 leading-relaxed">
+        Construimos una industria textil transparente, confiable y sin trabajo informal. Para talleres, marcas y organismos del Estado.
+      </p>
+      <div class="flex flex-wrap gap-3 mt-8">
+        <a href="#" class="px-6 py-3 bg-brand-blue text-white font-overpass font-semibold rounded-lg hover:bg-brand-blue-hover flex items-center gap-2">
+          Soy taller
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
+        <a href="#" class="px-6 py-3 border-2 border-brand-blue text-brand-blue font-overpass font-semibold rounded-lg hover:bg-pastel-blue flex items-center gap-2">
+          Soy marca
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="relative">
+      <div class="aspect-square rounded-full bg-pastel-blue flex items-center justify-center overflow-hidden">
+        <!-- Placeholder de imagen real (foto del piloto) -->
+        <div class="text-center text-brand-blue p-12">
+          <svg class="w-32 h-32 mx-auto opacity-30" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/>
+          </svg>
+          <p class="font-overpass font-semibold text-sm mt-4 opacity-60">[Foto real de taller del piloto]</p>
+        </div>
+      </div>
+      <!-- Card flotante (tono más sutil que la propuesta IA) -->
+      <div class="absolute -right-4 top-12 lg:right-0 bg-white rounded-card shadow-card-hover p-5 max-w-xs border border-gray-100">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full bg-pastel-blue flex items-center justify-center">
+            <svg class="w-5 h-5 text-brand-blue" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          </div>
+          <p class="font-overpass font-bold text-ink-primary text-sm">Producción transparente y responsable</p>
+        </div>
+        <ul class="space-y-1.5 text-sm text-ink-secondary">
+          <li class="flex items-center gap-2"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Talleres verificados</li>
+          <li class="flex items-center gap-2"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Contratos formales</li>
+          <li class="flex items-center gap-2"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Trazabilidad completa</li>
+          <li class="flex items-center gap-2"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Trabajo digno</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARA CADA ACTOR -->
+<section class="bg-gray-50 py-20">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <h2 class="font-overpass font-bold text-3xl text-center text-ink-primary mb-12">Para cada actor del ecosistema textil</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+      <!-- Talleres -->
+      <div class="bg-white rounded-card shadow-card p-8 border border-gray-100 hover:shadow-card-hover transition-shadow">
+        <div class="w-16 h-16 rounded-full bg-pastel-blue flex items-center justify-center mb-6">
+          <svg class="w-8 h-8 text-brand-blue" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/></svg>
+        </div>
+        <h3 class="font-overpass font-bold text-xl mb-4">Talleres</h3>
+        <ul class="space-y-2 text-ink-secondary mb-6">
+          <li class="flex items-start gap-2"><svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Conseguí clientes formales</li>
+          <li class="flex items-start gap-2"><svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Accedé a certificación</li>
+          <li class="flex items-start gap-2"><svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Digitalizá tu producción</li>
+          <li class="flex items-start gap-2"><svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Capacitate y crecé de nivel</li>
+        </ul>
+        <a href="#" class="text-brand-blue font-overpass font-semibold text-sm hover:underline">Quiero formalizarme →</a>
+      </div>
+      <!-- Marcas -->
+      <div class="bg-white rounded-card shadow-card p-8 border border-gray-100 hover:shadow-card-hover transition-shadow">
+        <div class="w-16 h-16 rounded-full bg-pastel-green flex items-center justify-center mb-6">
+          <svg class="w-8 h-8 text-green-700" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+        </div>
+        <h3 class="font-overpass font-bold text-xl mb-4">Marcas</h3>
+        <ul class="space-y-2 text-ink-secondary mb-6">
+          <li class="flex items-start gap-2"><svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Encontrá proveedores verificados</li>
+          <li class="flex items-start gap-2"><svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Reducí riesgos legales</li>
+          <li class="flex items-start gap-2"><svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Trazabilidad completa</li>
+          <li class="flex items-start gap-2"><svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Cumplí con estándares ESG</li>
+        </ul>
+        <a href="#" class="text-green-700 font-overpass font-semibold text-sm hover:underline">Buscar proveedores →</a>
+      </div>
+      <!-- Estado -->
+      <div class="bg-white rounded-card shadow-card p-8 border border-gray-100 hover:shadow-card-hover transition-shadow">
+        <div class="w-16 h-16 rounded-full bg-pastel-purple flex items-center justify-center mb-6">
+          <svg class="w-8 h-8 text-purple-700" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21H3M5 21V7l7-4 7 4v14M9 9h.01M9 13h.01M9 17h.01M15 9h.01M15 13h.01M15 17h.01"/></svg>
+        </div>
+        <h3 class="font-overpass font-bold text-xl mb-4">Estado e instituciones</h3>
+        <ul class="space-y-2 text-ink-secondary mb-6">
+          <li class="flex items-start gap-2"><svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Datos para fiscalización</li>
+          <li class="flex items-start gap-2"><svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Formalización sectorial</li>
+          <li class="flex items-start gap-2"><svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Transparencia y evidencia</li>
+          <li class="flex items-start gap-2"><svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Mejores políticas públicas</li>
+        </ul>
+        <a href="#" class="text-purple-700 font-overpass font-semibold text-sm hover:underline">Acceder a indicadores →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACTO con stats grandes (estilo Better Work) -->
+<section class="bg-pastel-blue/40 py-20">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
+    <div>
+      <h2 class="font-overpass font-bold text-3xl text-ink-primary mb-4">Impulsamos un sector más justo y transparente</h2>
+      <p class="text-ink-secondary leading-relaxed mb-6">
+        Trabajamos para reducir la informalidad en el sector textil, mejorar las condiciones laborales y generar oportunidades de desarrollo en talleres y marcas argentinas.
+      </p>
+      <a href="#" class="inline-flex items-center gap-2 px-6 py-3 bg-brand-blue text-white font-overpass font-semibold rounded-lg hover:bg-brand-blue-hover">
+        Conocé nuestro impacto
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+      </a>
+    </div>
+    <div class="grid grid-cols-2 gap-6">
+      <div class="bg-white rounded-card p-6 shadow-card">
+        <div class="font-overpass font-extrabold text-5xl text-brand-blue leading-none">10</div>
+        <p class="text-xs uppercase tracking-wider text-ink-secondary mt-3 font-semibold">Talleres activos verificados</p>
+        <p class="text-xs text-ink-muted mt-1">Datos a abril 2026</p>
+      </div>
+      <div class="bg-white rounded-card p-6 shadow-card">
+        <div class="font-overpass font-extrabold text-5xl text-green-700 leading-none">9</div>
+        <p class="text-xs uppercase tracking-wider text-ink-secondary mt-3 font-semibold">Marcas registradas</p>
+        <p class="text-xs text-ink-muted mt-1">Datos a abril 2026</p>
+      </div>
+      <div class="bg-white rounded-card p-6 shadow-card">
+        <div class="font-overpass font-extrabold text-5xl text-purple-700 leading-none">4</div>
+        <p class="text-xs uppercase tracking-wider text-ink-secondary mt-3 font-semibold">Cursos publicados</p>
+        <p class="text-xs text-ink-muted mt-1">Academia PDT 2026</p>
+      </div>
+      <div class="bg-white rounded-card p-6 shadow-card">
+        <div class="font-overpass font-extrabold text-5xl text-brand-blue leading-none">54</div>
+        <p class="text-xs uppercase tracking-wider text-ink-secondary mt-3 font-semibold">Pedidos en proceso</p>
+        <p class="text-xs text-ink-muted mt-1">Datos a mayo 2026</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CARRUSEL DE NOVEDADES Y CURSOS (REEMPLAZA TESTIMONIOS) -->
+<section class="bg-white py-20">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="flex items-end justify-between mb-10">
+      <div>
+        <h2 class="font-overpass font-bold text-3xl text-ink-primary">Novedades y capacitaciones</h2>
+        <p class="text-ink-secondary mt-2">Lo último de la academia y del sector</p>
+      </div>
+      <div class="flex gap-2">
+        <button class="w-10 h-10 rounded-full border border-gray-300 hover:bg-pastel-blue flex items-center justify-center"><svg class="w-4 h-4 text-ink-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg></button>
+        <button class="w-10 h-10 rounded-full bg-brand-blue text-white hover:bg-brand-blue-hover flex items-center justify-center"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Card curso 1 -->
+      <a href="#" class="group bg-white rounded-card border border-gray-100 hover:shadow-card-hover transition-shadow overflow-hidden">
+        <div class="aspect-[4/3] bg-pastel-blue flex items-center justify-center">
+          <svg class="w-16 h-16 text-brand-blue opacity-50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <div class="p-5">
+          <span class="inline-block px-2.5 py-1 rounded-full bg-pastel-blue text-brand-blue text-xs font-overpass font-bold uppercase tracking-wider">Curso</span>
+          <h3 class="font-overpass font-bold text-lg mt-3 group-hover:text-brand-blue">Seguridad e Higiene en el Taller Textil</h3>
+          <p class="text-sm text-ink-muted mt-2">3 videos · 2h 30min</p>
+        </div>
+      </a>
+      <!-- Card novedad 1 -->
+      <a href="#" class="group bg-white rounded-card border border-gray-100 hover:shadow-card-hover transition-shadow overflow-hidden">
+        <div class="aspect-[4/3] bg-pastel-green flex items-center justify-center">
+          <svg class="w-16 h-16 text-green-700 opacity-50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+        </div>
+        <div class="p-5">
+          <span class="inline-block px-2.5 py-1 rounded-full bg-pastel-green text-green-700 text-xs font-overpass font-bold uppercase tracking-wider">Novedad</span>
+          <h3 class="font-overpass font-bold text-lg mt-3 group-hover:text-brand-blue">Lanzamiento del piloto en Conurbano Sur</h3>
+          <p class="text-sm text-ink-muted mt-2">Mayo 2026</p>
+        </div>
+      </a>
+      <!-- Card curso 2 -->
+      <a href="#" class="group bg-white rounded-card border border-gray-100 hover:shadow-card-hover transition-shadow overflow-hidden">
+        <div class="aspect-[4/3] bg-pastel-yellow flex items-center justify-center">
+          <svg class="w-16 h-16 text-yellow-700 opacity-50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h3m-3 0h-1m9 12h.01M12 12a9 9 0 100-18 9 9 0 000 18z"/></svg>
+        </div>
+        <div class="p-5">
+          <span class="inline-block px-2.5 py-1 rounded-full bg-pastel-blue text-brand-blue text-xs font-overpass font-bold uppercase tracking-wider">Curso</span>
+          <h3 class="font-overpass font-bold text-lg mt-3 group-hover:text-brand-blue">Cálculo de Costos y Presupuestos</h3>
+          <p class="text-sm text-ink-muted mt-2">4 videos · 3h</p>
+        </div>
+      </a>
+      <!-- Card novedad 2 -->
+      <a href="#" class="group bg-white rounded-card border border-gray-100 hover:shadow-card-hover transition-shadow overflow-hidden">
+        <div class="aspect-[4/3] bg-pastel-purple flex items-center justify-center">
+          <svg class="w-16 h-16 text-purple-700 opacity-50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        </div>
+        <div class="p-5">
+          <span class="inline-block px-2.5 py-1 rounded-full bg-pastel-purple text-purple-700 text-xs font-overpass font-bold uppercase tracking-wider">Indicador</span>
+          <h3 class="font-overpass font-bold text-lg mt-3 group-hover:text-brand-blue">Reporte sectorial: organización productiva</h3>
+          <p class="text-sm text-ink-muted mt-2">Abril 2026</p>
+        </div>
+      </a>
+    </div>
+    <div class="text-center mt-10">
+      <a href="#" class="text-brand-blue font-overpass font-semibold hover:underline">Ver todas las novedades y cursos →</a>
+    </div>
+  </div>
+</section>
+
+<!-- BANNER CTA -->
+<section class="bg-brand-blue">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12 grid md:grid-cols-2 gap-6 items-center">
+    <div>
+      <h2 class="font-overpass font-bold text-2xl lg:text-3xl text-white">Sumate a la transformación del sector textil</h2>
+      <p class="text-blue-200 mt-2">Empezá hoy. Es gratis.</p>
+    </div>
+    <div class="flex flex-wrap gap-3 md:justify-end">
+      <a href="#" class="px-5 py-3 bg-white text-brand-blue font-overpass font-semibold rounded-lg hover:bg-pastel-blue">Soy taller</a>
+      <a href="#" class="px-5 py-3 border-2 border-white text-white font-overpass font-semibold rounded-lg hover:bg-white/10">Soy marca</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-ink-primary text-gray-300 py-12">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="grid md:grid-cols-4 gap-8 mb-10">
+      <div>
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center"><span class="font-overpass font-bold text-brand-blue text-xs">PDT</span></div>
+          <div class="font-overpass font-bold text-white text-sm leading-tight">Plataforma<br/>Digital Textil</div>
+        </div>
+        <p class="text-xs text-gray-400 leading-relaxed">Una iniciativa de OIT Argentina y la Universidad Nacional de Tres de Febrero (UNTREF).</p>
+      </div>
+      <div>
+        <h4 class="font-overpass font-bold text-white text-sm mb-3 uppercase tracking-wider">Plataforma</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white">¿Cómo funciona?</a></li>
+          <li><a href="#" class="hover:text-white">Para taller</a></li>
+          <li><a href="#" class="hover:text-white">Para marcas</a></li>
+          <li><a href="#" class="hover:text-white">Impacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-overpass font-bold text-white text-sm mb-3 uppercase tracking-wider">Recursos</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white">Centro de ayuda</a></li>
+          <li><a href="#" class="hover:text-white">Academia</a></li>
+          <li><a href="#" class="hover:text-white">Novedades</a></li>
+          <li><a href="#" class="hover:text-white">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-overpass font-bold text-white text-sm mb-3 uppercase tracking-wider">Legal</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white">Términos y condiciones</a></li>
+          <li><a href="#" class="hover:text-white">Política de privacidad</a></li>
+          <li><a href="#" class="hover:text-white">Accesibilidad</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-gray-500">
+      <p>© 2026 Plataforma Digital Textil. Todos los derechos reservados.</p>
+      <div class="flex items-center gap-4">
+        <span>Con el respaldo de:</span>
+        <span class="font-overpass font-bold text-gray-300">OIT</span>
+        <span class="text-gray-700">·</span>
+        <span class="font-overpass font-bold text-gray-300">UNTREF</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- PANTALLA 2 — DASHBOARD TALLER REDISEÑADO                              -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div id="pantalla-2" class="mt-12">
+<div class="screen-marker">PANTALLA 2 · DASHBOARD TALLER · /taller</div>
+
+<div class="screen-frame">
+
+<!-- HEADER APP (variante simplificada — 2 bandas en lugar de 4) -->
+<header class="bg-white border-b border-gray-100 sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <button class="p-2 hover:bg-gray-100 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full bg-brand-blue flex items-center justify-center"><span class="font-overpass font-bold text-white text-xs">PDT</span></div>
+        <div class="font-overpass font-bold text-brand-blue text-sm leading-tight hidden sm:block">Plataforma<br/>Digital Textil</div>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="hidden md:inline-flex items-center gap-1.5 text-xs text-gray-500"><span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>Ambiente piloto</span>
+      <button class="p-2 hover:bg-gray-100 rounded-lg relative">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+        <span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500"></span>
+      </button>
+      <button class="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg">
+        <div class="w-7 h-7 rounded-full bg-pastel-blue flex items-center justify-center text-brand-blue font-overpass font-bold text-xs">TA</div>
+        <span class="hidden sm:inline text-sm font-medium">Taller La Aguja</span>
+      </button>
+    </div>
+  </div>
+  <!-- Tabs por rol -->
+  <nav class="max-w-7xl mx-auto px-6 lg:px-8 flex gap-1 overflow-x-auto">
+    <a href="#" class="px-4 py-3 font-overpass font-semibold text-sm text-brand-blue border-b-2 border-brand-blue whitespace-nowrap">Tablero</a>
+    <a href="#" class="px-4 py-3 font-overpass font-semibold text-sm text-ink-secondary hover:text-brand-blue border-b-2 border-transparent whitespace-nowrap">Mis pedidos</a>
+    <a href="#" class="px-4 py-3 font-overpass font-semibold text-sm text-ink-secondary hover:text-brand-blue border-b-2 border-transparent whitespace-nowrap">Mi formalización</a>
+    <a href="#" class="px-4 py-3 font-overpass font-semibold text-sm text-ink-secondary hover:text-brand-blue border-b-2 border-transparent whitespace-nowrap">Mi perfil</a>
+    <a href="#" class="px-4 py-3 font-overpass font-semibold text-sm text-ink-secondary hover:text-brand-blue border-b-2 border-transparent whitespace-nowrap">Academia</a>
+  </nav>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+  <!-- Saludo -->
+  <div class="mb-8">
+    <div class="flex items-center gap-3 mb-2">
+      <h1 class="font-overpass font-bold text-3xl text-ink-primary">Hola, Taller La Aguja</h1>
+      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pastel-yellow text-yellow-800 text-xs font-overpass font-bold uppercase tracking-wider">
+        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.539 1.118L10 13.347l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L3.567 7.819c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+        Nivel Bronce
+      </span>
+    </div>
+    <p class="text-ink-secondary">Tu progreso de formalización es de <span class="font-bold text-ink-primary">14%</span>. Te faltan 6 documentos para subir a Plata.</p>
+  </div>
+
+  <!-- Card próxima acción (CTA destacado) -->
+  <div class="bg-pastel-blue/40 border border-brand-blue/20 rounded-card p-6 mb-8 flex flex-col md:flex-row items-start md:items-center gap-4">
+    <div class="w-12 h-12 rounded-full bg-brand-blue flex items-center justify-center flex-shrink-0">
+      <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+    </div>
+    <div class="flex-1">
+      <p class="text-xs uppercase tracking-wider font-overpass font-bold text-brand-blue mb-1">Próxima acción</p>
+      <h2 class="font-overpass font-bold text-lg text-ink-primary">Completá tu habilitación municipal</h2>
+      <p class="text-sm text-ink-secondary mt-1">Es el siguiente paso para subir a Plata. Subí el documento o registrá la cita.</p>
+    </div>
+    <a href="#" class="px-5 py-2.5 bg-brand-blue text-white font-overpass font-semibold rounded-lg hover:bg-brand-blue-hover whitespace-nowrap">Continuar →</a>
+  </div>
+
+  <!-- KPIs estilo Stripe (con delta) -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div class="bg-white rounded-card p-5 shadow-card border border-gray-100">
+      <div class="flex items-center gap-2 mb-3">
+        <div class="w-9 h-9 rounded-full bg-pastel-blue flex items-center justify-center"><svg class="w-4 h-4 text-brand-blue" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg></div>
+        <p class="text-xs uppercase tracking-wider text-ink-secondary font-overpass font-bold">Pedidos activos</p>
+      </div>
+      <div class="font-overpass font-extrabold text-3xl text-ink-primary">3</div>
+      <p class="text-xs text-green-600 mt-1 flex items-center gap-1"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"/></svg>+1 vs abril</p>
+    </div>
+    <div class="bg-white rounded-card p-5 shadow-card border border-gray-100">
+      <div class="flex items-center gap-2 mb-3">
+        <div class="w-9 h-9 rounded-full bg-pastel-green flex items-center justify-center"><svg class="w-4 h-4 text-green-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.381-1.81.587-1.81h4.915a1 1 0 00.951-.69l1.519-4.674z"/></svg></div>
+        <p class="text-xs uppercase tracking-wider text-ink-secondary font-overpass font-bold">Rating</p>
+      </div>
+      <div class="font-overpass font-extrabold text-3xl text-ink-primary">3.2</div>
+      <p class="text-xs text-ink-muted mt-1">de 5 · 12 evaluaciones</p>
+    </div>
+    <div class="bg-white rounded-card p-5 shadow-card border border-gray-100">
+      <div class="flex items-center gap-2 mb-3">
+        <div class="w-9 h-9 rounded-full bg-pastel-purple flex items-center justify-center"><svg class="w-4 h-4 text-purple-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg></div>
+        <p class="text-xs uppercase tracking-wider text-ink-secondary font-overpass font-bold">Capacidad mensual</p>
+      </div>
+      <div class="font-overpass font-extrabold text-3xl text-ink-primary">6,468</div>
+      <p class="text-xs text-ink-muted mt-1">prendas/mes</p>
+    </div>
+    <div class="bg-white rounded-card p-5 shadow-card border border-gray-100">
+      <div class="flex items-center gap-2 mb-3">
+        <div class="w-9 h-9 rounded-full bg-pastel-yellow flex items-center justify-center"><svg class="w-4 h-4 text-yellow-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+        <p class="text-xs uppercase tracking-wider text-ink-secondary font-overpass font-bold">On-time</p>
+      </div>
+      <div class="font-overpass font-extrabold text-3xl text-ink-primary">75%</div>
+      <p class="text-xs text-ink-muted mt-1">últimos 6 meses</p>
+    </div>
+  </div>
+
+  <div class="grid lg:grid-cols-3 gap-6">
+    <!-- Pedidos activos -->
+    <div class="lg:col-span-2 bg-white rounded-card shadow-card border border-gray-100 p-6">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="font-overpass font-bold text-xl">Mis pedidos activos</h2>
+        <a href="#" class="text-sm text-brand-blue font-semibold hover:underline">Ver todos →</a>
+      </div>
+      <div class="space-y-3">
+        <a href="#" class="block p-4 rounded-lg border border-gray-100 hover:border-brand-blue hover:bg-pastel-blue/30 transition-colors">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <p class="font-overpass font-bold text-ink-primary">Urbano Textil — 500 unidades</p>
+              <p class="text-sm text-ink-muted mt-0.5">Corte y confección · Plazo 15 días</p>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-pastel-yellow text-yellow-800 text-xs font-overpass font-bold uppercase tracking-wider whitespace-nowrap">Pendiente</span>
+          </div>
+        </a>
+        <a href="#" class="block p-4 rounded-lg border border-gray-100 hover:border-brand-blue hover:bg-pastel-blue/30 transition-colors">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <p class="font-overpass font-bold text-ink-primary">Marca Sur — 200 unidades</p>
+              <p class="text-sm text-ink-muted mt-0.5">Estampado y confección · Plazo 8 días</p>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-pastel-blue text-brand-blue text-xs font-overpass font-bold uppercase tracking-wider whitespace-nowrap">En producción</span>
+          </div>
+        </a>
+        <a href="#" class="block p-4 rounded-lg border border-gray-100 hover:border-brand-blue hover:bg-pastel-blue/30 transition-colors">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <p class="font-overpass font-bold text-ink-primary">Calle Once — 150 unidades</p>
+              <p class="text-sm text-ink-muted mt-0.5">Solo confección · Plazo 5 días</p>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-pastel-green text-green-800 text-xs font-overpass font-bold uppercase tracking-wider whitespace-nowrap">Por entregar</span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Próximas capacitaciones -->
+    <div class="bg-white rounded-card shadow-card border border-gray-100 p-6">
+      <h2 class="font-overpass font-bold text-xl mb-5">Próximas capacitaciones</h2>
+      <div class="space-y-4">
+        <a href="#" class="block group">
+          <div class="aspect-[4/3] rounded-lg bg-pastel-blue flex items-center justify-center mb-3"><svg class="w-12 h-12 text-brand-blue opacity-50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div>
+          <h3 class="font-overpass font-semibold text-sm group-hover:text-brand-blue">Seguridad e Higiene</h3>
+          <div class="mt-2"><div class="h-1.5 bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-brand-blue rounded-full" style="width: 75%"></div></div><p class="text-xs text-ink-muted mt-1">75% completado</p></div>
+        </a>
+        <a href="#" class="block group">
+          <h3 class="font-overpass font-semibold text-sm group-hover:text-brand-blue">Cálculo de Costos y Presupuestos</h3>
+          <p class="text-xs text-ink-muted mt-1">4 videos · 3h · No iniciado</p>
+        </a>
+        <a href="#" class="block group">
+          <h3 class="font-overpass font-semibold text-sm group-hover:text-brand-blue">Formalización y Registro del Taller</h3>
+          <p class="text-xs text-ink-muted mt-1">3 videos · 1h 45min · 67% completado</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</main>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- PANTALLA 3 — LISTADO DE PEDIDOS TALLER                                -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div id="pantalla-3" class="mt-12 mb-12">
+<div class="screen-marker">PANTALLA 3 · MIS PEDIDOS · /taller/pedidos</div>
+
+<div class="screen-frame">
+
+<!-- HEADER APP (igual que pantalla 2) -->
+<header class="bg-white border-b border-gray-100 sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <button class="p-2 hover:bg-gray-100 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full bg-brand-blue flex items-center justify-center"><span class="font-overpass font-bold text-white text-xs">PDT</span></div>
+        <div class="font-overpass font-bold text-brand-blue text-sm leading-tight hidden sm:block">Plataforma<br/>Digital Textil</div>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="hidden md:inline-flex items-center gap-1.5 text-xs text-gray-500"><span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>Ambiente piloto</span>
+      <button class="p-2 hover:bg-gray-100 rounded-lg relative"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg><span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500"></span></button>
+      <button class="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg"><div class="w-7 h-7 rounded-full bg-pastel-blue flex items-center justify-center text-brand-blue font-overpass font-bold text-xs">TA</div><span class="hidden sm:inline text-sm font-medium">Taller La Aguja</span></button>
+    </div>
+  </div>
+  <nav class="max-w-7xl mx-auto px-6 lg:px-8 flex gap-1 overflow-x-auto">
+    <a href="#" class="px-4 py-3 font-overpass font-semibold text-sm text-ink-secondary hover:text-brand-blue border-b-2 border-transparent whitespace-nowrap">Tablero</a>
+    <a href="#" class="px-4 py-3 font-overpass font-semibold text-sm text-brand-blue border-b-2 border-brand-blue whitespace-nowrap">Mis pedidos</a>
+    <a href="#" class="px-4 py-3 font-overpass font-semibold text-sm text-ink-secondary hover:text-brand-blue border-b-2 border-transparent whitespace-nowrap">Mi formalización</a>
+    <a href="#" class="px-4 py-3 font-overpass font-semibold text-sm text-ink-secondary hover:text-brand-blue border-b-2 border-transparent whitespace-nowrap">Mi perfil</a>
+    <a href="#" class="px-4 py-3 font-overpass font-semibold text-sm text-ink-secondary hover:text-brand-blue border-b-2 border-transparent whitespace-nowrap">Academia</a>
+  </nav>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+  <!-- Breadcrumb -->
+  <nav class="text-sm text-ink-muted mb-4">
+    <a href="#" class="hover:text-brand-blue">Tablero</a>
+    <span class="mx-2">→</span>
+    <span class="text-ink-secondary">Mis pedidos</span>
+  </nav>
+
+  <!-- Header de página -->
+  <div class="flex items-end justify-between mb-6">
+    <div>
+      <h1 class="font-overpass font-bold text-3xl text-ink-primary">Mis pedidos</h1>
+      <p class="text-ink-secondary mt-1">3 pedidos activos · 8 completados este mes</p>
+    </div>
+    <a href="#" class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 border-2 border-brand-blue text-brand-blue font-overpass font-semibold rounded-lg hover:bg-pastel-blue">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      Buscar pedidos disponibles
+    </a>
+  </div>
+
+  <!-- Filtros como pills (estilo Stripe) -->
+  <div class="flex flex-wrap gap-2 mb-6">
+    <button class="px-4 py-2 rounded-full bg-brand-blue text-white text-sm font-overpass font-semibold">Todos · 3</button>
+    <button class="px-4 py-2 rounded-full border border-gray-200 hover:bg-gray-50 text-sm font-medium text-ink-secondary">Pendientes · 1</button>
+    <button class="px-4 py-2 rounded-full border border-gray-200 hover:bg-gray-50 text-sm font-medium text-ink-secondary">En producción · 1</button>
+    <button class="px-4 py-2 rounded-full border border-gray-200 hover:bg-gray-50 text-sm font-medium text-ink-secondary">Por entregar · 1</button>
+    <button class="px-4 py-2 rounded-full border border-gray-200 hover:bg-gray-50 text-sm font-medium text-ink-secondary">Completados · 8</button>
+  </div>
+
+  <!-- Tabla -->
+  <div class="bg-white rounded-card shadow-card border border-gray-100 overflow-hidden">
+    <table class="w-full">
+      <thead class="bg-gray-50 border-b border-gray-100">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-overpass font-bold text-ink-secondary uppercase tracking-wider">Pedido</th>
+          <th class="px-6 py-3 text-left text-xs font-overpass font-bold text-ink-secondary uppercase tracking-wider">Marca</th>
+          <th class="px-6 py-3 text-left text-xs font-overpass font-bold text-ink-secondary uppercase tracking-wider">Cantidad</th>
+          <th class="px-6 py-3 text-left text-xs font-overpass font-bold text-ink-secondary uppercase tracking-wider">Plazo</th>
+          <th class="px-6 py-3 text-left text-xs font-overpass font-bold text-ink-secondary uppercase tracking-wider">Estado</th>
+          <th class="px-6 py-3"></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        <tr class="hover:bg-pastel-blue/30 cursor-pointer">
+          <td class="px-6 py-4">
+            <p class="font-overpass font-bold text-ink-primary">Pedido de mayo</p>
+            <p class="text-xs text-ink-muted">MO-2026-E1D8FA31</p>
+          </td>
+          <td class="px-6 py-4">Urbano Textil</td>
+          <td class="px-6 py-4 font-medium">500 un</td>
+          <td class="px-6 py-4">
+            <p class="text-ink-primary">15 días</p>
+            <p class="text-xs text-ink-muted">vence 23/05</p>
+          </td>
+          <td class="px-6 py-4"><span class="px-3 py-1 rounded-full bg-pastel-yellow text-yellow-800 text-xs font-overpass font-bold uppercase tracking-wider">Pendiente</span></td>
+          <td class="px-6 py-4 text-right"><span class="text-brand-blue text-sm font-semibold">Ver →</span></td>
+        </tr>
+        <tr class="hover:bg-pastel-blue/30 cursor-pointer">
+          <td class="px-6 py-4">
+            <p class="font-overpass font-bold text-ink-primary">Lote primavera</p>
+            <p class="text-xs text-ink-muted">MO-2026-A7221043</p>
+          </td>
+          <td class="px-6 py-4">Marca Sur</td>
+          <td class="px-6 py-4 font-medium">200 un</td>
+          <td class="px-6 py-4">
+            <p class="text-ink-primary">8 días</p>
+            <p class="text-xs text-ink-muted">vence 16/05</p>
+          </td>
+          <td class="px-6 py-4"><span class="px-3 py-1 rounded-full bg-pastel-blue text-brand-blue text-xs font-overpass font-bold uppercase tracking-wider">En producción</span></td>
+          <td class="px-6 py-4 text-right"><span class="text-brand-blue text-sm font-semibold">Ver →</span></td>
+        </tr>
+        <tr class="hover:bg-pastel-blue/30 cursor-pointer">
+          <td class="px-6 py-4">
+            <p class="font-overpass font-bold text-ink-primary">Reposición abril</p>
+            <p class="text-xs text-ink-muted">MO-2026-1F728FC1</p>
+          </td>
+          <td class="px-6 py-4">Calle Once</td>
+          <td class="px-6 py-4 font-medium">150 un</td>
+          <td class="px-6 py-4">
+            <p class="text-ink-primary">5 días</p>
+            <p class="text-xs text-ink-muted">vence 13/05</p>
+          </td>
+          <td class="px-6 py-4"><span class="px-3 py-1 rounded-full bg-pastel-green text-green-800 text-xs font-overpass font-bold uppercase tracking-wider">Por entregar</span></td>
+          <td class="px-6 py-4 text-right"><span class="text-brand-blue text-sm font-semibold">Ver →</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Empty state demo (al final como ejemplo de cómo se vería sin pedidos) -->
+  <div class="mt-12 bg-white rounded-card border-2 border-dashed border-gray-200 p-12 text-center">
+    <p class="text-xs uppercase tracking-wider font-overpass font-bold text-ink-muted mb-4">Ejemplo de empty state (cuando no hay pedidos)</p>
+    <div class="w-24 h-24 rounded-full bg-pastel-blue mx-auto flex items-center justify-center mb-5">
+      <svg class="w-12 h-12 text-brand-blue opacity-60" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
+    </div>
+    <h3 class="font-overpass font-bold text-xl text-ink-primary mb-2">Aún no tenés pedidos asignados</h3>
+    <p class="text-ink-secondary mb-6 max-w-md mx-auto">Te avisaremos por email cuando una marca te envíe una cotización.</p>
+    <a href="#" class="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-blue text-white font-overpass font-semibold rounded-lg hover:bg-brand-blue-hover">
+      Completá tu perfil para que las marcas te encuentren
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+    </a>
+  </div>
+</main>
+
+</div>
+</div>
+
+<!-- FOOTER FINAL DE LA GUÍA -->
+<div class="bg-ink-primary text-gray-400 py-8 mt-12">
+  <div class="max-w-5xl mx-auto px-6 text-center text-sm">
+    <p>Mockup visual PDT v4 — generado para revisión interna · 2026-05-08</p>
+    <p class="text-xs text-gray-500 mt-2">Todos los datos son simulados. No usar en producción sin validar testimonios, fotos, stats y autorización OIT.</p>
+  </div>
+</div>
+
+</body>
+</html>
