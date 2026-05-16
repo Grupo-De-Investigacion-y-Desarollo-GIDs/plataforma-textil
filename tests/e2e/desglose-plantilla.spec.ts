@@ -26,7 +26,11 @@ test.describe('W-A1 Desglose de plantilla por categoría', () => {
       await page.goto('/taller/perfil/completar', { waitUntil: 'load', timeout: 30_000 })
 
       // Navegar al paso 4 (Composición del equipo)
-      // El wizard tiene botones "Siguiente"
+      // Paso 0: bienvenida — botón "Empezar"
+      await page.getByRole('button', { name: /empezar/i }).click()
+      await page.waitForTimeout(300)
+
+      // Pasos 1-3: navegación del wizard — botón "Siguiente"
       for (let i = 0; i < 3; i++) {
         await page.getByRole('button', { name: /siguiente/i }).click()
         await page.waitForTimeout(300)
