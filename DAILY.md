@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-05-16
+
+### Gerardo Breard
+- **14:13** `b91dea6` — docs(handover): documentar incident config imagenes-portfolio desactivada
+  - `.claude/specs/handover/KNOWN_ISSUES.md`
+
+
 ## 2026-05-15
 
 ### Gerardo Breard
