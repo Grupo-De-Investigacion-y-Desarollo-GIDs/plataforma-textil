@@ -14,6 +14,7 @@ async function main() {
   // ============================================
   // LIMPIEZA (orden inverso a dependencias)
   // ============================================
+  await prisma.novedad.deleteMany()
   await prisma.intentoEvaluacion.deleteMany()
   await prisma.escrowHito.deleteMany()
   await prisma.logActividad.deleteMany()
@@ -1089,6 +1090,63 @@ async function main() {
   console.log('  ✓ 4 logs adicionales + progreso bronce')
 
   // ============================================
+  // NOVEDADES (contenido público para carrusel landing)
+  // ============================================
+  const novedadesSeed = [
+    {
+      tipo: 'NOTICIA' as const,
+      titulo: 'Convenio firmado con OIT para piloto sectorial',
+      descripcion: 'Anuncio del convenio que da marco al lanzamiento de la Plataforma Digital Textil en el sector de indumentaria del Conurbano Sur.',
+      imagenUrl: '/seed/novedades/convenio-oit.jpg',
+      slug: 'convenio-oit-piloto-sectorial',
+      fecha: new Date('2026-04-15'),
+      publicado: true,
+    },
+    {
+      tipo: 'CASO' as const,
+      titulo: 'Taller Confecciones del Sur formaliza su producción',
+      descripcion: 'Caso de un taller que en 3 meses pasó de Bronce a Plata gracias al acompañamiento de la plataforma.',
+      imagenUrl: '/seed/novedades/caso-taller-sur.jpg',
+      slug: 'caso-confecciones-del-sur',
+      fecha: new Date('2026-04-22'),
+      publicado: true,
+    },
+    {
+      tipo: 'INDICADOR' as const,
+      titulo: '+38% de talleres con CUIT verificado en el sector',
+      descripcion: 'Datos consolidados del primer trimestre 2026 muestran un avance significativo en la formalización del sector textil.',
+      imagenUrl: null,
+      slug: 'indicador-cuit-q1-2026',
+      fecha: new Date('2026-05-01'),
+      publicado: true,
+    },
+    {
+      tipo: 'NOTICIA' as const,
+      titulo: 'Nuevas capacitaciones en costura industrial disponibles',
+      descripcion: 'INTI lanza módulo certificable en el sistema de capacitaciones de la plataforma.',
+      imagenUrl: '/seed/novedades/capacitacion-inti.jpg',
+      slug: 'capacitaciones-costura-inti',
+      fecha: new Date('2026-05-08'),
+      publicado: true,
+    },
+    {
+      tipo: 'INDICADOR' as const,
+      titulo: '127 talleres registrados en la plataforma',
+      descripcion: 'Crecimiento sostenido del directorio textil durante el primer mes del piloto.',
+      imagenUrl: null,
+      slug: 'indicador-127-talleres',
+      fecha: new Date('2026-05-12'),
+      publicado: true,
+    },
+  ]
+
+  for (const novedad of novedadesSeed) {
+    await prisma.novedad.create({ data: novedad })
+  }
+
+  console.log('  ✓ 5 novedades')
+
+  // ============================================
   // RESUMEN
   // ============================================
   const counts = await prisma.$transaction([
@@ -1105,6 +1163,7 @@ async function main() {
     prisma.auditoria.count(),
     prisma.denuncia.count(),
     prisma.notificacion.count(),
+    prisma.novedad.count(),
   ])
 
   console.log('\n✅ Seed completado:')
@@ -1112,6 +1171,7 @@ async function main() {
   console.log(`  ${counts[3]} pedidos | ${counts[4]} ordenes | ${counts[5]} colecciones | ${counts[6]} videos`)
   console.log(`  ${counts[7]} certificados | ${counts[8]} validaciones`)
   console.log(`  ${counts[9]} cotizaciones | ${counts[10]} auditorias | ${counts[11]} denuncias | ${counts[12]} notificaciones`)
+  console.log(`  ${counts[13]} novedades`)
   console.log('\n  Feature flags E2: TODOS ACTIVADOS')
   console.log('  Credenciales: todas las cuentas usan password "pdt2026"')
 }

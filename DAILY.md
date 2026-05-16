@@ -3,6 +3,15 @@
 ## 2026-05-15
 
 ### Gerardo Breard
+- **20:40** `def5b7f` — feat(db): modelo Novedad + endpoint publico
+  - `prisma/migrations/20260515200000_agregar_modelo_novedad/migration.sql`
+  - `prisma/schema.prisma`
+  - `prisma/seed.ts`
+  - `src/app/api/novedades/route.ts`
+
+- **20:32** `4da55c9` — docs(spec): X-04 modelo Novedad
+  - `.claude/specs/v4-x-04-modelo-novedad.md`
+
 - **15:59** `f91ea1c` — fix(e2e): resolver race condition en file-validation con serial mode
   - `tests/e2e/file-validation.spec.ts`
 
