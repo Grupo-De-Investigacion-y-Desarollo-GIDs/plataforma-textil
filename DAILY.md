@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-05-16
+
+### Gerardo Breard
+- **13:06** `053eb4a` — docs(spec): W-A1 desglose plantilla — spec inicial con correcciones
+  - `.claude/specs/v4-w-a1-desglose-plantilla.md`
+
+
 ## 2026-05-15
 
 ### Gerardo Breard
