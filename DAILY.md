@@ -3,6 +3,9 @@
 ## 2026-05-16
 
 ### Gerardo Breard
+- **19:28** `f6c6950` — fix(api): include solo con relaciones en /api/talleres
+  - `src/app/api/talleres/route.ts`
+
 - **18:19** `6ead85f` — docs(handover): lecciones operativas del 2026-05-16
   - `.claude/specs/handover/DECISIONS.md`
 
