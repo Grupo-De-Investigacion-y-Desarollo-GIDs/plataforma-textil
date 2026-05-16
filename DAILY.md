@@ -3,6 +3,9 @@
 ## 2026-05-16
 
 ### Gerardo Breard
+- **16:26** `3de1276` — merge: traer W-A1 de main a develop
+
+
 - **13:32** `baff23c` — feat(seed): plantillas de ejemplo + test E2E desglose
   - `prisma/seed.ts`
   - `tests/e2e/desglose-plantilla.spec.ts`
