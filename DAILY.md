@@ -3,6 +3,9 @@
 ## 2026-05-16
 
 ### Gerardo Breard
+- **13:20** `2958e3f` — feat(perfil): vista de plantilla con desglose por categoria
+  - `src/app/(taller)/taller/perfil/page.tsx`
+
 - **13:20** `84a693a` — feat(form): wizard paso 4 con desglose por categoria
   - `src/app/(taller)/taller/perfil/completar/page.tsx`
 
