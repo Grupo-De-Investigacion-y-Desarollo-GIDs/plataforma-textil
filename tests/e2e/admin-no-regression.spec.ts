@@ -7,7 +7,7 @@ test.describe('D-01 Admin no-regression — verificar que ADMIN no se rompio', (
     await ensureNotProduction(page)
     await loginAs(page, 'admin')
     await page.goto('/admin/talleres')
-    await expect(page.locator('h1')).toContainText('Talleres')
+    await expect(page.locator('h1').first()).toContainText('Talleres')
     // Click en el primer taller
     const firstRow = page.locator('table tbody tr, [data-testid="data-table"] tbody tr').first()
     const link = firstRow.locator('a').first()
@@ -35,7 +35,7 @@ test.describe('D-01 Admin no-regression — verificar que ADMIN no se rompio', (
     await ensureNotProduction(page)
     await loginAs(page, 'admin')
     await page.goto('/admin/logs')
-    await expect(page.locator('h1')).toContainText('Logs')
+    await expect(page.locator('h1').first()).toContainText('Logs')
     // La tabla debe cargar sin error
     await page.waitForSelector('table', { timeout: 10000 })
   })

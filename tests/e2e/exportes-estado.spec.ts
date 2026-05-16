@@ -19,8 +19,8 @@ test.describe('F-04 Exportes del Estado', () => {
     await expect(page.getByRole('heading', { name: 'Exportar Reportes' })).toBeVisible({ timeout: 30000 })
 
     // Verificar que hay tarjetas de reportes
-    await expect(page.getByText('Talleres')).toBeVisible()
-    await expect(page.getByText('Marcas')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Talleres', exact: true })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Marcas', exact: true })).toBeVisible()
     await expect(page.getByText('Informe mensual completo')).toBeVisible()
   })
 
@@ -96,7 +96,7 @@ test.describe('F-04 Exportes del Estado', () => {
     await page.goto('/estado/exportar')
     await page.waitForLoadState('domcontentloaded')
 
-    const breadcrumb = page.locator('nav[aria-label="Breadcrumb"]')
+    const breadcrumb = page.locator('main nav[aria-label="Breadcrumb"]')
     await expect(breadcrumb).toBeVisible({ timeout: 30000 })
   })
 })

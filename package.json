@@ -2,6 +2,29 @@
   "name": "pdt",
   "version": "0.1.0",
   "private": true,
+  "description": "Plataforma Digital Textil — Donde se encuentran talleres y marcas para producir formalmente. Desarrollado por UNTREF con el apoyo de la OIT.",
+  "author": "UNTREF + OIT <contacto@plataformatextil.com.ar>",
+  "license": "MIT",
+  "homepage": "https://plataformatextil.com.ar",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil/issues"
+  },
+  "keywords": [
+    "oit",
+    "ilo",
+    "untref",
+    "argentina",
+    "textil",
+    "formalizacion",
+    "trabajo-decente",
+    "nextjs",
+    "prisma",
+    "supabase"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "prisma migrate deploy && prisma generate && next build",

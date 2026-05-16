@@ -68,7 +68,7 @@ test.describe('Layout consistency — cada rol tiene header y sidebar correctos'
       // Header global — NO el header minimo
       await expect(page.locator('button[aria-label*="Notificaciones"]').first()).toBeVisible()
       // Breadcrumbs
-      await expect(page.locator('nav[aria-label="Breadcrumb"]')).toBeVisible()
+      await expect(page.locator('main nav[aria-label="Breadcrumb"]')).toBeVisible()
     } catch {
       test.skip()
     }
@@ -82,7 +82,7 @@ test.describe('Layout consistency — cada rol tiene header y sidebar correctos'
       // Header global
       await expect(page.locator('button[aria-label*="Notificaciones"]').first()).toBeVisible()
       // Breadcrumbs
-      await expect(page.locator('nav[aria-label="Breadcrumb"]')).toBeVisible()
+      await expect(page.locator('main nav[aria-label="Breadcrumb"]')).toBeVisible()
     } catch {
       test.skip()
     }

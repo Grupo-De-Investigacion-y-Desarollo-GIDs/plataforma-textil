@@ -41,7 +41,7 @@ test.describe('T-03 Protocolos de onboarding', () => {
       await ensureNotProduction(page)
       const response = await page.goto('/ayuda/onboarding-taller')
       expect(response?.status()).toBe(200)
-      await expect(page.locator('h1')).toContainText('Plataforma Digital Textil')
+      await expect(page.locator('h1').first()).toContainText('Plataforma Digital Textil')
     } catch {
       test.skip()
     }
@@ -52,7 +52,7 @@ test.describe('T-03 Protocolos de onboarding', () => {
       await ensureNotProduction(page)
       const response = await page.goto('/ayuda/onboarding-marca')
       expect(response?.status()).toBe(200)
-      await expect(page.locator('h1')).toContainText('Marca')
+      await expect(page.locator('h1').first()).toContainText('Marca')
     } catch {
       test.skip()
     }
@@ -63,7 +63,7 @@ test.describe('T-03 Protocolos de onboarding', () => {
       await ensureNotProduction(page)
       await loginAs(page, 'admin')
       await page.goto('/admin/onboarding')
-      await expect(page.locator('h1')).toContainText('onboarding')
+      await expect(page.locator('h1').first()).toContainText('onboarding')
     } catch {
       test.skip()
     }

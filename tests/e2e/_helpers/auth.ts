@@ -1,4 +1,6 @@
 import { Page } from '@playwright/test'
+import fs from 'fs'
+import path from 'path'
 
 type Rol = 'taller' | 'marca' | 'admin' | 'estado'
 
@@ -33,7 +35,34 @@ const envMap: Record<Rol, { emailVar: string; passwordVar: string }> = {
   estado: { emailVar: 'TEST_ESTADO_EMAIL', passwordVar: 'TEST_ESTADO_PASSWORD' },
 }
 
+// Rutas de navegacion post-login por rol.
+// ESTADO usa /estado/talleres (liviana) en vez de /estado (16 queries pesadas).
+const targetPaths: Record<Rol, string> = {
+  admin: '/admin',
+  taller: '/taller',
+  marca: '/marca',
+  estado: '/estado/talleres',
+}
+
+/**
+ * Login como un rol. Si auth.setup.ts ya guardo storageState,
+ * inyecta las cookies y navega directo (~2-5s).
+ * Si no existe, hace login via browser form (fallback local).
+ */
 export async function loginAs(page: Page, rol: Rol) {
+  // Fast path: reusar storageState del setup project
+  const authFile = path.resolve('playwright/.auth', `${rol}.json`)
+  if (fs.existsSync(authFile)) {
+    const state = JSON.parse(fs.readFileSync(authFile, 'utf-8'))
+    if (state.cookies?.length > 0) {
+      await page.context().addCookies(state.cookies)
+      // Navegacion full-page directa (evita middleware redirect → RSC hang)
+      await page.goto(targetPaths[rol], { waitUntil: 'load', timeout: 30_000 })
+      return
+    }
+  }
+
+  // Fallback: login completo via browser (desarrollo local sin setup project)
   const env = envMap[rol]
   const def = defaults[rol]
 
@@ -41,13 +70,18 @@ export async function loginAs(page: Page, rol: Rol) {
   const password = process.env[env.passwordVar] || def.password
 
   await page.goto('/login')
-  // El form usa react-hook-form con register('email') y register('password')
-  // que agrega name="email" y name="password". Pero hay un segundo form (magic link)
-  // con otro input email. Usamos selectores mas especificos.
   await page.locator('form:has(button:has-text("Ingresar")) input[name="email"]').fill(email)
   await page.locator('form:has(button:has-text("Ingresar")) input[name="password"]').fill(password)
   await page.getByRole('button', { name: 'Ingresar' }).click()
-  await page.waitForURL(def.rutaEsperada, { timeout: 60000, waitUntil: 'commit' })
+
+  // Esperar que URL salga de /login (login completó)
+  await page.waitForURL((url) => !url.pathname.startsWith('/login'), {
+    timeout: 30_000,
+    waitUntil: 'commit',
+  })
+
+  // Navegacion full-page al target (evita client-side RSC hang de /estado)
+  await page.goto(targetPaths[rol], { waitUntil: 'load', timeout: 60_000 })
 }
 
 export async function logout(page: Page) {

@@ -96,7 +96,7 @@ test.describe('T-02 Observaciones de campo', () => {
       await ensureNotProduction(page)
       await loginAs(page, 'admin')
       await page.goto('/admin/observaciones')
-      await expect(page.locator('h1')).toContainText('Observaciones de campo')
+      await expect(page.locator('h1').first()).toContainText('Observaciones de campo')
     } catch {
       test.skip()
     }
@@ -107,7 +107,7 @@ test.describe('T-02 Observaciones de campo', () => {
       await ensureNotProduction(page)
       await loginAs(page, 'admin')
       await page.goto('/admin/observaciones/nueva')
-      await expect(page.locator('h1')).toContainText('Nueva observacion')
+      await expect(page.locator('h1').first()).toContainText('Nueva observacion')
     } catch {
       test.skip()
     }

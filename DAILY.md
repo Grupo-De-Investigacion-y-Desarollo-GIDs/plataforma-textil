@@ -1,5 +1,151 @@
 # Daily Log
 
+## 2026-05-16
+
+### Gerardo Breard
+- **13:32** `baff23c` — feat(seed): plantillas de ejemplo + test E2E desglose
+  - `prisma/seed.ts`
+  - `tests/e2e/desglose-plantilla.spec.ts`
+
+- **13:26** `73ad698` — feat(api): guardado y lectura de plantilla en talleres
+  - `src/app/api/talleres/[id]/route.ts`
+  - `src/app/api/talleres/me/route.ts`
+
+- **13:25** `5e6ac69` — feat(reporte): distribucion de plantilla por categoria
+  - `src/app/(estado)/estado/sector/page.tsx`
+
+- **13:20** `2958e3f` — feat(perfil): vista de plantilla con desglose por categoria
+  - `src/app/(taller)/taller/perfil/page.tsx`
+
+- **13:20** `84a693a` — feat(form): wizard paso 4 con desglose por categoria
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+
+- **13:16** `38737c4` — feat(db): schema TallerPlantilla + helper oficio textil
+  - `prisma/migrations/20260516120000_desglose_plantilla_taller/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/compartido/lib/oficio-textil.ts`
+
+- **13:06** `053eb4a` — docs(spec): W-A1 desglose plantilla — spec inicial con correcciones
+  - `.claude/specs/v4-w-a1-desglose-plantilla.md`
+
+
+## 2026-05-15
+
+### Gerardo Breard
+- **20:40** `def5b7f` — feat(db): modelo Novedad + endpoint publico
+  - `prisma/migrations/20260515200000_agregar_modelo_novedad/migration.sql`
+  - `prisma/schema.prisma`
+  - `prisma/seed.ts`
+  - `src/app/api/novedades/route.ts`
+
+- **20:32** `4da55c9` — docs(spec): X-04 modelo Novedad
+  - `.claude/specs/v4-x-04-modelo-novedad.md`
+
+- **15:59** `f91ea1c` — fix(e2e): resolver race condition en file-validation con serial mode
+  - `tests/e2e/file-validation.spec.ts`
+
+- **15:25** `f680b3f` — fix(e2e): strict mode y navigation race en demanda-insatisfecha y smoke
+  - `tests/e2e/demanda-insatisfecha.spec.ts`
+  - `tests/e2e/smoke.spec.ts`
+
+- **15:19** `47f7347` — chore(skills): infraestructura de skills V4
+  - `.claude/skills/README.md`
+  - `.claude/skills/debugging-methodology/SKILL.md`
+  - `.claude/skills/github-workflows/SKILL.md`
+  - `.claude/skills/playwright-e2e/SKILL.md`
+  - `.claude/skills/spec-v4-implementation/SKILL.md`
+  - `.claude/skills/vercel-nextauth/SKILL.md`
+
+- **14:50** `208f950` — docs(handover): documentar flaky multi-rol en flujo-comercial
+  - `.claude/specs/handover/KNOWN_ISSUES.md`
+
+- **12:56** `bf34840` — fix(e2e): 4 bugs preexistentes en tests ESTADO destapados por storageState
+  - `tests/e2e/demanda-insatisfecha.spec.ts`
+  - `tests/e2e/exportes-estado.spec.ts`
+
+- **11:32** `afd40af` — fix(e2e): navegacion full-page despues de login para evitar RSC hang
+  - `tests/e2e/_helpers/auth.ts`
+  - `tests/e2e/auth.setup.ts`
+
+- **11:13** `7801f9f` — fix(e2e): usar browser real en auth.setup (no page.request)
+  - `tests/e2e/_helpers/auth.ts`
+  - `tests/e2e/auth.setup.ts`
+
+
+## 2026-05-14
+
+### Gerardo Breard
+- **23:17** `5f8b6c4` — debug: agregar logging diagnostico al auth setup
+  - `tests/e2e/auth.setup.ts`
+
+- **23:12** `ced67eb` — fix(e2e): auth setup via API directa en vez de browser form
+  - `tests/e2e/auth.setup.ts`
+
+- **22:56** `9ff8bb2` — fix(e2e): scopear locator de h1 con .first() para strict mode
+  - `tests/e2e/admin-no-regression.spec.ts`
+  - `tests/e2e/observaciones-campo.spec.ts`
+  - `tests/e2e/onboarding.spec.ts`
+
+- **22:55** `cf19216` — fix(e2e): resolver timeouts de tests ESTADO con storageState
+  - `playwright.config.ts`
+  - `tests/e2e/_helpers/auth.ts`
+  - `tests/e2e/auth.setup.ts`
+
+- **15:17** `0585e7b` — fix(e2e): scopear selector de Breadcrumb a <main>
+  - `tests/e2e/exportes-estado.spec.ts`
+  - `tests/e2e/layout-consistency.spec.ts`
+  - `tests/e2e/ux-mejoras.spec.ts`
+
+- **15:32** `4b6ff74` — fix(file-validation): eliminar cache in-memory cross-instance
+  - `src/app/api/admin/configuracion-upload/[id]/route.ts`
+  - `src/compartido/lib/file-validation.ts`
+
+- **12:24** `52f6537` — chore(qa-pages): soportar QAs V4 en workflow y generador
+  - `.github/workflows/qa-pages.yml`
+  - `tools/generate-qa.js`
+
+- **00:48** `8213c0b` — feat(visual): tokens v4 (paleta extendida + tipografías Source Serif/Inter)
+  - `.claude/specs/v4-x-01-tokens.md`
+  - `src/app/globals.css`
+
+
+## 2026-05-13
+
+### Gerardo Breard
+- **17:16** `cb66a4b` — fix(ci+auth): consolidar fixes E2E preview deploys
+  - `.github/workflows/e2e.yml`
+  - `src/compartido/lib/email.ts`
+
+- **16:37** `44b65c9` — feat(ci): warmup programático con login real por rol
+  - `.github/workflows/e2e.yml`
+
+- **16:07** `4836ead` — fix(middleware): /unauthorized debe ser pública
+  - `src/middleware.ts`
+
+- **13:20** `6bbe557` — fix(ci): E2E workflow soporta preview deploys de PRs
+  - `.github/workflows/e2e.yml`
+
+- **11:58** `7d5c473` — chore: trigger redeploy con variables de entorno corregidas
+
+
+## 2026-05-12
+
+### Gerardo Breard
+- **19:42** `bb8c8fa` — chore: handover básico V4 (README, LICENSE, docs, decisiones)
+  - `.claude/specs/handover/DECISIONS.md`
+  - `.claude/specs/handover/DEPLOY.md`
+  - `.claude/specs/handover/HOW_TO_ADD_SPEC.md`
+  - `.claude/specs/handover/HOW_TO_RUN_QA.md`
+  - `LICENSE`
+  - `README.md`
+  - `docs/AS_IS_MAP.md`
+  - `docs/GAP_MATRIX.md`
+  - `docs/README.md`
+  - `docs/ROADMAP_REMEDIACION.md`
+  - `docs/TO_BE_MAP.md`
+  - `package.json`
+
+
 ## 2026-05-09
 
 ### Gerardo Breard

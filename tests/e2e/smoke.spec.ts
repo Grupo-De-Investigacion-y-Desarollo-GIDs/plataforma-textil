@@ -7,11 +7,12 @@ test.describe('Smoke test — setup basico funciona', () => {
     await ensureNotProduction(page)
     await loginAs(page, 'admin')
 
-    // Verificar que estamos en /admin
+    // Verificar que estamos en /admin (esperar redirect a dashboard si aplica)
     await expect(page).toHaveURL(/\/admin/)
+    await page.waitForLoadState('load')
 
     // Navegar a /admin/logs (implementado en S-04)
-    await page.goto('/admin/logs')
+    await page.goto('/admin/logs', { waitUntil: 'load' })
 
     // Verificar que la pagina de logs carga con la UI mejorada de S-04
     await expect(page.getByRole('heading', { name: 'Logs de Actividad' })).toBeVisible()

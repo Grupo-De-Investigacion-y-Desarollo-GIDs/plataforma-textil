@@ -23,6 +23,7 @@ export default async function TallerPerfilPage() {
       user: { select: { email: true, phone: true } },
       procesos: { include: { proceso: true } },
       prendas: { include: { prenda: true } },
+      plantilla: { orderBy: { categoria: 'asc' } },
       maquinaria: true,
       certificaciones: { where: { activa: true } },
       certificados: {
@@ -192,15 +193,27 @@ export default async function TallerPerfilPage() {
               </div>
             )}
 
-            {taller.experienciaPromedio && (
+            {taller.plantilla.length > 0 && taller.plantilla.some(p => p.cantidad > 0) ? (
               <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-gray-500 text-xs mb-1">Experiencia del equipo</p>
-                <p className="font-medium text-gray-800">
-                  {taller.experienciaPromedio === '5+' ? 'Más de 5 años'
-                   : taller.experienciaPromedio === '3-5' ? '3 a 5 años'
-                   : taller.experienciaPromedio === '1-3' ? '1 a 3 años'
-                   : 'Menos de 1 año'}
-                </p>
+                <p className="text-gray-500 text-xs mb-1">Composición del equipo</p>
+                <div className="space-y-1">
+                  {taller.plantilla.filter(p => p.cantidad > 0).map(p => (
+                    <p key={p.categoria} className="font-medium text-gray-800 text-sm">
+                      {p.categoria === 'APRENDIZ' ? 'Aprendices'
+                       : p.categoria === 'MEDIO_OFICIAL' ? 'Medio oficial'
+                       : p.categoria === 'OFICIAL' ? 'Oficial'
+                       : 'Oficial calificado'}: {p.cantidad}
+                    </p>
+                  ))}
+                  <p className="text-xs text-gray-500 mt-1">
+                    Total: {taller.plantilla.reduce((sum, p) => sum + p.cantidad, 0)} personas
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-gray-50 rounded-lg p-3">
+                <p className="text-gray-500 text-xs mb-1">Composición del equipo</p>
+                <p className="text-sm text-gray-400 italic">Pendiente de completar</p>
               </div>
             )}
 
