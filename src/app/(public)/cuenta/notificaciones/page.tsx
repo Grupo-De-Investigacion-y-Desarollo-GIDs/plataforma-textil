@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { NotificacionesLista } from './notificaciones-lista'
 import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 
-type Tab = 'comunicaciones' | 'historial'
+type Tab = 'todas' | 'comunicaciones' | 'sistema'
 
 export default async function NotificacionesPage({
   searchParams,
@@ -18,12 +18,17 @@ export default async function NotificacionesPage({
   if (!session?.user?.id) redirect('/login?callbackUrl=%2Fcuenta%2Fnotificaciones')
 
   const params = await Promise.resolve(searchParams ?? {})
-  const tab: Tab = params.tab === 'historial' ? 'historial' : 'comunicaciones'
+  const rawTab = params.tab
+  const tab: Tab = rawTab === 'historial' || rawTab === 'sistema'
+    ? 'sistema'
+    : rawTab === 'comunicaciones'
+    ? 'comunicaciones'
+    : 'todas'
 
   const where: Record<string, unknown> = { userId: session.user.id }
   if (tab === 'comunicaciones') {
     where.createdById = { not: null }
-  } else {
+  } else if (tab === 'sistema') {
     where.createdById = null
   }
 
@@ -44,6 +49,14 @@ export default async function NotificacionesPage({
       ]} />
       <div className="flex gap-2">
         <Link
+          href="/cuenta/notificaciones"
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            tab === 'todas' ? 'bg-brand-blue text-white' : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
+          }`}
+        >
+          Todas
+        </Link>
+        <Link
           href="?tab=comunicaciones"
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             tab === 'comunicaciones' ? 'bg-brand-blue text-white' : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
@@ -52,21 +65,23 @@ export default async function NotificacionesPage({
           Comunicaciones
         </Link>
         <Link
-          href="?tab=historial"
+          href="?tab=sistema"
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            tab === 'historial' ? 'bg-brand-blue text-white' : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
+            tab === 'sistema' ? 'bg-brand-blue text-white' : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
           }`}
         >
-          Historial del sistema
+          Sistema
         </Link>
       </div>
 
       <NotificacionesLista
         notificaciones={notificaciones}
         emptyMessage={
-          tab === 'comunicaciones'
+          tab === 'todas'
+            ? 'Estas al dia. No tenes notificaciones.'
+            : tab === 'comunicaciones'
             ? 'No recibiste comunicaciones todavia.'
-            : 'El sistema no genero notificaciones para vos todavia.'
+            : 'Sin alertas del sistema.'
         }
       />
     </div>
