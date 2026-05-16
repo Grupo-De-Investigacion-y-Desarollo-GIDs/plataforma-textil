@@ -3,6 +3,10 @@
 ## 2026-05-16
 
 ### Gerardo Breard
+- **13:26** `73ad698` — feat(api): guardado y lectura de plantilla en talleres
+  - `src/app/api/talleres/[id]/route.ts`
+  - `src/app/api/talleres/me/route.ts`
+
 - **13:25** `5e6ac69` — feat(reporte): distribucion de plantilla por categoria
   - `src/app/(estado)/estado/sector/page.tsx`
 
