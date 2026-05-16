@@ -18,6 +18,25 @@ function exeBuffer(): Buffer {
 test.describe.configure({ mode: 'serial' })
 
 test.describe('File validation — S-03', () => {
+  // Garantizar que la config imagenes-portfolio quede activa despues de
+  // cada test, incluso si el test aborta por timeout. Esto previene que
+  // el test :159 (que desactiva la config) deje la DB en estado sucio.
+  test.afterEach(async ({ page }) => {
+    try {
+      await loginAs(page, 'admin')
+      const configsRes = await page.request.get('/api/admin/configuracion-upload')
+      if (configsRes.status() !== 200) return
+      const configs = await configsRes.json()
+      const portfolioConfig = configs.find((c: { contexto: string }) => c.contexto === 'imagenes-portfolio')
+      if (!portfolioConfig || portfolioConfig.activo) return
+      await page.request.put(`/api/admin/configuracion-upload/${portfolioConfig.id}`, {
+        data: { activo: true },
+      })
+    } catch {
+      // Best-effort: si falla la reactivacion, no romper el reporte
+    }
+  })
+
   test('upload JPEG valido a imagenes (portfolio) retorna URL', async ({ page }) => {
     test.setTimeout(30000)
     await ensureNotProduction(page)
@@ -184,41 +203,34 @@ test.describe('File validation — S-03', () => {
     })
     expect(desactivarRes.status()).toBe(200)
 
-    try {
-      // Ahora loguearse como taller e intentar subir
-      await loginAs(page, 'taller')
+    // Loguearse como taller e intentar subir
+    await loginAs(page, 'taller')
 
-      const tallerRes = await page.request.get('/api/talleres/me')
-      const tallerData = await tallerRes.json()
-      const tallerId = tallerData.id || tallerData.taller?.id
+    const tallerRes = await page.request.get('/api/talleres/me')
+    const tallerData = await tallerRes.json()
+    const tallerId = tallerData.id || tallerData.taller?.id
 
-      if (!tallerId) {
-        test.skip(true, 'No se encontro tallerId')
-        return
-      }
-
-      const fileBuffer = jpegBuffer(1024)
-      const res = await page.request.post('/api/upload/imagenes', {
-        multipart: {
-          file: {
-            name: 'test.jpg',
-            mimeType: 'image/jpeg',
-            buffer: fileBuffer,
-          },
-          contexto: 'portfolio',
-          entityId: tallerId,
-        },
-      })
-
-      expect(res.status()).toBe(400)
-      const data = await res.json()
-      expect(data.error).toContain('no habilitada')
-    } finally {
-      // Restaurar: reactivar el contexto
-      await loginAs(page, 'admin')
-      await page.request.put(`/api/admin/configuracion-upload/${portfolioConfig.id}`, {
-        data: { activo: true },
-      })
+    if (!tallerId) {
+      test.skip(true, 'No se encontro tallerId')
+      return
     }
+
+    const fileBuffer = jpegBuffer(1024)
+    const res = await page.request.post('/api/upload/imagenes', {
+      multipart: {
+        file: {
+          name: 'test.jpg',
+          mimeType: 'image/jpeg',
+          buffer: fileBuffer,
+        },
+        contexto: 'portfolio',
+        entityId: tallerId,
+      },
+    })
+
+    expect(res.status()).toBe(400)
+    const data = await res.json()
+    expect(data.error).toContain('no habilitada')
+    // afterEach se encarga de reactivar la config
   })
 })
