@@ -3,6 +3,11 @@
 ## 2026-05-16
 
 ### Gerardo Breard
+- **13:16** `38737c4` — feat(db): schema TallerPlantilla + helper oficio textil
+  - `prisma/migrations/20260516120000_desglose_plantilla_taller/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/compartido/lib/oficio-textil.ts`
+
 - **13:06** `053eb4a` — docs(spec): W-A1 desglose plantilla — spec inicial con correcciones
   - `.claude/specs/v4-w-a1-desglose-plantilla.md`
 
