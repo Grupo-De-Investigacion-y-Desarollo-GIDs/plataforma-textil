@@ -3,6 +3,9 @@
 ## 2026-05-16
 
 ### Gerardo Breard
+- **13:25** `5e6ac69` — feat(reporte): distribucion de plantilla por categoria
+  - `src/app/(estado)/estado/sector/page.tsx`
+
 - **13:20** `2958e3f` — feat(perfil): vista de plantilla con desglose por categoria
   - `src/app/(taller)/taller/perfil/page.tsx`
 
