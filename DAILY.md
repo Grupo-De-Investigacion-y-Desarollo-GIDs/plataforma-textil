@@ -3,6 +3,9 @@
 ## 2026-05-16
 
 ### Gerardo Breard
+- **18:19** `6ead85f` — docs(handover): lecciones operativas del 2026-05-16
+  - `.claude/specs/handover/DECISIONS.md`
+
 - **16:26** `3de1276` — merge: traer W-A1 de main a develop
 
 
