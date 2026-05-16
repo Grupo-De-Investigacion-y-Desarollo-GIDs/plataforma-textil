@@ -3,6 +3,9 @@
 ## 2026-05-16
 
 ### Gerardo Breard
+- **20:30** `7d65e27` — fix(notificaciones): tab 'Todas' por default en pagina cuenta
+  - `src/app/(public)/cuenta/notificaciones/page.tsx`
+
 - **19:28** `f6c6950` — fix(api): include solo con relaciones en /api/talleres
   - `src/app/api/talleres/route.ts`
 
