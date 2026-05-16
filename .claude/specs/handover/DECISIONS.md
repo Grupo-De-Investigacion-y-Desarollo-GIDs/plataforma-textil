@@ -454,3 +454,68 @@ Si una decisión existente cambia:
 **Última actualización:** Mayo 2026
 
 Si encontrás una decisión faltante o desactualizada, actualizá este documento y avisá al equipo.
+
+---
+
+## 2026-05-16 — Lecciones operativas del dia
+
+### 1. DB compartida + migraciones destructivas = riesgo
+
+**Problema:** Cuando un PR contiene una migracion destructiva (DROP COLUMN,
+DROP TABLE), Vercel la aplica a la DB compartida de dev/preview cuando
+deploya el branch. Si el branch tarda en mergear, otros branches y develop
+quedan con codigo desalineado contra la DB modificada → 500 en SSR.
+
+**Caso:** W-A1 dropeo experienciaPromedio. Develop y X-02 quedaron rotos
+2h 48min hasta el merge de W-A1. 9 issues abiertos durante ese periodo
+(#297, #298, #327-#336) fueron falsos positivos resueltos al alinear.
+
+**Mitigaciones adoptadas:**
+- Default branch del repo cambiado a develop (no main) — evita PRs
+  mergeados a main por error
+- Aceptar QA post-merge en dev (no esperar aprobacion previa por preview URL)
+- Mergear lo antes posible cuando hay migracion destructiva pendiente
+
+### 2. Tests que modifican estado global usan afterEach
+
+**Problema:** file-validation.spec.ts:159 desactivaba la config
+imagenes-portfolio y la reactivaba en finally. Cuando Playwright aborta
+por timeout o error, el finally no se ejecuta → config queda desactivada
+→ tests siguientes fallan.
+
+**Fix aplicado (PR #337):** Migrar a test.afterEach con cleanup robusto.
+
+**Patron general:** tests que modifican DB, archivos compartidos o
+configuraciones deben usar test.afterEach con cleanup, no try/finally
+dentro del test.
+
+### 3. Default branch del repo importa
+
+**Problema:** gh pr create sin --base usa el default branch del repo.
+Como el default era main, PRs #326 y #337 se mergearon a main
+directamente sin pasar por develop. Aunque tecnicamente OK, generaba
+grafo de git confuso.
+
+**Fix:** Default branch cambiado a develop via GitHub UI.
+
+### 4. Cambio de modelo de QA: Sergio post-merge, no pre-merge
+
+**Antes:** Sergio revisa preview URL antes de cada merge.
+**Ahora:** Gerardo hace smoke test tras CI verde, mergea, equipo prueba en
+dev y reporta issues.
+
+**Razon:** DB compartida no permite branches abiertos por dias. Aprobacion
+previa de Sergio se vuelve cuello de botella incompatible con la
+infraestructura. Mejor velocidad + QA post-merge en dev real.
+
+**Excepciones:** cambios de identidad visual fuertes, refactors de UX
+critica (registro, validacion CUIT, cotizacion).
+
+### 5. "Pasa en retry" no es "funciona"
+
+**Lecciones reforzadas hoy:**
+- Tests flaky deben investigarse antes de re-run
+- Distinguir "flaky de infraestructura" (re-run OK) de "regresion empeorada"
+  (no mergear)
+- Patron de degradacion (1 fail → 2 → 3 retries) es senal de algo que
+  empeora, no excusa para mergear
