@@ -3,6 +3,10 @@
 ## 2026-05-16
 
 ### Gerardo Breard
+- **13:32** `baff23c` — feat(seed): plantillas de ejemplo + test E2E desglose
+  - `prisma/seed.ts`
+  - `tests/e2e/desglose-plantilla.spec.ts`
+
 - **13:26** `73ad698` — feat(api): guardado y lectura de plantilla en talleres
   - `src/app/api/talleres/[id]/route.ts`
   - `src/app/api/talleres/me/route.ts`
