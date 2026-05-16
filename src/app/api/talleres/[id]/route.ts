@@ -55,7 +55,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       'nombre', 'ubicacion', 'website', 'provincia', 'partido', 'ubicacionDetalle', 'descripcion',
       'capacidadMensual', 'trabajadoresRegistrados', 'fundado',
       'sam', 'prendaPrincipal', 'organizacion', 'metrosCuadrados',
-      'areas', 'experienciaPromedio', 'polivalencia', 'horario',
+      'areas', 'polivalencia', 'horario',
       'registroProduccion', 'escalabilidad', 'paradasFrecuencia',
       'portfolioFotos',
     ]
@@ -100,6 +100,19 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
             skipDuplicates: true,
           })
         }
+      }
+
+      // Plantilla: replace all if provided
+      if (body.plantilla && typeof body.plantilla === 'object') {
+        await tx.tallerPlantilla.deleteMany({ where: { tallerId: id } })
+        await tx.tallerPlantilla.createMany({
+          data: [
+            { tallerId: id, categoria: 'APRENDIZ' as const, cantidad: Math.max(0, parseInt(body.plantilla.APRENDIZ) || 0) },
+            { tallerId: id, categoria: 'MEDIO_OFICIAL' as const, cantidad: Math.max(0, parseInt(body.plantilla.MEDIO_OFICIAL) || 0) },
+            { tallerId: id, categoria: 'OFICIAL' as const, cantidad: Math.max(0, parseInt(body.plantilla.OFICIAL) || 0) },
+            { tallerId: id, categoria: 'OFICIAL_CALIFICADO' as const, cantidad: Math.max(0, parseInt(body.plantilla.OFICIAL_CALIFICADO) || 0) },
+          ],
+        })
       }
 
       // Taller update
