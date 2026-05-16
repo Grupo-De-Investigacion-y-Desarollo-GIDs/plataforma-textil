@@ -3,6 +3,9 @@
 ## 2026-05-16
 
 ### Gerardo Breard
+- **13:20** `84a693a` — feat(form): wizard paso 4 con desglose por categoria
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+
 - **13:16** `38737c4` — feat(db): schema TallerPlantilla + helper oficio textil
   - `prisma/migrations/20260516120000_desglose_plantilla_taller/migration.sql`
   - `prisma/schema.prisma`
