@@ -3,6 +3,9 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **18:14** `5a61586` — feat(x-06): agregar utilities pattern-grid y card-lift
+  - `src/app/globals.css`
+
 - **00:16** `4189077` — fix(x-05): simplificar smoke test del header
   - `tests/e2e/smoke.spec.ts`
 
