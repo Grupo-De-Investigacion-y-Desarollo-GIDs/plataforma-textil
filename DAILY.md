@@ -3,6 +3,11 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **20:29** `81a92fe` — feat(x-04b): add CRUD + upload endpoints for novedades
+  - `src/app/api/contenido/novedades/[id]/route.ts`
+  - `src/app/api/contenido/novedades/route.ts`
+  - `src/app/api/contenido/novedades/upload/route.ts`
+
 - **20:27** `cca786b` — feat(x-04b): add slugify utility for novedades
   - `src/compartido/lib/slugify.ts`
 
