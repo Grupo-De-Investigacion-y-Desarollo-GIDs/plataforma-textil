@@ -3,6 +3,9 @@
 ## 2026-05-16
 
 ### Gerardo Breard
+- **23:43** `fb9efb2` — feat(x-05): institutional.ts con textos centralizados
+  - `src/compartido/lib/content/institutional.ts`
+
 - **23:07** `f449ace` — docs(handover): auditoria operabilidad + specs CMS pendientes
   - `.claude/specs/ORDEN_IMPLEMENTACION.md`
   - `.claude/specs/handover/AUDITORIA_OPERABILIDAD_2026-05-16.md`
