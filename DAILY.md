@@ -3,6 +3,9 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **18:25** `3b51b15` — feat(x-06): layout (public) usa HeaderPublic para anonimos
+  - `src/app/(public)/layout.tsx`
+
 - **18:23** `bbc75f7` — feat(x-06): assets del landing (hero + placeholders novedades)
   - `public/images/landing/hero-taller.png`
   - `public/seed/novedades/capacitacion-inti.jpg`
