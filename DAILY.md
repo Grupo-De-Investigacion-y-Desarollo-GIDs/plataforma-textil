@@ -3,6 +3,9 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **18:21** `dcdd034` — feat(x-06): agregar publicRoutes para paginas marketing
+  - `src/middleware.ts`
+
 - **18:19** `85694f2` — feat(x-06): componente HeaderPublic (1 banda sticky)
   - `src/compartido/componentes/layout/header-public.tsx`
 
