@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
-import { Bell, User, ShieldCheck } from 'lucide-react'
+import { Bell, User, ShieldCheck, CheckCircle2, AlertCircle } from 'lucide-react'
 import { CuentaWhatsappForm } from '@/compartido/componentes/cuenta-whatsapp-form'
 
 export default async function CuentaPage() {
@@ -23,6 +23,7 @@ export default async function CuentaPage() {
       phone: true,
       role: true,
       createdAt: true,
+      emailVerified: true,
       notificacionesWhatsapp: true,
       notificacionesRecibidas: { where: { leida: false }, select: { id: true } },
     },
@@ -40,13 +41,31 @@ export default async function CuentaPage() {
         <h2 className="font-overpass font-bold text-lg text-brand-blue mb-4">Resumen</h2>
         <div className="grid gap-3 sm:grid-cols-2 text-sm">
           <p><span className="text-gray-500">Nombre:</span> <span className="font-medium text-gray-800">{user.name || 'Sin nombre'}</span></p>
-          <p><span className="text-gray-500">Email:</span> <span className="font-medium text-gray-800">{user.email}</span></p>
+          <p className="flex items-center gap-1.5">
+            <span className="text-gray-500">Email:</span>
+            <span className="font-medium text-gray-800">{user.email}</span>
+            {user.emailVerified ? (
+              <CheckCircle2 className="w-4 h-4 text-green-500" title="Email verificado" />
+            ) : (
+              <AlertCircle className="w-4 h-4 text-amber-500" title="Verificacion pendiente" />
+            )}
+          </p>
           <p><span className="text-gray-500">Telefono:</span> <span className="font-medium text-gray-800">{user.phone || '-'}</span></p>
           <p><span className="text-gray-500">Rol:</span> <span className="font-medium text-gray-800">{user.role}</span></p>
           <p><span className="text-gray-500">Alta:</span> <span className="font-medium text-gray-800">{new Date(user.createdAt).toLocaleDateString('es-AR')}</span></p>
           <p><span className="text-gray-500">No leidas:</span> <span className="font-medium text-gray-800">{user.notificacionesRecibidas.length}</span></p>
         </div>
       </section>
+
+      {!user.emailVerified && (
+        <section className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-amber-500 mt-0.5 shrink-0" />
+          <div>
+            <p className="font-medium">Verificacion de email pendiente</p>
+            <p className="text-amber-700 mt-1">Te enviamos un email de verificacion al registrarte. Si no lo recibiste, contactanos a soporte@plataformatextil.ar.</p>
+          </div>
+        </section>
+      )}
 
       <CuentaWhatsappForm
         phoneInicial={user.phone}

@@ -54,35 +54,35 @@ async function main() {
   // USUARIOS
   // ============================================
   const admin = await prisma.user.create({
-    data: { email: 'lucia.fernandez@pdt.org.ar', password: hash, name: 'Lucía Fernández', role: 'ADMIN', phone: '+5491150001001', active: true },
+    data: { email: 'lucia.fernandez@pdt.org.ar', password: hash, name: 'Lucía Fernández', role: 'ADMIN', phone: '+5491150001001', active: true, emailVerified: new Date() },
   })
 
   const userBronce = await prisma.user.create({
-    data: { email: 'roberto.gimenez@pdt.org.ar', password: hash, name: 'Roberto Giménez', role: 'TALLER', phone: '+5491143567890', active: true },
+    data: { email: 'roberto.gimenez@pdt.org.ar', password: hash, name: 'Roberto Giménez', role: 'TALLER', phone: '+5491143567890', active: true, emailVerified: new Date() },
   })
 
   const userPlata = await prisma.user.create({
-    data: { email: 'graciela.sosa@pdt.org.ar', password: hash, name: 'Graciela Sosa', role: 'TALLER', phone: '+5491154321098', active: true },
+    data: { email: 'graciela.sosa@pdt.org.ar', password: hash, name: 'Graciela Sosa', role: 'TALLER', phone: '+5491154321098', active: true, emailVerified: new Date() },
   })
 
   const userOro = await prisma.user.create({
-    data: { email: 'carlos.mendoza@pdt.org.ar', password: hash, name: 'Carlos Mendoza', role: 'TALLER', phone: '+5491167890123', active: true },
+    data: { email: 'carlos.mendoza@pdt.org.ar', password: hash, name: 'Carlos Mendoza', role: 'TALLER', phone: '+5491167890123', active: true, emailVerified: new Date() },
   })
 
   const userMarcaChica = await prisma.user.create({
-    data: { email: 'valentina.ramos@pdt.org.ar', password: hash, name: 'Valentina Ramos', role: 'MARCA', phone: '+5491178901234', active: true },
+    data: { email: 'valentina.ramos@pdt.org.ar', password: hash, name: 'Valentina Ramos', role: 'MARCA', phone: '+5491178901234', active: true, emailVerified: new Date() },
   })
 
   const userMarcaMediana = await prisma.user.create({
-    data: { email: 'martin.echevarria@pdt.org.ar', password: hash, name: 'Martín Echevarría', role: 'MARCA', phone: '+5491189012345', active: true },
+    data: { email: 'martin.echevarria@pdt.org.ar', password: hash, name: 'Martín Echevarría', role: 'MARCA', phone: '+5491189012345', active: true, emailVerified: new Date() },
   })
 
   const userEstado = await prisma.user.create({
-    data: { email: 'anabelen.torres@pdt.org.ar', password: hash, name: 'Ana Belén Torres', role: 'ESTADO', phone: '+5491190123456', active: true },
+    data: { email: 'anabelen.torres@pdt.org.ar', password: hash, name: 'Ana Belén Torres', role: 'ESTADO', phone: '+5491190123456', active: true, emailVerified: new Date() },
   })
 
   await prisma.user.create({
-    data: { email: 'sofia.martinez@pdt.org.ar', password: hash, name: 'Sofía Martínez', role: 'CONTENIDO', phone: '+5491101234567', active: true },
+    data: { email: 'sofia.martinez@pdt.org.ar', password: hash, name: 'Sofía Martínez', role: 'CONTENIDO', phone: '+5491101234567', active: true, emailVerified: new Date() },
   })
 
   console.log('  ✓ 8 usuarios creados (incl. CONTENIDO)')
