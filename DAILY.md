@@ -3,6 +3,11 @@
 ## 2026-05-16
 
 ### Gerardo Breard
+- **23:07** `f449ace` — docs(handover): auditoria operabilidad + specs CMS pendientes
+  - `.claude/specs/ORDEN_IMPLEMENTACION.md`
+  - `.claude/specs/handover/AUDITORIA_OPERABILIDAD_2026-05-16.md`
+  - `.claude/specs/handover/DECISIONS.md`
+
 - **21:09** `6fb4683` — fix(acceso-rapido): restaurar usuario CONTENIDO
   - `src/app/(auth)/acceso-rapido/page.tsx`
 
