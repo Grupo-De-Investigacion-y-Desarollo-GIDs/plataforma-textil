@@ -3,6 +3,15 @@
 ## 2026-05-16
 
 ### Gerardo Breard
+- **23:48** `8ebba81` — feat(x-05): refactor Header a 2 bandas + montar Footer en layouts
+  - `src/app/(auth)/layout.tsx`
+  - `src/app/(estado)/layout.tsx`
+  - `src/app/(marca)/layout.tsx`
+  - `src/app/(public)/layout.tsx`
+  - `src/app/(taller)/layout.tsx`
+  - `src/app/layout.tsx`
+  - `src/compartido/componentes/layout/header.tsx`
+
 - **23:45** `a8b89a6` — feat(x-05): componente Footer institucional 4 columnas
   - `src/compartido/componentes/layout/footer.tsx`
 
