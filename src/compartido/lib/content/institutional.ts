@@ -48,3 +48,80 @@ export const TABS_BY_ROLE = {
     { label: 'Exportar', href: '/estado/exportar' },
   ],
 } as const
+
+// ─── Landing público (X-06) ─────────────────────────────────────
+
+export const LANDING_COPY = {
+  hero: {
+    badge: 'INICIATIVA DE OIT Y UNTREF',
+    titleParts: ['Formalizá,', 'conectá y trazá', 'la producción textil'],
+    subtitle: 'Construimos una industria textil transparente, confiable y sin trabajo informal. Para talleres, marcas y organismos del Estado.',
+    ctaTaller: { label: 'Soy taller', href: '/registro?rol=TALLER' },
+    ctaMarca: { label: 'Soy marca', href: '/registro?rol=MARCA' },
+    imageAlt: 'Trabajadores en taller textil con máquinas de coser',
+    cardTrazabilidad: {
+      title: 'Trazabilidad completa',
+      subtitle: 'Cada etapa del proceso registrada y verificable.',
+    },
+    cardStat: {
+      label: 'Talleres verificados en el piloto',
+    },
+  },
+  actores: {
+    eyebrow: 'DOS CAMINOS · UN ECOSISTEMA',
+    title: 'Para talleres y marcas del sector textil',
+    subtitle: 'El acceso institucional para organismos del Estado se gestiona por convenio con OIT y UNTREF.',
+    talleres: {
+      title: 'Talleres',
+      bullets: [
+        'Conseguí clientes formales',
+        'Accedé a certificación',
+        'Digitalizá tu producción',
+        'Capacitate y crecé de nivel',
+      ],
+      cta: { label: 'Quiero formalizarme', href: '/registro?rol=TALLER' },
+    },
+    marcas: {
+      title: 'Marcas',
+      bullets: [
+        'Encontrá proveedores verificados',
+        'Reducí riesgos legales',
+        'Trazabilidad completa',
+        'Cumplí con estándares ESG',
+      ],
+      cta: { label: 'Buscar proveedores', href: '/registro?rol=MARCA' },
+    },
+  },
+  impacto: {
+    eyebrow: 'NUESTRO IMPACTO',
+    titleParts: ['Impulsamos un sector más', 'justo y transparente'],
+    subtitle: 'Trabajamos para reducir la informalidad, mejorar las condiciones laborales y generar oportunidades de desarrollo en talleres y marcas argentinas.',
+    cta: { label: 'Conocé nuestro impacto', href: '/impacto' },
+  },
+  carrusel: {
+    eyebrow: 'ACADEMIA · SECTOR',
+    title: 'Novedades y capacitaciones',
+    subtitle: 'Lo último de la academia y del sector textil argentino',
+    verTodas: { label: 'Ver todas las novedades y cursos', href: '/novedades' },
+  },
+  ctaBanner: {
+    titleParts: ['Sumate a la transformación del', 'sector textil'],
+    subtitle: 'Empezá hoy. Es gratis.',
+    ctaTaller: { label: 'Soy taller', href: '/registro?rol=TALLER' },
+    ctaMarca: { label: 'Soy marca', href: '/registro?rol=MARCA' },
+  },
+} as const
+
+export const HEADER_PUBLIC_NAV = [
+  { label: '¿Cómo funciona?', href: '/taller-info' },
+  { label: 'Para taller', href: '/taller-info' },
+  { label: 'Para marcas', href: '/marca-info' },
+  { label: 'Impacto', href: '/impacto' },
+  { label: 'Recursos', href: '/recursos' },
+] as const
+
+export const HEADER_PUBLIC_CTAS = {
+  iniciar: { label: 'Iniciar sesión', href: '/login' },
+  taller: { label: 'Soy taller', href: '/registro?rol=TALLER' },
+  marca: { label: 'Soy marca', href: '/registro?rol=MARCA' },
+} as const
