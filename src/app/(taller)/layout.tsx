@@ -1,4 +1,5 @@
 import { Header } from '@/compartido/componentes/layout'
+import { Footer } from '@/compartido/componentes/layout/footer'
 import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { redirect } from 'next/navigation'
@@ -6,7 +7,6 @@ import { redirect } from 'next/navigation'
 export default async function TallerLayout({ children }: { children: React.ReactNode }) {
   const session = await auth()
 
-  // Si no hay sesión, redirigir a login (aunque el middleware ya debería manejarlo)
   if (!session?.user) {
     redirect('/login')
   }
@@ -14,7 +14,6 @@ export default async function TallerLayout({ children }: { children: React.React
     redirect('/unauthorized')
   }
 
-  // Obtener datos del taller desde la base de datos
   const taller = await prisma.taller.findFirst({
     where: { userId: session.user.id },
     select: {
@@ -28,18 +27,23 @@ export default async function TallerLayout({ children }: { children: React.React
   const userLevel = taller?.nivel || 'BRONCE'
   const userProgress = taller?.puntaje || 0
 
+  const isMain = process.env.VERCEL_GIT_COMMIT_REF === 'main'
+  const isLocal = !process.env.VERCEL_ENV
+  const showPilotPill = !isMain && !isLocal
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Header
-        activeTab="tablero"
         userName={userName}
         userRole="TALLER"
         userProgress={userProgress}
         userLevel={userLevel}
+        showPilotPill={showPilotPill}
       />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
         {children}
       </main>
+      <Footer />
     </div>
   )
 }

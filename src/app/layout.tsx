@@ -3,7 +3,6 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Providers } from "./providers";
 import { FeedbackWidgetWrapper } from "@/compartido/componentes/feedback-widget-wrapper";
-import { AmbienteBanner } from "@/compartido/componentes/ambiente-banner";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -27,7 +26,6 @@ export default function RootLayout({
       <body
         className="antialiased"
       >
-        <AmbienteBanner />
         <Providers>
           {children}
           <FeedbackWidgetWrapper />

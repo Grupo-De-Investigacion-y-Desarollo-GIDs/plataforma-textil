@@ -3,70 +3,47 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Globe, Search, Menu, X, User } from 'lucide-react'
+import { Menu } from 'lucide-react'
+import { LogoPDT } from '@/compartido/componentes/ui/logo-pdt'
 import { NotificacionesBell } from './notificaciones-bell'
-import { cn } from '@/compartido/lib/utils'
 import { UserSidebar } from './user-sidebar'
-
-interface Tab {
-  id: string
-  label: string
-  href: string
-}
-
-const tabsByRole: Record<string, Tab[]> = {
-  TALLER: [
-    { id: 'tablero', label: 'Tablero', href: '/taller' },
-    { id: 'pedidos', label: 'Pedidos', href: '/taller/pedidos' },
-    { id: 'formalizacion', label: 'Formalización', href: '/taller/formalizacion' },
-    { id: 'perfil', label: 'Mi Perfil', href: '/taller/perfil' },
-    { id: 'aprender', label: 'Academia', href: '/taller/aprender' },
-  ],
-  MARCA: [
-    { id: 'tablero', label: 'Tablero', href: '/marca' },
-    { id: 'directorio', label: 'Directorio', href: '/marca/directorio' },
-    { id: 'pedidos', label: 'Pedidos', href: '/marca/pedidos' },
-    { id: 'perfil', label: 'Mi Perfil', href: '/marca/perfil' },
-  ],
-  ESTADO: [
-    { id: 'dashboard', label: 'Dashboard', href: '/estado' },
-    { id: 'demanda', label: 'Demanda insatisfecha', href: '/estado/demanda-insatisfecha' },
-    { id: 'sector', label: 'Datos sectoriales', href: '/estado/sector' },
-    { id: 'exportar', label: 'Exportar', href: '/estado/exportar' },
-  ],
-  ADMIN: [
-    { id: 'dashboard', label: 'Dashboard', href: '/admin' },
-    { id: 'usuarios', label: 'Usuarios', href: '/admin/usuarios' },
-    { id: 'configuracion', label: 'Configuración', href: '/admin/configuracion' },
-  ],
-}
+import { INSTITUTIONAL, TABS_BY_ROLE } from '@/compartido/lib/content/institutional'
 
 interface HeaderProps {
-  activeTab?: string
   userName?: string
-  userRole?: 'TALLER' | 'MARCA' | 'ESTADO' | 'ADMIN'
-  userProgress?: number
+  userRole?: 'TALLER' | 'MARCA' | 'ESTADO'
   userLevel?: string
+  userProgress?: number
+  showPilotPill?: boolean
 }
 
 export function Header({
   userName = 'Usuario',
   userRole = 'TALLER',
-  userProgress = 40,
-  userLevel = 'Bronce'
+  userProgress = 0,
+  userLevel = 'Bronce',
+  showPilotPill = false,
 }: HeaderProps) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const pathname = usePathname()
-  const tabs = tabsByRole[userRole] || tabsByRole.TALLER
 
-  // Detectar tab activo por la ruta actual
-  const activeTab = (() => {
-    // Buscar match mas especifico primero (ordenar por longitud de href desc)
-    const sorted = [...tabs].sort((a, b) => b.href.length - a.href.length)
-    const match = sorted.find(tab => pathname.startsWith(tab.href))
-    return match?.id || tabs[0]?.id || ''
-  })()
+  // Tabs segun rol
+  const tabs = TABS_BY_ROLE[userRole] ?? []
+
+  // Tab activo: match mas especifico primero (ordenar por longitud de href desc)
+  const sortedTabs = [...tabs].sort((a, b) => b.href.length - a.href.length)
+  const activeTab = sortedTabs.find(
+    tab => pathname === tab.href || pathname.startsWith(tab.href + '/')
+  )
+
+  // Iniciales del usuario para avatar
+  const initials = userName
+    .split(' ')
+    .filter(Boolean)
+    .map(n => n[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase() || '?'
 
   return (
     <>
@@ -79,99 +56,87 @@ export function Header({
         userLevel={userLevel}
       />
 
-      <header className="sticky top-0 z-50">
-        <div className="bg-brand-topbar text-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-10 text-sm">
+      <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
+        {/* Banda 1: topbar */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-14">
+            {/* Izquierda: menu + logo + nombre */}
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="flex items-center gap-2 hover:bg-white/10 px-3 py-1.5 rounded transition-colors"
-                aria-label="Abrir menú personal"
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label="Abrir menu personal"
               >
-                <Menu className="w-4 h-4" />
-                <span className="hidden sm:inline">Menú</span>
+                <Menu className="w-5 h-5 text-ink-primary" />
               </button>
-
-              <div className="flex items-center gap-6">
-                <button className="flex items-center gap-2 hover:text-blue-200 transition-colors">
-                  <Globe className="w-4 h-4" />
-                  <span className="hidden sm:inline">ESPAÑOL</span>
-                </button>
-                <nav className="hidden md:flex items-center gap-6">
-                  <span className="text-green-400 font-semibold">V2.0</span>
-                  <NotificacionesBell />
-                  <button
-                    onClick={() => setSidebarOpen(true)}
-                    className="hover:text-blue-200 transition-colors flex items-center gap-2"
-                  >
-                    <User className="w-4 h-4" />
-                    {userName}
-                  </button>
-                </nav>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      <div className="bg-brand-blue text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            <div className="flex items-center gap-4">
-              <Link href="/" className="w-14 h-14 rounded-full bg-white flex items-center justify-center flex-shrink-0">
-                <span className="font-overpass font-bold text-brand-blue text-lg">PDT</span>
+              <Link href={`/${userRole.toLowerCase()}`} className="flex items-center gap-2.5">
+                <LogoPDT variant="icon" size="sm" />
+                <div className="hidden sm:flex flex-col leading-tight">
+                  <span className="font-serif font-bold text-sm text-ink-primary">
+                    {INSTITUTIONAL.brandName}
+                  </span>
+                  <span className="font-overpass font-bold text-[9px] text-terra-600 uppercase tracking-wider mt-0.5">
+                    {INSTITUTIONAL.brandSubtitle}
+                  </span>
+                </div>
               </Link>
-              <div className="hidden sm:block">
-                <h1 className="font-overpass font-bold text-xl">Plataforma Digital Textil</h1>
-                {userName && <p className="text-blue-200 text-sm font-overpass">{userRole}: {userName}</p>}
-              </div>
             </div>
-            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2">
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-      </div>
 
-      <div className="bg-brand-tabnav text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="hidden md:flex items-center justify-between">
-            <div className="flex">
-              {tabs.map((tab) => (
-                <Link key={tab.id} href={tab.href}
-                  className={cn(
-                    'px-6 py-4 font-overpass font-medium transition-colors relative',
-                    activeTab === tab.id ? 'bg-white text-brand-blue' : 'text-white hover:bg-white/10'
-                  )}>
-                  {tab.label}
-                  {activeTab === tab.id && <div className="absolute bottom-0 left-0 right-0 h-1 bg-brand-red" />}
-                </Link>
-              ))}
-            </div>
-            <button className="p-4 hover:bg-white/10 transition-colors">
-              <Search className="w-5 h-5" />
-            </button>
-          </nav>
-        </div>
-      </div>
+            {/* Derecha: pill ambiente + bell + avatar */}
+            <div className="flex items-center gap-3">
+              {showPilotPill && (
+                <span className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-overpass font-medium bg-pastel-yellow text-amber-900">
+                  <span className="w-1.5 h-1.5 rounded-full bg-yellow-500" />
+                  Ambiente piloto
+                </span>
+              )}
 
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-brand-blue border-t border-white/20">
-          <nav className="px-4 py-2">
-            {tabs.map((tab) => (
-              <Link key={tab.id} href={tab.href}
-                className={cn(
-                  'block px-4 py-3 font-overpass font-medium rounded-lg',
-                  activeTab === tab.id ? 'bg-white text-brand-blue' : 'text-white hover:bg-white/10'
-                )}>
-                {tab.label}
-              </Link>
-            ))}
-            <div className="px-4 py-3">
               <NotificacionesBell />
+
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <div className="w-8 h-8 rounded-full bg-brand-blue text-white flex items-center justify-center font-overpass font-bold text-xs">
+                  {initials}
+                </div>
+                <span className="hidden lg:inline text-sm font-medium text-ink-primary font-overpass">
+                  {userName}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Banda 2: tabs */}
+        {tabs.length > 0 && (
+          <nav className="border-t border-gray-100">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <ul className="flex gap-1 overflow-x-auto">
+                {tabs.map(tab => {
+                  const isActive = activeTab?.href === tab.href
+                  return (
+                    <li key={tab.href}>
+                      <Link
+                        href={tab.href}
+                        className={`
+                          inline-flex items-center px-4 py-3 text-sm font-overpass font-semibold whitespace-nowrap
+                          border-b-2 transition-colors
+                          ${isActive
+                            ? 'border-brand-blue text-brand-blue'
+                            : 'border-transparent text-ink-secondary hover:text-ink-primary hover:border-gray-300'
+                          }
+                        `}
+                      >
+                        {tab.label}
+                      </Link>
+                    </li>
+                  )
+                })}
+              </ul>
             </div>
           </nav>
-        </div>
-      )}
+        )}
       </header>
     </>
   )
