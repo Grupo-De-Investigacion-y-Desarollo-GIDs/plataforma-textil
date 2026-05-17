@@ -3,6 +3,10 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **00:11** `b2fcd3d` — fix(x-05): scoped sidebar selector + robust pill assertion
+  - `tests/e2e/roles-estado.spec.ts`
+  - `tests/e2e/smoke.spec.ts`
+
 - **00:02** `2af3fbf` — fix(x-05): tests E2E y aria-label compatible
   - `src/compartido/componentes/layout/header.tsx`
   - `tests/e2e/smoke.spec.ts`
