@@ -3,6 +3,9 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **00:16** `4189077` — fix(x-05): simplificar smoke test del header
+  - `tests/e2e/smoke.spec.ts`
+
 - **00:11** `b2fcd3d` — fix(x-05): scoped sidebar selector + robust pill assertion
   - `tests/e2e/roles-estado.spec.ts`
   - `tests/e2e/smoke.spec.ts`
