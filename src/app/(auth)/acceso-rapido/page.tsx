@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { Card } from '@/compartido/componentes/ui/card'
-import { Factory, ShoppingBag, BarChart3, Shield } from 'lucide-react'
+import { Factory, ShoppingBag, BarChart3, Shield, FileText } from 'lucide-react'
 
 const usuarios = [
   {
@@ -66,6 +66,16 @@ const usuarios = [
     redirect: '/estado',
     icon: BarChart3,
     color: 'bg-green-600',
+  },
+  {
+    email: 'sofia.martinez@pdt.org.ar',
+    password: 'pdt2026',
+    nombre: 'Sofía Martínez',
+    rol: 'CONTENIDO',
+    descripcion: 'Gestión de contenido público',
+    redirect: '/contenido',
+    icon: FileText,
+    color: 'bg-purple-500',
   },
 ]
 
