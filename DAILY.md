@@ -3,6 +3,9 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **18:25** `048a00e` — feat(x-06): componente CarruselNovedades con flechas prev/next
+  - `src/compartido/componentes/ui/carrusel-novedades.tsx`
+
 - **18:25** `3b51b15` — feat(x-06): layout (public) usa HeaderPublic para anonimos
   - `src/app/(public)/layout.tsx`
 
