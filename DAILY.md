@@ -3,6 +3,16 @@
 ## 2026-05-16
 
 ### Gerardo Breard
+- **23:44** `074c380` — feat(x-05): paginas stub para links del footer
+  - `src/app/(public)/academia-publica/page.tsx`
+  - `src/app/(public)/accesibilidad/page.tsx`
+  - `src/app/(public)/contacto/page.tsx`
+  - `src/app/(public)/impacto/page.tsx`
+  - `src/app/(public)/marca-info/page.tsx`
+  - `src/app/(public)/novedades/page.tsx`
+  - `src/app/(public)/recursos/page.tsx`
+  - `src/app/(public)/taller-info/page.tsx`
+
 - **23:43** `fb9efb2` — feat(x-05): institutional.ts con textos centralizados
   - `src/compartido/lib/content/institutional.ts`
 
