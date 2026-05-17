@@ -3,6 +3,10 @@
 ## 2026-05-16
 
 ### Gerardo Breard
+- **21:46** `c84a260` — fix(onboarding): desbloquear paso 'Verificar email' en piloto
+  - `prisma/seed.ts`
+  - `src/app/(public)/cuenta/page.tsx`
+
 - **21:09** `6fb4683` — fix(acceso-rapido): restaurar usuario CONTENIDO
   - `src/app/(auth)/acceso-rapido/page.tsx`
 
