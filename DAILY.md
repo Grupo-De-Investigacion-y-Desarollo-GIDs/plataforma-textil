@@ -3,6 +3,9 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **18:28** `d75cfd8` — feat(x-06): landing rediseñado V4
+  - `src/app/page.tsx`
+
 - **18:25** `048a00e` — feat(x-06): componente CarruselNovedades con flechas prev/next
   - `src/compartido/componentes/ui/carrusel-novedades.tsx`
 
