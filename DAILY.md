@@ -3,6 +3,9 @@
 ## 2026-05-16
 
 ### Gerardo Breard
+- **23:45** `a8b89a6` — feat(x-05): componente Footer institucional 4 columnas
+  - `src/compartido/componentes/layout/footer.tsx`
+
 - **23:44** `074c380` — feat(x-05): paginas stub para links del footer
   - `src/app/(public)/academia-publica/page.tsx`
   - `src/app/(public)/accesibilidad/page.tsx`
