@@ -3,6 +3,9 @@
 ## 2026-05-16
 
 ### Gerardo Breard
+- **21:09** `6fb4683` — fix(acceso-rapido): restaurar usuario CONTENIDO
+  - `src/app/(auth)/acceso-rapido/page.tsx`
+
 - **20:30** `7d65e27` — fix(notificaciones): tab 'Todas' por default en pagina cuenta
   - `src/app/(public)/cuenta/notificaciones/page.tsx`
 
