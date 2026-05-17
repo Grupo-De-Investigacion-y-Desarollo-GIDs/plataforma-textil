@@ -1,6 +1,6 @@
-import Link from 'next/link'
 import { auth } from '@/compartido/lib/auth'
 import { Header } from '@/compartido/componentes/layout'
+import { HeaderPublic } from '@/compartido/componentes/layout/header-public'
 import { Footer } from '@/compartido/componentes/layout/footer'
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
@@ -31,25 +31,11 @@ export default async function PublicLayout({ children }: { children: React.React
     )
   }
 
-  // Anonymous: minimal header for public pages
+  // Anonymous: HeaderPublic + Footer for marketing pages
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      <header className="bg-white border-b border-gray-100 sticky top-0 z-40">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-14">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-brand-blue flex items-center justify-center">
-              <span className="font-overpass font-bold text-white text-xs">PDT</span>
-            </div>
-            <span className="font-serif font-bold text-ink-primary text-sm hidden sm:inline">
-              Plataforma Digital Textil
-            </span>
-          </Link>
-          <Link href="/login" className="text-sm hover:text-brand-blue transition-colors font-overpass text-ink-secondary">
-            Iniciar sesion
-          </Link>
-        </div>
-      </header>
-      <main className="flex-grow max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+      <HeaderPublic />
+      <main className="flex-grow">
         {children}
       </main>
       <Footer />
