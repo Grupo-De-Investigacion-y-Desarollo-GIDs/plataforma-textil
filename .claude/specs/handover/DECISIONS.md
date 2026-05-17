@@ -519,3 +519,30 @@ critica (registro, validacion CUIT, cotizacion).
   (no mergear)
 - Patron de degradacion (1 fail → 2 → 3 retries) es senal de algo que
   empeora, no excusa para mergear
+
+---
+
+## 2026-05-16 (auditoria) — Gap de operabilidad detectado
+
+Al disenar X-05 (Header + Footer) se descubrio que varias entidades
+existen en el modelo de datos pero no tienen UI para administracion.
+
+**Gaps encontrados:**
+- Novedad: modelo existe, API GET existe, seed carga 5 — pero NO hay UI para crear/editar
+- TipoPrenda: catalogo solo via seed, sin CRUD admin
+- TipoDocumento: catalogo solo via seed, sin CRUD admin
+
+**Decision tomada:** Implementar X-05 con contenido hardcodeado (lista
+de links del footer, instituciones, etc.) pero estructurar el codigo
+para facilitar la migracion a CMS cuando los specs nuevos se
+implementen.
+
+El CMS de novedades (X-04b) y catalogos (TipoPrenda, TipoDocumento)
+se implementaran como specs aparte despues de X-05.
+
+**Specs nuevos identificados:**
+- X-04b: CRUD Novedades para CONTENIDO (MVP, 3-4h)
+- CRUD TipoPrenda para ADMIN (MVP, 2h)
+- CRUD TipoDocumento para ADMIN (Post-MVP, 3h)
+
+Ver: `AUDITORIA_OPERABILIDAD_2026-05-16.md`

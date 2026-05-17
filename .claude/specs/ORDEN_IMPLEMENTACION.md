@@ -92,6 +92,18 @@ Una vez cargados y validados: activar flag `asistente_rag` desde `/admin/configu
 
 ---
 
+## Specs identificados 2026-05-16 (post-auditoria operabilidad)
+
+| # | Spec | Urgencia | Esfuerzo | Notas |
+|---|------|----------|----------|-------|
+| — | X-04b: CRUD Novedades para rol CONTENIDO | MVP | 3-4h | Cubre gap del rol CONTENIDO sin UI para administrar Novedad. Bloquea: X-06 (landing con novedades reales editables) |
+| — | CRUD TipoPrenda para ADMIN | MVP | 2h | Catalogo hoy solo via seed. Sin esto no se pueden agregar prendas nuevas sin developer |
+| — | CRUD TipoDocumento para ADMIN | Post-MVP | 3h | Catalogo hoy solo via seed. Necesario si cambia regulacion |
+
+Ver: `.claude/specs/handover/AUDITORIA_OPERABILIDAD_2026-05-16.md`
+
+---
+
 ## Post-piloto (no implementar ahora)
 
 - **S1-04** — Vencimiento de documentos
