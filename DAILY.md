@@ -3,6 +3,13 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **18:23** `bbc75f7` — feat(x-06): assets del landing (hero + placeholders novedades)
+  - `public/images/landing/hero-taller.png`
+  - `public/seed/novedades/capacitacion-inti.jpg`
+  - `public/seed/novedades/caso-taller-sur.jpg`
+  - `public/seed/novedades/convenio-oit.jpg`
+  - `public/seed/novedades/placeholder.svg`
+
 - **18:21** `dcdd034` — feat(x-06): agregar publicRoutes para paginas marketing
   - `src/middleware.ts`
 
