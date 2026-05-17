@@ -26,17 +26,10 @@ test.describe('Smoke test — setup basico funciona', () => {
     await loginAs(page, 'taller')
     await expect(page).toHaveURL(/\/taller/)
 
-    // El header debe mostrar tabs del taller
+    // El header debe mostrar tabs del taller y boton de menu
     await expect(page.getByText('Tablero')).toBeVisible()
     await expect(page.getByText('Mis pedidos')).toBeVisible()
-
-    // En dev/preview, la pill "Ambiente piloto" se muestra en desktop (md+)
-    const baseUrl = process.env.TEST_BASE_URL ?? 'http://localhost:3000'
-    if (baseUrl.includes('vercel.app')) {
-      // Pill puede estar hidden en viewport < md, verificar con locator
-      const pill = page.locator('text=Ambiente piloto')
-      await expect(pill).toBeAttached()
-    }
+    await expect(page.locator('button[aria-label="Abrir menú"]')).toBeVisible()
   })
 
   test('ensureNotProduction bloquea URL de produccion', async ({ page }) => {
