@@ -100,3 +100,4 @@ Una vez cargados y validados: activar flag `asistente_rag` desde `/admin/configu
 - Badge dinámico de notificaciones en el sidebar
 - Edición básica del perfil de marca
 - Signed URLs para bucket `documentos` (reemplazar URLs públicas)
+- **Verificacion real de email** — Origen: bug #307 (parcheado con Opcion C, 2026-05-16). Esfuerzo: S (2-3h). Contenido: boton "Verificar email" en /cuenta, endpoint POST /api/auth/send-verification (genera token + envia via Resend), pagina /verificar-email/[token] que setea emailVerified. Dependencias: INT-02 (Resend ya implementado).
