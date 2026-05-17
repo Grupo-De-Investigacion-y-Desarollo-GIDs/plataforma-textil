@@ -19,21 +19,24 @@ test.describe('Smoke test — setup basico funciona', () => {
     await expect(page.getByRole('button', { name: 'Exportar CSV' })).toBeVisible()
   })
 
-  test('Pill ambiente piloto visible en dev/preview (I-01)', async ({ page }) => {
+  test('Header app renderiza correctamente en dev/preview (I-01)', async ({ page }) => {
     await ensureNotProduction(page)
 
-    // La pill "Ambiente piloto" aparece en paginas con Header (no en /login)
+    // Verificar que el Header simplificado (X-05) carga correctamente
     await loginAs(page, 'taller')
     await expect(page).toHaveURL(/\/taller/)
 
-    // En dev/preview, la pill de ambiente debe ser visible en desktop
+    // El header debe mostrar tabs del taller
+    await expect(page.getByText('Tablero')).toBeVisible()
+    await expect(page.getByText('Mis pedidos')).toBeVisible()
+
+    // En dev/preview, la pill "Ambiente piloto" se muestra en desktop (md+)
     const baseUrl = process.env.TEST_BASE_URL ?? 'http://localhost:3000'
     if (baseUrl.includes('vercel.app')) {
-      await expect(page.getByText('Ambiente piloto')).toBeVisible()
+      // Pill puede estar hidden en viewport < md, verificar con locator
+      const pill = page.locator('text=Ambiente piloto')
+      await expect(pill).toBeAttached()
     }
-    // En localhost (VERCEL_ENV undefined) la pill NO aparece (por diseno)
-    // Verificar que la pagina carga correctamente
-    await expect(page.getByText('Tablero')).toBeVisible()
   })
 
   test('ensureNotProduction bloquea URL de produccion', async ({ page }) => {
