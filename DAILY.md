@@ -3,6 +3,9 @@
 ## 2026-05-16
 
 ### Gerardo Breard
+- **21:48** `3da0f11` — docs: agendar verificacion real de email como spec futuro
+  - `.claude/specs/ORDEN_IMPLEMENTACION.md`
+
 - **21:46** `c84a260` — fix(onboarding): desbloquear paso 'Verificar email' en piloto
   - `prisma/seed.ts`
   - `src/app/(public)/cuenta/page.tsx`
