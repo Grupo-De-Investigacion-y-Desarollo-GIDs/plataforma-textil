@@ -3,6 +3,9 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **18:48** `ccfb7f0` — fix(x-06): corregir valor de enum EstadoPedido
+  - `src/app/page.tsx`
+
 - **18:28** `d75cfd8` — feat(x-06): landing rediseñado V4
   - `src/app/page.tsx`
 
