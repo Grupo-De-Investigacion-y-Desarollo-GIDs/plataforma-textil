@@ -26,9 +26,10 @@ test.describe('Smoke test — setup basico funciona', () => {
     await loginAs(page, 'taller')
     await expect(page).toHaveURL(/\/taller/)
 
-    // El header debe mostrar tabs del taller y boton de menu
-    await expect(page.getByText('Tablero')).toBeVisible()
-    await expect(page.getByText('Mis pedidos')).toBeVisible()
+    // El header debe mostrar tabs del taller (scoped al header) y boton de menu
+    const header = page.locator('header')
+    await expect(header.getByText('Mis pedidos')).toBeVisible()
+    await expect(header.getByText('Mi perfil')).toBeVisible()
     await expect(page.locator('button[aria-label="Abrir menú"]')).toBeVisible()
   })
 
