@@ -1,8 +1,48 @@
 # Daily Log
 
+## 2026-05-17
+
+### Gerardo Breard
+- **00:16** `4189077` — fix(x-05): simplificar smoke test del header
+  - `tests/e2e/smoke.spec.ts`
+
+- **00:11** `b2fcd3d` — fix(x-05): scoped sidebar selector + robust pill assertion
+  - `tests/e2e/roles-estado.spec.ts`
+  - `tests/e2e/smoke.spec.ts`
+
+- **00:02** `2af3fbf` — fix(x-05): tests E2E y aria-label compatible
+  - `src/compartido/componentes/layout/header.tsx`
+  - `tests/e2e/smoke.spec.ts`
+
+
 ## 2026-05-16
 
 ### Gerardo Breard
+- **23:48** `8ebba81` — feat(x-05): refactor Header a 2 bandas + montar Footer en layouts
+  - `src/app/(auth)/layout.tsx`
+  - `src/app/(estado)/layout.tsx`
+  - `src/app/(marca)/layout.tsx`
+  - `src/app/(public)/layout.tsx`
+  - `src/app/(taller)/layout.tsx`
+  - `src/app/layout.tsx`
+  - `src/compartido/componentes/layout/header.tsx`
+
+- **23:45** `a8b89a6` — feat(x-05): componente Footer institucional 4 columnas
+  - `src/compartido/componentes/layout/footer.tsx`
+
+- **23:44** `074c380` — feat(x-05): paginas stub para links del footer
+  - `src/app/(public)/academia-publica/page.tsx`
+  - `src/app/(public)/accesibilidad/page.tsx`
+  - `src/app/(public)/contacto/page.tsx`
+  - `src/app/(public)/impacto/page.tsx`
+  - `src/app/(public)/marca-info/page.tsx`
+  - `src/app/(public)/novedades/page.tsx`
+  - `src/app/(public)/recursos/page.tsx`
+  - `src/app/(public)/taller-info/page.tsx`
+
+- **23:43** `fb9efb2` — feat(x-05): institutional.ts con textos centralizados
+  - `src/compartido/lib/content/institutional.ts`
+
 - **23:07** `f449ace` — docs(handover): auditoria operabilidad + specs CMS pendientes
   - `.claude/specs/ORDEN_IMPLEMENTACION.md`
   - `.claude/specs/handover/AUDITORIA_OPERABILIDAD_2026-05-16.md`

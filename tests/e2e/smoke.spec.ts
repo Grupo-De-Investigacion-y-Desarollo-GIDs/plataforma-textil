@@ -19,19 +19,18 @@ test.describe('Smoke test — setup basico funciona', () => {
     await expect(page.getByRole('button', { name: 'Exportar CSV' })).toBeVisible()
   })
 
-  test('Banner de ambiente visible en dev/preview (I-01)', async ({ page }) => {
+  test('Header app renderiza correctamente en dev/preview (I-01)', async ({ page }) => {
     await ensureNotProduction(page)
 
-    await page.goto('/login')
+    // Verificar que el Header simplificado (X-05) carga correctamente
+    await loginAs(page, 'taller')
+    await expect(page).toHaveURL(/\/taller/)
 
-    // En dev/preview, el banner de ambiente debe ser visible
-    // En localhost (VERCEL_ENV undefined) el banner NO aparece (por diseño)
-    const baseUrl = process.env.TEST_BASE_URL ?? 'http://localhost:3000'
-    if (baseUrl.includes('vercel.app')) {
-      await expect(page.getByText('AMBIENTE DE PRUEBAS')).toBeVisible()
-    }
-    // En localhost, verificamos que la pagina de login carga correctamente
-    await expect(page.getByText('Ingresar')).toBeVisible()
+    // El header debe mostrar tabs del taller (scoped al header) y boton de menu
+    const header = page.locator('header')
+    await expect(header.getByText('Mis pedidos')).toBeVisible()
+    await expect(header.getByText('Mi perfil')).toBeVisible()
+    await expect(page.locator('button[aria-label="Abrir menú"]')).toBeVisible()
   })
 
   test('ensureNotProduction bloquea URL de produccion', async ({ page }) => {

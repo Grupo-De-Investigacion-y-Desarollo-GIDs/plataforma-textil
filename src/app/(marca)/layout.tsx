@@ -1,4 +1,5 @@
 import { Header } from '@/compartido/componentes/layout'
+import { Footer } from '@/compartido/componentes/layout/footer'
 import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { redirect } from 'next/navigation'
@@ -6,7 +7,6 @@ import { redirect } from 'next/navigation'
 export default async function MarcaLayout({ children }: { children: React.ReactNode }) {
   const session = await auth()
 
-  // Si no hay sesión, redirigir a login
   if (!session?.user) {
     redirect('/login')
   }
@@ -14,7 +14,6 @@ export default async function MarcaLayout({ children }: { children: React.ReactN
     redirect('/unauthorized')
   }
 
-  // Obtener datos de la marca desde la base de datos
   const marca = await prisma.marca.findFirst({
     where: { userId: session.user.id },
     select: {
@@ -24,16 +23,21 @@ export default async function MarcaLayout({ children }: { children: React.ReactN
 
   const userName = marca?.nombre || session.user.name || 'Mi Marca'
 
+  const isMain = process.env.VERCEL_GIT_COMMIT_REF === 'main'
+  const isLocal = !process.env.VERCEL_ENV
+  const showPilotPill = !isMain && !isLocal
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Header
-        activeTab="directorio"
         userName={userName}
         userRole="MARCA"
+        showPilotPill={showPilotPill}
       />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
         {children}
       </main>
+      <Footer />
     </div>
   )
 }
