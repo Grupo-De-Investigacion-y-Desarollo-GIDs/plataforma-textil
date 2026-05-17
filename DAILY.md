@@ -1,5 +1,13 @@
 # Daily Log
 
+## 2026-05-17
+
+### Gerardo Breard
+- **00:02** `2af3fbf` — fix(x-05): tests E2E y aria-label compatible
+  - `src/compartido/componentes/layout/header.tsx`
+  - `tests/e2e/smoke.spec.ts`
+
+
 ## 2026-05-16
 
 ### Gerardo Breard
