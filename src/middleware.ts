@@ -28,6 +28,15 @@ export default auth((req) => {
     '/perfil/',        // Perfil público taller /perfil/[id]
     '/perfil-marca/',  // Perfil público marca /perfil-marca/[id]
     '/n/',             // Magic links WhatsApp (F-02)
+    // Marketing pages (X-06)
+    '/taller-info',
+    '/marca-info',
+    '/impacto',
+    '/recursos',
+    '/academia-publica',
+    '/novedades',
+    '/contacto',
+    '/accesibilidad',
   ]
 
   // Verificar si es ruta pública (incluyendo rutas dinámicas)

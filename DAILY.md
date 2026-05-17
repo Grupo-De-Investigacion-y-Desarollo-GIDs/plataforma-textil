@@ -3,6 +3,37 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **18:48** `ccfb7f0` — fix(x-06): corregir valor de enum EstadoPedido
+  - `src/app/page.tsx`
+
+- **18:28** `d75cfd8` — feat(x-06): landing rediseñado V4
+  - `src/app/page.tsx`
+
+- **18:25** `048a00e` — feat(x-06): componente CarruselNovedades con flechas prev/next
+  - `src/compartido/componentes/ui/carrusel-novedades.tsx`
+
+- **18:25** `3b51b15` — feat(x-06): layout (public) usa HeaderPublic para anonimos
+  - `src/app/(public)/layout.tsx`
+
+- **18:23** `bbc75f7` — feat(x-06): assets del landing (hero + placeholders novedades)
+  - `public/images/landing/hero-taller.png`
+  - `public/seed/novedades/capacitacion-inti.jpg`
+  - `public/seed/novedades/caso-taller-sur.jpg`
+  - `public/seed/novedades/convenio-oit.jpg`
+  - `public/seed/novedades/placeholder.svg`
+
+- **18:21** `dcdd034` — feat(x-06): agregar publicRoutes para paginas marketing
+  - `src/middleware.ts`
+
+- **18:19** `85694f2` — feat(x-06): componente HeaderPublic (1 banda sticky)
+  - `src/compartido/componentes/layout/header-public.tsx`
+
+- **18:16** `1d5138c` — feat(x-06): extender institutional.ts con textos del landing
+  - `src/compartido/lib/content/institutional.ts`
+
+- **18:14** `5a61586` — feat(x-06): agregar utilities pattern-grid y card-lift
+  - `src/app/globals.css`
+
 - **00:16** `4189077` — fix(x-05): simplificar smoke test del header
   - `tests/e2e/smoke.spec.ts`
 
