@@ -3,6 +3,9 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **20:27** `cca786b` — feat(x-04b): add slugify utility for novedades
+  - `src/compartido/lib/slugify.ts`
+
 - **18:48** `ccfb7f0` — fix(x-06): corregir valor de enum EstadoPedido
   - `src/app/page.tsx`
 
