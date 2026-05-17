@@ -31,7 +31,7 @@ export default async function Home() {
     prisma.taller.count({ where: { verificadoAfip: true } }),
     prisma.marca.count(),
     prisma.coleccion.count({ where: { activa: true } }),
-    prisma.pedido.count({ where: { estado: { in: ['EN_PROCESO', 'PUBLICADO'] } } }),
+    prisma.pedido.count({ where: { estado: { in: ['EN_EJECUCION', 'PUBLICADO'] } } }),
     prisma.novedad.findMany({
       where: { publicado: true },
       orderBy: { fecha: 'desc' },
