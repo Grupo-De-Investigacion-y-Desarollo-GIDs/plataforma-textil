@@ -3,6 +3,9 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **20:51** `680b4bd` — fix: add Supabase Storage to next/image remotePatterns
+  - `next.config.ts`
+
 - **20:36** `bcd5fbe` — feat(x-04b): add CMS novedades pages + sidebar entry
   - `src/app/(contenido)/contenido-sidebar.tsx`
   - `src/app/(contenido)/contenido/novedades/[id]/editar/page.tsx`
