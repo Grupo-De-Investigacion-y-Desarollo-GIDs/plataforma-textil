@@ -65,7 +65,7 @@ export function Header({
               <button
                 onClick={() => setSidebarOpen(true)}
                 className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                aria-label="Abrir menu personal"
+                aria-label="Abrir menú"
               >
                 <Menu className="w-5 h-5 text-ink-primary" />
               </button>
