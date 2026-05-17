@@ -3,6 +3,9 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **18:19** `85694f2` — feat(x-06): componente HeaderPublic (1 banda sticky)
+  - `src/compartido/componentes/layout/header-public.tsx`
+
 - **18:16** `1d5138c` — feat(x-06): extender institutional.ts con textos del landing
   - `src/compartido/lib/content/institutional.ts`
 
