@@ -3,6 +3,9 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **23:10** `9964df2` — feat(x-06b): footer con links limpios (sin destinos 404)
+  - `src/compartido/lib/content/institutional.ts`
+
 - **23:09** `e57309d` — feat(x-06b): disclaimer piloto antes del footer + limpiar carrusel
   - `src/app/page.tsx`
 
