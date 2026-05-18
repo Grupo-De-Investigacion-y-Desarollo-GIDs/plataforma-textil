@@ -54,7 +54,7 @@ export default async function AdminOnboardingPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-overpass font-bold text-2xl text-brand-blue">Estado del onboarding</h1>
+          <h1 className="font-serif font-bold text-2xl text-brand-blue">Estado del onboarding</h1>
           <p className="text-sm text-gray-500 mt-1">Seguimiento del progreso de talleres y marcas en el piloto</p>
         </div>
       </div>
@@ -80,7 +80,7 @@ export default async function AdminOnboardingPage() {
 
       {/* Funnel */}
       <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h2 className="font-overpass font-bold text-lg text-gray-800 mb-4">Funnel de adopcion</h2>
+        <h2 className="font-serif font-bold text-lg text-gray-800 mb-4">Funnel de adopcion</h2>
         <div className="space-y-3">
           <FunnelBar label="Invitados" count={total} pct={100} color="bg-gray-300" />
           <FunnelBar label="Registrados" count={total - conteos.INVITADO} pct={pctRegistrados} color="bg-brand-blue/60" />
@@ -92,7 +92,7 @@ export default async function AdminOnboardingPage() {
       {/* Tabla de usuarios */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-100">
-          <h2 className="font-overpass font-bold text-lg text-gray-800">Usuarios</h2>
+          <h2 className="font-serif font-bold text-lg text-gray-800">Usuarios</h2>
         </div>
         {usuariosConEtapa.length === 0 ? (
           <EmptyState

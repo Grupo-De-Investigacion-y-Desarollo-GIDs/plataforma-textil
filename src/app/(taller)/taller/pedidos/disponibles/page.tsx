@@ -156,7 +156,7 @@ export default async function PedidosDisponiblesPage({ searchParams }: { searchP
           { label: 'Taller', href: '/taller' },
           { label: 'Pedidos disponibles' },
         ]} />
-        <h1 className="font-overpass font-bold text-3xl text-brand-blue mt-2">Pedidos disponibles</h1>
+        <h1 className="font-serif font-bold text-3xl text-brand-blue mt-2">Pedidos disponibles</h1>
         <p className="text-gray-500 mt-1">Pedidos publicados por marcas que buscan talleres</p>
       </div>
 

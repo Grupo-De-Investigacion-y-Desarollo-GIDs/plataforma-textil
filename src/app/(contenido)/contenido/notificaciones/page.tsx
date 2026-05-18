@@ -24,7 +24,7 @@ export default async function ContenidoNotificacionesPage() {
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Notificaciones</h1>
+          <h1 className="font-serif font-bold text-2xl text-brand-blue mb-1">Notificaciones</h1>
           <p className="text-gray-500 text-sm">Envio de comunicaciones a talleres</p>
         </div>
         <NotificacionesClient />
@@ -60,7 +60,7 @@ export default async function ContenidoNotificacionesPage() {
         </div>
       </div>
 
-      <h2 className="font-overpass font-bold text-lg text-brand-blue mb-3">Recientes</h2>
+      <h2 className="font-serif font-bold text-lg text-brand-blue mb-3">Recientes</h2>
       {notificaciones.length === 0 ? (
         <div className="bg-white rounded-xl shadow-sm p-8 border border-gray-100 text-center">
           <Mail className="w-8 h-8 text-gray-300 mx-auto mb-2" />

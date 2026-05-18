@@ -43,7 +43,7 @@ const integraciones = [
 export default function AdminIntegracionesPage() {
   return (
     <div className="max-w-4xl mx-auto py-6 px-4">
-      <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Integraciones API</h1>
+      <h1 className="font-serif font-bold text-2xl text-brand-blue mb-1">Integraciones API</h1>
       <p className="text-gray-500 text-sm mb-6">Configuración de servicios externos</p>
 
       <div className="space-y-3">
@@ -55,7 +55,7 @@ export default function AdminIntegracionesPage() {
                   <int.icon className="w-6 h-6 text-brand-blue" />
                 </div>
                 <div className="flex-1">
-                  <h2 className="font-overpass font-bold text-brand-blue">{int.nombre}</h2>
+                  <h2 className="font-serif font-bold text-brand-blue">{int.nombre}</h2>
                   <p className="text-sm text-gray-500">{int.descripcion}</p>
                 </div>
                 {int.proximamente ? (

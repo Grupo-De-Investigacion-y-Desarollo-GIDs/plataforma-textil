@@ -251,7 +251,7 @@ export default function WizardPage() {
           <div className="w-20 h-20 rounded-full bg-brand-blue/10 flex items-center justify-center mx-auto mb-4">
             <Factory className="w-10 h-10 text-brand-blue" />
           </div>
-          <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-2">Perfil Productivo</h1>
+          <h1 className="font-serif font-bold text-2xl text-brand-blue mb-2">Perfil Productivo</h1>
           <p className="text-gray-600 mb-6">Vamos a completar tu perfil productivo</p>
           <Card className="text-left mb-6">
             <p className="text-sm mb-2"><span className="font-semibold">Duración:</span> ~15 minutos</p>
@@ -281,7 +281,7 @@ export default function WizardPage() {
       {/* Paso 2: Maquinaria */}
       {step === 1 && (
         <div>
-          <h2 className="font-overpass font-bold text-xl text-brand-blue mb-2">¿Qué máquinas de confección tenés?</h2>
+          <h2 className="font-serif font-bold text-xl text-brand-blue mb-2">¿Qué máquinas de confección tenés?</h2>
           <p className="text-sm text-gray-500 mb-4">Hacé click en cada tipo y poné la cantidad:</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
             {MAQUINAS.map(m => (
@@ -305,7 +305,7 @@ export default function WizardPage() {
       {/* Paso 3: Equipo */}
       {step === 2 && (
         <div>
-          <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">Contanos sobre tu equipo de trabajo</h2>
+          <h2 className="font-serif font-bold text-xl text-brand-blue mb-4">Contanos sobre tu equipo de trabajo</h2>
           <p className="text-sm font-semibold mb-2">¿Cuántas personas trabajan en producción?</p>
           <div className="flex gap-2 mb-4">
             {['1-2', '3-5', '6-10', '11-20', '+20'].map(v => (
@@ -333,7 +333,7 @@ export default function WizardPage() {
       {/* Paso 4: Composición del equipo */}
       {step === 3 && (
         <div>
-          <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">¿Cómo se compone tu equipo?</h2>
+          <h2 className="font-serif font-bold text-xl text-brand-blue mb-4">¿Cómo se compone tu equipo?</h2>
           <Card className="bg-pastel-blue/50 text-sm mb-4">
             Indicá cuántas personas tenés en cada categoría del oficio textil. Si no tenés trabajadores de alguna categoría, dejá en 0.
           </Card>
@@ -374,7 +374,7 @@ export default function WizardPage() {
       {/* Paso 5: Organización */}
       {step === 4 && (
         <div>
-          <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">¿Cómo organizan el trabajo?</h2>
+          <h2 className="font-serif font-bold text-xl text-brand-blue mb-4">¿Cómo organizan el trabajo?</h2>
           <Card className="bg-pastel-blue/50 text-sm mb-4">
             <p className="font-semibold mb-1">Tipos de organización productiva:</p>
             <p><strong>En línea:</strong> Cada persona hace UNA operación. Más rápido para grandes volúmenes.</p>
@@ -392,7 +392,7 @@ export default function WizardPage() {
       {/* Paso 6: Espacio */}
       {step === 5 && (
         <div>
-          <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">¿Cómo es tu espacio de trabajo?</h2>
+          <h2 className="font-serif font-bold text-xl text-brand-blue mb-4">¿Cómo es tu espacio de trabajo?</h2>
           <Input label="Metros cuadrados del área de producción" type="number" value={metrosCuadrados} onChange={e => setMetrosCuadrados(e.target.value)} />
           <Card className="bg-pastel-blue/50 text-sm my-4">
             {parseInt(metrosCuadrados) > 0 && <p>{metrosCuadrados} m² con {tamanoEquipo} personas. Recomendado: 10-15 m² por persona. Si tenes menos, no te preocupes — esto es solo referencia, no bloquea tu perfil.</p>}
@@ -412,7 +412,7 @@ export default function WizardPage() {
       {/* Paso 7: SAM */}
       {step === 6 && (
         <div>
-          <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">¿Cuánto tardás en hacer una prenda?</h2>
+          <h2 className="font-serif font-bold text-xl text-brand-blue mb-4">¿Cuánto tardás en hacer una prenda?</h2>
           <Card className="bg-pastel-blue/50 text-sm mb-4">
             <p className="font-semibold">Tiempo estandar de confeccion</p>
             <p className="mb-2">Es el tiempo promedio que tarda tu taller en confeccionar una prenda completa.</p>
@@ -439,7 +439,7 @@ export default function WizardPage() {
       {/* Paso 8: SAM Quiz */}
       {step === 7 && (
         <div>
-          <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">Verificamos que entendiste el concepto</h2>
+          <h2 className="font-serif font-bold text-xl text-brand-blue mb-4">Verificamos que entendiste el concepto</h2>
           <p className="text-sm font-semibold mb-3">¿Que es el tiempo estandar de confeccion?</p>
           <div className="space-y-2 mb-4">
             <RadioOption value="salario" current={samQuizResp} onChange={setSamQuizResp} label="El salario mensual de un operario" />
@@ -464,7 +464,7 @@ export default function WizardPage() {
       {/* Paso 9: Eficiencia */}
       {step === 8 && (
         <div>
-          <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">Calculemos tu eficiencia real</h2>
+          <h2 className="font-serif font-bold text-xl text-brand-blue mb-4">Calculemos tu eficiencia real</h2>
           <Card className="bg-pastel-blue/50 text-sm mb-4">
             La eficiencia real de un taller depende de muchos factores: organizacion, mantenimiento, tiempos muertos, cambios de modelo. En Argentina, la eficiencia promedio del sector ronda el 50% — esto es normal y no significa que tu taller funcione mal.
           </Card>
@@ -485,7 +485,7 @@ export default function WizardPage() {
       {/* Paso 10: Resultado Capacidad */}
       {step === 9 && (
         <div className="text-center">
-          <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">Tu Capacidad Calculada</h2>
+          <h2 className="font-serif font-bold text-xl text-brand-blue mb-4">Tu Capacidad Calculada</h2>
           <Card className="mb-4">
             <p className="text-sm text-gray-500 mb-2">Basado en tus datos:</p>
             <div className="text-sm text-gray-600 space-y-0.5 mb-4">
@@ -515,7 +515,7 @@ export default function WizardPage() {
       {/* Paso 11: Gestión */}
       {step === 10 && (
         <div>
-          <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">Gestión y Escalabilidad</h2>
+          <h2 className="font-serif font-bold text-xl text-brand-blue mb-4">Gestión y Escalabilidad</h2>
           <p className="text-sm font-semibold mb-2">¿Cómo es tu horario de trabajo?</p>
           <div className="space-y-2 mb-4">
             <RadioOption value="unico" current={horario} onChange={setHorario} label="Turno único (8 horas fijas)" />
@@ -543,7 +543,7 @@ export default function WizardPage() {
       {/* Paso 12: Procesos productivos */}
       {step === 11 && (
         <div>
-          <h2 className="font-overpass font-bold text-xl text-brand-blue mb-2">¿Qué procesos realizás?</h2>
+          <h2 className="font-serif font-bold text-xl text-brand-blue mb-2">¿Qué procesos realizás?</h2>
           <p className="text-sm text-gray-500 mb-4">Seleccioná todos los procesos que tu taller puede ofrecer a las marcas.</p>
           {catalogoProcesos.length === 0 ? (
             <Card className="text-center py-8 text-gray-500 text-sm">Cargando procesos...</Card>
@@ -577,7 +577,7 @@ export default function WizardPage() {
       {/* Paso 13: Tipos de prenda */}
       {step === 12 && (
         <div>
-          <h2 className="font-overpass font-bold text-xl text-brand-blue mb-2">¿Qué prendas fabricás?</h2>
+          <h2 className="font-serif font-bold text-xl text-brand-blue mb-2">¿Qué prendas fabricás?</h2>
           <p className="text-sm text-gray-500 mb-4">Seleccioná los tipos de prenda en los que tu taller está especializado.</p>
           {catalogoPrendas.length === 0 ? (
             <Card className="text-center py-8 text-gray-500 text-sm">Cargando prendas...</Card>
@@ -609,7 +609,7 @@ export default function WizardPage() {
       {/* Paso 14: Resumen */}
       {step === 13 && (
         <div className="text-center">
-          <h2 className="font-overpass font-bold text-2xl text-brand-blue mb-4">¡Perfil productivo completado!</h2>
+          <h2 className="font-serif font-bold text-2xl text-brand-blue mb-4">¡Perfil productivo completado!</h2>
           <p className="text-gray-600 mb-1">Las marcas pueden ver tu capacidad, maquinaria y procesos</p>
           <p className="text-xs text-gray-400 mb-6">Este diagnóstico ayuda al equipo de la plataforma a entender el sector textil</p>
 

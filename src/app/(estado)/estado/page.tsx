@@ -86,13 +86,13 @@ export default async function EstadoDashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-overpass font-bold text-3xl text-brand-blue">Dashboard del Sector</h1>
+        <h1 className="font-serif font-bold text-3xl text-brand-blue">Dashboard del Sector</h1>
         <p className="text-gray-500 text-sm mt-1">Monitoreo de la Plataforma Digital Textil</p>
       </div>
 
       {/* ── SECCION 1: Como esta el sector? ── */}
       <div>
-        <h2 className="font-overpass font-bold text-lg text-gray-700 mb-4">Como esta el sector?</h2>
+        <h2 className="font-serif font-bold text-lg text-gray-700 mb-4">Como esta el sector?</h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
           <Card className="text-center">
@@ -148,7 +148,7 @@ export default async function EstadoDashboardPage() {
 
       {/* ── SECCION 2: Donde hay que actuar? ── */}
       <div>
-        <h2 className="font-overpass font-bold text-lg text-gray-700 mb-4">Donde hay que actuar?</h2>
+        <h2 className="font-serif font-bold text-lg text-gray-700 mb-4">Donde hay que actuar?</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card className="border-l-4 border-l-amber-400">
@@ -225,7 +225,7 @@ export default async function EstadoDashboardPage() {
 
       {/* ── SECCION 3: Que esta funcionando? ── */}
       <div>
-        <h2 className="font-overpass font-bold text-lg text-gray-700 mb-4">Que esta funcionando?</h2>
+        <h2 className="font-serif font-bold text-lg text-gray-700 mb-4">Que esta funcionando?</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card className="border-l-4 border-l-green-400">

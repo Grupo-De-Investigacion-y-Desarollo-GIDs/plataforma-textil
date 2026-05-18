@@ -53,7 +53,7 @@ export default async function DemandaInsatisfechaPage({ searchParams }: PageProp
             { label: 'Demanda insatisfecha', href: '/estado/demanda-insatisfecha' },
             { label: catInfo.label },
           ]} />
-          <h1 className="font-overpass font-bold text-2xl text-brand-blue mt-2">
+          <h1 className="font-serif font-bold text-2xl text-brand-blue mt-2">
             Pedidos sin matchear: {catInfo.label}
           </h1>
           <p className="text-gray-500 text-sm mt-1">
@@ -135,7 +135,7 @@ export default async function DemandaInsatisfechaPage({ searchParams }: PageProp
             { label: 'Demanda insatisfecha', href: '/estado/demanda-insatisfecha' },
             { label: 'Talleres cerca' },
           ]} />
-          <h1 className="font-overpass font-bold text-2xl text-brand-blue mt-2">
+          <h1 className="font-serif font-bold text-2xl text-brand-blue mt-2">
             Talleres cerca de poder matchear
           </h1>
           <p className="text-gray-500 text-sm mt-1">
@@ -193,7 +193,7 @@ export default async function DemandaInsatisfechaPage({ searchParams }: PageProp
     <div className="space-y-8">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="font-overpass font-bold text-3xl text-brand-blue">
+          <h1 className="font-serif font-bold text-3xl text-brand-blue">
             Demanda insatisfecha
           </h1>
           <p className="text-gray-500 text-sm mt-1">

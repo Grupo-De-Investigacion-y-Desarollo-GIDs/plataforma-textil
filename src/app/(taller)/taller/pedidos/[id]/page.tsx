@@ -82,7 +82,7 @@ export default async function TallerOrdenDetallePage({
       {/* Encabezado */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="font-overpass font-bold text-2xl text-brand-blue">{orden.moId}</h1>
+          <h1 className="font-serif font-bold text-2xl text-brand-blue">{orden.moId}</h1>
           <p className="text-gray-500 text-sm mt-0.5">Pedido {pedido.omId}</p>
         </div>
         <span className={`text-sm font-semibold px-3 py-1 rounded-full ${estadoColor[orden.estado] ?? 'bg-gray-100 text-gray-600'}`}>
@@ -92,7 +92,7 @@ export default async function TallerOrdenDetallePage({
 
       {/* Detalle del pedido */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 space-y-3">
-        <h2 className="font-overpass font-semibold text-gray-700 text-sm uppercase">
+        <h2 className="font-serif font-semibold text-gray-700 text-sm uppercase">
           Detalle del pedido
         </h2>
         <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
@@ -121,7 +121,7 @@ export default async function TallerOrdenDetallePage({
 
       {/* Detalle de la orden */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 space-y-3">
-        <h2 className="font-overpass font-semibold text-gray-700 text-sm uppercase">
+        <h2 className="font-serif font-semibold text-gray-700 text-sm uppercase">
           Tu orden de manufactura
         </h2>
         <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
@@ -178,7 +178,7 @@ export default async function TallerOrdenDetallePage({
       {/* Acciones */}
       {(orden.estado === 'PENDIENTE' || orden.estado === 'EN_EJECUCION') && (
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 space-y-3">
-          <h2 className="font-overpass font-semibold text-gray-700 text-sm uppercase">
+          <h2 className="font-serif font-semibold text-gray-700 text-sm uppercase">
             {orden.estado === 'PENDIENTE' ? 'Responder propuesta' : 'Actualizar progreso'}
           </h2>
           <OrdenActions
@@ -191,7 +191,7 @@ export default async function TallerOrdenDetallePage({
 
       {/* Contacto marca */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-        <h2 className="font-overpass font-semibold text-gray-700 text-sm uppercase mb-3">
+        <h2 className="font-serif font-semibold text-gray-700 text-sm uppercase mb-3">
           Contacto marca
         </h2>
         <p className="text-sm font-medium text-gray-800 mb-3">{pedido.marca.nombre}</p>
@@ -220,7 +220,7 @@ export default async function TallerOrdenDetallePage({
 
       {actividad.length > 0 && (
         <Card>
-          <h2 className="font-overpass font-bold text-brand-blue mb-3">Actividad de tu orden</h2>
+          <h2 className="font-serif font-bold text-brand-blue mb-3">Actividad de tu orden</h2>
           <ActivityTimeline eventos={actividad} perspective="taller" />
         </Card>
       )}

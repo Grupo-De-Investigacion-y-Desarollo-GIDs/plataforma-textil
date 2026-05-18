@@ -82,7 +82,7 @@ export default function EstadoDocumentosPage() {
   function renderList(title: string, items: TipoDocumento[]) {
     return (
       <div className="mb-6">
-        <h2 className="font-overpass font-bold text-brand-blue mb-2">{title}</h2>
+        <h2 className="font-serif font-bold text-brand-blue mb-2">{title}</h2>
         <Card>
           {items.length === 0 ? (
             <p className="text-sm text-gray-500 py-2">Sin documentos en esta categoria.</p>
@@ -117,7 +117,7 @@ export default function EstadoDocumentosPage() {
     <div className="max-w-4xl mx-auto py-6 px-4">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Tipos de Documento</h1>
+          <h1 className="font-serif font-bold text-2xl text-brand-blue mb-1">Tipos de Documento</h1>
           <p className="text-gray-500 text-sm">Requisitos de formalizacion por nivel — configuracion regulatoria del Estado</p>
         </div>
         <Button icon={<Plus className="w-4 h-4" />} onClick={handleNew}>Nuevo Requisito</Button>

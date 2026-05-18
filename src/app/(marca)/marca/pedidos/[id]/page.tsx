@@ -131,7 +131,7 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
-          <h1 className="font-overpass font-bold text-3xl text-brand-blue">{pedido.omId}</h1>
+          <h1 className="font-serif font-bold text-3xl text-brand-blue">{pedido.omId}</h1>
           <p className="text-gray-600 mt-1">{pedido.tipoPrenda} - {pedido.cantidad.toLocaleString()} unidades</p>
           <p className="text-sm text-gray-400 mt-1">
             Creado: {new Date(pedido.createdAt).toLocaleDateString('es-AR')}
@@ -365,7 +365,7 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
       {/* Contacto talleres asignados */}
       {pedido.ordenes.length > 0 && (
         <Card>
-          <h2 className="font-overpass font-semibold text-gray-700 text-sm uppercase mb-3">
+          <h2 className="font-serif font-semibold text-gray-700 text-sm uppercase mb-3">
             Contacto talleres
           </h2>
           <div className="space-y-3">
@@ -396,7 +396,7 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
 
       {actividad.length > 0 && (
         <Card>
-          <h2 className="font-overpass font-bold text-brand-blue mb-3">Actividad del pedido</h2>
+          <h2 className="font-serif font-bold text-brand-blue mb-3">Actividad del pedido</h2>
           <ActivityTimeline eventos={actividad} perspective="marca" />
         </Card>
       )}

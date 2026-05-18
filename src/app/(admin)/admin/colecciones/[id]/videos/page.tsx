@@ -60,7 +60,7 @@ export default function AdminAgregarVideoPage() {
         { label: 'Videos' },
       ]} />
 
-      <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-6 mt-4">Agregar Video</h1>
+      <h1 className="font-serif font-bold text-2xl text-brand-blue mb-6 mt-4">Agregar Video</h1>
 
       {error && (
         <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 flex items-center gap-2">
@@ -70,7 +70,7 @@ export default function AdminAgregarVideoPage() {
       )}
 
       <Card className="mb-6">
-        <h2 className="font-overpass font-bold text-brand-blue mb-3">Paso 1: URL de YouTube</h2>
+        <h2 className="font-serif font-bold text-brand-blue mb-3">Paso 1: URL de YouTube</h2>
         <Input
           placeholder="https://www.youtube.com/watch?v=..."
           value={url}
@@ -88,7 +88,7 @@ export default function AdminAgregarVideoPage() {
 
       {urlValida && videoId && (
         <Card className="mb-6">
-          <h2 className="font-overpass font-bold text-brand-blue mb-3">Vista previa</h2>
+          <h2 className="font-serif font-bold text-brand-blue mb-3">Vista previa</h2>
           <div className="aspect-video w-full rounded-lg overflow-hidden bg-black">
             <iframe
               src={`https://www.youtube.com/embed/${videoId}`}
@@ -102,7 +102,7 @@ export default function AdminAgregarVideoPage() {
       )}
 
       <Card className="mb-6">
-        <h2 className="font-overpass font-bold text-brand-blue mb-3">Paso 2: Información del video</h2>
+        <h2 className="font-serif font-bold text-brand-blue mb-3">Paso 2: Información del video</h2>
         <div className="space-y-4">
           <Input
             label="Título en la plataforma *"
@@ -119,7 +119,7 @@ export default function AdminAgregarVideoPage() {
       </Card>
 
       <Card className="mb-6">
-        <h2 className="font-overpass font-bold text-brand-blue mb-3">Verificación de contenido</h2>
+        <h2 className="font-serif font-bold text-brand-blue mb-3">Verificación de contenido</h2>
         <div className="space-y-2">
           {[
             { key: 'preciso' as const, label: 'Verifiqué que el contenido es preciso y actualizado' },

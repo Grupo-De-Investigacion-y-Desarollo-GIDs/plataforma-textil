@@ -71,7 +71,7 @@ async function ListaOrdenes() {
     <>
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="font-overpass font-bold text-3xl text-brand-blue">Pedidos Recibidos</h1>
+          <h1 className="font-serif font-bold text-3xl text-brand-blue">Pedidos Recibidos</h1>
           <p className="text-gray-600 mt-2">Ordenes de manufactura asignadas a {taller.nombre}</p>
         </div>
         <Link

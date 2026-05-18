@@ -82,7 +82,7 @@ async function PedidosContent({ query, estado, created }: { query: string; estad
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-overpass font-bold text-3xl text-brand-blue">Mis Pedidos</h1>
+        <h1 className="font-serif font-bold text-3xl text-brand-blue">Mis Pedidos</h1>
         <p className="text-gray-600 mt-2">Seguimiento de pedidos de {marca.nombre}</p>
       </div>
 

@@ -52,7 +52,7 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="max-w-6xl mx-auto py-6 px-4">
-      <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Panel de Administración</h1>
+      <h1 className="font-serif font-bold text-2xl text-brand-blue mb-1">Panel de Administración</h1>
       <p className="text-gray-500 text-sm mb-6">Gestión completa de la plataforma</p>
 
       {loading && (
@@ -105,7 +105,7 @@ export default function AdminDashboardPage() {
         </Card>
       </div>
 
-      <h2 className="font-overpass font-bold text-lg text-brand-blue mb-3">Menú Completo</h2>
+      <h2 className="font-serif font-bold text-lg text-brand-blue mb-3">Menú Completo</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
         {menuItems.map(item => (
           <Link key={item.href} href={item.href}>

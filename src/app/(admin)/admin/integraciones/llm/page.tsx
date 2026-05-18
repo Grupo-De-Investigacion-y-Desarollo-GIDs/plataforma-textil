@@ -113,11 +113,11 @@ export default function AdminIntegracionLlmPage() {
         { label: 'LLM' },
       ]} />
 
-      <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1 mt-4">Configuracion LLM</h1>
+      <h1 className="font-serif font-bold text-2xl text-brand-blue mb-1 mt-4">Configuracion LLM</h1>
       <p className="text-gray-500 text-sm mb-6">Asistente virtual con IA para talleres</p>
 
       <Card className="mb-6">
-        <h2 className="font-overpass font-bold text-brand-blue mb-4">Proveedor</h2>
+        <h2 className="font-serif font-bold text-brand-blue mb-4">Proveedor</h2>
         <div className="space-y-4">
           <Select label="Proveedor de IA" value={provider} onChange={e => setProvider(e.target.value)}
             options={[{ value: 'anthropic', label: 'Anthropic' }, { value: 'openai', label: 'OpenAI' }]} />
@@ -135,7 +135,7 @@ export default function AdminIntegracionLlmPage() {
       </Card>
 
       <Card className="mb-6">
-        <h2 className="font-overpass font-bold text-brand-blue mb-4">System Prompt</h2>
+        <h2 className="font-serif font-bold text-brand-blue mb-4">System Prompt</h2>
         <textarea value={systemPrompt} onChange={e => setSystemPrompt(e.target.value)} rows={5}
           className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent" />
       </Card>
@@ -146,7 +146,7 @@ export default function AdminIntegracionLlmPage() {
 
       {/* Documentos del corpus */}
       <Card>
-        <h2 className="font-overpass font-bold text-brand-blue mb-4">Documentos del corpus ({documentos.length})</h2>
+        <h2 className="font-serif font-bold text-brand-blue mb-4">Documentos del corpus ({documentos.length})</h2>
 
         {/* Agregar documento */}
         <div className="space-y-3 mb-4 pb-4 border-b border-gray-100">

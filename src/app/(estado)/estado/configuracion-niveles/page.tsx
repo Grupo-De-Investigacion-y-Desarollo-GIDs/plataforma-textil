@@ -112,7 +112,7 @@ export default function EstadoConfiguracionNivelesPage() {
 
   return (
     <div className="max-w-4xl mx-auto py-6 px-4">
-      <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Configuracion de Niveles</h1>
+      <h1 className="font-serif font-bold text-2xl text-brand-blue mb-1">Configuracion de Niveles</h1>
       <p className="text-gray-500 text-sm mb-6">Criterios para que los talleres alcancen cada nivel — configuracion regulatoria del Estado</p>
 
       {loading ? (

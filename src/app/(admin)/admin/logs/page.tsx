@@ -139,7 +139,7 @@ export default function AdminLogsPage() {
   return (
     <div className="max-w-6xl mx-auto py-6 px-4">
       <div className="flex items-center justify-between mb-1">
-        <h1 className="font-overpass font-bold text-2xl text-brand-blue">Logs de Actividad</h1>
+        <h1 className="font-serif font-bold text-2xl text-brand-blue">Logs de Actividad</h1>
         <Button size="sm" variant="secondary" onClick={exportCsv}>
           <Download className="w-4 h-4 mr-1" /> Exportar CSV
         </Button>

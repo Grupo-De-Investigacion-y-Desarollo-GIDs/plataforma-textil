@@ -209,7 +209,7 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
             {taller.nombre.charAt(0)}
           </div>
           <div className="flex-1">
-            <h1 className="font-overpass font-bold text-xl text-brand-blue">{taller.nombre}</h1>
+            <h1 className="font-serif font-bold text-xl text-brand-blue">{taller.nombre}</h1>
             <div className="flex items-center gap-2 mt-0.5">
               <p className="text-sm text-gray-500">CUIT: {taller.cuit}</p>
               <BadgeArca verificado={taller.verificadoAfip} fecha={taller.verificadoAfipAt} />
@@ -250,7 +250,7 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
       {/* Tab: Formalizacion */}
       {tab === 'formalizacion' && (
         <Card>
-          <h2 className="font-overpass font-bold text-brand-blue mb-3">Checklist de Formalizacion</h2>
+          <h2 className="font-serif font-bold text-brand-blue mb-3">Checklist de Formalizacion</h2>
           <div className="divide-y divide-gray-100">
             {taller.validaciones.map(v => (
               <div key={v.id} className="py-3 first:pt-0 last:pb-0">
@@ -347,7 +347,7 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
       {/* Tab: Historial */}
       {tab === 'historial' && (
         <Card>
-          <h2 className="font-overpass font-bold text-brand-blue mb-3">Historial de decisiones</h2>
+          <h2 className="font-serif font-bold text-brand-blue mb-3">Historial de decisiones</h2>
           {historialLogs.length === 0 ? (
             <p className="text-sm text-gray-500">Sin decisiones registradas.</p>
           ) : (
@@ -389,7 +389,7 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
       {/* Tab: Datos del taller (solo lectura) */}
       {tab === 'datos' && (
         <Card>
-          <h2 className="font-overpass font-bold text-brand-blue mb-3">Datos del Taller</h2>
+          <h2 className="font-serif font-bold text-brand-blue mb-3">Datos del Taller</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
             <div>
               <p className="text-gray-500">Responsable</p>

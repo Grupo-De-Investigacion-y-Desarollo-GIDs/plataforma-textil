@@ -47,7 +47,7 @@ export default async function AdminNotificacionesPage({
     <div className="max-w-4xl mx-auto py-6 px-4">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Comunicaciones</h1>
+          <h1 className="font-serif font-bold text-2xl text-brand-blue mb-1">Comunicaciones</h1>
           <p className="text-gray-500 text-sm">Envio de comunicaciones a usuarios</p>
         </div>
         <NotificacionesClient />

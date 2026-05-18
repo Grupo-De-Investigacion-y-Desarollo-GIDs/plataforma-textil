@@ -41,7 +41,7 @@ export default async function TallerAprenderPage() {
     <div className="space-y-6">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="font-overpass font-bold text-3xl text-brand-blue">Academia</h1>
+          <h1 className="font-serif font-bold text-3xl text-brand-blue">Academia</h1>
           <p className="text-gray-500 mt-1">Cursos gratuitos para mejorar tu taller y ganar puntos de formalización.</p>
         </div>
       </div>
@@ -81,7 +81,7 @@ export default async function TallerAprenderPage() {
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <h2 className="font-overpass font-bold text-lg text-brand-blue">{col.titulo}</h2>
+                    <h2 className="font-serif font-bold text-lg text-brand-blue">{col.titulo}</h2>
                     {certificado && !certificado.revocado && (
                       <Badge variant="success">Certificado</Badge>
                     )}

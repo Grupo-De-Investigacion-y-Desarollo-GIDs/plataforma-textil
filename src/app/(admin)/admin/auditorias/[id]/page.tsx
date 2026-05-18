@@ -34,7 +34,7 @@ export default async function AuditoriaDetallePage({
       ]} />
 
       <div>
-        <h1 className="text-3xl font-bold font-overpass text-brand-blue">
+        <h1 className="text-3xl font-bold font-serif text-brand-blue">
           Auditoria — {auditoria.taller.nombre}
         </h1>
         <p className="text-gray-500 mt-1">
@@ -45,7 +45,7 @@ export default async function AuditoriaDetallePage({
       </div>
 
       <div className="bg-white rounded-xl border border-gray-100 p-6">
-        <h2 className="font-overpass font-bold text-gray-800 mb-3">Taller auditado</h2>
+        <h2 className="font-serif font-bold text-gray-800 mb-3">Taller auditado</h2>
         <div className="grid grid-cols-2 gap-3 text-sm">
           <div><span className="text-gray-500">Nombre:</span> <span className="font-medium">{auditoria.taller.nombre}</span></div>
           <div><span className="text-gray-500">CUIT:</span> <span className="font-medium">{auditoria.taller.cuit}</span></div>

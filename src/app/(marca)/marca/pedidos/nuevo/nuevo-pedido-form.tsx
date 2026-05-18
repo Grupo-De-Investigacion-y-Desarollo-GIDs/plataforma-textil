@@ -73,7 +73,7 @@ export function NuevoPedidoForm({ marcaId, procesos }: Props) {
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h1 className="font-overpass font-bold text-3xl text-brand-blue">Nuevo Pedido</h1>
+          <h1 className="font-serif font-bold text-3xl text-brand-blue">Nuevo Pedido</h1>
           <p className="text-gray-600 mt-2">Crea una orden para iniciar tu flujo de produccion.</p>
         </div>
         <Link

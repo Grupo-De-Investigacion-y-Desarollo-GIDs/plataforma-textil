@@ -8,7 +8,7 @@ export default function NuevaNovedadPage() {
         { label: 'Novedades', href: '/contenido/novedades' },
         { label: 'Nueva novedad' },
       ]} />
-      <h1 className="font-overpass font-bold text-2xl text-brand-blue">Nueva novedad</h1>
+      <h1 className="font-serif font-bold text-2xl text-brand-blue">Nueva novedad</h1>
       <p className="text-sm text-gray-500">
         La novedad se publicará inmediatamente en el landing.
       </p>

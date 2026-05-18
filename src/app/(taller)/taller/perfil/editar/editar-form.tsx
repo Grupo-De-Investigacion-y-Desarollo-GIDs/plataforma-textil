@@ -80,7 +80,7 @@ export function EditarPerfilForm({ taller }: Props) {
           ← Volver al perfil
         </Link>
       </div>
-      <h1 className="text-2xl font-bold font-overpass text-brand-blue">Editar datos básicos</h1>
+      <h1 className="text-2xl font-bold font-serif text-brand-blue">Editar datos básicos</h1>
 
       {error && (
         <p className="text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">{error}</p>
@@ -88,7 +88,7 @@ export function EditarPerfilForm({ taller }: Props) {
 
       {/* Sección: Datos de la empresa */}
       <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-4">
-        <h2 className="font-overpass font-bold text-gray-800">Datos de la empresa</h2>
+        <h2 className="font-serif font-bold text-gray-800">Datos de la empresa</h2>
         <div>
           <label className="text-sm font-medium text-gray-700">Nombre del taller</label>
           <input
@@ -142,7 +142,7 @@ export function EditarPerfilForm({ taller }: Props) {
 
       {/* Sección: Datos del responsable */}
       <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-4">
-        <h2 className="font-overpass font-bold text-gray-800">Datos del responsable</h2>
+        <h2 className="font-serif font-bold text-gray-800">Datos del responsable</h2>
         <div>
           <label className="text-sm font-medium text-gray-700">Nombre completo</label>
           <input

@@ -135,7 +135,7 @@ export default function ExportarReportePage() {
           { label: 'Estado', href: '/estado' },
           { label: 'Exportar' },
         ]} />
-        <h1 className="font-overpass font-bold text-2xl text-brand-blue">Exportar Reportes</h1>
+        <h1 className="font-serif font-bold text-2xl text-brand-blue">Exportar Reportes</h1>
         <p className="text-gray-500 text-sm mt-1">Genera informes del sector en formato CSV o Excel</p>
       </div>
 
@@ -143,7 +143,7 @@ export default function ExportarReportePage() {
       <Card className="border-brand-blue/30 bg-pastel-blue/30">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h2 className="font-overpass font-bold text-lg text-brand-blue">Informe mensual completo</h2>
+            <h2 className="font-serif font-bold text-lg text-brand-blue">Informe mensual completo</h2>
             <p className="text-sm text-gray-600 mt-1">
               Plantilla Excel con todas las hojas: talleres, marcas, pedidos, validaciones, demanda insatisfecha y resumen.
               Listo para presentar a OIT.

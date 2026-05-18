@@ -171,7 +171,7 @@ export default async function TallerDashboardPage() {
     <div className="space-y-6">
       {/* Encabezado */}
       <div>
-        <h1 className="font-overpass font-bold text-3xl text-brand-blue">
+        <h1 className="font-serif font-bold text-3xl text-brand-blue">
           Bienvenido, {taller?.nombre ?? session.user.name}
         </h1>
         <p className="text-gray-500 mt-1">
@@ -300,7 +300,7 @@ export default async function TallerDashboardPage() {
       {/* Historial de nivel */}
       {historialNiveles.length > 1 && (
         <div className="bg-white rounded-xl border border-gray-100 p-6">
-          <h2 className="font-overpass font-bold text-gray-800 mb-4">Historial de nivel</h2>
+          <h2 className="font-serif font-bold text-gray-800 mb-4">Historial de nivel</h2>
           <div className="space-y-2">
             {historialNiveles.map(log => {
               const detalles = log.detalles as { nivelAnterior?: string; nivelNuevo?: string }
@@ -330,7 +330,7 @@ export default async function TallerDashboardPage() {
 
       {/* Acciones rápidas */}
       <div>
-        <h2 className="font-overpass font-bold text-lg text-gray-800 mb-3">Acciones rápidas</h2>
+        <h2 className="font-serif font-bold text-lg text-gray-800 mb-3">Acciones rápidas</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Link
             href="/taller/perfil/completar"
@@ -363,7 +363,7 @@ export default async function TallerDashboardPage() {
       {taller && taller.ordenesManufactura.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-overpass font-bold text-lg text-gray-800">Pedidos activos</h2>
+            <h2 className="font-serif font-bold text-lg text-gray-800">Pedidos activos</h2>
             <Link href="/taller/pedidos" className="text-sm text-brand-blue hover:underline">
               Ver todos →
             </Link>
@@ -398,7 +398,7 @@ export default async function TallerDashboardPage() {
       {coleccionesRecomendadas.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-overpass font-bold text-lg text-gray-800">
+            <h2 className="font-serif font-bold text-lg text-gray-800">
               Capacitaciones recomendadas
             </h2>
             <Link href="/taller/aprender" className="text-sm text-brand-blue hover:underline">
