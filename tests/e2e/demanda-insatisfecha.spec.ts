@@ -44,7 +44,7 @@ test.describe('F-05 Dashboard de demanda insatisfecha', () => {
     await loginEstado(page)
 
     await page.goto('/estado')
-    await expect(page.locator('header').getByText('Demanda insatisfecha')).toBeVisible({ timeout: 30000 })
+    await expect(page.locator('header nav').getByText('Demanda insatisfecha')).toBeVisible({ timeout: 30000 })
   })
 
   test('Boton Exportar CSV esta visible', async ({ page }) => {
