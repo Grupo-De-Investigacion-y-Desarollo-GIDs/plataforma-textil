@@ -3,6 +3,12 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **22:46** `8c19d3a` — feat(x-06b): HeaderPublic con pill ambiente piloto + nav reducido
+  - `src/app/(public)/layout.tsx`
+  - `src/app/page.tsx`
+  - `src/compartido/componentes/layout/header-public.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+
 - **22:44** `f8a1300` — refactor(x-06b): centralizar logica showPilotPill en util
   - `src/app/(public)/layout.tsx`
   - `src/compartido/lib/env.ts`
