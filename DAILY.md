@@ -3,6 +3,71 @@
 ## 2026-05-18
 
 ### Gerardo Breard
+- **16:34** `8dcf0b0` — feat(x-07a): font-serif en titulares H1/H2 de dashboards
+  - `src/app/(admin)/admin/auditorias/[id]/informe-client.tsx`
+  - `src/app/(admin)/admin/auditorias/[id]/page.tsx`
+  - `src/app/(admin)/admin/auditorias/page.tsx`
+  - `src/app/(admin)/admin/certificados/page.tsx`
+  - `src/app/(admin)/admin/colecciones/[id]/page.tsx`
+  - `src/app/(admin)/admin/colecciones/[id]/videos/page.tsx`
+  - `src/app/(admin)/admin/colecciones/nueva/page.tsx`
+  - `src/app/(admin)/admin/colecciones/page.tsx`
+  - `src/app/(admin)/admin/configuracion/archivos/page.tsx`
+  - `src/app/(admin)/admin/configuracion/page.tsx`
+  - `src/app/(admin)/admin/dashboard/page.tsx`
+  - `src/app/(admin)/admin/evaluaciones/page.tsx`
+  - `src/app/(admin)/admin/feedback/page.tsx`
+  - `src/app/(admin)/admin/integraciones/email/page.tsx`
+  - `src/app/(admin)/admin/integraciones/llm/page.tsx`
+  - `src/app/(admin)/admin/integraciones/page.tsx`
+  - `src/app/(admin)/admin/logs/page.tsx`
+  - `src/app/(admin)/admin/marcas/[id]/page.tsx`
+  - `src/app/(admin)/admin/marcas/page.tsx`
+  - `src/app/(admin)/admin/notificaciones/page.tsx`
+  - `src/app/(admin)/admin/observaciones/[id]/editar/page.tsx`
+  - `src/app/(admin)/admin/observaciones/nueva/page.tsx`
+  - `src/app/(admin)/admin/observaciones/page.tsx`
+  - `src/app/(admin)/admin/onboarding/page.tsx`
+  - `src/app/(admin)/admin/pedidos/page.tsx`
+  - `src/app/(admin)/admin/procesos/page.tsx`
+  - `src/app/(admin)/admin/reportes/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(admin)/admin/talleres/page.tsx`
+  - `src/app/(admin)/admin/usuarios/page.tsx`
+  - `src/app/(contenido)/contenido/colecciones/page.tsx`
+  - `src/app/(contenido)/contenido/evaluaciones/page.tsx`
+  - `src/app/(contenido)/contenido/notificaciones/page.tsx`
+  - `src/app/(contenido)/contenido/novedades/[id]/editar/page.tsx`
+  - `src/app/(contenido)/contenido/novedades/nueva/page.tsx`
+  - `src/app/(contenido)/contenido/novedades/page.tsx`
+  - `src/app/(estado)/estado/auditorias/page.tsx`
+  - `src/app/(estado)/estado/configuracion-niveles/page.tsx`
+  - `src/app/(estado)/estado/demanda-insatisfecha/page.tsx`
+  - `src/app/(estado)/estado/documentos/page.tsx`
+  - `src/app/(estado)/estado/exportar/page.tsx`
+  - `src/app/(estado)/estado/page.tsx`
+  - `src/app/(estado)/estado/sector/page.tsx`
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/(estado)/estado/talleres/page.tsx`
+  - `src/app/(marca)/marca/directorio/[id]/page.tsx`
+  - `src/app/(marca)/marca/directorio/page.tsx`
+  - `src/app/(marca)/marca/page.tsx`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(marca)/marca/pedidos/nuevo/nuevo-pedido-form.tsx`
+  - `src/app/(marca)/marca/pedidos/page.tsx`
+  - `src/app/(marca)/marca/perfil/page.tsx`
+  - `src/app/(taller)/taller/aprender/[id]/page.tsx`
+  - `src/app/(taller)/taller/aprender/page.tsx`
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/app/(taller)/taller/pedidos/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+  - `src/app/(taller)/taller/pedidos/page.tsx`
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+  - `src/app/(taller)/taller/perfil/editar/editar-form.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+
 - **16:22** `60192c1` — feat(x-07a): paleta V4 en 21 paginas con clases blue inline
   - `src/app/(admin)/admin/auditorias/page.tsx`
   - `src/app/(admin)/admin/notificaciones/page.tsx`
