@@ -113,11 +113,8 @@ export const LANDING_COPY = {
 } as const
 
 export const HEADER_PUBLIC_NAV = [
-  { label: '¿Cómo funciona?', href: '/taller-info' },
-  { label: 'Para taller', href: '/taller-info' },
-  { label: 'Para marcas', href: '/marca-info' },
-  { label: 'Impacto', href: '/impacto' },
-  { label: 'Recursos', href: '/recursos' },
+  { label: '¿Cómo funciona?', href: '#como-funciona' },
+  { label: 'Impacto', href: '#impacto' },
 ] as const
 
 export const HEADER_PUBLIC_CTAS = {

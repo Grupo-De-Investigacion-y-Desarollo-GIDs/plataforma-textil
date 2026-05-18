@@ -33,7 +33,7 @@ export default async function PublicLayout({ children }: { children: React.React
   // Anonymous: HeaderPublic + Footer for marketing pages
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      <HeaderPublic />
+      <HeaderPublic showPilotPill={showPilotPill} />
       <main className="flex-grow">
         {children}
       </main>

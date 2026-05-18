@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 import { HeaderPublic } from '@/compartido/componentes/layout/header-public'
 import { Footer } from '@/compartido/componentes/layout/footer'
+import { getShowPilotPill } from '@/compartido/lib/env'
 import { CarruselNovedades, type CarruselItem } from '@/compartido/componentes/ui/carrusel-novedades'
 import { IconTaller, IconMarca, IconVerificado, IconTrazabilidad, IconSpark, IconCapacitacion, IconPedido } from '@/compartido/iconos'
 import { LANDING_COPY } from '@/compartido/lib/content/institutional'
@@ -74,7 +75,7 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      <HeaderPublic />
+      <HeaderPublic showPilotPill={getShowPilotPill()} />
 
       {/* ═══ HERO ═══ */}
       <section className="relative bg-white overflow-hidden">

@@ -6,23 +6,35 @@ import {
   HEADER_PUBLIC_CTAS,
 } from '@/compartido/lib/content/institutional'
 
-export function HeaderPublic() {
+interface HeaderPublicProps {
+  showPilotPill?: boolean
+}
+
+export function HeaderPublic({ showPilotPill = false }: HeaderPublicProps) {
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Izquierda: logo + nombre */}
-          <Link href="/" className="flex items-center gap-3">
-            <LogoPDT variant="icon" size="md" />
-            <div className="flex flex-col leading-tight">
-              <span className="font-serif font-bold text-base text-ink-primary">
-                {INSTITUTIONAL.brandName}
+          {/* Izquierda: logo + nombre + pill condicional */}
+          <div className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3">
+              <LogoPDT variant="icon" size="md" />
+              <div className="flex flex-col leading-tight">
+                <span className="font-serif font-bold text-base text-ink-primary">
+                  {INSTITUTIONAL.brandName}
+                </span>
+                <span className="font-overpass font-bold text-[10px] text-terra-600 uppercase tracking-wider">
+                  {INSTITUTIONAL.brandSubtitle}
+                </span>
+              </div>
+            </Link>
+
+            {showPilotPill && (
+              <span className="hidden md:inline-flex items-center px-2 py-1 rounded-full bg-pastel-yellow text-yellow-900 text-[10px] font-overpass font-bold uppercase tracking-wider">
+                Ambiente piloto
               </span>
-              <span className="font-overpass font-bold text-[10px] text-terra-600 uppercase tracking-wider">
-                {INSTITUTIONAL.brandSubtitle}
-              </span>
-            </div>
-          </Link>
+            )}
+          </div>
 
           {/* Centro: nav (hidden en mobile) */}
           <nav className="hidden lg:flex items-center gap-6">
