@@ -3,6 +3,9 @@
 ## 2026-05-18
 
 ### Gerardo Breard
+- **14:34** `971e673` — docs: lecciones de investigacion CI flaky (18-mayo-2026)
+  - `KNOWN_ISSUES.md`
+
 - **14:12** `7183d39` — fix(tests): eliminar doble navegacion en smoke admin/logs
   - `tests/e2e/smoke.spec.ts`
 
