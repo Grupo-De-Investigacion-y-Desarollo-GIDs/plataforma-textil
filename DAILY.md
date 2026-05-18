@@ -3,6 +3,9 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **21:48** `cf0a354` — docs: oficializar TEMPLATE_SPEC_V4 con pre-flight y selectores criticos
+  - `"docs/Dise\303\261o/TEMPLATE_SPEC_V4.md"`
+
 - **20:51** `680b4bd` — fix: add Supabase Storage to next/image remotePatterns
   - `next.config.ts`
 
