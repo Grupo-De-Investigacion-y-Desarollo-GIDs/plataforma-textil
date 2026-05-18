@@ -3,6 +3,10 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **22:44** `f8a1300` — refactor(x-06b): centralizar logica showPilotPill en util
+  - `src/app/(public)/layout.tsx`
+  - `src/compartido/lib/env.ts`
+
 - **21:48** `cf0a354` — docs: oficializar TEMPLATE_SPEC_V4 con pre-flight y selectores criticos
   - `"docs/Dise\303\261o/TEMPLATE_SPEC_V4.md"`
 
