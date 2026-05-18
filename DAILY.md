@@ -3,6 +3,9 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **22:55** `7e6492a` — feat(x-06b): nueva seccion 'Asi funciona' narrativa
+  - `src/app/page.tsx`
+
 - **22:47** `98bb682` — feat(x-06b): hero rediseñado con copy alineado a master V4
   - `src/app/page.tsx`
   - `src/compartido/lib/content/institutional.ts`
