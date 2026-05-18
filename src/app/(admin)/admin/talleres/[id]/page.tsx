@@ -134,7 +134,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
       </Card>
 
       {/* Link a vista ESTADO */}
-      <div className="mb-4 rounded-lg bg-blue-50 border border-blue-200 px-4 py-3 text-sm text-blue-700">
+      <div className="mb-4 rounded-lg bg-pastel-blue border border-brand-blue/30 px-4 py-3 text-sm text-brand-blue-dark">
         Las acciones de formalizacion (aprobar/rechazar documentos) son responsabilidad del Estado.{' '}
         <Link href={`/estado/talleres/${id}`} className="font-semibold text-brand-blue hover:underline">
           Ver vista de formalizacion

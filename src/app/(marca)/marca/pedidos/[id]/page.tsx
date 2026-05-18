@@ -205,7 +205,7 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
           <p className="text-xs text-gray-500">Monto total</p>
         </Card>
         <Card className="text-center p-4">
-          <Clock className="w-5 h-5 text-blue-500 mx-auto mb-1" />
+          <Clock className="w-5 h-5 text-brand-blue mx-auto mb-1" />
           <p className="font-overpass font-bold text-lg">
             {pedido.fechaObjetivo
               ? new Date(pedido.fechaObjetivo).toLocaleDateString('es-AR')

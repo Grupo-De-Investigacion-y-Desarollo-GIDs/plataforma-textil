@@ -83,7 +83,7 @@ export default async function AdminOnboardingPage() {
         <h2 className="font-overpass font-bold text-lg text-gray-800 mb-4">Funnel de adopcion</h2>
         <div className="space-y-3">
           <FunnelBar label="Invitados" count={total} pct={100} color="bg-gray-300" />
-          <FunnelBar label="Registrados" count={total - conteos.INVITADO} pct={pctRegistrados} color="bg-blue-400" />
+          <FunnelBar label="Registrados" count={total - conteos.INVITADO} pct={pctRegistrados} color="bg-brand-blue/60" />
           <FunnelBar label="Perfil completo" count={conteos.PERFIL_COMPLETO + conteos.ACTIVO} pct={pctPerfilCompleto} color="bg-amber-400" />
           <FunnelBar label="Activos" count={conteos.ACTIVO} pct={pctActivos} color="bg-green-500" />
         </div>

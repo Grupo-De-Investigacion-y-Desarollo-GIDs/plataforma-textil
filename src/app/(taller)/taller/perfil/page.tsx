@@ -114,7 +114,7 @@ export default async function TallerPerfilPage() {
           <p className="text-xs text-gray-500">Cap. mensual</p>
         </Card>
         <Card className="text-center p-4">
-          <Clock className="w-5 h-5 text-blue-500 mx-auto mb-1" />
+          <Clock className="w-5 h-5 text-brand-blue mx-auto mb-1" />
           <p className="font-overpass font-bold text-2xl text-brand-blue">{taller.ontimeRate}%</p>
           <p className="text-xs text-gray-500">On-time</p>
         </Card>

@@ -197,7 +197,7 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
       ]} />
 
       {soloLectura && (
-        <div className="mb-4 rounded-lg bg-blue-50 border border-blue-200 px-4 py-3 text-sm text-blue-700">
+        <div className="mb-4 rounded-lg bg-pastel-blue border border-brand-blue/30 px-4 py-3 text-sm text-brand-blue-dark">
           Modo lectura — las acciones de formalizacion son responsabilidad del Estado.
         </div>
       )}

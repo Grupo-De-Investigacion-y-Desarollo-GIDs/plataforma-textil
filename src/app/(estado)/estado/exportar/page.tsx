@@ -140,7 +140,7 @@ export default function ExportarReportePage() {
       </div>
 
       {/* Informe mensual destacado */}
-      <Card className="border-brand-blue/30 bg-blue-50/30">
+      <Card className="border-brand-blue/30 bg-pastel-blue/30">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h2 className="font-overpass font-bold text-lg text-brand-blue">Informe mensual completo</h2>

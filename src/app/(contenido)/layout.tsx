@@ -23,7 +23,7 @@ export default async function ContenidoLayout({ children }: { children: React.Re
             <span className="font-overpass font-bold text-lg">Panel de Contenidos</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/" className="text-sm hover:text-blue-200 transition-colors">
+            <Link href="/" className="text-sm hover:text-white/70 transition-colors">
               Volver al sitio
             </Link>
             <LogoutButton />

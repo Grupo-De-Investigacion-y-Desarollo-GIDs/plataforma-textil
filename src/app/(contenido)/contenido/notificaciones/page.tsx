@@ -33,7 +33,7 @@ export default async function ContenidoNotificacionesPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
           <div className="flex items-center gap-3">
-            <Send className="w-5 h-5 text-blue-600" />
+            <Send className="w-5 h-5 text-brand-blue" />
             <div>
               <p className="text-2xl font-bold text-gray-800">{total}</p>
               <p className="text-xs text-gray-500">Total enviadas</p>
@@ -73,7 +73,7 @@ export default async function ContenidoNotificacionesPage() {
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <p className="font-semibold text-sm text-gray-800 truncate">{n.titulo}</p>
-                  {!n.leida && <span className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" aria-label="Sin leer" />}
+                  {!n.leida && <span className="w-2 h-2 rounded-full bg-brand-blue flex-shrink-0" aria-label="Sin leer" />}
                 </div>
                 <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{n.mensaje}</p>
                 <p className="text-xs text-gray-400 mt-1">
@@ -81,7 +81,7 @@ export default async function ContenidoNotificacionesPage() {
                   {' | '}{n.createdAt.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: '2-digit' })}
                 </p>
               </div>
-              <span className={`text-xs font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${n.leida ? 'bg-gray-100 text-gray-500' : 'bg-blue-100 text-blue-700'}`}>
+              <span className={`text-xs font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${n.leida ? 'bg-gray-100 text-gray-500' : 'bg-pastel-blue text-brand-blue-dark'}`}>
                 {n.leida ? 'Leida' : 'Sin leer'}
               </span>
             </div>

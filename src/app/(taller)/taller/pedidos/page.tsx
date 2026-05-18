@@ -118,7 +118,7 @@ async function ListaOrdenes() {
               <Link
                 key={orden.id}
                 href={`/taller/pedidos/${orden.id}`}
-                className="block border border-gray-100 rounded-lg p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3 hover:border-brand-blue hover:bg-blue-50/30 transition-colors"
+                className="block border border-gray-100 rounded-lg p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3 hover:border-brand-blue hover:bg-pastel-blue/30 transition-colors"
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">

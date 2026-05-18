@@ -245,7 +245,7 @@ export default async function EstadoDashboardPage() {
                 <p className="text-2xl font-bold text-gray-800">{subieronNivelMes}</p>
                 <p className="text-sm text-gray-500">Subieron de nivel este mes</p>
               </div>
-              <TrendingUp className="w-8 h-8 text-blue-400" />
+              <TrendingUp className="w-8 h-8 text-brand-blue/70" />
             </div>
           </Card>
 
@@ -268,7 +268,7 @@ export default async function EstadoDashboardPage() {
             },
             NIVEL_SUBIDO: {
               texto: 'subio de nivel',
-              icono: <TrendingUp className="w-4 h-4 text-blue-500 shrink-0" />,
+              icono: <TrendingUp className="w-4 h-4 text-brand-blue shrink-0" />,
             },
             NIVEL_BAJADO: {
               texto: 'bajo de nivel',

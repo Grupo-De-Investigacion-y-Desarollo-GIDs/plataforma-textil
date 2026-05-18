@@ -112,7 +112,7 @@ export default async function ObservacionesPage({
           </Link>
           <Link
             href="/admin/observaciones/nueva"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-overpass font-semibold bg-brand-blue hover:bg-blue-800 text-white transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-overpass font-semibold bg-brand-blue hover:bg-brand-blue-dark text-white transition-colors"
           >
             <Plus className="w-4 h-4" />
             Nueva observacion
@@ -171,7 +171,7 @@ export default async function ObservacionesPage({
           </div>
         </div>
         <div className="mt-3 flex justify-end">
-          <button type="submit" className="px-4 py-2 rounded-lg text-sm font-overpass font-semibold bg-brand-blue text-white hover:bg-blue-800 transition-colors">
+          <button type="submit" className="px-4 py-2 rounded-lg text-sm font-overpass font-semibold bg-brand-blue text-white hover:bg-brand-blue-dark transition-colors">
             Filtrar
           </button>
         </div>

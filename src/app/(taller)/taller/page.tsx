@@ -382,7 +382,7 @@ export default async function TallerDashboardPage() {
                 <span
                   className={`text-xs font-semibold px-3 py-1 rounded-full ${
                     orden.estado === 'EN_EJECUCION'
-                      ? 'bg-blue-100 text-blue-700'
+                      ? 'bg-pastel-blue text-brand-blue-dark'
                       : 'bg-yellow-100 text-yellow-700'
                   }`}
                 >

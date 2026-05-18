@@ -16,7 +16,7 @@ const TIPO_LABELS: Record<TipoNovedad, string> = {
 
 const TIPO_COLOR: Record<TipoNovedad, string> = {
   NOTICIA: 'bg-green-100 text-green-800',
-  CASO: 'bg-blue-100 text-brand-blue',
+  CASO: 'bg-pastel-blue text-brand-blue',
   INDICADOR: 'bg-purple-100 text-purple-800',
 }
 
@@ -36,7 +36,7 @@ export default async function NovedadesPage() {
         </div>
         <Link
           href="/contenido/novedades/nueva"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-overpass font-semibold bg-brand-blue hover:bg-blue-800 text-white transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-overpass font-semibold bg-brand-blue hover:bg-brand-blue-dark text-white transition-colors"
         >
           <Plus className="w-4 h-4" />
           Nueva novedad
@@ -98,7 +98,7 @@ export default async function NovedadesPage() {
                   <td className="px-4 py-3 text-right">
                     <Link
                       href={`/contenido/novedades/${n.id}/editar`}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 text-sm text-brand-blue hover:bg-blue-50 rounded transition-colors"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 text-sm text-brand-blue hover:bg-pastel-blue rounded transition-colors"
                     >
                       <Edit className="w-4 h-4" />
                       Editar
