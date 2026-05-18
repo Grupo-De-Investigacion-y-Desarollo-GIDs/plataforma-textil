@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-05-18
+
+### Gerardo Breard
+- **13:35** `caf3b6d` — fix(tests): eliminar waitUntil 'load' en smoke admin/logs
+  - `tests/e2e/smoke.spec.ts`
+
+
 ## 2026-05-17
 
 ### Gerardo Breard
