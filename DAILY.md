@@ -3,6 +3,29 @@
 ## 2026-05-18
 
 ### Gerardo Breard
+- **16:22** `60192c1` — feat(x-07a): paleta V4 en 21 paginas con clases blue inline
+  - `src/app/(admin)/admin/auditorias/page.tsx`
+  - `src/app/(admin)/admin/notificaciones/page.tsx`
+  - `src/app/(admin)/admin/observaciones/page.tsx`
+  - `src/app/(admin)/admin/onboarding/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(admin)/layout.tsx`
+  - `src/app/(contenido)/contenido/notificaciones/page.tsx`
+  - `src/app/(contenido)/contenido/novedades/formulario-novedad.tsx`
+  - `src/app/(contenido)/contenido/novedades/page.tsx`
+  - `src/app/(contenido)/layout.tsx`
+  - `src/app/(estado)/estado/exportar/page.tsx`
+  - `src/app/(estado)/estado/page.tsx`
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/(marca)/marca/directorio/[id]/page.tsx`
+  - `src/app/(marca)/marca/page.tsx`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/app/(taller)/taller/pedidos/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/page.tsx`
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+
 - **16:14** `7d58d2b` — feat(x-07a): paleta V4 en componentes layout y secundarios
   - `src/compartido/componentes/activity-timeline.tsx`
   - `src/compartido/componentes/badge-arca.tsx`
