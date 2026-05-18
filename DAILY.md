@@ -3,6 +3,10 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **22:47** `98bb682` — feat(x-06b): hero rediseñado con copy alineado a master V4
+  - `src/app/page.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+
 - **22:46** `8c19d3a` — feat(x-06b): HeaderPublic con pill ambiente piloto + nav reducido
   - `src/app/(public)/layout.tsx`
   - `src/app/page.tsx`
