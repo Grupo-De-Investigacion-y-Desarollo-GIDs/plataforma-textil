@@ -139,6 +139,33 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* ═══ ASI FUNCIONA ═══ */}
+      <section id="como-funciona" className="bg-white py-24">
+        <div className="max-w-4xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <p className="text-xs uppercase tracking-widest font-overpass font-bold text-terra-600 mb-2">
+              Asi funciona
+            </p>
+            <h2 className="font-serif font-bold text-4xl lg:text-5xl text-ink-primary mb-4">
+              Acompañamos al sector textil en cada paso del recorrido.
+            </h2>
+          </div>
+          <div className="space-y-6 text-lg text-ink-secondary leading-relaxed">
+            <p>
+              Un taller textil se suma. Aprende con cursos gratuitos, arma su perfil
+              y muestra lo que sabe hacer.
+            </p>
+            <p>
+              Una marca de indumentaria lo descubre en el directorio. Conoce sus
+              capacidades, su trayectoria y su recorrido.
+            </p>
+            <p>
+              Se contactan directo y empiezan a trabajar juntos.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* ═══ PARA CADA ACTOR ═══ */}
       <section className="bg-gray-50 py-24 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
