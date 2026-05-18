@@ -12,7 +12,7 @@ test.describe('Smoke test — setup basico funciona', () => {
     await page.waitForLoadState('load')
 
     // Navegar a /admin/logs (implementado en S-04)
-    await page.goto('/admin/logs', { waitUntil: 'load' })
+    await page.goto('/admin/logs')
 
     // Verificar que la pagina de logs carga con la UI mejorada de S-04
     await expect(page.getByRole('heading', { name: 'Logs de Actividad' })).toBeVisible()
