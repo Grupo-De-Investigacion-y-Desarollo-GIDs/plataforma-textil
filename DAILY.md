@@ -3,6 +3,9 @@
 ## 2026-05-18
 
 ### Gerardo Breard
+- **13:43** `f7cbcaf` — fix(tests): usar getByRole heading en exportes-estado
+  - `tests/e2e/exportes-estado.spec.ts`
+
 - **13:43** `574a35b` — fix(tests): scope selector a 'header nav' en demanda-insatisfecha
   - `tests/e2e/demanda-insatisfecha.spec.ts`
 
