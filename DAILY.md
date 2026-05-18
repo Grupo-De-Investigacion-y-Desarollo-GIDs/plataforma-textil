@@ -3,6 +3,9 @@
 ## 2026-05-18
 
 ### Gerardo Breard
+- **13:43** `574a35b` — fix(tests): scope selector a 'header nav' en demanda-insatisfecha
+  - `tests/e2e/demanda-insatisfecha.spec.ts`
+
 - **13:35** `8a1759f` — fix(tests): beforeAll para restaurar config imagenes-portfolio
   - `tests/e2e/file-validation.spec.ts`
 
