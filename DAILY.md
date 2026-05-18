@@ -3,6 +3,9 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **23:09** `e57309d` — feat(x-06b): disclaimer piloto antes del footer + limpiar carrusel
+  - `src/app/page.tsx`
+
 - **23:08** `16d2b49` — refactor(x-06b): eliminar secciones obsoletas (Para Talleres + Banner Sumate)
   - `src/app/page.tsx`
   - `src/compartido/lib/content/institutional.ts`
