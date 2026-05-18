@@ -10,20 +10,15 @@ export const INSTITUTIONAL = {
 export const FOOTER_LINKS = {
   plataforma: [
     { label: '\u00bfC\u00f3mo funciona?', href: '/#como-funciona' },
-    { label: 'Para taller', href: '/taller-info' },
-    { label: 'Para marcas', href: '/marca-info' },
-    { label: 'Impacto', href: '/impacto' },
+    { label: 'Impacto', href: '/#impacto' },
   ],
   recursos: [
     { label: 'Centro de ayuda', href: '/ayuda' },
-    { label: 'Academia', href: '/academia-publica' },
-    { label: 'Novedades', href: '/novedades' },
-    { label: 'Contacto', href: '/contacto' },
+    { label: 'Contacto', href: 'mailto:soporte@plataformatextil.ar' },
   ],
   legal: [
     { label: 'T\u00e9rminos y condiciones', href: '/terminos' },
     { label: 'Pol\u00edtica de privacidad', href: '/privacidad' },
-    { label: 'Accesibilidad', href: '/accesibilidad' },
   ],
 } as const
 
@@ -53,71 +48,31 @@ export const TABS_BY_ROLE = {
 
 export const LANDING_COPY = {
   hero: {
-    badge: 'INICIATIVA DE OIT Y UNTREF',
-    titleParts: ['Formalizá,', 'conectá y trazá', 'la producción textil'],
-    subtitle: 'Construimos una industria textil transparente, confiable y sin trabajo informal. Para talleres, marcas y organismos del Estado.',
+    titleParts: ['Hacé crecer tu taller.', 'Conectá tu marca.', 'Empezá desde donde estés.'],
+    subtitle: 'Plataforma pública de OIT y UNTREF que acompaña a talleres y marcas del sector textil argentino. Capacitaciones gratuitas, perfil profesional y conexión directa entre quienes producen y quienes buscan.',
     ctaTaller: { label: 'Soy taller', href: '/registro?rol=TALLER' },
     ctaMarca: { label: 'Soy marca', href: '/registro?rol=MARCA' },
     imageAlt: 'Trabajadores en taller textil con máquinas de coser',
     cardTrazabilidad: {
-      title: 'Trazabilidad completa',
-      subtitle: 'Cada etapa del proceso registrada y verificable.',
-    },
-    cardStat: {
-      label: 'Talleres verificados en el piloto',
-    },
-  },
-  actores: {
-    eyebrow: 'DOS CAMINOS · UN ECOSISTEMA',
-    title: 'Para talleres y marcas del sector textil',
-    subtitle: 'El acceso institucional para organismos del Estado se gestiona por convenio con OIT y UNTREF.',
-    talleres: {
-      title: 'Talleres',
-      bullets: [
-        'Conseguí clientes formales',
-        'Accedé a certificación',
-        'Digitalizá tu producción',
-        'Capacitate y crecé de nivel',
-      ],
-      cta: { label: 'Quiero formalizarme', href: '/registro?rol=TALLER' },
-    },
-    marcas: {
-      title: 'Marcas',
-      bullets: [
-        'Encontrá proveedores verificados',
-        'Reducí riesgos legales',
-        'Trazabilidad completa',
-        'Cumplí con estándares ESG',
-      ],
-      cta: { label: 'Buscar proveedores', href: '/registro?rol=MARCA' },
+      title: 'Acompañamiento institucional',
+      subtitle: 'OIT y UNTREF respaldan tu recorrido.',
     },
   },
   impacto: {
     eyebrow: 'NUESTRO IMPACTO',
     titleParts: ['Impulsamos un sector más', 'justo y transparente'],
     subtitle: 'Trabajamos para reducir la informalidad, mejorar las condiciones laborales y generar oportunidades de desarrollo en talleres y marcas argentinas.',
-    cta: { label: 'Conocé nuestro impacto', href: '/impacto' },
   },
   carrusel: {
     eyebrow: 'ACADEMIA · SECTOR',
     title: 'Novedades y capacitaciones',
-    subtitle: 'Lo último de la academia y del sector textil argentino',
-    verTodas: { label: 'Ver todas las novedades y cursos', href: '/novedades' },
-  },
-  ctaBanner: {
-    titleParts: ['Sumate a la transformación del', 'sector textil'],
-    subtitle: 'Empezá hoy. Es gratis.',
-    ctaTaller: { label: 'Soy taller', href: '/registro?rol=TALLER' },
-    ctaMarca: { label: 'Soy marca', href: '/registro?rol=MARCA' },
+    subtitle: 'Lo ultimo de la academia y del sector textil argentino',
   },
 } as const
 
 export const HEADER_PUBLIC_NAV = [
-  { label: '¿Cómo funciona?', href: '/taller-info' },
-  { label: 'Para taller', href: '/taller-info' },
-  { label: 'Para marcas', href: '/marca-info' },
-  { label: 'Impacto', href: '/impacto' },
-  { label: 'Recursos', href: '/recursos' },
+  { label: '¿Cómo funciona?', href: '#como-funciona' },
+  { label: 'Impacto', href: '#impacto' },
 ] as const
 
 export const HEADER_PUBLIC_CTAS = {

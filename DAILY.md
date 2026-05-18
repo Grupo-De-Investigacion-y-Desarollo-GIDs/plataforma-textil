@@ -3,6 +3,37 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **23:10** `9964df2` — feat(x-06b): footer con links limpios (sin destinos 404)
+  - `src/compartido/lib/content/institutional.ts`
+
+- **23:09** `e57309d` — feat(x-06b): disclaimer piloto antes del footer + limpiar carrusel
+  - `src/app/page.tsx`
+
+- **23:08** `16d2b49` — refactor(x-06b): eliminar secciones obsoletas (Para Talleres + Banner Sumate)
+  - `src/app/page.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+
+- **23:00** `2491b17` — feat(x-06b): impacto con stats reformuladas (metricas V4)
+  - `src/app/page.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+
+- **22:55** `7e6492a` — feat(x-06b): nueva seccion 'Asi funciona' narrativa
+  - `src/app/page.tsx`
+
+- **22:47** `98bb682` — feat(x-06b): hero rediseñado con copy alineado a master V4
+  - `src/app/page.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+
+- **22:46** `8c19d3a` — feat(x-06b): HeaderPublic con pill ambiente piloto + nav reducido
+  - `src/app/(public)/layout.tsx`
+  - `src/app/page.tsx`
+  - `src/compartido/componentes/layout/header-public.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+
+- **22:44** `f8a1300` — refactor(x-06b): centralizar logica showPilotPill en util
+  - `src/app/(public)/layout.tsx`
+  - `src/compartido/lib/env.ts`
+
 - **21:48** `cf0a354` — docs: oficializar TEMPLATE_SPEC_V4 con pre-flight y selectores criticos
   - `"docs/Dise\303\261o/TEMPLATE_SPEC_V4.md"`
 
