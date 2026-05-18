@@ -3,6 +3,10 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **23:08** `16d2b49` — refactor(x-06b): eliminar secciones obsoletas (Para Talleres + Banner Sumate)
+  - `src/app/page.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+
 - **23:00** `2491b17` — feat(x-06b): impacto con stats reformuladas (metricas V4)
   - `src/app/page.tsx`
   - `src/compartido/lib/content/institutional.ts`
