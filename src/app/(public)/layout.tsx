@@ -2,14 +2,13 @@ import { auth } from '@/compartido/lib/auth'
 import { Header } from '@/compartido/componentes/layout'
 import { HeaderPublic } from '@/compartido/componentes/layout/header-public'
 import { Footer } from '@/compartido/componentes/layout/footer'
+import { getShowPilotPill } from '@/compartido/lib/env'
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const session = await auth()
   const role = (session?.user as { role?: string } | undefined)?.role || ''
 
-  const isMain = process.env.VERCEL_GIT_COMMIT_REF === 'main'
-  const isLocal = !process.env.VERCEL_ENV
-  const showPilotPill = !isMain && !isLocal
+  const showPilotPill = getShowPilotPill()
 
   // Logged in: Header global with tabs, sidebar, bell
   if (session?.user) {
