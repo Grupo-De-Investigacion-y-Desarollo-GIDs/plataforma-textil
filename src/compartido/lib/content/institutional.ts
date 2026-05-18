@@ -63,31 +63,6 @@ export const LANDING_COPY = {
       subtitle: 'OIT y UNTREF respaldan tu recorrido.',
     },
   },
-  actores: {
-    eyebrow: 'DOS CAMINOS · UN ECOSISTEMA',
-    title: 'Para talleres y marcas del sector textil',
-    subtitle: 'El acceso institucional para organismos del Estado se gestiona por convenio con OIT y UNTREF.',
-    talleres: {
-      title: 'Talleres',
-      bullets: [
-        'Conseguí clientes formales',
-        'Accedé a certificación',
-        'Digitalizá tu producción',
-        'Capacitate y crecé de nivel',
-      ],
-      cta: { label: 'Quiero formalizarme', href: '/registro?rol=TALLER' },
-    },
-    marcas: {
-      title: 'Marcas',
-      bullets: [
-        'Encontrá proveedores verificados',
-        'Reducí riesgos legales',
-        'Trazabilidad completa',
-        'Cumplí con estándares ESG',
-      ],
-      cta: { label: 'Buscar proveedores', href: '/registro?rol=MARCA' },
-    },
-  },
   impacto: {
     eyebrow: 'NUESTRO IMPACTO',
     titleParts: ['Impulsamos un sector más', 'justo y transparente'],
@@ -96,14 +71,7 @@ export const LANDING_COPY = {
   carrusel: {
     eyebrow: 'ACADEMIA · SECTOR',
     title: 'Novedades y capacitaciones',
-    subtitle: 'Lo último de la academia y del sector textil argentino',
-    verTodas: { label: 'Ver todas las novedades y cursos', href: '/novedades' },
-  },
-  ctaBanner: {
-    titleParts: ['Sumate a la transformación del', 'sector textil'],
-    subtitle: 'Empezá hoy. Es gratis.',
-    ctaTaller: { label: 'Soy taller', href: '/registro?rol=TALLER' },
-    ctaMarca: { label: 'Soy marca', href: '/registro?rol=MARCA' },
+    subtitle: 'Lo ultimo de la academia y del sector textil argentino',
   },
 } as const
 

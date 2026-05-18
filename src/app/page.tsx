@@ -8,7 +8,7 @@ import { HeaderPublic } from '@/compartido/componentes/layout/header-public'
 import { Footer } from '@/compartido/componentes/layout/footer'
 import { getShowPilotPill } from '@/compartido/lib/env'
 import { CarruselNovedades, type CarruselItem } from '@/compartido/componentes/ui/carrusel-novedades'
-import { IconTaller, IconMarca, IconVerificado, IconTrazabilidad, IconCapacitacion, IconPedido } from '@/compartido/iconos'
+import { IconTaller, IconMarca, IconTrazabilidad, IconCapacitacion, IconPedido } from '@/compartido/iconos'
 import { LANDING_COPY } from '@/compartido/lib/content/institutional'
 
 export const dynamic = 'force-dynamic'
@@ -67,7 +67,7 @@ export default async function Home() {
     })),
   ]
 
-  const { hero, actores, impacto, carrusel, ctaBanner } = LANDING_COPY
+  const { hero, impacto, carrusel } = LANDING_COPY
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -162,71 +162,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ═══ PARA CADA ACTOR ═══ */}
-      <section className="bg-gray-50 py-24 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <p className="text-xs uppercase tracking-widest font-overpass font-bold text-terra-600 mb-2">
-              {actores.eyebrow}
-            </p>
-            <h2 className="font-serif font-bold text-4xl lg:text-5xl text-ink-primary">
-              {actores.title}
-            </h2>
-            <p className="text-ink-secondary mt-3 max-w-2xl mx-auto">{actores.subtitle}</p>
-          </div>
-          <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-            {/* Talleres */}
-            <div className="bg-white rounded-card shadow-card border border-gray-100 card-lift hover:shadow-card-hover overflow-hidden">
-              <div className="h-2 bg-brand-blue" />
-              <div className="p-8">
-                <div className="w-14 h-14 rounded-2xl bg-pastel-blue flex items-center justify-center mb-5">
-                  <IconTaller className="w-7 h-7 text-brand-blue" />
-                </div>
-                <h3 className="font-serif font-bold text-2xl mb-4">{actores.talleres.title}</h3>
-                <ul className="space-y-2.5 text-ink-secondary mb-6 text-sm">
-                  {actores.talleres.bullets.map(b => (
-                    <li key={b} className="flex items-start gap-2">
-                      <IconVerificado className="w-4 h-4 text-brand-blue flex-shrink-0 mt-0.5" />
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href={actores.talleres.cta.href}
-                  className="inline-flex items-center gap-1 text-brand-blue font-overpass font-semibold text-sm hover:gap-2 transition-all"
-                >
-                  {actores.talleres.cta.label} <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </div>
-            {/* Marcas */}
-            <div className="bg-white rounded-card shadow-card border border-gray-100 card-lift hover:shadow-card-hover overflow-hidden">
-              <div className="h-2 bg-green-700" />
-              <div className="p-8">
-                <div className="w-14 h-14 rounded-2xl bg-pastel-green flex items-center justify-center mb-5">
-                  <IconMarca className="w-7 h-7 text-green-700" />
-                </div>
-                <h3 className="font-serif font-bold text-2xl mb-4">{actores.marcas.title}</h3>
-                <ul className="space-y-2.5 text-ink-secondary mb-6 text-sm">
-                  {actores.marcas.bullets.map(b => (
-                    <li key={b} className="flex items-start gap-2">
-                      <IconVerificado className="w-4 h-4 text-green-700 flex-shrink-0 mt-0.5" />
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href={actores.marcas.cta.href}
-                  className="inline-flex items-center gap-1 text-green-700 font-overpass font-semibold text-sm hover:gap-2 transition-all"
-                >
-                  {actores.marcas.cta.label} <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ═══ IMPACTO ═══ */}
       <section id="impacto" className="bg-ink-primary text-white py-24 relative overflow-hidden">
         <div className="absolute inset-0 pattern-weave opacity-50" />
@@ -291,36 +226,6 @@ export default async function Home() {
               className="inline-flex items-center gap-2 text-brand-blue font-overpass font-semibold hover:underline"
             >
               {carrusel.verTodas.label} <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ BANNER CTA ═══ */}
-      <section className="bg-brand-blue relative overflow-hidden">
-        <div className="absolute inset-0 pattern-weave opacity-30" />
-        <div className="absolute -bottom-20 -right-20 w-72 h-72 rounded-full bg-terra-600 opacity-20" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid md:grid-cols-2 gap-6 items-center">
-          <div>
-            <h2 className="font-serif font-bold text-3xl lg:text-4xl text-white leading-tight">
-              {ctaBanner.titleParts[0]} <span className="italic text-terra-300">{ctaBanner.titleParts[1]}</span>
-            </h2>
-            <p className="text-blue-100 mt-3">{ctaBanner.subtitle}</p>
-          </div>
-          <div className="flex flex-wrap gap-3 md:justify-end">
-            <Link
-              href={ctaBanner.ctaTaller.href}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-white text-brand-blue font-overpass font-semibold rounded-lg hover:bg-pastel-blue transition-colors"
-            >
-              <IconTaller className="w-4 h-4" />
-              {ctaBanner.ctaTaller.label}
-            </Link>
-            <Link
-              href={ctaBanner.ctaMarca.href}
-              className="inline-flex items-center gap-2 px-6 py-3 border border-white/40 text-white font-overpass font-semibold rounded-lg hover:bg-white/10 transition-colors"
-            >
-              <IconMarca className="w-4 h-4" />
-              {ctaBanner.ctaMarca.label}
             </Link>
           </div>
         </div>
