@@ -12,11 +12,11 @@ function tiempoRelativo(fecha: Date): string {
 export function BadgeArca({ verificado, fecha }: { verificado: boolean; fecha?: Date | null }) {
   if (verificado) {
     return (
-      <span className="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-medium">
+      <span className="inline-flex items-center gap-1 text-xs bg-pastel-blue text-brand-blue-dark px-2 py-0.5 rounded font-medium">
         <ShieldCheck className="w-3 h-3" />
         Verificado por ARCA
         {fecha && (
-          <span className="text-blue-400 font-normal">
+          <span className="text-brand-blue/70 font-normal">
             ({tiempoRelativo(fecha)})
           </span>
         )}

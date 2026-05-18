@@ -121,7 +121,7 @@ export function NotificacionesBell() {
           setOpen(prev => !prev)
           if (!open) fetchNotificaciones()
         }}
-        className="hover:text-blue-200 transition-colors relative"
+        className="hover:text-white/70 transition-colors relative"
         aria-label={`Notificaciones${sinLeer > 0 ? ` (${sinLeer} sin leer)` : ''}`}
       >
         <Bell className="w-4 h-4" />
