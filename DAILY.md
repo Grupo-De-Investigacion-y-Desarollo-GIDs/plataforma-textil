@@ -3,6 +3,10 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **23:00** `2491b17` — feat(x-06b): impacto con stats reformuladas (metricas V4)
+  - `src/app/page.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+
 - **22:55** `7e6492a` — feat(x-06b): nueva seccion 'Asi funciona' narrativa
   - `src/app/page.tsx`
 
