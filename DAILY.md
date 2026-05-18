@@ -3,6 +3,9 @@
 ## 2026-05-18
 
 ### Gerardo Breard
+- **14:12** `7183d39` — fix(tests): eliminar doble navegacion en smoke admin/logs
+  - `tests/e2e/smoke.spec.ts`
+
 - **13:43** `f7cbcaf` — fix(tests): usar getByRole heading en exportes-estado
   - `tests/e2e/exportes-estado.spec.ts`
 
