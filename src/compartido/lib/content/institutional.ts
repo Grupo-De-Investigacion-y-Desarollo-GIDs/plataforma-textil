@@ -53,18 +53,14 @@ export const TABS_BY_ROLE = {
 
 export const LANDING_COPY = {
   hero: {
-    badge: 'INICIATIVA DE OIT Y UNTREF',
-    titleParts: ['Formalizá,', 'conectá y trazá', 'la producción textil'],
-    subtitle: 'Construimos una industria textil transparente, confiable y sin trabajo informal. Para talleres, marcas y organismos del Estado.',
+    titleParts: ['Hacé crecer tu taller.', 'Conectá tu marca.', 'Empezá desde donde estés.'],
+    subtitle: 'Plataforma pública de OIT y UNTREF que acompaña a talleres y marcas del sector textil argentino. Capacitaciones gratuitas, perfil profesional y conexión directa entre quienes producen y quienes buscan.',
     ctaTaller: { label: 'Soy taller', href: '/registro?rol=TALLER' },
     ctaMarca: { label: 'Soy marca', href: '/registro?rol=MARCA' },
     imageAlt: 'Trabajadores en taller textil con máquinas de coser',
     cardTrazabilidad: {
-      title: 'Trazabilidad completa',
-      subtitle: 'Cada etapa del proceso registrada y verificable.',
-    },
-    cardStat: {
-      label: 'Talleres verificados en el piloto',
+      title: 'Acompañamiento institucional',
+      subtitle: 'OIT y UNTREF respaldan tu recorrido.',
     },
   },
   actores: {

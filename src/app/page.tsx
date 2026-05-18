@@ -8,7 +8,7 @@ import { HeaderPublic } from '@/compartido/componentes/layout/header-public'
 import { Footer } from '@/compartido/componentes/layout/footer'
 import { getShowPilotPill } from '@/compartido/lib/env'
 import { CarruselNovedades, type CarruselItem } from '@/compartido/componentes/ui/carrusel-novedades'
-import { IconTaller, IconMarca, IconVerificado, IconTrazabilidad, IconSpark, IconCapacitacion, IconPedido } from '@/compartido/iconos'
+import { IconTaller, IconMarca, IconVerificado, IconTrazabilidad, IconCapacitacion, IconPedido } from '@/compartido/iconos'
 import { LANDING_COPY } from '@/compartido/lib/content/institutional'
 
 export const dynamic = 'force-dynamic'
@@ -85,16 +85,10 @@ export default async function Home() {
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 grid lg:grid-cols-12 gap-10 items-center">
           <div className="lg:col-span-7">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-terra-50 border border-terra-300/50 rounded-full mb-6">
-              <IconSpark className="w-3.5 h-3.5 text-terra-600" />
-              <span className="text-xs font-overpass font-bold uppercase tracking-widest text-terra-700">
-                {hero.badge}
-              </span>
-            </div>
             <h1 className="font-serif font-extrabold text-5xl lg:text-7xl text-ink-primary leading-[1.05] tracking-tight">
-              <span className="text-brand-blue">{hero.titleParts[0]}</span>
-              <br />
-              {hero.titleParts[1]} <span className="italic font-medium text-ink-secondary">{hero.titleParts[2]}</span>
+              {hero.titleParts[0]}<br />
+              {hero.titleParts[1]}<br />
+              <span className="italic font-medium text-ink-secondary">{hero.titleParts[2]}</span>
             </h1>
             <p className="text-ink-secondary text-lg mt-6 leading-relaxed max-w-xl">
               {hero.subtitle}
@@ -141,14 +135,6 @@ export default async function Home() {
               <p className="text-xs text-ink-secondary leading-snug">{hero.cardTrazabilidad.subtitle}</p>
             </div>
 
-            {/* Card flotante: stat */}
-            <div className="absolute -right-4 bottom-12 bg-white rounded-2xl shadow-card-hover p-4 max-w-[200px] border border-gray-100 hidden md:block">
-              <p className="font-serif font-bold text-3xl text-brand-blue leading-none">{talleresActivos}+</p>
-              <p className="text-xs text-ink-secondary mt-1 leading-snug">{hero.cardStat.label}</p>
-              <div className="h-1 w-full bg-gray-100 rounded-full mt-2 overflow-hidden">
-                <div className="h-full bg-terra-600 rounded-full" style={{ width: '33%' }} />
-              </div>
-            </div>
           </div>
         </div>
       </section>
