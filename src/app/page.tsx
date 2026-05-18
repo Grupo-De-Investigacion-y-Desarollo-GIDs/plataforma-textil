@@ -220,14 +220,18 @@ export default async function Home() {
             <p className="text-center text-ink-secondary py-8">Próximamente</p>
           )}
 
-          <div className="text-center mt-10">
-            <Link
-              href={carrusel.verTodas.href}
-              className="inline-flex items-center gap-2 text-brand-blue font-overpass font-semibold hover:underline"
-            >
-              {carrusel.verTodas.label} <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
+        </div>
+      </section>
+
+      {/* ═══ DISCLAIMER PILOTO ═══ */}
+      <section className="bg-pastel-yellow border-t border-yellow-200/50 py-4">
+        <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+          <p className="text-xs text-ink-secondary">
+            <span className="font-overpass font-bold">Programa piloto en curso.</span>{' '}
+            Plataforma Digital Textil es una iniciativa de OIT Argentina y UNTREF
+            en fase de piloto, Conurbano Sur, mayo 2026. Los datos y funcionalidades
+            pueden evolucionar durante esta etapa.
+          </p>
         </div>
       </section>
 
