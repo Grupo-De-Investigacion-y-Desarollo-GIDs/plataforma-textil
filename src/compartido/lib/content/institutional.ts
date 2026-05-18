@@ -10,20 +10,15 @@ export const INSTITUTIONAL = {
 export const FOOTER_LINKS = {
   plataforma: [
     { label: '\u00bfC\u00f3mo funciona?', href: '/#como-funciona' },
-    { label: 'Para taller', href: '/taller-info' },
-    { label: 'Para marcas', href: '/marca-info' },
-    { label: 'Impacto', href: '/impacto' },
+    { label: 'Impacto', href: '/#impacto' },
   ],
   recursos: [
     { label: 'Centro de ayuda', href: '/ayuda' },
-    { label: 'Academia', href: '/academia-publica' },
-    { label: 'Novedades', href: '/novedades' },
-    { label: 'Contacto', href: '/contacto' },
+    { label: 'Contacto', href: 'mailto:soporte@plataformatextil.ar' },
   ],
   legal: [
     { label: 'T\u00e9rminos y condiciones', href: '/terminos' },
     { label: 'Pol\u00edtica de privacidad', href: '/privacidad' },
-    { label: 'Accesibilidad', href: '/accesibilidad' },
   ],
 } as const
 
