@@ -92,7 +92,6 @@ export const LANDING_COPY = {
     eyebrow: 'NUESTRO IMPACTO',
     titleParts: ['Impulsamos un sector más', 'justo y transparente'],
     subtitle: 'Trabajamos para reducir la informalidad, mejorar las condiciones laborales y generar oportunidades de desarrollo en talleres y marcas argentinas.',
-    cta: { label: 'Conocé nuestro impacto', href: '/impacto' },
   },
   carrusel: {
     eyebrow: 'ACADEMIA · SECTOR',

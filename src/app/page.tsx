@@ -28,11 +28,11 @@ export default async function Home() {
   }
 
   // Queries paralelas para stats + carrusel
-  const [talleresActivos, marcasRegistradas, cursosPublicados, pedidosEnProceso, novedades, colecciones] = await Promise.all([
+  const [vidrierasPublicadas, marcasExplorando, cursosPublicados, encuentrosGenerados, novedades, colecciones] = await Promise.all([
     prisma.taller.count({ where: { verificadoAfip: true } }),
     prisma.marca.count(),
     prisma.coleccion.count({ where: { activa: true } }),
-    prisma.pedido.count({ where: { estado: { in: ['EN_EJECUCION', 'PUBLICADO'] } } }),
+    prisma.pedido.count(),
     prisma.novedad.findMany({
       where: { publicado: true },
       orderBy: { fecha: 'desc' },
@@ -66,10 +66,6 @@ export default async function Home() {
       href: '/academia-publica',
     })),
   ]
-
-  const now = new Date()
-  const currentMonth = now.toLocaleDateString('es-AR', { month: 'long' })
-  const currentYear = now.getFullYear()
 
   const { hero, actores, impacto, carrusel, ctaBanner } = LANDING_COPY
 
@@ -232,7 +228,7 @@ export default async function Home() {
       </section>
 
       {/* ═══ IMPACTO ═══ */}
-      <section className="bg-ink-primary text-white py-24 relative overflow-hidden">
+      <section id="impacto" className="bg-ink-primary text-white py-24 relative overflow-hidden">
         <div className="absolute inset-0 pattern-weave opacity-50" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
           <div>
@@ -242,21 +238,14 @@ export default async function Home() {
             <h2 className="font-serif font-bold text-4xl lg:text-5xl mb-6 leading-tight">
               {impacto.titleParts[0]} <span className="italic text-terra-300">{impacto.titleParts[1]}</span>
             </h2>
-            <p className="text-gray-300 leading-relaxed mb-6 max-w-md">{impacto.subtitle}</p>
-            <Link
-              href={impacto.cta.href}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-terra-600 text-white font-overpass font-semibold rounded-lg hover:bg-terra-700 transition-colors"
-            >
-              {impacto.cta.label}
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            <p className="text-gray-300 leading-relaxed max-w-md">{impacto.subtitle}</p>
           </div>
           <div className="grid grid-cols-2 gap-px bg-white/10 rounded-2xl overflow-hidden">
             {[
-              { value: talleresActivos, label: 'Talleres activos verificados', icon: IconTaller, iconColor: 'text-pastel-blue' },
-              { value: marcasRegistradas, label: 'Marcas registradas', icon: IconMarca, iconColor: 'text-pastel-green' },
+              { value: vidrierasPublicadas, label: 'Vidrieras de talleres publicadas', icon: IconTaller, iconColor: 'text-pastel-blue' },
+              { value: marcasExplorando, label: 'Marcas explorando proveedores formales', icon: IconMarca, iconColor: 'text-pastel-green' },
               { value: cursosPublicados, label: 'Cursos publicados', icon: IconCapacitacion, iconColor: 'text-terra-300' },
-              { value: pedidosEnProceso, label: 'Pedidos en proceso', icon: IconPedido, iconColor: 'text-pastel-blue' },
+              { value: encuentrosGenerados, label: 'Encuentros generados', icon: IconPedido, iconColor: 'text-pastel-blue' },
             ].map(stat => (
               <div key={stat.label} className="bg-ink-primary p-8">
                 <stat.icon className={`w-6 h-6 ${stat.iconColor} mb-4`} />
@@ -267,7 +256,7 @@ export default async function Home() {
                   {stat.label}
                 </p>
                 <p className="text-[10px] text-gray-500 mt-1">
-                  Datos a {currentMonth} {currentYear}
+                  Datos a mayo 2026
                 </p>
               </div>
             ))}
