@@ -3,6 +3,9 @@
 ## 2026-05-18
 
 ### Gerardo Breard
+- **13:35** `8a1759f` — fix(tests): beforeAll para restaurar config imagenes-portfolio
+  - `tests/e2e/file-validation.spec.ts`
+
 - **13:35** `caf3b6d` — fix(tests): eliminar waitUntil 'load' en smoke admin/logs
   - `tests/e2e/smoke.spec.ts`
 
