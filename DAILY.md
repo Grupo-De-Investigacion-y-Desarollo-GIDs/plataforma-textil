@@ -3,6 +3,25 @@
 ## 2026-05-17
 
 ### Gerardo Breard
+- **20:51** `680b4bd` — fix: add Supabase Storage to next/image remotePatterns
+  - `next.config.ts`
+
+- **20:36** `bcd5fbe` — feat(x-04b): add CMS novedades pages + sidebar entry
+  - `src/app/(contenido)/contenido-sidebar.tsx`
+  - `src/app/(contenido)/contenido/novedades/[id]/editar/page.tsx`
+  - `src/app/(contenido)/contenido/novedades/formulario-novedad.tsx`
+  - `src/app/(contenido)/contenido/novedades/loading.tsx`
+  - `src/app/(contenido)/contenido/novedades/nueva/page.tsx`
+  - `src/app/(contenido)/contenido/novedades/page.tsx`
+
+- **20:29** `81a92fe` — feat(x-04b): add CRUD + upload endpoints for novedades
+  - `src/app/api/contenido/novedades/[id]/route.ts`
+  - `src/app/api/contenido/novedades/route.ts`
+  - `src/app/api/contenido/novedades/upload/route.ts`
+
+- **20:27** `cca786b` — feat(x-04b): add slugify utility for novedades
+  - `src/compartido/lib/slugify.ts`
+
 - **18:48** `ccfb7f0` — fix(x-06): corregir valor de enum EstadoPedido
   - `src/app/page.tsx`
 
