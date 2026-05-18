@@ -3,6 +3,16 @@
 ## 2026-05-18
 
 ### Gerardo Breard
+- **16:14** `7d58d2b` — feat(x-07a): paleta V4 en componentes layout y secundarios
+  - `src/compartido/componentes/activity-timeline.tsx`
+  - `src/compartido/componentes/badge-arca.tsx`
+  - `src/compartido/componentes/error-page.tsx`
+  - `src/compartido/componentes/feedback-widget.tsx`
+  - `src/compartido/componentes/layout/notificaciones-bell.tsx`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+  - `src/compartido/componentes/ui/progress-ring.tsx`
+  - `src/compartido/componentes/ui/section-error.tsx`
+
 - **15:58** `8cccda2` — feat(x-07a): paleta V4 en componentes UI base — toast.tsx
   - `src/compartido/componentes/ui/toast.tsx`
 
