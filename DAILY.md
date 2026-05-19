@@ -3,6 +3,79 @@
 ## 2026-05-19
 
 ### Gerardo Breard
+- **11:32** `f05047c` — fix(x-07a): consistencia H1 ink-primary + H2 font-serif
+  - `src/app/(admin)/admin/auditorias/[id]/page.tsx`
+  - `src/app/(admin)/admin/auditorias/page.tsx`
+  - `src/app/(admin)/admin/certificados/page.tsx`
+  - `src/app/(admin)/admin/colecciones/[id]/page.tsx`
+  - `src/app/(admin)/admin/colecciones/[id]/videos/page.tsx`
+  - `src/app/(admin)/admin/colecciones/nueva/page.tsx`
+  - `src/app/(admin)/admin/colecciones/page.tsx`
+  - `src/app/(admin)/admin/configuracion/archivos/page.tsx`
+  - `src/app/(admin)/admin/configuracion/page.tsx`
+  - `src/app/(admin)/admin/dashboard/page.tsx`
+  - `src/app/(admin)/admin/evaluaciones/page.tsx`
+  - `src/app/(admin)/admin/feedback/page.tsx`
+  - `src/app/(admin)/admin/integraciones/email/page.tsx`
+  - `src/app/(admin)/admin/integraciones/llm/page.tsx`
+  - `src/app/(admin)/admin/integraciones/page.tsx`
+  - `src/app/(admin)/admin/logs/page.tsx`
+  - `src/app/(admin)/admin/marcas/[id]/page.tsx`
+  - `src/app/(admin)/admin/marcas/page.tsx`
+  - `src/app/(admin)/admin/notificaciones/page.tsx`
+  - `src/app/(admin)/admin/observaciones/[id]/editar/page.tsx`
+  - `src/app/(admin)/admin/observaciones/nueva/page.tsx`
+  - `src/app/(admin)/admin/observaciones/page.tsx`
+  - `src/app/(admin)/admin/onboarding/page.tsx`
+  - `src/app/(admin)/admin/pedidos/page.tsx`
+  - `src/app/(admin)/admin/procesos/page.tsx`
+  - `src/app/(admin)/admin/reportes/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(admin)/admin/talleres/page.tsx`
+  - `src/app/(admin)/admin/usuarios/page.tsx`
+  - `src/app/(auth)/acceso-rapido/page.tsx`
+  - `src/app/(auth)/layout.tsx`
+  - `src/app/(auth)/login/page.tsx`
+  - `src/app/(auth)/mi-cuenta/page.tsx`
+  - `src/app/(auth)/olvide-contrasena/page.tsx`
+  - `src/app/(auth)/registro/completar/page.tsx`
+  - `src/app/(auth)/registro/page.tsx`
+  - `src/app/(auth)/restablecer/[token]/page.tsx`
+  - `src/app/(contenido)/contenido/colecciones/page.tsx`
+  - `src/app/(contenido)/contenido/evaluaciones/page.tsx`
+  - `src/app/(contenido)/contenido/notificaciones/page.tsx`
+  - `src/app/(contenido)/contenido/novedades/[id]/editar/page.tsx`
+  - `src/app/(contenido)/contenido/novedades/nueva/page.tsx`
+  - `src/app/(contenido)/contenido/novedades/page.tsx`
+  - `src/app/(estado)/estado/auditorias/page.tsx`
+  - `src/app/(estado)/estado/configuracion-niveles/page.tsx`
+  - `src/app/(estado)/estado/demanda-insatisfecha/page.tsx`
+  - `src/app/(estado)/estado/documentos/page.tsx`
+  - `src/app/(estado)/estado/exportar/page.tsx`
+  - `src/app/(estado)/estado/page.tsx`
+  - `src/app/(estado)/estado/sector/page.tsx`
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/(estado)/estado/talleres/page.tsx`
+  - `src/app/(marca)/marca/directorio/[id]/page.tsx`
+  - `src/app/(marca)/marca/directorio/page.tsx`
+  - `src/app/(marca)/marca/page.tsx`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(marca)/marca/pedidos/nuevo/nuevo-pedido-form.tsx`
+  - `src/app/(marca)/marca/pedidos/page.tsx`
+  - `src/app/(marca)/marca/perfil/page.tsx`
+  - `src/app/(taller)/taller/aprender/[id]/page.tsx`
+  - `src/app/(taller)/taller/aprender/page.tsx`
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/app/(taller)/taller/pedidos/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+  - `src/app/(taller)/taller/pedidos/page.tsx`
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+  - `src/app/(taller)/taller/perfil/editar/editar-form.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/app/unauthorized/page.tsx`
+
 - **11:24** `364640e` — fix(x-07a): refactor /taller dashboard a V4 (paridad con /marca)
   - `src/app/(taller)/taller/page.tsx`
 
