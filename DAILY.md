@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-05-19
+
+### Gerardo Breard
+- **11:24** `364640e` — fix(x-07a): refactor /taller dashboard a V4 (paridad con /marca)
+  - `src/app/(taller)/taller/page.tsx`
+
+
 ## 2026-05-18
 
 ### Gerardo Breard
