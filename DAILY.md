@@ -79,6 +79,9 @@
 - **11:24** `364640e` — fix(x-07a): refactor /taller dashboard a V4 (paridad con /marca)
   - `src/app/(taller)/taller/page.tsx`
 
+- **10:32** `1c5709f` — docs(u-01): análisis funcional y técnico multi-rol Airbnb
+  - `docs/analisis/U-01_multi-rol-airbnb.md`
+
 
 ## 2026-05-18
 
