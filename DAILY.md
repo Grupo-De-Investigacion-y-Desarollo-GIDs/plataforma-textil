@@ -3,6 +3,10 @@
 ## 2026-05-19
 
 ### Gerardo Breard
+- **18:01** `41a50fd` — feat(u-02): schema multi-rol con CUIT y ARCA centralizados
+  - `prisma/migrations/20260519200000_agregar_multirol_y_arca_a_user/migration.sql`
+  - `prisma/schema.prisma`
+
 - **17:35** `cbf0b39` — docs(u-01): corregir tipos ARCA tras pre-flight U-02 (v2.1)
   - `docs/analisis/U-01_multi-rol-airbnb.md`
 
