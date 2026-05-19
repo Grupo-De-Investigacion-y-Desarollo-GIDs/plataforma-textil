@@ -118,7 +118,7 @@ export default function AdminConfiguracionPage() {
 
   return (
     <div className="max-w-3xl mx-auto py-6 px-4">
-      <h1 className="font-serif font-bold text-2xl text-brand-blue mb-1">Configuración General</h1>
+      <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">Configuración General</h1>
       <p className="text-gray-500 text-sm mb-6">Parámetros del sistema</p>
 
       {loading && (

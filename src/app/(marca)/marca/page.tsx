@@ -39,7 +39,7 @@ export default async function MarcaDashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-serif font-bold text-3xl text-brand-blue">
+        <h1 className="font-serif font-bold text-3xl text-ink-primary">
           Bienvenido, {marca?.nombre ?? session.user.name}
         </h1>
         <p className="text-gray-500 mt-1">Tu panel de gestión de producción</p>

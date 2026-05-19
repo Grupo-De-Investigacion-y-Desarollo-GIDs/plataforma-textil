@@ -80,7 +80,7 @@ export function EditarPerfilForm({ taller }: Props) {
           ← Volver al perfil
         </Link>
       </div>
-      <h1 className="text-2xl font-bold font-serif text-brand-blue">Editar datos básicos</h1>
+      <h1 className="text-2xl font-bold font-serif text-ink-primary">Editar datos básicos</h1>
 
       {error && (
         <p className="text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">{error}</p>

@@ -113,7 +113,7 @@ export default function AdminIntegracionLlmPage() {
         { label: 'LLM' },
       ]} />
 
-      <h1 className="font-serif font-bold text-2xl text-brand-blue mb-1 mt-4">Configuracion LLM</h1>
+      <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1 mt-4">Configuracion LLM</h1>
       <p className="text-gray-500 text-sm mb-6">Asistente virtual con IA para talleres</p>
 
       <Card className="mb-6">

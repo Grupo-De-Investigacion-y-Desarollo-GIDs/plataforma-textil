@@ -9,7 +9,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             <div className="w-20 h-20 rounded-full bg-brand-blue flex items-center justify-center mx-auto mb-4">
               <span className="font-overpass font-bold text-white text-2xl">PDT</span>
             </div>
-            <h1 className="font-overpass font-bold text-2xl text-brand-blue">Plataforma Digital Textil</h1>
+            <h1 className="font-overpass font-bold text-2xl text-ink-primary">Plataforma Digital Textil</h1>
           </div>
           {children}
         </div>

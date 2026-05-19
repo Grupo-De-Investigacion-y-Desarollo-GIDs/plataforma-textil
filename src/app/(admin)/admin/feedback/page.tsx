@@ -30,7 +30,7 @@ export default async function AdminFeedbackPage() {
       <div className="flex items-center gap-3 mb-6">
         <MessageSquare className="w-6 h-6 text-brand-blue" />
         <div>
-          <h1 className="font-serif font-bold text-2xl text-brand-blue">Feedback del piloto</h1>
+          <h1 className="font-serif font-bold text-2xl text-ink-primary">Feedback del piloto</h1>
           <p className="text-gray-500 text-sm">Ultimos 50 feedbacks de los usuarios</p>
         </div>
       </div>

@@ -53,7 +53,7 @@ export default async function TallerPerfilMarcaPage({ params }: { params: Promis
             <span className="font-overpass font-bold text-brand-blue text-xl">{taller.nombre.charAt(0)}</span>
           </div>
           <div className="flex-1">
-            <h1 className="font-serif font-bold text-2xl text-brand-blue mb-1">{taller.nombre}</h1>
+            <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">{taller.nombre}</h1>
             {(taller.verificadoAfip || taller.validaciones.length > 0) && (
               <div className="flex flex-wrap items-center gap-2 mb-1">
                 {taller.verificadoAfip && (

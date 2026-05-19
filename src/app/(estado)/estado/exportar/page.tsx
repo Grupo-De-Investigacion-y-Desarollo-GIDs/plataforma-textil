@@ -135,7 +135,7 @@ export default function ExportarReportePage() {
           { label: 'Estado', href: '/estado' },
           { label: 'Exportar' },
         ]} />
-        <h1 className="font-serif font-bold text-2xl text-brand-blue">Exportar Reportes</h1>
+        <h1 className="font-serif font-bold text-2xl text-ink-primary">Exportar Reportes</h1>
         <p className="text-gray-500 text-sm mt-1">Genera informes del sector en formato CSV o Excel</p>
       </div>
 

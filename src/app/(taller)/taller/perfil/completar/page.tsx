@@ -251,7 +251,7 @@ export default function WizardPage() {
           <div className="w-20 h-20 rounded-full bg-brand-blue/10 flex items-center justify-center mx-auto mb-4">
             <Factory className="w-10 h-10 text-brand-blue" />
           </div>
-          <h1 className="font-serif font-bold text-2xl text-brand-blue mb-2">Perfil Productivo</h1>
+          <h1 className="font-serif font-bold text-2xl text-ink-primary mb-2">Perfil Productivo</h1>
           <p className="text-gray-600 mb-6">Vamos a completar tu perfil productivo</p>
           <Card className="text-left mb-6">
             <p className="text-sm mb-2"><span className="font-semibold">Duración:</span> ~15 minutos</p>

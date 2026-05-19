@@ -31,7 +31,7 @@ export default async function NovedadesPage() {
 
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-serif font-bold text-2xl text-brand-blue">Novedades</h1>
+          <h1 className="font-serif font-bold text-2xl text-ink-primary">Novedades</h1>
           <p className="text-sm text-gray-500 mt-1">Gestionar novedades del landing</p>
         </div>
         <Link

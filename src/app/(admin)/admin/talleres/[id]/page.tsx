@@ -103,7 +103,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
             {taller.nombre.charAt(0)}
           </div>
           <div className="flex-1">
-            <h1 className="font-serif font-bold text-xl text-brand-blue">{taller.nombre}</h1>
+            <h1 className="font-serif font-bold text-xl text-ink-primary">{taller.nombre}</h1>
             <p className="text-sm text-gray-500">CUIT: {taller.cuit} {taller.verificadoAfip && <span className="text-green-500">&#10003;</span>}</p>
             <div className="flex flex-wrap gap-3 mt-2 text-sm text-gray-500">
               {taller.provincia && <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {taller.provincia}{taller.partido ? `, ${taller.partido}` : ''}</span>}

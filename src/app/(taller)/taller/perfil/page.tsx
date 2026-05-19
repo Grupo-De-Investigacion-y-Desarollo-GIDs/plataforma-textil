@@ -37,7 +37,7 @@ export default async function TallerPerfilPage() {
   if (!taller) {
     return (
       <div className="space-y-6">
-        <h1 className="font-serif font-bold text-3xl text-brand-blue">Mi Perfil</h1>
+        <h1 className="font-serif font-bold text-3xl text-ink-primary">Mi Perfil</h1>
         <Card className="text-center py-12">
           <p className="text-gray-600 mb-4">Todavía no completaste tu perfil.</p>
           <Link href="/taller/perfil/completar">
@@ -62,7 +62,7 @@ export default async function TallerPerfilPage() {
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <h1 className="font-serif font-bold text-3xl text-brand-blue">{taller.nombre}</h1>
+            <h1 className="font-serif font-bold text-3xl text-ink-primary">{taller.nombre}</h1>
             <Badge variant={nivelColor[taller.nivel]}>{taller.nivel}</Badge>
           </div>
           {taller.provincia && (

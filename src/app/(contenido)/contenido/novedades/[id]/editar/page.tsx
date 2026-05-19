@@ -15,7 +15,7 @@ export default async function EditarNovedadPage({ params }: { params: Promise<{ 
         { label: 'Novedades', href: '/contenido/novedades' },
         { label: 'Editar novedad' },
       ]} />
-      <h1 className="font-serif font-bold text-2xl text-brand-blue">Editar novedad</h1>
+      <h1 className="font-serif font-bold text-2xl text-ink-primary">Editar novedad</h1>
       <FormularioNovedad novedad={novedad} />
     </div>
   )

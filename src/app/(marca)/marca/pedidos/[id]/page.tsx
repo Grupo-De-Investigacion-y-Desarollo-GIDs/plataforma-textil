@@ -131,7 +131,7 @@ export default async function MarcaPedidoDetallePage({ params }: { params: Promi
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
-          <h1 className="font-serif font-bold text-3xl text-brand-blue">{pedido.omId}</h1>
+          <h1 className="font-serif font-bold text-3xl text-ink-primary">{pedido.omId}</h1>
           <p className="text-gray-600 mt-1">{pedido.tipoPrenda} - {pedido.cantidad.toLocaleString()} unidades</p>
           <p className="text-sm text-gray-400 mt-1">
             Creado: {new Date(pedido.createdAt).toLocaleDateString('es-AR')}

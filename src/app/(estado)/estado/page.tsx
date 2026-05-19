@@ -86,7 +86,7 @@ export default async function EstadoDashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-serif font-bold text-3xl text-brand-blue">Dashboard del Sector</h1>
+        <h1 className="font-serif font-bold text-3xl text-ink-primary">Dashboard del Sector</h1>
         <p className="text-gray-500 text-sm mt-1">Monitoreo de la Plataforma Digital Textil</p>
       </div>
 

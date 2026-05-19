@@ -99,7 +99,7 @@ export default function AdminProcesosPage() {
     <div className="max-w-4xl mx-auto py-6 px-4">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-serif font-bold text-2xl text-brand-blue mb-1">Procesos Productivos</h1>
+          <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">Procesos Productivos</h1>
           <p className="text-gray-500 text-sm">Tags que los talleres usan para indicar sus capacidades</p>
         </div>
         <Button icon={<Plus className="w-4 h-4" />} onClick={handleNew}>Nuevo Proceso</Button>

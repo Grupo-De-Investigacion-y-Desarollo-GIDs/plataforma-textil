@@ -127,7 +127,7 @@ export default function AdminEvaluacionesPage() {
   return (
     <div className="max-w-4xl mx-auto py-6 px-4">
       <div className="flex items-center justify-between mb-1">
-        <h1 className="font-serif font-bold text-2xl text-brand-blue">Evaluaciones</h1>
+        <h1 className="font-serif font-bold text-2xl text-ink-primary">Evaluaciones</h1>
         {tieneEval && <Badge variant="success">Evaluación activa</Badge>}
         {coleccionId && !tieneEval && !loading && <Badge variant="default">Sin evaluación</Badge>}
       </div>

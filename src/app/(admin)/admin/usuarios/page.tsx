@@ -139,7 +139,7 @@ export default function AdminUsuariosPage() {
 
   return (
     <div className="max-w-5xl mx-auto py-6 px-4">
-      <h1 className="font-serif font-bold text-2xl text-brand-blue mb-1">Usuarios</h1>
+      <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">Usuarios</h1>
       <p className="text-gray-500 text-sm mb-6">Gestión de usuarios de la plataforma</p>
 
       {registrosIncompletos.length > 0 && (

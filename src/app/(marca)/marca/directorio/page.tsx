@@ -86,7 +86,7 @@ export default async function DirectorioPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-serif font-bold text-3xl text-brand-blue">
+        <h1 className="font-serif font-bold text-3xl text-ink-primary">
           Explorar Proveedores
         </h1>
         <p className="text-gray-600 mt-2">

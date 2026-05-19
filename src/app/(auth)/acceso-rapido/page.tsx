@@ -115,7 +115,7 @@ export default function AccesoRapidoPage() {
         <div className="w-16 h-16 rounded-full bg-brand-blue flex items-center justify-center mx-auto mb-4">
           <span className="font-overpass font-bold text-white text-xl">PDT</span>
         </div>
-        <h1 className="font-overpass font-bold text-2xl text-brand-blue">Acceso rapido</h1>
+        <h1 className="font-overpass font-bold text-2xl text-ink-primary">Acceso rapido</h1>
         <p className="text-gray-500 text-sm mt-1">Selecciona un usuario para ingresar al sistema</p>
       </div>
 

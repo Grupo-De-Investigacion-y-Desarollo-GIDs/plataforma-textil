@@ -109,7 +109,7 @@ export default function LoginPage() {
 
   return (
     <Card className="p-8">
-      <h2 className="font-overpass font-bold text-xl text-brand-blue text-center mb-6">
+      <h2 className="font-serif font-bold text-xl text-brand-blue text-center mb-6">
         Iniciar sesion
       </h2>
 

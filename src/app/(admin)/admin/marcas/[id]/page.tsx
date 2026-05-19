@@ -108,7 +108,7 @@ export default async function AdminDetalleMarcaPage({ params }: {
             {marca.nombre.charAt(0)}
           </div>
           <div className="flex-1">
-            <h1 className="font-serif font-bold text-xl text-brand-blue">{marca.nombre}</h1>
+            <h1 className="font-serif font-bold text-xl text-ink-primary">{marca.nombre}</h1>
             <p className="text-sm text-gray-500">CUIT: {marca.cuit}</p>
             <div className="flex flex-wrap gap-3 mt-2 text-sm text-gray-500">
               {marca.ubicacion && (

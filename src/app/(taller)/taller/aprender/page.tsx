@@ -41,7 +41,7 @@ export default async function TallerAprenderPage() {
     <div className="space-y-6">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="font-serif font-bold text-3xl text-brand-blue">Academia</h1>
+          <h1 className="font-serif font-bold text-3xl text-ink-primary">Academia</h1>
           <p className="text-gray-500 mt-1">Cursos gratuitos para mejorar tu taller y ganar puntos de formalización.</p>
         </div>
       </div>

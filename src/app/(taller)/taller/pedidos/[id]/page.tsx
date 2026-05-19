@@ -82,7 +82,7 @@ export default async function TallerOrdenDetallePage({
       {/* Encabezado */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="font-serif font-bold text-2xl text-brand-blue">{orden.moId}</h1>
+          <h1 className="font-serif font-bold text-2xl text-ink-primary">{orden.moId}</h1>
           <p className="text-gray-500 text-sm mt-0.5">Pedido {pedido.omId}</p>
         </div>
         <span className={`text-sm font-semibold px-3 py-1 rounded-full ${estadoColor[orden.estado] ?? 'bg-gray-100 text-gray-600'}`}>

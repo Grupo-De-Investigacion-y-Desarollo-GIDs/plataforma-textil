@@ -112,7 +112,7 @@ export default function MiCuentaPage() {
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
-      <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-6">Mi Cuenta</h1>
+      <h1 className="font-overpass font-bold text-2xl text-ink-primary mb-6">Mi Cuenta</h1>
 
       <Card title="Información de la cuenta" className="mb-6">
         <div className="flex items-center gap-3 mb-3 pb-3 border-b border-gray-100">

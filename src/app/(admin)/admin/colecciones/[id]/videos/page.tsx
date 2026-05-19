@@ -60,7 +60,7 @@ export default function AdminAgregarVideoPage() {
         { label: 'Videos' },
       ]} />
 
-      <h1 className="font-serif font-bold text-2xl text-brand-blue mb-6 mt-4">Agregar Video</h1>
+      <h1 className="font-serif font-bold text-2xl text-ink-primary mb-6 mt-4">Agregar Video</h1>
 
       {error && (
         <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 flex items-center gap-2">

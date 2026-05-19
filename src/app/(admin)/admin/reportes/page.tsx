@@ -66,7 +66,7 @@ export default async function AdminReportesPage() {
 
   return (
     <div className="max-w-4xl mx-auto py-6 px-4">
-      <h1 className="font-serif font-bold text-2xl text-brand-blue mb-1">Reportes y Estadisticas</h1>
+      <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">Reportes y Estadisticas</h1>
       <p className="text-gray-500 text-sm mb-6">Metricas de la plataforma</p>
 
       <h2 className="font-serif font-bold text-lg text-brand-blue mb-3">Metricas Principales</h2>

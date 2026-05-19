@@ -209,7 +209,7 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
             {taller.nombre.charAt(0)}
           </div>
           <div className="flex-1">
-            <h1 className="font-serif font-bold text-xl text-brand-blue">{taller.nombre}</h1>
+            <h1 className="font-serif font-bold text-xl text-ink-primary">{taller.nombre}</h1>
             <div className="flex items-center gap-2 mt-0.5">
               <p className="text-sm text-gray-500">CUIT: {taller.cuit}</p>
               <BadgeArca verificado={taller.verificadoAfip} fecha={taller.verificadoAfipAt} />

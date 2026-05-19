@@ -67,7 +67,7 @@ export default function AdminPedidosPage() {
 
   return (
     <div className="max-w-5xl mx-auto py-6 px-4">
-      <h1 className="font-serif font-bold text-2xl text-brand-blue mb-1">Gestión de Pedidos</h1>
+      <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">Gestión de Pedidos</h1>
       <p className="text-gray-500 text-sm mb-6">Todos los pedidos realizados en la plataforma</p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">

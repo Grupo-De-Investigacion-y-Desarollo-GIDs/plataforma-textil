@@ -63,7 +63,7 @@ export default async function EstadoAuditoriasPage({
   return (
     <div className="max-w-6xl mx-auto py-6 px-4">
       <div className="flex items-center justify-between mb-1">
-        <h1 className="font-serif font-bold text-2xl text-brand-blue">Auditorias de Formalizacion</h1>
+        <h1 className="font-serif font-bold text-2xl text-ink-primary">Auditorias de Formalizacion</h1>
         <a href={`/api/admin/logs?${exportParams}`} target="_blank" rel="noopener noreferrer">
           <Button size="sm" variant="secondary">
             <Download className="w-4 h-4 mr-1" /> Exportar CSV

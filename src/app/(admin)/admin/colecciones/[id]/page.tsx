@@ -115,7 +115,7 @@ export default function AdminEditarColeccionPage() {
       ]} />
 
       <div className="flex items-center justify-between mb-6 mt-4">
-        <h1 className="font-serif font-bold text-2xl text-brand-blue">Editar Colección</h1>
+        <h1 className="font-serif font-bold text-2xl text-ink-primary">Editar Colección</h1>
         <Badge variant={activa ? 'success' : 'default'}>{activa ? 'Publicada' : 'Borrador'}</Badge>
       </div>
 

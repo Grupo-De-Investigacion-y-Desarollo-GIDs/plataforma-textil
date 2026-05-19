@@ -99,7 +99,7 @@ export default async function ObservacionesPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-serif font-bold text-2xl text-brand-blue">Observaciones de campo</h1>
+          <h1 className="font-serif font-bold text-2xl text-ink-primary">Observaciones de campo</h1>
           <p className="text-sm text-gray-500 mt-1">Registro cualitativo del piloto para el reporte a OIT</p>
         </div>
         <div className="flex gap-2">

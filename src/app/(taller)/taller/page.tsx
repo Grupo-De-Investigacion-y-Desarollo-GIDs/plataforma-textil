@@ -171,7 +171,7 @@ export default async function TallerDashboardPage() {
     <div className="space-y-6">
       {/* Encabezado */}
       <div>
-        <h1 className="font-serif font-bold text-3xl text-brand-blue">
+        <h1 className="font-serif font-bold text-3xl text-ink-primary">
           Bienvenido, {taller?.nombre ?? session.user.name}
         </h1>
         <p className="text-gray-500 mt-1">

@@ -34,7 +34,7 @@ export default async function AuditoriaDetallePage({
       ]} />
 
       <div>
-        <h1 className="text-3xl font-bold font-serif text-brand-blue">
+        <h1 className="text-3xl font-bold font-serif text-ink-primary">
           Auditoria — {auditoria.taller.nombre}
         </h1>
         <p className="text-gray-500 mt-1">

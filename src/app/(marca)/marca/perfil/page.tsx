@@ -69,7 +69,7 @@ export default async function MarcaPerfilPage() {
   if (!marca) {
     return (
       <div className="space-y-6">
-        <h1 className="font-serif font-bold text-3xl text-brand-blue">Mi Perfil de Marca</h1>
+        <h1 className="font-serif font-bold text-3xl text-ink-primary">Mi Perfil de Marca</h1>
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
           <p className="text-gray-700">No encontramos datos de marca para este usuario.</p>
         </div>
@@ -80,7 +80,7 @@ export default async function MarcaPerfilPage() {
   return (
     <div className="space-y-6">
       <Suspense><SaveToast message="Perfil actualizado" /></Suspense>
-      <h1 className="font-serif font-bold text-3xl text-brand-blue">Mi Perfil de Marca</h1>
+      <h1 className="font-serif font-bold text-3xl text-ink-primary">Mi Perfil de Marca</h1>
 
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="bg-white rounded-xl border border-gray-200 p-4">

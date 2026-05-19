@@ -15,7 +15,7 @@ export default function AdminIntegracionEmailPage() {
         { label: 'Email' },
       ]} />
 
-      <h1 className="font-serif font-bold text-2xl text-brand-blue mb-1 mt-4">Configuracion SendGrid</h1>
+      <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1 mt-4">Configuracion SendGrid</h1>
       <p className="text-gray-500 text-sm mb-6">Envio de emails transaccionales y masivos</p>
 
       <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-center gap-3">

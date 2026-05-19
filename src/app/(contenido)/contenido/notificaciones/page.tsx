@@ -24,7 +24,7 @@ export default async function ContenidoNotificacionesPage() {
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-serif font-bold text-2xl text-brand-blue mb-1">Notificaciones</h1>
+          <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">Notificaciones</h1>
           <p className="text-gray-500 text-sm">Envio de comunicaciones a talleres</p>
         </div>
         <NotificacionesClient />

@@ -56,7 +56,7 @@ export default async function EstadoTalleresPage({
 
   return (
     <div className="max-w-5xl mx-auto py-6 px-4">
-      <h1 className="font-serif font-bold text-2xl text-brand-blue mb-1">Talleres</h1>
+      <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">Talleres</h1>
       <p className="text-gray-500 text-sm mb-6">Vista regulatoria — estado de formalización y documentación</p>
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
