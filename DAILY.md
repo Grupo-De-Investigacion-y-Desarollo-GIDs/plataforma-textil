@@ -3,6 +3,9 @@
 ## 2026-05-19
 
 ### Gerardo Breard
+- **17:35** `cbf0b39` — docs(u-01): corregir tipos ARCA tras pre-flight U-02 (v2.1)
+  - `docs/analisis/U-01_multi-rol-airbnb.md`
+
 - **17:01** `e85a08e` — docs(u-01): consolidar v2 con 10 decisiones de Gerardo
   - `docs/analisis/U-01_multi-rol-airbnb.md`
 
