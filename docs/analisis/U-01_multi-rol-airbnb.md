@@ -1,11 +1,18 @@
 # U-01 v2: Análisis funcional y técnico — Multi-rol Airbnb
 
-> **Versión:** v2 (consolidada con todas las decisiones de Gerardo)
+> **Versión:** v2.1 (corrección de tipos tras pre-flight de U-02)
 > **Fecha:** 18 de mayo de 2026
 > **Autor:** Gerardo Breard (decisiones) + Claude (análisis y consolidación)
 > **Ref:** Master V4 §3.3, SPEC v4-u-01-analisis-multi-rol-airbnb.md
 > **Reemplaza:** U-01 v1 (18-mayo-2026, mañana)
 > **Output:** Documento de diseño — NO produce código de aplicación
+>
+> **Cambios v2 → v2.1 (18-may, tarde):**
+> - Corregidos 3 tipos ARCA detectados por pre-flight U-02:
+>   - `tipoInscripcionAfip`: `String?` → `TipoInscripcionAfip?` (enum)
+>   - `estadoCuitAfip`: `String?` → `EstadoCuit?` (enum)
+>   - `actividadesAfip`: `Json?` → `String[]` (array)
+> - SQL de migración actualizado para reusar enums existentes
 
 ---
 
@@ -330,19 +337,33 @@ enum UserRole {
 }
 
 model Taller {
-  userId                       String   @unique
-  cuit                         String   @unique
-  verificadoAfip               Boolean  @default(false)
+  userId                       String                @unique
+  cuit                         String                @unique
+  verificadoAfip               Boolean               @default(false)
   verificadoAfipAt             DateTime?
-  tipoInscripcionAfip          String?
+  tipoInscripcionAfip          TipoInscripcionAfip?  // enum (no String)
   categoriaMonotributo         String?
-  estadoCuitAfip               String?
+  estadoCuitAfip               EstadoCuit?           // enum (no String)
   fechaInscripcionAfip         DateTime?
-  actividadesAfip              Json?
+  actividadesAfip              String[]              // array (no Json)
   domicilioFiscalAfip          Json?
   empleadosRegistradosSipa     Int?
   empleadosSipaActualizadoAt   DateTime?
   // ... ~30 campos más
+}
+
+enum TipoInscripcionAfip {
+  RESPONSABLE_INSCRIPTO
+  MONOTRIBUTO
+  EXENTO
+  NO_INSCRIPTO
+}
+
+enum EstadoCuit {
+  ACTIVO
+  INACTIVO
+  BAJA
+  SUSPENDIDO
 }
 
 model Marca {
@@ -367,14 +388,14 @@ model User {
   // NUEVOS: CUIT centralizado
   cuit                         String?    @unique
 
-  // NUEVOS: Data ARCA centralizada
-  verificadoAfip               Boolean    @default(false)
+  // NUEVOS: Data ARCA centralizada (10 campos con tipos exactos del Taller actual)
+  verificadoAfip               Boolean               @default(false)
   verificadoAfipAt             DateTime?
-  tipoInscripcionAfip          String?
+  tipoInscripcionAfip          TipoInscripcionAfip?  // enum reutilizado
   categoriaMonotributo         String?
-  estadoCuitAfip               String?
+  estadoCuitAfip               EstadoCuit?           // enum reutilizado
   fechaInscripcionAfip         DateTime?
-  actividadesAfip              Json?
+  actividadesAfip              String[]              // array de strings
   domicilioFiscalAfip          Json?
   empleadosRegistradosSipa     Int?
   empleadosSipaActualizadoAt   DateTime?
@@ -415,13 +436,13 @@ model Marca {
 +  cuit                         String?    @unique
 +  
 +  // Data ARCA centralizada
-+  verificadoAfip               Boolean    @default(false)
++  verificadoAfip               Boolean               @default(false)
 +  verificadoAfipAt             DateTime?
-+  tipoInscripcionAfip          String?
++  tipoInscripcionAfip          TipoInscripcionAfip?
 +  categoriaMonotributo         String?
-+  estadoCuitAfip               String?
++  estadoCuitAfip               EstadoCuit?
 +  fechaInscripcionAfip         DateTime?
-+  actividadesAfip              Json?
++  actividadesAfip              String[]
 +  domicilioFiscalAfip          Json?
 +  empleadosRegistradosSipa     Int?
 +  empleadosSipaActualizadoAt   DateTime?
@@ -501,17 +522,17 @@ ALTER TABLE users ADD COLUMN active_mode "UserRole";
 -- B. Agregar CUIT centralizado a User
 ALTER TABLE users ADD COLUMN cuit TEXT;
 
--- C. Agregar data ARCA centralizada a User
-ALTER TABLE users ADD COLUMN verificado_afip BOOLEAN DEFAULT false;
-ALTER TABLE users ADD COLUMN verificado_afip_at TIMESTAMP;
-ALTER TABLE users ADD COLUMN tipo_inscripcion_afip TEXT;
+-- C. Agregar data ARCA centralizada a User (tipos exactos del Taller actual)
+ALTER TABLE users ADD COLUMN verificado_afip BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE users ADD COLUMN verificado_afip_at TIMESTAMP(3);
+ALTER TABLE users ADD COLUMN tipo_inscripcion_afip "TipoInscripcionAfip";  -- enum reutilizado
 ALTER TABLE users ADD COLUMN categoria_monotributo TEXT;
-ALTER TABLE users ADD COLUMN estado_cuit_afip TEXT;
-ALTER TABLE users ADD COLUMN fecha_inscripcion_afip TIMESTAMP;
-ALTER TABLE users ADD COLUMN actividades_afip JSONB;
+ALTER TABLE users ADD COLUMN estado_cuit_afip "EstadoCuit";                 -- enum reutilizado
+ALTER TABLE users ADD COLUMN fecha_inscripcion_afip TIMESTAMP(3);
+ALTER TABLE users ADD COLUMN actividades_afip TEXT[];                       -- array de strings
 ALTER TABLE users ADD COLUMN domicilio_fiscal_afip JSONB;
 ALTER TABLE users ADD COLUMN empleados_registrados_sipa INTEGER;
-ALTER TABLE users ADD COLUMN empleados_sipa_actualizado_at TIMESTAMP;
+ALTER TABLE users ADD COLUMN empleados_sipa_actualizado_at TIMESTAMP(3);
 
 -- D. Backfill multi-rol desde role actual
 UPDATE users SET roles = ARRAY[role];
