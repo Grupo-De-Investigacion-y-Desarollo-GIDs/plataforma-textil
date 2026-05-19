@@ -115,7 +115,7 @@ export default function AdminEditarColeccionPage() {
       ]} />
 
       <div className="flex items-center justify-between mb-6 mt-4">
-        <h1 className="font-overpass font-bold text-2xl text-brand-blue">Editar Colección</h1>
+        <h1 className="font-serif font-bold text-2xl text-ink-primary">Editar Colección</h1>
         <Badge variant={activa ? 'success' : 'default'}>{activa ? 'Publicada' : 'Borrador'}</Badge>
       </div>
 
@@ -127,7 +127,7 @@ export default function AdminEditarColeccionPage() {
       )}
 
       <Card className="mb-6">
-        <h2 className="font-overpass font-bold text-brand-blue mb-4">Información Básica</h2>
+        <h2 className="font-serif font-bold text-brand-blue mb-4">Información Básica</h2>
         <div className="space-y-4">
           <Input label="Título de la colección *" value={titulo} onChange={e => setTitulo(e.target.value)} />
           <div>
@@ -160,7 +160,7 @@ export default function AdminEditarColeccionPage() {
       {/* Videos */}
       <Card className="mb-6">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-overpass font-bold text-brand-blue">Videos ({videos.length})</h2>
+          <h2 className="font-serif font-bold text-brand-blue">Videos ({videos.length})</h2>
           <Link href={`/admin/colecciones/${coleccionId}/videos`}>
             <Button size="sm" variant="secondary" icon={<Plus className="w-3.5 h-3.5" />}>Agregar video</Button>
           </Link>
@@ -192,7 +192,7 @@ export default function AdminEditarColeccionPage() {
 
       {/* Estado */}
       <Card className="mb-6">
-        <h2 className="font-overpass font-bold text-brand-blue mb-3">Estado de publicación</h2>
+        <h2 className="font-serif font-bold text-brand-blue mb-3">Estado de publicación</h2>
         <div className="flex gap-4">
           <label className="flex items-center gap-2 cursor-pointer">
             <input type="radio" checked={!activa} onChange={() => setActiva(false)} className="accent-[var(--color-brand-blue)]" />

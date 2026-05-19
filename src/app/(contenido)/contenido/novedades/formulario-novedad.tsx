@@ -205,7 +205,7 @@ export function FormularioNovedad({ novedad }: Props) {
                 const file = e.target.files?.[0]
                 if (file) await handleUpload(file)
               }}
-              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-overpass file:font-semibold file:bg-blue-50 file:text-brand-blue hover:file:bg-blue-100"
+              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-overpass file:font-semibold file:bg-pastel-blue file:text-brand-blue hover:file:bg-pastel-blue"
             />
             {uploading && (
               <p className="text-sm text-brand-blue animate-pulse">Subiendo imagen...</p>
@@ -234,7 +234,7 @@ export function FormularioNovedad({ novedad }: Props) {
           <button
             type="submit"
             disabled={loading || uploading}
-            className="px-5 py-2.5 bg-brand-blue text-white rounded-lg font-overpass font-semibold text-sm hover:bg-blue-800 disabled:opacity-50 transition-colors"
+            className="px-5 py-2.5 bg-brand-blue text-white rounded-lg font-overpass font-semibold text-sm hover:bg-brand-blue-dark disabled:opacity-50 transition-colors"
           >
             {loading ? 'Guardando...' : isEdit ? 'Guardar cambios' : 'Crear novedad'}
           </button>

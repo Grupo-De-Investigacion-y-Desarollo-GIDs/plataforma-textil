@@ -85,7 +85,7 @@ export default function AdminCertificadosPage() {
 
   return (
     <div className="max-w-5xl mx-auto py-6 px-4">
-      <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Certificados Emitidos</h1>
+      <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">Certificados Emitidos</h1>
       <p className="text-gray-500 text-sm mb-6">Control de certificados de la plataforma</p>
 
       <div className="grid grid-cols-2 gap-4 mb-6">

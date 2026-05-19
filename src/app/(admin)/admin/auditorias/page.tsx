@@ -18,7 +18,7 @@ const tipoLabels: Record<string, string> = {
 }
 
 const estadoConfig: Record<string, { label: string; bg: string; text: string }> = {
-  PROGRAMADA: { label: 'Programada', bg: 'bg-blue-100', text: 'text-blue-700' },
+  PROGRAMADA: { label: 'Programada', bg: 'bg-pastel-blue', text: 'text-brand-blue-dark' },
   EN_CURSO: { label: 'En curso', bg: 'bg-yellow-100', text: 'text-yellow-700' },
   COMPLETADA: { label: 'Completada', bg: 'bg-green-100', text: 'text-green-700' },
   CANCELADA: { label: 'Cancelada', bg: 'bg-gray-100', text: 'text-gray-500' },
@@ -59,7 +59,7 @@ async function AuditoriasContent() {
     <div className="max-w-4xl mx-auto py-6 px-4">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Auditorias</h1>
+          <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">Auditorias</h1>
           <p className="text-gray-500 text-sm">Programacion y seguimiento de auditorias presenciales</p>
         </div>
         <AuditoriasClient talleres={talleres} />
@@ -69,7 +69,7 @@ async function AuditoriasContent() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
           <div className="flex items-center gap-3">
-            <Calendar className="w-5 h-5 text-blue-600" />
+            <Calendar className="w-5 h-5 text-brand-blue" />
             <div>
               <p className="text-2xl font-bold text-gray-800">{programadas}</p>
               <p className="text-xs text-gray-500">Programadas</p>
@@ -97,7 +97,7 @@ async function AuditoriasContent() {
       </div>
 
       {/* Proximas auditorias */}
-      <h2 className="font-overpass font-bold text-lg text-brand-blue mb-3">Proximas Auditorias</h2>
+      <h2 className="font-serif font-bold text-lg text-brand-blue mb-3">Proximas Auditorias</h2>
       {proximas.length === 0 ? (
         <div className="mb-6">
           <EmptyState
@@ -135,7 +135,7 @@ async function AuditoriasContent() {
       {/* Pendientes de informe */}
       {pendientesInforme.length > 0 && (
         <>
-          <h2 className="font-overpass font-bold text-lg text-brand-blue mb-3">Pendientes de Informe</h2>
+          <h2 className="font-serif font-bold text-lg text-brand-blue mb-3">Pendientes de Informe</h2>
           <div className="space-y-3 mb-6">
             {pendientesInforme.map(a => (
               <div key={a.id} className="bg-white rounded-xl shadow-sm p-4 border border-gray-100 border-l-4 border-l-yellow-400">
@@ -153,7 +153,7 @@ async function AuditoriasContent() {
                   </div>
                   <Link
                     href={`/admin/auditorias/${a.id}`}
-                    className="text-xs font-semibold text-brand-blue bg-blue-50 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors"
+                    className="text-xs font-semibold text-brand-blue bg-pastel-blue px-3 py-1.5 rounded-lg hover:bg-pastel-blue transition-colors"
                   >
                     Cargar informe
                   </Link>
@@ -167,7 +167,7 @@ async function AuditoriasContent() {
       {/* Historial */}
       {historial.length > 0 && (
         <>
-          <h2 className="font-overpass font-bold text-lg text-brand-blue mb-3">Historial</h2>
+          <h2 className="font-serif font-bold text-lg text-brand-blue mb-3">Historial</h2>
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 divide-y divide-gray-100">
             {historial.map(a => (
               <div key={a.id} className="px-5 py-3 flex items-center justify-between">

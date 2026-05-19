@@ -88,7 +88,7 @@ function StepIndicator({ currentStep, totalSteps }: { currentStep: number; total
 function StepRole({ onSelect }: { onSelect: (role: Role) => void }) {
   return (
     <div>
-      <h2 className="font-overpass font-bold text-xl text-brand-blue text-center mb-2">
+      <h2 className="font-serif font-bold text-xl text-brand-blue text-center mb-2">
         Crear cuenta
       </h2>
       <p className="text-sm text-gray-500 text-center mb-6">
@@ -151,7 +151,7 @@ function StepPersonalInfo({
 
   return (
     <div>
-      <h2 className="font-overpass font-bold text-xl text-brand-blue text-center mb-2">
+      <h2 className="font-serif font-bold text-xl text-brand-blue text-center mb-2">
         Datos personales
       </h2>
       <p className="text-sm text-gray-500 text-center mb-6">
@@ -278,7 +278,7 @@ function StepEntidadInfo({
 
   return (
     <div>
-      <h2 className="font-overpass font-bold text-xl text-brand-blue text-center mb-2">{titulo}</h2>
+      <h2 className="font-serif font-bold text-xl text-brand-blue text-center mb-2">{titulo}</h2>
       <p className="text-sm text-gray-500 text-center mb-6">{subtitulo}</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

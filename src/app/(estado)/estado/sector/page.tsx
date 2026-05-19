@@ -149,7 +149,7 @@ export default async function DiagnosticoSectorPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold font-overpass text-brand-blue">Datos sectoriales</h1>
+        <h1 className="text-3xl font-bold font-serif text-ink-primary">Datos sectoriales</h1>
         <p className="text-gray-500 mt-1">Datos productivos agregados de los talleres registrados</p>
         <p className="text-xs text-gray-400 mt-1">
           Basado en el perfil productivo completado por cada taller.

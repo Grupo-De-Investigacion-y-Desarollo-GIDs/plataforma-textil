@@ -46,7 +46,7 @@ export default function OlvideContrasenaPage() {
         <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
           <CheckCircle className="w-8 h-8 text-green-600" />
         </div>
-        <h2 className="font-overpass font-bold text-xl text-brand-blue mb-2">Email enviado</h2>
+        <h2 className="font-serif font-bold text-xl text-brand-blue mb-2">Email enviado</h2>
         <p className="text-sm text-gray-600 mb-6">
           Te enviamos un email con instrucciones para restablecer tu contraseña. Revisá tu bandeja de entrada.
         </p>
@@ -59,7 +59,7 @@ export default function OlvideContrasenaPage() {
 
   return (
     <Card className="p-8">
-      <h2 className="font-overpass font-bold text-xl text-brand-blue text-center mb-2">
+      <h2 className="font-serif font-bold text-xl text-brand-blue text-center mb-2">
         Recuperar contraseña
       </h2>
       <p className="text-sm text-gray-500 text-center mb-6">

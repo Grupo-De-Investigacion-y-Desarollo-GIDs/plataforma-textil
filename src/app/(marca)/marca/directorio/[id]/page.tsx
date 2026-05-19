@@ -53,7 +53,7 @@ export default async function TallerPerfilMarcaPage({ params }: { params: Promis
             <span className="font-overpass font-bold text-brand-blue text-xl">{taller.nombre.charAt(0)}</span>
           </div>
           <div className="flex-1">
-            <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">{taller.nombre}</h1>
+            <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">{taller.nombre}</h1>
             {(taller.verificadoAfip || taller.validaciones.length > 0) && (
               <div className="flex flex-wrap items-center gap-2 mb-1">
                 {taller.verificadoAfip && (
@@ -88,7 +88,7 @@ export default async function TallerPerfilMarcaPage({ params }: { params: Promis
         <Card className="text-center p-3"><Star className="w-5 h-5 text-yellow-500 mx-auto mb-1" /><p className="font-bold text-lg">{taller.rating.toFixed(1)}</p><p className="text-xs text-gray-500">Rating</p></Card>
         <Card className="text-center p-3"><Users className="w-5 h-5 text-brand-blue mx-auto mb-1" /><p className="font-bold text-lg">{taller.trabajadoresRegistrados}</p><p className="text-xs text-gray-500">Trabajadores</p></Card>
         <Card className="text-center p-3"><TrendingUp className="w-5 h-5 text-green-600 mx-auto mb-1" /><p className="font-bold text-lg">{taller.capacidadMensual.toLocaleString()}</p><p className="text-xs text-gray-500">Cap/mes</p></Card>
-        <Card className="text-center p-3"><Clock className="w-5 h-5 text-blue-500 mx-auto mb-1" /><p className="font-bold text-lg">{taller.ontimeRate}%</p><p className="text-xs text-gray-500">On-time</p></Card>
+        <Card className="text-center p-3"><Clock className="w-5 h-5 text-brand-blue mx-auto mb-1" /><p className="font-bold text-lg">{taller.ontimeRate}%</p><p className="text-xs text-gray-500">On-time</p></Card>
       </div>
 
       {taller.procesos.length > 0 && (

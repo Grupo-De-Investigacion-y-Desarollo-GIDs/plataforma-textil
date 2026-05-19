@@ -171,7 +171,7 @@ export function UserSidebar({
               </div>
               <div className="flex-1 min-w-0">
                 <h2 className="font-overpass font-bold text-lg truncate">{userName}</h2>
-                <p className="text-blue-200 text-sm">
+                <p className="text-white/70 text-sm">
                   {userRole === 'TALLER' && `${userLevel} - ${userProgress}%`}
                   {userRole === 'MARCA' && 'Marca'}
                   {userRole === 'ESTADO' && 'Ente Estatal'}
@@ -183,7 +183,7 @@ export function UserSidebar({
             {/* Progress bar (solo para talleres) */}
             {userRole === 'TALLER' && (
               <div className="space-y-1">
-                <div className="flex justify-between text-xs text-blue-100">
+                <div className="flex justify-between text-xs text-white/60">
                   <span>Progreso de formalización</span>
                   <span className="font-semibold">{userProgress}%</span>
                 </div>

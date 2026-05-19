@@ -171,7 +171,7 @@ export default async function TallerDashboardPage() {
     <div className="space-y-6">
       {/* Encabezado */}
       <div>
-        <h1 className="font-overpass font-bold text-3xl text-brand-blue">
+        <h1 className="font-serif font-bold text-3xl text-ink-primary">
           Bienvenido, {taller?.nombre ?? session.user.name}
         </h1>
         <p className="text-gray-500 mt-1">
@@ -181,7 +181,7 @@ export default async function TallerDashboardPage() {
 
       {/* Banner taller no verificado */}
       {taller && !taller.verificadoAfip && (
-        <div className="border-l-4 border-l-amber-400 bg-amber-50 rounded-xl p-4">
+        <div className="border-l-4 border-l-amber-400 bg-amber-50 rounded-card p-4">
           <p className="font-overpass font-bold text-amber-800 mb-1">
             Tu taller esta en proceso de formalizacion
           </p>
@@ -200,7 +200,7 @@ export default async function TallerDashboardPage() {
       {/* Banner de cambio de nivel */}
       {cambioNivel && cambioNivel.nivelNuevo && (
         cambioNivel.accion === 'NIVEL_SUBIDO' ? (
-          <div className="border-l-4 border-l-green-500 bg-green-50 rounded-xl p-4 flex items-center gap-3">
+          <div className="border-l-4 border-l-green-500 bg-green-50 rounded-card p-4 flex items-center gap-3">
             <span className="text-2xl">
               {cambioNivel.nivelNuevo === 'ORO' ? '🥇' : '🥈'}
             </span>
@@ -214,7 +214,7 @@ export default async function TallerDashboardPage() {
             </div>
           </div>
         ) : (
-          <div className="border-l-4 border-l-amber-500 bg-amber-50 rounded-xl p-4 flex items-center gap-3">
+          <div className="border-l-4 border-l-amber-500 bg-amber-50 rounded-card p-4 flex items-center gap-3">
             <span className="text-2xl">⚠️</span>
             <div>
               <p className="font-overpass font-bold text-amber-800">
@@ -243,7 +243,7 @@ export default async function TallerDashboardPage() {
       {/* Progreso principal */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Ring formalización */}
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+        <div className="bg-white rounded-card shadow-card p-6 border border-gray-100">
           <h3 className="font-overpass font-semibold text-gray-700 text-sm uppercase mb-4">
             Progreso de Formalización
           </h3>
@@ -276,21 +276,21 @@ export default async function TallerDashboardPage() {
 
         {/* Stats secundarios */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+          <div className="bg-white rounded-card shadow-card p-5 border border-gray-100">
             <p className="text-xs uppercase text-gray-500 font-semibold mb-1">Formalización</p>
             <p className="text-3xl font-bold text-brand-blue">{completadas}/{totalValidaciones}</p>
             <p className="text-xs text-gray-400 mt-1">documentos completados</p>
           </div>
-          <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+          <div className="bg-white rounded-card shadow-card p-5 border border-gray-100">
             <p className="text-xs uppercase text-gray-500 font-semibold mb-1">Capacidad</p>
             <p className="text-3xl font-bold text-green-600">{taller?.capacidadMensual ?? 0}</p>
             <p className="text-xs text-gray-400 mt-1">prendas/mes</p>
           </div>
-          <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+          <div className="bg-white rounded-card shadow-card p-5 border border-gray-100">
             <p className="text-xs uppercase text-gray-500 font-semibold mb-1">Certificados</p>
             <p className="text-3xl font-bold text-brand-blue">{taller?.certificados.length ?? 0}</p>
           </div>
-          <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+          <div className="bg-white rounded-card shadow-card p-5 border border-gray-100">
             <p className="text-xs uppercase text-gray-500 font-semibold mb-1">Pedidos activos</p>
             <p className="text-3xl font-bold text-gray-700">{taller?.ordenesManufactura.length ?? 0}</p>
           </div>
@@ -299,8 +299,8 @@ export default async function TallerDashboardPage() {
 
       {/* Historial de nivel */}
       {historialNiveles.length > 1 && (
-        <div className="bg-white rounded-xl border border-gray-100 p-6">
-          <h2 className="font-overpass font-bold text-gray-800 mb-4">Historial de nivel</h2>
+        <div className="bg-white rounded-card border border-gray-100 p-6">
+          <h2 className="font-serif font-bold text-gray-800 mb-4">Historial de nivel</h2>
           <div className="space-y-2">
             {historialNiveles.map(log => {
               const detalles = log.detalles as { nivelAnterior?: string; nivelNuevo?: string }
@@ -330,11 +330,11 @@ export default async function TallerDashboardPage() {
 
       {/* Acciones rápidas */}
       <div>
-        <h2 className="font-overpass font-bold text-lg text-gray-800 mb-3">Acciones rápidas</h2>
+        <h2 className="font-serif font-bold text-lg text-gray-800 mb-3">Acciones rápidas</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Link
             href="/taller/perfil/completar"
-            className="flex flex-col items-center gap-2 bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-brand-blue transition-all text-center"
+            className="flex flex-col items-center gap-2 bg-white rounded-card p-5 border border-gray-100 shadow-card hover:shadow-md hover:border-brand-blue transition-all text-center"
           >
             <span className="text-3xl">📝</span>
             <span className="font-overpass font-semibold text-gray-700">{taller?.sam ? 'Actualizar mi perfil' : 'Completar mi perfil'}</span>
@@ -342,7 +342,7 @@ export default async function TallerDashboardPage() {
           </Link>
           <Link
             href="/taller/aprender"
-            className="flex flex-col items-center gap-2 bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-brand-blue transition-all text-center"
+            className="flex flex-col items-center gap-2 bg-white rounded-card p-5 border border-gray-100 shadow-card hover:shadow-md hover:border-brand-blue transition-all text-center"
           >
             <span className="text-3xl">📚</span>
             <span className="font-overpass font-semibold text-gray-700">Ver cursos disponibles</span>
@@ -350,7 +350,7 @@ export default async function TallerDashboardPage() {
           </Link>
           <Link
             href="/directorio"
-            className="flex flex-col items-center gap-2 bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md hover:border-brand-blue transition-all text-center"
+            className="flex flex-col items-center gap-2 bg-white rounded-card p-5 border border-gray-100 shadow-card hover:shadow-md hover:border-brand-blue transition-all text-center"
           >
             <span className="text-3xl">🔍</span>
             <span className="font-overpass font-semibold text-gray-700">Explorar marcas</span>
@@ -363,7 +363,7 @@ export default async function TallerDashboardPage() {
       {taller && taller.ordenesManufactura.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-overpass font-bold text-lg text-gray-800">Pedidos activos</h2>
+            <h2 className="font-serif font-bold text-lg text-gray-800">Pedidos activos</h2>
             <Link href="/taller/pedidos" className="text-sm text-brand-blue hover:underline">
               Ver todos →
             </Link>
@@ -373,7 +373,7 @@ export default async function TallerDashboardPage() {
               <Link
                 key={orden.id}
                 href={`/taller/pedidos/${orden.id}`}
-                className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm flex items-center justify-between hover:border-brand-blue hover:shadow-md transition-all"
+                className="bg-white rounded-card p-4 border border-gray-100 shadow-card flex items-center justify-between hover:border-brand-blue hover:shadow-md transition-all"
               >
                 <div>
                   <p className="font-semibold text-gray-800 text-sm">{orden.moId}</p>
@@ -382,7 +382,7 @@ export default async function TallerDashboardPage() {
                 <span
                   className={`text-xs font-semibold px-3 py-1 rounded-full ${
                     orden.estado === 'EN_EJECUCION'
-                      ? 'bg-blue-100 text-blue-700'
+                      ? 'bg-pastel-blue text-brand-blue-dark'
                       : 'bg-yellow-100 text-yellow-700'
                   }`}
                 >
@@ -398,14 +398,14 @@ export default async function TallerDashboardPage() {
       {coleccionesRecomendadas.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-overpass font-bold text-lg text-gray-800">
+            <h2 className="font-serif font-bold text-lg text-gray-800">
               Capacitaciones recomendadas
             </h2>
             <Link href="/taller/aprender" className="text-sm text-brand-blue hover:underline">
               Ver todas →
             </Link>
           </div>
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm divide-y divide-gray-100">
+          <div className="bg-white rounded-card border border-gray-100 shadow-card divide-y divide-gray-100">
             {coleccionesRecomendadas.map((col) => {
               const progreso = taller?.progresoCapacitacion.find((p) => p.coleccionId === col.id)
               return (

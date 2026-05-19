@@ -108,7 +108,7 @@ export default async function AdminDetalleMarcaPage({ params }: {
             {marca.nombre.charAt(0)}
           </div>
           <div className="flex-1">
-            <h1 className="font-overpass font-bold text-xl text-brand-blue">{marca.nombre}</h1>
+            <h1 className="font-serif font-bold text-xl text-ink-primary">{marca.nombre}</h1>
             <p className="text-sm text-gray-500">CUIT: {marca.cuit}</p>
             <div className="flex flex-wrap gap-3 mt-2 text-sm text-gray-500">
               {marca.ubicacion && (
@@ -226,7 +226,7 @@ export default async function AdminDetalleMarcaPage({ params }: {
 
       {/* Pedidos */}
       <Card className="mb-6">
-        <h2 className="font-overpass font-bold text-brand-blue mb-3">Pedidos</h2>
+        <h2 className="font-serif font-bold text-brand-blue mb-3">Pedidos</h2>
         {marca.pedidos.length === 0 ? (
           <p className="text-sm text-gray-500">Sin pedidos registrados.</p>
         ) : (
@@ -265,7 +265,7 @@ export default async function AdminDetalleMarcaPage({ params }: {
 
       {/* Actividad (logs) */}
       <Card className="mb-6">
-        <h2 className="font-overpass font-bold text-brand-blue mb-3">Actividad Reciente</h2>
+        <h2 className="font-serif font-bold text-brand-blue mb-3">Actividad Reciente</h2>
         {logs.length === 0 ? (
           <p className="text-sm text-gray-500">Sin actividad registrada.</p>
         ) : (
@@ -286,7 +286,7 @@ export default async function AdminDetalleMarcaPage({ params }: {
 
       {/* Notas */}
       <Card>
-        <h2 className="font-overpass font-bold text-brand-blue mb-3">Notas Internas</h2>
+        <h2 className="font-serif font-bold text-brand-blue mb-3">Notas Internas</h2>
         <form action={guardarNota} className="flex gap-2 mb-4">
           <input
             type="text"

@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react'
 
 const TIPOS = [
   { value: 'bug', label: '🐛 Algo no funciona', color: 'text-red-600' },
-  { value: 'mejora', label: '✨ Podria mejorar', color: 'text-blue-600' },
+  { value: 'mejora', label: '✨ Podria mejorar', color: 'text-brand-blue' },
   { value: 'falta', label: '🔍 Me falta algo', color: 'text-amber-600' },
   { value: 'confusion', label: '😕 No entendi como usar esto', color: 'text-purple-600' },
 ]

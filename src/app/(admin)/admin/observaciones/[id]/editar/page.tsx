@@ -36,7 +36,7 @@ export default async function EditarObservacionPage({
         { label: 'Editar observacion' },
       ]} />
       <div className="flex items-center justify-between">
-        <h1 className="font-overpass font-bold text-2xl text-brand-blue">Editar observacion</h1>
+        <h1 className="font-serif font-bold text-2xl text-ink-primary">Editar observacion</h1>
         {canEdit && <EliminarObservacion observacionId={id} />}
       </div>
       {canEdit ? (

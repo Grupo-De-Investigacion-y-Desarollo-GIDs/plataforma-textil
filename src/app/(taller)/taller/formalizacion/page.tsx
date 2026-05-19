@@ -33,7 +33,7 @@ export default async function TallerFormalizacionPage() {
   if (!taller) {
     return (
       <div className="space-y-6">
-        <h1 className="font-overpass font-bold text-3xl text-brand-blue">Mi Formalización</h1>
+        <h1 className="font-serif font-bold text-3xl text-ink-primary">Mi Formalización</h1>
         <Card className="text-center py-12">
           <p className="text-gray-600 mb-4">Primero completá tu perfil para ver tu checklist de formalización.</p>
           <Link href="/taller/perfil/completar"><Button>Completar Perfil</Button></Link>
@@ -64,7 +64,7 @@ export default async function TallerFormalizacionPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-overpass font-bold text-3xl text-brand-blue">Mi Formalización</h1>
+      <h1 className="font-serif font-bold text-3xl text-ink-primary">Mi Formalización</h1>
 
       {/* Resumen */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

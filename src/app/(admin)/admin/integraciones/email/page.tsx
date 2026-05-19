@@ -15,7 +15,7 @@ export default function AdminIntegracionEmailPage() {
         { label: 'Email' },
       ]} />
 
-      <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1 mt-4">Configuracion SendGrid</h1>
+      <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1 mt-4">Configuracion SendGrid</h1>
       <p className="text-gray-500 text-sm mb-6">Envio de emails transaccionales y masivos</p>
 
       <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-center gap-3">
@@ -29,7 +29,7 @@ export default function AdminIntegracionEmailPage() {
       </div>
 
       <Card className="mb-6 opacity-50">
-        <h2 className="font-overpass font-bold text-brand-blue mb-4">API de SendGrid</h2>
+        <h2 className="font-serif font-bold text-brand-blue mb-4">API de SendGrid</h2>
         <div className="space-y-4">
           <Input label="API Key" type="password" value="............" disabled onChange={() => {}} />
           <Input label="Email remitente" value="noreply@plataformatextil.ar" disabled onChange={() => {}} />
@@ -38,7 +38,7 @@ export default function AdminIntegracionEmailPage() {
       </Card>
 
       <Card className="mb-6 opacity-50">
-        <h2 className="font-overpass font-bold text-brand-blue mb-4">Emails Habilitados</h2>
+        <h2 className="font-serif font-bold text-brand-blue mb-4">Emails Habilitados</h2>
         <div className="space-y-2">
           {['Bienvenida al registrarse', 'Verificacion de email', 'Recuperar contrasena', 'Certificado emitido', 'Recordatorio de documentos por vencer'].map(label => (
             <label key={label} className="flex items-center gap-2">
@@ -50,7 +50,7 @@ export default function AdminIntegracionEmailPage() {
       </Card>
 
       <Card className="mb-6">
-        <h2 className="font-overpass font-bold text-brand-blue mb-3">Estado</h2>
+        <h2 className="font-serif font-bold text-brand-blue mb-3">Estado</h2>
         <div className="flex items-center gap-2">
           <Badge variant="success">Activo</Badge>
           <span className="text-sm text-gray-500">Configurado via variables de entorno</span>

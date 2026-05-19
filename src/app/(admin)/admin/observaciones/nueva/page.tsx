@@ -10,7 +10,7 @@ export default function NuevaObservacionPage() {
         { label: 'Observaciones', href: '/admin/observaciones' },
         { label: 'Nueva observacion' },
       ]} />
-      <h1 className="font-overpass font-bold text-2xl text-brand-blue">Nueva observacion</h1>
+      <h1 className="font-serif font-bold text-2xl text-ink-primary">Nueva observacion</h1>
       <p className="text-sm text-gray-500">
         Esta info se usa para el reporte a OIT. No incluyas datos sensibles que no quieras compartir.
       </p>

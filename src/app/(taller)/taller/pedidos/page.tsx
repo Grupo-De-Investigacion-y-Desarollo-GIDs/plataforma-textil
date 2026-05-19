@@ -71,7 +71,7 @@ async function ListaOrdenes() {
     <>
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="font-overpass font-bold text-3xl text-brand-blue">Pedidos Recibidos</h1>
+          <h1 className="font-serif font-bold text-3xl text-ink-primary">Pedidos Recibidos</h1>
           <p className="text-gray-600 mt-2">Ordenes de manufactura asignadas a {taller.nombre}</p>
         </div>
         <Link
@@ -118,7 +118,7 @@ async function ListaOrdenes() {
               <Link
                 key={orden.id}
                 href={`/taller/pedidos/${orden.id}`}
-                className="block border border-gray-100 rounded-lg p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3 hover:border-brand-blue hover:bg-blue-50/30 transition-colors"
+                className="block border border-gray-100 rounded-lg p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3 hover:border-brand-blue hover:bg-pastel-blue/30 transition-colors"
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">

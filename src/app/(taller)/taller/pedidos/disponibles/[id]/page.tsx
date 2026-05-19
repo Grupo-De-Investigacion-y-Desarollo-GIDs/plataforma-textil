@@ -39,7 +39,7 @@ export default async function PedidoDisponibleDetallePage({ params }: { params: 
       ]} />
 
       <div>
-        <h1 className="font-overpass font-bold text-3xl text-brand-blue">{pedido.tipoPrenda}</h1>
+        <h1 className="font-serif font-bold text-3xl text-ink-primary">{pedido.tipoPrenda}</h1>
         <p className="text-gray-500 mt-1">Publicado por {pedido.marca.nombre}</p>
       </div>
 

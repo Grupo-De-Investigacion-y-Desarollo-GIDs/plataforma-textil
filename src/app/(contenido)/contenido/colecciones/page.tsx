@@ -33,7 +33,7 @@ export default function ContenidoColeccionesPage() {
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Colecciones de Cursos</h1>
+          <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">Colecciones de Cursos</h1>
           <p className="text-gray-500 text-sm">Gestiona las colecciones de videos curados</p>
         </div>
         <Link href="/admin/colecciones/nueva">
@@ -48,7 +48,7 @@ export default function ContenidoColeccionesPage() {
           <Card key={col.id}>
             <div className="flex items-start justify-between">
               <div>
-                <h2 className="font-overpass font-bold text-brand-blue">{col.titulo}</h2>
+                <h2 className="font-serif font-bold text-brand-blue">{col.titulo}</h2>
                 <p className="text-sm text-gray-500 mt-1">{col.institucion} | {col._count.videos} videos</p>
                 <div className="mt-2">
                   <Badge variant={col.activa ? 'success' : 'warning'}>

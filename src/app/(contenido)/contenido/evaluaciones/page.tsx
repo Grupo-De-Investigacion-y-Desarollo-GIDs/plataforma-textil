@@ -127,7 +127,7 @@ export default function AdminEvaluacionesPage() {
   return (
     <div className="max-w-4xl mx-auto py-6 px-4">
       <div className="flex items-center justify-between mb-1">
-        <h1 className="font-overpass font-bold text-2xl text-brand-blue">Evaluaciones</h1>
+        <h1 className="font-serif font-bold text-2xl text-ink-primary">Evaluaciones</h1>
         {tieneEval && <Badge variant="success">Evaluación activa</Badge>}
         {coleccionId && !tieneEval && !loading && <Badge variant="default">Sin evaluación</Badge>}
       </div>
@@ -151,7 +151,7 @@ export default function AdminEvaluacionesPage() {
       {!loading && coleccionId && (
         <>
           <Card className="mb-6">
-            <h2 className="font-overpass font-bold text-brand-blue mb-3">Configuración</h2>
+            <h2 className="font-serif font-bold text-brand-blue mb-3">Configuración</h2>
             <Input
               label="Puntaje mínimo para aprobar (%)"
               type="number"
@@ -162,7 +162,7 @@ export default function AdminEvaluacionesPage() {
           </Card>
 
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-overpass font-bold text-lg text-brand-blue">
+            <h2 className="font-serif font-bold text-lg text-brand-blue">
               Preguntas ({preguntas.length})
             </h2>
             <Button size="sm" icon={<Plus className="w-4 h-4" />} onClick={abrirNueva}>

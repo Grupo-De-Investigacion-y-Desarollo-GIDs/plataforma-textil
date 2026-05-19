@@ -47,7 +47,7 @@ export default function NuevaColeccionPage() {
         { label: 'Nueva' },
       ]} />
 
-      <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1 mt-4">Nueva Colección</h1>
+      <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1 mt-4">Nueva Colección</h1>
       <p className="text-gray-500 text-sm mb-6">Creá una nueva colección de videos de capacitación</p>
 
       <form onSubmit={handleSubmit}>
