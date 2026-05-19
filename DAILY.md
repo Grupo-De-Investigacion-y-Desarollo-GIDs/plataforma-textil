@@ -3,6 +3,9 @@
 ## 2026-05-19
 
 ### Gerardo Breard
+- **17:01** `e85a08e` — docs(u-01): consolidar v2 con 10 decisiones de Gerardo
+  - `docs/analisis/U-01_multi-rol-airbnb.md`
+
 - **16:10** `21d454c` — Merge remote-tracking branch 'origin/develop' into feature/v4-x-07a-paleta-dashboards-critico
 
 
