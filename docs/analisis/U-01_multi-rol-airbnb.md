@@ -1,8 +1,10 @@
-# U-01: Análisis funcional y técnico — Multi-rol Airbnb
+# U-01 v2: Análisis funcional y técnico — Multi-rol Airbnb
 
+> **Versión:** v2 (consolidada con todas las decisiones de Gerardo)
 > **Fecha:** 18 de mayo de 2026
-> **Autor:** Gerardo Breard (decisiones) + Claude Code (análisis técnico)
+> **Autor:** Gerardo Breard (decisiones) + Claude (análisis y consolidación)
 > **Ref:** Master V4 §3.3, SPEC v4-u-01-analisis-multi-rol-airbnb.md
+> **Reemplaza:** U-01 v1 (18-mayo-2026, mañana)
 > **Output:** Documento de diseño — NO produce código de aplicación
 
 ---
@@ -11,32 +13,49 @@
 
 ### Problema
 
-Un mismo CUIT puede operar como taller y como marca. Hoy el sistema obliga a crear dos cuentas con datos duplicados, lo cual genera inconsistencia y fricción.
+Un mismo CUIT puede operar como taller y como marca. Hoy el sistema obliga a crear dos cuentas con datos duplicados, generando inconsistencia y fricción.
 
-### Decisión
+### Solución
 
-**Opción A: Array de roles + modo activo + CUIT centralizado.**
+**Opción A: Array de roles + modo activo + CUIT y datos ARCA centralizados.**
 
-El schema actual ya tiene la estructura de perfiles separados (`Taller` y `Marca` como entidades 1:1 opcionales del `User`). Solo falta:
+Cambios al modelo `User`:
 
-1. Cambiar `User.role` (valor único) por `User.roles` (array)
-2. Agregar `User.activeMode` (modo activo persistente)
-3. Centralizar CUIT en `User.cuit` (hoy vive en Taller y Marca por separado)
+1. `User.roles UserRole[]` — array de roles activos (reemplaza `User.role` único)
+2. `User.activeMode UserRole?` — modo activo actual (persistente)
+3. `User.cuit String? @unique` — CUIT centralizado
+4. **TODOS los datos ARCA** centralizados (10 campos, ver §4.2)
+
+El schema actual ya tiene `Taller?` y `Marca?` como relaciones opcionales 1:1, así que la base estructural ya existe. Solo se modifica `User` y se ajustan los uniques.
 
 ### Impacto medido
 
 | Categoría | Cantidad |
 |-----------|----------|
-| Campos nuevos en schema | 3 (`roles`, `activeMode`, `cuit`) |
-| API endpoints con enforcement de rol | 54 (9 con helper, 45 inline) |
+| Campos nuevos en `User` | 13 (3 multi-rol + 10 ARCA) |
+| Campos eliminados en `Taller` | 10 (ARCA) |
+| API endpoints con enforcement de rol | 54 (todos migrados a helper) |
 | Páginas/layouts con lógica de rol | 30 |
 | Type assertions `(session.user as {role?})` | 83 |
 | Tests E2E afectados | 25 |
 | Tests unitarios afectados | 17 |
+| Pantalla nueva: selector de modo al login | 1 |
+| Modal nuevo: advertencia activación segundo perfil | 1 |
+| Componente nuevo: pestañas tipo Notion (toggle) | 1 |
+| Wizard nuevo: activar segundo perfil (taller o marca) | 1 |
 
-### Estimación refinada total: 33h (vs 31h del master)
+### Estimación refinada total: 35h (vs 31h del master)
 
-La diferencia viene de U-03 (auth refactor) que es más grande de lo estimado, y U-08 (tests) que tiene más cobertura de la esperada.
+| Spec | Master | v1 | v2 (final) | Justificación |
+|------|--------|----|----|---------------|
+| U-02 schema | 8h | 5h | **6h** | +10 campos ARCA a migrar |
+| U-03 auth | 4h | 8h | **8h** | 54 endpoints a helper uniforme |
+| U-04 toggle UI | 4h | 4h | **6h** | + pantalla selector + modal + wizard |
+| U-05 migración | 3h | 2h | **2h** | Sin cambio |
+| U-06 clasificación | 4h | 3h | **3h** | Sin cambio |
+| U-07 anti-incesto | 2h | 2h | **2h** | Sin cambio |
+| U-08 tests | 6h | 9h | **9h** | Sin cambio |
+| **Total** | **31h** | **33h** | **35h** | +2h por pantalla intermedia + modal + wizard |
 
 ---
 
@@ -44,15 +63,86 @@ La diferencia viene de U-03 (auth refactor) que es más grande de lo estimado, y
 
 | ID | Decisión | Justificación |
 |----|----------|---------------|
-| D1 | Migración automática viable | Seed: 8 users sin conflictos. Producción: piloto chico, asumimos similar. Si hay sorpresas, ajustar en U-05 |
-| D2 | CUIT centralizado en User | `User.cuit @unique`. Cada CUIT = una identidad = un User. Coherente con master V4 §3.3 |
-| D3 | Registro: elegir rol, después activar otro | Un usuario elige su rol al registrarse. Después puede activar un segundo perfil |
-| D4 | Toggle UX en header | Cambio de modo visible en el header |
-| D5 | Usuarios existentes se migran automáticamente | Mantienen su rol original como `roles: [ROL_ACTUAL]` |
+| **D1** | Schema = Opción A (array de roles + activeMode + CUIT centralizado) | El schema YA tiene perfiles separados (`Taller?`, `Marca?`). Solo falta el array de roles |
+| **D2** | CUIT centralizado en `User.cuit @unique` | Cada CUIT = una identidad = un User. Coherente con master V4 §3.3 |
+| **D3** | Registro: usuario elige rol, después puede activar segundo perfil | Reduce fricción inicial. Patrón Airbnb |
+| **D4** | Toggle UX = Pestañas grandes tipo Notion (workspace-style) | Cambio de modo visible y deliberado, no escondido |
+| **D5** | Migración automática de los 8 users seed | Sin conflictos, migración trivial |
+| **D6** | Eliminar perfil = NO existe (caso borde #1 eliminado) | Modal de advertencia al activar segundo perfil avisa que es permanente |
+| **D7** | TODA la data ARCA centralizada en User | Una sola verificación por CUIT, ambos roles requieren ARCA para operar |
+| **D8** | 45 endpoints inline → migrar TODOS a helper | Código uniforme, mantenibilidad |
+| **D9** | Modal de advertencia antes de activar segundo perfil | Decisión permanente, mejor informar de más |
+| **D10** | Login con doble perfil → pantalla "¿Cómo operás hoy?" cada vez | No recuerda último modo. Cada login pregunta explícitamente |
 
 ---
 
-## 3. Diseño funcional
+## 3. Reglas de negocio derivadas
+
+### RN-1: ARCA es prerequisito para operar
+
+```
+User.verificadoAfip = false → NO PUEDE:
+- Aparecer en directorio de talleres/marcas
+- Crear pedidos (si es marca)
+- Cotizar pedidos (si es taller)
+- Activar segundo perfil
+- Cualquier operación comercial
+
+Solo PUEDE:
+- Ver dashboard limitado
+- Completar verificación ARCA
+- Ver pantalla de "Tu cuenta está pendiente de verificación"
+```
+
+### RN-2: CUIT es inmutable
+
+```
+- Una vez verificado con ARCA, el CUIT no se puede cambiar
+- Si necesita corregir CUIT: contactar soporte (manual)
+- El registro inicial usa el CUIT que se va a verificar
+```
+
+### RN-3: Roles son acumulables, no intercambiables
+
+```
+- User puede tener [TALLER] o [MARCA] o [TALLER, MARCA]
+- Activar segundo perfil = AGREGAR rol (no convertir)
+- ADMIN, ESTADO, CONTENIDO NO se pueden combinar con TALLER/MARCA
+- Esos 3 roles son administrativos, no comerciales
+```
+
+### RN-4: Activación de segundo perfil es permanente
+
+```
+- Sin "eliminar perfil"
+- Si arrepentido: contactar soporte (caso por caso)
+- Modal de advertencia previo lo deja claro
+```
+
+### RN-5: Datos ARCA se heredan entre roles
+
+```
+- Si User activa segundo perfil:
+  - CUIT ya verificado → hereda automáticamente
+  - Categoría monotributo, actividades, etc. → mismas
+  - NO se vuelve a consultar ARCA
+- Los datos ARCA son del User, no del rol específico
+```
+
+### RN-6: Membresía/nivel es por rol
+
+```
+- Cada rol (Taller, Marca) tiene su propio:
+  - Nivel (Bronce/Plata/Oro)
+  - Puntaje
+  - Histórico de pedidos
+  - Métricas
+- No se mezclan entre roles
+```
+
+---
+
+## 4. Diseño funcional
 
 ### Flujo 1: Registro nuevo (taller o marca)
 
@@ -62,97 +152,172 @@ La diferencia viene de U-03 (auth refactor) que es más grande de lo estimado, y
 3. Formulario de registro:
    - Email
    - Contraseña
-   - CUIT (→ guardado en User.cuit)
-4. Verificación de email (magic link o confirmación)
-5. Wizard de perfil específico del rol elegido:
-   - TALLER: 11 pasos (sam, prendas, maquinaria, etc.)
-   - MARCA: datos básicos (nombre, tipo, volumen)
-6. Cuenta activa con:
-   - User.roles = [TALLER] o [MARCA]
-   - User.activeMode = TALLER o MARCA
+   - CUIT
+4. Submit:
+   - Crea User con role temporal = rol elegido
+   - User.cuit = cuit ingresado
+   - User.verificadoAfip = false (todavía)
+5. Verificación de email (magic link)
+6. Verificación ARCA del CUIT (automática)
+   - Si verifica OK:
+     - User.verificadoAfip = true
+     - Datos ARCA se guardan en User (categoría, actividades, etc.)
+   - Si falla:
+     - Cuenta queda en estado "pendiente"
+     - Mostrar pantalla "Tu CUIT no se pudo verificar"
+7. Si OK: wizard de perfil específico
+   - TALLER: 11 pasos
+   - MARCA: 4-5 campos básicos
+8. Cuenta activa:
+   - User.roles = [ROL_ELEGIDO]
+   - User.activeMode = ROL_ELEGIDO
    - Relación Taller o Marca creada (1:1)
 ```
-
-**Cambio respecto a hoy:** El CUIT se guarda en `User.cuit` en lugar de `Taller.cuit` o `Marca.cuit`. El campo `cuit` en Taller/Marca se mantiene por ahora como campo de display/legacy pero pierde el `@unique`.
 
 ### Flujo 2: Activar segundo perfil
 
 ```
-1. Usuario logueado como TALLER
+1. Usuario logueado como TALLER (o MARCA)
 2. Accede a "Mi cuenta" → sección "Mis perfiles"
-3. Ve su perfil activo (TALLER) y un botón:
-   "También operar como marca"
-4. Mini-wizard de datos de marca:
-   - Nombre comercial
-   - Tipo (diseño independiente, marca comercial, etc.)
-   - Volumen mensual estimado
-5. Al completar:
+3. Ve:
+   - Perfil activo: TALLER ✅
+   - Botón: "Activar perfil de marca"
+4. Click → Modal de advertencia:
+   
+   ┌──────────────────────────────────────────────────────┐
+   │ Activar perfil de marca                              │
+   │                                                       │
+   │ Estás por activar un perfil de marca asociado a tu  │
+   │ CUIT 20-12345678-9.                                  │
+   │                                                       │
+   │ ⚠️ Importante:                                       │
+   │ Una vez activado, este perfil queda asociado a tu   │
+   │ cuenta de forma permanente. Para gestionar la baja, │
+   │ deberás contactar soporte.                          │
+   │                                                       │
+   │ Tu CUIT ya está verificado con ARCA. Los datos      │
+   │ fiscales se heredan automáticamente al nuevo perfil.│
+   │                                                       │
+   │           [Cancelar]  [Continuar con activación]    │
+   └──────────────────────────────────────────────────────┘
+   
+5. Click "Continuar":
+   - Mini-wizard de marca (4-5 campos):
+     - Nombre comercial
+     - Tipo (diseño independiente, marca comercial, etc.)
+     - Volumen mensual estimado
+     - Frecuencia de compra
+6. Al completar:
    - Se crea Marca vinculada al mismo User
    - User.roles actualizado: [TALLER, MARCA]
-   - CUIT compartido (ya existe en User.cuit)
-   - Toggle de modo aparece en el header
-6. Redirige al dashboard del modo que estaba usando
+   - CUIT y datos ARCA compartidos (ya están en User)
+   - Pestañas de toggle aparecen en header
+7. Redirect al dashboard del NUEVO modo activado (Marca)
 ```
-
-**Nota:** El flujo inverso (Marca que quiere ser Taller) funciona igual pero con el wizard de taller.
 
 ### Flujo 3: Login con doble perfil
 
 ```
-1. Login normal (email + contraseña)
-2. Auth callback carga User.roles y User.activeMode
-3. Modo activo se determina así:
-   a) Si User.activeMode tiene valor → usar ese
-   b) Si no → usar roles[0] (primer rol creado)
-4. JWT token incluye: { roles: [...], activeMode: 'TALLER' }
-5. Session incluye: { user: { roles, activeMode } }
-6. Redirect a /{activeMode.toLowerCase()} dashboard
-7. Toggle visible en header (solo si roles.length > 1)
+1. Usuario hace login (email + password) normal
+2. Auth carga User.roles
+3. ¿Cuántos roles tiene?
+   
+   CASO A: Un solo rol (roles.length === 1)
+   → Redirect directo a /{role.toLowerCase()}
+   → Comportamiento idéntico al actual
+
+   CASO B: Doble rol (roles.length > 1)
+   → Pantalla intermedia "¿Cómo querés operar hoy?"
+   
+   ┌──────────────────────────────────────────────────────┐
+   │ Hola, Roberto                                         │
+   │                                                       │
+   │ ¿Cómo querés operar hoy?                             │
+   │                                                       │
+   │  ┌────────────────────┐  ┌────────────────────┐    │
+   │  │      🔧            │  │       🏢            │    │
+   │  │                    │  │                    │    │
+   │  │     Taller         │  │      Marca         │    │
+   │  │                    │  │                    │    │
+   │  │  Producir prendas  │  │  Buscar talleres   │    │
+   │  └────────────────────┘  └────────────────────┘    │
+   │                                                       │
+   └──────────────────────────────────────────────────────┘
+   
+4. Click en un modo:
+   - PATCH /api/auth/mode { activeMode: 'TALLER' }
+   - Cookie/JWT actualizado
+5. Redirect a /{modo.toLowerCase()} dashboard
+6. Header muestra pestañas de toggle (porque tiene doble perfil)
 ```
 
-### Flujo 4: Cambio de modo (toggle)
+### Flujo 4: Cambio de modo (toggle pestañas tipo Notion)
 
 ```
-1. Usuario en modo TALLER ve toggle en header
-2. Click en toggle → cambio inmediato (sin confirmación)
-3. Acción:
-   a) PATCH /api/auth/mode { activeMode: 'MARCA' }
-   b) Actualiza User.activeMode en DB
-   c) Actualiza cookie de sesión
+Header con doble perfil:
+
+┌─────────────────────────────────────────────────────────────────┐
+│ ┌────────────┐  ┌────────────┐                                  │
+│ │ 🔧 Taller  │  │ 🏢 Marca   │                  👤 Roberto ▾   │
+│ └════════════┘  └────────────┘                                  │
+│  (activo)        (inactivo)                                     │
+├─────────────────────────────────────────────────────────────────┤
+│ 🔵 PDT  Plataforma Digital Textil                              │
+│ [Tablero] [Mis pedidos] [Mi formalización] [Mi perfil]         │
+└─────────────────────────────────────────────────────────────────┘
+
+1. Click en pestaña "Marca":
+2. PATCH /api/auth/mode { activeMode: 'MARCA' }
+3. Cookie/JWT actualizado
 4. Redirect a /marca (dashboard del nuevo modo)
-5. Header re-renderiza con tabs de MARCA
-6. Toda navegación posterior usa el nuevo modo
+5. Pestañas se invierten (Marca activa, Taller inactiva)
+6. Tabs del header cambian (las de marca)
+7. Cero confirmación, click directo
 ```
 
-**Decisión UX:** Cambio inmediato sin confirmación. Es reversible (un click), no destructivo, y la analogía Airbnb funciona así.
+### Diseño visual del toggle (Notion-style)
 
-### Resolución de los 8 casos borde
+```
+PRINCIPIO: las pestañas son visibles y deliberadas, no escondidas
+- Ancho: ocupan parte superior del header (banda)
+- Fondo: pestaña activa con color sólido + sombra suave
+- Fondo: pestaña inactiva más clara, sin sombra
+- Hover: cursor pointer, leve highlight
+- Mobile: las dos pestañas en la parte superior, full width
 
-| # | Caso | Resolución |
-|---|------|------------|
-| 1 | **Eliminar perfil marca después de activar** | Permitir solo si no tiene pedidos activos ni cotizaciones pendientes como marca. Soft delete: `Marca.activo = false`, `roles` vuelve a `[TALLER]`. Los datos se preservan por si reactiva |
-| 2 | **Marca quiere "convertirse en taller"** | Es Flujo 2 al revés. No es conversión, es activación de segundo perfil. `roles: [MARCA, TALLER]` |
-| 3 | **CUIT ya existe (otro User intenta registrarse con mismo CUIT)** | `User.cuit @unique` impide duplicados. Error: "Este CUIT ya está registrado. Si es tu CUIT, iniciá sesión con tu cuenta existente." No hay merge automático de cuentas |
-| 4 | **Doble perfil + membresía vence** | Nivel/puntaje son del Taller o Marca (no del User). Cada perfil mantiene su propio estado. Si Taller baja de nivel, no afecta perfil Marca |
-| 5 | **Verificación ARCA del CUIT** | Se verifica una vez contra `User.cuit`. Resultado básico (`verificadoAfip: boolean`) se mueve a User. Datos detallados ARCA (categoría monotributo, actividades, domicilio fiscal, etc.) permanecen en Taller porque son parte del flujo de formalización, no del perfil de marca |
-| 6 | **Notificaciones con doble perfil** | Notificaciones van al User (ya es así: `Notificacion.userId`). Visibles en ambos modos. Para V4 no se filtran por contexto — el usuario ve todas sus notificaciones sin importar el modo activo |
-| 7 | **URLs: /taller/perfil vs /marca/perfil** | Son rutas distintas. Cada modo tiene sus propias rutas protegidas. Con multi-rol, el middleware permite acceso a ambos prefijos si `roles.includes(rol)`. El `activeMode` determina el dashboard por defecto y las tabs del header, pero el usuario puede navegar manualmente a rutas de su otro perfil |
-| 8 | **Sesión entre devices** | `activeMode` persiste en DB (`User.activeMode`). Al login en otro device, se lee de DB. No hay sync real-time entre devices (aceptable para MVP). El último cambio de modo gana |
+Estados visuales:
+- ACTIVA: bg-white, border-bottom: terra-600 (2px), font-bold
+- INACTIVA: bg-gray-50, text-gray-600, hover:bg-gray-100
+- DISABLED: no aplicable (siempre clickeable si tiene el rol)
+```
+
+### Resolución de casos borde (actualizada)
+
+| # | Caso | Resolución v2 |
+|---|------|---------------|
+| 1 | ~~Eliminar perfil después de activar~~ | **ELIMINADO** — No existe. Modal de advertencia previo lo aclara |
+| 2 | Marca quiere "convertirse en taller" | Es Flujo 2 (activación de segundo perfil), no conversión |
+| 3 | CUIT ya existe en otro User | `User.cuit @unique` impide duplicados. Error claro: "Este CUIT ya está registrado" |
+| 4 | Doble perfil + membresía vence | Cada rol mantiene su propio nivel/puntaje (RN-6) |
+| 5 | Verificación ARCA del CUIT | UNA vez en registro. Datos guardados en User. Heredados al segundo perfil (RN-5) |
+| 6 | Notificaciones con doble perfil | Van al User (ya es así). Visibles en ambos modos sin filtro |
+| 7 | URLs `/taller/perfil` vs `/marca/perfil` | Rutas distintas. Middleware permite ambas si `roles.includes()`. activeMode determina dashboard default |
+| 8 | Sesión entre devices | `User.activeMode` en DB. Si se loguea en otro device, ve pantalla selector de modo (Flujo 3) |
 
 ---
 
-## 4. Análisis técnico
+## 5. Análisis técnico
 
-### 4.1 Schema actual
+### 5.1 Schema actual
 
 ```prisma
 model User {
-  id               String    @id @default(cuid())
-  email            String    @unique
-  role             UserRole  @default(TALLER)    // ← VALOR ÚNICO (problema)
+  id        String   @id @default(cuid())
+  email     String   @unique
+  role      UserRole @default(TALLER)
   // ... 15+ campos más
-  taller           Taller?                        // ← 1:1 opcional (ya existe)
-  marca            Marca?                         // ← 1:1 opcional (ya existe)
+  taller    Taller?
+  marca     Marca?
   // ... 13 relaciones más
 }
 
@@ -165,175 +330,162 @@ enum UserRole {
 }
 
 model Taller {
-  userId  String  @unique
-  cuit    String  @unique    // ← CUIT duplicado aquí
-  // ... ~40 campos (wizard, ARCA, métricas)
+  userId                       String   @unique
+  cuit                         String   @unique
+  verificadoAfip               Boolean  @default(false)
+  verificadoAfipAt             DateTime?
+  tipoInscripcionAfip          String?
+  categoriaMonotributo         String?
+  estadoCuitAfip               String?
+  fechaInscripcionAfip         DateTime?
+  actividadesAfip              Json?
+  domicilioFiscalAfip          Json?
+  empleadosRegistradosSipa     Int?
+  empleadosSipaActualizadoAt   DateTime?
+  // ... ~30 campos más
 }
 
 model Marca {
-  userId  String  @unique
-  cuit    String  @unique    // ← CUIT duplicado aquí
-  // ... ~14 campos
+  userId           String  @unique
+  cuit             String  @unique
+  verificadoAfip   Boolean @default(false)
+  // ... ~12 campos más
 }
 ```
 
-**Observación clave:** El schema YA soporta que un User tenga Taller? Y Marca? simultáneamente. Las relaciones son opcionales 1:1. El único impedimento es que `User.role` es un valor único.
-
-### 4.2 Schema propuesto
+### 5.2 Schema propuesto v2
 
 ```prisma
 model User {
-  // DEPRECADO — mantener temporalmente para backward compat en migración
-  role             UserRole  @default(TALLER)
+  id                           String     @id @default(cuid())
+  email                        String     @unique
 
-  // NUEVOS CAMPOS
-  roles            UserRole[] @default([])          // Array de roles activos
-  activeMode       UserRole?                         // Modo activo actual
-  cuit             String?    @unique                // CUIT centralizado
+  // NUEVOS: Multi-rol
+  roles                        UserRole[] @default([])
+  activeMode                   UserRole?
 
-  // El resto del modelo permanece igual
-  taller           Taller?
-  marca            Marca?
-  // ...
+  // NUEVOS: CUIT centralizado
+  cuit                         String?    @unique
+
+  // NUEVOS: Data ARCA centralizada
+  verificadoAfip               Boolean    @default(false)
+  verificadoAfipAt             DateTime?
+  tipoInscripcionAfip          String?
+  categoriaMonotributo         String?
+  estadoCuitAfip               String?
+  fechaInscripcionAfip         DateTime?
+  actividadesAfip              Json?
+  domicilioFiscalAfip          Json?
+  empleadosRegistradosSipa     Int?
+  empleadosSipaActualizadoAt   DateTime?
+
+  // DEPRECATED: mantener para backward compat durante U-02/U-03
+  role                         UserRole   @default(TALLER)
+
+  // Sin cambios
+  taller                       Taller?
+  marca                        Marca?
+  // ... resto
 }
 
 model Taller {
-  cuit    String    // ← pierde @unique, se mantiene como display/legacy
-  // ...
+  userId  String @unique
+  cuit    String              // pierde @unique, queda como cache/display
+  // ELIMINADOS: 10 campos ARCA (movidos a User)
+  // ... resto sin cambios (campos productivos)
 }
 
 model Marca {
-  cuit    String    // ← pierde @unique, se mantiene como display/legacy
-  // ...
+  userId         String  @unique
+  cuit           String              // pierde @unique
+  verificadoAfip Boolean @default(false)  // ELIMINADO (queda en User)
+  // ... resto sin cambios
 }
 ```
 
-**Transición:** `User.role` se mantiene durante U-02/U-03 para backward compatibility. Se elimina en U-08 (tests) cuando todo el código use `roles`.
-
-### 4.3 Diff visual del cambio
+### 5.3 Diff visual
 
 ```diff
  model User {
--  role             UserRole  @default(TALLER)
-+  role             UserRole  @default(TALLER)    // DEPRECATED
-+  roles            UserRole[] @default([])
-+  activeMode       UserRole?
-+  cuit             String?    @unique
++  // Multi-rol
++  roles                        UserRole[] @default([])
++  activeMode                   UserRole?
++  
++  // CUIT centralizado
++  cuit                         String?    @unique
++  
++  // Data ARCA centralizada
++  verificadoAfip               Boolean    @default(false)
++  verificadoAfipAt             DateTime?
++  tipoInscripcionAfip          String?
++  categoriaMonotributo         String?
++  estadoCuitAfip               String?
++  fechaInscripcionAfip         DateTime?
++  actividadesAfip              Json?
++  domicilioFiscalAfip          Json?
++  empleadosRegistradosSipa     Int?
++  empleadosSipaActualizadoAt   DateTime?
+
+   role  UserRole @default(TALLER)  // DEPRECATED hasta U-08
  }
 
  model Taller {
--  cuit    String  @unique
-+  cuit    String              // display only
+-  cuit                         String   @unique
++  cuit                         String   // legacy/display
+-  verificadoAfip               Boolean  @default(false)
+-  verificadoAfipAt             DateTime?
+-  tipoInscripcionAfip          String?
+-  categoriaMonotributo         String?
+-  estadoCuitAfip               String?
+-  fechaInscripcionAfip         DateTime?
+-  actividadesAfip              Json?
+-  domicilioFiscalAfip          Json?
+-  empleadosRegistradosSipa     Int?
+-  empleadosSipaActualizadoAt   DateTime?
  }
 
  model Marca {
--  cuit    String  @unique
-+  cuit    String              // display only
+-  cuit                         String   @unique
++  cuit                         String   // legacy/display
+-  verificadoAfip               Boolean  @default(false)
  }
 ```
 
-### 4.4 Inventario de código afectado
-
-#### API endpoints (54 total)
+### 5.4 Inventario de código afectado (sin cambios respecto v1)
 
 | Patrón | Archivos | Líneas | Refactor |
 |--------|----------|--------|----------|
-| Usa `requiereRolApi()` helper | 9 | 17 | Auto: actualizar helper una vez |
-| Inline `(session.user as {role?}).role` | ~30 | 66 | Manual: migrar a helper o `roles.includes()` |
-| Inline `session.user.role` directo | ~15 | 25 | Manual: cambiar a `roles.includes()` |
+| Usa `requiereRolApi()` helper | 9 | 17 | Auto: actualizar helper |
+| Inline `(session.user as {role?}).role` | ~30 | 66 | **MIGRAR TODOS a helper (D8)** |
+| Inline `session.user.role` directo | ~15 | 25 | **MIGRAR TODOS a helper (D8)** |
+| Páginas con role checks | 30 | - | Layout-level + ajustes |
+| Middleware | 1 | 162 | Refactor a `roles.includes()` + `activeMode` |
+| Auth callbacks | 1 | - | JWT + Session con `roles` y `activeMode` |
+| Componentes UI | 3 | - | header (toggle), sidebar, permisos.ts |
+| Type augmentation | 1 | - | next-auth.d.ts |
 
-**Estrategia:** Actualizar `permisos.ts` para leer `roles` en lugar de `role`. Los 9 endpoints con helper se arreglan automáticamente. Los 45 restantes se migran a usar el helper (uniforma el código + resuelve el problema).
-
-#### Páginas y layouts (30 total)
-
-| Grupo | Archivos | Patrón |
-|-------|----------|--------|
-| Group layouts (`(admin)`, `(taller)`, etc.) | 6 | `role !== 'X'` → `!roles.includes('X')` |
-| Páginas admin | 10 | Inline role checks |
-| Páginas taller/marca | 5 | Layout ya protege |
-| Páginas estado | 4 | `requiereRol` |
-| Páginas auth/public | 5 | Role-aware rendering |
-
-#### Middleware (1 archivo, crítico)
-
-`src/middleware.ts` — 162 líneas. Lee `req.auth?.user?.role` (valor único). Cambio necesario:
+### 5.5 Componentes nuevos UI
 
 ```
-ANTES: userRole === 'TALLER' → permitir /taller
-DESPUÉS: userRoles.includes('TALLER') → permitir /taller
+1. PantallaSelectorModo (post-login con doble perfil)
+   - Ruta: /elegir-modo (intermedia)
+   - Si roles.length > 1: render
+   - Si roles.length === 1: redirect directo
+
+2. PestanasToggle (en header)
+   - Solo visible si roles.length > 1
+   - 2 pestañas grandes (Taller / Marca)
+   - Active state visual
+
+3. ModalAdvertenciaActivacion
+   - Texto fijo con CUIT del usuario
+   - Botones: Cancelar / Continuar
+   - Aparece antes del wizard de activación
+
+4. MiniWizardSegundoPerfil
+   - 4-5 campos (los específicos del rol que activa)
+   - Re-usa componentes del wizard original
 ```
-
-Además, la redirección de `/` a dashboard cambia: usar `activeMode` en lugar de `role`.
-
-#### Auth callbacks (1 archivo, crítico)
-
-`src/compartido/lib/auth.config.ts` — callbacks JWT y session:
-
-```
-ANTES: token.role = user.role
-DESPUÉS: token.roles = user.roles; token.activeMode = user.activeMode
-```
-
-#### Componentes UI (3)
-
-| Componente | Cambio |
-|------------|--------|
-| `header.tsx` | Agregar toggle de modo. Prop `userRole` → `userRoles` + `activeMode` |
-| `user-sidebar.tsx` | Mostrar ambos perfiles. Prop `userRole` → `userRoles` + `activeMode` |
-| `permisos.ts` | Leer `roles` en lugar de `role` |
-
-#### Type augmentation (1 archivo)
-
-`src/compartido/types/next-auth.d.ts` — Agregar `roles: string[]` y `activeMode: string` a `Session['user']`.
-
-### 4.5 Datos actuales en DB (seed)
-
-| Rol | Usuarios | CUITs | Perfiles asociados |
-|-----|----------|-------|--------------------|
-| ADMIN | 1 | — | Ninguno |
-| TALLER | 3 | 3 (todos distintos) | 3 Taller |
-| MARCA | 2 | 2 (todos distintos) | 2 Marca |
-| ESTADO | 1 | — | Ninguno |
-| CONTENIDO | 1 | — | Ninguno |
-| **Total** | **8** | **5** | **5** |
-
-- Ningún usuario tiene ambos perfiles
-- Ningún CUIT aparece en más de un usuario
-- ADMIN, ESTADO y CONTENIDO no tienen CUIT (correcto — CUIT es para talleres y marcas)
-- Migración de datos: trivial (copiar role → roles[role], copiar cuit de Taller/Marca → User)
-
----
-
-## 5. Decisión: Opción A (array de roles)
-
-### Comparativa
-
-| Criterio | Opción A: Array de roles | Opción B: Perfiles separados |
-|----------|--------------------------|------------------------------|
-| **Complejidad schema** | Baja (3 campos nuevos) | Innecesaria (Taller/Marca YA son perfiles separados) |
-| **Migración** | Simple (backfill array + cuit) | Restructuración completa (mover datos) |
-| **Queries afectadas** | Mínimo (leer `roles` en vez de `role`) | Muchas (nuevos joins) |
-| **Backward compat** | `role` coexiste con `roles` durante transición | Rompe todo de golpe |
-| **Performance** | Igual (array en misma tabla) | Peor (join extra) |
-| **Mantenibilidad** | Alta (modelo actual + extensión) | Alta pero innecesaria |
-
-### Justificación
-
-**Se recomienda Opción A** porque:
-
-1. **Taller y Marca ya son perfiles separados.** Crear `PerfilTaller`/`PerfilMarca` duplica lo que `Taller`/`Marca` ya hacen. La Opción B del spec es, en la práctica, la arquitectura actual renombrada.
-
-2. **El cambio mínimo es agregar `roles[]` + `activeMode` + `cuit` a User.** No reestructurar.
-
-3. **Backward compatibility natural:** `roles[0]` equivale a `role` durante la transición. Se puede migrar incrementalmente sin downtime.
-
-4. **Refactor predecible:** El patrón `role === 'X'` se reemplaza sistemáticamente por `roles.includes('X')`. No hay ambigüedad.
-
-### Trade-offs aceptados
-
-- `User.role` (deprecated) coexiste con `User.roles` durante U-02/U-03. Esto es deuda técnica temporal, eliminada en U-08.
-- Los 45 endpoints con inline role checks necesitan refactor manual (no hay atajo).
-- CUIT duplicado temporalmente en User + Taller/Marca hasta que se elimine de los perfiles.
 
 ---
 
@@ -342,173 +494,237 @@ DESPUÉS: token.roles = user.roles; token.activeMode = user.activeMode
 ### Paso 1: Schema (U-02)
 
 ```sql
--- 1. Agregar campos nuevos
-ALTER TABLE users ADD COLUMN roles text[] DEFAULT '{}';
-ALTER TABLE users ADD COLUMN active_mode text;
-ALTER TABLE users ADD COLUMN cuit text;
+-- A. Agregar campos multi-rol a User
+ALTER TABLE users ADD COLUMN roles "UserRole"[] DEFAULT ARRAY[]::"UserRole"[];
+ALTER TABLE users ADD COLUMN active_mode "UserRole";
 
--- 2. Backfill roles desde role
+-- B. Agregar CUIT centralizado a User
+ALTER TABLE users ADD COLUMN cuit TEXT;
+
+-- C. Agregar data ARCA centralizada a User
+ALTER TABLE users ADD COLUMN verificado_afip BOOLEAN DEFAULT false;
+ALTER TABLE users ADD COLUMN verificado_afip_at TIMESTAMP;
+ALTER TABLE users ADD COLUMN tipo_inscripcion_afip TEXT;
+ALTER TABLE users ADD COLUMN categoria_monotributo TEXT;
+ALTER TABLE users ADD COLUMN estado_cuit_afip TEXT;
+ALTER TABLE users ADD COLUMN fecha_inscripcion_afip TIMESTAMP;
+ALTER TABLE users ADD COLUMN actividades_afip JSONB;
+ALTER TABLE users ADD COLUMN domicilio_fiscal_afip JSONB;
+ALTER TABLE users ADD COLUMN empleados_registrados_sipa INTEGER;
+ALTER TABLE users ADD COLUMN empleados_sipa_actualizado_at TIMESTAMP;
+
+-- D. Backfill multi-rol desde role actual
 UPDATE users SET roles = ARRAY[role];
-
--- 3. Backfill cuit desde Taller
-UPDATE users SET cuit = t.cuit
-FROM talleres t WHERE t.user_id = users.id;
-
--- 4. Backfill cuit desde Marca (los que no tienen taller)
-UPDATE users SET cuit = m.cuit
-FROM marcas m WHERE m.user_id = users.id AND users.cuit IS NULL;
-
--- 5. Backfill activeMode = role actual
 UPDATE users SET active_mode = role;
 
--- 6. Crear unique index en cuit
+-- E. Backfill CUIT desde Taller (prioridad)
+UPDATE users
+   SET cuit = t.cuit
+  FROM talleres t
+ WHERE t.user_id = users.id;
+
+-- F. Backfill CUIT desde Marca (si no hay taller)
+UPDATE users
+   SET cuit = m.cuit
+  FROM marcas m
+ WHERE m.user_id = users.id
+   AND users.cuit IS NULL;
+
+-- G. Backfill data ARCA desde Taller
+UPDATE users
+   SET verificado_afip               = t.verificado_afip,
+       verificado_afip_at            = t.verificado_afip_at,
+       tipo_inscripcion_afip         = t.tipo_inscripcion_afip,
+       categoria_monotributo         = t.categoria_monotributo,
+       estado_cuit_afip              = t.estado_cuit_afip,
+       fecha_inscripcion_afip        = t.fecha_inscripcion_afip,
+       actividades_afip              = t.actividades_afip,
+       domicilio_fiscal_afip         = t.domicilio_fiscal_afip,
+       empleados_registrados_sipa    = t.empleados_registrados_sipa,
+       empleados_sipa_actualizado_at = t.empleados_sipa_actualizado_at
+  FROM talleres t
+ WHERE t.user_id = users.id;
+
+-- H. Backfill verificadoAfip desde Marca (si no hay taller)
+UPDATE users
+   SET verificado_afip = m.verificado_afip
+  FROM marcas m
+ WHERE m.user_id = users.id
+   AND users.verificado_afip = false;
+
+-- I. Crear unique index en User.cuit
 CREATE UNIQUE INDEX users_cuit_key ON users(cuit) WHERE cuit IS NOT NULL;
 
--- 7. Eliminar @unique de Taller.cuit y Marca.cuit
+-- J. Eliminar @unique de Taller.cuit y Marca.cuit
 DROP INDEX IF EXISTS talleres_cuit_key;
 DROP INDEX IF EXISTS marcas_cuit_key;
-```
 
-**Prisma migration:** Esto se traduce a un migration file de Prisma con los ALTER TABLE correspondientes.
+-- K. Eliminar columnas ARCA de Taller (NOTA: solo después de validar backfill)
+-- Esto se puede dejar para U-08 si queremos hacer migración no destructiva
+-- En U-02 los mantenemos por backward compat
+```
 
 ### Paso 2: Auth core (U-03)
 
-1. `auth.config.ts`: JWT callback carga `roles` y `activeMode`
-2. `auth.ts`: authorize retorna `roles` y `activeMode`
-3. `next-auth.d.ts`: tipo actualizado
-4. `permisos.ts`: `requiereRol` y `requiereRolApi` leen `roles`
-5. `middleware.ts`: lógica de acceso por `roles.includes()`
+```
+1. auth.config.ts:
+   - JWT callback: token.roles = user.roles, token.activeMode = user.activeMode
+   - Session callback: idem
+2. auth.ts: authorize() retorna roles y activeMode
+3. next-auth.d.ts: tipos actualizados (roles: UserRole[], activeMode: UserRole)
+4. permisos.ts: requiereRol y requiereRolApi leen roles
+5. middleware.ts: lógica de acceso por roles.includes(), redirect a activeMode
 6. 6 group layouts actualizados
-7. 45 endpoints con inline checks migrados a helper o `roles.includes()`
+7. 54 endpoints (todos) migrados a helper requiereRolApi() — D8
+8. Type assertions (83) eliminadas (al pasar a helper)
+```
 
-### Paso 3: UI (U-04)
+### Paso 3: UI multi-rol (U-04)
 
-1. Toggle de modo en `header.tsx`
-2. Endpoint `PATCH /api/auth/mode`
+```
+1. Pantalla intermedia /elegir-modo (Flujo 3)
+   - Component: PantallaSelectorModo
+   - Solo redirige a aquí si roles.length > 1
+2. Pestañas Notion-style en header (Flujo 4)
+   - Component: PestanasToggle
+   - PATCH /api/auth/mode endpoint
 3. Sección "Mis perfiles" en mi-cuenta
-4. Flujo de activación de segundo perfil
+4. Modal de advertencia activación (Flujo 2)
+   - Component: ModalAdvertenciaActivacion
+5. Mini-wizard de segundo perfil (Flujo 2)
+   - Component: MiniWizardSegundoPerfil
+```
 
 ### Paso 4: Datos producción (U-05)
 
+```
 1. Backup de DB antes de migrar
 2. Ejecutar migration (Paso 1)
-3. Verificar: cada user tiene `roles` correcto y `cuit` correcto
-4. Smoke test: login funciona para todos los roles
+3. Verificar: cada user tiene roles, cuit, verificadoAfip correctos
+4. Smoke test: login funciona para todos
+5. Verificar pantalla intermedia (si hay doble perfil) - en seed no aplica
+```
 
 ### Paso 5: Lógica de negocio (U-06, U-07)
 
-1. Clasificación de pedidos cuando user es TALLER+MARCA
-2. Regla anti-incesto: no cotizar en propio pedido
+```
+U-06: Clasificación pedidos cuando user es TALLER+MARCA
+U-07: Regla anti-incesto (no cotizar en propio pedido)
+```
 
-### Paso 6: Tests (U-08)
+### Paso 6: Tests + cleanup (U-08)
 
-1. Actualizar `loginAs` helper
-2. Actualizar `auth.setup.ts`
-3. Refactorizar 25 E2E specs
-4. Refactorizar 17 unit tests
-5. Agregar tests específicos de multi-rol
-6. Eliminar `User.role` (campo deprecated)
+```
+1. Actualizar loginAs helper
+2. Refactorizar 25 E2E + 17 unit tests
+3. Tests nuevos: multi-rol, pantalla selector, toggle, modal
+4. Eliminar User.role (campo deprecated)
+5. Eliminar columnas ARCA de Taller/Marca (opcional, no destructivo)
+```
 
 ### Rollback plan
 
 | Escenario | Acción |
 |-----------|--------|
-| Migration SQL falla | `prisma migrate reset` + re-seed. `roles` y `cuit` no existían, nada se pierde |
-| Código rompe post-deploy | `git revert` del PR. `User.role` sigue existiendo, el sistema funciona como antes |
-| Datos corruptos en prod | Restaurar backup pre-migración. El backup se toma antes del Paso 4 |
-| Tests fallan masivamente | No mergear. Arreglar en branch antes del PR |
+| Migration SQL falla | `prisma migrate reset` + re-seed |
+| Código rompe post-deploy | `git revert` del PR |
+| Datos corruptos en prod | Restaurar backup pre-migración |
+| Tests fallan masivamente | No mergear |
 
 ### Verificación post-migración
 
-- [ ] Cada user tiene `roles` que contiene su `role` original
-- [ ] Cada user TALLER/MARCA tiene `cuit` correcto (verificar contra Taller.cuit/Marca.cuit)
+- [ ] Cada user tiene `roles` correcto
+- [ ] Cada user con TALLER o MARCA tiene `cuit` correcto
 - [ ] `activeMode` = `role` original para todos
+- [ ] `verificadoAfip` migrado correctamente
+- [ ] Datos ARCA migrados (verificar contra Taller original)
 - [ ] Login funciona para los 5 roles
-- [ ] Middleware permite acceso correcto por prefijo
-- [ ] Toggle no aparece para users con un solo rol
-- [ ] Tests E2E pasan (loginAs funciona)
+- [ ] Middleware permite acceso correcto
+- [ ] Toggle NO aparece para roles.length === 1
+- [ ] Pantalla intermedia NO aparece para roles.length === 1
+- [ ] Tests E2E pasan
 
 ---
 
-## 7. Estimaciones refinadas U-02 a U-08
-
-| Spec | Descripción | Master | Refinada | Justificación |
-|------|-------------|--------|----------|---------------|
-| U-02 | Schema refactor | 8h | **5h** | Solo 3 campos nuevos + migration SQL con backfill. Schema simple, no reestructuración |
-| U-03 | Auth refactor | 4h | **8h** | 54 endpoints (9 con helper + 45 inline), 6 layouts, middleware, callbacks. Más grande de lo estimado — 91 líneas de inline role checks |
-| U-04 | Toggle UI | 4h | **4h** | Componente nuevo en header, endpoint PATCH, sección en mi-cuenta. Razonable |
-| U-05 | Migración datos | 3h | **2h** | 8 users en seed, piloto chico en prod. Script trivial + verificación |
-| U-06 | Clasificación pedidos | 4h | **3h** | Lógica aislada en creación de pedidos. Impacto limitado |
-| U-07 | Regla anti-incesto | 2h | **2h** | Validación en cotización. Scope reducido y claro |
-| U-08 | Tests E2E + cleanup | 6h | **9h** | 25 E2E + 17 unit tests + nuevos tests multi-rol + eliminar `User.role` deprecated |
-| | **Total** | **31h** | **33h** | +2h por volumen real de inline role checks |
-
-### Orden de implementación sugerido
-
-```
-U-02 (schema) ──→ U-03 (auth) ──→ U-04 (toggle) ──→ U-05 (migración prod)
-                                        ↓
-                                   U-06 (clasificación) ──→ U-07 (anti-incesto)
-                                                                    ↓
-                                                               U-08 (tests + cleanup)
-```
-
-**Dependencias:**
-- U-02 es prerequisito de todo
-- U-03 es prerequisito de U-04 (toggle necesita auth actualizado)
-- U-04 es prerequisito de U-06 y U-07 (necesitan modo activo)
-- U-08 va al final (testea todo + elimina deprecated)
-- U-05 puede ejecutarse después de U-03 (no depende de UI)
-
----
-
-## 8. Riesgos identificados
+## 7. Riesgos identificados
 
 | # | Riesgo | Probabilidad | Impacto | Mitigación |
 |---|--------|--------------|---------|------------|
-| 1 | **Inline role checks olvidados** | Media | Alto | Grep exhaustivo post-U-03. CI con lint rule que detecte `session.user.role` (deprecated) |
-| 2 | **Middleware edge case con multi-rol** | Baja | Alto | User TALLER+MARCA accede a `/taller` Y `/marca`. Verificar que no hay conflicto de redirect |
-| 3 | **CUIT null para ADMIN/ESTADO/CONTENIDO** | Baja | Bajo | `User.cuit` es `String?` (nullable). Solo TALLER/MARCA tienen CUIT. Queries deben manejar null |
-| 4 | **Toggle confuso para usuarios no técnicos** | Media | Medio | Texto claro: "Estás operando como Taller. Cambiar a Marca ↔". Piloto permite feedback |
-| 5 | **Session stale después de cambio de modo** | Baja | Medio | PATCH /api/auth/mode actualiza JWT. Si hay tabs abiertas con session vieja, se actualizan en siguiente request |
-| 6 | **Rollback parcial** | Baja | Alto | Si U-03 se mergea pero U-04 no, el toggle no existe pero roles[] sí. No es destructivo: users siguen con un solo rol, todo funciona como antes |
-| 7 | **Tests flaky por timing de session** | Media | Bajo | loginAs ya maneja storageState. Agregar wait explícito si toggle cambia session |
+| 1 | Inline role checks olvidados | Baja (D8 migra todos) | Alto | Lint rule post-U-03 + grep exhaustivo |
+| 2 | Migración ARCA pierde datos | Media | Alto | Backup pre-migración, NO eliminar columnas Taller/Marca en U-02 |
+| 3 | Middleware edge case multi-rol | Baja | Alto | Tests específicos para user TALLER+MARCA |
+| 4 | Pantalla intermedia molesta a usuarios single-role | Baja | Bajo | Solo aparece si roles.length > 1 (verificación explícita) |
+| 5 | Pestañas tipo Notion no funcionan bien en mobile | Media | Medio | Diseñar mobile-first, validar con Sergio |
+| 6 | Modal de advertencia ignorado | Baja | Medio | Texto claro, botones explícitos |
+| 7 | Tests flaky por timing de session change | Media | Bajo | loginAs maneja storageState. Agregar wait si toggle cambia |
+| 8 | CUIT verificado pero User no operativo | Baja | Bajo | RN-1 implementada correctamente en checks |
 
 ---
 
-## 9. Apéndice: Discovery completo del pre-flight
+## 8. Casos borde resueltos (resumen)
+
+| # | Caso | Resolución |
+|---|------|------------|
+| 1 | ~~Eliminar perfil~~ | NO existe. Modal advierte permanencia. Contactar soporte si arrepentido |
+| 2 | Marca quiere ser taller | Es Flujo 2 (activar segundo perfil) |
+| 3 | CUIT duplicado al registrarse | `User.cuit @unique` + error claro |
+| 4 | Membresía con doble perfil | Cada rol mantiene su nivel (RN-6) |
+| 5 | ARCA con doble perfil | Centralizado en User. Heredado al segundo (RN-5) |
+| 6 | Notificaciones doble perfil | Al User, sin filtro por modo |
+| 7 | URLs /taller vs /marca | Ambas accesibles si tiene el rol. activeMode = default |
+| 8 | Sesión entre devices | Cada device pasa por pantalla intermedia (Flujo 3) |
+
+---
+
+## 9. Componentes nuevos UI a construir (U-04)
+
+### 9.1 PantallaSelectorModo
+
+```typescript
+// /app/elegir-modo/page.tsx
+// Server component (lee session)
+// Si roles.length === 1 → redirect a /{role.toLowerCase()}
+// Si roles.length > 1 → render 2 cards grandes
+// Cada card: click → PATCH /api/auth/mode + redirect
+```
+
+### 9.2 PestanasToggle (header)
+
+```typescript
+// /compartido/componentes/layout/pestanas-toggle.tsx
+// Server component que lee session
+// Si roles.length <= 1 → return null
+// Si roles.length > 1 → render banda con 2 pestañas
+// onClick → PATCH + redirect
+```
+
+### 9.3 ModalAdvertenciaActivacion
+
+```typescript
+// /compartido/componentes/ui/modal-advertencia-activacion.tsx
+// Props: { cuit: string, rolNuevo: 'TALLER' | 'MARCA', onConfirm, onCancel }
+// Texto fijo con CUIT inyectado
+// Botones: Cancelar + Continuar
+```
+
+### 9.4 MiniWizardSegundoPerfil
+
+```typescript
+// /app/mi-cuenta/activar-perfil/page.tsx
+// Form de 4-5 campos según rol
+// Submit → crea Taller o Marca + actualiza User.roles
+// Redirect al dashboard del nuevo modo
+```
+
+---
+
+## 10. Apéndice: Discovery del pre-flight (sin cambios respecto v1)
 
 ### A. Modelos del schema (44 total)
 
 User, Account, Session, VerificationToken, Taller, Marca, ProcesoProductivo, TipoPrenda, PrendaProceso, TallerProceso, TallerPrenda, Maquinaria, TallerCertificacion, Pedido, Cotizacion, OrdenManufactura, PedidoInvitacion, Validacion, TipoDocumento, ReglaNivel, Coleccion, Video, Evaluacion, Certificado, ProgresoCapacitacion, IntentoEvaluacion, Auditoria, AccionCorrectiva, Denuncia, Notificacion, ConfiguracionSistema, ConfiguracionUpload, DocumentoRAG, LogActividad, NotaInterna, NotaSeguimiento, ConsultaArca, EscrowHito, MotivoNoMatch, ObservacionCampo, MensajeWhatsapp, MagicLink, Novedad, TallerPlantilla.
 
-### B. Modelos que referencian User.id (13)
-
-Account, Session, Taller, Marca, Notificacion (x2 relaciones), LogActividad, NotaInterna, Validacion, Auditoria, MensajeWhatsapp, MagicLink, NotaSeguimiento (x2), ObservacionCampo (x2).
-
-### C. Campos de Taller (~40 campos)
-
-id, userId, nombre, cuit, nivel, puntaje, rating, ubicacion, website, provincia, partido, ubicacionDetalle, descripcion, capacidadMensual, trabajadoresRegistrados, fundado, verificadoAfip, verificadoAfipAt, tipoInscripcionAfip, categoriaMonotributo, estadoCuitAfip, fechaInscripcionAfip, actividadesAfip, domicilioFiscalAfip, empleadosRegistradosSipa, empleadosSipaActualizadoAt, pedidosCompletados, ontimeRate, retrabajoRate, portfolioFotos, sam, prendaPrincipal, organizacion, metrosCuadrados, areas, polivalencia, horario, registroProduccion, escalabilidad, paradasFrecuencia, createdAt, updatedAt.
-
-### D. Campos de Marca (~14 campos)
-
-id, userId, nombre, cuit, ubicacion, tipo, website, volumenMensual, frecuenciaCompra, rating, pedidosRealizados, verificadoAfip, createdAt, updatedAt.
-
-### E. Últimas 10 migraciones
-
-```
-20260428100000_agregar_aprobado_por_validacion
-20260428100001_backfill_aprobado_por_validacion
-20260428200000_tipos_documento_y_reglas_nivel
-20260428200001_seed_reglas_nivel
-20260505120000_add_notificacion_userId_leida_index
-20260505140000_add_nota_seguimiento
-20260505160000_add_observacion_campo
-20260515200000_agregar_modelo_novedad
-20260516120000_desglose_plantilla_taller
-```
-
-### F. Seed: usuarios creados
+### B. Seed: usuarios creados
 
 | Variable | Nombre | Email | Rol | CUIT |
 |----------|--------|-------|-----|------|
@@ -521,44 +737,30 @@ id, userId, nombre, cuit, ubicacion, tipo, website, volumenMensual, frecuenciaCo
 | userEstado | Ana Belén Torres | anabelen.torres@pdt.org.ar | ESTADO | — |
 | (sin var) | Sofía Martínez | sofia.martinez@pdt.org.ar | CONTENIDO | — |
 
-### G. Infraestructura de tests
+### C. Infraestructura de tests
 
 | Framework | Directorio | Archivos | Activo |
 |-----------|-----------|----------|--------|
 | Vitest 4.x | `src/__tests__/` | 33 | Sí |
 | Playwright 1.59 | `tests/e2e/` | 25 | Sí |
-| Playwright (legacy) | `e2e/` | 16 | No (config apunta a `tests/e2e/`) |
 
 `loginAs` helper actual: `'taller' | 'marca' | 'admin' | 'estado'` (4 roles).
 
-### H. Flujo del rol en el sistema
+---
 
-```
-DB (User.role)
-  ↓ authorize()
-JWT callback (token.role = user.role)
-  ↓
-Session callback (session.user.role = token.role)
-  ↓
-Middleware (req.auth.user.role → ruteo por prefijo)
-  ↓
-Página/API (session.user.role → lógica condicional)
-```
+## 11. Próximos pasos
 
-**Con multi-rol:**
+1. **Gerardo aprueba este documento** (U-01 v2)
+2. **Commit del documento a develop:**
+   - `docs/analisis/U-01_multi-rol-airbnb.md` (reemplaza v1)
+3. **Arrancar U-02** (schema refactor, 6h)
+4. **Después de U-02 mergeado:** U-03 (auth, 8h)
+5. **Después de U-03:** U-04 (toggle UI + pantalla intermedia, 6h)
+6. **Después de U-04:** U-05, U-06, U-07 en paralelo
+7. **U-08 al final:** tests y cleanup
 
-```
-DB (User.roles[], User.activeMode)
-  ↓ authorize()
-JWT callback (token.roles = user.roles, token.activeMode = user.activeMode)
-  ↓
-Session callback (session.user.roles, session.user.activeMode)
-  ↓
-Middleware (req.auth.user.roles → permitir múltiples prefijos, activeMode → redirect)
-  ↓
-Página/API (session.user.roles.includes() → lógica, activeMode → UI)
-```
+**Total Bloque U: ~35h** (5 días de trabajo continuo o ~2 semanas con ritmo realista).
 
 ---
 
-*Fin del análisis U-01. Este documento es la base para los specs U-02 a U-08.*
+*Fin de U-01 v2. Este documento es la base aprobada para los specs U-02 a U-08.*
