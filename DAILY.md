@@ -3,6 +3,9 @@
 ## 2026-05-19
 
 ### Gerardo Breard
+- **16:10** `21d454c` — Merge remote-tracking branch 'origin/develop' into feature/v4-x-07a-paleta-dashboards-critico
+
+
 - **11:32** `f05047c` — fix(x-07a): consistencia H1 ink-primary + H2 font-serif
   - `src/app/(admin)/admin/auditorias/[id]/page.tsx`
   - `src/app/(admin)/admin/auditorias/page.tsx`
