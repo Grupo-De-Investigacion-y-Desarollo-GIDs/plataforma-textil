@@ -39,7 +39,7 @@ test.describe('D-01 Roles ESTADO — flujos principales', () => {
     await ensureNotProduction(page)
     await loginEstado(page)
     // Abrir sidebar hamburger
-    const menuBtn = page.locator('button[aria-label="Abrir menú"]').or(page.locator('button[aria-label="Menu"]'))
+    const menuBtn = page.locator('button[aria-label="Abrir menú"]').or(page.locator('button[aria-label="Menu"]')).first()
     if (await menuBtn.isVisible()) {
       await menuBtn.click()
     }
