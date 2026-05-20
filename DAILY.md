@@ -1,5 +1,16 @@
 # Daily Log
 
+## 2026-05-20
+
+### Gerardo Breard
+- **13:53** `9f29dc5` — fix(tests): resolver duplicacion RSC streaming en 5 tests
+  - `KNOWN_ISSUES.md`
+  - `tests/e2e/acceso-verificado.spec.ts`
+  - `tests/e2e/demanda-insatisfecha.spec.ts`
+  - `tests/e2e/roles-estado.spec.ts`
+  - `tests/e2e/smoke.spec.ts`
+
+
 ## 2026-05-19
 
 ### Gerardo Breard
