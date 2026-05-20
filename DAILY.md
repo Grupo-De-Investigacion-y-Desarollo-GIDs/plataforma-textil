@@ -3,6 +3,9 @@
 ## 2026-05-20
 
 ### Gerardo Breard
+- **15:35** `d562934` — chore: trigger deploy
+  - `README.md`
+
 - **13:53** `9f29dc5` — fix(tests): resolver duplicacion RSC streaming en 5 tests
   - `KNOWN_ISSUES.md`
   - `tests/e2e/acceso-verificado.spec.ts`
