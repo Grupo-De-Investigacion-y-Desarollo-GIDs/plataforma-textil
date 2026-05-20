@@ -1,8 +1,23 @@
 # Daily Log
 
+## 2026-05-20
+
+### Gerardo Breard
+- **13:53** `9f29dc5` — fix(tests): resolver duplicacion RSC streaming en 5 tests
+  - `KNOWN_ISSUES.md`
+  - `tests/e2e/acceso-verificado.spec.ts`
+  - `tests/e2e/demanda-insatisfecha.spec.ts`
+  - `tests/e2e/roles-estado.spec.ts`
+  - `tests/e2e/smoke.spec.ts`
+
+
 ## 2026-05-19
 
 ### Gerardo Breard
+- **18:01** `41a50fd` — feat(u-02): schema multi-rol con CUIT y ARCA centralizados
+  - `prisma/migrations/20260519200000_agregar_multirol_y_arca_a_user/migration.sql`
+  - `prisma/schema.prisma`
+
 - **17:35** `cbf0b39` — docs(u-01): corregir tipos ARCA tras pre-flight U-02 (v2.1)
   - `docs/analisis/U-01_multi-rol-airbnb.md`
 

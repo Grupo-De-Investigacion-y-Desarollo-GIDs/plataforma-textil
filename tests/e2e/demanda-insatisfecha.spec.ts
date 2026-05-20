@@ -44,6 +44,7 @@ test.describe('F-05 Dashboard de demanda insatisfecha', () => {
     await loginEstado(page)
 
     await page.goto('/estado')
+    await page.waitForLoadState('networkidle')
     await expect(page.locator('header nav').getByText('Demanda insatisfecha')).toBeVisible({ timeout: 30000 })
   })
 

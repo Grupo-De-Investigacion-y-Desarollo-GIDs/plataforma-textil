@@ -25,8 +25,8 @@ test.describe('Smoke test — setup basico funciona', () => {
 
     // El header debe mostrar tabs del taller (scoped al header) y boton de menu
     const header = page.locator('header')
-    await expect(header.getByText('Mis pedidos')).toBeVisible()
-    await expect(header.getByText('Mi perfil')).toBeVisible()
+    await expect(header.getByText('Mis pedidos').first()).toBeVisible()
+    await expect(header.getByText('Mi perfil').first()).toBeVisible()
     await expect(page.locator('button[aria-label="Abrir menú"]')).toBeVisible()
   })
 

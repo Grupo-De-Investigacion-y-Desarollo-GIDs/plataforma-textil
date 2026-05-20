@@ -147,6 +147,26 @@ model User {
   role             UserRole  @default(TALLER)
   active           Boolean   @default(true)
   registroCompleto Boolean   @default(true)
+
+  // Multi-rol (U-02, decisión D1)
+  roles                        UserRole[]            @default([])
+  activeMode                   UserRole?
+
+  // CUIT centralizado (U-02, decisión D2)
+  cuit                         String?               @unique
+
+  // ARCA centralizado (U-02, decisión D7) — tipos exactos del Taller actual
+  verificadoAfip               Boolean               @default(false)
+  verificadoAfipAt             DateTime?
+  tipoInscripcionAfip          TipoInscripcionAfip?
+  categoriaMonotributo         String?
+  estadoCuitAfip               EstadoCuit?
+  fechaInscripcionAfip         DateTime?
+  actividadesAfip              String[]
+  domicilioFiscalAfip          Json?
+  empleadosRegistradosSipa     Int?
+  empleadosSipaActualizadoAt   DateTime?
+
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
@@ -220,7 +240,7 @@ model Taller {
   id                      String      @id @default(cuid())
   userId                  String      @unique
   nombre                  String
-  cuit                    String      @unique
+  cuit                    String
   nivel                   NivelTaller @default(BRONCE)
   puntaje                 Int         @default(0)
   rating                  Float       @default(0)
@@ -295,7 +315,7 @@ model Marca {
   id                String   @id @default(cuid())
   userId            String   @unique
   nombre            String
-  cuit              String   @unique
+  cuit              String
   ubicacion         String?
   tipo              String?
   website           String?

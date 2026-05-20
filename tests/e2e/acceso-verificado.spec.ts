@@ -7,6 +7,7 @@ test.describe('Acceso pre-formalizacion y niveles privados', () => {
     await ensureNotProduction(page)
 
     await page.goto('/directorio')
+    await page.waitForLoadState('networkidle')
 
     // El directorio deberia cargar sin error
     // Timeout 30s: streaming SSR + cold start en preview puede tardar >15s
