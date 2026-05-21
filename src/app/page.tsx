@@ -137,7 +137,7 @@ export default async function Home() {
 
       {/* ═══ ASI FUNCIONA ═══ */}
       <section id="como-funciona" className="bg-white py-24">
-        <div className="max-w-4xl mx-auto px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-12">
             <p className="text-xs uppercase tracking-widest font-overpass font-bold text-terra-600 mb-2">
               Asi funciona
@@ -146,18 +146,42 @@ export default async function Home() {
               Acompañamos al sector textil en cada paso del recorrido.
             </h2>
           </div>
-          <div className="space-y-6 text-lg text-ink-secondary leading-relaxed">
-            <p>
-              Un taller textil se suma. Aprende con cursos gratuitos, arma su perfil
-              y muestra lo que sabe hacer.
-            </p>
-            <p>
-              Una marca de indumentaria lo descubre en el directorio. Conoce sus
-              capacidades, su trayectoria y su recorrido.
-            </p>
-            <p>
-              Se contactan directo y empiezan a trabajar juntos.
-            </p>
+
+          <div className="mb-10">
+            <Image
+              src="/landing/proceso-textil.webp"
+              alt="Diagrama del proceso: un taller textil se suma, una marca lo descubre, se contactan y trabajan juntos"
+              width={1600}
+              height={900}
+              className="w-full h-auto"
+            />
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 mt-8">
+            <div className="text-center">
+              <h3 className="font-serif font-bold text-lg text-ink-primary mb-2">
+                1. Un taller textil se suma
+              </h3>
+              <p className="text-sm text-ink-secondary">
+                Aprende con cursos gratuitos, arma su perfil y muestra lo que sabe hacer.
+              </p>
+            </div>
+            <div className="text-center">
+              <h3 className="font-serif font-bold text-lg text-ink-primary mb-2">
+                2. Una marca lo descubre
+              </h3>
+              <p className="text-sm text-ink-secondary">
+                Lo encuentra en el directorio y conoce sus capacidades, su trayectoria y su recorrido.
+              </p>
+            </div>
+            <div className="text-center">
+              <h3 className="font-serif font-bold text-lg text-ink-primary mb-2">
+                3. Se contactan y trabajan juntos
+              </h3>
+              <p className="text-sm text-ink-secondary">
+                Se conectan de forma directa y empiezan a trabajar juntos.
+              </p>
+            </div>
           </div>
         </div>
       </section>
