@@ -36,7 +36,7 @@ export default async function Home() {
     prisma.novedad.findMany({
       where: { publicado: true },
       orderBy: { fecha: 'desc' },
-      take: 2,
+      take: 5,
       select: { id: true, tipo: true, titulo: true, slug: true, fecha: true, imagenUrl: true },
     }),
     prisma.coleccion.findMany({
@@ -79,7 +79,7 @@ export default async function Home() {
         <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-terra-50 opacity-70" />
         <div className="absolute top-40 -left-20 w-72 h-72 rounded-full bg-pastel-blue opacity-50" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 grid lg:grid-cols-12 gap-10 items-center">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 grid lg:grid-cols-12 gap-10 items-center">
           <div className="lg:col-span-7">
             <h1 className="font-serif font-extrabold text-5xl lg:text-7xl text-ink-primary leading-[1.05] tracking-tight">
               {hero.titleParts[0]}<br />
@@ -136,9 +136,9 @@ export default async function Home() {
       </section>
 
       {/* ═══ ASI FUNCIONA ═══ */}
-      <section id="como-funciona" className="bg-white py-24">
-        <div className="max-w-4xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-12">
+      <section id="como-funciona" className="py-12">
+        <div className="max-w-6xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-6">
             <p className="text-xs uppercase tracking-widest font-overpass font-bold text-terra-600 mb-2">
               Asi funciona
             </p>
@@ -146,24 +146,48 @@ export default async function Home() {
               Acompañamos al sector textil en cada paso del recorrido.
             </h2>
           </div>
-          <div className="space-y-6 text-lg text-ink-secondary leading-relaxed">
-            <p>
-              Un taller textil se suma. Aprende con cursos gratuitos, arma su perfil
-              y muestra lo que sabe hacer.
-            </p>
-            <p>
-              Una marca de indumentaria lo descubre en el directorio. Conoce sus
-              capacidades, su trayectoria y su recorrido.
-            </p>
-            <p>
-              Se contactan directo y empiezan a trabajar juntos.
-            </p>
+
+          <div className="mb-4">
+            <Image
+              src="/landing/proceso-textil.webp"
+              alt="Diagrama del proceso: un taller textil se suma, una marca lo descubre, se contactan y trabajan juntos"
+              width={1600}
+              height={900}
+              className="w-full max-w-3xl mx-auto h-auto"
+            />
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 mt-4">
+            <div className="text-center">
+              <h3 className="font-serif font-bold text-lg text-ink-primary mb-2">
+                1. Un taller textil se suma
+              </h3>
+              <p className="text-sm text-ink-secondary">
+                Aprende con cursos gratuitos, arma su perfil y muestra lo que sabe hacer.
+              </p>
+            </div>
+            <div className="text-center">
+              <h3 className="font-serif font-bold text-lg text-ink-primary mb-2">
+                2. Una marca lo descubre
+              </h3>
+              <p className="text-sm text-ink-secondary">
+                Lo encuentra en el directorio y conoce sus capacidades, su trayectoria y su recorrido.
+              </p>
+            </div>
+            <div className="text-center">
+              <h3 className="font-serif font-bold text-lg text-ink-primary mb-2">
+                3. Se contactan y trabajan juntos
+              </h3>
+              <p className="text-sm text-ink-secondary">
+                Se conectan de forma directa y empiezan a trabajar juntos.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ═══ IMPACTO ═══ */}
-      <section id="impacto" className="bg-ink-primary text-white py-24 relative overflow-hidden">
+      <section id="impacto" className="bg-ink-primary text-white py-16 relative overflow-hidden">
         <div className="absolute inset-0 pattern-weave opacity-50" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
           <div>
@@ -200,7 +224,7 @@ export default async function Home() {
       </section>
 
       {/* ═══ CARRUSEL NOVEDADES + CURSOS ═══ */}
-      <section className="bg-white py-24">
+      <section className="bg-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
             <div>
@@ -226,11 +250,8 @@ export default async function Home() {
       {/* ═══ DISCLAIMER PILOTO ═══ */}
       <section className="bg-pastel-yellow border-t border-yellow-200/50 py-4">
         <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
-          <p className="text-xs text-ink-secondary">
-            <span className="font-overpass font-bold">Programa piloto en curso.</span>{' '}
-            Plataforma Digital Textil es una iniciativa de OIT Argentina y UNTREF
-            en fase de piloto, Conurbano Sur, mayo 2026. Los datos y funcionalidades
-            pueden evolucionar durante esta etapa.
+          <p className="text-xs font-overpass font-bold text-ink-secondary">
+            Programa piloto
           </p>
         </div>
       </section>

@@ -1,8 +1,35 @@
 # Daily Log
 
+## 2026-05-21
+
+### Gerardo Breard
+- **13:29** `c75cf44` — fix(novedades): error reporting claro en upload + crear buckets faltantes
+  - `src/app/api/contenido/novedades/upload/route.ts`
+
+- **12:28** `32fa815` — fix(x-06b): aplicar feedback QA de Sergio
+  - `public/seed/novedades/capacitacion-inti.jpg`
+  - `public/seed/novedades/caso-taller-sur.jpg`
+  - `public/seed/novedades/convenio-oit.jpg`
+  - `src/app/page.tsx`
+
+
 ## 2026-05-20
 
 ### Gerardo Breard
+- **22:47** `54650c9` — feat(novedades): pagina de detalle publica /novedades/[slug]
+  - `src/app/(public)/novedades/[slug]/page.tsx`
+
+- **22:47** `b60f9d1` — refactor(logo): <LogoPDT> usa next/image en vez de SVG inline
+  - `src/compartido/componentes/ui/logo-pdt.tsx`
+
+- **22:47** `184b7dc` — feat(landing): imagen de proceso en seccion 'Asi funciona'
+  - `public/landing/proceso-textil.webp`
+  - `src/app/page.tsx`
+
+- **22:46** `272ed12` — docs+chore(x-06b): spec FINAL + logo optimizado (985KB → 9.3KB)
+  - `.claude/specs/v4-x-06b-mejoras-landing.md`
+  - `public/logo-pdt.png`
+
 - **15:35** `d562934` — chore: trigger deploy
   - `README.md`
 
