@@ -3,6 +3,10 @@
 ## 2026-05-20
 
 ### Gerardo Breard
+- **22:47** `184b7dc` — feat(landing): imagen de proceso en seccion 'Asi funciona'
+  - `public/landing/proceso-textil.webp`
+  - `src/app/page.tsx`
+
 - **22:46** `272ed12` — docs+chore(x-06b): spec FINAL + logo optimizado (985KB → 9.3KB)
   - `.claude/specs/v4-x-06b-mejoras-landing.md`
   - `public/logo-pdt.png`
