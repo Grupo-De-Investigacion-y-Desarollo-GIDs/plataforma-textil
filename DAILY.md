@@ -19,6 +19,9 @@
 ## 2026-05-21
 
 ### Gerardo Breard
+- **14:12** `536d601` — fix(landing): traer mas novedades al carrusel (take 2 → 5)
+  - `src/app/page.tsx`
+
 - **13:29** `c75cf44` — fix(novedades): error reporting claro en upload + crear buckets faltantes
   - `src/app/api/contenido/novedades/upload/route.ts`
 
