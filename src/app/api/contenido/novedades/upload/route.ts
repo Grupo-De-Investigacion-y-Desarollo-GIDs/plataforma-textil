@@ -48,6 +48,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ url })
   } catch (error) {
     console.error('[contenido/novedades/upload]', error)
-    return NextResponse.json({ error: 'Error al subir la imagen' }, { status: 502 })
+    const message = error instanceof Error ? error.message : 'Error desconocido'
+    const isMissingBucket = /bucket not found/i.test(message)
+    return NextResponse.json(
+      { error: isMissingBucket ? 'Storage no configurado: bucket "imagenes" no existe' : message },
+      { status: isMissingBucket ? 503 : 500 }
+    )
   }
 }
