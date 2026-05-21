@@ -36,7 +36,7 @@ export default async function Home() {
     prisma.novedad.findMany({
       where: { publicado: true },
       orderBy: { fecha: 'desc' },
-      take: 2,
+      take: 5,
       select: { id: true, tipo: true, titulo: true, slug: true, fecha: true, imagenUrl: true },
     }),
     prisma.coleccion.findMany({
