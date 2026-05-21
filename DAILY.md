@@ -3,6 +3,9 @@
 ## 2026-05-20
 
 ### Gerardo Breard
+- **22:47** `b60f9d1` — refactor(logo): <LogoPDT> usa next/image en vez de SVG inline
+  - `src/compartido/componentes/ui/logo-pdt.tsx`
+
 - **22:47** `184b7dc` — feat(landing): imagen de proceso en seccion 'Asi funciona'
   - `public/landing/proceso-textil.webp`
   - `src/app/page.tsx`
