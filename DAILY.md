@@ -3,6 +3,9 @@
 ## 2026-05-21
 
 ### Gerardo Breard
+- **13:29** `c75cf44` — fix(novedades): error reporting claro en upload + crear buckets faltantes
+  - `src/app/api/contenido/novedades/upload/route.ts`
+
 - **12:28** `32fa815` — fix(x-06b): aplicar feedback QA de Sergio
   - `public/seed/novedades/capacitacion-inti.jpg`
   - `public/seed/novedades/caso-taller-sur.jpg`
