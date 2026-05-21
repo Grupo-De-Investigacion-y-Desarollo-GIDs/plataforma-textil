@@ -16,6 +16,15 @@
   - `src/app/(estado)/estado/talleres/[id]/page.tsx`
   - `src/app/api/validaciones/[id]/signed-url/route.ts`
 
+## 2026-05-21
+
+### Gerardo Breard
+- **12:28** `32fa815` — fix(x-06b): aplicar feedback QA de Sergio
+  - `public/seed/novedades/capacitacion-inti.jpg`
+  - `public/seed/novedades/caso-taller-sur.jpg`
+  - `public/seed/novedades/convenio-oit.jpg`
+  - `src/app/page.tsx`
+
 
 ## 2026-05-20
 
