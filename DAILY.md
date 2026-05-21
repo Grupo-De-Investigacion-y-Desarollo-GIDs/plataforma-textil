@@ -3,6 +3,9 @@
 ## 2026-05-20
 
 ### Gerardo Breard
+- **22:47** `54650c9` — feat(novedades): pagina de detalle publica /novedades/[slug]
+  - `src/app/(public)/novedades/[slug]/page.tsx`
+
 - **22:47** `b60f9d1` — refactor(logo): <LogoPDT> usa next/image en vez de SVG inline
   - `src/compartido/componentes/ui/logo-pdt.tsx`
 
