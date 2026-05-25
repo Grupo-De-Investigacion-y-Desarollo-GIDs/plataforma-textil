@@ -26,6 +26,9 @@
   - `src/app/(taller)/taller/perfil/page.tsx`
   - `src/taller/componentes/asistente-chat.tsx`
 
+- **22:57** `37c4ee8` — fix(x-07c): actualizar e2e test de configuracion-niveles al nuevo copy
+  - `tests/e2e/configuracion-niveles.spec.ts`
+
 - **22:50** `8d8ddc5` — feat(x-07c): ocultar niveles en ESTADO y ADMIN (fase 2)
   - `src/app/(admin)/admin/notificaciones/notificaciones-client.tsx`
   - `src/app/(admin)/admin/reportes/page.tsx`
