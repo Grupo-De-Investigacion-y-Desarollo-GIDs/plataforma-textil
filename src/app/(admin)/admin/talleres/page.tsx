@@ -11,6 +11,7 @@ import { StatCard } from '@/compartido/componentes/ui/stat-card'
 import { Select } from '@/compartido/componentes/ui/select'
 import { Eye, Edit } from 'lucide-react'
 import { EmptyState } from '@/compartido/componentes/ui/empty-state'
+import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 
 interface TallerRow {
   id: string
@@ -51,8 +52,8 @@ export default function AdminTalleresPage() {
       </div>
     )},
     { header: 'CUIT', accessor: 'cuit' as const, sortable: true },
-    { header: 'Nivel', accessor: (row: TallerRow) => (
-      <Badge variant={row.nivel === 'ORO' ? 'success' : row.nivel === 'PLATA' ? 'default' : 'warning'}>{row.nivel}</Badge>
+    { header: 'Etapa', accessor: (row: TallerRow) => (
+      <Badge variant={row.nivel === 'ORO' ? 'success' : row.nivel === 'PLATA' ? 'default' : 'warning'}>{nivelAEtapa(row.nivel)}</Badge>
     )},
     { header: 'Estado', accessor: (row: TallerRow) => (
       <Badge variant={row.user.active ? 'success' : 'warning'}>{row.user.active ? 'Activo' : 'Inactivo'}</Badge>
@@ -73,9 +74,9 @@ export default function AdminTalleresPage() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <StatCard value={String(talleres.length)} label="Total" variant="success" />
-        <StatCard value={String(byNivel('ORO'))} label="Oro" variant="success" />
-        <StatCard value={String(byNivel('PLATA'))} label="Plata" variant="muted" />
-        <StatCard value={String(byNivel('BRONCE'))} label="Bronce" variant="warning" />
+        <StatCard value={String(byNivel('ORO'))} label="Consolidada" variant="success" />
+        <StatCard value={String(byNivel('PLATA'))} label="En proceso" variant="muted" />
+        <StatCard value={String(byNivel('BRONCE'))} label="Etapa inicial" variant="warning" />
       </div>
 
       <div className="flex gap-3 mb-4">
@@ -84,10 +85,10 @@ export default function AdminTalleresPage() {
           value={filtroNivel}
           onChange={e => setFiltroNivel(e.target.value)}
           options={[
-            { value: '', label: 'Todos los niveles' },
-            { value: 'ORO', label: 'Oro' },
-            { value: 'PLATA', label: 'Plata' },
-            { value: 'BRONCE', label: 'Bronce' },
+            { value: '', label: 'Todas las etapas' },
+            { value: 'ORO', label: 'Consolidada' },
+            { value: 'PLATA', label: 'En proceso' },
+            { value: 'BRONCE', label: 'Etapa inicial' },
           ]}
         />
       </div>

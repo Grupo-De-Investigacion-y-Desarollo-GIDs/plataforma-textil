@@ -45,9 +45,9 @@ export default async function AdminReportesPage() {
     nivelMap[g.nivel] = g._count
   }
   const niveles = [
-    { nivel: 'Oro', count: nivelMap.ORO, color: 'bg-yellow-400' },
-    { nivel: 'Plata', count: nivelMap.PLATA, color: 'bg-gray-400' },
-    { nivel: 'Bronce', count: nivelMap.BRONCE, color: 'bg-amber-600' },
+    { nivel: 'Consolidada', count: nivelMap.ORO, color: 'bg-blue-600' },
+    { nivel: 'En proceso', count: nivelMap.PLATA, color: 'bg-blue-400' },
+    { nivel: 'Etapa inicial', count: nivelMap.BRONCE, color: 'bg-blue-300' },
   ]
   const totalNivel = totalTalleres || 1
 

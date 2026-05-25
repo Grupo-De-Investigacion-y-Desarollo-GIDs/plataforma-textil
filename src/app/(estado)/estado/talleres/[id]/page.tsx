@@ -13,6 +13,7 @@ import { Badge } from '@/compartido/componentes/ui/badge'
 import { SubmitButton } from '@/compartido/componentes/ui/button'
 import { ChecklistItem } from '@/compartido/componentes/ui/checklist-item'
 import { MapPin, Mail, Phone, FileText, Award } from 'lucide-react'
+import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { ReverificarButton } from './reverificar-button'
@@ -221,7 +222,7 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
               {taller.user.phone && <span className="flex items-center gap-1"><Phone className="w-3.5 h-3.5" /> {taller.user.phone}</span>}
             </div>
             <div className="flex items-center gap-3 mt-3">
-              <Badge variant={nivelVariant}>{taller.nivel}</Badge>
+              <Badge variant={nivelVariant}>{nivelAEtapa(taller.nivel)}</Badge>
               <Badge variant="outline">{taller.puntaje} pts</Badge>
               <Badge variant={taller.user.active ? 'success' : 'warning'}>{taller.user.active ? 'Activo' : 'Inactivo'}</Badge>
             </div>

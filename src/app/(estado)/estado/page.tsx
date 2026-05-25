@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Factory, Store, FileCheck, Award, Clock, TrendingUp, TrendingDown, AlertCircle, BookOpen, ShoppingBag } from 'lucide-react'
+import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 
 export default async function EstadoDashboardPage() {
   const session = await auth()
@@ -118,12 +119,12 @@ export default async function EstadoDashboardPage() {
         </div>
 
         <Card title="Progreso de formalización">
-          <p className="text-xs text-gray-400 mb-3">Porcentaje de documentos completados sobre el total requerido por nivel. Bronce = requisitos básicos, Plata = intermedios, Oro = avanzados.</p>
+          <p className="text-xs text-gray-400 mb-3">Distribución de talleres por etapa de formalización.</p>
           <div className="space-y-3">
             {[
-              { label: 'Bronce', count: bronce, color: 'bg-orange-400', textColor: 'text-orange-600' },
-              { label: 'Plata', count: plata, color: 'bg-gray-400', textColor: 'text-gray-500' },
-              { label: 'Oro', count: oro, color: 'bg-yellow-400', textColor: 'text-yellow-600' },
+              { label: nivelAEtapa('BRONCE'), count: bronce, color: 'bg-blue-300', textColor: 'text-blue-600' },
+              { label: nivelAEtapa('PLATA'), count: plata, color: 'bg-blue-400', textColor: 'text-blue-700' },
+              { label: nivelAEtapa('ORO'), count: oro, color: 'bg-blue-600', textColor: 'text-blue-800' },
             ].map(({ label, count, color, textColor }) => (
               <div key={label}>
                 <div className="flex justify-between text-sm mb-1">
@@ -141,7 +142,7 @@ export default async function EstadoDashboardPage() {
           </div>
           <div className="mt-4 pt-3 border-t border-gray-100 flex justify-between text-xs text-gray-400">
             <span>{totalTalleres} talleres en total</span>
-            <span>{totalTalleres > 0 ? Math.round(((plata + oro) / totalTalleres) * 100) : 0}% formalizados (Plata+Oro)</span>
+            <span>{totalTalleres > 0 ? Math.round(((plata + oro) / totalTalleres) * 100) : 0}% en proceso o consolidados</span>
           </div>
         </Card>
       </div>

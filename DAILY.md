@@ -10,8 +10,22 @@
 
 - **11:41** `e8b69db` — chore: trigger e2e after rebase to develop
 
+- **11:25** `401a8fc` — fix(test): exact:true en los 3 selectores de etapa (no solo Etapa inicial)
+  - `tests/e2e/configuracion-niveles.spec.ts`
+
+- **11:19** `eb835f5` — fix(test): desambiguar selectores en configuracion-niveles e2e
+  - `tests/e2e/configuracion-niveles.spec.ts`
+
 - **11:11** `98c63da` — fix(x-06b): recortar aire vertical del diagrama de proceso (QA Sergio)
   - `src/app/page.tsx`
+
+- **11:04** `90e35ff` — fix(x-07c): corregir textos de nivel en seed reglas_nivel (BUG 1)
+  - `prisma/seed.ts`
+
+- **10:52** `9913013` — fix(x-07c): resolver 4 bugs del QA de Sergio
+  - `src/app/(estado)/estado/documentos/page.tsx`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+  - `src/compartido/lib/content/institutional.ts`
 
 
 ## 2026-05-24
@@ -25,6 +39,22 @@
   - `src/app/(taller)/taller/perfil/completar/page.tsx`
   - `src/app/(taller)/taller/perfil/page.tsx`
   - `src/taller/componentes/asistente-chat.tsx`
+
+- **22:57** `37c4ee8` — fix(x-07c): actualizar e2e test de configuracion-niveles al nuevo copy
+  - `tests/e2e/configuracion-niveles.spec.ts`
+
+- **22:50** `8d8ddc5` — feat(x-07c): ocultar niveles en ESTADO y ADMIN (fase 2)
+  - `src/app/(admin)/admin/notificaciones/notificaciones-client.tsx`
+  - `src/app/(admin)/admin/reportes/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(admin)/admin/talleres/page.tsx`
+  - `src/app/(estado)/estado/configuracion-niveles/page.tsx`
+  - `src/app/(estado)/estado/documentos/page.tsx`
+  - `src/app/(estado)/estado/exportar/page.tsx`
+  - `src/app/(estado)/estado/page.tsx`
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/(estado)/estado/talleres/page.tsx`
+  - `src/compartido/lib/formalizacion.ts`
 
 - **22:27** `f14f47e` — feat(x-07b): ocultar niveles en UI de taller y marca (fase 1)
   - `src/app/(auth)/acceso-rapido/page.tsx`
