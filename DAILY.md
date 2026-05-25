@@ -13,6 +13,11 @@
 - **11:11** `98c63da` — fix(x-06b): recortar aire vertical del diagrama de proceso (QA Sergio)
   - `src/app/page.tsx`
 
+- **10:52** `9913013` — fix(x-07c): resolver 4 bugs del QA de Sergio
+  - `src/app/(estado)/estado/documentos/page.tsx`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+
 
 ## 2026-05-24
 
