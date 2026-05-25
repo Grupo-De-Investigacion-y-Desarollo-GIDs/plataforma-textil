@@ -17,6 +17,12 @@
   - `src/app/(contenido)/contenido/colecciones/page.tsx`
   - `src/middleware.ts`
 
+- **15:37** `ba5f0f0` — feat(w-a): completar formulario taller (W-A2 a W-A5)
+  - `prisma/migrations/20260525180000_agregar_campos_formulario_taller/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+  - `src/app/api/talleres/[id]/route.ts`
+
 - **12:05** `612b951` — feat(leyenda): aplicar leyenda institucional oficial de OIT
   - `src/app/page.tsx`
   - `src/compartido/lib/content/institutional.ts`
