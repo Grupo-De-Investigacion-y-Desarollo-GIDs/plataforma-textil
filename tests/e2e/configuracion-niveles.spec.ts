@@ -15,11 +15,11 @@ test.describe('D-02 Configuracion de niveles y tipos de documento', () => {
     await ensureNotProduction(page)
     await loginEstado(page)
     await page.goto('/estado/configuracion-niveles')
-    await expect(page.getByRole('heading', { name: 'Configuracion de Niveles' })).toBeVisible()
-    // Debe haber 3 cards (BRONCE, PLATA, ORO)
-    await expect(page.getByText('BRONCE', { exact: true })).toBeVisible()
-    await expect(page.getByText('PLATA', { exact: true })).toBeVisible()
-    await expect(page.getByText('ORO', { exact: true })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Configuración de etapas' })).toBeVisible()
+    // Debe haber 3 cards (etapas de formalización)
+    await expect(page.getByText('Etapa inicial')).toBeVisible()
+    await expect(page.getByText('En proceso de formalización')).toBeVisible()
+    await expect(page.getByText('Formalización consolidada')).toBeVisible()
   })
 
   test('ESTADO puede ver puntos en /estado/documentos', async ({ page }) => {
@@ -42,7 +42,7 @@ test.describe('D-02 Configuracion de niveles y tipos de documento', () => {
     await ensureNotProduction(page)
     await loginAs(page, 'admin')
     await page.goto('/estado/configuracion-niveles')
-    await expect(page.getByText('BRONCE')).toBeVisible()
+    await expect(page.getByText('Etapa inicial')).toBeVisible()
   })
 
   test('TALLER no puede acceder a configuracion-niveles API', async ({ page, playwright }) => {
