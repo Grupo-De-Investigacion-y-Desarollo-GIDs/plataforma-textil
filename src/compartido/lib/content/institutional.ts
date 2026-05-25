@@ -1,10 +1,10 @@
 export const INSTITUTIONAL = {
   brandName: 'Plataforma Digital Textil',
-  brandSubtitle: 'OIT \u00b7 UNTREF',
-  brandDescription: 'Una iniciativa de OIT Argentina y la Universidad Nacional de Tres de Febrero.',
+  brandSubtitle: 'Desarrollado por UNTREF con el apoyo de la OIT',
+  brandDescription: 'Desarrollado por UNTREF con el apoyo de la OIT',
   developedBy: 'Desarrollado por UNTREF con el apoyo de la OIT',
   copyrightHolder: 'Plataforma Digital Textil',
-  endorsement: 'Con el respaldo de OIT \u00b7 UNTREF',
+  endorsement: 'Desarrollado por UNTREF con el apoyo de la OIT',
 } as const
 
 export const FOOTER_LINKS = {
@@ -49,13 +49,13 @@ export const TABS_BY_ROLE = {
 export const LANDING_COPY = {
   hero: {
     titleParts: ['Hacé crecer tu taller.', 'Conectá tu marca.', 'Empezá desde donde estés.'],
-    subtitle: 'Plataforma pública de OIT y UNTREF que acompaña a talleres y marcas del sector textil argentino. Capacitaciones gratuitas, perfil profesional y conexión directa entre quienes producen y quienes buscan.',
+    subtitle: 'Plataforma que acompaña a talleres y marcas del sector textil argentino. Capacitaciones gratuitas, perfil profesional y conexión directa entre quienes producen y quienes buscan. Desarrollada por UNTREF con el apoyo de la OIT.',
     ctaTaller: { label: 'Soy taller', href: '/registro?rol=TALLER' },
     ctaMarca: { label: 'Soy marca', href: '/registro?rol=MARCA' },
     imageAlt: 'Trabajadores en taller textil con máquinas de coser',
     cardTrazabilidad: {
       title: 'Acompañamiento institucional',
-      subtitle: 'OIT y UNTREF respaldan tu recorrido.',
+      subtitle: 'Desarrollado por UNTREF con el apoyo de la OIT.',
     },
   },
   impacto: {

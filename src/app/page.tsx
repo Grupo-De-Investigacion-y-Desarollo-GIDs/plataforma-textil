@@ -228,9 +228,9 @@ export default async function Home() {
         <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
           <p className="text-xs text-ink-secondary">
             <span className="font-overpass font-bold">Programa piloto en curso.</span>{' '}
-            Plataforma Digital Textil es una iniciativa de OIT Argentina y UNTREF
-            en fase de piloto, Conurbano Sur, mayo 2026. Los datos y funcionalidades
-            pueden evolucionar durante esta etapa.
+            Plataforma Digital Textil — desarrollada por UNTREF con el apoyo de
+            la OIT — se encuentra en fase de piloto, Conurbano Sur, mayo 2026.
+            Los datos y funcionalidades pueden evolucionar durante esta etapa.
           </p>
         </div>
       </section>
