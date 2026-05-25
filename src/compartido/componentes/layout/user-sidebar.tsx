@@ -67,7 +67,7 @@ const menuItemsByRole: Record<string, MenuItem[]> = {
     { id: 'talleres', label: 'Talleres', href: '/estado/talleres', icon: Building2 },
     { id: 'documentos', label: 'Documentos', href: '/estado/documentos', icon: FileText },
     { id: 'auditorias', label: 'Auditorias', href: '/estado/auditorias', icon: ClipboardCheck },
-    { id: 'niveles', label: 'Niveles', href: '/estado/configuracion-niveles', icon: Sliders },
+    { id: 'niveles', label: 'Etapas', href: '/estado/configuracion-niveles', icon: Sliders },
     { id: 'demanda', label: 'Demanda insatisfecha', href: '/estado/demanda-insatisfecha', icon: AlertTriangle },
     { id: 'sector', label: 'Datos sectoriales', href: '/estado/sector', icon: BarChart3 },
     { id: 'exportar', label: 'Exportar Datos', href: '/estado/exportar', icon: Download },
