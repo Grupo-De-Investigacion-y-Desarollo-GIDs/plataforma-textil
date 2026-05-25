@@ -15,6 +15,15 @@
 ## 2026-05-24
 
 ### Gerardo Breard
+- **23:31** `e70fd9d` — feat(x-09): mi formalizacion en 3 cards por etapa + SAM a tiempo estandar
+  - `src/app/(admin)/admin/evaluaciones/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(contenido)/contenido/evaluaciones/page.tsx`
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/taller/componentes/asistente-chat.tsx`
+
 - **22:27** `f14f47e` — feat(x-07b): ocultar niveles en UI de taller y marca (fase 1)
   - `src/app/(auth)/acceso-rapido/page.tsx`
   - `src/app/(marca)/marca/directorio/page.tsx`
