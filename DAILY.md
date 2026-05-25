@@ -3,6 +3,20 @@
 ## 2026-05-25
 
 ### Gerardo Breard
+- **17:07** `e67beb9` — fix(j-03): CONTENIDO puede gestionar colecciones (bug #355)
+  - `.claude/specs/j-03-contenido-rutas-colecciones.md`
+  - `src/app/(admin)/admin/colecciones/[id]/page.tsx`
+  - `src/app/(admin)/admin/colecciones/[id]/videos/page.tsx`
+  - `src/app/(admin)/admin/colecciones/nueva/page.tsx`
+  - `src/app/(admin)/admin/colecciones/page.tsx`
+  - `src/app/(admin)/admin/dashboard/page.tsx`
+  - `src/app/(admin)/layout.tsx`
+  - `src/app/(contenido)/contenido/colecciones/[id]/page.tsx`
+  - `src/app/(contenido)/contenido/colecciones/[id]/videos/page.tsx`
+  - `src/app/(contenido)/contenido/colecciones/nueva/page.tsx`
+  - `src/app/(contenido)/contenido/colecciones/page.tsx`
+  - `src/middleware.ts`
+
 - **12:05** `612b951` — feat(leyenda): aplicar leyenda institucional oficial de OIT
   - `src/app/page.tsx`
   - `src/compartido/lib/content/institutional.ts`
