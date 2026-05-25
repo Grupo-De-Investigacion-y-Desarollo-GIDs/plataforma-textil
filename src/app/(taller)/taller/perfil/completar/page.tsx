@@ -166,7 +166,7 @@ export default function WizardPage() {
   const scoreOrg = organizacion === 'linea' ? 80 : organizacion === 'modular' ? 70 : organizacion === 'mixta' ? 75 : 55
   const scoreMaq = Math.min(Object.values(maquinaria).reduce((a, b) => a + b, 0) * 12, 100)
   const scoreGestion = registro === 'software' ? 90 : registro === 'excel' ? 65 : registro === 'papel' ? 40 : registro === 'sin-sistematico' ? 30 : 20
-  const scoreEscalabilidad = escalabilidad === 'tercerizar' ? 85 : escalabilidad === 'contratar' ? 75 : escalabilidad === 'turnos' ? 70 : escalabilidad === 'maquinaria' ? 65 : 30
+  const scoreEscalabilidad = escalabilidad === 'maquinaria' ? 85 : escalabilidad === 'contratar' ? 80 : escalabilidad === 'turnos' ? 70 : escalabilidad === 'tercerizar' ? 60 : 30
   const scoreDisponibilidad = disponibilidad === 'sin-cambios' ? 90 : disponibilidad === 'con-limites' ? 70 : disponibilidad === 'baja' ? 40 : disponibilidad === 'no-puede' ? 15 : 0
   const scoreGeneral = Math.round((scoreEquipo + scoreOrg + scoreMaq + scoreGestion + scoreEscalabilidad + scoreDisponibilidad) / 6)
 
