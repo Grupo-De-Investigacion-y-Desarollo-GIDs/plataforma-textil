@@ -147,17 +147,17 @@ export default async function Home() {
             </h2>
           </div>
 
-          <div className="mb-4">
+          <div className="mb-2">
             <Image
               src="/landing/proceso-textil.webp"
               alt="Diagrama del proceso: un taller textil se suma, una marca lo descubre, se contactan y trabajan juntos"
               width={1600}
               height={900}
-              className="w-full max-w-3xl mx-auto h-auto"
+              className="w-full max-w-3xl mx-auto h-[200px] object-cover object-center"
             />
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 mt-4">
+          <div className="grid md:grid-cols-3 gap-8 mt-2">
             <div className="text-center">
               <h3 className="font-serif font-bold text-lg text-ink-primary mb-2">
                 1. Un taller textil se suma
