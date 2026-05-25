@@ -18,8 +18,9 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 
     if (!validacion) return NextResponse.json({ error: 'No encontrada' }, { status: 404 })
 
-    // Solo el taller dueño o ADMIN pueden ver el documento
-    if (role !== 'ADMIN' && validacion.taller.userId !== session.user.id) {
+    // Solo el taller dueño, ADMIN o ESTADO pueden ver el documento
+    const canAccess = role === 'ADMIN' || role === 'ESTADO' || validacion.taller.userId === session.user.id
+    if (!canAccess) {
       return NextResponse.json({ error: 'Sin acceso' }, { status: 403 })
     }
 
