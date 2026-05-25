@@ -12,6 +12,7 @@ import { MapPin, Mail, Phone, AlertTriangle, Award } from 'lucide-react'
 import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 import { BotonEnviarMensaje } from '@/admin/componentes/boton-enviar-mensaje'
 import { NotasSeguimiento } from '@/admin/componentes/notas-seguimiento'
+import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 
 export default async function AdminDetalleTallerPage({ params, searchParams }: {
   params: Promise<{ id: string }>
@@ -111,7 +112,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
               {taller.user.phone && <span className="flex items-center gap-1"><Phone className="w-3.5 h-3.5" /> {taller.user.phone}</span>}
             </div>
             <div className="flex items-center gap-3 mt-3">
-              <Badge variant={nivelVariant}>{taller.nivel}</Badge>
+              <Badge variant={nivelVariant}>{nivelAEtapa(taller.nivel)}</Badge>
               <Badge variant="outline">{taller.puntaje} pts</Badge>
               <Badge variant={taller.user.active ? 'success' : 'warning'}>{taller.user.active ? 'Activo' : 'Inactivo'}</Badge>
               <BotonEnviarMensaje

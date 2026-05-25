@@ -7,6 +7,7 @@ import { Badge } from '@/compartido/componentes/ui/badge'
 import { Modal } from '@/compartido/componentes/ui/modal'
 import { useToast } from '@/compartido/componentes/ui/toast'
 import { Edit, AlertTriangle } from 'lucide-react'
+import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 
 interface ReglaNivel {
   id: string
@@ -102,7 +103,7 @@ export default function EstadoConfiguracionNivelesPage() {
         body: JSON.stringify(editData),
       })
       if (!res.ok) { toast({ mensaje: 'Error al guardar', tipo: 'error' }); return }
-      toast({ mensaje: `Regla ${editModal.nivel} actualizada`, tipo: 'success' })
+      toast({ mensaje: `Regla "${nivelAEtapa(editModal.nivel)}" actualizada`, tipo: 'success' })
       setEditModal(null)
       fetchReglas()
     } finally {
@@ -112,8 +113,8 @@ export default function EstadoConfiguracionNivelesPage() {
 
   return (
     <div className="max-w-4xl mx-auto py-6 px-4">
-      <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">Configuracion de Niveles</h1>
-      <p className="text-gray-500 text-sm mb-6">Criterios para que los talleres alcancen cada nivel — configuracion regulatoria del Estado</p>
+      <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">Configuración de etapas</h1>
+      <p className="text-gray-500 text-sm mb-6">Criterios para que los talleres alcancen cada etapa de formalización — configuración regulatoria del Estado</p>
 
       {loading ? (
         <p className="text-sm text-gray-500 text-center py-8">Cargando...</p>
@@ -124,7 +125,7 @@ export default function EstadoConfiguracionNivelesPage() {
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <Badge variant={nivelVariant[regla.nivel] || 'default'} className="text-sm px-3 py-1">{regla.nivel}</Badge>
+                    <Badge variant={nivelVariant[regla.nivel] || 'default'} className="text-sm px-3 py-1">{nivelAEtapa(regla.nivel)}</Badge>
                     <span className="text-sm text-gray-500">{regla.puntosMinimos} pts minimos</span>
                   </div>
                   {regla.descripcion && <p className="text-sm text-gray-600 mb-3">{regla.descripcion}</p>}
@@ -152,7 +153,7 @@ export default function EstadoConfiguracionNivelesPage() {
         </div>
       )}
 
-      <Modal open={!!editModal} onClose={() => setEditModal(null)} title={`Editar regla ${editModal?.nivel}`} size="lg">
+      <Modal open={!!editModal} onClose={() => setEditModal(null)} title={`Editar regla — ${editModal ? nivelAEtapa(editModal.nivel) : ''}`} size="lg">
         {editModal && (
           <div className="space-y-4">
             <div>
@@ -184,22 +185,22 @@ export default function EstadoConfiguracionNivelesPage() {
                 <div className="mt-3 rounded-lg bg-gray-50 p-3">
                   <p className="text-sm font-semibold text-gray-700 mb-1">
                     {preview.talleresAfectados === 0
-                      ? 'Ningun taller cambiaria de nivel con esta configuracion.'
-                      : `${preview.talleresAfectados} de ${preview.totalTalleres} talleres cambiarian de nivel:`}
+                      ? 'Ningún taller cambiaría de etapa con esta configuración.'
+                      : `${preview.talleresAfectados} de ${preview.totalTalleres} talleres cambiarían de etapa:`}
                   </p>
                   {preview.bajan > 0 && (
                     <div className="flex items-center gap-1 text-sm text-red-600 mt-1">
                       <AlertTriangle className="w-4 h-4" />
-                      {preview.bajan} taller{preview.bajan > 1 ? 'es' : ''} bajaria{preview.bajan > 1 ? 'n' : ''} de nivel
+                      {preview.bajan} taller{preview.bajan > 1 ? 'es' : ''} retrocedería{preview.bajan > 1 ? 'n' : ''} de etapa
                     </div>
                   )}
                   {preview.suben > 0 && (
-                    <p className="text-sm text-green-600 mt-1">{preview.suben} taller{preview.suben > 1 ? 'es' : ''} subiria{preview.suben > 1 ? 'n' : ''} de nivel</p>
+                    <p className="text-sm text-green-600 mt-1">{preview.suben} taller{preview.suben > 1 ? 'es' : ''} avanzaría{preview.suben > 1 ? 'n' : ''} de etapa</p>
                   )}
                   {preview.detalle.length > 0 && (
                     <div className="mt-2 space-y-1">
                       {preview.detalle.map((d, i) => (
-                        <p key={i} className="text-xs text-gray-600">{d.nombre}: {d.nivelActual} → {d.nivelNuevo}</p>
+                        <p key={i} className="text-xs text-gray-600">{d.nombre}: {nivelAEtapa(d.nivelActual)} → {nivelAEtapa(d.nivelNuevo)}</p>
                       ))}
                     </div>
                   )}

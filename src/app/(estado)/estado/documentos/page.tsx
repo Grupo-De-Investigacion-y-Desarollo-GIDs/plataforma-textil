@@ -142,12 +142,12 @@ export default function EstadoDocumentosPage() {
             )}
             {!editando.id && (
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Nivel minimo</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Etapa mínima</label>
                 <select value={editando.nivelMinimo} onChange={e => setEditando({ ...editando, nivelMinimo: e.target.value })}
                   className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent">
-                  <option value="BRONCE">Bronce</option>
-                  <option value="PLATA">Plata</option>
-                  <option value="ORO">Oro</option>
+                  <option value="BRONCE">Etapa inicial</option>
+                  <option value="PLATA">En proceso de formalización</option>
+                  <option value="ORO">Formalización consolidada</option>
                 </select>
               </div>
             )}

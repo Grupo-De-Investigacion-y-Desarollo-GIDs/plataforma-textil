@@ -200,10 +200,10 @@ export default function ExportarReportePage() {
                     onChange={e => setFiltro(r.value, 'nivel', e.target.value)}
                     className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-xs"
                   >
-                    <option value="">Todos los niveles</option>
-                    <option value="BRONCE">Bronce</option>
-                    <option value="PLATA">Plata</option>
-                    <option value="ORO">Oro</option>
+                    <option value="">Todas las etapas</option>
+                    <option value="BRONCE">Etapa inicial</option>
+                    <option value="PLATA">En proceso de formalización</option>
+                    <option value="ORO">Formalización consolidada</option>
                   </select>
                 )}
               </div>
