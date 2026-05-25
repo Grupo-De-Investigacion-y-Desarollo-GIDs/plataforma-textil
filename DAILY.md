@@ -8,6 +8,9 @@
   - `src/compartido/lib/content/institutional.ts`
   - `src/compartido/lib/email.ts`
 
+- **11:11** `98c63da` — fix(x-06b): recortar aire vertical del diagrama de proceso (QA Sergio)
+  - `src/app/page.tsx`
+
 
 ## 2026-05-24
 
