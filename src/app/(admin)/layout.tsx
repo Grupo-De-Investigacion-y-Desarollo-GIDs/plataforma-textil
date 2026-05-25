@@ -15,7 +15,7 @@ const sidebarItems = [
   { label: 'Talleres', href: '/admin/talleres', icon: Building2 },
   { label: 'Marcas', href: '/admin/marcas', icon: Briefcase },
   { label: 'Pedidos', href: '/admin/pedidos', icon: ShoppingCart },
-  { label: 'Colecciones', href: '/admin/colecciones', icon: BookOpen },
+  { label: 'Colecciones', href: '/contenido/colecciones', icon: BookOpen },
   { label: 'Evaluaciones', href: '/admin/evaluaciones', icon: ClipboardCheck },
   { label: 'Certificados', href: '/admin/certificados', icon: Award },
   { label: 'Procesos', href: '/admin/procesos', icon: UserCheck },
