@@ -10,6 +10,9 @@
 
 - **11:41** `e8b69db` — chore: trigger e2e after rebase to develop
 
+- **11:19** `eb835f5` — fix(test): desambiguar selectores en configuracion-niveles e2e
+  - `tests/e2e/configuracion-niveles.spec.ts`
+
 - **11:11** `98c63da` — fix(x-06b): recortar aire vertical del diagrama de proceso (QA Sergio)
   - `src/app/page.tsx`
 
