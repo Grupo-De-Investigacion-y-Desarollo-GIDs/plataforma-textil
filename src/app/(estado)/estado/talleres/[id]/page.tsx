@@ -16,6 +16,7 @@ import { MapPin, Mail, Phone, FileText, Award } from 'lucide-react'
 import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { ReverificarButton } from './reverificar-button'
+import { VerDocumentoButton } from '@/taller/componentes/ver-documento-button'
 
 const estadoToStatus: Record<string, 'completed' | 'pending' | 'warning' | 'optional'> = {
   COMPLETADO: 'completed',
@@ -288,18 +289,13 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
                     </a>
                   </div>
                 )}
-                {/* Link del documento */}
+                {/* Link del documento (signed URL on-the-fly) */}
                 {v.documentoUrl && (
                   <div className="mt-2 ml-8">
-                    <a
-                      href={v.documentoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-brand-blue underline text-sm inline-flex items-center gap-1"
-                    >
-                      <FileText className="w-3.5 h-3.5" />
-                      Ver documento
-                    </a>
+                    <VerDocumentoButton
+                      validacionId={v.id}
+                      fileName="Ver documento"
+                    />
                   </div>
                 )}
                 {/* Acciones para PENDIENTE — solo ESTADO */}

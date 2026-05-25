@@ -1,5 +1,13 @@
 # Daily Log
 
+## 2026-05-24
+
+### Gerardo Breard
+- **21:31** `6295a46` — fix(k-02): preparar codigo para bucket documentos privado
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/api/validaciones/[id]/signed-url/route.ts`
+
+
 ## 2026-05-20
 
 ### Gerardo Breard
