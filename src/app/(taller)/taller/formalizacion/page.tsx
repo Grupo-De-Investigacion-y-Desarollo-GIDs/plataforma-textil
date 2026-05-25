@@ -13,6 +13,7 @@ import { FileText, ExternalLink } from 'lucide-react'
 import { UploadButton } from '@/taller/componentes/upload-button'
 import { VerDocumentoButton } from '@/taller/componentes/ver-documento-button'
 import { MarcarRealizadoButton } from '@/taller/componentes/marcar-realizado-button'
+import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 
 const estadoToStatus: Record<string, 'completed' | 'pending' | 'warning' | 'optional'> = {
   COMPLETADO: 'completed',
@@ -76,26 +77,25 @@ export default async function TallerFormalizacionPage() {
               <p className="text-sm text-gray-500 mt-1">
                 {progreso === 100
                   ? '¡Felicitaciones! Tu taller está completamente formalizado.'
-                  : 'Completá los requisitos para subir de nivel y acceder a más oportunidades.'}
+                  : 'Completá los requisitos para avanzar en tu recorrido de formalización.'}
               </p>
               <div className="flex gap-2 mt-3">
-                <Badge variant={taller.nivel === 'BRONCE' ? 'warning' : taller.nivel === 'PLATA' ? 'default' : 'success'}>
-                  Nivel {taller.nivel}
+                <Badge variant="default">
+                  {nivelAEtapa(taller.nivel)}
                 </Badge>
-                <Badge variant="outline">{taller.puntaje} pts</Badge>
               </div>
             </div>
           </div>
         </Card>
         <Card>
-          <p className="font-overpass font-bold text-brand-blue mb-2">Niveles</p>
+          <p className="font-overpass font-bold text-brand-blue mb-2">Etapas del recorrido</p>
           <div className="space-y-2 text-sm">
-            <div className="flex justify-between"><span>Bronce</span><span className="text-gray-500">0-39 pts</span></div>
-            <div className="flex justify-between"><span>Plata</span><span className="text-gray-500">40-69 pts</span></div>
-            <div className="flex justify-between"><span>Oro</span><span className="text-gray-500">70+ pts</span></div>
+            <div className="flex justify-between"><span>Etapa inicial</span><span className="text-gray-500">Registro completado</span></div>
+            <div className="flex justify-between"><span>En proceso</span><span className="text-gray-500">Documentación en curso</span></div>
+            <div className="flex justify-between"><span>Consolidada</span><span className="text-gray-500">Todos los requisitos</span></div>
           </div>
           <Link href="/taller/aprender" className="text-sm text-brand-blue hover:underline mt-3 block font-semibold">
-            Ganá más puntos con capacitaciones →
+            Capacitate en la academia →
           </Link>
         </Card>
       </div>

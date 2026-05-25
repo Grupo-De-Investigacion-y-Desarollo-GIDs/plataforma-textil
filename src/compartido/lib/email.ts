@@ -106,7 +106,7 @@ export function buildBienvenidaEmail(data: { nombre: string; role: 'TALLER' | 'M
       <h2 style="margin: 0 0 12px;">Hola, ${data.nombre}!</h2>
       <p>Tu cuenta fue creada con éxito como <strong>${esTaller ? 'Taller' : 'Marca'}</strong>.</p>
       ${esTaller
-        ? '<p>El siguiente paso es completar tu perfil y cargar tus documentos de formalización para subir de nivel y aparecer en más búsquedas.</p>'
+        ? '<p>El siguiente paso es completar tu perfil y cargar tus documentos de formalización para avanzar en tu recorrido y aparecer en más búsquedas.</p>'
         : '<p>Ya podés explorar el directorio de talleres y publicar tu primer pedido.</p>'
       }
       ${btnPrimario(dashUrl, 'Ir a mi panel')}
@@ -120,7 +120,7 @@ export function buildDocAprobadoEmail(data: { nombreTaller: string; tipoDoc: str
     html: emailWrapper(`
       <h2 style="margin: 0 0 12px; color: #16a34a;">Documento aprobado</h2>
       <p>Hola <strong>${data.nombreTaller}</strong>, tu documento <strong>${data.tipoDoc}</strong> fue revisado y aprobado por el equipo de PDT.</p>
-      <p>Tu nivel de formalización fue actualizado. Seguí cargando documentos para avanzar hacia el nivel Oro.</p>
+      <p>Tu recorrido de formalización avanzó. Seguí cargando documentos para completar todos los requisitos.</p>
       ${btnPrimario(`${appBaseUrl}/taller/formalizacion`, 'Ver mi formalización')}
     `),
   }

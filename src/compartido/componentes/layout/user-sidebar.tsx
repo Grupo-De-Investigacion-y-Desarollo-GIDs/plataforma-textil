@@ -172,7 +172,7 @@ export function UserSidebar({
               <div className="flex-1 min-w-0">
                 <h2 className="font-overpass font-bold text-lg truncate">{userName}</h2>
                 <p className="text-white/70 text-sm">
-                  {userRole === 'TALLER' && `${userLevel} - ${userProgress}%`}
+                  {userRole === 'TALLER' && `Formalización ${userProgress}%`}
                   {userRole === 'MARCA' && 'Marca'}
                   {userRole === 'ESTADO' && 'Ente Estatal'}
                   {userRole === 'ADMIN' && 'Administrador'}
