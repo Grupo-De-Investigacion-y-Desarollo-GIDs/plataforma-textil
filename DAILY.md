@@ -13,6 +13,9 @@
 - **11:11** `98c63da` — fix(x-06b): recortar aire vertical del diagrama de proceso (QA Sergio)
   - `src/app/page.tsx`
 
+- **11:04** `90e35ff` — fix(x-07c): corregir textos de nivel en seed reglas_nivel (BUG 1)
+  - `prisma/seed.ts`
+
 - **10:52** `9913013` — fix(x-07c): resolver 4 bugs del QA de Sergio
   - `src/app/(estado)/estado/documentos/page.tsx`
   - `src/compartido/componentes/layout/user-sidebar.tsx`
