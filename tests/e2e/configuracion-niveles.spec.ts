@@ -17,7 +17,7 @@ test.describe('D-02 Configuracion de niveles y tipos de documento', () => {
     await page.goto('/estado/configuracion-niveles')
     await expect(page.getByRole('heading', { name: 'Configuración de etapas' })).toBeVisible()
     // Debe haber 3 cards (etapas de formalización)
-    await expect(page.getByText('Etapa inicial')).toBeVisible()
+    await expect(page.getByText('Etapa inicial', { exact: true })).toBeVisible()
     await expect(page.getByText('En proceso de formalización')).toBeVisible()
     await expect(page.getByText('Formalización consolidada')).toBeVisible()
   })
@@ -42,7 +42,7 @@ test.describe('D-02 Configuracion de niveles y tipos de documento', () => {
     await ensureNotProduction(page)
     await loginAs(page, 'admin')
     await page.goto('/estado/configuracion-niveles')
-    await expect(page.getByText('Etapa inicial')).toBeVisible()
+    await expect(page.getByText('Etapa inicial', { exact: true })).toBeVisible()
   })
 
   test('TALLER no puede acceder a configuracion-niveles API', async ({ page, playwright }) => {
