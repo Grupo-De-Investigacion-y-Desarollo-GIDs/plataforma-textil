@@ -17,6 +17,10 @@
   - `src/app/(contenido)/contenido/colecciones/page.tsx`
   - `src/middleware.ts`
 
+- **16:28** `8d1c49d` — docs(w-a): spec retroactivo + QA del formulario taller
+  - `.claude/auditorias/QA_v4-w-a-formulario-taller.md`
+  - `.claude/specs/v4-w-a-formulario-taller.md`
+
 - **15:49** `ac01d3f` — fix(w-a): ajustar scores de escalabilidad (optica solidez productiva)
   - `src/app/(taller)/taller/perfil/completar/page.tsx`
 
