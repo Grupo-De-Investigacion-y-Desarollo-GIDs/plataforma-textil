@@ -1,5 +1,14 @@
 # Daily Log
 
+## 2026-05-25
+
+### Gerardo Breard
+- **12:05** `612b951` — feat(leyenda): aplicar leyenda institucional oficial de OIT
+  - `src/app/page.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+  - `src/compartido/lib/email.ts`
+
+
 ## 2026-05-24
 
 ### Gerardo Breard
