@@ -10,6 +10,9 @@
 
 - **11:41** `e8b69db` — chore: trigger e2e after rebase to develop
 
+- **11:25** `401a8fc` — fix(test): exact:true en los 3 selectores de etapa (no solo Etapa inicial)
+  - `tests/e2e/configuracion-niveles.spec.ts`
+
 - **11:19** `eb835f5` — fix(test): desambiguar selectores en configuracion-niveles e2e
   - `tests/e2e/configuracion-niveles.spec.ts`
 
