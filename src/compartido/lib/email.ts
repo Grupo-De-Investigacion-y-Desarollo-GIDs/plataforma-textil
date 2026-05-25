@@ -271,7 +271,7 @@ export function buildInvitacionRegistroEmail(data: {
   const registroUrl = `${appBaseUrl}/registro`
   const guiaUrl = `${appBaseUrl}/ayuda/onboarding-taller`
   return {
-    subject: 'Te invitamos a la Plataforma Digital Textil — UNTREF/OIT',
+    subject: 'Te invitamos a la Plataforma Digital Textil',
     html: emailWrapper(`
       <h2 style="margin: 0 0 12px;">Hola ${data.nombreDestinatario}</h2>
       <p>Soy <strong>${data.nombreReferente}</strong> de ${data.cargoReferente}. Estamos lanzando la <strong>Plataforma Digital Textil</strong>, una herramienta gratuita que conecta talleres como el tuyo con marcas formales.</p>
