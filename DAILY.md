@@ -26,6 +26,19 @@
   - `src/app/(taller)/taller/perfil/page.tsx`
   - `src/taller/componentes/asistente-chat.tsx`
 
+- **22:50** `8d8ddc5` — feat(x-07c): ocultar niveles en ESTADO y ADMIN (fase 2)
+  - `src/app/(admin)/admin/notificaciones/notificaciones-client.tsx`
+  - `src/app/(admin)/admin/reportes/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(admin)/admin/talleres/page.tsx`
+  - `src/app/(estado)/estado/configuracion-niveles/page.tsx`
+  - `src/app/(estado)/estado/documentos/page.tsx`
+  - `src/app/(estado)/estado/exportar/page.tsx`
+  - `src/app/(estado)/estado/page.tsx`
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/(estado)/estado/talleres/page.tsx`
+  - `src/compartido/lib/formalizacion.ts`
+
 - **22:27** `f14f47e` — feat(x-07b): ocultar niveles en UI de taller y marca (fase 1)
   - `src/app/(auth)/acceso-rapido/page.tsx`
   - `src/app/(marca)/marca/directorio/page.tsx`
