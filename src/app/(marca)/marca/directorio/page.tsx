@@ -203,7 +203,7 @@ export default async function DirectorioPage({
                     <div className="flex items-center gap-1 mt-1">
                       <ShieldCheck className="w-3.5 h-3.5 text-green-600 shrink-0" />
                       <span className="text-xs text-green-700 font-medium">
-                        {taller.validaciones.length} {taller.validaciones.length === 1 ? 'credencial verificada' : 'credenciales verificadas'}
+                        {taller.validaciones.length} de 7 requisitos verificados
                       </span>
                     </div>
                   )}

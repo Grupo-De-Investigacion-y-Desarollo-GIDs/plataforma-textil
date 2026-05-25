@@ -10,8 +10,7 @@ import { Button } from '@/compartido/componentes/ui/button'
 import { ProgressRing } from '@/compartido/componentes/ui/progress-ring'
 import { Star, MapPin, Users, TrendingUp, Clock, Award, Download } from 'lucide-react'
 import { PortfolioManager } from '@/taller/componentes/portfolio-manager'
-
-const nivelColor: Record<string, 'warning' | 'default' | 'success'> = { BRONCE: 'warning', PLATA: 'default', ORO: 'success' }
+import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 
 export default async function TallerPerfilPage() {
   const session = await auth()
@@ -63,7 +62,7 @@ export default async function TallerPerfilPage() {
         <div>
           <div className="flex items-center gap-3 mb-1">
             <h1 className="font-serif font-bold text-3xl text-ink-primary">{taller.nombre}</h1>
-            <Badge variant={nivelColor[taller.nivel]}>{taller.nivel}</Badge>
+            <Badge variant="default">{nivelAEtapa(taller.nivel)}</Badge>
           </div>
           {taller.provincia && (
             <p className="flex items-center gap-1 text-gray-600">
@@ -244,7 +243,7 @@ export default async function TallerPerfilPage() {
 
             {(taller.sam ?? 0) > 0 && (
               <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-gray-500 text-xs mb-1">SAM ({taller.prendaPrincipal})</p>
+                <p className="text-gray-500 text-xs mb-1">Tiempo estándar ({taller.prendaPrincipal})</p>
                 <p className="font-medium text-gray-800">{taller.sam} min</p>
               </div>
             )}
@@ -253,7 +252,7 @@ export default async function TallerPerfilPage() {
 
           <p className="text-xs text-gray-400 mt-4">
             Esta información es visible para el equipo de la plataforma y organismos del Estado.
-            No afecta tu nivel de formalización.
+            No afecta tu recorrido de formalización.
           </p>
         </Card>
       )}

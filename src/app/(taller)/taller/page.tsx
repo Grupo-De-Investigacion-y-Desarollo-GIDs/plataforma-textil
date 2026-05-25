@@ -9,6 +9,7 @@ import { ProximoNivelCard } from '@/taller/componentes/proximo-nivel-card'
 import { SincronizarNivel } from '@/taller/componentes/sincronizar-nivel'
 import { calcularPasosTaller } from '@/compartido/lib/onboarding'
 import { ChecklistOnboarding } from '@/compartido/componentes/ui/checklist-onboarding'
+import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 const PTS_VERIFICADO_AFIP = 10 // bonus AFIP fijo
 const PTS_POR_CERTIFICADO = 15 // bonus por certificado fijo
 
@@ -163,9 +164,7 @@ export default async function TallerDashboardPage() {
     : 0
 
   const nivel = taller?.nivel ?? 'BRONCE'
-
-  // Iconos por nivel
-  const nivelIcono: Record<string, string> = { BRONCE: '🥉', PLATA: '🥈', ORO: '🥇' }
+  const etapa = nivelAEtapa(nivel)
 
   return (
     <div className="space-y-6">
@@ -175,7 +174,7 @@ export default async function TallerDashboardPage() {
           Bienvenido, {taller?.nombre ?? session.user.name}
         </h1>
         <p className="text-gray-500 mt-1">
-          Tu nivel actual: {nivelIcono[nivel]} <span className="font-semibold">{nivel}</span>
+          Tu recorrido de formalización: <span className="font-semibold">{etapa}</span>
         </p>
       </div>
 
@@ -197,16 +196,13 @@ export default async function TallerDashboardPage() {
         </div>
       )}
 
-      {/* Banner de cambio de nivel */}
+      {/* Banner de cambio de etapa de formalización */}
       {cambioNivel && cambioNivel.nivelNuevo && (
         cambioNivel.accion === 'NIVEL_SUBIDO' ? (
           <div className="border-l-4 border-l-green-500 bg-green-50 rounded-card p-4 flex items-center gap-3">
-            <span className="text-2xl">
-              {cambioNivel.nivelNuevo === 'ORO' ? '🥇' : '🥈'}
-            </span>
             <div>
               <p className="font-overpass font-bold text-green-800">
-                Subiste a nivel {cambioNivel.nivelNuevo}!
+                Avanzaste en tu formalización: {nivelAEtapa(cambioNivel.nivelNuevo)}
               </p>
               <p className="text-sm text-green-600">
                 Ahora tenes mas visibilidad en el directorio.
@@ -215,13 +211,12 @@ export default async function TallerDashboardPage() {
           </div>
         ) : (
           <div className="border-l-4 border-l-amber-500 bg-amber-50 rounded-card p-4 flex items-center gap-3">
-            <span className="text-2xl">⚠️</span>
             <div>
               <p className="font-overpass font-bold text-amber-800">
-                Tu nivel bajo a {cambioNivel.nivelNuevo}
+                Tu estado de formalización cambió: {nivelAEtapa(cambioNivel.nivelNuevo)}
               </p>
               <p className="text-sm text-amber-600">
-                Revisa tus documentos en Formalizacion para volver a subir.
+                Revisá tus documentos en Formalización para seguir avanzando.
               </p>
             </div>
           </div>

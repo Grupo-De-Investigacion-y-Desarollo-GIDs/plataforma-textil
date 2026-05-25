@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { calcularProximoNivel, type ProximoNivelInfo, type NivelTaller } from '@/compartido/lib/nivel'
+import { calcularProximoNivel, type ProximoNivelInfo } from '@/compartido/lib/nivel'
+import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 
 // --- Tipos internos ---
 
@@ -41,8 +42,8 @@ function ordenarPasos(info: ProximoNivelInfo): Paso[] {
       id: `documento-${doc.id}`,
       titulo: `Subi tu ${doc.nombre}`,
       descripcion: doc.requerido
-        ? 'Documento requerido para tu proximo nivel'
-        : 'Documento opcional — suma puntos extras',
+        ? 'Documento requerido para avanzar en tu formalización'
+        : 'Documento opcional — suma a tu recorrido',
       puntos: doc.puntos,
       prioridad: doc.requerido ? 2 : 4,
       requerido: doc.requerido,
@@ -57,7 +58,7 @@ function ordenarPasos(info: ProximoNivelInfo): Paso[] {
       titulo: info.certificadosFaltantes === 1
         ? 'Completa un curso de la academia'
         : `Completa ${info.certificadosFaltantes} cursos de la academia`,
-      descripcion: `Tu proximo nivel requiere al menos ${info.certificadosFaltantes} certificado${info.certificadosFaltantes > 1 ? 's' : ''} mas`,
+      descripcion: `Se requieren al menos ${info.certificadosFaltantes} certificado${info.certificadosFaltantes > 1 ? 's' : ''} mas para avanzar`,
       puntos: 0,
       prioridad: 3,
       requerido: true,
@@ -77,12 +78,12 @@ function BarraProgreso({ puntosActuales, puntosObjetivo }: { puntosActuales: num
     <div>
       <div className="h-2.5 bg-zinc-200 rounded-full overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full transition-all"
+          className="h-full bg-gradient-to-r from-brand-blue to-blue-500 rounded-full transition-all"
           style={{ width: `${porcentaje}%` }}
         />
       </div>
       <p className="text-xs text-zinc-500 mt-1">
-        {porcentaje}% ({puntosActuales} / {puntosObjetivo} pts)
+        {porcentaje}% completado
       </p>
     </div>
   )
@@ -94,14 +95,9 @@ function PasoItem({ paso }: { paso: Paso }) {
       <div className="flex-1">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="font-semibold text-sm text-gray-800">{paso.titulo}</span>
-          {paso.puntos > 0 && (
-            <span className="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-medium">
-              +{paso.puntos} pts
-            </span>
-          )}
-          {paso.puntos === 0 && paso.requerido && (
-            <span className="text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded font-medium">
-              req
+          {paso.requerido && (
+            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-medium">
+              requerido
             </span>
           )}
           {!paso.requerido && (
@@ -120,41 +116,19 @@ function PasoItem({ paso }: { paso: Paso }) {
   )
 }
 
-function BeneficiosNivel({ beneficios, nivel }: { beneficios: string[]; nivel: NivelTaller }) {
-  const items = beneficios.length > 0
-    ? beneficios
-    : ['Mejoras tu visibilidad en la plataforma']
-
+function FormalizacionConsolidada() {
   return (
-    <div className="mt-5 pt-4 border-t border-gray-100">
-      <p className="text-sm font-semibold text-gray-700 mb-2">
-        Al alcanzar {nivel} vas a obtener:
-      </p>
-      <ul className="text-sm text-gray-600 space-y-1.5">
-        {items.map((b, i) => (
-          <li key={i} className="flex items-start gap-2">
-            <span className="text-green-500 mt-0.5">&#10003;</span>
-            <span>{b}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
-}
-
-function NivelOroCelebracion() {
-  return (
-    <div className="bg-gradient-to-br from-amber-50 to-amber-100 border border-amber-300 rounded-xl p-6">
-      <h2 className="font-overpass text-xl font-bold text-amber-900 mb-2">
-        Estas en nivel ORO!
+    <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-300 rounded-xl p-6">
+      <h2 className="font-overpass text-xl font-bold text-brand-blue mb-2">
+        Formalización consolidada
       </h2>
-      <p className="text-sm text-amber-800">
-        Sos parte del top de talleres de la plataforma. Mantenete activo cumpliendo con
-        los pedidos para conservar tu nivel.
+      <p className="text-sm text-blue-800">
+        Tu taller cumple con todos los requisitos de formalización. Mantenete activo completando
+        pedidos y renovando tu documentación cuando corresponda.
       </p>
       <div className="mt-4">
-        <p className="text-sm font-semibold text-amber-900 mb-2">Para mantener ORO:</p>
-        <ul className="text-sm text-amber-800 space-y-1">
+        <p className="text-sm font-semibold text-blue-900 mb-2">Para mantener tu estado:</p>
+        <ul className="text-sm text-blue-800 space-y-1">
           <li>Mantene tus documentos al dia</li>
           <li>Segui capacitandote en la academia</li>
           <li>Completa tus pedidos en tiempo</li>
@@ -167,7 +141,7 @@ function NivelOroCelebracion() {
 function ListaVaciaMensaje() {
   return (
     <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-sm text-green-800">
-      Estas listo para el proximo nivel — el sistema lo actualizara en breve.
+      Cumplís con todos los requisitos de esta etapa — el sistema actualizará tu estado en breve.
     </div>
   )
 }
@@ -176,7 +150,7 @@ function ProximoNivelFallback() {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
       <p className="text-sm text-zinc-500">
-        Estamos cargando tu informacion de nivel. Si esto persiste, contacta al soporte.
+        Estamos cargando tu informacion de formalización. Si esto persiste, contacta al soporte.
       </p>
     </div>
   )
@@ -193,17 +167,19 @@ export async function ProximoNivelCard({ tallerId }: { tallerId: string }) {
   }
 
   if (info.nivelProximo === null) {
-    return <NivelOroCelebracion />
+    return <FormalizacionConsolidada />
   }
 
   const pasos = ordenarPasos(info)
+  const etapaProxima = nivelAEtapa(info.nivelProximo)
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
       <div className="mb-4">
         <h2 className="font-overpass font-bold text-lg text-brand-blue">
-          Tu proximo nivel: {info.nivelProximo}
+          Tu recorrido de formalización
         </h2>
+        <p className="text-sm text-zinc-500 mt-1">Próxima etapa: {etapaProxima}</p>
         <div className="mt-2">
           <BarraProgreso
             puntosActuales={info.puntosActuales}
@@ -217,7 +193,7 @@ export async function ProximoNivelCard({ tallerId }: { tallerId: string }) {
       ) : (
         <>
           <p className="text-sm text-zinc-600 mb-3">
-            Te {pasos.length === 1 ? 'falta' : 'faltan'} {pasos.length} paso{pasos.length > 1 ? 's' : ''} para subir a {info.nivelProximo}:
+            Te {pasos.length === 1 ? 'falta' : 'faltan'} {pasos.length} paso{pasos.length > 1 ? 's' : ''} para avanzar:
           </p>
 
           <div className="space-y-3">
@@ -227,8 +203,6 @@ export async function ProximoNivelCard({ tallerId }: { tallerId: string }) {
           </div>
         </>
       )}
-
-      <BeneficiosNivel beneficios={info.beneficiosProximoNivel} nivel={info.nivelProximo} />
     </div>
   )
 }

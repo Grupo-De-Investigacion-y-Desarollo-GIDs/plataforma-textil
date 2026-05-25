@@ -30,9 +30,7 @@ function parsearEntidad(pathname: string): { entidad: string; id: string } | nul
 }
 
 const ROLES_AUDITOR = [
-  { value: 'TALLER_BRONCE', label: 'Taller Bronce' },
-  { value: 'TALLER_PLATA', label: 'Taller Plata' },
-  { value: 'TALLER_ORO', label: 'Taller Oro' },
+  { value: 'TALLER', label: 'Taller' },
   { value: 'MARCA', label: 'Marca' },
   { value: 'ADMIN', label: 'Admin' },
   { value: 'ESTADO', label: 'Estado' },

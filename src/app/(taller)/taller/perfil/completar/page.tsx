@@ -409,7 +409,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* Paso 7: SAM */}
+      {/* Paso 7: Tiempo estándar */}
       {step === 6 && (
         <div>
           <h2 className="font-serif font-bold text-xl text-brand-blue mb-4">¿Cuánto tardás en hacer una prenda?</h2>
@@ -436,7 +436,7 @@ export default function WizardPage() {
         </div>
       )}
 
-      {/* Paso 8: SAM Quiz */}
+      {/* Paso 8: Tiempo estándar Quiz */}
       {step === 7 && (
         <div>
           <h2 className="font-serif font-bold text-xl text-brand-blue mb-4">Verificamos que entendiste el concepto</h2>
