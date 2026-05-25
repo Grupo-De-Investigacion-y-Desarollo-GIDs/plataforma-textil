@@ -3,6 +3,22 @@
 ## 2026-05-24
 
 ### Gerardo Breard
+- **22:27** `f14f47e` — feat(x-07b): ocultar niveles en UI de taller y marca (fase 1)
+  - `src/app/(auth)/acceso-rapido/page.tsx`
+  - `src/app/(marca)/marca/directorio/page.tsx`
+  - `src/app/(public)/ayuda/onboarding-marca/page.tsx`
+  - `src/app/(public)/ayuda/onboarding-taller/page.tsx`
+  - `src/app/(public)/directorio/page.tsx`
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/compartido/componentes/feedback-widget.tsx`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+  - `src/compartido/lib/email.ts`
+  - `src/compartido/lib/formalizacion.ts`
+  - `src/taller/componentes/proximo-nivel-card.tsx`
+
 - **21:31** `6295a46` — fix(k-02): preparar codigo para bucket documentos privado
   - `src/app/(estado)/estado/talleres/[id]/page.tsx`
   - `src/app/api/validaciones/[id]/signed-url/route.ts`
