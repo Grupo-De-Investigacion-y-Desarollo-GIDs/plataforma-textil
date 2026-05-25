@@ -125,7 +125,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
         </div>
         {taller.sam && (
           <div className="mt-4 pt-4 border-t grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-            <div><span className="text-gray-500">SAM:</span> {taller.sam} min</div>
+            <div><span className="text-gray-500">Tiempo estándar:</span> {taller.sam} min</div>
             <div><span className="text-gray-500">Capacidad:</span> {taller.capacidadMensual}/mes</div>
             <div><span className="text-gray-500">Organizacion:</span> {taller.organizacion || '—'}</div>
             <div><span className="text-gray-500">Trabajadores:</span> {taller.trabajadoresRegistrados}</div>

@@ -243,7 +243,7 @@ export default async function TallerPerfilPage() {
 
             {(taller.sam ?? 0) > 0 && (
               <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-gray-500 text-xs mb-1">SAM ({taller.prendaPrincipal})</p>
+                <p className="text-gray-500 text-xs mb-1">Tiempo estándar ({taller.prendaPrincipal})</p>
                 <p className="font-medium text-gray-800">{taller.sam} min</p>
               </div>
             )}
