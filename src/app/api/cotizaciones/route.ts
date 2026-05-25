@@ -87,7 +87,7 @@ export const POST = apiHandler(async (req: NextRequest) => {
   if (!taller.verificadoAfip) {
     return errorResponse({
       code: 'TALLER_NO_VERIFICADO',
-      message: 'Para cotizar pedidos, tu taller necesita tener el CUIT verificado por AFIP. Completá tu documentación en la sección Formalización.',
+      message: 'Para cotizar, primero necesitás completar la validación de CUIT.',
       status: 403,
     })
   }
