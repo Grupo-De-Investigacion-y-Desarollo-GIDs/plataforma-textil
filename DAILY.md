@@ -17,6 +17,9 @@
   - `src/app/(contenido)/contenido/colecciones/page.tsx`
   - `src/middleware.ts`
 
+- **15:49** `ac01d3f` — fix(w-a): ajustar scores de escalabilidad (optica solidez productiva)
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+
 - **15:37** `ba5f0f0` — feat(w-a): completar formulario taller (W-A2 a W-A5)
   - `prisma/migrations/20260525180000_agregar_campos_formulario_taller/migration.sql`
   - `prisma/schema.prisma`
