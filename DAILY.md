@@ -16,6 +16,10 @@
   - `src/app/(estado)/estado/talleres/[id]/page.tsx`
   - `src/app/api/validaciones/[id]/signed-url/route.ts`
 
+- **21:05** `d023292` — fix(x-06b): assets con transparencia real
+  - `public/landing/proceso-textil.webp`
+  - `public/logo-pdt.png`
+
 ## 2026-05-21
 
 ### Gerardo Breard
