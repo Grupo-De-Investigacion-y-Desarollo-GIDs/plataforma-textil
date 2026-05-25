@@ -230,7 +230,7 @@ async function main() {
         puntosMinimos: 0,
         requiereVerificadoAfip: false,
         certificadosAcademiaMin: 0,
-        descripcion: 'Nivel inicial — el taller esta registrado en la plataforma',
+        descripcion: 'Etapa inicial — el taller está registrado en la plataforma',
         beneficios: ['Aparece en el directorio publico', 'Recibe pedidos compatibles con su capacidad'],
       },
       {
@@ -239,7 +239,7 @@ async function main() {
         requiereVerificadoAfip: true,
         certificadosAcademiaMin: 1,
         descripcion: 'El taller demuestra formalizacion basica y compromiso con la capacitacion',
-        beneficios: ['Aparece mas arriba en el directorio', 'Acceso a pedidos de marcas medianas', 'Distintivo PLATA visible'],
+        beneficios: ['Aparece mas arriba en el directorio', 'Acceso a pedidos de marcas medianas', 'Distintivo de formalización visible en el directorio'],
       },
       {
         nivel: 'ORO',
@@ -247,7 +247,7 @@ async function main() {
         requiereVerificadoAfip: true,
         certificadosAcademiaMin: 0,
         descripcion: 'Taller plenamente formalizado con capacitacion avanzada',
-        beneficios: ['Top del directorio', 'Acceso a marcas grandes', 'Invitaciones directas a pedidos premium', 'Distintivo ORO visible'],
+        beneficios: ['Top del directorio', 'Acceso a marcas grandes', 'Invitaciones directas a pedidos premium', 'Distintivo de formalización consolidada visible en el directorio'],
       },
     ],
   })
