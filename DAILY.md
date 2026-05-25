@@ -8,6 +8,8 @@
   - `src/compartido/lib/content/institutional.ts`
   - `src/compartido/lib/email.ts`
 
+- **11:41** `e8b69db` — chore: trigger e2e after rebase to develop
+
 - **11:11** `98c63da` — fix(x-06b): recortar aire vertical del diagrama de proceso (QA Sergio)
   - `src/app/page.tsx`
 
