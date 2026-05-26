@@ -42,7 +42,7 @@ test.describe('UX Mejoras', () => {
     expect(body).not.toContain('Application error')
 
     // Verificar que la pagina tiene tabs de navegacion (Recibidos | Disponibles)
-    const tabDisponibles = page.getByRole('link', { name: 'Disponibles' })
+    const tabDisponibles = page.getByRole('link', { name: 'Disponibles', exact: true })
     await expect(tabDisponibles).toBeVisible({ timeout: 30000 })
   })
 
