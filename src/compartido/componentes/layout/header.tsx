@@ -1,8 +1,10 @@
 'use client'
 
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
-import { Menu } from 'lucide-react'
+import { usePathname } from 'next/navigation'
+import { Menu, User, LogOut } from 'lucide-react'
+import { signOut } from 'next-auth/react'
 import { LogoPDT } from '@/compartido/componentes/ui/logo-pdt'
 import { NotificacionesBell } from './notificaciones-bell'
 import { useSidebar } from './sidebar-context'
@@ -21,7 +23,8 @@ export function Header({
 }: HeaderProps) {
   const { open } = useSidebar()
   const pathname = usePathname()
-  const router = useRouter()
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
 
   // Tabs segun rol
   const tabs = TABS_BY_ROLE[userRole] ?? []
@@ -41,15 +44,34 @@ export function Header({
     .join('')
     .toUpperCase() || '?'
 
-  // Avatar click: mobile abre sidebar, desktop navega a /cuenta
+  // Avatar click: mobile abre sidebar, desktop abre dropdown
   function handleAvatarClick() {
     const isDesktop = window.matchMedia('(min-width: 1024px)').matches
     if (isDesktop) {
-      router.push('/cuenta')
+      setMenuOpen(prev => !prev)
     } else {
       open()
     }
   }
+
+  // Cerrar dropdown al click afuera o ESC
+  useEffect(() => {
+    if (!menuOpen) return
+    function handleClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false)
+      }
+    }
+    function handleEscape(e: KeyboardEvent) {
+      if (e.key === 'Escape') setMenuOpen(false)
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('keydown', handleEscape)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleEscape)
+    }
+  }, [menuOpen])
 
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
@@ -89,17 +111,50 @@ export function Header({
 
             <NotificacionesBell />
 
-            <button
-              onClick={handleAvatarClick}
-              className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <div className="w-8 h-8 rounded-full bg-brand-blue text-white flex items-center justify-center font-overpass font-bold text-xs">
-                {initials}
-              </div>
-              <span className="hidden lg:inline text-sm font-medium text-ink-primary font-overpass">
-                {userName}
-              </span>
-            </button>
+            <div className="relative" ref={menuRef}>
+              <button
+                onClick={handleAvatarClick}
+                className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label="Menú de usuario"
+                aria-expanded={menuOpen}
+                aria-haspopup="true"
+              >
+                <div className="w-8 h-8 rounded-full bg-brand-blue text-white flex items-center justify-center font-overpass font-bold text-xs">
+                  {initials}
+                </div>
+                <span className="hidden lg:inline text-sm font-medium text-ink-primary font-overpass">
+                  {userName}
+                </span>
+              </button>
+
+              {menuOpen && (
+                <div className="absolute right-0 top-full mt-1 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                  <div className="px-4 py-3 border-b border-gray-100">
+                    <p className="text-sm font-overpass font-semibold text-ink-primary truncate">{userName}</p>
+                    <p className="text-xs font-overpass text-ink-secondary mt-0.5">
+                      {userRole === 'TALLER' && 'Taller'}
+                      {userRole === 'MARCA' && 'Marca'}
+                      {userRole === 'ESTADO' && 'Ente Estatal'}
+                    </p>
+                  </div>
+                  <Link
+                    href="/cuenta"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm font-overpass text-gray-700 hover:bg-gray-50 transition-colors"
+                  >
+                    <User className="w-4 h-4 text-gray-400" />
+                    Mi cuenta
+                  </Link>
+                  <button
+                    onClick={() => { setMenuOpen(false); signOut({ callbackUrl: '/login' }) }}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-overpass text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+                  >
+                    <LogOut className="w-4 h-4 text-gray-400" />
+                    Cerrar sesión
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

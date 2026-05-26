@@ -3,14 +3,12 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { signOut } from 'next-auth/react'
 import {
   X,
   User,
   Bell,
   Settings,
   HelpCircle,
-  LogOut,
 } from 'lucide-react'
 import { cn } from '@/compartido/lib/utils'
 import { useSidebar } from './sidebar-context'
@@ -36,14 +34,17 @@ const menuItemsByRole: Record<string, MenuItem[]> = {
   TALLER: [
     { id: 'notificaciones', label: 'Notificaciones', href: '/cuenta/notificaciones', icon: Bell },
     { id: 'cuenta', label: 'Mi cuenta', href: '/cuenta', icon: Settings },
+    { id: 'ayuda', label: 'Ayuda', href: '/ayuda', icon: HelpCircle },
   ],
   MARCA: [
     { id: 'notificaciones', label: 'Notificaciones', href: '/cuenta/notificaciones', icon: Bell },
     { id: 'cuenta', label: 'Mi cuenta', href: '/cuenta', icon: Settings },
+    { id: 'ayuda', label: 'Ayuda', href: '/ayuda', icon: HelpCircle },
   ],
   ESTADO: [
     { id: 'notificaciones', label: 'Notificaciones', href: '/cuenta/notificaciones', icon: Bell },
     { id: 'cuenta', label: 'Mi cuenta', href: '/cuenta', icon: Settings },
+    { id: 'ayuda', label: 'Ayuda', href: '/ayuda', icon: HelpCircle },
   ],
   ADMIN: [
     { id: 'dashboard', label: 'Dashboard', href: '/admin', icon: User },
@@ -227,24 +228,6 @@ export function UserSidebar({
             </ul>
           </nav>
 
-          {/* Footer */}
-          <div className="border-t border-gray-200 p-4 space-y-1">
-            <Link
-              href="/ayuda"
-              onClick={close}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg font-overpass font-medium text-sm text-gray-700 hover:bg-gray-50 hover:text-brand-blue transition-colors group"
-            >
-              <HelpCircle className="w-5 h-5 text-gray-400 group-hover:text-brand-blue" />
-              <span>Ayuda</span>
-            </Link>
-            <button
-              onClick={() => { close(); signOut({ callbackUrl: '/login' }); }}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg font-overpass font-medium text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors group"
-            >
-              <LogOut className="w-5 h-5 text-gray-400 group-hover:text-red-600" />
-              <span>Cerrar sesión</span>
-            </button>
-          </div>
         </div>
       </aside>
     </>

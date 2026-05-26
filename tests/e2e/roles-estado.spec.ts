@@ -41,9 +41,9 @@ test.describe('D-01 Roles ESTADO — flujos principales', () => {
     // F1: sidebar visible en desktop sin necesidad de hamburguesa
     const sidebar = page.locator('aside[aria-label="Menú principal"]')
     await expect(sidebar).toBeVisible()
-    // F3: solo accesos personales (Notificaciones + Mi cuenta)
+    // F3: solo accesos personales (Notificaciones + Mi cuenta + Ayuda)
     const navItems = sidebar.locator('nav ul li')
-    await expect(navItems).toHaveCount(2)
+    await expect(navItems).toHaveCount(3)
   })
 
   test('ESTADO ve tabs Formalizacion/Historial/Datos en detalle taller', async ({ page }) => {
