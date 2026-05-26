@@ -1,4 +1,4 @@
-import { Header } from '@/compartido/componentes/layout'
+import { Header, UserSidebar, SidebarProvider } from '@/compartido/componentes/layout'
 import { Footer } from '@/compartido/componentes/layout/footer'
 import { auth } from '@/compartido/lib/auth'
 import { redirect } from 'next/navigation'
@@ -21,16 +21,24 @@ export default async function EstadoLayout({ children }: { children: React.React
   const showPilotPill = !isMain && !isLocal
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      <Header
-        userName={userName}
-        userRole="ESTADO"
-        showPilotPill={showPilotPill}
-      />
-      <main className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
-        {children}
-      </main>
-      <Footer />
-    </div>
+    <SidebarProvider>
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Header
+          userName={userName}
+          userRole="ESTADO"
+          showPilotPill={showPilotPill}
+        />
+        <div className="flex flex-1">
+          <UserSidebar
+            userRole="ESTADO"
+            userName={userName}
+          />
+          <main className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
+            {children}
+          </main>
+        </div>
+        <Footer />
+      </div>
+    </SidebarProvider>
   )
 }

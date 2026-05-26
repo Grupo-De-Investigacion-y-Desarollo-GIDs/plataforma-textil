@@ -3,6 +3,24 @@
 ## 2026-05-26
 
 ### Gerardo Breard
+- **15:12** `01d8199` — feat(f1-f3): avatar como dropdown (Mi cuenta + Cerrar sesion)
+  - `src/compartido/componentes/layout/header.tsx`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+  - `tests/e2e/roles-estado.spec.ts`
+
+- **13:54** `8440a54` — feat(f1-f3): sidebar visible en desktop + solo accesos personales
+  - `.claude/specs/v4-f1-f3-sidebar-navegacion.md`
+  - `src/app/(estado)/layout.tsx`
+  - `src/app/(marca)/layout.tsx`
+  - `src/app/(public)/layout.tsx`
+  - `src/app/(taller)/layout.tsx`
+  - `src/compartido/componentes/layout/header.tsx`
+  - `src/compartido/componentes/layout/index.ts`
+  - `src/compartido/componentes/layout/sidebar-context.tsx`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+  - `tests/e2e/roles-estado.spec.ts`
+  - `tests/e2e/smoke.spec.ts`
+
 - **10:58** `820acd4` — fix(e2e): usar exact:true para tab Disponibles (strict mode)
   - `tests/e2e/ux-mejoras.spec.ts`
 
