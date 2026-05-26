@@ -901,6 +901,7 @@ async function main() {
       montoTotal: 0,
       presupuesto: 2700000,
       descripcion: 'Buzos con capucha oversize para coleccion invierno. Tela french terry 280gr. Estampa en frente y espalda.',
+      imagenes: [`${process.env.SUPABASE_URL || 'https://fjddgukwydsdcrqoxvns.supabase.co'}/storage/v1/object/public/imagenes/pedido/seed/buzo.png`],
     },
   })
 
@@ -916,6 +917,7 @@ async function main() {
       montoTotal: 0,
       presupuesto: 1800000,
       descripcion: 'Remeras lisas de algodon 24/1 para sublimacion. Colores: blanco, negro, gris melange. Talles S a XXL.',
+      imagenes: [`${process.env.SUPABASE_URL || 'https://fjddgukwydsdcrqoxvns.supabase.co'}/storage/v1/object/public/imagenes/pedido/seed/remera.png`],
     },
   })
 
@@ -931,6 +933,7 @@ async function main() {
       montoTotal: 0,
       presupuesto: 900000,
       descripcion: 'Camisas manga larga en gabardina. Corte regular. Para uniforme corporativo.',
+      imagenes: [`${process.env.SUPABASE_URL || 'https://fjddgukwydsdcrqoxvns.supabase.co'}/storage/v1/object/public/imagenes/pedido/seed/camisa.png`],
     },
   })
 

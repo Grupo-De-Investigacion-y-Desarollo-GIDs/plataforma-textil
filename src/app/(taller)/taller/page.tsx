@@ -344,11 +344,11 @@ export default async function TallerDashboardPage() {
             <span className="text-xs text-gray-400">Capacitate y certificate</span>
           </Link>
           <Link
-            href="/directorio"
+            href="/taller/pedidos/disponibles"
             className="flex flex-col items-center gap-2 bg-white rounded-card p-5 border border-gray-100 shadow-card hover:shadow-md hover:border-brand-blue transition-all text-center"
           >
             <span className="text-3xl">🔍</span>
-            <span className="font-overpass font-semibold text-gray-700">Explorar marcas</span>
+            <span className="font-overpass font-semibold text-gray-700">Ver qué buscan las marcas</span>
             <span className="text-xs text-gray-400">Conocé quién busca talleres</span>
           </Link>
         </div>

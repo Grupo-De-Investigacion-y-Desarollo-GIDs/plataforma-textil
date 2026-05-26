@@ -3,6 +3,15 @@
 ## 2026-05-25
 
 ### Gerardo Breard
+- **21:31** `9968623` — fix(e2e): renombrar prefijo tipoPrenda del test para que no sea filtrado
+  - `tests/e2e/flujo-comercial.spec.ts`
+
+- **21:24** `97f820f` — feat(g-19): vitrina de demanda para el taller con imagenes
+  - `.claude/specs/v4-g-19-vitrina-demanda.md`
+  - `prisma/seed.ts`
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+
 - **17:07** `e67beb9` — fix(j-03): CONTENIDO puede gestionar colecciones (bug #355)
   - `.claude/specs/j-03-contenido-rutas-colecciones.md`
   - `src/app/(admin)/admin/colecciones/[id]/page.tsx`
