@@ -3,6 +3,9 @@
 ## 2026-05-26
 
 ### Gerardo Breard
+- **10:58** `820acd4` — fix(e2e): usar exact:true para tab Disponibles (strict mode)
+  - `tests/e2e/ux-mejoras.spec.ts`
+
 - **10:49** `e8c9fa0` — fix(e2e): actualizar tests para tabs en pedidos taller
   - `tests/e2e/ux-mejoras.spec.ts`
 
