@@ -35,7 +35,18 @@ const MAQUINAS = [
   { nombre: 'Plancha industrial', icono: '🔥' },
 ]
 
-const ROLES_EQUIPO = ['Cortador/a', 'Costurero/a', 'Terminación/Planchado', 'Control calidad', 'Encargado/a', 'Logística']
+const ROLES_EQUIPO = [
+  'Moldería / desarrollo de moldes',
+  'Tizado / marcada',
+  'Corte',
+  'Confección / costura',
+  'Terminación y planchado',
+  'Control de calidad',
+  'Coordinación / encargado/a de taller',
+  'Administración / gestión de pedidos',
+  'Compras / gestión de insumos',
+  'Logística / entregas',
+]
 const AREAS = ['Área de corte', 'Área de confección', 'Área de terminación/planchado', 'Almacén de insumos', 'Área de control de calidad']
 
 interface ProcesoProductivo {
@@ -79,7 +90,9 @@ export default function WizardPage() {
   const [horario, setHorario] = useState('extendido')
   const [horasExtra, setHorasExtra] = useState('a-veces')
   const [registro, setRegistro] = useState('excel')
-  const [escalabilidad, setEscalabilidad] = useState('contratar')
+  const [escalabilidad, setEscalabilidad] = useState('turnos')
+  const [disponibilidad, setDisponibilidad] = useState('')
+  const [organizacionDetalle, setOrganizacionDetalle] = useState('')
   const [procesosSeleccionados, setProcesosSeleccionados] = useState<string[]>([])
   const [prendasSeleccionadas, setPrendasSeleccionadas] = useState<string[]>([])
 
@@ -114,7 +127,12 @@ export default function WizardPage() {
         if (t.horario) setHorario(t.horario)
         if (t.registroProduccion) setRegistro(t.registroProduccion)
         if (t.escalabilidad) setEscalabilidad(t.escalabilidad)
+        if (t.disponibilidad) setDisponibilidad(t.disponibilidad)
+        if (t.organizacionDetalle) setOrganizacionDetalle(t.organizacionDetalle)
         if (t.paradasFrecuencia) setParadas(t.paradasFrecuencia)
+        if (t.rolesFuncionales && typeof t.rolesFuncionales === 'object') {
+          setRoles(t.rolesFuncionales as Record<string, number>)
+        }
         if (t.trabajadoresRegistrados) setTamanoEquipo(
           t.trabajadoresRegistrados <= 2 ? '1-2' : t.trabajadoresRegistrados <= 5 ? '3-5' : t.trabajadoresRegistrados <= 10 ? '6-10' : t.trabajadoresRegistrados <= 20 ? '11-20' : '+20'
         )
@@ -145,11 +163,12 @@ export default function WizardPage() {
   const scoreEquipo = totalPlantilla > 0
     ? Math.round((plantilla.APRENDIZ * 30 + plantilla.MEDIO_OFICIAL * 50 + plantilla.OFICIAL * 75 + plantilla.OFICIAL_CALIFICADO * 90) / totalPlantilla)
     : 0
-  const scoreOrg = organizacion === 'linea' ? 80 : organizacion === 'modular' ? 70 : 55
+  const scoreOrg = organizacion === 'linea' ? 80 : organizacion === 'modular' ? 70 : organizacion === 'mixta' ? 75 : 55
   const scoreMaq = Math.min(Object.values(maquinaria).reduce((a, b) => a + b, 0) * 12, 100)
-  const scoreGestion = registro === 'software' ? 90 : registro === 'excel' ? 65 : registro === 'papel' ? 40 : 20
-  const scoreEscalabilidad = escalabilidad === 'turno' || escalabilidad === 'tercerizar' ? 85 : escalabilidad === 'contratar' ? 75 : escalabilidad === 'horas-extra' ? 55 : 30
-  const scoreGeneral = Math.round((scoreEquipo + scoreOrg + scoreMaq + scoreGestion + scoreEscalabilidad) / 5)
+  const scoreGestion = registro === 'software' ? 90 : registro === 'excel' ? 65 : registro === 'papel' ? 40 : registro === 'sin-sistematico' ? 30 : 20
+  const scoreEscalabilidad = escalabilidad === 'maquinaria' ? 85 : escalabilidad === 'contratar' ? 80 : escalabilidad === 'turnos' ? 70 : escalabilidad === 'tercerizar' ? 60 : 30
+  const scoreDisponibilidad = disponibilidad === 'sin-cambios' ? 90 : disponibilidad === 'con-limites' ? 70 : disponibilidad === 'baja' ? 40 : disponibilidad === 'no-puede' ? 15 : 0
+  const scoreGeneral = Math.round((scoreEquipo + scoreOrg + scoreMaq + scoreGestion + scoreEscalabilidad + scoreDisponibilidad) / 6)
 
   const buildPayload = useCallback(() => {
     const numMaq = Object.values(maquinaria).reduce((a, b) => a + b, 0)
@@ -161,6 +180,7 @@ export default function WizardPage() {
       sam: parseInt(sam) || undefined,
       prendaPrincipal: prendaPrincipal || undefined,
       organizacion: organizacion || undefined,
+      organizacionDetalle: organizacion === 'mixta' ? (organizacionDetalle || undefined) : undefined,
       metrosCuadrados: parseInt(metrosCuadrados) || undefined,
       areas,
       plantilla,
@@ -168,16 +188,18 @@ export default function WizardPage() {
       horario: horario || undefined,
       registroProduccion: registro || undefined,
       escalabilidad: escalabilidad || undefined,
+      disponibilidad: disponibilidad || undefined,
       paradasFrecuencia: paradas || undefined,
       capacidadMensual: capMensual || undefined,
       trabajadoresRegistrados: tamanoEquipo === '1-2' ? 2 : tamanoEquipo === '3-5' ? 4 : tamanoEquipo === '6-10' ? 8 : tamanoEquipo === '11-20' ? 15 : 25,
+      rolesFuncionales: Object.keys(roles).length > 0 ? roles : undefined,
       maquinaria: Object.entries(maquinaria)
         .filter(([, c]) => c > 0)
         .map(([nombre, cantidad]) => ({ nombre, cantidad, tipo: numMaq > 0 ? 'confeccion' : undefined })),
       procesosIds: procesosSeleccionados,
       prendasIds: prendasSeleccionadas,
     }
-  }, [maquinaria, sam, prendaPrincipal, organizacion, metrosCuadrados, areas, plantilla, polivalencia, horario, registro, escalabilidad, paradas, roles, tamanoEquipo, procesosSeleccionados, prendasSeleccionadas])
+  }, [maquinaria, sam, prendaPrincipal, organizacion, organizacionDetalle, metrosCuadrados, areas, plantilla, polivalencia, horario, registro, escalabilidad, disponibilidad, paradas, roles, tamanoEquipo, procesosSeleccionados, prendasSeleccionadas])
 
   async function handleSave(redirectTo: string) {
     if (!tallerId) {
@@ -380,12 +402,24 @@ export default function WizardPage() {
             <p><strong>En línea:</strong> Cada persona hace UNA operación. Más rápido para grandes volúmenes.</p>
             <p><strong>Modular:</strong> Grupos pequeños hacen varias operaciones. Balance velocidad/flexibilidad.</p>
             <p><strong>Prenda completa:</strong> Cada persona hace toda la prenda. Mayor control de calidad.</p>
+            <p><strong>Mixta:</strong> Combina distintos modos según el tipo de trabajo o pedido.</p>
           </Card>
           <div className="space-y-2">
             <RadioOption value="linea" current={organizacion} onChange={setOrganizacion} label="En línea" desc="Cada uno hace una operación específica" />
             <RadioOption value="modular" current={organizacion} onChange={setOrganizacion} label="Modular" desc="Grupos hacen varias operaciones juntas" />
             <RadioOption value="completa" current={organizacion} onChange={setOrganizacion} label="Prenda completa" desc="Cada persona hace la prenda de principio a fin" />
+            <RadioOption value="mixta" current={organizacion} onChange={setOrganizacion} label="Organización mixta" desc="Combina distintos modos según el tipo de trabajo" />
           </div>
+          {organizacion === 'mixta' && (
+            <div className="mt-3">
+              <Input
+                label="Describí cómo combinás los modos de organización"
+                value={organizacionDetalle}
+                onChange={e => setOrganizacionDetalle(e.target.value)}
+                placeholder="Ej: línea para producción en serie, modular para muestras"
+              />
+            </div>
+          )}
         </div>
       )}
 
@@ -525,17 +559,24 @@ export default function WizardPage() {
           <p className="text-sm font-semibold mb-2">¿Llevan registro de producción diaria?</p>
           <div className="space-y-2 mb-4">
             <RadioOption value="no" current={registro} onChange={setRegistro} label="No llevamos registro" />
+            <RadioOption value="sin-sistematico" current={registro} onChange={setRegistro} label="Sin registro sistemático" desc="Anotamos algo pero no de forma regular" />
             <RadioOption value="papel" current={registro} onChange={setRegistro} label="Anotamos en papel/cuaderno" />
             <RadioOption value="excel" current={registro} onChange={setRegistro} label="Usamos planilla Excel o similar" />
             <RadioOption value="software" current={registro} onChange={setRegistro} label="Tenemos sistema/software" />
           </div>
-          <p className="text-sm font-semibold mb-2">Si te piden el DOBLE de producción, ¿cómo responderías?</p>
+          <p className="text-sm font-semibold mb-2">Disponibilidad para tomar nuevos pedidos</p>
+          <div className="space-y-2 mb-4">
+            <RadioOption value="sin-cambios" current={disponibilidad} onChange={setDisponibilidad} label="Puede incorporar nuevos pedidos sin cambios relevantes" />
+            <RadioOption value="con-limites" current={disponibilidad} onChange={setDisponibilidad} label="Puede tomar algunos pedidos adicionales, con límites" />
+            <RadioOption value="baja" current={disponibilidad} onChange={setDisponibilidad} label="Tiene baja disponibilidad actual; solo pequeños/simples" />
+            <RadioOption value="no-puede" current={disponibilidad} onChange={setDisponibilidad} label="No puede tomar nuevos pedidos" />
+          </div>
+          <p className="text-sm font-semibold mb-2">¿Cómo podría aumentar su capacidad productiva?</p>
           <div className="space-y-2">
-            <RadioOption value="no-puedo" current={escalabilidad} onChange={setEscalabilidad} label="No podría, estoy al máximo" />
-            <RadioOption value="horas-extra" current={escalabilidad} onChange={setEscalabilidad} label="Con horas extras del equipo actual" />
-            <RadioOption value="contratar" current={escalabilidad} onChange={setEscalabilidad} label="Contratar más gente temporalmente" />
-            <RadioOption value="turno" current={escalabilidad} onChange={setEscalabilidad} label="Agregar un turno adicional" />
-            <RadioOption value="tercerizar" current={escalabilidad} onChange={setEscalabilidad} label="Tercerizar a otro taller" />
+            <RadioOption value="turnos" current={escalabilidad} onChange={setEscalabilidad} label="Ampliando turnos u horas de trabajo" />
+            <RadioOption value="contratar" current={escalabilidad} onChange={setEscalabilidad} label="Contratando personal" />
+            <RadioOption value="tercerizar" current={escalabilidad} onChange={setEscalabilidad} label="Tercerizando parte de la producción" />
+            <RadioOption value="maquinaria" current={escalabilidad} onChange={setEscalabilidad} label="Invirtiendo en maquinaria/equipamiento" />
           </div>
         </div>
       )}

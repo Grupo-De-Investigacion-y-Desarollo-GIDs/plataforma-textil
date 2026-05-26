@@ -272,16 +272,19 @@ model Taller {
   portfolioFotos     String[]
 
   // Wizard perfil (pasos 1-11)
-  sam                 Int?
-  prendaPrincipal     String?
-  organizacion        String?
-  metrosCuadrados     Int?
-  areas               String[]
-  polivalencia        String?
-  horario             String?
-  registroProduccion  String?
-  escalabilidad       String?
-  paradasFrecuencia   String?
+  sam                  Int?
+  prendaPrincipal      String?
+  organizacion         String?
+  organizacionDetalle  String?    // W-A2: detalle de organización mixta
+  metrosCuadrados      Int?
+  areas                String[]
+  polivalencia         String?
+  horario              String?
+  registroProduccion   String?
+  escalabilidad        String?
+  disponibilidad       String?    // W-A4: disponibilidad para nuevos pedidos
+  paradasFrecuencia    String?
+  rolesFuncionales     Json?      // W-A5: roles funcionales del taller
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -17,6 +17,19 @@
   - `src/app/(contenido)/contenido/colecciones/page.tsx`
   - `src/middleware.ts`
 
+- **16:28** `8d1c49d` — docs(w-a): spec retroactivo + QA del formulario taller
+  - `.claude/auditorias/QA_v4-w-a-formulario-taller.md`
+  - `.claude/specs/v4-w-a-formulario-taller.md`
+
+- **15:49** `ac01d3f` — fix(w-a): ajustar scores de escalabilidad (optica solidez productiva)
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+
+- **15:37** `ba5f0f0` — feat(w-a): completar formulario taller (W-A2 a W-A5)
+  - `prisma/migrations/20260525180000_agregar_campos_formulario_taller/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+  - `src/app/api/talleres/[id]/route.ts`
+
 - **12:05** `612b951` — feat(leyenda): aplicar leyenda institucional oficial de OIT
   - `src/app/page.tsx`
   - `src/compartido/lib/content/institutional.ts`

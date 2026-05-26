@@ -54,9 +54,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     const fields = [
       'nombre', 'ubicacion', 'website', 'provincia', 'partido', 'ubicacionDetalle', 'descripcion',
       'capacidadMensual', 'trabajadoresRegistrados', 'fundado',
-      'sam', 'prendaPrincipal', 'organizacion', 'metrosCuadrados',
+      'sam', 'prendaPrincipal', 'organizacion', 'organizacionDetalle', 'metrosCuadrados',
       'areas', 'polivalencia', 'horario',
-      'registroProduccion', 'escalabilidad', 'paradasFrecuencia',
+      'registroProduccion', 'escalabilidad', 'disponibilidad', 'paradasFrecuencia',
+      'rolesFuncionales',
       'portfolioFotos',
     ]
     for (const f of fields) {
