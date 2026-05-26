@@ -41,9 +41,9 @@ test.describe('UX Mejoras', () => {
     const body = await page.textContent('body')
     expect(body).not.toContain('Application error')
 
-    // Verificar que la pagina tiene breadcrumbs (nav con aria-label)
-    const breadcrumb = page.locator('main nav[aria-label="Breadcrumb"]')
-    await expect(breadcrumb).toBeVisible({ timeout: 30000 })
+    // Verificar que la pagina tiene tabs de navegacion (Recibidos | Disponibles)
+    const tabDisponibles = page.getByRole('link', { name: 'Disponibles' })
+    await expect(tabDisponibles).toBeVisible({ timeout: 30000 })
   })
 
   test('Pagina de ordenes del taller carga con Suspense', async ({ page }) => {
@@ -53,7 +53,7 @@ test.describe('UX Mejoras', () => {
     await page.goto('/taller/pedidos')
     await page.waitForLoadState('domcontentloaded')
 
-    const heading = page.getByRole('heading', { name: 'Pedidos Recibidos' })
+    const heading = page.getByRole('heading', { name: 'Pedidos recibidos' })
     await expect(heading).toBeVisible({ timeout: 30000 })
   })
 
