@@ -45,22 +45,22 @@ interface UserSidebarProps {
 
 const menuItemsByRole: Record<string, MenuItem[]> = {
   TALLER: [
-    { id: 'tablero', label: 'Mi Tablero', href: '/taller', icon: Home },
-    { id: 'perfil', label: 'Mi Perfil', href: '/taller/perfil', icon: User },
-    { id: 'formalizacion', label: 'Mi Formalización', href: '/taller/formalizacion', icon: ClipboardCheck },
-    { id: 'academia', label: 'Academia', href: '/taller/aprender', icon: BookOpen },
-    { id: 'pedidos', label: 'Mis Pedidos', href: '/taller/pedidos', icon: ClipboardList },
+    { id: 'tablero', label: 'Inicio', href: '/taller', icon: Home },
+    { id: 'perfil', label: 'Mi vidriera', href: '/taller/perfil', icon: User },
+    { id: 'formalizacion', label: 'Mi recorrido', href: '/taller/formalizacion', icon: ClipboardCheck },
+    { id: 'academia', label: 'Cursos', href: '/taller/aprender', icon: BookOpen },
+    { id: 'pedidos', label: 'Pedidos', href: '/taller/pedidos', icon: ClipboardList },
     { id: 'disponibles', label: 'Pedidos disponibles', href: '/taller/pedidos/disponibles', icon: Search },
     { id: 'notificaciones', label: 'Notificaciones', href: '/cuenta/notificaciones', icon: Bell },
-    { id: 'cuenta', label: 'Mi Cuenta', href: '/cuenta', icon: Settings },
+    { id: 'cuenta', label: 'Mi cuenta', href: '/cuenta', icon: Settings },
   ],
   MARCA: [
-    { id: 'inicio', label: 'Mi Panel', href: '/marca', icon: Home },
-    { id: 'directorio', label: 'Directorio Talleres', href: '/marca/directorio', icon: Search },
-    { id: 'pedidos', label: 'Mis Pedidos', href: '/marca/pedidos', icon: ClipboardList },
-    { id: 'perfil', label: 'Mi Perfil', href: '/marca/perfil', icon: Building2 },
+    { id: 'inicio', label: 'Mi panel', href: '/marca', icon: Home },
+    { id: 'directorio', label: 'Directorio talleres', href: '/marca/directorio', icon: Search },
+    { id: 'pedidos', label: 'Mis pedidos', href: '/marca/pedidos', icon: ClipboardList },
+    { id: 'perfil', label: 'Mi perfil', href: '/marca/perfil', icon: Building2 },
     { id: 'notificaciones', label: 'Notificaciones', href: '/cuenta/notificaciones', icon: Bell },
-    { id: 'cuenta', label: 'Mi Cuenta', href: '/cuenta', icon: Settings },
+    { id: 'cuenta', label: 'Mi cuenta', href: '/cuenta', icon: Settings },
   ],
   ESTADO: [
     { id: 'dashboard', label: 'Dashboard', href: '/estado', icon: Home },
@@ -70,9 +70,9 @@ const menuItemsByRole: Record<string, MenuItem[]> = {
     { id: 'niveles', label: 'Etapas', href: '/estado/configuracion-niveles', icon: Sliders },
     { id: 'demanda', label: 'Demanda insatisfecha', href: '/estado/demanda-insatisfecha', icon: AlertTriangle },
     { id: 'sector', label: 'Datos sectoriales', href: '/estado/sector', icon: BarChart3 },
-    { id: 'exportar', label: 'Exportar Datos', href: '/estado/exportar', icon: Download },
+    { id: 'exportar', label: 'Exportar datos', href: '/estado/exportar', icon: Download },
     { id: 'notificaciones', label: 'Notificaciones', href: '/cuenta/notificaciones', icon: Bell },
-    { id: 'cuenta', label: 'Mi Cuenta', href: '/cuenta', icon: Settings },
+    { id: 'cuenta', label: 'Mi cuenta', href: '/cuenta', icon: Settings },
   ],
   ADMIN: [
     { id: 'dashboard', label: 'Dashboard', href: '/admin', icon: Home },
@@ -149,7 +149,7 @@ export function UserSidebar({
           'fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-[60] transform transition-transform duration-300 ease-out',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
-        aria-label="Menú de navegación personal"
+        aria-label="Menú principal"
       >
         <div className="flex flex-col h-full">
           {/* Header del sidebar */}
@@ -244,14 +244,14 @@ export function UserSidebar({
               className="flex items-center gap-3 px-4 py-3 rounded-lg font-overpass font-medium text-sm text-gray-700 hover:bg-gray-50 hover:text-brand-blue transition-colors group"
             >
               <HelpCircle className="w-5 h-5 text-gray-400 group-hover:text-brand-blue" />
-              <span>Ayuda y Soporte</span>
+              <span>Ayuda</span>
             </Link>
             <button
               onClick={() => { onClose(); signOut({ callbackUrl: '/login' }); }}
               className="w-full flex items-center gap-3 px-4 py-3 rounded-lg font-overpass font-medium text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors group"
             >
               <LogOut className="w-5 h-5 text-gray-400 group-hover:text-red-600" />
-              <span>Cerrar Sesión</span>
+              <span>Cerrar sesión</span>
             </button>
           </div>
         </div>

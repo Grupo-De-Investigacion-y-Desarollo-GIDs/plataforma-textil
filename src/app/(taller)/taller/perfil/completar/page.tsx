@@ -695,7 +695,7 @@ export default function WizardPage() {
               {saving ? 'Guardando...' : 'Ver mi perfil'}
             </Button>
             <Button onClick={() => handleSave('/taller/aprender')} disabled={saving}>
-              {saving ? 'Guardando...' : 'Guardar e ir a Academia'}
+              {saving ? 'Guardando...' : 'Guardar e ir a Cursos'}
             </Button>
           </div>
         </div>

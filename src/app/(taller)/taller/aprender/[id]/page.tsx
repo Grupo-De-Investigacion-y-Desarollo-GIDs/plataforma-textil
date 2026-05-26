@@ -51,7 +51,7 @@ export default async function AcademiaDetallePage({
     <div className="max-w-4xl mx-auto space-y-6">
       <Breadcrumbs items={[
         { label: 'Taller', href: '/taller' },
-        { label: 'Academia', href: '/taller/aprender' },
+        { label: 'Cursos', href: '/taller/aprender' },
         { label: coleccion.titulo },
       ]} />
 

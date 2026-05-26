@@ -44,8 +44,8 @@ test.describe('D-01 Roles ESTADO — flujos principales', () => {
       await menuBtn.click()
     }
     // Contar items de navegacion en el sidebar (scoped al aside)
-    // 10 items: Dashboard, Talleres, Documentos, Auditorias, Niveles, Demanda insatisfecha, Datos sectoriales, Exportar Datos, Notificaciones, Mi Cuenta
-    const sidebar = page.locator('aside[aria-label="Menú de navegación personal"]')
+    // 10 items: Dashboard, Talleres, Documentos, Auditorias, Etapas, Demanda insatisfecha, Datos sectoriales, Exportar datos, Notificaciones, Mi cuenta
+    const sidebar = page.locator('aside[aria-label="Menú principal"]')
     await expect(sidebar).toBeVisible()
     const navItems = sidebar.locator('nav ul li')
     await expect(navItems).toHaveCount(10)

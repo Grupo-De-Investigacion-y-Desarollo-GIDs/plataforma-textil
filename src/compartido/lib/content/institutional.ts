@@ -24,11 +24,11 @@ export const FOOTER_LINKS = {
 
 export const TABS_BY_ROLE = {
   TALLER: [
-    { label: 'Tablero', href: '/taller' },
-    { label: 'Mis pedidos', href: '/taller/pedidos' },
-    { label: 'Mi formalizaci\u00f3n', href: '/taller/formalizacion' },
-    { label: 'Mi perfil', href: '/taller/perfil' },
-    { label: 'Academia', href: '/taller/aprender' },
+    { label: 'Inicio', href: '/taller' },
+    { label: 'Pedidos', href: '/taller/pedidos' },
+    { label: 'Mi recorrido', href: '/taller/formalizacion' },
+    { label: 'Mi vidriera', href: '/taller/perfil' },
+    { label: 'Cursos', href: '/taller/aprender' },
   ],
   MARCA: [
     { label: 'Tablero', href: '/marca' },

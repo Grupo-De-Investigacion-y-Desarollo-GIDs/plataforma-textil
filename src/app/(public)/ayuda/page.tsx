@@ -23,7 +23,7 @@ const faqItems = [
 export default function AyudaPage() {
   return (
     <div className="space-y-6">
-      <h1 className="font-overpass font-bold text-3xl text-brand-blue">Ayuda y Soporte</h1>
+      <h1 className="font-overpass font-bold text-3xl text-brand-blue">Ayuda</h1>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Link href="/ayuda/onboarding-taller" className="rounded-xl border border-gray-200 bg-white p-5 hover:border-brand-blue hover:shadow-card transition-all">
