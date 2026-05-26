@@ -3,6 +3,9 @@
 ## 2026-05-26
 
 ### Gerardo Breard
+- **10:49** `e8c9fa0` — fix(e2e): actualizar tests para tabs en pedidos taller
+  - `tests/e2e/ux-mejoras.spec.ts`
+
 - **10:26** `c3c39ce` — feat(f2): tabs internos en Pedidos del taller [Recibidos | Disponibles]
   - `.claude/specs/v4-f2-tabs-pedidos.md`
   - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
