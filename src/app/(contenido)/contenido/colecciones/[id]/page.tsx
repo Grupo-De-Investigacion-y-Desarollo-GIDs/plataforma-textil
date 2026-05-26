@@ -36,6 +36,8 @@ export default function AdminEditarColeccionPage() {
   const [duracion, setDuracion] = useState('')
   const [activa, setActiva] = useState(false)
   const [videos, setVideos] = useState<Video[]>([])
+  const [imagenUrl, setImagenUrl] = useState<string | null>(null)
+  const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(true)
   const [msg, setMsg] = useState<{ type: 'ok' | 'error'; text: string } | null>(null)
@@ -52,6 +54,7 @@ export default function AdminEditarColeccionPage() {
         setCategoria(data.categoria ?? '')
         setDuracion(data.duracion ?? '')
         setActiva(data.activa ?? false)
+        setImagenUrl(data.imagenUrl ?? null)
         setVideos(data.videos ?? [])
       })
       .catch(() => {})
@@ -66,7 +69,7 @@ export default function AdminEditarColeccionPage() {
       const res = await fetch(`/api/colecciones/${coleccionId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ titulo, descripcion, institucion, categoria, duracion, activa }),
+        body: JSON.stringify({ titulo, descripcion, institucion, categoria, duracion, activa, imagenUrl }),
       })
       if (res.ok) {
         setMsg({ type: 'ok', text: 'Colección guardada correctamente' })
@@ -78,6 +81,29 @@ export default function AdminEditarColeccionPage() {
       setMsg({ type: 'error', text: 'Error de conexión' })
     } finally {
       setSaving(false)
+    }
+  }
+
+  async function handleUpload(file: File) {
+    setUploading(true)
+    setMsg(null)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const res = await fetch(`/api/colecciones/${coleccionId}/upload`, {
+        method: 'POST',
+        body: formData,
+      })
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || 'Error subiendo imagen')
+      }
+      const { url } = await res.json()
+      setImagenUrl(url)
+    } catch (err) {
+      setMsg({ type: 'error', text: err instanceof Error ? err.message : 'Error subiendo imagen' })
+    } finally {
+      setUploading(false)
     }
   }
 
@@ -171,6 +197,40 @@ export default function AdminEditarColeccionPage() {
         </div>
       </Card>
 
+      {/* Imagen de portada */}
+      <Card className="mb-6">
+        <h2 className="font-serif font-bold text-brand-blue mb-3">Imagen de portada</h2>
+        {imagenUrl ? (
+          <div className="space-y-2">
+            <img src={imagenUrl} alt="" className="max-w-xs h-40 object-cover rounded-lg border border-gray-200" />
+            <button
+              type="button"
+              onClick={() => setImagenUrl(null)}
+              className="text-sm text-red-600 hover:text-red-800 font-overpass font-medium"
+            >
+              Quitar imagen
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              disabled={uploading}
+              onChange={async (e) => {
+                const file = e.target.files?.[0]
+                if (file) await handleUpload(file)
+              }}
+              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-overpass file:font-semibold file:bg-pastel-blue file:text-brand-blue hover:file:bg-pastel-blue"
+            />
+            {uploading && (
+              <p className="text-sm text-brand-blue animate-pulse">Subiendo imagen...</p>
+            )}
+            <p className="text-xs text-gray-400">JPEG, PNG o WebP. Máximo 5MB. Aparece en el carrusel del landing.</p>
+          </div>
+        )}
+      </Card>
+
       {/* Videos */}
       <Card className="mb-6">
         <div className="flex items-center justify-between mb-3">
@@ -220,7 +280,7 @@ export default function AdminEditarColeccionPage() {
       </Card>
 
       <div className="flex gap-3">
-        <Button onClick={handleSave} disabled={saving} className="flex-1">
+        <Button onClick={handleSave} disabled={saving || uploading} className="flex-1">
           {saving ? 'Guardando...' : 'Guardar cambios'}
         </Button>
         <Button variant="secondary" onClick={() => router.push('/contenido/colecciones')}>

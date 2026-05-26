@@ -43,7 +43,7 @@ export default async function Home() {
       where: { activa: true },
       orderBy: { createdAt: 'desc' },
       take: 6,
-      select: { id: true, titulo: true, duracion: true, videos: { select: { id: true } } },
+      select: { id: true, titulo: true, duracion: true, imagenUrl: true, videos: { select: { id: true } } },
     }),
   ]).catch(() => [0, 0, 0, 0, [], []] as const)
 
@@ -57,12 +57,12 @@ export default async function Home() {
       imagen: n.imagenUrl,
       href: `/novedades/${n.slug}`,
     })),
-    ...(colecciones as { id: string; titulo: string; duracion: string | null; videos: { id: string }[] }[]).map(c => ({
+    ...(colecciones as { id: string; titulo: string; duracion: string | null; imagenUrl: string | null; videos: { id: string }[] }[]).map(c => ({
       id: c.id,
       tipo: 'CURSO' as const,
       titulo: c.titulo,
       subtitulo: `${c.videos.length} videos${c.duracion ? ` · ${c.duracion}` : ''}`,
-      imagen: null,
+      imagen: c.imagenUrl,
       href: '/academia-publica',
     })),
   ]
