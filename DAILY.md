@@ -3,6 +3,9 @@
 ## 2026-05-25
 
 ### Gerardo Breard
+- **21:31** `9968623` — fix(e2e): renombrar prefijo tipoPrenda del test para que no sea filtrado
+  - `tests/e2e/flujo-comercial.spec.ts`
+
 - **21:24** `97f820f` — feat(g-19): vitrina de demanda para el taller con imagenes
   - `.claude/specs/v4-g-19-vitrina-demanda.md`
   - `prisma/seed.ts`
