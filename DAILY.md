@@ -3,6 +3,12 @@
 ## 2026-05-25
 
 ### Gerardo Breard
+- **23:23** `de790d3` — fix(j-04): flujo de publicacion de cursos (hallazgo B)
+  - `.claude/specs/v4-j-04-flujo-publicacion-cursos.md`
+  - `src/app/(contenido)/contenido/colecciones/[id]/page.tsx`
+  - `src/app/(contenido)/contenido/colecciones/nueva/page.tsx`
+  - `src/app/page.tsx`
+
 - **21:31** `9968623` — fix(e2e): renombrar prefijo tipoPrenda del test para que no sea filtrado
   - `tests/e2e/flujo-comercial.spec.ts`
 

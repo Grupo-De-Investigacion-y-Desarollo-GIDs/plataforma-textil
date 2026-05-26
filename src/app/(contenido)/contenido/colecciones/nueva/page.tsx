@@ -30,7 +30,7 @@ export default function NuevaColeccionPage() {
       })
       if (res.ok) {
         const data = await res.json()
-        router.push(`/contenido/colecciones/${data.id}`)
+        router.push(`/contenido/colecciones/${data.id}?created=1`)
       }
     } catch {
       // Error silencioso

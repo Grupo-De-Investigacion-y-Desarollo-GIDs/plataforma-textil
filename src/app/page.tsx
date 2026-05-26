@@ -42,7 +42,7 @@ export default async function Home() {
     prisma.coleccion.findMany({
       where: { activa: true },
       orderBy: { createdAt: 'desc' },
-      take: 2,
+      take: 6,
       select: { id: true, titulo: true, duracion: true, videos: { select: { id: true } } },
     }),
   ]).catch(() => [0, 0, 0, 0, [], []] as const)

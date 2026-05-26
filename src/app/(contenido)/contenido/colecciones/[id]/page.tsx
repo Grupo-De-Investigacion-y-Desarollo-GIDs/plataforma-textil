@@ -1,14 +1,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
 import { Input } from '@/compartido/componentes/ui/input'
 import { Select } from '@/compartido/componentes/ui/select'
 import { Badge } from '@/compartido/componentes/ui/badge'
-import { Trash2, Plus, CheckCircle, AlertCircle } from 'lucide-react'
+import { Trash2, Plus, CheckCircle, AlertCircle, Info } from 'lucide-react'
 import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 
 const categorias = ['Formalización', 'Costos', 'Calidad', 'Plataforma', 'Otro']
@@ -25,6 +25,8 @@ interface Video {
 export default function AdminEditarColeccionPage() {
   const params = useParams()
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const justCreated = searchParams.get('created') === '1'
   const coleccionId = params.id as string
 
   const [titulo, setTitulo] = useState('')
@@ -118,6 +120,18 @@ export default function AdminEditarColeccionPage() {
         <h1 className="font-serif font-bold text-2xl text-ink-primary">Editar Colección</h1>
         <Badge variant={activa ? 'success' : 'default'}>{activa ? 'Publicada' : 'Borrador'}</Badge>
       </div>
+
+      {justCreated && (
+        <div className="mb-4 rounded-xl border border-blue-200 bg-blue-50 px-5 py-4 flex items-start gap-3">
+          <Info className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
+          <div>
+            <p className="font-overpass font-semibold text-blue-900">Tu colección se creó como borrador</p>
+            <p className="text-sm text-blue-700 mt-0.5">
+              Agregá videos y cuando esté lista, cambiá el estado a «Publicada» para que aparezca en el inicio y en Cursos.
+            </p>
+          </div>
+        </div>
+      )}
 
       {msg && (
         <div className={`mb-4 rounded-lg border px-4 py-3 text-sm flex items-center gap-2 ${msg.type === 'ok' ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-600'}`}>
