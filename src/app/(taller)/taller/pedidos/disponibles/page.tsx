@@ -7,7 +7,6 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { EmptyState } from '@/compartido/componentes/ui/empty-state'
-import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 import { SkeletonTable } from '@/compartido/componentes/ui/skeleton'
 import { Package, MapPin, Calendar, ShieldCheck } from 'lucide-react'
 
@@ -179,11 +178,7 @@ export default async function PedidosDisponiblesPage({ searchParams }: { searchP
   return (
     <div className="space-y-6">
       <div>
-        <Breadcrumbs items={[
-          { label: 'Taller', href: '/taller' },
-          { label: 'Pedidos disponibles' },
-        ]} />
-        <h1 className="font-serif font-bold text-3xl text-ink-primary mt-2">Pedidos disponibles</h1>
+        <h1 className="font-serif font-bold text-3xl text-ink-primary">Pedidos disponibles</h1>
         <p className="text-gray-500 mt-1">Pedidos publicados por marcas que buscan talleres</p>
       </div>
 

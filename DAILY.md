@@ -3,6 +3,18 @@
 ## 2026-05-26
 
 ### Gerardo Breard
+- **10:58** `820acd4` — fix(e2e): usar exact:true para tab Disponibles (strict mode)
+  - `tests/e2e/ux-mejoras.spec.ts`
+
+- **10:49** `e8c9fa0` — fix(e2e): actualizar tests para tabs en pedidos taller
+  - `tests/e2e/ux-mejoras.spec.ts`
+
+- **10:26** `c3c39ce` — feat(f2): tabs internos en Pedidos del taller [Recibidos | Disponibles]
+  - `.claude/specs/v4-f2-tabs-pedidos.md`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+  - `src/app/(taller)/taller/pedidos/layout.tsx`
+  - `src/app/(taller)/taller/pedidos/page.tsx`
+
 - **00:05** `2971791` — feat(j-05): soporte de imagen en colecciones (hallazgo A)
   - `.claude/specs/v4-j-05-imagen-colecciones.md`
   - `prisma/migrations/20260526000000_agregar_imagen_coleccion/migration.sql`
