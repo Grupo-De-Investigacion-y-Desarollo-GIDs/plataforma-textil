@@ -10,7 +10,7 @@ test.describe('Flujo comercial completo', () => {
     await ensureNotProduction(page)
 
     const ts = Date.now()
-    const tipoPrenda = `E2E-Test-${ts}`
+    const tipoPrenda = `Test-Prenda-${ts}`
 
     // ═══════════════════════════════════════════
     // PASO 1: Marca crea pedido (BORRADOR)
