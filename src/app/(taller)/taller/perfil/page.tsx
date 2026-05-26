@@ -36,7 +36,7 @@ export default async function TallerPerfilPage() {
   if (!taller) {
     return (
       <div className="space-y-6">
-        <h1 className="font-serif font-bold text-3xl text-ink-primary">Mi Perfil</h1>
+        <h1 className="font-serif font-bold text-3xl text-ink-primary">Mi vidriera</h1>
         <Card className="text-center py-12">
           <p className="text-gray-600 mb-4">Todavía no completaste tu perfil.</p>
           <Link href="/taller/perfil/completar">
@@ -283,7 +283,7 @@ export default async function TallerPerfilPage() {
       )}
 
       {taller.certificados.length > 0 && (
-        <Card title="Certificados de Academia">
+        <Card title="Certificados de cursos">
           <div className="space-y-2">
             {taller.certificados.map((c) => (
               <div key={c.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
