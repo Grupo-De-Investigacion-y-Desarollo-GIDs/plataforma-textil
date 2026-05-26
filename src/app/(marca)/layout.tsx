@@ -1,4 +1,4 @@
-import { Header } from '@/compartido/componentes/layout'
+import { Header, UserSidebar, SidebarProvider } from '@/compartido/componentes/layout'
 import { Footer } from '@/compartido/componentes/layout/footer'
 import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
@@ -28,16 +28,24 @@ export default async function MarcaLayout({ children }: { children: React.ReactN
   const showPilotPill = !isMain && !isLocal
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      <Header
-        userName={userName}
-        userRole="MARCA"
-        showPilotPill={showPilotPill}
-      />
-      <main className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
-        {children}
-      </main>
-      <Footer />
-    </div>
+    <SidebarProvider>
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Header
+          userName={userName}
+          userRole="MARCA"
+          showPilotPill={showPilotPill}
+        />
+        <div className="flex flex-1">
+          <UserSidebar
+            userRole="MARCA"
+            userName={userName}
+          />
+          <main className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
+            {children}
+          </main>
+        </div>
+        <Footer />
+      </div>
+    </SidebarProvider>
   )
 }

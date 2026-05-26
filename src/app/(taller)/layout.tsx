@@ -1,4 +1,4 @@
-import { Header } from '@/compartido/componentes/layout'
+import { Header, UserSidebar, SidebarProvider } from '@/compartido/componentes/layout'
 import { Footer } from '@/compartido/componentes/layout/footer'
 import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
@@ -32,18 +32,26 @@ export default async function TallerLayout({ children }: { children: React.React
   const showPilotPill = !isMain && !isLocal
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      <Header
-        userName={userName}
-        userRole="TALLER"
-        userProgress={userProgress}
-        userLevel={userLevel}
-        showPilotPill={showPilotPill}
-      />
-      <main className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
-        {children}
-      </main>
-      <Footer />
-    </div>
+    <SidebarProvider>
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Header
+          userName={userName}
+          userRole="TALLER"
+          showPilotPill={showPilotPill}
+        />
+        <div className="flex flex-1">
+          <UserSidebar
+            userRole="TALLER"
+            userName={userName}
+            userProgress={userProgress}
+            userLevel={userLevel}
+          />
+          <main className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
+            {children}
+          </main>
+        </div>
+        <Footer />
+      </div>
+    </SidebarProvider>
   )
 }
