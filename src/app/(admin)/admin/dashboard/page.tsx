@@ -21,7 +21,7 @@ interface LogEntry {
 }
 
 const menuItems = [
-  { href: '/admin/colecciones', icon: BookOpen, label: 'Colecciones' },
+  { href: '/contenido/colecciones', icon: BookOpen, label: 'Colecciones' },
   { href: '/admin/evaluaciones', icon: FileText, label: 'Evaluaciones' },
   { href: '/admin/certificados', icon: Award, label: 'Certificados' },
   { href: '/admin/usuarios', icon: Users, label: 'Usuarios' },
@@ -72,7 +72,7 @@ export default function AdminDashboardPage() {
         <Card title="Accesos Rápidos">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {[
-              { href: '/admin/colecciones', icon: BookOpen, label: 'Colecciones' },
+              { href: '/contenido/colecciones', icon: BookOpen, label: 'Colecciones' },
               { href: '/admin/usuarios', icon: Users, label: 'Usuarios' },
               { href: '/admin/certificados', icon: Award, label: 'Certificados' },
               { href: '/admin/reportes', icon: BarChart3, label: 'Reportes' },

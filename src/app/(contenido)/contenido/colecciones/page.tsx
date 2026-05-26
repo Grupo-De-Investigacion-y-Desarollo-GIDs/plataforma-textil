@@ -36,7 +36,7 @@ export default function ContenidoColeccionesPage() {
           <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">Colecciones de Cursos</h1>
           <p className="text-gray-500 text-sm">Gestiona las colecciones de videos curados</p>
         </div>
-        <Link href="/admin/colecciones/nueva">
+        <Link href="/contenido/colecciones/nueva">
           <Button icon={<Plus className="w-4 h-4" />}>Nueva Coleccion</Button>
         </Link>
       </div>
@@ -57,10 +57,10 @@ export default function ContenidoColeccionesPage() {
                 </div>
               </div>
               <div className="flex gap-2">
-                <Link href={`/admin/colecciones/${col.id}`}>
+                <Link href={`/contenido/colecciones/${col.id}`}>
                   <Button size="sm" variant="secondary">Editar</Button>
                 </Link>
-                <Link href={`/admin/colecciones/${col.id}/videos`}>
+                <Link href={`/contenido/colecciones/${col.id}/videos`}>
                   <Button size="sm" variant="secondary">Videos</Button>
                 </Link>
               </div>
