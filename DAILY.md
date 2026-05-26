@@ -16,6 +16,25 @@
 ## 2026-05-25
 
 ### Gerardo Breard
+- **23:44** `860b82e` — feat(nav): renombrar tabs del taller segun modelo Showcase+Match
+  - `.claude/specs/v4-renombres-tabs-taller.md`
+  - `src/app/(admin)/logout-button.tsx`
+  - `src/app/(auth)/mi-cuenta/page.tsx`
+  - `src/app/(marca)/marca/pedidos/page.tsx`
+  - `src/app/(marca)/marca/perfil/page.tsx`
+  - `src/app/(public)/ayuda/page.tsx`
+  - `src/app/(public)/cuenta/page.tsx`
+  - `src/app/(taller)/taller/aprender/[id]/page.tsx`
+  - `src/app/(taller)/taller/aprender/page.tsx`
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+  - `src/compartido/componentes/ui/logout-button.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+  - `tests/e2e/roles-estado.spec.ts`
+  - `tests/e2e/smoke.spec.ts`
+
 - **23:23** `de790d3` — fix(j-04): flujo de publicacion de cursos (hallazgo B)
   - `.claude/specs/v4-j-04-flujo-publicacion-cursos.md`
   - `src/app/(contenido)/contenido/colecciones/[id]/page.tsx`
