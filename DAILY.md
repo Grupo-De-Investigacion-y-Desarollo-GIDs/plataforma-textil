@@ -1,5 +1,18 @@
 # Daily Log
 
+## 2026-05-26
+
+### Gerardo Breard
+- **00:05** `2971791` — feat(j-05): soporte de imagen en colecciones (hallazgo A)
+  - `.claude/specs/v4-j-05-imagen-colecciones.md`
+  - `prisma/migrations/20260526000000_agregar_imagen_coleccion/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/app/(contenido)/contenido/colecciones/[id]/page.tsx`
+  - `src/app/api/colecciones/[id]/route.ts`
+  - `src/app/api/colecciones/[id]/upload/route.ts`
+  - `src/app/page.tsx`
+
+
 ## 2026-05-25
 
 ### Gerardo Breard

@@ -46,6 +46,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         institucion: body.institucion,
         orden: body.orden,
         activa: body.activa,
+        imagenUrl: body.imagenUrl,
       },
     })
     logAccionAdmin('COLECCION_EDITADA', session.user.id, {
