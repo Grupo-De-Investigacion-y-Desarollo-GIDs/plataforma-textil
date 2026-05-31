@@ -1,5 +1,17 @@
 # Daily Log
 
+## 2026-05-31
+
+### Gerardo Breard
+- **14:44** `808b88d` — chore: registrar D1 del bloque U en DECISIONS (faltante de d48a37e)
+  - `.claude/specs/handover/DECISIONS.md`
+
+- **14:32** `d48a37e` — chore: limpiar v1 obsoleta U-01 + registrar D1 en DECISIONS
+  - `.claude/specs/v4-u-01-analisis-multi-rol-airbnb.md`
+  - `.claude/specs/v4-u-02-schema-multi-rol.md`
+  - `docs/analisis/U-01_multi-rol-airbnb.md`
+
+
 ## 2026-05-26
 
 ### Gerardo Breard

@@ -418,6 +418,23 @@ Este documento registra las decisiones importantes tomadas durante el proyecto, 
   - Noto Sans se mantiene pero ya no es body font (migración gradual)
 - **Estado:** Vigente
 
+### 23. Arquitectura multi-rol: Opción A — array de roles en User (bloque U, D1)
+
+- **Fecha:** 18-may-2026
+- **Categoría:** Técnica
+- **Contexto:** Para implementar el modelo Airbnb (decisión 3), había que elegir cómo modelar que un mismo User opere como taller y como marca. Esta es la decisión fundacional (D1) del análisis U-01 y define la arquitectura de todo el bloque U.
+- **Alternativas consideradas:**
+  - A) Array de roles en `User`: `User.roles UserRole[]` + `User.activeMode` + CUIT y datos ARCA centralizados en `User`
+  - B) Modelos de perfil separados: `PerfilTaller` + `PerfilMarca` como modelos nuevos
+- **Decisión tomada:** A
+- **Razonamiento:** Refactor más liviano. Las tablas `Taller`/`Marca` ya son relaciones 1:1 opcionales con `User`, así que no hace falta migrarlas a modelos de perfil nuevos: alcanza con agregar el array de roles, el modo activo y centralizar el CUIT y los datos ARCA en `User`.
+- **Implicancias:**
+  - Define la arquitectura de todo el bloque U (U-03 a U-08)
+  - `activeMode` y `roles` ya existen en el schema (migración #348) pero ningún código los lee todavía
+  - Reemplaza el framing de "PerfilTaller + PerfilMarca" mencionado en la decisión 3
+- **Referencia:** `.claude/specs/U-01_multi-rol-airbnb_v2-tipos-corregidos.md`
+- **Estado:** Vigente
+
 ---
 
 ## Decisiones revisadas o anuladas
