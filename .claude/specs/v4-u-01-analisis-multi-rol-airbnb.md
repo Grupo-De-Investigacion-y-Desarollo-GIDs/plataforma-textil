@@ -424,7 +424,7 @@ Claude Code ejecuta sección 0 completa y reporta.
 
 ### Fase 6: Documento final (30 min)
 
-- Consolidar todo en `docs/analisis/U-01_multi-rol-airbnb.md`
+- Consolidar todo en `.claude/specs/U-01_multi-rol-airbnb_v2-tipos-corregidos.md`
 - Commit + push (NO PR, es solo documentación)
 
 **Total estimado: 4h**
@@ -433,7 +433,7 @@ Claude Code ejecuta sección 0 completa y reporta.
 
 ## 9. Definición de "Done"
 
-- [ ] Documento `docs/analisis/U-01_multi-rol-airbnb.md` commiteado
+- [ ] Documento `.claude/specs/U-01_multi-rol-airbnb_v2-tipos-corregidos.md` commiteado
 - [ ] Gerardo revisó y aprobó las decisiones
 - [ ] DECISIONS.md actualizado con:
   - Decisión schema (Opción A o B)

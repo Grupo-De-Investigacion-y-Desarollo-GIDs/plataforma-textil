@@ -12,7 +12,7 @@
 ### 0.1 Verificar entorno
 
 - [ ] CI verde en develop (post X-07a merge)
-- [ ] U-01 v2 commiteado en `docs/analisis/U-01_multi-rol-airbnb.md`
+- [ ] U-01 v2 commiteado en `.claude/specs/U-01_multi-rol-airbnb_v2-tipos-corregidos.md`
 - [ ] X-07a mergeado (SHA 2d914d6)
 - [ ] Develop al día
 - [ ] Branch nuevo: `feature/u-02-schema-multi-rol`
@@ -510,7 +510,7 @@ git push -u origin feature/u-02-schema-multi-rol
 gh pr create --title "feat: U-02 schema multi-rol con CUIT y ARCA centralizados" \
   --body "Implementa los cambios de schema de U-01 v2.
 
-Refs: docs/analisis/U-01_multi-rol-airbnb.md"
+Refs: .claude/specs/U-01_multi-rol-airbnb_v2-tipos-corregidos.md"
 ```
 
 ### Fase 8: Esperar CI y mergear
