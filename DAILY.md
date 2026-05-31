@@ -3,6 +3,11 @@
 ## 2026-05-31
 
 ### Gerardo Breard
+- **20:24** `3aa2a1b` — fix(#307): setear emailVerified al crear cuenta (mitigacion temporal)
+  - `.claude/specs/handover/DECISIONS.md`
+  - `src/app/api/admin/usuarios/route.ts`
+  - `src/app/api/auth/registro/route.ts`
+
 - **14:44** `808b88d` — chore: registrar D1 del bloque U en DECISIONS (faltante de d48a37e)
   - `.claude/specs/handover/DECISIONS.md`
 

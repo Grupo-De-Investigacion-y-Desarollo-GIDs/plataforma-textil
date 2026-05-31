@@ -62,7 +62,9 @@ export async function POST(req: NextRequest) {
 
     const hashedPassword = await bcrypt.hash(body.password, 10)
     const user = await prisma.user.create({
-      data: { email: body.email, password: hashedPassword, name: body.name, role: body.role, phone: body.phone },
+      // MITIGACION #307 (temporal): emailVerified al crear para no bloquear el
+      // onboarding (mismo motivo que en auth/registro). Revertir con flujo real.
+      data: { email: body.email, password: hashedPassword, name: body.name, role: body.role, phone: body.phone, emailVerified: new Date() },
       select: { id: true, email: true, name: true, role: true, active: true },
     })
     logAccionAdmin('ADMIN_USUARIO_CREADO', session.user.id, {
