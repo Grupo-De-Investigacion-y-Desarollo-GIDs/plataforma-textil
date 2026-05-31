@@ -89,6 +89,12 @@ export const POST = apiHandler(async (req: NextRequest) => {
         name: data.name || data.nombre || null,
         phone: data.phone || null,
         role: data.role,
+        // MITIGACION #307 (temporal): marcar emailVerified al crear la cuenta para
+        // no bloquear el onboarding. El paso "Verificar email" del checklist
+        // (onboarding.ts) gatea con !!user.emailVerified y, sin flujo de verificacion
+        // implementado, quedaba en false para siempre. Revertir cuando exista el
+        // flujo real (endpoint /api/auth/send-verification + magic link).
+        emailVerified: new Date(),
         ...(data.role === 'TALLER' && data.tallerData
           ? {
               taller: {

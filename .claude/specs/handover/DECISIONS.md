@@ -435,6 +435,23 @@ Este documento registra las decisiones importantes tomadas durante el proyecto, 
 - **Referencia:** `.claude/specs/U-01_multi-rol-airbnb_v2-tipos-corregidos.md`
 - **Estado:** Vigente
 
+### 24. Mitigación #307: setear `emailVerified` al crear la cuenta
+
+- **Fecha:** 31-may-2026
+- **Categoría:** Técnica
+- **Contexto:** El issue #307 (rol MARCA) reportó que no se podían completar los pasos del onboarding. El checklist (`onboarding.ts:86` y `:135`) gatea el paso "Verificar email" con `!!user.emailVerified`, pero el campo `emailVerified` (`DateTime?`, sin `@default`) nunca se seteaba al registrar: ni `auth/registro` ni `admin/usuarios` lo escribían, y no existe flujo de verificación de email. Resultado: el paso quedaba en `false` para todos los usuarios y bloqueaba el onboarding.
+- **Alternativas consideradas:**
+  - A) Implementar el flujo real de verificación ahora (endpoint `/api/auth/send-verification` + magic link, 2-4h)
+  - B) Sacar el paso "Verificar email" del checklist
+  - C) Setear `emailVerified: new Date()` al crear la cuenta (mitigación temporal)
+- **Decisión tomada:** C
+- **Razonamiento:** No bloquea el piloto, no requiere cambios de UX ni migración de schema, y se revierte trivialmente (borrar una línea por endpoint) cuando se implemente el flujo real. La opción B perdería el paso del checklist; la A no entra en el tiempo del piloto.
+- **Implicancias:**
+  - Usuarios nuevos del piloto quedan con `emailVerified` sin haber verificado realmente el correo.
+  - Riesgo: una cuenta con email mal escrito queda sin medio de recuperación verificado. Bajo para un piloto chico.
+  - Aplicado en `src/app/api/auth/registro/route.ts` y `src/app/api/admin/usuarios/route.ts` con comentario que marca el carácter temporal.
+- **Estado:** Temporal — reemplazar al implementar el flujo real de verificación (`/api/auth/send-verification` + magic link).
+
 ---
 
 ## Decisiones revisadas o anuladas
