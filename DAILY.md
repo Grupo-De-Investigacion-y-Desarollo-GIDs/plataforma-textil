@@ -1,5 +1,14 @@
 # Daily Log
 
+## 2026-06-01
+
+### Gerardo Breard
+- **10:55** `4a85e04` — fix(admin): UI de integraciones email decia 'SendGrid', es 'Resend'
+  - `e2e/checklist-sec5-6.spec.ts`
+  - `src/app/(admin)/admin/integraciones/email/page.tsx`
+  - `src/app/(admin)/admin/integraciones/page.tsx`
+
+
 ## 2026-05-31
 
 ### Gerardo Breard

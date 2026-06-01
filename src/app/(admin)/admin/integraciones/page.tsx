@@ -25,7 +25,7 @@ const integraciones = [
   {
     href: '/admin/integraciones/email',
     icon: Mail,
-    nombre: 'SendGrid (Email)',
+    nombre: 'Resend (Email)',
     descripcion: 'Envío de emails transaccionales y masivos',
     estado: 'configurado',
     proximamente: false,
