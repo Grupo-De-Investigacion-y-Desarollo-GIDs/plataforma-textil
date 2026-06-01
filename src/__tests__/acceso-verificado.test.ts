@@ -54,8 +54,9 @@ describe('POST /api/cotizaciones — verificadoAfip guard', () => {
     const body = await res.json()
 
     expect(res.status).toBe(403)
+    // El code es el contrato estable; el texto del mensaje es cosmetico y puede
+    // cambiar (paso de 'verificado' a 'validación de CUIT') -> no se asserta.
     expect(body.error.code).toBe('TALLER_NO_VERIFICADO')
-    expect(body.error.message).toContain('verificado')
     // No deberia haber creado cotizacion
     expect(mockPrisma.cotizacion.create).not.toHaveBeenCalled()
   })

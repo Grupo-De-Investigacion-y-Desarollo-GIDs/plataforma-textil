@@ -1,0 +1,34 @@
+name: Unit Tests
+
+# Corre los unit tests de Vitest (src/__tests__/) en push y PR.
+# MODO INFORMATIVO: este workflow reporta verde/rojo pero NO esta configurado
+# como required check todavia, asi que no bloquea merges. El objetivo es ver el
+# resultado real de la suite antes de promoverlo a required en branch protection.
+# Los e2e de Playwright corren aparte en e2e.yml (contra el deploy de Vercel).
+# Disenado en docs/03_tecnico/ESTRATEGIA_TESTING.md.
+
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop]
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm ci
+
+      # Genera el client de Prisma (los tests importan tipos/enums generados).
+      - run: npx prisma generate
+
+      - name: Run Vitest unit tests
+        run: npm run test
