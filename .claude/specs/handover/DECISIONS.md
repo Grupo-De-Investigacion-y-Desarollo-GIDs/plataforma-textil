@@ -452,6 +452,22 @@ Este documento registra las decisiones importantes tomadas durante el proyecto, 
   - Aplicado en `src/app/api/auth/registro/route.ts` y `src/app/api/admin/usuarios/route.ts` con comentario que marca el carácter temporal.
 - **Estado:** Temporal — reemplazar al implementar el flujo real de verificación (`/api/auth/send-verification` + magic link).
 
+### 25. Mitigación #305: ocultar el botón "Continuar con Google" sin credenciales OAuth
+
+- **Fecha:** 31-may-2026
+- **Categoría:** Técnica
+- **Contexto:** El botón "Continuar con Google" en `/login` estaba cableado a `signIn('google', { callbackUrl: '/' })`, pero el provider de Google solo se registra si existen `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` (`auth.ts`). Esas vars no están configuradas en ningún entorno, así que el botón fallaba silenciosamente al clickearlo (issue #305).
+- **Alternativas consideradas:**
+  - A) Configurar OAuth real ahora (alta en Google Cloud + vars en Vercel, 1-2h + trámite)
+  - B) Ocultar el botón temporalmente hasta tener las credenciales
+- **Decisión tomada:** B
+- **Razonamiento:** Sin credenciales, el botón ofrece una acción que siempre falla en silencio — peor UX que no mostrarlo. Ocultarlo es trivialmente reversible y no bloquea el piloto, que usa login por credenciales.
+- **Implicancias:**
+  - El login del piloto queda solo con email + contraseña (credenciales).
+  - Se ocultó el botón y el divisor "o continúa con" en `src/app/(auth)/login/page.tsx` con un comentario que marca el carácter temporal.
+  - El provider condicional de Google en `auth.ts` se deja intacto: cuando se configuren las vars, basta con reponer el botón.
+- **Estado:** Temporal — reactivar cuando se configure `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` (Google Cloud + vars en Vercel).
+
 ---
 
 ## Decisiones revisadas o anuladas
