@@ -41,6 +41,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       include: { user: { select: { id: true, email: true } } },
     })
 
+    const propios = talleresConUser.filter(t => t.user.id === pedido.marca.userId)
+    if (propios.length > 0) {
+      return NextResponse.json(
+        { error: 'No podés invitarte a vos mismo a cotizar tu propio pedido.' },
+        { status: 400 }
+      )
+    }
+
     const noVerificados = talleresConUser.filter(t => !t.verificadoAfip)
     if (noVerificados.length > 0) {
       return NextResponse.json(
