@@ -39,7 +39,8 @@ src/
 - GitHub: https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil
 - DB: Supabase (sa-east-1)
 - Vercel user: gbreard (gbreard@gmail.com)
-- Env vars en Vercel: DATABASE_URL, DIRECT_URL, NEXTAUTH_SECRET, NEXTAUTH_URL, SENDGRID_API_KEY, EMAIL_FROM, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, CUIT_API_URL (pendiente)
+- Env vars en Vercel: DATABASE_URL, DIRECT_URL, NEXTAUTH_SECRET, NEXTAUTH_URL, RESEND_API_KEY, EMAIL_FROM, EMAIL_FROM_NAME (opcional), EMAIL_REPLY_TO (opcional), SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, CUIT_API_URL (pendiente)
+- Email: proveedor Resend (`src/compartido/lib/email.ts`). `EMAIL_FROM` usa el dominio propio `notificaciones@plataformatextil.com.ar`; sin `RESEND_API_KEY` el envio cae a modo dev (log por consola, no manda)
 
 ## Variables de entorno locales
 - `.env.local` — todas las variables (bajar con `vercel env pull .env.local`)
