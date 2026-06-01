@@ -16,7 +16,7 @@ export default async function PedidoDisponibleDetallePage({ params }: { params: 
 
   const pedido = await prisma.pedido.findFirst({
     where: { id, estado: 'PUBLICADO' },
-    include: { marca: { select: { nombre: true, tipo: true, ubicacion: true } } },
+    include: { marca: { select: { nombre: true, tipo: true, ubicacion: true, userId: true } } },
   })
   if (!pedido) notFound()
 
@@ -82,7 +82,18 @@ export default async function PedidoDisponibleDetallePage({ params }: { params: 
         </Card>
       )}
 
-      {taller && !taller.verificadoAfip ? (
+      {pedido.marca.userId === session.user.id ? (
+        <Card>
+          <div className="text-center py-6">
+            <p className="font-overpass font-semibold text-brand-blue mb-1">
+              Este es un pedido que publicaste como marca
+            </p>
+            <p className="text-sm text-gray-600">
+              No podés cotizarlo. Para gestionar las cotizaciones recibidas, andá a tu panel de marca.
+            </p>
+          </div>
+        </Card>
+      ) : taller && !taller.verificadoAfip ? (
         <Card>
           <div className="text-center py-6">
             <p className="font-overpass font-semibold text-amber-800 mb-2">

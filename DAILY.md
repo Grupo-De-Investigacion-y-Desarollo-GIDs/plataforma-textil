@@ -3,6 +3,14 @@
 ## 2026-06-01
 
 ### Gerardo Breard
+- **14:34** `5ecc879` — feat(u-07): regla anti-incesto multi-rol
+  - `.claude/specs/v4-u-07-anti-incesto.md`
+  - `e2e/u-07-anti-incesto.spec.ts`
+  - `src/app/(taller)/taller/pedidos/disponibles/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/app/api/pedidos/[id]/invitaciones/route.ts`
+
 - **10:55** `4a85e04` — fix(admin): UI de integraciones email decia 'SendGrid', es 'Resend'
   - `e2e/checklist-sec5-6.spec.ts`
   - `src/app/(admin)/admin/integraciones/email/page.tsx`

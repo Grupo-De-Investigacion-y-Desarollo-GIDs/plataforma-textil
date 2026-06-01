@@ -20,7 +20,10 @@ async function ListaPedidosDisponibles({ page }: { page: number }) {
 
   const where = {
     estado: 'PUBLICADO' as const,
-    NOT: { tipoPrenda: { startsWith: 'E2E-Test' } },
+    NOT: [
+      { tipoPrenda: { startsWith: 'E2E-Test' } },
+      ...(session.user.id ? [{ marca: { userId: session.user.id } }] : []),
+    ],
     OR: [
       { visibilidad: 'PUBLICO' as const },
       ...(taller ? [{ invitaciones: { some: { tallerId: taller.id } } }] : []),

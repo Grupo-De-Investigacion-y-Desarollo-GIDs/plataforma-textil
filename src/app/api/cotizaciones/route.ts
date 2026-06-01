@@ -108,6 +108,15 @@ export const POST = apiHandler(async (req: NextRequest) => {
     select: { id: true, estado: true, visibilidad: true, marca: { select: { userId: true, nombre: true } }, omId: true, tipoPrenda: true, cantidad: true, marcaId: true },
   })
   if (!pedido) return errorNotFound('pedido')
+
+  if (pedido.marca.userId === session.user.id) {
+    return errorResponse({
+      code: 'AUTO_COTIZACION',
+      message: 'No podés cotizar un pedido que publicaste como marca.',
+      status: 403,
+    })
+  }
+
   if (pedido.estado !== 'PUBLICADO') {
     return errorResponse({ code: 'INVALID_INPUT', message: 'El pedido no esta disponible para cotizar', status: 400 })
   }
