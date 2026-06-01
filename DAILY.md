@@ -6,37 +6,16 @@
 - **18:42** `4243067` — test: arreglar asercion fragil en acceso-verificado
   - `src/__tests__/acceso-verificado.test.ts`
 
-- **18:41** `1fd8934` — test: arreglar asercion fragil en acceso-verificado
-  - `.claude/scheduled_tasks.lock`
-  - `.claude/specs/06-spec-mejoras-landing.md`
-  - `.claude/specs/07-spec-mejoras-landing-FINAL.md`
-  - `.claude/specs/k-01-rls-supabase.md`
-  - `.claude/specs/k-02-bucket-documentos-publico.md`
-  - `.claude/specs/logo-pdt.png.png`
-  - `.claude/specs/narrativa-V4-consolidado-niveles-1-a-4.md`
-  - `.claude/specs/proceso-textil.webp.webp`
-  - `.claude/specs/v4-x-04b-cms-novedades-v2.md`
-  - `.claude/specs/v4-x-04b-cms-novedades.md`
-  - `.claude/specs/v4-x-05-header-app-footer.md`
-  - `.claude/specs/v4-x-06-header-public-landing-v2.md`
-  - `.claude/specs/v4-x-06-header-public-landing.md`
-  - `.claude/specs/v4-x-07-paleta-dashboards.md`
-  - `.claude/specs/v4-x-07a-paleta-dashboards-critico.md`
-  - `"docs/Dise\303\261o/ChatGPT Image 25 may 2026, 09_07_37 p.m. (1).png"`
-  - `"docs/Dise\303\261o/ChatGPT Image 25 may 2026, 09_07_37 p.m. (2).png"`
-  - `"docs/Dise\303\261o/ChatGPT Image 25 may 2026, 09_07_38 p.m. (3).png"`
-  - `"docs/Dise\303\261o/ChatGPT Image 25 may 2026, 09_08_41 p.m..png"`
-  - `"docs/Dise\303\261o/ChatGPT Image 25 may 2026, 09_08_48 p.m..png"`
-  - `"docs/Dise\303\261o/PDT_logo_sin_fondo.png"`
-  - `"docs/Dise\303\261o/buzo.png"`
-  - `"docs/Dise\303\261o/camisa.png"`
-  - `"docs/Dise\303\261o/logo_PDT.png"`
-  - `"docs/Dise\303\261o/proceso_nuevo_sin_fondo.png"`
-  - `"docs/Dise\303\261o/remera.png"`
-  - `src/__tests__/acceso-verificado.test.ts`
-
 - **18:03** `43d0fd7` — ci: agregar workflow Vitest (modo informativo)
   - `.github/workflows/test.yml`
+
+- **17:21** `cdf735b` — feat(u-06): clasificacion automatica de pedidos COMERCIAL/SUBCONTRATACION
+  - `.claude/specs/v4-u-06-clasificacion-pedidos.md`
+  - `e2e/u-06-clasificacion-pedidos.spec.ts`
+  - `prisma/migrations/20260601120000_agregar_tipo_pedido/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/__tests__/u-06-clasificacion-pedidos.test.ts`
+  - `src/app/api/pedidos/route.ts`
 
 - **14:34** `5ecc879` — feat(u-07): regla anti-incesto multi-rol
   - `.claude/specs/v4-u-07-anti-incesto.md`

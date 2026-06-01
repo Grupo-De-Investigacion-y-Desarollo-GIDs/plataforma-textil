@@ -35,6 +35,11 @@ enum EstadoPedido {
   CANCELADO
 }
 
+enum TipoPedido {
+  COMERCIAL
+  SUBCONTRATACION
+}
+
 enum EstadoOrdenManufactura {
   PENDIENTE
   EN_EJECUCION
@@ -447,6 +452,7 @@ model Pedido {
   fechaObjetivo DateTime?
   estado        EstadoPedido      @default(BORRADOR)
   visibilidad   VisibilidadPedido @default(PUBLICO)
+  tipo          TipoPedido        @default(COMERCIAL)
   progresoTotal Float             @default(0)
   montoTotal    Float             @default(0)
   descripcion   String?           @db.Text

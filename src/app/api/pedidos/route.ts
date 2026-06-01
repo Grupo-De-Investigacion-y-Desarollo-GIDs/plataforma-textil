@@ -81,26 +81,47 @@ export const POST = apiHandler(async (req: NextRequest) => {
   }
 
   let resolvedMarcaId = ''
+  let ownerUserId = ''
   if (role === 'MARCA') {
     const marca = await prisma.marca.findUnique({
       where: { userId: session.user.id },
-      select: { id: true },
+      select: { id: true, userId: true },
     })
     if (!marca) return errorNotFound('marca')
     resolvedMarcaId = marca.id
+    ownerUserId = marca.userId
   } else if (role === 'ADMIN') {
+    // Rama no usada en produccion (admin no publica via API; manipula por Prisma
+    // Studio). Clasificacion defensiva. Limpieza de la rama pendiente en PR de
+    // housekeeping aparte. Ver spec v4-u-06.
     if (!body.marcaId) {
       return errorResponse({ code: 'INVALID_INPUT', message: 'marcaId requerido', status: 400 })
     }
-    resolvedMarcaId = body.marcaId
+    const marcaTarget = await prisma.marca.findUnique({
+      where: { id: body.marcaId },
+      select: { id: true, userId: true },
+    })
+    if (!marcaTarget) return errorNotFound('marca')
+    resolvedMarcaId = marcaTarget.id
+    ownerUserId = marcaTarget.userId
   } else {
     return errorForbidden()
   }
+
+  // U-06: clasificacion automatica del pedido (bloque multi-rol). Si el dueno del
+  // pedido tambien tiene un Taller -> SUBCONTRATACION; si solo tiene Marca ->
+  // COMERCIAL. Invisible al cliente y autoritativa: no se acepta `tipo` del body.
+  const ownerTaller = await prisma.taller.findFirst({
+    where: { userId: ownerUserId },
+    select: { id: true },
+  })
+  const tipo = ownerTaller ? 'SUBCONTRATACION' : 'COMERCIAL'
 
   const pedido = await prisma.pedido.create({
     data: {
       omId: body.omId || generateOmId(),
       marcaId: resolvedMarcaId,
+      tipo,
       tipoPrenda: body.tipoPrenda,
       cantidad: Math.round(cantidad),
       fechaObjetivo: body.fechaObjetivo ? new Date(body.fechaObjetivo) : undefined,
