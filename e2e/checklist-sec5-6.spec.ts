@@ -292,7 +292,7 @@ test('6.7 /admin/integraciones/email banner amarillo', async ({ page }) => {
 test('6.8 Formulario email deshabilitado (opacity reducida)', async ({ page }) => {
   await loginAs(page, 'admin')
   await page.goto('/admin/integraciones/email')
-  await expect(page.getByText('Configuracion SendGrid')).toBeVisible({ timeout: 15000 })
+  await expect(page.getByText('Configuracion Resend')).toBeVisible({ timeout: 15000 })
   const opacityCards = page.locator('.opacity-50')
   const count = await opacityCards.count()
   expect(count, 'Debe haber al menos 1 card con opacity reducida').toBeGreaterThanOrEqual(1)
