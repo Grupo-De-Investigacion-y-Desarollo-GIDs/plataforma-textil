@@ -3,6 +3,10 @@
 ## 2026-05-31
 
 ### Gerardo Breard
+- **21:02** `9249325` — fix(#305): ocultar boton Google sin credenciales OAuth
+  - `.claude/specs/handover/DECISIONS.md`
+  - `src/app/(auth)/login/page.tsx`
+
 - **20:24** `3aa2a1b` — fix(#307): setear emailVerified al crear cuenta (mitigacion temporal)
   - `.claude/specs/handover/DECISIONS.md`
   - `src/app/api/admin/usuarios/route.ts`
