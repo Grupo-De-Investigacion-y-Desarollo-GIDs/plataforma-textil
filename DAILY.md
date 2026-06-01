@@ -3,6 +3,9 @@
 ## 2026-05-31
 
 ### Gerardo Breard
+- **22:15** `6c2216b` — chore(fase-0): actualizar CLAUDE.md - Resend en lugar de SendGrid
+  - `CLAUDE.md`
+
 - **21:02** `9249325` — fix(#305): ocultar boton Google sin credenciales OAuth
   - `.claude/specs/handover/DECISIONS.md`
   - `src/app/(auth)/login/page.tsx`
