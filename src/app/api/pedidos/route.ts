@@ -90,21 +90,9 @@ export const POST = apiHandler(async (req: NextRequest) => {
     if (!marca) return errorNotFound('marca')
     resolvedMarcaId = marca.id
     ownerUserId = marca.userId
-  } else if (role === 'ADMIN') {
-    // Rama no usada en produccion (admin no publica via API; manipula por Prisma
-    // Studio). Clasificacion defensiva. Limpieza de la rama pendiente en PR de
-    // housekeeping aparte. Ver spec v4-u-06.
-    if (!body.marcaId) {
-      return errorResponse({ code: 'INVALID_INPUT', message: 'marcaId requerido', status: 400 })
-    }
-    const marcaTarget = await prisma.marca.findUnique({
-      where: { id: body.marcaId },
-      select: { id: true, userId: true },
-    })
-    if (!marcaTarget) return errorNotFound('marca')
-    resolvedMarcaId = marcaTarget.id
-    ownerUserId = marcaTarget.userId
   } else {
+    // Solo rol MARCA crea pedidos via API. La accion admin sobre pedidos se
+    // canaliza por Prisma Studio, no por endpoint (ver DECISIONS.md).
     return errorForbidden()
   }
 
@@ -125,7 +113,7 @@ export const POST = apiHandler(async (req: NextRequest) => {
       tipoPrenda: body.tipoPrenda,
       cantidad: Math.round(cantidad),
       fechaObjetivo: body.fechaObjetivo ? new Date(body.fechaObjetivo) : undefined,
-      estado: role === 'ADMIN' ? body.estado : 'BORRADOR',
+      estado: 'BORRADOR',
       montoTotal: Number.isFinite(montoTotal) && montoTotal >= 0 ? montoTotal : 0,
       descripcion: typeof body.descripcion === 'string' ? body.descripcion.trim() || null : undefined,
       imagenes: Array.isArray(body.imagenes) ? body.imagenes.filter((u: unknown) => typeof u === 'string') : undefined,
