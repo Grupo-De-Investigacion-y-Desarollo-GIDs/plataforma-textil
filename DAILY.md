@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-06-02
+
+### Gerardo Breard
+- **16:53** `c5dfe4e` — chore: gitignore para imagenes throwaway y mal ubicadas
+  - `.gitignore`
+
+
 ## 2026-06-01
 
 ### Gerardo Breard
