@@ -3,6 +3,16 @@
 ## 2026-06-02
 
 ### Gerardo Breard
+- **17:18** `3a437c9` — chore: trackear specs vigentes del bloque X y K
+  - `.claude/specs/07-spec-mejoras-landing-FINAL.md`
+  - `.claude/specs/k-01-rls-supabase.md`
+  - `.claude/specs/k-02-bucket-documentos-publico.md`
+  - `.claude/specs/narrativa-V4-consolidado-niveles-1-a-4.md`
+  - `.claude/specs/v4-x-04b-cms-novedades-v2.md`
+  - `.claude/specs/v4-x-05-header-app-footer.md`
+  - `.claude/specs/v4-x-06-header-public-landing-v2.md`
+  - `.claude/specs/v4-x-07a-paleta-dashboards-critico.md`
+
 - **16:53** `c5dfe4e` — chore: gitignore para imagenes throwaway y mal ubicadas
   - `.gitignore`
 
