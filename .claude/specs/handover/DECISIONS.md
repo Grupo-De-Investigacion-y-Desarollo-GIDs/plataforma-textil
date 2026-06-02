@@ -292,6 +292,24 @@ Este documento registra las decisiones importantes tomadas durante el proyecto, 
 - **Implicancias:** Integración via SDK, RPC en Supabase para búsqueda vectorial
 - **Estado:** Vigente
 
+### 26. Eliminar la rama ADMIN muerta en `POST /api/pedidos`
+
+- **Fecha:** 2026-06
+- **Categoría:** Técnica (seguridad / limpieza)
+- **Contexto:** El handler `POST /api/pedidos` tenía una rama `role === 'ADMIN'` que permitía, vía API, publicar un pedido en nombre de cualquier marca tomando `body.marcaId` — **sin ninguna validación de permiso**. Era una puerta de escritura sin control.
+- **Origen del código:** `git blame`/`git log -S` → commit `a710bde` (17 feb 2026, "filtros directorio, pedidos marca…"). Nació por **simetría con el handler GET** (que sí distingue ADMIN para filtrar por `marcaId`), no por un requerimiento de producto.
+- **Evidencia de código muerto:** sin UI que la invoque, sin tests, sin cliente. El único `POST` real a `/api/pedidos` es el form de la marca, que resuelve `marcaId` desde la sesión y ni siquiera manda `body.marcaId`. El diseño (`semana2-schema-e2.md`, `publicacion-pedidos-ui.md`) canaliza la acción admin sobre pedidos por **Prisma Studio**, no por endpoint.
+- **Alternativas consideradas:**
+  - A) Dejarla y agregarle validación de permiso (construir una función que el producto no pide)
+  - B) Eliminarla — solo rol MARCA crea pedidos vía API; el resto recibe 403
+- **Decisión tomada:** B
+- **Razonamiento:** era una superficie de escritura sin validación (riesgo de seguridad latente) para una función que el diseño no contempla. Mantenerla obliga a custodiarla; eliminarla cierra la puerta. Si en el futuro se necesita que admin cree pedidos vía API, se agrega con validación de permiso explícita y su propio test.
+- **Implicancias:**
+  - `POST /api/pedidos`: solo `role === 'MARCA'` crea; cualquier otro rol → `errorForbidden()` (403).
+  - La clasificación automática U-06 (COMERCIAL/SUBCONTRATACION) vive después del bloque de resolución de marca, sobre `ownerUserId`, así que la rama MARCA (camino real) la conserva intacta. La clasificación "defensiva" que U-06 había puesto dentro de la rama ADMIN se va con la rama (correcto: era para un camino muerto).
+  - Se simplificó `estado: role === 'ADMIN' ? body.estado : 'BORRADOR'` → `estado: 'BORRADOR'` (ADMIN ya no llega a crear).
+- **Estado:** Vigente
+
 ---
 
 ## Decisiones Institucionales
