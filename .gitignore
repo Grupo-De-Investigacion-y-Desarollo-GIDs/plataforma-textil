@@ -79,3 +79,10 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Imagenes mal ubicadas en specs (un spec nunca es una imagen)
+.claude/specs/*.png
+.claude/specs/*.webp
+
+# Iteraciones throwaway de generacion de imagenes (no son assets finales)
+docs/Diseño/ChatGPT Image*.png
