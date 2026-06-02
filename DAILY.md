@@ -3,6 +3,9 @@
 ## 2026-06-02
 
 ### Gerardo Breard
+- **18:00** `f2485b5` — chore: gitignore para fuentes de diseno de marca
+  - `.gitignore`
+
 - **17:18** `3a437c9` — chore: trackear specs vigentes del bloque X y K
   - `.claude/specs/07-spec-mejoras-landing-FINAL.md`
   - `.claude/specs/k-01-rls-supabase.md`
