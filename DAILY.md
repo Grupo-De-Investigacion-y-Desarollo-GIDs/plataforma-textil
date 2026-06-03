@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-06-03
+
+### Gerardo Breard
+- **18:18** `62f49f8` — chore: rate-limit en POST /api/pedidos aplica a todos los roles
+  - `src/app/api/pedidos/route.ts`
+
+
 ## 2026-06-02
 
 ### Gerardo Breard
