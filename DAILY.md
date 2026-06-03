@@ -1,5 +1,25 @@
 # Daily Log
 
+## 2026-06-03
+
+### Gerardo Breard
+- **15:16** `413a0e7` — feat(u-03): PR1 sesion multi-rol + helper por membresia + middleware/layouts
+  - `.claude/specs/v4-u-03-auth-multirol.md`
+  - `src/__tests__/roles-multirol.test.ts`
+  - `src/app/(admin)/layout.tsx`
+  - `src/app/(contenido)/layout.tsx`
+  - `src/app/(estado)/layout.tsx`
+  - `src/app/(marca)/layout.tsx`
+  - `src/app/(public)/layout.tsx`
+  - `src/app/(taller)/layout.tsx`
+  - `src/compartido/lib/auth.config.ts`
+  - `src/compartido/lib/auth.ts`
+  - `src/compartido/lib/permisos.ts`
+  - `src/compartido/lib/roles.ts`
+  - `src/compartido/types/next-auth.d.ts`
+  - `src/middleware.ts`
+
+
 ## 2026-06-02
 
 ### Gerardo Breard
