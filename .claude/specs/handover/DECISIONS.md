@@ -310,6 +310,35 @@ Este documento registra las decisiones importantes tomadas durante el proyecto, 
   - Se simplificó `estado: role === 'ADMIN' ? body.estado : 'BORRADOR'` → `estado: 'BORRADOR'` (ADMIN ya no llega a crear).
 - **Estado:** Vigente
 
+### 27. Incidente de seguridad — leak de datos en dev (RLS deshabilitado)
+
+- **Fecha:** 03-jun-2026 (verificado y tapado el mismo día; alerta inicial 31-may-2026)
+- **Categoría:** Técnica (seguridad / respuesta a incidente)
+- **Contexto:** El Supabase Security Advisor alertó (31-may) "RLS disabled" + columnas sensibles expuestas en el proyecto **dev** (`fjddgukwydsdcrqoxvns`). Verificación empírica (03-jun): con la **anon key PÚBLICA** (pública por diseño), las tablas sensibles devolvían datos reales vía PostgREST (HTTP 200): `users` con **hashes bcrypt**, CUITs, `cotizaciones`, `pedidos`, `notificaciones`.
+- **Causa raíz:** footgun de Supabase — el bootstrap por defecto otorga `USAGE` + `SELECT` al rol `anon` sobre `public.*`, y RLS estaba OFF; las tablas nuevas heredaban esos grants. **Ninguna migración de Prisma causó esto** (se revisaron las 31 migraciones: cero `GRANT`); es configuración de proyecto por defecto.
+- **Alcance:**
+  - **dev: LEAK ACTIVO** — expuestos 13 users, 6 talleres, 4 marcas, 87 cotizaciones, 98 pedidos, 173 notificaciones. 5 de las 13 cuentas eran **personas reales** (gmails), no seed.
+  - **prod** (`nefbhacmjrzynnhvgfnl`): **NO afectada**. Verificada: anon recibe `42501 permission denied`. Protegida "accidentalmente" (sin grants a anon ni USAGE de schema, no por RLS).
+- **Alternativas consideradas:**
+  - A) Crear policies de lectura para anon (mantener el Data API expuesto)
+  - B) Habilitar RLS + revocar todo grant a anon/authenticated, sin policies (la app no accede vía anon)
+- **Decisión tomada:** B (spec K-01, PR #389)
+- **Razonamiento:** la app accede a la DB **100% vía Prisma** (rol `postgres`, dueño de las tablas, **bypassa RLS**) y a Storage vía `service_role`; las páginas públicas (landing, directorio, perfil) leen vía Prisma server-side, **nunca como anon**. Por eso no se necesita ninguna policy y revocar a anon no rompe nada. Crear policies de lectura para anon sería reabrir la superficie.
+- **Resolución (K-01, PR #389):**
+  - Capa A: `ENABLE ROW LEVEL SECURITY` en las 44 tablas de `public.*`.
+  - Capa B: `REVOKE` grants + `USAGE` + default privileges a `anon`/`authenticated`.
+  - Capa C: sin policies.
+  - Aplicado a **dev** vía Vercel preview build (`prisma migrate deploy`). Verificado: las 6 tablas ahora dan `42501`; **e2e verde con RLS ON** (la app no se rompió).
+- **Implicancias / Pendiente:**
+  - **prod:** aplicar el mismo hardening (RLS explícito) para no depender del grant ausente no documentado — **Fase 3**.
+  - **Rotación de las 5 cuentas reales** (coordinada con Sergio): el leak se tapó pero los hashes ya expuestos no se des-filtran. Existe flujo de reset (`/olvide-contrasena`); invalidación inmediata seteando `password=null` (login lo rechaza sin crashear).
+  - **8 cuentas seed:** cambiar la constante `pdt2026` en el próximo re-seed.
+- **Lección / prevención:**
+  - Toda migración futura que **cree una tabla DEBE incluir `ENABLE ROW LEVEL SECURITY`** (RLS no se auto-habilita en tablas nuevas).
+  - Al clonar/crear entornos Supabase: verificar que `public.*` no esté expuesto al Data API y que `anon` no tenga grants. Revisar la asimetría entre entornos.
+  - Revisar el Security Advisor de Supabase periódicamente.
+- **Estado:** Leak tapado en dev (PR #389). Prod hardening + rotación de cuentas reales pendientes.
+
 ---
 
 ## Decisiones Institucionales
