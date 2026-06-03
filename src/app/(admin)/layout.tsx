@@ -1,6 +1,5 @@
 import Link from 'next/link'
-import { auth } from '@/compartido/lib/auth'
-import { redirect } from 'next/navigation'
+import { requiereRol } from '@/compartido/lib/permisos'
 import {
   LayoutDashboard, BookOpen, Users, Building2, ShoppingCart, ClipboardCheck,
   Settings, Shield, BarChart3, FileText, Bell, Award,
@@ -32,13 +31,7 @@ const sidebarItems = [
 ]
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth()
-  if (!session?.user) {
-    redirect('/login')
-  }
-  if (session.user.role !== 'ADMIN') {
-    redirect('/unauthorized')
-  }
+  const session = await requiereRol(['ADMIN'])
 
   return (
     <div className="min-h-screen bg-gray-50">

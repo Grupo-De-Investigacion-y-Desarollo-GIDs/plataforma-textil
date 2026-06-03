@@ -1,20 +1,12 @@
 import { Header, UserSidebar, SidebarProvider } from '@/compartido/componentes/layout'
 import { Footer } from '@/compartido/componentes/layout/footer'
-import { auth } from '@/compartido/lib/auth'
-import { redirect } from 'next/navigation'
+import { requiereRol, modoActivo } from '@/compartido/lib/permisos'
 
 export default async function EstadoLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth()
+  const session = await requiereRol(['ESTADO', 'ADMIN'])
 
-  if (!session?.user) {
-    redirect('/login')
-  }
-  const role = session.user.role as string
-  if (role !== 'ESTADO' && role !== 'ADMIN') {
-    redirect('/unauthorized')
-  }
-
-  const userName = session.user.name || (role === 'ADMIN' ? 'Administrador' : 'Ente Estatal')
+  const modo = modoActivo(session.user)
+  const userName = session.user.name || (modo === 'ADMIN' ? 'Administrador' : 'Ente Estatal')
 
   const isMain = process.env.VERCEL_GIT_COMMIT_REF === 'main'
   const isLocal = !process.env.VERCEL_ENV

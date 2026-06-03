@@ -1,18 +1,10 @@
 import { Header, UserSidebar, SidebarProvider } from '@/compartido/componentes/layout'
 import { Footer } from '@/compartido/componentes/layout/footer'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRol } from '@/compartido/lib/permisos'
 import { prisma } from '@/compartido/lib/prisma'
-import { redirect } from 'next/navigation'
 
 export default async function TallerLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth()
-
-  if (!session?.user) {
-    redirect('/login')
-  }
-  if (session.user.role !== 'TALLER') {
-    redirect('/unauthorized')
-  }
+  const session = await requiereRol(['TALLER'])
 
   const taller = await prisma.taller.findFirst({
     where: { userId: session.user.id },

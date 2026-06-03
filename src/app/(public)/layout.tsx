@@ -1,4 +1,5 @@
 import { auth } from '@/compartido/lib/auth'
+import { modoActivo } from '@/compartido/lib/roles'
 import { Header, UserSidebar, SidebarProvider } from '@/compartido/componentes/layout'
 import { HeaderPublic } from '@/compartido/componentes/layout/header-public'
 import { Footer } from '@/compartido/componentes/layout/footer'
@@ -6,14 +7,13 @@ import { getShowPilotPill } from '@/compartido/lib/env'
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const session = await auth()
-  const role = (session?.user as { role?: string } | undefined)?.role || ''
 
   const showPilotPill = getShowPilotPill()
 
   // Logged in: Header global with tabs + sidebar visible en desktop
   if (session?.user) {
     const userName = session.user.name || 'Usuario'
-    const userRole = (role as 'TALLER' | 'MARCA' | 'ESTADO') || 'TALLER'
+    const userRole = (modoActivo(session.user) as 'TALLER' | 'MARCA' | 'ESTADO') || 'TALLER'
 
     return (
       <SidebarProvider>

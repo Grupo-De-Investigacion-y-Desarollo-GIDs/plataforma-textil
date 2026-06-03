@@ -1,13 +1,15 @@
 import NextAuth from 'next-auth'
 import { NextResponse } from 'next/server'
 import authConfig from '@/compartido/lib/auth.config'
+import { tieneAlgunRol, modoActivo, type FuenteRoles } from '@/compartido/lib/roles'
 
 const { auth } = NextAuth(authConfig)
 
 export default auth((req) => {
   const { nextUrl } = req
   const isLoggedIn = !!req.auth
-  const userRole = req.auth?.user?.role as string | undefined
+  // U-03: gating por MEMBRESÍA en roles[] (decisión D1/A), no por el escalar.
+  const sessionUser = req.auth?.user as FuenteRoles | undefined
 
   // Rutas públicas que no requieren autenticación
   const publicRoutes = [
@@ -80,40 +82,44 @@ export default auth((req) => {
   // ESTADO ya no accede a /admin/* (tiene sus propias rutas /estado/*)
   // Colecciones se gestiona desde /contenido/colecciones (J-03)
   if (pathname.startsWith('/admin')) {
-    if (userRole === 'ADMIN') return NextResponse.next()
-    if (userRole === 'CONTENIDO' && pathname.startsWith('/admin/evaluaciones')) {
+    if (sessionUser && tieneAlgunRol(sessionUser, ['ADMIN'])) return NextResponse.next()
+    if (
+      sessionUser &&
+      tieneAlgunRol(sessionUser, ['CONTENIDO']) &&
+      pathname.startsWith('/admin/evaluaciones')
+    ) {
       return NextResponse.next()
     }
     return NextResponse.redirect(new URL('/unauthorized', nextUrl))
   }
 
-  // Rutas de TALLER - solo para rol TALLER
+  // Rutas de TALLER - membresía TALLER
   if (pathname.startsWith('/taller')) {
-    if (userRole !== 'TALLER') {
+    if (!sessionUser || !tieneAlgunRol(sessionUser, ['TALLER'])) {
       return NextResponse.redirect(new URL('/unauthorized', nextUrl))
     }
     return NextResponse.next()
   }
 
-  // Rutas de MARCA - solo para rol MARCA
+  // Rutas de MARCA - membresía MARCA
   if (pathname.startsWith('/marca')) {
-    if (userRole !== 'MARCA') {
+    if (!sessionUser || !tieneAlgunRol(sessionUser, ['MARCA'])) {
       return NextResponse.redirect(new URL('/unauthorized', nextUrl))
     }
     return NextResponse.next()
   }
 
-  // Rutas de ESTADO - para rol ESTADO y ADMIN
+  // Rutas de ESTADO - membresía ESTADO o ADMIN
   if (pathname.startsWith('/estado')) {
-    if (userRole !== 'ESTADO' && userRole !== 'ADMIN') {
+    if (!sessionUser || !tieneAlgunRol(sessionUser, ['ESTADO', 'ADMIN'])) {
       return NextResponse.redirect(new URL('/unauthorized', nextUrl))
     }
     return NextResponse.next()
   }
 
-  // Rutas de CONTENIDO - para rol CONTENIDO y ADMIN
+  // Rutas de CONTENIDO - membresía CONTENIDO o ADMIN
   if (pathname.startsWith('/contenido')) {
-    if (userRole !== 'CONTENIDO' && userRole !== 'ADMIN') {
+    if (!sessionUser || !tieneAlgunRol(sessionUser, ['CONTENIDO', 'ADMIN'])) {
       return NextResponse.redirect(new URL('/unauthorized', nextUrl))
     }
     return NextResponse.next()
@@ -124,9 +130,9 @@ export default auth((req) => {
     return NextResponse.next()
   }
 
-  // Redirigir a dashboard según rol si accede a raíz estando logueado
+  // Redirigir a dashboard según el modo activo si accede a raíz estando logueado
   if (pathname === '/' && isLoggedIn) {
-    switch (userRole) {
+    switch (sessionUser ? modoActivo(sessionUser) : undefined) {
       case 'TALLER':
         return NextResponse.redirect(new URL('/taller', nextUrl))
       case 'MARCA':
