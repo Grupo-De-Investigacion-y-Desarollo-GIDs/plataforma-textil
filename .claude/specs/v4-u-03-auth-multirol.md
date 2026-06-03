@@ -259,6 +259,89 @@ El discovery global estimó **8h**. Con la superficie medida (58 API files con g
 
 ---
 
+## PR2 — Plan de burn-down (API)
+
+> Resultado del discovery del burn-down (post-PR1). **No migra código** — es el plan a ejecutar cuando PR1 (#391) tenga OK de QA de Sergio.
+
+### Inventario
+
+| | Archivos |
+|--|--|
+| Gatean `role` inline (cualquier forma) | **52** |
+| − falso positivo (`body.role`, no sesión) | −1 (`auth/registro/route.ts`) |
+| − ya migrado al helper | −1 (`talleres/route.ts`) |
+| **A migrar (neto)** | **~50** |
+| Ya usan `requiereRolApi` (no tocar) | 8 |
+
+> El conteo "literal" (`session.user.role`) da solo 15, pero **subestima**: el patrón dominante es `const role = (session.user as { role?: string }).role` y después `if (role !== 'ADMIN')`. La comparación cae en una variable, no en `session.user.role` literal. El conteo bueno es **52** (coincide con el "~58" de la sección 2).
+
+### Patrones de gating
+
+| Patrón | ~Cantidad | Migración |
+|--|--|--|
+| **A — admin-only** (`role !== 'ADMIN'`) | ~41 refs | Mecánico |
+| **B — lista** (`['ADMIN','ESTADO'].includes(role)`) | 7 | Mecánico (cambia el array) |
+| **C — ownership-or-rol** | 2 (`observaciones/[id]`, `validaciones/[id]`) | Ojo individual |
+| **D — role dirige lógica** (no solo gatea) | 2 (`validaciones/[id]` ramifica en `role === 'ESTADO'`; `registro` usa `body.role` → **no migrar**) | Ojo individual |
+
+**~48 son reemplazo mecánico idéntico; ~2-4 necesitan ojo individual.**
+
+### Patrón de migración mecánico (A y B)
+
+```ts
+const sesion = await requiereRolApi(['ADMIN'])        // o ['ADMIN', 'ESTADO']
+if (sesion instanceof NextResponse) return sesion
+// sesion.userId / sesion.role disponibles
+```
+
+En **C/D**, el gate se migra igual, pero el `role` que se reusa abajo (branching/ownership) se obtiene con `modoActivo(session.user)` (= modo actuante, respeta el invariante `role == activeMode`).
+
+### ⚠️ Cambio de comportamiento
+
+Los admin-only que hoy devuelven **401** para un usuario logueado-pero-sin-rol pasarán a **403** con el helper (el **401** queda solo para sin-sesión). Es lo correcto, pero **hay que actualizar los tests que asserteen 401** en ese caso.
+
+### Riesgo `roles[]` derivado — SEGURO
+
+`requiereRolApi` lee la **sesión** (`auth()` → `tieneAlgunRol(session.user, …)`), donde `roles[]` ya viene normalizado por el callback `jwt`. **Nunca** toca la DB cruda. Grep confirmado: ningún endpoint selecciona `user.roles`/`activeMode` de Prisma para gatear.
+
+**Regla del burn-down: siempre el helper (lee la sesión), nunca leer `roles` de la DB** (leería el array vacío y rompería el gating).
+
+### Orden de migración (por carpeta, de menos a más riesgo)
+
+1. `admin/*` admin-only puro (config, stats, marcas, usuarios, usuarios/[id])
+2. `admin/*` lista ADMIN/ESTADO (notas-seguimiento, observaciones, reportes, onboarding, usuarios-buscar)
+3. Resto por área (colecciones, pedidos, cotizaciones, auditorías, certificados, procesos, tipos-documento, contenido, validaciones lista)
+4. **Último, con ojo:** `observaciones/[id]`, `validaciones/[id]` (ownership/branching)
+5. **Excluir:** `auth/registro/*` (es `body.role`, input, no sesión)
+
+### Estructura — 2 sub-PRs
+
+- **PR2a** — los ~48 mecánicos (A+B). Diff grande pero homogéneo.
+- **PR2b** — los ~4 ownership/branching + limpieza de los 46 casts `as { role }`.
+
+### Verificación de cobertura final
+
+```bash
+grep -rE "session\.user.*role|as \{[^}]*role" src/app/api
+```
+Debe dar **0** fuera del helper.
+
+### Tests
+
+Matriz rol×endpoint representativa (1 por patrón): ADMIN-only rechaza TALLER con 403; lista ADMIN/ESTADO acepta ambos y rechaza MARCA; ownership acepta owner sin rol; multi-rol `[TALLER, MARCA]` entra a endpoint MARCA. **Reusar el harness de `src/__tests__/roles-multirol.test.ts`.**
+
+### Estimación
+
+| Bloque | Estimación |
+|--|--|
+| ~48 mecánicos (PR2a) | 3–4 h |
+| ~4 ownership/branching + casts (PR2b) | 2–3 h |
+| Tests matriz | 1.5 h |
+| QA + ajuste de asserts 401→403 | 1 h |
+| **Total burn-down** | **~7–9 h** |
+
+---
+
 ## 11. Metadata
 
 ```
