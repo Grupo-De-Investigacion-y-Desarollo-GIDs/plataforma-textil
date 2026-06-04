@@ -3,6 +3,9 @@
 ## 2026-06-04
 
 ### Gerardo Breard
+- **14:51** `59cbab7` — ci: re-trigger checks for PR2b
+
+
 - **14:44** `240df5a` — feat(u-03): PR2b - ownership/branching + cast cleanup
   - `src/__tests__/u-03-pr2b-ownership.test.ts`
   - `src/app/api/admin/observaciones/[id]/route.ts`
