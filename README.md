@@ -123,15 +123,19 @@ cd plataforma-textil
 # 2. Instalar dependencias
 npm install
 
-# 3. Copiar y configurar variables de entorno
-cp .env.example .env.local
-# Editar .env.local con los valores correspondientes
+# 3. Copiar y configurar variables de entorno (apuntar a DEV)
+cp .env.example .env.local   # usado por Next.js (runtime)
+cp .env.example .env         # usado por el Prisma CLI (migraciones)
+# Editar ambos con los valores de DEV. Obtenerlos con:
+#   vercel env pull --environment=preview .env.local
+# y copiar DATABASE_URL/DIRECT_URL tambien a .env.
+# NUNCA dejar .env apuntando a PROD (ver "seguridad de la DB" en .env.example).
 
 # 4. Generar cliente Prisma
 npx prisma generate
 
-# 5. Correr migraciones
-npx prisma migrate dev
+# 5. Correr migraciones (con guard anti-PROD)
+npm run db:migrate
 
 # 6. Cargar datos de prueba (seed)
 npm run db:seed
@@ -157,7 +161,13 @@ Para instrucciones detalladas (variables de entorno completas, configuración de
 | `npm run test:e2e` | Tests E2E con Playwright |
 | `npm run test:e2e:ui` | Tests E2E con interfaz visual de Playwright |
 | `npm run test:e2e:headed` | Tests E2E con browser visible |
-| `npm run db:seed` | Cargar datos de prueba en la base |
+| `npm run db:migrate` | `prisma migrate dev` con guard anti-PROD |
+| `npm run db:push` | `prisma db push` con guard anti-PROD |
+| `npm run db:reset` | `prisma migrate reset` con guard anti-PROD |
+| `npm run db:check` | Verifica que `DATABASE_URL` no apunte a PROD |
+| `npm run db:seed` | Cargar datos de prueba (bloquea PROD salvo `ALLOW_PROD_SEED=1`) |
+
+> **Seguridad DB:** los scripts `db:*` bloquean si `DATABASE_URL` apunta a PROD. Para operar contra PROD deliberadamente: `ALLOW_PROD=1 npm run db:migrate` (o `ALLOW_PROD_SEED=1 npm run db:seed`). El `build` no lleva guard porque Vercel lo corre legítimamente contra PROD en el deploy de producción.
 
 ---
 
