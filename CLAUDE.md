@@ -43,12 +43,15 @@ src/
 - Email: proveedor Resend (`src/compartido/lib/email.ts`). `EMAIL_FROM` usa el dominio propio `notificaciones@plataformatextil.com.ar`; sin `RESEND_API_KEY` el envio cae a modo dev (log por consola, no manda)
 
 ## Variables de entorno locales
-- `.env.local` — todas las variables (bajar con `vercel env pull .env.local`)
-- `.env` — solo `DATABASE_URL` y `DIRECT_URL` (para que Prisma CLI funcione sin `source`)
+- `.env.local` — todas las variables (bajar con `vercel env pull --environment=preview .env.local`). Lo lee Next.js (runtime). Apunta a DEV.
+- `.env` — solo `DATABASE_URL` y `DIRECT_URL` (para que Prisma CLI funcione sin `source`). **Debe apuntar a DEV**, igual que `.env.local`.
 - Ambos archivos estan en `.gitignore`
+- **`.env` por defecto = DEV.** El Prisma CLI lee `.env` (no `.env.local`); si apuntara a PROD, `migrate/push/reset` y `db:seed` le pegarian a produccion. Las migraciones a PROD las aplica Vercel en el build, no el CLI local.
+- **PROD es opt-in puntual:** `vercel env pull --environment=production .env.prod` y correr con `ALLOW_PROD=1` (scripts `db:*`) o `ALLOW_PROD_SEED=1` (`db:seed`). El flip personal de `.env` lo hace cada dev en su maquina (gitignored, no commiteable).
+- **Guards anti-PROD** (commiteados, en el repo): `scripts/check-db-ref.ts` bloquea `db:migrate`/`db:push`/`db:reset` si `DATABASE_URL` apunta al ref de prod; `prisma/seed.ts` se niega a correr contra prod. Bypass deliberado con `ALLOW_PROD=1` / `ALLOW_PROD_SEED=1`. El `build` NO lleva guard (Vercel lo corre contra prod legitimamente).
 
 ## Advertencias tecnicas conocidas
-- Prisma CLI no lee `.env.local` — usar `.env` para migraciones y `db pull`
+- Prisma CLI no lee `.env.local` — usar `.env` para migraciones y `db pull` (mantener `.env` apuntando a DEV; ver "Variables de entorno locales")
 - Next.js 16 recomienda migrar `middleware.ts` a `proxy.ts` (no bloqueante por ahora)
 - Prisma: config en `package.json#prisma` esta deprecada y se elimina en Prisma 7
 - Fuentes: Noto Sans y Overpass estan en `public/fonts/` como archivos woff2 locales (no dependen de Google Fonts en build)

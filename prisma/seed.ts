@@ -4,9 +4,19 @@ import bcrypt from 'bcryptjs'
 const prisma = new PrismaClient()
 
 async function main() {
-  if (process.env.VERCEL_ENV === 'production') {
-    console.log('Seed skipped in production')
-    return
+  // Guard robusto: bloquear si la DB parece PROD, salvo opt-in explícito.
+  // El check anterior (VERCEL_ENV) no disparaba en local porque .env no define
+  // VERCEL_ENV — y este seed empieza por borrar TODAS las tablas (deleteMany).
+  const DB_URL = process.env.DATABASE_URL || ''
+  const PROD_REF = 'nefbhacmjrzynnhvgfnl' // ref de prod, ver .claude/specs/handover/DECISIONS.md
+  const isProdDb = DB_URL.includes(PROD_REF)
+
+  if (isProdDb && process.env.ALLOW_PROD_SEED !== '1') {
+    throw new Error(
+      '🔴 BLOQUEADO: el seed apunta a una DB que parece PROD.\n' +
+      'Si REALMENTE querés seedear PROD, corré con ALLOW_PROD_SEED=1.\n' +
+      'Si no, configurá .env para apuntar a DEV.'
+    )
   }
 
   console.log('🌱 Seeding database...')

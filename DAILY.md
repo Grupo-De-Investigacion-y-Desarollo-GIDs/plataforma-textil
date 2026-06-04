@@ -1,5 +1,17 @@
 # Daily Log
 
+## 2026-06-04
+
+### Gerardo Breard
+- **11:57** `bdb7e24` — chore: env safety - DEV por defecto + guards anti-PROD
+  - `.env.example`
+  - `CLAUDE.md`
+  - `README.md`
+  - `package.json`
+  - `prisma/seed.ts`
+  - `scripts/check-db-ref.ts`
+
+
 ## 2026-06-03
 
 ### Gerardo Breard
