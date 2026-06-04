@@ -59,10 +59,8 @@ export const POST = apiHandler(async (req: NextRequest) => {
   if (!session?.user) return errorAuthRequired()
   const role = (session.user as { role?: string }).role
 
-  if (role !== 'ADMIN' && role !== 'ESTADO') {
-    const blocked = await rateLimit(req, 'pedidos', session.user.id!)
-    if (blocked) return blocked
-  }
+  const blocked = await rateLimit(req, 'pedidos', session.user.id!)
+  if (blocked) return blocked
 
   const body = await req.json()
   const cantidad = Number(body.cantidad)

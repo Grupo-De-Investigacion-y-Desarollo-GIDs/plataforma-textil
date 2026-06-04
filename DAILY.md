@@ -19,6 +19,9 @@
   - `src/compartido/types/next-auth.d.ts`
   - `src/middleware.ts`
 
+- **18:18** `62f49f8` — chore: rate-limit en POST /api/pedidos aplica a todos los roles
+  - `src/app/api/pedidos/route.ts`
+
 
 ## 2026-06-02
 
