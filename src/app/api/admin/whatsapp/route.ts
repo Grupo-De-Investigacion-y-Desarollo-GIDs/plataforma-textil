@@ -1,21 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import {
   apiHandler,
-  errorAuthRequired,
-  errorForbidden,
   errorNotFound,
   errorResponse,
 } from '@/compartido/lib/api-errors'
 
 // GET: devuelve mensajes WhatsApp pendientes (estado=GENERADO)
 export const GET = apiHandler(async () => {
-  const session = await auth()
-  if (!session?.user) return errorAuthRequired()
-
-  const role = (session.user as { role?: string }).role
-  if (role !== 'ADMIN' && role !== 'ESTADO') return errorForbidden('ADMIN o ESTADO')
+  const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
+  if (sesion instanceof NextResponse) return sesion
 
   const mensajes = await prisma.mensajeWhatsapp.findMany({
     where: { estado: 'GENERADO' },
@@ -37,11 +32,8 @@ export const GET = apiHandler(async () => {
 
 // PUT: marca un mensaje como ENVIADO
 export const PUT = apiHandler(async (req: NextRequest) => {
-  const session = await auth()
-  if (!session?.user) return errorAuthRequired()
-
-  const role = (session.user as { role?: string }).role
-  if (role !== 'ADMIN' && role !== 'ESTADO') return errorForbidden('ADMIN o ESTADO')
+  const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
+  if (sesion instanceof NextResponse) return sesion
 
   const body = await req.json()
   const { id } = body as { id?: string }
@@ -66,7 +58,7 @@ export const PUT = apiHandler(async (req: NextRequest) => {
     data: {
       estado: 'ENVIADO',
       enviadoAt: new Date(),
-      enviadoPor: session.user.id,
+      enviadoPor: sesion.userId,
     },
   })
 

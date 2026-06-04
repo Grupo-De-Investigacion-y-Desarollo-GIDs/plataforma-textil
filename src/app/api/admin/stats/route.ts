@@ -1,13 +1,11 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 
 export async function GET() {
   try {
-    const session = await auth()
-    if (!session?.user || (session.user as { role?: string }).role !== 'ADMIN') {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const sesion = await requiereRolApi(['ADMIN'])
+    if (sesion instanceof NextResponse) return sesion
 
     const [talleres, marcas, pedidos, auditorias, usuarios, denuncias, certificados] = await Promise.all([
       prisma.taller.count(),

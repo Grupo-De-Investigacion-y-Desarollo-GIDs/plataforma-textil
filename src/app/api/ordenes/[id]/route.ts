@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { logActividad } from '@/compartido/lib/log'
 import { EstadoPedido } from '@prisma/client'
 
@@ -11,13 +11,9 @@ const TRANSICIONES_VALIDAS: Record<string, string[]> = {
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN' && role !== 'TALLER') {
-      return NextResponse.json({ error: 'Solo talleres o ADMIN pueden modificar órdenes' }, { status: 403 })
-    }
+    const sesion = await requiereRolApi(['ADMIN', 'TALLER'])
+    if (sesion instanceof NextResponse) return sesion
+    const role = sesion.role
 
     const { id } = await params
 
@@ -29,7 +25,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     if (!orden) return NextResponse.json({ error: 'Orden no encontrada' }, { status: 404 })
 
     // Solo el taller asignado o ADMIN puede modificar
-    if (role !== 'ADMIN' && orden.taller.userId !== session.user.id) {
+    if (role !== 'ADMIN' && orden.taller.userId !== sesion.userId) {
       return NextResponse.json({ error: 'Sin acceso a esta orden' }, { status: 403 })
     }
 
@@ -65,16 +61,16 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
     // Logs de actividad
     if (estado === 'EN_EJECUCION' && orden.estado === 'PENDIENTE') {
-      logActividad('ORDEN_ACEPTADA', session.user.id, { ordenId: id, pedidoId: orden.pedidoId })
+      logActividad('ORDEN_ACEPTADA', sesion.userId, { ordenId: id, pedidoId: orden.pedidoId })
     }
     if (estado === 'CANCELADO' && orden.estado === 'PENDIENTE') {
-      logActividad('ORDEN_RECHAZADA', session.user.id, { ordenId: id, pedidoId: orden.pedidoId })
+      logActividad('ORDEN_RECHAZADA', sesion.userId, { ordenId: id, pedidoId: orden.pedidoId })
     }
     if (data.estado === 'COMPLETADO') {
-      logActividad('ORDEN_COMPLETADA', session.user.id, { ordenId: id, pedidoId: orden.pedidoId })
+      logActividad('ORDEN_COMPLETADA', sesion.userId, { ordenId: id, pedidoId: orden.pedidoId })
     }
     if (progreso !== undefined && !estado) {
-      logActividad('PROGRESO_ACTUALIZADO', session.user.id, {
+      logActividad('PROGRESO_ACTUALIZADO', sesion.userId, {
         ordenId: id,
         pedidoId: orden.pedidoId,
         progreso: Number(data.progreso),

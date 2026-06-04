@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { apiHandler, errorAuthRequired, errorForbidden, errorInvalidInput, errorNotFound, errorRateLimited } from '@/compartido/lib/api-errors'
-import { auth } from '@/compartido/lib/auth'
+import { apiHandler, errorInvalidInput, errorNotFound, errorRateLimited } from '@/compartido/lib/api-errors'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { z } from 'zod'
 import { prisma } from '@/compartido/lib/prisma'
 import { logAccionAdmin } from '@/compartido/lib/log'
@@ -15,17 +15,13 @@ const SchemaCrearMensaje = z.object({
 })
 
 export const POST = apiHandler(async (req) => {
-  const session = await auth()
-
-  if (!session?.user) return errorAuthRequired()
-  if (!['ADMIN', 'ESTADO'].includes((session.user as { role?: string }).role ?? '')) {
-    return errorForbidden('ADMIN o ESTADO')
-  }
+  const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
+  if (sesion instanceof NextResponse) return sesion
 
   // Rate limit inline: 50 mensajes/hora por admin
   const unaHoraAtras = new Date(Date.now() - 60 * 60 * 1000)
   const enviados = await prisma.notificacion.count({
-    where: { createdById: session.user.id, tipo: 'mensaje_individual', createdAt: { gte: unaHoraAtras } },
+    where: { createdById: sesion.userId, tipo: 'mensaje_individual', createdAt: { gte: unaHoraAtras } },
   })
   if (enviados >= 50) return errorRateLimited(3600)
 
@@ -52,7 +48,7 @@ export const POST = apiHandler(async (req) => {
       titulo,
       mensaje,
       link: link || null,
-      createdById: session.user.id,
+      createdById: sesion.userId,
     },
   })
 
@@ -70,7 +66,7 @@ export const POST = apiHandler(async (req) => {
     })
   }
 
-  logAccionAdmin('MENSAJE_INDIVIDUAL_ENVIADO', session.user.id, {
+  logAccionAdmin('MENSAJE_INDIVIDUAL_ENVIADO', sesion.userId, {
     entidad: 'usuario',
     entidadId: destinatarioId,
     metadata: {

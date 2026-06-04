@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 
 export async function GET() {
   try {
@@ -20,10 +21,8 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN') return NextResponse.json({ error: 'Solo admin' }, { status: 403 })
+    const sesion = await requiereRolApi(['ADMIN'])
+    if (sesion instanceof NextResponse) return sesion
 
     const body = await req.json()
     if (!body.nombre?.trim()) {
@@ -50,10 +49,8 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN') return NextResponse.json({ error: 'Solo admin' }, { status: 403 })
+    const sesion = await requiereRolApi(['ADMIN'])
+    if (sesion instanceof NextResponse) return sesion
 
     const body = await req.json()
     if (!body.id) return NextResponse.json({ error: 'ID requerido' }, { status: 400 })

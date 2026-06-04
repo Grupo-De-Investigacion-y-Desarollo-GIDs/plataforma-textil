@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
-import { apiHandler, errorAuthRequired, errorForbidden, errorInvalidInput } from '@/compartido/lib/api-errors'
+import { apiHandler, errorInvalidInput } from '@/compartido/lib/api-errors'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { logAccionAdmin } from '@/compartido/lib/log'
 
 const crearSchema = z.object({
@@ -22,9 +22,8 @@ const crearSchema = z.object({
 })
 
 export const GET = apiHandler(async (req: NextRequest) => {
-  const session = await auth()
-  if (!session?.user?.id) return errorAuthRequired()
-  if (!['ADMIN', 'ESTADO'].includes(session.user.role)) return errorForbidden('ADMIN o ESTADO')
+  const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
+  if (sesion instanceof NextResponse) return sesion
 
   const url = req.nextUrl.searchParams
   const tipo = url.get('tipo') || undefined
@@ -74,9 +73,8 @@ export const GET = apiHandler(async (req: NextRequest) => {
 })
 
 export const POST = apiHandler(async (req: NextRequest) => {
-  const session = await auth()
-  if (!session?.user?.id) return errorAuthRequired()
-  if (!['ADMIN', 'ESTADO'].includes(session.user.role)) return errorForbidden('ADMIN o ESTADO')
+  const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
+  if (sesion instanceof NextResponse) return sesion
 
   const body = await req.json()
   const parsed = crearSchema.safeParse(body)
@@ -85,7 +83,7 @@ export const POST = apiHandler(async (req: NextRequest) => {
   const observacion = await prisma.observacionCampo.create({
     data: {
       ...parsed.data,
-      autorId: session.user.id,
+      autorId: sesion.userId,
     },
     include: {
       autor: { select: { id: true, name: true } },
@@ -93,7 +91,7 @@ export const POST = apiHandler(async (req: NextRequest) => {
     },
   })
 
-  logAccionAdmin('OBSERVACION_CAMPO_CREADA', session.user.id, {
+  logAccionAdmin('OBSERVACION_CAMPO_CREADA', sesion.userId, {
     entidad: 'nota',
     entidadId: observacion.id,
     metadata: { tipo: observacion.tipo, titulo: observacion.titulo },

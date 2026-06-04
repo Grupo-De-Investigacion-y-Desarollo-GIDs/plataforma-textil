@@ -2,17 +2,15 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Prisma } from '@prisma/client'
 import { randomUUID } from 'node:crypto'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { logActividad } from '@/compartido/lib/log'
 import { sendEmail, buildComunicacionAdminEmail } from '@/compartido/lib/email'
 import { generarMensajeWhatsapp } from '@/compartido/lib/whatsapp'
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN') return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 })
+    const sesion = await requiereRolApi(['ADMIN'])
+    if (sesion instanceof NextResponse) return sesion
 
     const body = await req.json()
     const { titulo, mensaje, tipo, canal, segmento, link } = body
@@ -63,7 +61,7 @@ export async function POST(req: NextRequest) {
         mensaje,
         canal: canal || 'PLATAFORMA',
         link: link || null,
-        createdById: session.user!.id!,
+        createdById: sesion.userId,
         batchId,
       })),
     })
@@ -103,7 +101,7 @@ export async function POST(req: NextRequest) {
       }).catch(err => console.error('[F-02] Error WhatsApp mensaje_admin:', err))
     }
 
-    await logActividad(session.user!.id!, 'NOTIFICACION_MASIVA', {
+    await logActividad(sesion.userId, 'NOTIFICACION_MASIVA', {
       titulo,
       segmento,
       canal,

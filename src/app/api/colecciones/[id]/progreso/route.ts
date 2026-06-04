@@ -1,18 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 
 // POST /api/colecciones/[id]/progreso
 // Body: { videosVistos: number, totalVideos: number }
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'TALLER') return NextResponse.json({ error: 'Solo talleres pueden registrar progreso' }, { status: 403 })
+    const sesion = await requiereRolApi(['TALLER'])
+    if (sesion instanceof NextResponse) return sesion
 
     const taller = await prisma.taller.findFirst({
-      where: { userId: session.user.id },
+      where: { userId: sesion.userId },
       select: { id: true },
     })
     if (!taller) return NextResponse.json({ error: 'Taller no encontrado' }, { status: 404 })

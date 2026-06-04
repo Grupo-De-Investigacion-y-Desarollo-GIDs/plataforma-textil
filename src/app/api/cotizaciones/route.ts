@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Prisma } from '@prisma/client'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { notificarCotizacion } from '@/compartido/lib/notificaciones'
 import { logActividad } from '@/compartido/lib/log'
 import { rateLimit } from '@/compartido/lib/ratelimit'
-import { apiHandler, errorAuthRequired, errorForbidden, errorNotFound, errorConflict, errorResponse } from '@/compartido/lib/api-errors'
+import { apiHandler, errorForbidden, errorNotFound, errorConflict, errorResponse } from '@/compartido/lib/api-errors'
 import { z } from 'zod'
 
 const cotizacionSchema = z.object({
@@ -17,10 +17,10 @@ const cotizacionSchema = z.object({
 })
 
 export const GET = apiHandler(async (req: NextRequest) => {
-  const session = await auth()
-  if (!session?.user) return errorAuthRequired()
-  const role = (session.user as { role?: string }).role
-  const userId = session.user.id!
+  const sesion = await requiereRolApi(['TALLER', 'MARCA', 'ADMIN'])
+  if (sesion instanceof NextResponse) return sesion
+  const role = sesion.role
+  const userId = sesion.userId
 
   await prisma.cotizacion.updateMany({
     where: {
@@ -45,13 +45,12 @@ export const GET = apiHandler(async (req: NextRequest) => {
       pedido: { marca: { userId } },
       ...(pedidoId ? { pedidoId } : {}),
     }
-  } else if (role === 'ADMIN') {
+  } else {
+    // role === 'ADMIN' (garantizado por el gate de requiereRolApi)
     where = {
       ...(pedidoId ? { pedidoId } : {}),
       ...(tallerId ? { tallerId } : {}),
     }
-  } else {
-    return errorForbidden()
   }
 
   const cotizaciones = await prisma.cotizacion.findMany({
@@ -67,19 +66,15 @@ export const GET = apiHandler(async (req: NextRequest) => {
 })
 
 export const POST = apiHandler(async (req: NextRequest) => {
-  const session = await auth()
-  if (!session?.user) return errorAuthRequired()
-  const role = (session.user as { role?: string }).role
+  // Solo rol TALLER puede cotizar.
+  const sesion = await requiereRolApi(['TALLER'])
+  if (sesion instanceof NextResponse) return sesion
 
-  if (role !== 'ADMIN' && role !== 'ESTADO') {
-    const blocked = await rateLimit(req, 'cotizaciones', session.user.id!)
-    if (blocked) return blocked
-  }
-
-  if (role !== 'TALLER') return errorForbidden('TALLER')
+  const blocked = await rateLimit(req, 'cotizaciones', sesion.userId)
+  if (blocked) return blocked
 
   const taller = await prisma.taller.findUnique({
-    where: { userId: session.user.id! },
+    where: { userId: sesion.userId },
     select: { id: true, nombre: true, verificadoAfip: true },
   })
   if (!taller) return errorNotFound('taller')
@@ -109,7 +104,7 @@ export const POST = apiHandler(async (req: NextRequest) => {
   })
   if (!pedido) return errorNotFound('pedido')
 
-  if (pedido.marca.userId === session.user.id) {
+  if (pedido.marca.userId === sesion.userId) {
     return errorResponse({
       code: 'AUTO_COTIZACION',
       message: 'No podés cotizar un pedido que publicaste como marca.',
@@ -148,7 +143,7 @@ export const POST = apiHandler(async (req: NextRequest) => {
       },
     })
 
-    logActividad('COTIZACION_RECIBIDA', session.user.id, {
+    logActividad('COTIZACION_RECIBIDA', sesion.userId, {
       pedidoId: data.pedidoId,
       cotizacionId: cotizacion.id,
       tallerId: taller.id,

@@ -1,17 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { getFeatureFlag } from '@/compartido/lib/features'
 import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
 
 export async function GET(req: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN' && role !== 'ESTADO') {
-      return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 })
-    }
+    const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { searchParams } = req.nextUrl
     const page = parseInt(searchParams.get('page') || '1')

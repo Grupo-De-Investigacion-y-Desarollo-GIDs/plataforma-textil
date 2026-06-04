@@ -1,21 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { prisma } from '@/compartido/lib/prisma'
 import { generarSlugUnico } from '@/compartido/lib/slugify'
 
-function checkAuth(session: { user?: { role?: string } } | null) {
-  if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-  const role = (session.user as { role?: string }).role
-  if (role !== 'CONTENIDO' && role !== 'ADMIN') {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-  }
-  return null
-}
-
 export async function GET() {
-  const session = await auth()
-  const authError = checkAuth(session)
-  if (authError) return authError
+  const sesion = await requiereRolApi(['CONTENIDO', 'ADMIN'])
+  if (sesion instanceof NextResponse) return sesion
 
   const novedades = await prisma.novedad.findMany({
     orderBy: { createdAt: 'desc' },
@@ -25,9 +15,8 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await auth()
-  const authError = checkAuth(session)
-  if (authError) return authError
+  const sesion = await requiereRolApi(['CONTENIDO', 'ADMIN'])
+  if (sesion instanceof NextResponse) return sesion
 
   const body = await req.json()
 

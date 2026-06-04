@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { uploadFile } from '@/compartido/lib/storage'
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
@@ -10,15 +10,8 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth()
-    if (!session?.user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
-
-    const role = (session.user as { role?: string }).role
-    if (role !== 'CONTENIDO' && role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-    }
+    const sesion = await requiereRolApi(['CONTENIDO', 'ADMIN'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { id } = await params
     const formData = await req.formData()

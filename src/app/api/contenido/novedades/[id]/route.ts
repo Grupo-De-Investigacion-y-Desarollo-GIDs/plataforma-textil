@@ -1,21 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { prisma } from '@/compartido/lib/prisma'
 import { generarSlugUnico } from '@/compartido/lib/slugify'
 
-function checkAuth(session: { user?: { role?: string } } | null) {
-  if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-  const role = (session.user as { role?: string }).role
-  if (role !== 'CONTENIDO' && role !== 'ADMIN') {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-  }
-  return null
-}
-
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await auth()
-  const authError = checkAuth(session)
-  if (authError) return authError
+  const sesion = await requiereRolApi(['CONTENIDO', 'ADMIN'])
+  if (sesion instanceof NextResponse) return sesion
 
   const { id } = await params
   const body = await req.json()
@@ -45,9 +35,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 }
 
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await auth()
-  const authError = checkAuth(session)
-  if (authError) return authError
+  const sesion = await requiereRolApi(['CONTENIDO', 'ADMIN'])
+  if (sesion instanceof NextResponse) return sesion
 
   const { id } = await params
 
