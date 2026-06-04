@@ -1,18 +1,10 @@
 import { Header, UserSidebar, SidebarProvider } from '@/compartido/componentes/layout'
 import { Footer } from '@/compartido/componentes/layout/footer'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRol } from '@/compartido/lib/permisos'
 import { prisma } from '@/compartido/lib/prisma'
-import { redirect } from 'next/navigation'
 
 export default async function MarcaLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth()
-
-  if (!session?.user) {
-    redirect('/login')
-  }
-  if (session.user.role !== 'MARCA') {
-    redirect('/unauthorized')
-  }
+  const session = await requiereRol(['MARCA'])
 
   const marca = await prisma.marca.findFirst({
     where: { userId: session.user.id },

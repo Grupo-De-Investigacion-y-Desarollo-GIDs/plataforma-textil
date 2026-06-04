@@ -1,16 +1,10 @@
-import { auth } from '@/compartido/lib/auth'
-import { redirect } from 'next/navigation'
+import { requiereRol } from '@/compartido/lib/permisos'
 import Link from 'next/link'
 import { LogoutButton } from '@/compartido/componentes/ui/logout-button'
 import { ContenidoSidebar } from './contenido-sidebar'
 
 export default async function ContenidoLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth()
-  if (!session?.user) redirect('/login')
-  const role = (session.user as { role?: string }).role
-  if (role !== 'CONTENIDO' && role !== 'ADMIN') {
-    redirect('/unauthorized')
-  }
+  await requiereRol(['CONTENIDO', 'ADMIN'])
 
   return (
     <div className="min-h-screen bg-gray-50">

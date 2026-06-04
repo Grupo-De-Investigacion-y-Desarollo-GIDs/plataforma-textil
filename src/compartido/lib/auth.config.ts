@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from 'next-auth'
+import type { UserRole } from '@prisma/client'
 import Credentials from 'next-auth/providers/credentials'
 
 // Configuracion ligera sin Prisma/bcrypt para uso en middleware (Edge)
@@ -57,16 +58,41 @@ export default {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as { role?: string }).role
-        token.id = user.id
-        token.registroCompleto = (user as { registroCompleto?: boolean }).registroCompleto ?? true
+        const u = user as {
+          id: string
+          role?: string | null
+          roles?: UserRole[] | null
+          activeMode?: UserRole | null
+          registroCompleto?: boolean
+        }
+        token.id = u.id
+        // Normalización en el borde de sesión (U-03): roles[] efectivos y
+        // activeMode siempre derivados, aunque la DB tenga roles=[] o
+        // activeMode=null (usuarios creados post-U02).
+        const activeMode = (u.activeMode ?? u.role ?? null) as UserRole | null
+        token.activeMode = activeMode
+        token.roles =
+          u.roles && u.roles.length > 0
+            ? u.roles
+            : activeMode
+              ? [activeMode]
+              : []
+        // INVARIANTE de back-compat: role == activeMode. Cualquier gate sin
+        // migrar que lea token.role / session.user.role ve el valor correcto.
+        token.role = activeMode ?? undefined
+        token.registroCompleto =
+          (user as { registroCompleto?: boolean }).registroCompleto ?? true
       }
       return token
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string
-        session.user.role = token.role as string
+        session.user.roles = (token.roles as UserRole[]) ?? []
+        session.user.activeMode = (token.activeMode as UserRole | null) ?? null
+        // INVARIANTE: role == activeMode (fallback a token.role para sesiones
+        // viejas emitidas antes del deploy de U-03).
+        session.user.role = (token.activeMode ?? token.role) as string
         ;(session.user as { registroCompleto: boolean }).registroCompleto =
           (token.registroCompleto as boolean) ?? true
       }

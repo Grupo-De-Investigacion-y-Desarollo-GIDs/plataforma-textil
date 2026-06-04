@@ -1,21 +1,22 @@
 import { auth } from './auth'
 import { redirect } from 'next/navigation'
 import { NextResponse } from 'next/server'
+import { tieneAlgunRol, modoActivo, type Rol } from './roles'
 
-type RolPermitido = 'ADMIN' | 'ESTADO' | 'CONTENIDO' | 'MARCA' | 'TALLER'
+type RolPermitido = Rol
 
 /**
  * Para uso en Server Components.
- * Verifica que el usuario tiene uno de los roles permitidos.
- * Redirige a /login si no hay sesion, a /unauthorized si el rol no coincide.
+ * Verifica que el usuario tiene MEMBRESÍA en alguno de los roles permitidos
+ * (decisión D1/A: gating por roles[], no por el escalar role).
+ * Redirige a /login si no hay sesion, a /unauthorized si no tiene el rol.
  */
 export async function requiereRol(rolesPermitidos: RolPermitido[]) {
   const session = await auth()
   if (!session?.user) {
     redirect('/login')
   }
-  const role = (session.user as { role?: string }).role as string
-  if (!rolesPermitidos.includes(role as RolPermitido)) {
+  if (!tieneAlgunRol(session.user, rolesPermitidos)) {
     redirect('/unauthorized')
   }
   return session
@@ -33,8 +34,7 @@ export async function requiereRolApi(
   if (!session?.user) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   }
-  const role = (session.user as { role?: string }).role as string
-  if (!rolesPermitidos.includes(role as RolPermitido)) {
+  if (!tieneAlgunRol(session.user, rolesPermitidos)) {
     return NextResponse.json(
       {
         error: `Requiere rol: ${rolesPermitidos.join(' o ')}`,
@@ -44,5 +44,12 @@ export async function requiereRolApi(
       { status: 403 }
     )
   }
-  return { userId: session.user.id!, role }
+  // role == activeMode (invariante de back-compat). Los consumidores que ya
+  // usaban .role siguen viendo el modo actuante.
+  return { userId: session.user.id!, role: (modoActivo(session.user) ?? '') as string }
 }
+
+// Re-export de las primitivas para componentes y branches de UI que necesitan
+// leer el modo/membresía sin redirigir.
+export { modoActivo, tieneAlgunRol, rolesEfectivos } from './roles'
+export type { Rol } from './roles'
