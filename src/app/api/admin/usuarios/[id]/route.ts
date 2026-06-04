@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { logAccionAdmin } from '@/compartido/lib/log'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth()
-    if (!session?.user || (session.user as { role?: string }).role !== 'ADMIN') {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const sesion = await requiereRolApi(['ADMIN'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { id } = await params
     const user = await prisma.user.findUnique({
@@ -24,10 +22,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth()
-    if (!session?.user || (session.user as { role?: string }).role !== 'ADMIN') {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const sesion = await requiereRolApi(['ADMIN'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { id } = await params
     const body = await req.json()
@@ -36,7 +32,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       data: { name: body.name, role: body.role, active: body.active, phone: body.phone },
       select: { id: true, email: true, name: true, role: true, active: true },
     })
-    logAccionAdmin('ADMIN_USUARIO_EDITADO', session.user.id, {
+    logAccionAdmin('ADMIN_USUARIO_EDITADO', sesion.userId, {
       entidad: 'usuario',
       entidadId: id,
       cambios: { name: body.name, role: body.role, active: body.active, phone: body.phone },
@@ -49,14 +45,12 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth()
-    if (!session?.user || (session.user as { role?: string }).role !== 'ADMIN') {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const sesion = await requiereRolApi(['ADMIN'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { id } = await params
     await prisma.user.update({ where: { id }, data: { active: false } })
-    logAccionAdmin('ADMIN_USUARIO_DESACTIVADO', session.user.id, {
+    logAccionAdmin('ADMIN_USUARIO_DESACTIVADO', sesion.userId, {
       entidad: 'usuario',
       entidadId: id,
     })

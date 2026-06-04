@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { logAccionAdmin } from '@/compartido/lib/log'
 import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
 import { generarXlsx, toCsv } from '@/compartido/lib/exportes'
@@ -8,14 +8,8 @@ import { obtenerDataExporte, esTipoValido } from './data'
 export const maxDuration = 120
 
 export async function GET(req: NextRequest) {
-  const session = await auth()
-  if (!session?.user) {
-    return NextResponse.json({ error: { code: 'AUTH_REQUIRED', message: 'No autorizado' } }, { status: 401 })
-  }
-  const role = (session.user as { role?: string }).role
-  if (role !== 'ESTADO' && role !== 'ADMIN') {
-    return NextResponse.json({ error: { code: 'FORBIDDEN', message: 'Solo ESTADO o ADMIN' } }, { status: 403 })
-  }
+  const sesion = await requiereRolApi(['ESTADO', 'ADMIN'])
+  if (sesion instanceof NextResponse) return sesion
 
   const rateLimitResponse = await rateLimit(req, 'exportar', getClientIp(req))
   if (rateLimitResponse) return rateLimitResponse
@@ -44,7 +38,7 @@ export async function GET(req: NextRequest) {
     const data = await obtenerDataExporte(tipo, { desde, hasta, provincia, nivel })
     const fecha = new Date().toISOString().split('T')[0]
 
-    logAccionAdmin('EXPORTE_GENERADO', session.user.id, {
+    logAccionAdmin('EXPORTE_GENERADO', sesion.userId, {
       entidad: 'exportacion',
       entidadId: tipo,
       metadata: { tipo, formato, filtros: { desde, hasta, provincia, nivel }, cantidadRegistros: data.filas.length },

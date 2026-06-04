@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { logAccionAdmin } from '@/compartido/lib/log'
 import { generarEmbedding } from '@/compartido/lib/rag'
 import { z } from 'zod'
@@ -14,12 +14,8 @@ const crearDocSchema = z.object({
 
 export async function GET() {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN' && role !== 'CONTENIDO') {
-      return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
-    }
+    const sesion = await requiereRolApi(['ADMIN', 'CONTENIDO'])
+    if (sesion instanceof NextResponse) return sesion
 
     // Retornar documentos sin el campo embedding (demasiado grande)
     const documentos = await prisma.documentoRAG.findMany({
@@ -36,12 +32,8 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN' && role !== 'CONTENIDO') {
-      return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
-    }
+    const sesion = await requiereRolApi(['ADMIN', 'CONTENIDO'])
+    if (sesion instanceof NextResponse) return sesion
 
     const body = await req.json()
     const parsed = crearDocSchema.safeParse(body)
@@ -71,7 +63,7 @@ export async function POST(req: NextRequest) {
       )
     `
 
-    logAccionAdmin('RAG_DOCUMENTO_CREADO', session.user.id, {
+    logAccionAdmin('RAG_DOCUMENTO_CREADO', sesion.userId, {
       entidad: 'rag',
       entidadId: id,
       metadata: { titulo: data.titulo, categoria: data.categoria },

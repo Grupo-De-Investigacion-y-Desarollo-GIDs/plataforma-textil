@@ -1,17 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { aplicarNivel } from '@/compartido/lib/nivel'
 import { logAccionAdmin } from '@/compartido/lib/log'
 
 export async function GET(req: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN' && role !== 'ESTADO') {
-      return NextResponse.json({ error: 'Solo ADMIN o ESTADO' }, { status: 403 })
-    }
+    const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { searchParams } = req.nextUrl
     const page = parseInt(searchParams.get('page') || '1')
@@ -44,10 +40,8 @@ export async function GET(req: NextRequest) {
 // PATCH /api/certificados — revocar certificado por id (admin)
 export async function PATCH(req: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN') return NextResponse.json({ error: 'Solo ADMIN' }, { status: 403 })
+    const sesion = await requiereRolApi(['ADMIN'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { id, motivo } = await req.json()
     if (!id) return NextResponse.json({ error: 'Falta id' }, { status: 400 })
@@ -58,9 +52,9 @@ export async function PATCH(req: NextRequest) {
       include: { taller: { select: { id: true } } },
     })
 
-    await aplicarNivel(cert.taller.id, session.user.id)
+    await aplicarNivel(cert.taller.id, sesion.userId)
 
-    logAccionAdmin('CERTIFICADO_REVOCADO', session.user.id, {
+    logAccionAdmin('CERTIFICADO_REVOCADO', sesion.userId, {
       entidad: 'certificado',
       entidadId: id,
       motivo: motivo || 'Sin motivo',
@@ -76,12 +70,8 @@ export async function PATCH(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Solo ADMIN puede emitir certificados' }, { status: 403 })
-    }
+    const sesion = await requiereRolApi(['ADMIN'])
+    if (sesion instanceof NextResponse) return sesion
 
     const body = await req.json()
     const certificado = await prisma.certificado.create({
@@ -94,9 +84,9 @@ export async function POST(req: NextRequest) {
     })
 
     // Recalculate taller level after new certificate
-    await aplicarNivel(body.tallerId, session.user.id)
+    await aplicarNivel(body.tallerId, sesion.userId)
 
-    logAccionAdmin('CERTIFICADO_EMITIDO', session.user.id, {
+    logAccionAdmin('CERTIFICADO_EMITIDO', sesion.userId, {
       entidad: 'certificado',
       entidadId: certificado.id,
       metadata: { tallerId: body.tallerId, codigo: body.codigo },

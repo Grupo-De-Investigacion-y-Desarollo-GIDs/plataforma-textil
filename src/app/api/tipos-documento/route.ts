@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { invalidarCacheNivel } from '@/compartido/lib/nivel'
 
 export async function GET() {
@@ -20,10 +21,8 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ESTADO') return NextResponse.json({ error: 'Requiere rol: ESTADO', code: 'INSUFFICIENT_ROLE', rolesRequeridos: ['ESTADO'] }, { status: 403 })
+    const sesion = await requiereRolApi(['ESTADO'])
+    if (sesion instanceof NextResponse) return sesion
 
     const body = await req.json()
     if (!body.nombre?.trim()) return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 })
@@ -57,10 +56,8 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ESTADO') return NextResponse.json({ error: 'Requiere rol: ESTADO', code: 'INSUFFICIENT_ROLE', rolesRequeridos: ['ESTADO'] }, { status: 403 })
+    const sesion = await requiereRolApi(['ESTADO'])
+    if (sesion instanceof NextResponse) return sesion
 
     const body = await req.json()
     if (!body.id) return NextResponse.json({ error: 'ID requerido' }, { status: 400 })

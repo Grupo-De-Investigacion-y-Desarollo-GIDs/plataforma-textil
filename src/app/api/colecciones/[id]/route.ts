@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { logAccionAdmin } from '@/compartido/lib/log'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -27,12 +27,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN' && role !== 'CONTENIDO') {
-      return NextResponse.json({ error: 'Solo ADMIN o CONTENIDO puede modificar colecciones' }, { status: 403 })
-    }
+    const sesion = await requiereRolApi(['ADMIN', 'CONTENIDO'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { id } = await params
     const body = await req.json()
@@ -49,7 +45,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         imagenUrl: body.imagenUrl,
       },
     })
-    logAccionAdmin('COLECCION_EDITADA', session.user.id, {
+    logAccionAdmin('COLECCION_EDITADA', sesion.userId, {
       entidad: 'coleccion',
       entidadId: id,
       cambios: { titulo: body.titulo, activa: body.activa },
@@ -64,16 +60,12 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN' && role !== 'CONTENIDO') {
-      return NextResponse.json({ error: 'Solo ADMIN o CONTENIDO puede eliminar colecciones' }, { status: 403 })
-    }
+    const sesion = await requiereRolApi(['ADMIN', 'CONTENIDO'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { id } = await params
     await prisma.coleccion.delete({ where: { id } })
-    logAccionAdmin('COLECCION_ELIMINADA', session.user.id, {
+    logAccionAdmin('COLECCION_ELIMINADA', sesion.userId, {
       entidad: 'coleccion',
       entidadId: id,
     })

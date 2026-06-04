@@ -1,16 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { toCsv } from '@/compartido/lib/csv'
 import { logAccionAdmin } from '@/compartido/lib/log'
 
 export async function GET(req: NextRequest) {
   try {
-    const session = await auth()
-    const role = (session?.user as { role?: string })?.role
-    if (!session?.user || (role !== 'ADMIN' && role !== 'ESTADO')) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { searchParams } = req.nextUrl
     const exportCsv = searchParams.get('export') === 'csv'
@@ -71,7 +68,7 @@ export async function GET(req: NextRequest) {
       const hastaStr = hasta || new Date().toISOString().split('T')[0]
 
       try {
-        logAccionAdmin('DATOS_EXPORTADOS', session.user.id!, {
+        logAccionAdmin('DATOS_EXPORTADOS', sesion.userId, {
           entidad: 'exportacion',
           entidadId: `logs_${desdeStr}_${hastaStr}`,
           metadata: { registros: logs.length, filtros: { userId, accion, entidad, desde, hasta } },

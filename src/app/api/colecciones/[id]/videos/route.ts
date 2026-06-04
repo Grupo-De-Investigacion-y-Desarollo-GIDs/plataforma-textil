@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 
 // POST /api/colecciones/[id]/videos — agregar video a colección
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN' && role !== 'CONTENIDO') return NextResponse.json({ error: 'Solo ADMIN o CONTENIDO puede agregar videos' }, { status: 403 })
+    const sesion = await requiereRolApi(['ADMIN', 'CONTENIDO'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { id: coleccionId } = await params
     const body = await req.json()
@@ -43,10 +41,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 // DELETE /api/colecciones/[id]/videos?videoId=xxx
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN' && role !== 'CONTENIDO') return NextResponse.json({ error: 'Solo ADMIN o CONTENIDO puede eliminar videos' }, { status: 403 })
+    const sesion = await requiereRolApi(['ADMIN', 'CONTENIDO'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { id: coleccionId } = await params
     const videoId = req.nextUrl.searchParams.get('videoId')

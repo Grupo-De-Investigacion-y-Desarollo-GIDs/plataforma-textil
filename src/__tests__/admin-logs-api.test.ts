@@ -79,10 +79,11 @@ describe('GET /api/admin/logs', () => {
     expect(res.status).toBe(401)
   })
 
-  it('retorna 401 si el rol no es ADMIN', async () => {
+  it('retorna 403 si el rol no es ADMIN ni ESTADO', async () => {
+    // U-03 PR2a: el gate pasa por requiereRolApi → logueado-sin-rol da 403 (no 401)
     mockAuth.mockResolvedValue({ user: { id: 'u1', role: 'TALLER' } })
     const res = await GET(makeRequest())
-    expect(res.status).toBe(401)
+    expect(res.status).toBe(403)
   })
 
   it('retorna logs paginados con metadata', async () => {

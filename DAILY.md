@@ -3,6 +3,50 @@
 ## 2026-06-03
 
 ### Gerardo Breard
+- **22:45** `f051a9e` — feat(u-03): PR2a burn-down mecanico - 40 endpoints al helper
+  - `src/__tests__/admin-logs-api.test.ts`
+  - `src/__tests__/permisos.test.ts`
+  - `src/app/api/admin/config/route.ts`
+  - `src/app/api/admin/configuracion-upload/[id]/route.ts`
+  - `src/app/api/admin/configuracion-upload/route.ts`
+  - `src/app/api/admin/logs/route.ts`
+  - `src/app/api/admin/mensajes-individuales/route.ts`
+  - `src/app/api/admin/notas-seguimiento/route.ts`
+  - `src/app/api/admin/notas/route.ts`
+  - `src/app/api/admin/notificaciones/route.ts`
+  - `src/app/api/admin/observaciones/route.ts`
+  - `src/app/api/admin/rag/[id]/route.ts`
+  - `src/app/api/admin/rag/route.ts`
+  - `src/app/api/admin/reporte-mensual/route.ts`
+  - `src/app/api/admin/reporte-piloto/route.ts`
+  - `src/app/api/admin/stats/route.ts`
+  - `src/app/api/admin/usuarios-buscar/route.ts`
+  - `src/app/api/admin/usuarios/[id]/route.ts`
+  - `src/app/api/admin/usuarios/route.ts`
+  - `src/app/api/admin/whatsapp/route.ts`
+  - `src/app/api/auditorias/[id]/route.ts`
+  - `src/app/api/auditorias/route.ts`
+  - `src/app/api/certificados/route.ts`
+  - `src/app/api/colecciones/[id]/evaluacion/route.ts`
+  - `src/app/api/colecciones/[id]/progreso/route.ts`
+  - `src/app/api/colecciones/[id]/route.ts`
+  - `src/app/api/colecciones/[id]/upload/route.ts`
+  - `src/app/api/colecciones/[id]/videos/route.ts`
+  - `src/app/api/colecciones/route.ts`
+  - `src/app/api/contenido/novedades/[id]/route.ts`
+  - `src/app/api/contenido/novedades/route.ts`
+  - `src/app/api/contenido/novedades/upload/route.ts`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/app/api/denuncias/route.ts`
+  - `src/app/api/estado/exportar/route.ts`
+  - `src/app/api/exportar/route.ts`
+  - `src/app/api/marcas/route.ts`
+  - `src/app/api/ordenes/[id]/route.ts`
+  - `src/app/api/pedidos/route.ts`
+  - `src/app/api/procesos/route.ts`
+  - `src/app/api/tipos-documento/route.ts`
+  - `src/app/api/validaciones/route.ts`
+
 - **21:58** `65c1263` — merge: develop en feature/u-03-auth-multirol (resuelve DAILY.md)
 
 

@@ -97,3 +97,33 @@ describe('requiereRolApi (API Routes)', () => {
     expect(body.rolesRequeridos).toEqual(['ESTADO', 'ADMIN'])
   })
 })
+
+// U-03 PR2a: tras el burn-down, los ~40 endpoints migrados gatean por este helper.
+// El gate decide por MEMBRESÍA en roles[] (no por el escalar role/activeMode).
+describe('requiereRolApi — membresía multi-rol (premisa del burn-down)', () => {
+  beforeEach(() => vi.clearAllMocks())
+
+  it('multi-rol [TALLER, MARCA] con activeMode TALLER pasa un gate de MARCA por membresía', async () => {
+    mockAuth.mockResolvedValue({
+      user: { id: 'multi-1', role: 'TALLER', roles: ['TALLER', 'MARCA'], activeMode: 'TALLER' },
+    })
+    const result = await requiereRolApi(['MARCA'])
+    // role devuelto = modo activo (invariante), no el rol por el que entró
+    expect(result).toEqual({ userId: 'multi-1', role: 'TALLER' })
+  })
+
+  it('single-rol [TALLER] NO pasa un gate de MARCA (403)', async () => {
+    mockAuth.mockResolvedValue({
+      user: { id: 't-1', role: 'TALLER', roles: ['TALLER'], activeMode: 'TALLER' },
+    })
+    const result = await requiereRolApi(['MARCA'])
+    expect(result).toBeInstanceOf(NextResponse)
+    expect((result as NextResponse).status).toBe(403)
+  })
+
+  it('fallback: sesión vieja sin roles[] usa el escalar role para el gate', async () => {
+    mockAuth.mockResolvedValue({ user: { id: 'old-1', role: 'ADMIN' } })
+    const result = await requiereRolApi(['ADMIN'])
+    expect(result).toEqual({ userId: 'old-1', role: 'ADMIN' })
+  })
+})

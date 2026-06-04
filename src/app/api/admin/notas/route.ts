@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { logAccionAdmin } from '@/compartido/lib/log'
 
 export async function GET(req: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN') return NextResponse.json({ error: 'Solo ADMIN' }, { status: 403 })
+    const sesion = await requiereRolApi(['ADMIN'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { searchParams } = req.nextUrl
     const tallerId = searchParams.get('tallerId')
@@ -37,10 +35,8 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN') return NextResponse.json({ error: 'Solo ADMIN' }, { status: 403 })
+    const sesion = await requiereRolApi(['ADMIN'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { texto, tallerId, marcaId } = await req.json()
 
@@ -54,13 +50,13 @@ export async function POST(req: NextRequest) {
     const nota = await prisma.notaInterna.create({
       data: {
         texto: texto.trim(),
-        adminId: session.user.id,
+        adminId: sesion.userId,
         ...(tallerId ? { tallerId } : {}),
         ...(marcaId ? { marcaId } : {}),
       },
       include: { admin: { select: { name: true } } },
     })
-    logAccionAdmin('NOTA_INTERNA_CREADA', session.user.id, {
+    logAccionAdmin('NOTA_INTERNA_CREADA', sesion.userId, {
       entidad: 'nota',
       entidadId: nota.id,
       metadata: { tallerId: tallerId || null, marcaId: marcaId || null },

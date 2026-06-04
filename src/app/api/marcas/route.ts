@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 
 export async function GET(req: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user || (session.user as { role?: string }).role !== 'ADMIN') {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const sesion = await requiereRolApi(['ADMIN'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { searchParams } = req.nextUrl
     const page = Math.max(parseInt(searchParams.get('page') || '1', 10), 1)

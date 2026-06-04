@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { logActividad } from '@/compartido/lib/log'
 import { rateLimit } from '@/compartido/lib/ratelimit'
-import { apiHandler, errorAuthRequired, errorForbidden, errorNotFound, errorResponse } from '@/compartido/lib/api-errors'
+import { apiHandler, errorNotFound, errorResponse } from '@/compartido/lib/api-errors'
 
 function generateOmId() {
   const year = new Date().getFullYear()
@@ -12,10 +12,10 @@ function generateOmId() {
 }
 
 export const GET = apiHandler(async (req: NextRequest) => {
-  const session = await auth()
-  if (!session?.user) return errorAuthRequired()
+  const sesion = await requiereRolApi(['ADMIN', 'MARCA'])
+  if (sesion instanceof NextResponse) return sesion
 
-  const role = (session.user as { role?: string }).role
+  const role = sesion.role
   const { searchParams } = req.nextUrl
   const page = parseInt(searchParams.get('page') || '1')
   const limit = parseInt(searchParams.get('limit') || '10')
@@ -26,15 +26,14 @@ export const GET = apiHandler(async (req: NextRequest) => {
   if (estado) where.estado = estado
   if (role === 'ADMIN') {
     if (marcaId) where.marcaId = marcaId
-  } else if (role === 'MARCA') {
+  } else {
+    // role === 'MARCA' (garantizado por el gate de requiereRolApi)
     const marca = await prisma.marca.findUnique({
-      where: { userId: session.user.id },
+      where: { userId: sesion.userId },
       select: { id: true },
     })
     if (!marca) return errorNotFound('marca')
     where.marcaId = marca.id
-  } else {
-    return errorForbidden()
   }
 
   const [pedidos, total] = await Promise.all([
@@ -55,11 +54,12 @@ export const GET = apiHandler(async (req: NextRequest) => {
 })
 
 export const POST = apiHandler(async (req: NextRequest) => {
-  const session = await auth()
-  if (!session?.user) return errorAuthRequired()
-  const role = (session.user as { role?: string }).role
+  // Solo rol MARCA crea pedidos via API. La accion admin sobre pedidos se
+  // canaliza por Prisma Studio, no por endpoint (ver DECISIONS.md).
+  const sesion = await requiereRolApi(['MARCA'])
+  if (sesion instanceof NextResponse) return sesion
 
-  const blocked = await rateLimit(req, 'pedidos', session.user.id!)
+  const blocked = await rateLimit(req, 'pedidos', sesion.userId)
   if (blocked) return blocked
 
   const body = await req.json()
@@ -78,21 +78,13 @@ export const POST = apiHandler(async (req: NextRequest) => {
     }
   }
 
-  let resolvedMarcaId = ''
-  let ownerUserId = ''
-  if (role === 'MARCA') {
-    const marca = await prisma.marca.findUnique({
-      where: { userId: session.user.id },
-      select: { id: true, userId: true },
-    })
-    if (!marca) return errorNotFound('marca')
-    resolvedMarcaId = marca.id
-    ownerUserId = marca.userId
-  } else {
-    // Solo rol MARCA crea pedidos via API. La accion admin sobre pedidos se
-    // canaliza por Prisma Studio, no por endpoint (ver DECISIONS.md).
-    return errorForbidden()
-  }
+  const marca = await prisma.marca.findUnique({
+    where: { userId: sesion.userId },
+    select: { id: true, userId: true },
+  })
+  if (!marca) return errorNotFound('marca')
+  const resolvedMarcaId = marca.id
+  const ownerUserId = marca.userId
 
   // U-06: clasificacion automatica del pedido (bloque multi-rol). Si el dueno del
   // pedido tambien tiene un Taller -> SUBCONTRATACION; si solo tiene Marca ->
@@ -119,7 +111,7 @@ export const POST = apiHandler(async (req: NextRequest) => {
     },
   })
 
-  logActividad('CRUD_PEDIDO_CREADO', session.user.id, { pedidoId: pedido.id, omId: pedido.omId, marcaId: resolvedMarcaId })
+  logActividad('CRUD_PEDIDO_CREADO', sesion.userId, { pedidoId: pedido.id, omId: pedido.omId, marcaId: resolvedMarcaId })
 
   return NextResponse.json(pedido, { status: 201 })
 })

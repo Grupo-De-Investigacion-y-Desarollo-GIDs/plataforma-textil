@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { prisma } from '@/compartido/lib/prisma'
 import { logAccionAdmin } from '@/compartido/lib/log'
 
@@ -7,11 +7,8 @@ const TIPOS_VALIDOS = ['pdf', 'jpeg', 'png', 'webp', 'xlsx', 'docx', 'mp4', 'mov
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN') return NextResponse.json({ error: 'Solo ADMIN' }, { status: 403 })
+    const sesion = await requiereRolApi(['ADMIN'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { id } = await params
     const body = await req.json()
@@ -46,11 +43,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         ...(tiposPermitidos !== undefined && { tiposPermitidos }),
         ...(tamanoMaximoMB !== undefined && { tamanoMaximoMB }),
         ...(activo !== undefined && { activo }),
-        actualizadoPor: session.user.id,
+        actualizadoPor: sesion.userId,
       },
     })
 
-    logAccionAdmin('CONFIGURACION_UPLOAD_ACTUALIZADA', session.user.id!, {
+    logAccionAdmin('CONFIGURACION_UPLOAD_ACTUALIZADA', sesion.userId, {
       entidad: 'configuracion',
       entidadId: id,
       cambios: {

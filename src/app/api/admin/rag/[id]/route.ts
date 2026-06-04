@@ -1,16 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { logAccionAdmin } from '@/compartido/lib/log'
 
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN' && role !== 'CONTENIDO') {
-      return NextResponse.json({ error: 'Sin permisos' }, { status: 403 })
-    }
+    const sesion = await requiereRolApi(['ADMIN', 'CONTENIDO'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { id } = await params
 
@@ -19,7 +15,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
       where: { id },
       data: { activo: false },
     })
-    logAccionAdmin('RAG_DOCUMENTO_DESACTIVADO', session.user.id, {
+    logAccionAdmin('RAG_DOCUMENTO_DESACTIVADO', sesion.userId, {
       entidad: 'rag',
       entidadId: id,
     })
