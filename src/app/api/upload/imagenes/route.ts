@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/compartido/lib/auth'
+import { modoActivo } from '@/compartido/lib/roles'
 import { prisma } from '@/compartido/lib/prisma'
 import { uploadFile } from '@/compartido/lib/storage'
 import { rateLimit } from '@/compartido/lib/ratelimit'
@@ -20,7 +21,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     }
 
-    const userRole = (session.user as { role?: string }).role
+    const userRole = modoActivo(session.user)
     if (userRole !== 'ADMIN' && userRole !== 'ESTADO') {
       const blocked = await rateLimit(request, 'upload', session.user.id!)
       if (blocked) return blocked

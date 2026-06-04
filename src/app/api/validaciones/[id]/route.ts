@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { modoActivo } from '@/compartido/lib/roles'
 import { logAccionAdmin } from '@/compartido/lib/log'
 import { aplicarNivel } from '@/compartido/lib/nivel'
 import { apiHandler, errorAuthRequired, errorNotFound, errorForbidden } from '@/compartido/lib/api-errors'
@@ -18,7 +19,7 @@ export const PUT = apiHandler(async (req: NextRequest, ctx) => {
 
   if (!existing) return errorNotFound('validacion')
 
-  const role = session.user.role
+  const role = modoActivo(session.user)
   const isOwner = existing.taller.userId === session.user.id
 
   if (role !== 'ESTADO' && !isOwner) {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { modoActivo } from '@/compartido/lib/roles'
 import { uploadFile } from '@/compartido/lib/storage'
 import { rateLimit } from '@/compartido/lib/ratelimit'
 import { validarArchivo, sanitizarNombreArchivo } from '@/compartido/lib/file-validation'
@@ -11,7 +12,7 @@ export const POST = apiHandler(async (req: NextRequest, ctx) => {
   const session = await auth()
   if (!session?.user) return errorAuthRequired()
 
-  const userRole = (session.user as { role?: string }).role
+  const userRole = modoActivo(session.user)
   if (userRole !== 'ADMIN' && userRole !== 'ESTADO') {
     const blocked = await rateLimit(req, 'upload', session.user.id!)
     if (blocked) return blocked

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { apiHandler, errorAuthRequired, errorForbidden, errorNotFound, errorInvalidInput } from '@/compartido/lib/api-errors'
+import { apiHandler, errorNotFound, errorInvalidInput } from '@/compartido/lib/api-errors'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { z } from 'zod'
@@ -11,11 +12,11 @@ const Schema = z.object({
 })
 
 export const POST = apiHandler(async (req: NextRequest) => {
+  const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
+  if (sesion instanceof NextResponse) return sesion
+  // El helper solo expone userId/role; necesitamos el nombre del referente
+  // para el cuerpo del email. auth() solo re-decodifica el JWT (sin hit a DB).
   const session = await auth()
-  if (!session?.user) return errorAuthRequired()
-  if (!['ADMIN', 'ESTADO'].includes(session.user.role)) {
-    return errorForbidden('ADMIN o ESTADO')
-  }
 
   const body = await req.json()
   const parsed = Schema.safeParse(body)
@@ -32,7 +33,7 @@ export const POST = apiHandler(async (req: NextRequest) => {
 
   const { subject, html } = buildInvitacionRegistroEmail({
     nombreDestinatario: destinatario.name ?? 'Usuario',
-    nombreReferente: session.user.name ?? 'Equipo PDT',
+    nombreReferente: session?.user?.name ?? 'Equipo PDT',
     cargoReferente: 'UNTREF/OIT',
   })
 
@@ -42,7 +43,7 @@ export const POST = apiHandler(async (req: NextRequest) => {
     html,
   })
 
-  await logAccionAdmin('INVITACION_REGISTRO_REENVIADA', session.user.id, {
+  await logAccionAdmin('INVITACION_REGISTRO_REENVIADA', sesion.userId, {
     entidad: 'usuario',
     entidadId: destinatario.id,
     metadata: { email: destinatario.email, exito: resultado.exito },

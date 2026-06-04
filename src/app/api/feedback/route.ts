@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/compartido/lib/auth'
+import { modoActivo } from '@/compartido/lib/roles'
 import { logActividad } from '@/compartido/lib/log'
 import { corsHeaders, handleOptions } from '@/compartido/lib/cors'
 import { buildIssueLabels, buildIssueBody } from '@/compartido/lib/feedback'
@@ -29,7 +30,7 @@ export async function POST(request: NextRequest) {
   // Datos del usuario: de la sesion si esta logueado, del body si es auditor externo
   const userId = session?.user?.id ?? null
   const role = session?.user
-    ? (session.user as { role?: string }).role
+    ? modoActivo(session.user)
     : auditorRol ?? 'SIN_LOGIN'
   const nombre = session?.user?.name ?? auditorNombre ?? 'Anonimo'
 

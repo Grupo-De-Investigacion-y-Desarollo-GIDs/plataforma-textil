@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { modoActivo } from '@/compartido/lib/roles'
 import { notificarCotizacion } from '@/compartido/lib/notificaciones'
 import { logActividad } from '@/compartido/lib/log'
 import { apiHandler, errorAuthRequired, errorNotFound, errorForbidden, errorResponse } from '@/compartido/lib/api-errors'
@@ -8,7 +9,7 @@ import { apiHandler, errorAuthRequired, errorNotFound, errorForbidden, errorResp
 export const PUT = apiHandler(async (req: NextRequest, ctx) => {
   const session = await auth()
   if (!session?.user) return errorAuthRequired()
-  const role = (session.user as { role?: string }).role
+  const role = modoActivo(session.user)
   const userId = session.user.id!
   const { id } = await ctx.params!
 

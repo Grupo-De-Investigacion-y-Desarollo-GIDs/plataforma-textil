@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { modoActivo } from '@/compartido/lib/roles'
 import { notificarTalleresCompatibles } from '@/compartido/lib/notificaciones'
 import { logActividad } from '@/compartido/lib/log'
 import { apiHandler, errorAuthRequired, errorNotFound, errorForbidden, errorResponse } from '@/compartido/lib/api-errors'
@@ -8,7 +9,7 @@ import { apiHandler, errorAuthRequired, errorNotFound, errorForbidden, errorResp
 export const GET = apiHandler(async (_req: NextRequest, ctx) => {
   const session = await auth()
   if (!session?.user) return errorAuthRequired()
-  const role = (session.user as { role?: string }).role
+  const role = modoActivo(session.user)
 
   const { id } = await ctx.params!
 
@@ -44,7 +45,7 @@ export const PUT = apiHandler(async (req: NextRequest, ctx) => {
   if (!session?.user) return errorAuthRequired()
 
   const { id } = await ctx.params!
-  const role = (session.user as { role?: string }).role
+  const role = modoActivo(session.user)
 
   const existing = await prisma.pedido.findUnique({
     where: { id: id as string },

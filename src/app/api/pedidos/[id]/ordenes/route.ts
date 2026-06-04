@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { modoActivo } from '@/compartido/lib/roles'
 import { apiHandler, errorAuthRequired, errorForbidden } from '@/compartido/lib/api-errors'
 
 async function checkPedidoAccess(pedidoId: string, userId: string, role: string | undefined) {
@@ -15,7 +16,7 @@ async function checkPedidoAccess(pedidoId: string, userId: string, role: string 
 export const GET = apiHandler(async (_req: NextRequest, ctx) => {
   const session = await auth()
   if (!session?.user) return errorAuthRequired()
-  const role = (session.user as { role?: string }).role
+  const role = modoActivo(session.user)
 
   const { id } = await ctx.params!
 
