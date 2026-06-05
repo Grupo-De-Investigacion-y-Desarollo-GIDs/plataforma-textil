@@ -2,6 +2,7 @@ import { Header, UserSidebar, SidebarProvider } from '@/compartido/componentes/l
 import { Footer } from '@/compartido/componentes/layout/footer'
 import { requiereRol } from '@/compartido/lib/permisos'
 import { prisma } from '@/compartido/lib/prisma'
+import { construirEntidadesModo } from '@/compartido/lib/entidades-modo'
 
 export default async function MarcaLayout({ children }: { children: React.ReactNode }) {
   const session = await requiereRol(['MARCA'])
@@ -15,6 +16,9 @@ export default async function MarcaLayout({ children }: { children: React.ReactN
 
   const userName = marca?.nombre || session.user.name || 'Mi Marca'
 
+  // U-04: datos para el toggle multi-rol (no-op si single-role).
+  const entidades = await construirEntidadesModo(session.user.id, session.user.roles)
+
   const isMain = process.env.VERCEL_GIT_COMMIT_REF === 'main'
   const isLocal = !process.env.VERCEL_ENV
   const showPilotPill = !isMain && !isLocal
@@ -26,6 +30,9 @@ export default async function MarcaLayout({ children }: { children: React.ReactN
           userName={userName}
           userRole="MARCA"
           showPilotPill={showPilotPill}
+          roles={session.user.roles}
+          activeMode={session.user.activeMode ?? undefined}
+          entidades={entidades}
         />
         <div className="flex flex-1">
           <UserSidebar

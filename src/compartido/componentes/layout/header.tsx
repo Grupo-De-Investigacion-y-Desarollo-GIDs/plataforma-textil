@@ -5,8 +5,10 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, User, LogOut } from 'lucide-react'
 import { signOut } from 'next-auth/react'
+import type { UserRole } from '@prisma/client'
 import { LogoPDT } from '@/compartido/componentes/ui/logo-pdt'
 import { NotificacionesBell } from './notificaciones-bell'
+import { ModoToggle } from './modo-toggle'
 import { useSidebar } from './sidebar-context'
 import { INSTITUTIONAL, TABS_BY_ROLE } from '@/compartido/lib/content/institutional'
 
@@ -14,12 +16,40 @@ interface HeaderProps {
   userName?: string
   userRole?: 'TALLER' | 'MARCA' | 'ESTADO'
   showPilotPill?: boolean
+  /** U-04: roles del usuario; el toggle de modo solo aparece si hay 2+. */
+  roles?: UserRole[]
+  /** U-04: modo activo actual. */
+  activeMode?: UserRole
+  /** U-04: nombre amable de la entidad por rol, para el toggle. */
+  entidades?: Partial<Record<UserRole, string>>
+}
+
+// U-04: nombre amable + acentos de color por modo activo (§4.4 narrativa V4).
+const MODO_LABEL: Partial<Record<UserRole, string>> = {
+  TALLER: 'Modo Taller',
+  MARCA: 'Modo Marca',
+  ESTADO: 'Modo Ente',
+}
+const MODO_PILL: Partial<Record<UserRole, string>> = {
+  TALLER: 'bg-brand-blue/10 text-brand-blue',
+  MARCA: 'bg-terra-600/10 text-terra-600',
+}
+const MODO_BORDE: Partial<Record<UserRole, string>> = {
+  TALLER: 'border-b-brand-blue',
+  MARCA: 'border-b-terra-600',
+}
+const MODO_AVATAR: Partial<Record<UserRole, string>> = {
+  TALLER: 'ring-2 ring-brand-blue',
+  MARCA: 'ring-2 ring-terra-600',
 }
 
 export function Header({
   userName = 'Usuario',
   userRole = 'TALLER',
   showPilotPill = false,
+  roles = [],
+  activeMode,
+  entidades,
 }: HeaderProps) {
   const { open } = useSidebar()
   const pathname = usePathname()
@@ -43,6 +73,12 @@ export function Header({
     .slice(0, 2)
     .join('')
     .toUpperCase() || '?'
+
+  // U-04: modo activo efectivo + diferenciación visual solo para multi-rol.
+  const modoActual: UserRole = activeMode ?? (userRole as UserRole)
+  const esMultiRol = roles.length > 1
+  const borderAccent = esMultiRol ? MODO_BORDE[modoActual] ?? '' : ''
+  const avatarAccent = esMultiRol ? MODO_AVATAR[modoActual] ?? '' : ''
 
   // Avatar click: mobile abre sidebar, desktop abre dropdown
   function handleAvatarClick() {
@@ -74,7 +110,11 @@ export function Header({
   }, [menuOpen])
 
   return (
-    <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
+    <header
+      className={`sticky top-0 z-40 bg-white border-b ${
+        borderAccent ? `border-b-2 ${borderAccent}` : 'border-gray-100'
+      }`}
+    >
       {/* Banda 1: topbar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
@@ -98,6 +138,18 @@ export function Header({
                 </span>
               </div>
             </Link>
+
+            {/* U-04: pill "Modo X" (solo multi-rol) */}
+            {esMultiRol && MODO_LABEL[modoActual] && (
+              <span
+                data-testid="modo-pill"
+                className={`hidden sm:inline-flex items-center px-2.5 py-1 rounded-full text-xs font-overpass font-semibold ${
+                  MODO_PILL[modoActual] ?? 'bg-gray-100 text-ink-secondary'
+                }`}
+              >
+                {MODO_LABEL[modoActual]}
+              </span>
+            )}
           </div>
 
           {/* Derecha: pill ambiente + bell + avatar */}
@@ -119,7 +171,9 @@ export function Header({
                 aria-expanded={menuOpen}
                 aria-haspopup="true"
               >
-                <div className="w-8 h-8 rounded-full bg-brand-blue text-white flex items-center justify-center font-overpass font-bold text-xs">
+                <div
+                  className={`w-8 h-8 rounded-full bg-brand-blue text-white flex items-center justify-center font-overpass font-bold text-xs ${avatarAccent}`}
+                >
                   {initials}
                 </div>
                 <span className="hidden lg:inline text-sm font-medium text-ink-primary font-overpass">
@@ -137,6 +191,13 @@ export function Header({
                       {userRole === 'ESTADO' && 'Ente Estatal'}
                     </p>
                   </div>
+                  {/* U-04: toggle multi-rol (se auto-oculta si roles <= 1) */}
+                  <ModoToggle
+                    roles={roles}
+                    activeMode={modoActual}
+                    entidades={entidades}
+                    onCambio={() => setMenuOpen(false)}
+                  />
                   <Link
                     href="/cuenta"
                     onClick={() => setMenuOpen(false)}

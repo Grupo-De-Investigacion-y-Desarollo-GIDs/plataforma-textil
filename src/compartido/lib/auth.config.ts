@@ -56,7 +56,7 @@ export default {
     },
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         const u = user as {
           id: string
@@ -82,6 +82,19 @@ export default {
         token.role = activeMode ?? undefined
         token.registroCompleto =
           (user as { registroCompleto?: boolean }).registroCompleto ?? true
+      }
+      // U-04: cambio de modo activo en caliente vía useSession().update({ activeMode }).
+      // Defense-in-depth: el endpoint /api/usuarios/me/active-mode ya validó contra la
+      // DB (autoritativo); acá revalidamos contra los roles que YA están en el token
+      // (en memoria, sin Prisma → Edge-safe). Nunca se confía ciegamente en el cliente.
+      if (trigger === 'update' && session && typeof session === 'object') {
+        const nuevo = (session as { activeMode?: UserRole | null }).activeMode
+        const rolesToken = (token.roles as UserRole[] | undefined) ?? []
+        if (nuevo && rolesToken.includes(nuevo)) {
+          token.activeMode = nuevo
+          // INVARIANTE: role == activeMode (back-compat U-03).
+          token.role = nuevo
+        }
       }
       return token
     },

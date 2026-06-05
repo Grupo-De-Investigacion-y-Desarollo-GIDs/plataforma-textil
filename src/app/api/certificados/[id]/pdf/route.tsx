@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/compartido/lib/auth'
+import { modoActivo } from '@/compartido/lib/roles'
 import { prisma } from '@/compartido/lib/prisma'
 import { renderToBuffer } from '@react-pdf/renderer'
 import { CertificadoPDF } from '@/compartido/componentes/pdf/certificado-pdf'
@@ -30,7 +31,7 @@ export async function GET(
   }
 
   // Verificar ownership: taller propio o ADMIN
-  const role = (session.user as { role?: string }).role
+  const role = modoActivo(session.user)
   if (role !== 'ADMIN' && certificado.taller.userId !== session.user.id) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
