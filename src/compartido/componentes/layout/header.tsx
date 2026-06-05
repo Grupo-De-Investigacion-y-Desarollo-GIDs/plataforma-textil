@@ -31,16 +31,16 @@ const MODO_LABEL: Partial<Record<UserRole, string>> = {
   ESTADO: 'Modo Ente',
 }
 const MODO_PILL: Partial<Record<UserRole, string>> = {
-  TALLER: 'bg-brand-blue/10 text-brand-blue',
-  MARCA: 'bg-terra-600/10 text-terra-600',
+  TALLER: 'bg-brand-bg-light text-brand-blue',
+  MARCA: 'bg-terra-100 text-terra-600',
 }
 const MODO_BORDE: Partial<Record<UserRole, string>> = {
   TALLER: 'border-b-brand-blue',
   MARCA: 'border-b-terra-600',
 }
 const MODO_AVATAR: Partial<Record<UserRole, string>> = {
-  TALLER: 'ring-2 ring-brand-blue',
-  MARCA: 'ring-2 ring-terra-600',
+  TALLER: 'ring-4 ring-brand-blue',
+  MARCA: 'ring-4 ring-terra-600',
 }
 
 export function Header({
@@ -112,7 +112,7 @@ export function Header({
   return (
     <header
       className={`sticky top-0 z-40 bg-white border-b ${
-        borderAccent ? `border-b-2 ${borderAccent}` : 'border-gray-100'
+        borderAccent ? `border-b-4 ${borderAccent}` : 'border-gray-100'
       }`}
     >
       {/* Banda 1: topbar */}
@@ -143,7 +143,7 @@ export function Header({
             {esMultiRol && MODO_LABEL[modoActual] && (
               <span
                 data-testid="modo-pill"
-                className={`hidden sm:inline-flex items-center px-2.5 py-1 rounded-full text-xs font-overpass font-semibold ${
+                className={`inline-flex items-center px-2.5 py-1 rounded-full text-sm font-overpass font-bold ${
                   MODO_PILL[modoActual] ?? 'bg-gray-100 text-ink-secondary'
                 }`}
               >
