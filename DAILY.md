@@ -3,6 +3,24 @@
 ## 2026-06-05
 
 ### Gerardo Breard
+- **14:41** `233e155` — feat(u-04): toggle UI multi-rol estilo Airbnb
+  - `.claude/specs/v4-u-04-toggle-multi-rol.md`
+  - `e2e/helpers/auth.ts`
+  - `e2e/u-04-toggle-multi-rol.spec.ts`
+  - `prisma/seed.ts`
+  - `src/__tests__/roles-multirol.test.ts`
+  - `src/__tests__/u-04-active-mode.test.ts`
+  - `src/app/(estado)/layout.tsx`
+  - `src/app/(marca)/layout.tsx`
+  - `src/app/(taller)/layout.tsx`
+  - `src/app/api/certificados/[id]/pdf/route.tsx`
+  - `src/app/api/ordenes/[id]/pdf/route.tsx`
+  - `src/app/api/usuarios/me/active-mode/route.ts`
+  - `src/compartido/componentes/layout/header.tsx`
+  - `src/compartido/componentes/layout/modo-toggle.tsx`
+  - `src/compartido/lib/auth.config.ts`
+  - `src/compartido/lib/entidades-modo.ts`
+
 - **11:51** `d05c766` — merge: resolver conflicto de DAILY.md (bitacora autogenerada) con develop
 
 
