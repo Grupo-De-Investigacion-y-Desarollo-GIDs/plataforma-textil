@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
-import { apiHandler, errorAuthRequired, errorForbidden, errorNotFound, errorInvalidInput } from '@/compartido/lib/api-errors'
+import { apiHandler, errorForbidden, errorNotFound, errorInvalidInput } from '@/compartido/lib/api-errors'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { logAccionAdmin } from '@/compartido/lib/log'
 
 type RouteContext = { params?: Promise<Record<string, string | string[]>> }
@@ -23,7 +23,7 @@ const editarSchema = z.object({
   ubicacion: z.string().nullable().optional(),
 })
 
-async function verificarPermisoEdicion(session: { user: { id: string; role: string } }, observacionId: string) {
+async function verificarPermisoEdicion(sesion: { userId: string; role: string }, observacionId: string) {
   const observacion = await prisma.observacionCampo.findUnique({
     where: { id: observacionId },
     select: { autorId: true },
@@ -31,7 +31,7 @@ async function verificarPermisoEdicion(session: { user: { id: string; role: stri
   if (!observacion) return { error: errorNotFound('observacion') }
 
   // Solo el autor o ADMIN puede editar/borrar
-  if (session.user.role !== 'ADMIN' && observacion.autorId !== session.user.id) {
+  if (sesion.role !== 'ADMIN' && observacion.autorId !== sesion.userId) {
     return { error: errorForbidden('Solo el autor o un ADMIN puede modificar esta observacion') }
   }
 
@@ -39,9 +39,8 @@ async function verificarPermisoEdicion(session: { user: { id: string; role: stri
 }
 
 export const GET = apiHandler(async (_req: NextRequest, ctx: RouteContext) => {
-  const session = await auth()
-  if (!session?.user?.id) return errorAuthRequired()
-  if (!['ADMIN', 'ESTADO'].includes(session.user.role)) return errorForbidden('ADMIN o ESTADO')
+  const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
+  if (sesion instanceof NextResponse) return sesion
 
   const params = await ctx.params!
   const id = params.id as string
@@ -59,14 +58,13 @@ export const GET = apiHandler(async (_req: NextRequest, ctx: RouteContext) => {
 })
 
 export const PATCH = apiHandler(async (req: NextRequest, ctx: RouteContext) => {
-  const session = await auth()
-  if (!session?.user?.id) return errorAuthRequired()
-  if (!['ADMIN', 'ESTADO'].includes(session.user.role)) return errorForbidden('ADMIN o ESTADO')
+  const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
+  if (sesion instanceof NextResponse) return sesion
 
   const params = await ctx.params!
   const id = params.id as string
 
-  const { error } = await verificarPermisoEdicion(session as { user: { id: string; role: string } }, id)
+  const { error } = await verificarPermisoEdicion(sesion, id)
   if (error) return error
 
   const body = await req.json()
@@ -82,7 +80,7 @@ export const PATCH = apiHandler(async (req: NextRequest, ctx: RouteContext) => {
     },
   })
 
-  logAccionAdmin('OBSERVACION_CAMPO_EDITADA', session.user.id, {
+  logAccionAdmin('OBSERVACION_CAMPO_EDITADA', sesion.userId, {
     entidad: 'nota',
     entidadId: id,
     metadata: { titulo: observacion.titulo },
@@ -92,19 +90,18 @@ export const PATCH = apiHandler(async (req: NextRequest, ctx: RouteContext) => {
 })
 
 export const DELETE = apiHandler(async (_req: NextRequest, ctx: RouteContext) => {
-  const session = await auth()
-  if (!session?.user?.id) return errorAuthRequired()
-  if (!['ADMIN', 'ESTADO'].includes(session.user.role)) return errorForbidden('ADMIN o ESTADO')
+  const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
+  if (sesion instanceof NextResponse) return sesion
 
   const params = await ctx.params!
   const id = params.id as string
 
-  const { error } = await verificarPermisoEdicion(session as { user: { id: string; role: string } }, id)
+  const { error } = await verificarPermisoEdicion(sesion, id)
   if (error) return error
 
   await prisma.observacionCampo.delete({ where: { id } })
 
-  logAccionAdmin('OBSERVACION_CAMPO_ELIMINADA', session.user.id, {
+  logAccionAdmin('OBSERVACION_CAMPO_ELIMINADA', sesion.userId, {
     entidad: 'nota',
     entidadId: id,
   })

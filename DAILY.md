@@ -1,8 +1,41 @@
 # Daily Log
 
+## 2026-06-05
+
+### Gerardo Breard
+- **11:51** `d05c766` — merge: resolver conflicto de DAILY.md (bitacora autogenerada) con develop
+
+
+- **10:54** `c333683` — chore: trigger Actions sobre PR #396
+  - `README.md`
+
+- **00:29** `70dfaf0` — ci: trigger Actions tras destrabar budget de la org
+
+
+
 ## 2026-06-04
 
 ### Gerardo Breard
+- **14:51** `59cbab7` — ci: re-trigger checks for PR2b
+
+
+- **14:44** `240df5a` — feat(u-03): PR2b - ownership/branching + cast cleanup
+  - `src/__tests__/u-03-pr2b-ownership.test.ts`
+  - `src/app/api/admin/observaciones/[id]/route.ts`
+  - `src/app/api/admin/onboarding/reenviar-invitacion/route.ts`
+  - `src/app/api/chat/route.ts`
+  - `src/app/api/cotizaciones/[id]/route.ts`
+  - `src/app/api/feedback/route.ts`
+  - `src/app/api/marcas/[id]/route.ts`
+  - `src/app/api/pedidos/[id]/invitaciones/route.ts`
+  - `src/app/api/pedidos/[id]/ordenes/route.ts`
+  - `src/app/api/pedidos/[id]/route.ts`
+  - `src/app/api/talleres/[id]/route.ts`
+  - `src/app/api/upload/imagenes/route.ts`
+  - `src/app/api/validaciones/[id]/route.ts`
+  - `src/app/api/validaciones/[id]/signed-url/route.ts`
+  - `src/app/api/validaciones/[id]/upload/route.ts`
+
 - **11:57** `bdb7e24` — chore: env safety - DEV por defecto + guards anti-PROD
   - `.env.example`
   - `CLAUDE.md`
