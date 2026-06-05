@@ -3,6 +3,20 @@
 ## 2026-06-05
 
 ### Gerardo Breard
+- **17:57** `847e1ca` — feat(u-09): flujo agregar segundo rol (TALLER <-> MARCA)
+  - `.claude/specs/v4-u-09-agregar-segundo-rol.md`
+  - `e2e/helpers/auth.ts`
+  - `e2e/u-09-agregar-segundo-rol.spec.ts`
+  - `prisma/seed.ts`
+  - `src/__tests__/crear-entidad-rol.test.ts`
+  - `src/__tests__/u-09-agregar-rol.test.ts`
+  - `src/__tests__/u-09-anti-incesto-regresion.test.ts`
+  - `src/app/(public)/cuenta/page.tsx`
+  - `src/app/api/auth/registro/completar/route.ts`
+  - `src/app/api/usuarios/me/roles/route.ts`
+  - `src/compartido/componentes/agregar-rol-card.tsx`
+  - `src/compartido/lib/crear-entidad-rol.ts`
+
 - **14:41** `233e155` — feat(u-04): toggle UI multi-rol estilo Airbnb
   - `.claude/specs/v4-u-04-toggle-multi-rol.md`
   - `e2e/helpers/auth.ts`
