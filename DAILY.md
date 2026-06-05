@@ -3,6 +3,9 @@
 ## 2026-06-05
 
 ### Gerardo Breard
+- **10:54** `c333683` — chore: trigger Actions sobre PR #396
+  - `README.md`
+
 - **00:29** `70dfaf0` — ci: trigger Actions tras destrabar budget de la org
 
 
