@@ -107,3 +107,42 @@ describe('auth.config.ts — callbacks multi-rol (invariante role==activeMode)',
     expect(sess.user.activeMode).toBe(null)
   })
 })
+
+describe('auth.config.ts — jwt trigger==="update" (U-04, cambio de modo)', () => {
+  const jwt = authConfig.callbacks!.jwt!
+
+  // Invoca el callback como lo hace useSession().update(data): trigger update + session=data.
+  const callUpdate = (token: Record<string, unknown>, data: unknown) =>
+    jwt({ token, trigger: 'update', session: data } as never) as Promise<Record<string, unknown>>
+
+  it('cambia activeMode+role si el nuevo modo está en token.roles (multi-rol)', async () => {
+    const token = await callUpdate(
+      { id: 'u1', role: 'TALLER', roles: ['TALLER', 'MARCA'], activeMode: 'TALLER' },
+      { activeMode: 'MARCA' }
+    )
+    expect(token.activeMode).toBe('MARCA')
+    // INVARIANTE role == activeMode
+    expect(token.role).toBe('MARCA')
+    // roles[] no se toca
+    expect(token.roles).toEqual(['TALLER', 'MARCA'])
+  })
+
+  it('IGNORA el cambio si el modo NO está en token.roles (defense-in-depth)', async () => {
+    const token = await callUpdate(
+      { id: 'u2', role: 'TALLER', roles: ['TALLER'], activeMode: 'TALLER' },
+      { activeMode: 'MARCA' }
+    )
+    // Sin cambios: el cliente no puede escalar a un rol que no tiene
+    expect(token.activeMode).toBe('TALLER')
+    expect(token.role).toBe('TALLER')
+  })
+
+  it('IGNORA un update sin activeMode', async () => {
+    const token = await callUpdate(
+      { id: 'u3', role: 'MARCA', roles: ['MARCA', 'TALLER'], activeMode: 'MARCA' },
+      { foo: 'bar' }
+    )
+    expect(token.activeMode).toBe('MARCA')
+    expect(token.role).toBe('MARCA')
+  })
+})

@@ -1,6 +1,6 @@
 import { Page, expect } from '@playwright/test'
 
-export async function loginAs(page: Page, role: 'admin' | 'taller_bronce' | 'taller_oro' | 'marca' | 'estado' | 'contenido') {
+export async function loginAs(page: Page, role: 'admin' | 'taller_bronce' | 'taller_oro' | 'marca' | 'estado' | 'contenido' | 'dual') {
   const credentials = {
     admin: { email: 'lucia.fernandez@pdt.org.ar', password: 'pdt2026' },
     taller_bronce: { email: 'roberto.gimenez@pdt.org.ar', password: 'pdt2026' },
@@ -8,6 +8,8 @@ export async function loginAs(page: Page, role: 'admin' | 'taller_bronce' | 'tal
     marca: { email: 'martin.echevarria@pdt.org.ar', password: 'pdt2026' },
     estado: { email: 'anabelen.torres@pdt.org.ar', password: 'pdt2026' },
     contenido: { email: 'sofia.martinez@pdt.org.ar', password: 'pdt2026' },
+    // U-04: usuario multi-rol (TALLER + MARCA) para el toggle "Operando como…".
+    dual: { email: 'julieta.benitez@pdt.org.ar', password: 'pdt2026' },
   }
   const { email, password } = credentials[role]
 

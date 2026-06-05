@@ -95,7 +95,24 @@ async function main() {
     data: { email: 'sofia.martinez@pdt.org.ar', password: hash, name: 'Sofía Martínez', role: 'CONTENIDO', phone: '+5491101234567', active: true },
   })
 
-  console.log('  ✓ 8 usuarios creados (incl. CONTENIDO)')
+  // U-04: usuario MULTI-ROL (taller + marca) para probar el toggle "Operando como…".
+  // roles[] poblado explícitamente + activeMode/role invariante. Su Taller y Marca
+  // se crean más abajo (mismo userId). Para otorgar un 2do rol a un user existente
+  // de forma manual: Prisma Studio → User → editar `roles` (array) + `activeMode`.
+  const userDual = await prisma.user.create({
+    data: {
+      email: 'julieta.benitez@pdt.org.ar',
+      password: hash,
+      name: 'Julieta Benítez',
+      role: 'TALLER',
+      roles: ['TALLER', 'MARCA'],
+      activeMode: 'TALLER',
+      phone: '+5491102020202',
+      active: true,
+    },
+  })
+
+  console.log('  ✓ 9 usuarios creados (incl. CONTENIDO + multi-rol)')
 
   // ============================================
   // PROCESOS PRODUCTIVOS (5)
@@ -572,7 +589,35 @@ async function main() {
     },
   })
 
-  console.log('  ✓ 2 marcas creadas')
+  // U-04: Taller + Marca del usuario multi-rol (Julieta Benítez). Le dan al
+  // toggle ambos nombres de entidad ("Taller La Hormiga" / "Marca Benítez").
+  await prisma.taller.create({
+    data: {
+      userId: userDual.id,
+      nombre: 'Taller La Hormiga',
+      cuit: '27-30111222-3',
+      nivel: 'BRONCE',
+      ubicacion: 'Avellaneda, Buenos Aires',
+      provincia: 'Buenos Aires',
+      partido: 'Avellaneda',
+      descripcion: 'Taller propio de Julieta, que además tiene su marca.',
+      capacidadMensual: 500,
+      trabajadoresRegistrados: 2,
+      verificadoAfip: true,
+    },
+  })
+  await prisma.marca.create({
+    data: {
+      userId: userDual.id,
+      nombre: 'Marca Benítez',
+      cuit: '27-30111222-4',
+      ubicacion: 'Avellaneda, Buenos Aires',
+      tipo: 'Diseño independiente',
+      volumenMensual: 200,
+    },
+  })
+
+  console.log('  ✓ 2 marcas creadas (+ taller/marca del user multi-rol)')
 
   // ============================================
   // PEDIDOS
