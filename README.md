@@ -314,3 +314,5 @@ Este proyecto se distribuye bajo licencia **MIT**. Ver [LICENSE](LICENSE) para m
 
 Este proyecto es resultado del trabajo conjunto de profesionales de distintas disciplinas (desarrollo, sociología, ciencias políticas, economía, contaduría, diseño UX/UI) coordinados a través de la Universidad Nacional de Tres de Febrero con el apoyo institucional y financiero de la Organización Internacional del Trabajo.
 
+
+<!-- CI: re-trigger Actions sobre PR #396 (budget destrabado 2026-06-05) -->
