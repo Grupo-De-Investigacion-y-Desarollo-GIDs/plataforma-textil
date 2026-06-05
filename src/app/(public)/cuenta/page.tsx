@@ -6,6 +6,7 @@ import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { Bell, User, ShieldCheck } from 'lucide-react'
 import { CuentaWhatsappForm } from '@/compartido/componentes/cuenta-whatsapp-form'
+import { AgregarRolCard } from '@/compartido/componentes/agregar-rol-card'
 
 export default async function CuentaPage() {
   const session = await auth()
@@ -32,6 +33,16 @@ export default async function CuentaPage() {
     redirect('/login')
   }
 
+  // U-09: ofrecer "agregar segundo rol" solo a un single user-rol (tiene exactamente
+  // una de las dos entidades). El CUIT existente pre-llena el formulario.
+  const [taller, marca] = await Promise.all([
+    prisma.taller.findFirst({ where: { userId: user.id }, select: { cuit: true } }),
+    prisma.marca.findFirst({ where: { userId: user.id }, select: { cuit: true } }),
+  ])
+  const rolFaltante: 'TALLER' | 'MARCA' | null =
+    taller && !marca ? 'MARCA' : marca && !taller ? 'TALLER' : null
+  const cuitActual = taller?.cuit ?? marca?.cuit ?? null
+
   return (
     <div className="space-y-6">
       <h1 className="font-overpass font-bold text-3xl text-brand-blue">Mi cuenta</h1>
@@ -52,6 +63,10 @@ export default async function CuentaPage() {
         phoneInicial={user.phone}
         whatsappActivo={user.notificacionesWhatsapp}
       />
+
+      {rolFaltante && (
+        <AgregarRolCard rolFaltante={rolFaltante} cuitActual={cuitActual} />
+      )}
 
       <section className="grid gap-4 sm:grid-cols-2">
         <Link href="/mi-cuenta" className="rounded-xl border border-gray-200 bg-white p-5 hover:border-brand-blue hover:shadow-card transition-all">

@@ -112,7 +112,29 @@ async function main() {
     },
   })
 
-  console.log('  ✓ 9 usuarios creados (incl. CONTENIDO + multi-rol)')
+  // U-09: usuario single-rol TALLER dedicado al e2e de "agregar segundo rol".
+  // Aislado para que el test pueda convertirlo a multi-rol sin pisar a otros users.
+  await prisma.user.create({
+    data: {
+      email: 'u09.test@pdt.org.ar',
+      password: hash,
+      name: 'Tomás U09',
+      role: 'TALLER',
+      phone: '+5491109090909',
+      active: true,
+      taller: {
+        create: {
+          nombre: 'Taller U09',
+          cuit: '20-40404040-4',
+          nivel: 'BRONCE',
+          ubicacion: 'Quilmes, Buenos Aires',
+          verificadoAfip: true,
+        },
+      },
+    },
+  })
+
+  console.log('  ✓ 10 usuarios creados (incl. CONTENIDO + multi-rol + e2e U-09)')
 
   // ============================================
   // PROCESOS PRODUCTIVOS (5)
