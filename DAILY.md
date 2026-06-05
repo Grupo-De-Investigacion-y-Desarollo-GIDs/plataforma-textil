@@ -3,6 +3,9 @@
 ## 2026-06-05
 
 ### Gerardo Breard
+- **11:51** `d05c766` — merge: resolver conflicto de DAILY.md (bitacora autogenerada) con develop
+
+
 - **10:54** `c333683` — chore: trigger Actions sobre PR #396
   - `README.md`
 
