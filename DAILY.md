@@ -3,6 +3,13 @@
 ## 2026-06-07
 
 ### Gerardo Breard
+- **20:32** `4ff917c` — fix(u-09): segunda ronda QA Sergio - replanteo /cuenta + copy + skip CUIT
+  - `src/__tests__/u-09-agregar-rol.test.ts`
+  - `src/app/(public)/cuenta/page.tsx`
+  - `src/app/(public)/layout.tsx`
+  - `src/app/api/usuarios/me/roles/route.ts`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+
 - **16:37** `81451f8` — fix(u-09): QA feedback Sergio - sidebar /cuenta + Pill + copy + CUIT skip
   - `src/__tests__/u-09-agregar-rol.test.ts`
   - `src/app/(public)/cuenta/page.tsx`
