@@ -1,5 +1,17 @@
 # Daily Log
 
+## 2026-06-07
+
+### Gerardo Breard
+- **16:37** `81451f8` — fix(u-09): QA feedback Sergio - sidebar /cuenta + Pill + copy + CUIT skip
+  - `src/__tests__/u-09-agregar-rol.test.ts`
+  - `src/app/(public)/cuenta/page.tsx`
+  - `src/app/(public)/layout.tsx`
+  - `src/app/api/usuarios/me/roles/route.ts`
+  - `src/compartido/componentes/agregar-rol-card.tsx`
+  - `src/compartido/componentes/layout/header.tsx`
+
+
 ## 2026-06-05
 
 ### Gerardo Breard
