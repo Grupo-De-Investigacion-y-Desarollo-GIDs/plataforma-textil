@@ -50,8 +50,8 @@ export const POST = apiHandler(async (req: NextRequest) => {
       id: true,
       roles: true,
       role: true,
-      taller: { select: { id: true } },
-      marca: { select: { id: true } },
+      taller: { select: { id: true, cuit: true } },
+      marca: { select: { id: true, cuit: true } },
     },
   })
   if (!user) return errorAuthRequired()
@@ -65,21 +65,37 @@ export const POST = apiHandler(async (req: NextRequest) => {
     return errorConflict('Ya tenes ese perfil')
   }
 
-  // Verificar CUIT con ARCA (mismo path que el registro primario).
+  // Verificación de CUIT.
   let verificado = false
   let datosArca: DatosArca | undefined
-  const resultado = await consultarPadron(cuit)
-  if (resultado.exitosa && resultado.datos) {
+
+  // D (QA #398): si el CUIT del request coincide con uno YA verificado del propio
+  // user (su Taller o Marca existente), se omite la llamada a ARCA y se asume OK.
+  // Coherente con la caché de 30 días de sincronizarTaller: no revalidamos lo mismo.
+  const normalizar = (c: string) => c.replace(/-/g, '')
+  const cuitsVerificados = [user.taller?.cuit, user.marca?.cuit]
+    .filter((c): c is string => Boolean(c))
+    .map(normalizar)
+  const cuitYaVerificado = cuitsVerificados.includes(normalizar(cuit))
+
+  if (cuitYaVerificado) {
     verificado = true
-    datosArca = resultado.datos
-  } else if (resultado.error && errorBloqueaRegistro(resultado.error)) {
-    return errorResponse({
-      code: 'INVALID_INPUT',
-      message: mensajeErrorArca(resultado.error),
-      status: 400,
-    })
+    logActividad('ARCA_SKIP_CUIT_CONOCIDO', user.id, { rol, cuit: normalizar(cuit) })
+  } else {
+    // CUIT nuevo → verificar con ARCA (mismo path que el registro primario).
+    const resultado = await consultarPadron(cuit)
+    if (resultado.exitosa && resultado.datos) {
+      verificado = true
+      datosArca = resultado.datos
+    } else if (resultado.error && errorBloqueaRegistro(resultado.error)) {
+      return errorResponse({
+        code: 'INVALID_INPUT',
+        message: mensajeErrorArca(resultado.error),
+        status: 400,
+      })
+    }
+    // ARCA_NO_RESPONDE / AFIPSDK_ERROR → continuar sin verificación (modo defensivo).
   }
-  // ARCA_NO_RESPONDE / AFIPSDK_ERROR → continuar sin verificación (modo defensivo).
 
   // Unión EXPLÍCITA, nunca push: un single-rol pre-U04 tiene roles=[] en DB y
   // su rol original solo vive en User.role. rolesEfectivos lo recupera.

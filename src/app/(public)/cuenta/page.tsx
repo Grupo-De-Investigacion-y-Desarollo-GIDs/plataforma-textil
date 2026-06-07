@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
+import { rolesEfectivos } from '@/compartido/lib/roles'
 import { Bell, User, ShieldCheck } from 'lucide-react'
 import { CuentaWhatsappForm } from '@/compartido/componentes/cuenta-whatsapp-form'
 import { AgregarRolCard } from '@/compartido/componentes/agregar-rol-card'
@@ -23,6 +24,8 @@ export default async function CuentaPage() {
       name: true,
       phone: true,
       role: true,
+      roles: true,
+      activeMode: true,
       createdAt: true,
       notificacionesWhatsapp: true,
       notificacionesRecibidas: { where: { leida: false }, select: { id: true } },
@@ -43,6 +46,12 @@ export default async function CuentaPage() {
     taller && !marca ? 'MARCA' : marca && !taller ? 'TALLER' : null
   const cuitActual = taller?.cuit ?? marca?.cuit ?? null
 
+  // BUG C (QA #398): "Rol: X" (singular) engañaba a un multi-rol. El rol activo
+  // es user.role (== activeMode por invariante); los demás roles efectivos son "otros".
+  const rolesEfec = rolesEfectivos({ roles: user.roles, role: user.role })
+  const otrosRoles = rolesEfec.filter((r) => r !== user.role)
+  const esMultiRol = rolesEfec.length > 1
+
   return (
     <div className="space-y-6">
       <h1 className="font-overpass font-bold text-3xl text-brand-blue">Mi cuenta</h1>
@@ -53,7 +62,11 @@ export default async function CuentaPage() {
           <p><span className="text-gray-500">Nombre:</span> <span className="font-medium text-gray-800">{user.name || 'Sin nombre'}</span></p>
           <p><span className="text-gray-500">Email:</span> <span className="font-medium text-gray-800">{user.email}</span></p>
           <p><span className="text-gray-500">Telefono:</span> <span className="font-medium text-gray-800">{user.phone || '-'}</span></p>
-          <p><span className="text-gray-500">Rol:</span> <span className="font-medium text-gray-800">{user.role}</span></p>
+          {esMultiRol ? (
+            <p><span className="text-gray-500">Rol activo:</span> <span className="font-medium text-gray-800">{user.role}</span> <span className="text-gray-500">· Otros roles:</span> <span className="font-medium text-gray-800">{otrosRoles.join(', ')}</span></p>
+          ) : (
+            <p><span className="text-gray-500">Rol:</span> <span className="font-medium text-gray-800">{user.role}</span></p>
+          )}
           <p><span className="text-gray-500">Alta:</span> <span className="font-medium text-gray-800">{new Date(user.createdAt).toLocaleDateString('es-AR')}</span></p>
           <p><span className="text-gray-500">No leidas:</span> <span className="font-medium text-gray-800">{user.notificacionesRecibidas.length}</span></p>
         </div>

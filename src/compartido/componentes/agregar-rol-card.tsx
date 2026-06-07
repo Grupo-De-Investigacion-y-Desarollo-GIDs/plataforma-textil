@@ -105,7 +105,7 @@ export function AgregarRolCard({ rolFaltante, cuitActual }: AgregarRolCardProps)
             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-blue focus:ring-1 focus:ring-brand-blue outline-none"
           />
           <p className="text-xs text-gray-500 mt-1">
-            Pre-cargado con tu CUIT actual. Cambialo si tu {amable.toLowerCase()} usa otro.
+            Pre-cargamos tu CUIT actual. Si usás otro CUIT para tu {amable.toLowerCase()}, lo verificaremos contra ARCA.
           </p>
         </div>
 

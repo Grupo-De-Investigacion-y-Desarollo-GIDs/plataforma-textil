@@ -86,6 +86,37 @@ describe('POST /api/usuarios/me/roles', () => {
     expect(arg.data.roles.set).toEqual(['TALLER', 'MARCA'])
   })
 
+  it('D: CUIT coincide con el del Taller existente → 200 SIN llamar a ARCA', async () => {
+    // Mismo CUIT que su Taller ya verificado → se omite consultarPadron (cache-like).
+    mockUserFind.mockResolvedValue({
+      id: 'u1', roles: ['TALLER'], role: 'TALLER',
+      taller: { id: 't1', cuit: '20123456789' }, marca: null,
+    })
+    mockCrear.mockResolvedValue({ id: 'marca-1' })
+
+    const res = await post({ rol: 'MARCA', nombre: 'Mi Marca', cuit: '20-12345678-9' })
+    expect(res.status).toBe(200)
+    expect(mockPadron).not.toHaveBeenCalled()
+    expect(mockCrear).toHaveBeenCalled()
+    // Se creó igual con verificadoAfip asumido (sin datosArca de ARCA).
+    const crearArgs = mockCrear.mock.calls[0][1]
+    expect(crearArgs.verificadoAfip).toBe(true)
+    expect(crearArgs.datosArca).toBeUndefined()
+  })
+
+  it('D: CUIT difiere del verificado → 200 LLAMANDO a ARCA como antes', async () => {
+    mockUserFind.mockResolvedValue({
+      id: 'u1', roles: ['TALLER'], role: 'TALLER',
+      taller: { id: 't1', cuit: '20123456789' }, marca: null,
+    })
+    mockCrear.mockResolvedValue({ id: 'marca-1' })
+
+    const res = await post({ rol: 'MARCA', nombre: 'Mi Marca', cuit: '27-99999999-3' })
+    expect(res.status).toBe(200)
+    expect(mockPadron).toHaveBeenCalledTimes(1)
+    expect(mockPadron).toHaveBeenCalledWith('27-99999999-3')
+  })
+
   it('rol ya poseído → 409, sin crear entidad', async () => {
     mockUserFind.mockResolvedValue({ id: 'u1', roles: ['TALLER'], role: 'TALLER', taller: { id: 't1' }, marca: null })
     const res = await post({ rol: 'TALLER', nombre: 'Otro', cuit: '20-1-9' })
