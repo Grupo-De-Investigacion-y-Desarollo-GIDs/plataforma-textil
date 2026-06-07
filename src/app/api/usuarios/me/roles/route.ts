@@ -50,8 +50,8 @@ export const POST = apiHandler(async (req: NextRequest) => {
       id: true,
       roles: true,
       role: true,
-      taller: { select: { id: true, cuit: true } },
-      marca: { select: { id: true, cuit: true } },
+      taller: { select: { id: true, cuit: true, verificadoAfip: true } },
+      marca: { select: { id: true, cuit: true, verificadoAfip: true } },
     },
   })
   if (!user) return errorAuthRequired()
@@ -69,11 +69,16 @@ export const POST = apiHandler(async (req: NextRequest) => {
   let verificado = false
   let datosArca: DatosArca | undefined
 
-  // D (QA #398): si el CUIT del request coincide con uno YA verificado del propio
-  // user (su Taller o Marca existente), se omite la llamada a ARCA y se asume OK.
-  // Coherente con la caché de 30 días de sincronizarTaller: no revalidamos lo mismo.
+  // D (QA #398 r2): si el CUIT del request coincide con uno YA VERIFICADO del propio
+  // user (su Taller o Marca con verificadoAfip=true), se omite la llamada a ARCA.
+  // Coherente con la caché de 30 días de sincronizarTaller, que solo cachea
+  // verificaciones EXITOSAS: un CUIT presente pero nunca verificado (verificadoAfip=false,
+  // ej. registro con ARCA caído o dato de seed) SÍ se manda a ARCA.
   const normalizar = (c: string) => c.replace(/-/g, '')
-  const cuitsVerificados = [user.taller?.cuit, user.marca?.cuit]
+  const cuitsVerificados = [
+    user.taller?.verificadoAfip ? user.taller.cuit : null,
+    user.marca?.verificadoAfip ? user.marca.cuit : null,
+  ]
     .filter((c): c is string => Boolean(c))
     .map(normalizar)
   const cuitYaVerificado = cuitsVerificados.includes(normalizar(cuit))

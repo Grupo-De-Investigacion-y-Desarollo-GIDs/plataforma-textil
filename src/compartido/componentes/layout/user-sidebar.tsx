@@ -26,6 +26,12 @@ interface UserSidebarProps {
   userName?: string
   userProgress?: number
   userLevel?: string
+  /**
+   * U-09 (QA #398): en páginas DEL USUARIO (ej. /cuenta) el sidebar muestra la
+   * identidad del user, sin "Formalización X%" (que es del perfil Taller, no del
+   * user). Default true para no afectar los layouts (taller)/(marca)/(estado).
+   */
+  mostrarFormalizacion?: boolean
 }
 
 // F3: solo accesos personales para los 3 roles operativos.
@@ -57,7 +63,8 @@ export function UserSidebar({
   userRole = 'TALLER',
   userName = 'Usuario',
   userProgress = 0,
-  userLevel = 'Bronce'
+  userLevel = 'Bronce',
+  mostrarFormalizacion = true
 }: UserSidebarProps) {
   const pathname = usePathname()
   const { isOpen, close } = useSidebar()
@@ -164,16 +171,17 @@ export function UserSidebar({
               <div className="flex-1 min-w-0">
                 <h2 className="font-overpass font-bold text-lg lg:text-base truncate">{userName}</h2>
                 <p className="text-white/70 text-sm lg:text-xs">
-                  {userRole === 'TALLER' && `Formalización ${userProgress}%`}
-                  {userRole === 'MARCA' && 'Marca'}
-                  {userRole === 'ESTADO' && 'Ente Estatal'}
-                  {userRole === 'ADMIN' && 'Administrador'}
+                  {!mostrarFormalizacion && 'Mi cuenta'}
+                  {mostrarFormalizacion && userRole === 'TALLER' && `Formalización ${userProgress}%`}
+                  {mostrarFormalizacion && userRole === 'MARCA' && 'Marca'}
+                  {mostrarFormalizacion && userRole === 'ESTADO' && 'Ente Estatal'}
+                  {mostrarFormalizacion && userRole === 'ADMIN' && 'Administrador'}
                 </p>
               </div>
             </div>
 
-            {/* Progress bar (solo para talleres) */}
-            {userRole === 'TALLER' && (
+            {/* Progress bar (solo para talleres, y no en páginas del usuario) */}
+            {mostrarFormalizacion && userRole === 'TALLER' && (
               <div className="space-y-1">
                 <div className="flex justify-between text-xs text-white/60">
                   <span>Progreso de formalización</span>

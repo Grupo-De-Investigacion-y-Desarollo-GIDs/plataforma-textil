@@ -86,11 +86,11 @@ describe('POST /api/usuarios/me/roles', () => {
     expect(arg.data.roles.set).toEqual(['TALLER', 'MARCA'])
   })
 
-  it('D: CUIT coincide con el del Taller existente → 200 SIN llamar a ARCA', async () => {
-    // Mismo CUIT que su Taller ya verificado → se omite consultarPadron (cache-like).
+  it('D: CUIT coincide con un Taller VERIFICADO → 200 SIN llamar a ARCA', async () => {
+    // Mismo CUIT que su Taller verificadoAfip=true → se omite consultarPadron (cache-like).
     mockUserFind.mockResolvedValue({
       id: 'u1', roles: ['TALLER'], role: 'TALLER',
-      taller: { id: 't1', cuit: '20123456789' }, marca: null,
+      taller: { id: 't1', cuit: '20123456789', verificadoAfip: true }, marca: null,
     })
     mockCrear.mockResolvedValue({ id: 'marca-1' })
 
@@ -104,10 +104,25 @@ describe('POST /api/usuarios/me/roles', () => {
     expect(crearArgs.datosArca).toBeUndefined()
   })
 
+  it('D (caso martin): CUIT coincide pero la entidad NO está verificada → SÍ llama a ARCA', async () => {
+    // Fidedigno a martin.echevarria: marca con cuit presente pero verificadoAfip=false.
+    // El CUIT nunca fue verificado → no se skipea, se manda a ARCA como corresponde.
+    mockUserFind.mockResolvedValue({
+      id: 'u1', roles: ['MARCA'], role: 'MARCA',
+      taller: null, marca: { id: 'm1', cuit: '30718902345', verificadoAfip: false },
+    })
+    mockCrear.mockResolvedValue({ id: 'taller-1' })
+
+    const res = await post({ rol: 'TALLER', nombre: 'Mi Taller', cuit: '30-71890234-5' })
+    expect(res.status).toBe(200)
+    expect(mockPadron).toHaveBeenCalledTimes(1)
+    expect(mockPadron).toHaveBeenCalledWith('30-71890234-5')
+  })
+
   it('D: CUIT difiere del verificado → 200 LLAMANDO a ARCA como antes', async () => {
     mockUserFind.mockResolvedValue({
       id: 'u1', roles: ['TALLER'], role: 'TALLER',
-      taller: { id: 't1', cuit: '20123456789' }, marca: null,
+      taller: { id: 't1', cuit: '20123456789', verificadoAfip: true }, marca: null,
     })
     mockCrear.mockResolvedValue({ id: 'marca-1' })
 
