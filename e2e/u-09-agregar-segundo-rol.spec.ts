@@ -29,12 +29,24 @@ test('single-rol ve la card "Agregar rol" en /cuenta y crea su perfil de Marca',
   // Redirige al dashboard de Marca.
   await expect(page).toHaveURL(/\/marca/, { timeout: 20000 })
 
+  // QA #398 r3 — el redirect anterior es client-side (URL optimista). Forzamos una
+  // navegación DURA a /marca: el middleware re-evalúa la cookie/JWT real. Si la
+  // sesión NO se refrescó (bug), el JWT sigue single-rol TALLER y el middleware manda
+  // a /unauthorized. Esto es lo que NO atrapaba el chequeo de URL optimista.
+  await page.goto('/marca')
+  await expect(page).toHaveURL(/\/marca/)
+  await expect(page).not.toHaveURL(/unauthorized/)
+
   // Ahora es multi-rol: el toggle SÍ aparece y /cuenta ya no ofrece sumar rol.
   await abrirMenuUsuario(page)
   await expect(page.getByTestId('modo-toggle')).toBeVisible()
   await expect(page.getByTestId('modo-toggle-option-TALLER')).toBeVisible()
   await expect(page.getByTestId('modo-toggle-option-MARCA')).toBeVisible()
-  await page.keyboard.press('Escape')
+
+  // El cambio de modo de vuelta a Taller también funciona (la sesión tiene ambos).
+  await page.getByTestId('modo-toggle-option-TALLER').click()
+  await expect(page).toHaveURL(/\/taller/)
+  await expect(page).not.toHaveURL(/unauthorized/)
 
   await page.goto('/cuenta')
   await expect(page.getByTestId('agregar-rol-card')).toHaveCount(0)

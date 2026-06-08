@@ -51,11 +51,17 @@ export function AgregarRolCard({ rolFaltante, cuitActual }: AgregarRolCardProps)
         setCreando(false)
         return
       }
-      // Reflejar el nuevo modo en la sesión viva (rama jwt trigger==='update' de U-04).
-      await update({ activeMode: rolFaltante })
-      toast({ mensaje: `Se creó tu perfil de ${amable}`, tipo: 'success' })
-      router.push(DASHBOARD[rolFaltante])
+      // QA #398 r3 — refresh de sesión completo tras agregar rol:
+      // 1) update() reenvía el roles[] server-computed por el endpoint para que el
+      //    callback jwt expanda el JWT en la cookie (sin esto el JWT queda single-rol
+      //    y el middleware redirige a /unauthorized).
+      // 2) refresh() invalida el cache de RSC para que el server re-lea la cookie nueva.
+      // 3) push() navega al dashboard del nuevo rol ya con la sesión correcta.
+      const nuevoRol = (data?.rol as RolFaltante) ?? rolFaltante
+      await update({ activeMode: nuevoRol, roles: data?.roles })
       router.refresh()
+      toast({ mensaje: `Se creó tu perfil de ${amable}`, tipo: 'success' })
+      router.push(DASHBOARD[nuevoRol])
     } catch {
       setError('No se pudo crear el perfil')
       setCreando(false)
