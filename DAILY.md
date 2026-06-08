@@ -3,6 +3,11 @@
 ## 2026-06-08
 
 ### Gerardo Breard
+- **11:54** `507941a` — fix(e2e): reconciliar tests reales en tests/e2e + corregir diagnostico T-03
+  - `.claude/DEUDA_TECNICA.md`
+  - `tests/e2e/acceso-verificado.spec.ts`
+  - `tests/e2e/smoke.spec.ts`
+
 - **11:02** `d8b28ac` — docs(deuda): T-03 resuelta en commit 66ebee8 (Narrativa V4 Etapa 1)
   - `.claude/DEUDA_TECNICA.md`
 
