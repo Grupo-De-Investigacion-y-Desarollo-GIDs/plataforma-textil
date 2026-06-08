@@ -38,6 +38,15 @@ y prioridad sugerida.
 - **Prioridad:** baja (innecesario en piloto, importante post-piloto)
 - **Estimación:** 30 min (agregar debounce o cachear último CUIT validado)
 
+### F-04: Cosmético dashboards V4 (X-07b)
+- **Detectado en:** Discovery Nivel 5 (2026-06-08)
+- **Descripción:** ajustes cosméticos menores en dashboards: grays,
+  serif en H3, estados public-auth. El grueso del diseño V4 ya está
+  aplicado (~85-90%); esto es pulido fino.
+- **Impacto:** estético menor, no afecta funcionalidad ni piloto
+- **Prioridad:** baja (backlog post-piloto, decisión de Gerardo)
+- **Estimación:** 3-4h
+
 ## Backend / Arquitectura
 
 ### B-01: Tres paths de verificación de CUIT sin unificar
