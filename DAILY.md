@@ -1,50 +1,29 @@
 # Daily Log
 
+## 2026-06-08
+
+### Gerardo Breard
+- **00:26** `c09e67f` — docs: spec Narrativa V4 Etapa 1 (§1.1+§1.2) + nueva deuda T-03
+  - `.claude/DEUDA_TECNICA.md`
+  - `.claude/specs/v4-narrativa-etapa-1.md`
+
+
 ## 2026-06-07
 
 ### Gerardo Breard
-- **23:11** `e0a8fc7` — ci: re-trigger unit+e2e tras recuperarse Actions
+- **23:36** `e953cfd` — docs: archivo de deuda tecnica pre-existente
+  - `.claude/DEUDA_TECNICA.md`
 
+- **22:38** `92d2a52` — docs: spec U-08 - tests E2E con seed dual
+  - `.claude/specs/v4-u-08-tests-e2e-multi-rol.md`
 
-- **22:22** `4475677` — fix(u-09): refresh de sesion tras agregar segundo rol
-  - `e2e/u-09-agregar-segundo-rol.spec.ts`
-  - `src/__tests__/roles-multirol.test.ts`
-  - `src/compartido/componentes/agregar-rol-card.tsx`
-  - `src/compartido/lib/auth.config.ts`
-
-- **20:32** `4ff917c` — fix(u-09): segunda ronda QA Sergio - replanteo /cuenta + copy + skip CUIT
-  - `src/__tests__/u-09-agregar-rol.test.ts`
-  - `src/app/(public)/cuenta/page.tsx`
-  - `src/app/(public)/layout.tsx`
-  - `src/app/api/usuarios/me/roles/route.ts`
-  - `src/compartido/componentes/layout/user-sidebar.tsx`
-
-- **16:37** `81451f8` — fix(u-09): QA feedback Sergio - sidebar /cuenta + Pill + copy + CUIT skip
-  - `src/__tests__/u-09-agregar-rol.test.ts`
-  - `src/app/(public)/cuenta/page.tsx`
-  - `src/app/(public)/layout.tsx`
-  - `src/app/api/usuarios/me/roles/route.ts`
-  - `src/compartido/componentes/agregar-rol-card.tsx`
-  - `src/compartido/componentes/layout/header.tsx`
+- **20:54** `4d64713` — docs: spec U-05 - migracion de datos existentes
+  - `.claude/specs/v4-u-05-migracion-datos.md`
 
 
 ## 2026-06-05
 
 ### Gerardo Breard
-- **17:57** `847e1ca` — feat(u-09): flujo agregar segundo rol (TALLER <-> MARCA)
-  - `.claude/specs/v4-u-09-agregar-segundo-rol.md`
-  - `e2e/helpers/auth.ts`
-  - `e2e/u-09-agregar-segundo-rol.spec.ts`
-  - `prisma/seed.ts`
-  - `src/__tests__/crear-entidad-rol.test.ts`
-  - `src/__tests__/u-09-agregar-rol.test.ts`
-  - `src/__tests__/u-09-anti-incesto-regresion.test.ts`
-  - `src/app/(public)/cuenta/page.tsx`
-  - `src/app/api/auth/registro/completar/route.ts`
-  - `src/app/api/usuarios/me/roles/route.ts`
-  - `src/compartido/componentes/agregar-rol-card.tsx`
-  - `src/compartido/lib/crear-entidad-rol.ts`
-
 - **14:41** `233e155` — feat(u-04): toggle UI multi-rol estilo Airbnb
   - `.claude/specs/v4-u-04-toggle-multi-rol.md`
   - `e2e/helpers/auth.ts`
