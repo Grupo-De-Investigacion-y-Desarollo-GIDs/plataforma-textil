@@ -1,5 +1,13 @@
 # Daily Log
 
+## 2026-06-08
+
+### Gerardo Breard
+- **00:26** `c09e67f` — docs: spec Narrativa V4 Etapa 1 (§1.1+§1.2) + nueva deuda T-03
+  - `.claude/DEUDA_TECNICA.md`
+  - `.claude/specs/v4-narrativa-etapa-1.md`
+
+
 ## 2026-06-07
 
 ### Gerardo Breard

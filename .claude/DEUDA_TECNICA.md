@@ -119,6 +119,19 @@ y prioridad sugerida.
 - **Estado:** ticket abierto a GitHub Support
 - **Plan:** monitorear ticket; mientras tanto usar admin bypass
 
+### T-03: Test e2e checklist-sec9-10.spec.ts con labels stale
+- **Detectado en:** Discovery narrativa V4 Etapa 1 (2026-06-07)
+- **Descripción:** e2e/checklist-sec9-10.spec.ts líneas 236/346
+  referencian labels obsoletos ('Mi Tablero', 'Academia', 'Mi Panel',
+  'Directorio Talleres') y aria-labels que se eliminaron en #375
+  (sidebar refactor).
+- **Impacto:** el test está pasando por casualidad o falla en silencio.
+  Cualquier renombre de tabs (próximo: narrativa V4 Etapa 1) puede
+  destapar el problema.
+- **Prioridad:** media — conviene arreglar JUNTO con la Etapa 1
+  narrativa V4 para no romper más
+- **Estimación:** 30 min (actualizar expectedItems y aria-labels)
+
 ## Producto
 
 ### P-01: Notificaciones — comportamiento en multi-rol
