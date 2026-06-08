@@ -3,6 +3,9 @@
 ## 2026-06-07
 
 ### Gerardo Breard
+- **23:36** `e953cfd` — docs: archivo de deuda tecnica pre-existente
+  - `.claude/DEUDA_TECNICA.md`
+
 - **22:38** `92d2a52` — docs: spec U-08 - tests E2E con seed dual
   - `.claude/specs/v4-u-08-tests-e2e-multi-rol.md`
 
