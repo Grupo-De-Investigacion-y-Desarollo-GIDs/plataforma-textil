@@ -3,6 +3,9 @@
 ## 2026-06-07
 
 ### Gerardo Breard
+- **22:38** `92d2a52` — docs: spec U-08 - tests E2E con seed dual
+  - `.claude/specs/v4-u-08-tests-e2e-multi-rol.md`
+
 - **20:54** `4d64713` — docs: spec U-05 - migracion de datos existentes
   - `.claude/specs/v4-u-05-migracion-datos.md`
 
