@@ -3,6 +3,9 @@
 ## 2026-06-08
 
 ### Gerardo Breard
+- **11:02** `d8b28ac` — docs(deuda): T-03 resuelta en commit 66ebee8 (Narrativa V4 Etapa 1)
+  - `.claude/DEUDA_TECNICA.md`
+
 - **11:02** `66ebee8` — feat(narrativa-v4): Etapa 1 §1.1 + §1.2 - renombres y reordenamiento
   - `e2e/checklist-sec9-10.spec.ts`
   - `src/app/(marca)/marca/directorio/[id]/page.tsx`
