@@ -132,6 +132,27 @@ y prioridad sugerida.
   narrativa V4 para no romper más
 - **Estimación:** 30 min (actualizar expectedItems y aria-labels)
 
+### T-05: Test e2e u-09 no es idempotente (muta estado permanente)
+- **Detectado en:** Validación de T-04 (2026-06-08)
+- **Descripción:** e2e u-09-agregar-segundo-rol muta u09.test de
+  single-rol a multi-rol de forma irreversible. La DEV DB persiste
+  entre corridas, así que el test pasa la 1ra vez y falla la 2da
+  (ya no aparece agregar-rol-card porque el user ya tiene 2 roles).
+- **Impacto:** el test NO es CI-confiable sin un reseed previo en cada
+  corrida. Bloquea la migración limpia de u-09 a tests/e2e/ (los otros
+  3 U-specs no tienen este problema).
+- **Prioridad:** media — bloquea cerrar T-04 al 100% (3 de 4 specs
+  migran limpio, u-09 queda pendiente de este fix)
+- **Soluciones posibles:**
+  - Hook de cleanup en afterEach que resetee u09.test a single-rol
+    (vía API o DB directa)
+  - Usar un user throwaway creado/destruido en el propio test
+  - Documentar como "one-shot" (NO recomendado: rompe en 2da corrida)
+- **Relación:** ya estaba anticipado en el spec de U-08
+  (v4-u-08-tests-e2e-multi-rol.md, §3.3 aislamiento) — esto lo confirma
+  en la práctica
+- **Estimación:** 1-2h (el cleanup hook es lo más limpio)
+
 ## Producto
 
 ### P-01: Notificaciones — comportamiento en multi-rol
