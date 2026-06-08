@@ -3,6 +3,13 @@
 ## 2026-06-08
 
 ### Gerardo Breard
+- **12:52** `185a619` — wip: T-04 - copia de validacion de 4 U-specs a tests/e2e/
+  - `tests/e2e/_helpers/auth-multirol.ts`
+  - `tests/e2e/u-04-toggle-multi-rol.spec.ts`
+  - `tests/e2e/u-06-clasificacion-pedidos.spec.ts`
+  - `tests/e2e/u-07-anti-incesto.spec.ts`
+  - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+
 - **11:54** `507941a` — fix(e2e): reconciliar tests reales en tests/e2e + corregir diagnostico T-03
   - `.claude/DEUDA_TECNICA.md`
   - `tests/e2e/acceso-verificado.spec.ts`
