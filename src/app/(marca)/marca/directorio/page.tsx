@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import Link from 'next/link'
-import { MapPin, Star, MessageCircle, Factory, ShieldCheck } from 'lucide-react'
+import { MapPin, Star, MessageCircle, Factory } from 'lucide-react'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { EmptyState } from '@/compartido/componentes/ui/empty-state'
 
@@ -87,7 +87,7 @@ export default async function DirectorioPage({
     <div className="space-y-6">
       <div>
         <h1 className="font-serif font-bold text-3xl text-ink-primary">
-          Explorar Proveedores
+          Explorar talleres
         </h1>
         <p className="text-gray-600 mt-2">
           Registro de unidades productivas acreditadas
@@ -199,14 +199,6 @@ export default async function DirectorioPage({
                     {taller.nombre}
                   </h3>
                   {taller.verificadoAfip && <BadgeArca verificado={true} />}
-                  {taller.validaciones.length > 0 && (
-                    <div className="flex items-center gap-1 mt-1">
-                      <ShieldCheck className="w-3.5 h-3.5 text-green-600 shrink-0" />
-                      <span className="text-xs text-green-700 font-medium">
-                        {taller.validaciones.length} de 7 requisitos verificados
-                      </span>
-                    </div>
-                  )}
                 </div>
 
                 {taller.ubicacion && (

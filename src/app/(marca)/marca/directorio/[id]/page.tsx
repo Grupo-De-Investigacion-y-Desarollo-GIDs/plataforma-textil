@@ -43,7 +43,7 @@ export default async function TallerPerfilMarcaPage({ params }: { params: Promis
     <div className="max-w-3xl mx-auto py-6 px-4">
       <Breadcrumbs items={[
         { label: 'Marca', href: '/marca' },
-        { label: 'Directorio', href: '/marca/directorio' },
+        { label: 'Explorar talleres', href: '/marca/directorio' },
         { label: taller.nombre },
       ]} />
 
