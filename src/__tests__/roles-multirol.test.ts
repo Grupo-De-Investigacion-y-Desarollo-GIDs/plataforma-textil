@@ -145,4 +145,30 @@ describe('auth.config.ts — jwt trigger==="update" (U-04, cambio de modo)', () 
     expect(token.activeMode).toBe('MARCA')
     expect(token.role).toBe('MARCA')
   })
+
+  // U-09 (QA #398 r3): al agregar un 2º rol, el cliente reenvía el roles[] que
+  // devolvió el endpoint. El callback expande el JWT (sin esto el middleware ve un
+  // token single-rol viejo y manda a /unauthorized).
+  it('U-09: update con roles[] operativos EXPANDE el token y aplica el nuevo activeMode', async () => {
+    const token = await callUpdate(
+      { id: 'u1', role: 'TALLER', roles: ['TALLER'], activeMode: 'TALLER' },
+      { activeMode: 'MARCA', roles: ['TALLER', 'MARCA'] }
+    )
+    expect(token.roles).toEqual(['TALLER', 'MARCA'])
+    expect(token.activeMode).toBe('MARCA')
+    // INVARIANTE role == activeMode
+    expect(token.role).toBe('MARCA')
+  })
+
+  it('U-09: NO escala a un team role aunque venga en roles[] del input (anti-escalación)', async () => {
+    const token = await callUpdate(
+      { id: 'u2', role: 'TALLER', roles: ['TALLER'], activeMode: 'TALLER' },
+      { activeMode: 'ADMIN', roles: ['TALLER', 'ADMIN'] }
+    )
+    // ADMIN se filtra (no es operativo) → no entra al token …
+    expect(token.roles).toEqual(['TALLER'])
+    // … y el activeMode pedido se rechaza porque no pertenece a los roles del token.
+    expect(token.activeMode).toBe('TALLER')
+    expect(token.role).toBe('TALLER')
+  })
 })

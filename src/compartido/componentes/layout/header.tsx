@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, User, LogOut } from 'lucide-react'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import type { UserRole } from '@prisma/client'
 import { LogoPDT } from '@/compartido/componentes/ui/logo-pdt'
 import { NotificacionesBell } from './notificaciones-bell'
@@ -56,6 +56,14 @@ export function Header({
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
+  // BUG B (QA #398): el Pill "Modo X" tomaba activeMode/roles de un prop server-side
+  // que quedaba vencido tras session.update() (se veía "Modo Marca" y luego "Modo Taller").
+  // La sesión viva de useSession() es la fuente autoritativa; caemos al prop solo mientras
+  // la sesión cliente aún no hidrató (evita parpadeo/mismatch en el primer paint).
+  const { data: liveSession } = useSession()
+  const liveRoles = liveSession?.user?.roles ?? roles
+  const liveActiveMode = (liveSession?.user?.activeMode ?? activeMode) ?? undefined
+
   // Tabs segun rol
   const tabs = TABS_BY_ROLE[userRole] ?? []
 
@@ -75,8 +83,8 @@ export function Header({
     .toUpperCase() || '?'
 
   // U-04: modo activo efectivo + diferenciación visual solo para multi-rol.
-  const modoActual: UserRole = activeMode ?? (userRole as UserRole)
-  const esMultiRol = roles.length > 1
+  const modoActual: UserRole = liveActiveMode ?? (userRole as UserRole)
+  const esMultiRol = liveRoles.length > 1
   const borderAccent = esMultiRol ? MODO_BORDE[modoActual] ?? '' : ''
   const avatarAccent = esMultiRol ? MODO_AVATAR[modoActual] ?? '' : ''
 
@@ -193,7 +201,7 @@ export function Header({
                   </div>
                   {/* U-04: toggle multi-rol (se auto-oculta si roles <= 1) */}
                   <ModoToggle
-                    roles={roles}
+                    roles={liveRoles}
                     activeMode={modoActual}
                     entidades={entidades}
                     onCambio={() => setMenuOpen(false)}

@@ -88,7 +88,26 @@ export default {
       // DB (autoritativo); acá revalidamos contra los roles que YA están en el token
       // (en memoria, sin Prisma → Edge-safe). Nunca se confía ciegamente en el cliente.
       if (trigger === 'update' && session && typeof session === 'object') {
-        const nuevo = (session as { activeMode?: UserRole | null }).activeMode
+        const s = session as { activeMode?: UserRole | null; roles?: UserRole[] | null }
+
+        // U-09 (QA #398 r3): al AGREGAR un 2º rol el endpoint /me/roles ya expandió
+        // roles[] en DB y reenvía el roles[] server-computed por el cliente. El JWT
+        // (estrategia JWT, self-contained) no se re-emite desde la DB solo, así que lo
+        // ponemos al día acá. SEGURIDAD: solo aceptamos EXPANSIÓN con roles OPERATIVOS
+        // (TALLER/MARCA) — los team roles (ADMIN/ESTADO/CONTENIDO) nunca se auto-asignan
+        // y se filtran, de modo que un input del cliente no puede escalar privilegios.
+        if (Array.isArray(s.roles)) {
+          const OPERATIVOS: UserRole[] = ['TALLER', 'MARCA']
+          const previos = (token.roles as UserRole[] | undefined) ?? []
+          token.roles = Array.from(
+            new Set([...previos, ...s.roles.filter((r) => OPERATIVOS.includes(r))])
+          )
+        }
+
+        // El activeMode solo se acepta si pertenece a los roles del token (ya
+        // expandidos arriba si correspondía). Esto preserva la defensa para el
+        // cambio de modo "normal" de un multi-rol que NO envía roles[].
+        const nuevo = s.activeMode
         const rolesToken = (token.roles as UserRole[] | undefined) ?? []
         if (nuevo && rolesToken.includes(nuevo)) {
           token.activeMode = nuevo
