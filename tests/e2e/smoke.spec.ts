@@ -26,7 +26,7 @@ test.describe('Smoke test — setup basico funciona', () => {
     // El header debe mostrar tabs del taller (scoped al header)
     const header = page.locator('header')
     await expect(header.getByText('Pedidos').first()).toBeVisible()
-    await expect(header.getByText('Mi vidriera').first()).toBeVisible()
+    await expect(header.getByText('Mi taller').first()).toBeVisible()
     // Sidebar visible en desktop (F1) — hamburguesa oculta en lg+
     await expect(page.locator('aside[aria-label="Menú principal"]')).toBeVisible()
   })
