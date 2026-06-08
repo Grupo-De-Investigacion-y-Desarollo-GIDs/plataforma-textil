@@ -119,19 +119,6 @@ y prioridad sugerida.
 - **Estado:** ticket abierto a GitHub Support
 - **Plan:** monitorear ticket; mientras tanto usar admin bypass
 
-### T-03: Test e2e checklist-sec9-10.spec.ts con labels stale
-- **Detectado en:** Discovery narrativa V4 Etapa 1 (2026-06-07)
-- **Descripción:** e2e/checklist-sec9-10.spec.ts líneas 236/346
-  referencian labels obsoletos ('Mi Tablero', 'Academia', 'Mi Panel',
-  'Directorio Talleres') y aria-labels que se eliminaron en #375
-  (sidebar refactor).
-- **Impacto:** el test está pasando por casualidad o falla en silencio.
-  Cualquier renombre de tabs (próximo: narrativa V4 Etapa 1) puede
-  destapar el problema.
-- **Prioridad:** media — conviene arreglar JUNTO con la Etapa 1
-  narrativa V4 para no romper más
-- **Estimación:** 30 min (actualizar expectedItems y aria-labels)
-
 ## Producto
 
 ### P-01: Notificaciones — comportamiento en multi-rol
@@ -182,4 +169,18 @@ y prioridad sugerida.
 
 ## Resueltas
 
-(Items mover acá cuando se resuelven, con fecha y referencia al fix)
+### T-03: Test e2e checklist-sec9-10.spec.ts con labels stale — RESUELTA
+- **Detectado en:** Discovery narrativa V4 Etapa 1 (2026-06-07)
+- **Resuelta en:** commit `66ebee8` (PR Narrativa V4 Etapa 1), 2026-06-08
+- **Descripción original:** `e2e/checklist-sec9-10.spec.ts` líneas 236/346
+  referenciaban labels obsoletos ('Mi Tablero', 'Academia', 'Mi Panel',
+  'Directorio Talleres') y selectores (`'Abrir menú personal'`,
+  `aside[aria-label="Menú de navegación personal"]`) eliminados en #375
+  (sidebar refactor: la navegación de sección pasó al header).
+- **Fix:** los tests 10.2 (TALLER) y 10.9 (MARCA) se reescribieron para
+  assertar los tabs del header (`header nav`) con los labels+orden de la
+  Narrativa V4 Etapa 1. Se encontró staleness adicional fuera del alcance
+  de T-03 y se arregló en el mismo PR: 10.12 (ESTADO, mismos selectores
+  rotos) y 9.1/9.2 (asertaban heading 'Academia', ya renombrado a 'Cursos'
+  en `eb87a48`). Se agregaron asserts del Flujo 4 (vidriera sin "X de 7":
+  10.9b marca + 10.9c público).
