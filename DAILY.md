@@ -3,6 +3,9 @@
 ## 2026-06-07
 
 ### Gerardo Breard
+- **23:11** `e0a8fc7` — ci: re-trigger unit+e2e tras recuperarse Actions
+
+
 - **22:22** `4475677` — fix(u-09): refresh de sesion tras agregar segundo rol
   - `e2e/u-09-agregar-segundo-rol.spec.ts`
   - `src/__tests__/roles-multirol.test.ts`
