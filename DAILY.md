@@ -3,6 +3,12 @@
 ## 2026-06-07
 
 ### Gerardo Breard
+- **22:22** `4475677` — fix(u-09): refresh de sesion tras agregar segundo rol
+  - `e2e/u-09-agregar-segundo-rol.spec.ts`
+  - `src/__tests__/roles-multirol.test.ts`
+  - `src/compartido/componentes/agregar-rol-card.tsx`
+  - `src/compartido/lib/auth.config.ts`
+
 - **20:32** `4ff917c` — fix(u-09): segunda ronda QA Sergio - replanteo /cuenta + copy + skip CUIT
   - `src/__tests__/u-09-agregar-rol.test.ts`
   - `src/app/(public)/cuenta/page.tsx`
