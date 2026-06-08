@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-06-07
+
+### Gerardo Breard
+- **20:54** `4d64713` — docs: spec U-05 - migracion de datos existentes
+  - `.claude/specs/v4-u-05-migracion-datos.md`
+
+
 ## 2026-06-05
 
 ### Gerardo Breard
