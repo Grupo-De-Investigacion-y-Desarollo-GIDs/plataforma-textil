@@ -3,6 +3,9 @@
 ## 2026-06-08
 
 ### Gerardo Breard
+- **10:28** `e86102f` — Merge remote-tracking branch 'origin/develop' into feature/u-09-agregar-segundo-rol
+
+
 - **00:26** `c09e67f` — docs: spec Narrativa V4 Etapa 1 (§1.1+§1.2) + nueva deuda T-03
   - `.claude/DEUDA_TECNICA.md`
   - `.claude/specs/v4-narrativa-etapa-1.md`
