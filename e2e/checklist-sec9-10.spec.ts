@@ -26,8 +26,8 @@ test('9.1 — Taller ORO: /taller/aprender muestra colecciones con badge Certifi
   await page.goto('/taller/aprender')
   await page.waitForLoadState('networkidle')
 
-  // Debe haber heading Academia
-  await expect(page.getByRole('heading', { name: 'Academia' })).toBeVisible()
+  // Debe haber heading Cursos (renombrado desde "Academia" en eb87a48)
+  await expect(page.getByRole('heading', { name: 'Cursos' })).toBeVisible()
 
   // Buscar badge "Certificado"
   const badges = page.locator('text=Certificado')
@@ -47,8 +47,8 @@ test('9.2 — Taller ORO: click en coleccion muestra videos (pagina detalle carg
   await btn.click()
   await page.waitForLoadState('networkidle')
 
-  // Debe mostrar la pagina de detalle con link "Volver a Academia"
-  await expect(page.getByText('Volver a Academia')).toBeVisible()
+  // Debe navegar a la pagina de detalle de la coleccion (ruta /taller/aprender/[id])
+  await expect(page).toHaveURL(/\/taller\/aprender\/.+/)
 })
 
 test('9.3 — Taller ORO: boton "Descargar certificado PDF" visible en coleccion certificada', async ({ page }) => {
@@ -222,23 +222,19 @@ test('10.1 — Taller Bronce: dashboard con greeting, nivel, progreso', async ({
   await expect(page.getByRole('heading', { name: 'Progreso de Formalización' })).toBeVisible()
 })
 
-test('10.2 — Taller Bronce: sidebar tiene los 6 items esperados', async ({ page }) => {
+test('10.2 — Taller Bronce: header muestra los tabs de sección (Narrativa V4 Etapa 1)', async ({ page }) => {
   test.setTimeout(60000)
   await loginAs(page, 'taller_bronce')
+  await page.waitForLoadState('networkidle')
 
-  // Abrir sidebar con el boton "Abrir menu personal"
-  await page.getByLabel('Abrir menú personal').click()
-  await page.waitForTimeout(800)
+  // Post-F3 (#375) la navegación de sección vive en los tabs del header (banda 2),
+  // no en el sidebar personal (que solo tiene Notificaciones/Mi cuenta/Ayuda).
+  // Narrativa V4 Etapa 1: labels y orden nuevos (Pedidos al final, "Mi taller").
+  const tabsNav = page.locator('header nav')
+  const expectedTabs = ['Inicio', 'Mi taller', 'Mi recorrido', 'Cursos', 'Pedidos']
 
-  const sidebar = page.locator('aside[aria-label="Menú de navegación personal"]')
-  await expect(sidebar).toBeVisible()
-
-  const expectedItems = ['Mi Tablero', 'Mi Perfil', 'Mi Formalización', 'Academia', 'Mis Pedidos', 'Pedidos disponibles']
-  for (const item of expectedItems) {
-    const link = sidebar.getByRole('link', { name: item })
-    const visible = await link.isVisible().catch(() => false)
-    expect(visible, `Sidebar debe tener link "${item}"`).toBe(true)
-  }
+  const labels = (await tabsNav.getByRole('link').allTextContents()).map(t => t.trim()).filter(Boolean)
+  expect(labels, 'Orden y labels de tabs TALLER').toEqual(expectedTabs)
 })
 
 test('10.3 — Taller Bronce: navegar todas las secciones del sidebar sin errores', async ({ page }) => {
@@ -331,24 +327,41 @@ test('10.8 — Marca: dashboard con stats (pedidos, activos, cotizaciones)', asy
   await expect(page.getByText('Cotizaciones pendientes')).toBeVisible()
 })
 
-test('10.9 — Marca: sidebar tiene items esperados', async ({ page }) => {
+test('10.9 — Marca: header muestra los tabs de sección (Narrativa V4 Etapa 1)', async ({ page }) => {
   test.setTimeout(60000)
   await loginAs(page, 'marca')
   await page.goto('/marca')
   await page.waitForLoadState('networkidle')
 
-  await page.getByLabel('Abrir menú personal').click()
-  await page.waitForTimeout(800)
+  // Post-F3 (#375): navegación de sección en los tabs del header.
+  // Narrativa V4 Etapa 1: Inicio · Mi marca · Explorar talleres · Pedidos.
+  const tabsNav = page.locator('header nav')
+  const expectedTabs = ['Inicio', 'Mi marca', 'Explorar talleres', 'Pedidos']
 
-  const sidebar = page.locator('aside[aria-label="Menú de navegación personal"]')
-  await expect(sidebar).toBeVisible()
+  const labels = (await tabsNav.getByRole('link').allTextContents()).map(t => t.trim()).filter(Boolean)
+  expect(labels, 'Orden y labels de tabs MARCA').toEqual(expectedTabs)
 
-  const expectedItems = ['Mi Panel', 'Directorio Talleres', 'Mis Pedidos', 'Mi Perfil']
-  for (const item of expectedItems) {
-    const link = sidebar.getByRole('link', { name: item })
-    const visible = await link.isVisible().catch(() => false)
-    expect(visible, `Sidebar debe tener link "${item}"`).toBe(true)
-  }
+  // R-2: "Cursos" NO debe aparecer en MARCA (Academia para marcas es Etapa 3)
+  await expect(tabsNav.getByRole('link', { name: 'Cursos' })).toHaveCount(0)
+})
+
+test('10.9b — Vidriera pública para marca (/marca/directorio): sin "X de 7 requisitos" (Narrativa V4 §1.2)', async ({ page }) => {
+  test.setTimeout(60000)
+  await loginAs(page, 'marca')
+  await page.goto('/marca/directorio')
+  await page.waitForLoadState('networkidle')
+
+  // §1.2: la vidriera pública ya no expone el conteo "X de 7 requisitos verificados".
+  await expect(page.locator('body')).not.toContainText('de 7 requisitos')
+})
+
+test('10.9c — Directorio público anónimo (/directorio): sin "X de 7 requisitos" (Narrativa V4 §1.2)', async ({ page }) => {
+  test.setTimeout(60000)
+  await page.goto('/directorio')
+  await page.waitForLoadState('networkidle')
+
+  await expect(page).toHaveURL(/\/directorio/)
+  await expect(page.locator('body')).not.toContainText('de 7 requisitos')
 })
 
 test('10.10 — Marca: widget de feedback aparece', async ({ page }) => {
@@ -371,22 +384,16 @@ test('10.11 — Estado: dashboard con 3 secciones claras y datos reales', async 
   await expect(page.getByText('Que esta funcionando?')).toBeVisible()
 })
 
-test('10.12 — Estado: sidebar tiene Dashboard y Exportar Datos', async ({ page }) => {
+test('10.12 — Estado: header tiene tabs Dashboard y Exportar', async ({ page }) => {
   test.setTimeout(60000)
   await loginAs(page, 'estado')
+  await page.waitForLoadState('networkidle')
 
-  await page.getByLabel('Abrir menú personal').click()
-  await page.waitForTimeout(800)
-
-  const sidebar = page.locator('aside[aria-label="Menú de navegación personal"]')
-  await expect(sidebar).toBeVisible()
-
-  const expectedItems = ['Dashboard', 'Exportar Datos']
-  for (const item of expectedItems) {
-    const link = sidebar.getByRole('link', { name: item })
-    const visible = await link.isVisible().catch(() => false)
-    expect(visible, `Sidebar debe tener link "${item}"`).toBe(true)
-  }
+  // Post-F3 (#375): navegación de sección en los tabs del header (banda 2).
+  // ESTADO no se renombra en Etapa 1 (su renombre a COORD es Etapa 2).
+  const tabsNav = page.locator('header nav')
+  await expect(tabsNav.getByRole('link', { name: 'Dashboard', exact: true })).toBeVisible()
+  await expect(tabsNav.getByRole('link', { name: 'Exportar', exact: true })).toBeVisible()
 })
 
 // --- Actor ADMIN (Lucia) ---

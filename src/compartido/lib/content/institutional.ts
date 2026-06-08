@@ -25,16 +25,16 @@ export const FOOTER_LINKS = {
 export const TABS_BY_ROLE = {
   TALLER: [
     { label: 'Inicio', href: '/taller' },
-    { label: 'Pedidos', href: '/taller/pedidos' },
+    { label: 'Mi taller', href: '/taller/perfil' },
     { label: 'Mi recorrido', href: '/taller/formalizacion' },
-    { label: 'Mi vidriera', href: '/taller/perfil' },
     { label: 'Cursos', href: '/taller/aprender' },
+    { label: 'Pedidos', href: '/taller/pedidos' },
   ],
   MARCA: [
-    { label: 'Tablero', href: '/marca' },
-    { label: 'Directorio', href: '/marca/directorio' },
-    { label: 'Mis pedidos', href: '/marca/pedidos' },
-    { label: 'Mi perfil', href: '/marca/perfil' },
+    { label: 'Inicio', href: '/marca' },
+    { label: 'Mi marca', href: '/marca/perfil' },
+    { label: 'Explorar talleres', href: '/marca/directorio' },
+    { label: 'Pedidos', href: '/marca/pedidos' },
   ],
   ESTADO: [
     { label: 'Dashboard', href: '/estado' },

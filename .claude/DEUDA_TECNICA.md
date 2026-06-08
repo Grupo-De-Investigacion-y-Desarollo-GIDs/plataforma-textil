@@ -119,18 +119,22 @@ y prioridad sugerida.
 - **Estado:** ticket abierto a GitHub Support
 - **Plan:** monitorear ticket; mientras tanto usar admin bypass
 
-### T-03: Test e2e checklist-sec9-10.spec.ts con labels stale
-- **Detectado en:** Discovery narrativa V4 Etapa 1 (2026-06-07)
-- **Descripción:** e2e/checklist-sec9-10.spec.ts líneas 236/346
-  referencian labels obsoletos ('Mi Tablero', 'Academia', 'Mi Panel',
-  'Directorio Talleres') y aria-labels que se eliminaron en #375
-  (sidebar refactor).
-- **Impacto:** el test está pasando por casualidad o falla en silencio.
-  Cualquier renombre de tabs (próximo: narrativa V4 Etapa 1) puede
-  destapar el problema.
-- **Prioridad:** media — conviene arreglar JUNTO con la Etapa 1
-  narrativa V4 para no romper más
-- **Estimación:** 30 min (actualizar expectedItems y aria-labels)
+### T-04: Directorio `e2e/` huérfano (no lo corre Playwright)
+- **Detectado en:** implementación Narrativa V4 Etapa 1 (2026-06-08)
+- **Descripción:** existen DOS carpetas de tests Playwright: `tests/e2e/`
+  (la real — `playwright.config.ts` tiene `testDir: './tests/e2e'`) y
+  `e2e/` (huérfana). Los archivos `e2e/checklist-sec*.spec.ts`,
+  `e2e/admin.spec.ts`, `e2e/auth.spec.ts`, etc. **nunca se ejecutan** en
+  CI ni con `npm run test:e2e`. Son ~12 specs de mantenimiento muerto.
+- **Impacto:** falsa sensación de cobertura. Cualquiera que edite `e2e/*`
+  (como pedía el spec de Etapa 1 para T-03) cree estar arreglando tests
+  que en realidad están inertes. Riesgo de divergencia silenciosa.
+- **Prioridad:** media (deuda de confiabilidad de la suite)
+- **Plan:** decidir entre (a) **migrar** los specs útiles de `e2e/` a
+  `tests/e2e/` y borrar la carpeta, o (b) **borrar** `e2e/` si son
+  duplicados/obsoletos de los de `tests/e2e/`. Verificar solapamiento
+  antes de borrar.
+- **Estimación:** 1-2h (auditar solapamiento + migrar/borrar)
 
 ### T-05: Test e2e u-09 no es idempotente (muta estado permanente)
 - **Detectado en:** Validación de T-04 (2026-06-08)
@@ -203,4 +207,23 @@ y prioridad sugerida.
 
 ## Resueltas
 
-(Items mover acá cuando se resuelven, con fecha y referencia al fix)
+### T-03: Test e2e checklist-sec9-10.spec.ts con labels stale — RESUELTA (con corrección de diagnóstico)
+- **Detectado en:** Discovery narrativa V4 Etapa 1 (2026-06-07)
+- **Resuelta en:** commits `66ebee8` + reconciliación real en el mismo PR
+  (Narrativa V4 Etapa 1), 2026-06-08
+- **Descripción original:** se reportó que `e2e/checklist-sec9-10.spec.ts`
+  líneas 236/346 tenían labels obsoletos y selectores eliminados en #375.
+- **CORRECCIÓN IMPORTANTE (hallazgo al implementar):** el directorio `e2e/`
+  **NO lo corre Playwright**. `playwright.config.ts` tiene
+  `testDir: './tests/e2e'`, y `e2e.yml` corre `npx playwright test` sin
+  `--config` alterno. Por eso esos tests "stale" jamás fallaron: nunca se
+  ejecutan. Ver **T-04** (directorio huérfano).
+- **Fix real (lo que SÍ corre en CI, en `tests/e2e/`):** la Etapa 1 rompió
+  dos tests reales que asertaban el copy viejo —
+  `tests/e2e/smoke.spec.ts:29` (`'Mi vidriera'` → `'Mi taller'`) y
+  `tests/e2e/acceso-verificado.spec.ts:40` (heading `'Explorar Proveedores'`
+  → `'Explorar talleres'`). Ambos actualizados; e2e vuelve a verde.
+- **Fix cosmético (en `e2e/` huérfano, por completitud y por si se rewirea):**
+  se igualaron igualmente `checklist-sec9-10.spec.ts` 10.2/10.9 a los tabs
+  del header, 10.12 (ESTADO) y 9.1/9.2 (Academia→Cursos), + asserts del
+  Flujo 4 (10.9b/10.9c). No afecta CI hasta que se resuelva T-04.

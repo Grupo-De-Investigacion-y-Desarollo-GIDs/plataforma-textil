@@ -3,6 +3,24 @@
 ## 2026-06-08
 
 ### Gerardo Breard
+- **11:54** `507941a` — fix(e2e): reconciliar tests reales en tests/e2e + corregir diagnostico T-03
+  - `.claude/DEUDA_TECNICA.md`
+  - `tests/e2e/acceso-verificado.spec.ts`
+  - `tests/e2e/smoke.spec.ts`
+
+- **11:02** `d8b28ac` — docs(deuda): T-03 resuelta en commit 66ebee8 (Narrativa V4 Etapa 1)
+  - `.claude/DEUDA_TECNICA.md`
+
+- **11:02** `66ebee8` — feat(narrativa-v4): Etapa 1 §1.1 + §1.2 - renombres y reordenamiento
+  - `e2e/checklist-sec9-10.spec.ts`
+  - `src/app/(marca)/marca/directorio/[id]/page.tsx`
+  - `src/app/(marca)/marca/directorio/page.tsx`
+  - `src/app/(marca)/marca/pedidos/page.tsx`
+  - `src/app/(marca)/marca/perfil/page.tsx`
+  - `src/app/(public)/directorio/page.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+
 - **10:28** `e86102f` — Merge remote-tracking branch 'origin/develop' into feature/u-09-agregar-segundo-rol
 
 

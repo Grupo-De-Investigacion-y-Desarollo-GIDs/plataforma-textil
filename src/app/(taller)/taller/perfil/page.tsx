@@ -36,7 +36,7 @@ export default async function TallerPerfilPage() {
   if (!taller) {
     return (
       <div className="space-y-6">
-        <h1 className="font-serif font-bold text-3xl text-ink-primary">Mi vidriera</h1>
+        <h1 className="font-serif font-bold text-3xl text-ink-primary">Mi taller</h1>
         <Card className="text-center py-12">
           <p className="text-gray-600 mb-4">Todavía no completaste tu perfil.</p>
           <Link href="/taller/perfil/completar">
