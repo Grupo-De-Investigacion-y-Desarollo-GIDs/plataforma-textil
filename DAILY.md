@@ -3,6 +3,13 @@
 ## 2026-06-09
 
 ### Gerardo Breard
+- **17:48** `9e9f157` — fix(t-04): mover endpoint reset fuera de carpeta privada _test (App Router)
+  - `.claude/DEUDA_TECNICA.md`
+  - `src/app/api/_test/reset-seed-state/route.ts`
+  - `src/app/api/test-utils/reset-seed-state/route.ts`
+  - `tests/e2e/u-04-toggle-multi-rol.spec.ts`
+  - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+
 - **17:22** `1b0d2c8` — fix(t-04): guard NODE_ENV + race u-09 + reset-seed-state para u-04/u-09
   - `.claude/DEUDA_TECNICA.md`
   - `src/app/api/_test/reset-seed-state/route.ts`
