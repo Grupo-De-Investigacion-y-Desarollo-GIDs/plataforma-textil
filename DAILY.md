@@ -1,5 +1,17 @@
 # Daily Log
 
+## 2026-06-09
+
+### Gerardo Breard
+- **10:58** `6ba3ec5` — feat(t-04): migrar 4 U-specs de seguridad a tests/e2e/ + fix idempotencia u-09
+  - `e2e/u-04-toggle-multi-rol.spec.ts`
+  - `e2e/u-06-clasificacion-pedidos.spec.ts`
+  - `e2e/u-07-anti-incesto.spec.ts`
+  - `e2e/u-09-agregar-segundo-rol.spec.ts`
+  - `src/app/api/_test/reset-u09/route.ts`
+  - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+
+
 ## 2026-06-08
 
 ### Gerardo Breard
