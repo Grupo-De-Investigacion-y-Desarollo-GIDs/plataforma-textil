@@ -3,6 +3,10 @@
 ## 2026-06-09
 
 ### Gerardo Breard
+- **15:20** `6eb0d96` — fix(u-04/u-09): bugs destapados por primer run real de specs migrados
+  - `src/app/page.tsx`
+  - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+
 - **12:29** `cfc7b57` — fix(t-04): hardening endpoint reset-u09 + deuda B-04
   - `.claude/DEUDA_TECNICA.md`
   - `src/app/api/_test/reset-u09/route.ts`
