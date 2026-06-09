@@ -10,6 +10,22 @@ async function abrirMenuUsuario(page: import('@playwright/test').Page) {
   await page.getByRole('button', { name: 'Menú de usuario' }).click()
 }
 
+// T-05: el test muta a u09.test a multi-rol de forma permanente. Sin este cleanup,
+// la 2da corrida falla (el guard de POST /me/roles devuelve 409 y la card "Agregar
+// rol" no reaparece). El afterEach resetea al estado del seed via endpoint SOLO-CI,
+// haciendo el test idempotente. Best-effort: corre SIEMPRE (try/catch) — si fallara
+// el reset no rompe el reporte, pero la idempotencia depende de que complete.
+test.afterEach(async ({ page }) => {
+  try {
+    const res = await page.request.post('/api/_test/reset-u09')
+    if (!res.ok()) {
+      console.warn(`Cleanup u-09: reset devolvió ${res.status()} (idempotencia comprometida)`)
+    }
+  } catch (e) {
+    console.warn('Cleanup u-09: reset falló', e)
+  }
+})
+
 test('single-rol ve la card "Agregar rol" en /cuenta y crea su perfil de Marca', async ({ page }) => {
   await ensureNotProduction(page)
   await loginAs(page, 'u09')
