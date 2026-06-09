@@ -12,12 +12,13 @@ async function abrirMenuUsuario(page: import('@playwright/test').Page) {
 
 // T-05: el test muta a u09.test a multi-rol de forma permanente. Sin este cleanup,
 // la 2da corrida falla (el guard de POST /me/roles devuelve 409 y la card "Agregar
-// rol" no reaparece). El afterEach resetea al estado del seed via endpoint SOLO-CI,
-// haciendo el test idempotente. Best-effort: corre SIEMPRE (try/catch) — si fallara
-// el reset no rompe el reporte, pero la idempotencia depende de que complete.
+// rol" no reaparece). El afterEach resetea al estado del seed via endpoint SOLO-CI
+// (reset-seed-state, sin parámetros), haciendo el test idempotente. Best-effort:
+// corre SIEMPRE (try/catch) — si fallara el reset no rompe el reporte, pero la
+// idempotencia depende de que complete.
 test.afterEach(async ({ page }) => {
   try {
-    const res = await page.request.post('/api/_test/reset-u09')
+    const res = await page.request.post('/api/_test/reset-seed-state')
     if (!res.ok()) {
       console.warn(`Cleanup u-09: reset devolvió ${res.status()} (idempotencia comprometida)`)
     }
@@ -54,6 +55,23 @@ test('single-rol ve la card "Agregar rol" en /cuenta y crea su perfil de Marca',
   // navegación DURA a /marca: el middleware re-evalúa la cookie/JWT real. Si la
   // sesión NO se refrescó (bug), el JWT sigue single-rol TALLER y el middleware manda
   // a /unauthorized. Esto es lo que NO atrapaba el chequeo de URL optimista.
+  //
+  // El hard-nav corre carrera con el commit de la cookie JWT (Set-Cookie de
+  // session.update). NO es bug de prod —en uso real la cookie propaga a tiempo—,
+  // es timing del test: esperamos determinísticamente a que /api/auth/session ya
+  // refleje MARCA antes de forzar el round-trip al server. Sin esto el goto puede
+  // viajar con la cookie vieja (single-rol) y el middleware mandar a /unauthorized.
+  await expect
+    .poll(
+      async () => {
+        const res = await page.request.get('/api/auth/session')
+        const session = await res.json().catch(() => null)
+        return (session?.user?.roles as string[] | undefined) ?? []
+      },
+      { timeout: 15000 }
+    )
+    .toContain('MARCA')
+
   await page.goto('/marca')
   await expect(page).toHaveURL(/\/marca/)
   await expect(page).not.toHaveURL(/unauthorized/)

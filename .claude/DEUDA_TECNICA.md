@@ -85,13 +85,19 @@ y prioridad sugerida.
 ### B-04: isCiBypass con doble responsabilidad (rate-limit + endpoint mutante)
 - **Detectado en:** Auditoría del endpoint /_test/reset-u09 (2026-06-09)
 - **Descripción:** isCiBypass se diseñó para saltar rate-limit (bajo
-  riesgo). Ahora también autoriza el endpoint mutante /_test/reset-u09
+  riesgo). Ahora también autoriza el endpoint mutante /_test/reset-seed-state
   (riesgo medio). Una relajación futura de isCiBypass por motivos de
   rate-limit ensancharía silenciosamente la autorización del endpoint
   destructivo.
 - **Impacto:** acoplamiento de seguridad. No es vuln activa (el endpoint
-  tiene guard de prod redundante + hardcode a u09.test), pero es deuda
-  de diseño.
+  tiene guard de prod + hardcode a un set fijo de users de seed, sin userId
+  del request), pero es deuda de diseño.
+- **Nota (2026-06-09):** el "guard de prod redundante" original usaba
+  `NODE_ENV === 'production'`, que es SIEMPRE true en deploys de Vercel
+  (incluido PREVIEW) → devolvía 404 en preview y rompía el cleanup del e2e.
+  Corregido a solo `VERCEL_ENV === 'production'` (lo que isCiBypass ya valida).
+  Y el endpoint se generalizó: reset-u09 → reset-seed-state (resetea u09.test
+  + julieta a estado de seed, sin parámetros del request).
 - **Prioridad:** baja-media
 - **Solución:** guard dedicado para endpoints mutantes de test,
   separado del bypass de rate-limit

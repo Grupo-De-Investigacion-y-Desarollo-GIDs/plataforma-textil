@@ -9,6 +9,22 @@ async function abrirMenuUsuario(page: import('@playwright/test').Page) {
   await page.getByRole('button', { name: 'Menú de usuario' }).click()
 }
 
+// T-05: el test de persistencia muta el activeMode de julieta a MARCA en DB y no
+// lo restaura. Como DEV persiste entre runs, sin este cleanup el siguiente login de
+// julieta arranca en /marca y rompe las aserciones que esperan /taller. El afterEach
+// la devuelve a su estado de seed (activeMode TALLER) via endpoint SOLO-CI sin
+// parámetros (reset-seed-state). Best-effort: corre SIEMPRE (try/catch).
+test.afterEach(async ({ page }) => {
+  try {
+    const res = await page.request.post('/api/_test/reset-seed-state')
+    if (!res.ok()) {
+      console.warn(`Cleanup u-04: reset devolvió ${res.status()} (idempotencia comprometida)`)
+    }
+  } catch (e) {
+    console.warn('Cleanup u-04: reset falló', e)
+  }
+})
+
 test('multi-rol ve el toggle y arranca en modo Taller', async ({ page }) => {
   await ensureNotProduction(page)
   await loginAs(page, 'dual')
