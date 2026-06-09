@@ -36,13 +36,16 @@ test('single-rol ve la card "Agregar rol" en /cuenta y crea su perfil de Marca',
   await page.keyboard.press('Escape')
 
   // En /cuenta aparece la card de agregar rol (le falta MARCA).
+  // Scope a <main>: React 19 streaming SSR deja brevemente una copia hidden
+  // (div id="S:1") que dispara strict-mode si el locator no está scopeado.
+  // Ver skill playwright-e2e §1. NO usar .first() (oculta el problema).
   await page.goto('/cuenta')
-  const card = page.getByTestId('agregar-rol-card')
+  const card = page.locator('main').getByTestId('agregar-rol-card')
   await expect(card).toBeVisible()
 
   // Completar nombre + CUIT (el CUIT viene pre-cargado; lo dejamos) y enviar.
-  await page.getByLabel('Nombre de la marca').fill('Marca de Tomás')
-  await page.getByTestId('agregar-rol-submit').click()
+  await card.getByLabel('Nombre de la marca').fill('Marca de Tomás')
+  await card.getByTestId('agregar-rol-submit').click()
 
   // Redirige al dashboard de Marca.
   await expect(page).toHaveURL(/\/marca/, { timeout: 20000 })
@@ -67,5 +70,5 @@ test('single-rol ve la card "Agregar rol" en /cuenta y crea su perfil de Marca',
   await expect(page).not.toHaveURL(/unauthorized/)
 
   await page.goto('/cuenta')
-  await expect(page.getByTestId('agregar-rol-card')).toHaveCount(0)
+  await expect(page.locator('main').getByTestId('agregar-rol-card')).toHaveCount(0)
 })
