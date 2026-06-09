@@ -82,6 +82,21 @@ y prioridad sugerida.
 - **Prioridad:** muy baja (optimización menor)
 - **Estimación:** 30 min
 
+### B-04: isCiBypass con doble responsabilidad (rate-limit + endpoint mutante)
+- **Detectado en:** Auditoría del endpoint /_test/reset-u09 (2026-06-09)
+- **Descripción:** isCiBypass se diseñó para saltar rate-limit (bajo
+  riesgo). Ahora también autoriza el endpoint mutante /_test/reset-u09
+  (riesgo medio). Una relajación futura de isCiBypass por motivos de
+  rate-limit ensancharía silenciosamente la autorización del endpoint
+  destructivo.
+- **Impacto:** acoplamiento de seguridad. No es vuln activa (el endpoint
+  tiene guard de prod redundante + hardcode a u09.test), pero es deuda
+  de diseño.
+- **Prioridad:** baja-media
+- **Solución:** guard dedicado para endpoints mutantes de test,
+  separado del bypass de rate-limit
+- **Estimación:** 30 min
+
 ## Datos
 
 ### D-01: Cuentas con role pero sin entidad asociada

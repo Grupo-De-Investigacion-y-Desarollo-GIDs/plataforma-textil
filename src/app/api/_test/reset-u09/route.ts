@@ -17,6 +17,13 @@ import { isCiBypass } from '@/compartido/lib/ratelimit'
 const U09_EMAIL = 'u09.test@pdt.org.ar'
 
 export async function POST(req: NextRequest) {
+  // Defense-in-depth: guard de prod explícito ANTES de isCiBypass. Si alguien
+  // relaja isCiBypass por motivos de rate-limit, este endpoint mutante sigue
+  // bloqueado en prod. Cubre además el caso no-Vercel (VERCEL_ENV ausente) vía
+  // NODE_ENV. Ver deuda B-04 (isCiBypass con doble responsabilidad).
+  if (process.env.VERCEL_ENV === 'production' || process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  }
   if (!isCiBypass(req)) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
