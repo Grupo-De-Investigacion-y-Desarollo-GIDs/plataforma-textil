@@ -3,6 +3,10 @@
 ## 2026-06-09
 
 ### Gerardo Breard
+- **12:29** `cfc7b57` — fix(t-04): hardening endpoint reset-u09 + deuda B-04
+  - `.claude/DEUDA_TECNICA.md`
+  - `src/app/api/_test/reset-u09/route.ts`
+
 - **10:58** `6ba3ec5` — feat(t-04): migrar 4 U-specs de seguridad a tests/e2e/ + fix idempotencia u-09
   - `e2e/u-04-toggle-multi-rol.spec.ts`
   - `e2e/u-06-clasificacion-pedidos.spec.ts`
