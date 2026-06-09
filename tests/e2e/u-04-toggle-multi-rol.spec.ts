@@ -16,7 +16,7 @@ async function abrirMenuUsuario(page: import('@playwright/test').Page) {
 // parámetros (reset-seed-state). Best-effort: corre SIEMPRE (try/catch).
 test.afterEach(async ({ page }) => {
   try {
-    const res = await page.request.post('/api/_test/reset-seed-state')
+    const res = await page.request.post('/api/test-utils/reset-seed-state')
     if (!res.ok()) {
       console.warn(`Cleanup u-04: reset devolvió ${res.status()} (idempotencia comprometida)`)
     }

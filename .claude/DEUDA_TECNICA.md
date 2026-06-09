@@ -83,21 +83,29 @@ y prioridad sugerida.
 - **Estimación:** 30 min
 
 ### B-04: isCiBypass con doble responsabilidad (rate-limit + endpoint mutante)
-- **Detectado en:** Auditoría del endpoint /_test/reset-u09 (2026-06-09)
+- **Detectado en:** Auditoría del endpoint reset de test (2026-06-09)
 - **Descripción:** isCiBypass se diseñó para saltar rate-limit (bajo
-  riesgo). Ahora también autoriza el endpoint mutante /_test/reset-seed-state
-  (riesgo medio). Una relajación futura de isCiBypass por motivos de
-  rate-limit ensancharía silenciosamente la autorización del endpoint
-  destructivo.
+  riesgo). Ahora también autoriza el endpoint mutante
+  /api/test-utils/reset-seed-state (riesgo medio). Una relajación futura de
+  isCiBypass por motivos de rate-limit ensancharía silenciosamente la
+  autorización del endpoint destructivo.
 - **Impacto:** acoplamiento de seguridad. No es vuln activa (el endpoint
   tiene guard de prod + hardcode a un set fijo de users de seed, sin userId
   del request), pero es deuda de diseño.
-- **Nota (2026-06-09):** el "guard de prod redundante" original usaba
-  `NODE_ENV === 'production'`, que es SIEMPRE true en deploys de Vercel
-  (incluido PREVIEW) → devolvía 404 en preview y rompía el cleanup del e2e.
-  Corregido a solo `VERCEL_ENV === 'production'` (lo que isCiBypass ya valida).
-  Y el endpoint se generalizó: reset-u09 → reset-seed-state (resetea u09.test
-  + julieta a estado de seed, sin parámetros del request).
+- **ROOT CAUSE del cleanup roto (2026-06-09):** el endpoint vivía en
+  `src/app/api/_test/...`. En el App Router de Next.js, **una carpeta con
+  prefijo `_` es "private folder" y queda EXCLUIDA del routing** → la ruta
+  `/api/_test/...` NUNCA existió: devolvía el 404 HTML de not-found (no el
+  JSON del guard) en TODOS los runs de CI. El cleanup nunca corrió; el
+  diagnóstico previo (NODE_ENV) era un red herring (el guard jamás se
+  ejecutaba). Fix: renombrado `_test` → `test-utils` (ruta
+  `/api/test-utils/reset-seed-state`). Lección: NO usar prefijo `_` en
+  segmentos de ruta del App Router. Verificar siempre el body del 404 (JSON
+  del guard = ruta existe; HTML = ruta no matcheada).
+- **Nota:** el guard de prod usa solo `VERCEL_ENV === 'production'` (NO
+  NODE_ENV, que es SIEMPRE 'production' en deploys Vercel incl. preview).
+  Endpoint generalizado: reset-u09 → reset-seed-state (resetea u09.test +
+  julieta a estado de seed, sin parámetros del request).
 - **Prioridad:** baja-media
 - **Solución:** guard dedicado para endpoints mutantes de test,
   separado del bypass de rate-limit

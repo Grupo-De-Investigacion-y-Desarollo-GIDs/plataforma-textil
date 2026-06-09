@@ -18,7 +18,7 @@ async function abrirMenuUsuario(page: import('@playwright/test').Page) {
 // idempotencia depende de que complete.
 test.afterEach(async ({ page }) => {
   try {
-    const res = await page.request.post('/api/_test/reset-seed-state')
+    const res = await page.request.post('/api/test-utils/reset-seed-state')
     if (!res.ok()) {
       console.warn(`Cleanup u-09: reset devolvió ${res.status()} (idempotencia comprometida)`)
     }
