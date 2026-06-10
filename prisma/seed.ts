@@ -628,7 +628,7 @@ async function main() {
       verificadoAfip: true,
     },
   })
-  await prisma.marca.create({
+  const marcaBenitez = await prisma.marca.create({
     data: {
       userId: userDual.id,
       nombre: 'Marca Benítez',
@@ -640,6 +640,48 @@ async function main() {
   })
 
   console.log('  ✓ 2 marcas creadas (+ taller/marca del user multi-rol)')
+
+  // U-08: pedidos publicados/borrador por la marca del user dual (Julieta), para
+  // ejercitar la regla anti-incesto E2E. Julieta tiene perfil TALLER y MARCA: no
+  // puede cotizar/invitarse a sí misma en pedidos que publicó como marca
+  // (pedido.marca.userId === su propio userId). Ver v4-u-08-tests-e2e-multi-rol.md.
+  //
+  // Son DOS pedidos a propósito, por el orden de los guards en cada ruta:
+  //   - DUAL1 PUBLICADO/PUBLICO → cotizar: AUTO_COTIZACION dispara antes que el
+  //     chequeo de estado (cotizaciones/route.ts), y disponibles lo excluye por
+  //     ser propio. Necesita estar PUBLICADO+PUBLICO para que la exclusión del
+  //     listado sea significativa (un BORRADOR no aparecería igual).
+  //   - DUAL2 BORRADOR → invitar: en invitaciones/route.ts el gate `estado !==
+  //     'BORRADOR'` (400) dispara ANTES que el anti-incesto ("No podés invitarte
+  //     a vos mismo", 400). Para ejercitar el guard REAL hace falta un pedido en
+  //     BORRADOR; sobre uno PUBLICADO el test pasaría por la razón equivocada.
+  // El reset-seed-state?user=julieta NO toca estos pedidos (solo hace user.update),
+  // así que sobreviven intactos entre corridas E2E.
+  await prisma.pedido.create({
+    data: {
+      omId: 'OM-2026-DUAL1',
+      marcaId: marcaBenitez.id,
+      tipoPrenda: 'Remera',
+      tipoPrendaId: prRemera.id,
+      cantidad: 300,
+      estado: 'PUBLICADO',
+      visibilidad: 'PUBLICO',
+      montoTotal: 270000,
+    },
+  })
+  await prisma.pedido.create({
+    data: {
+      omId: 'OM-2026-DUAL2',
+      marcaId: marcaBenitez.id,
+      tipoPrenda: 'Remera',
+      tipoPrendaId: prRemera.id,
+      cantidad: 150,
+      estado: 'BORRADOR',
+      montoTotal: 135000,
+    },
+  })
+
+  console.log('  ✓ 2 pedidos del user dual (DUAL1 publicado, DUAL2 borrador) para anti-incesto')
 
   // ============================================
   // PEDIDOS

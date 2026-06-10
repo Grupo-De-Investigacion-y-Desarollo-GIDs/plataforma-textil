@@ -83,8 +83,11 @@ export async function POST(req: NextRequest) {
   }
 
   // key === 'julieta' → dual con activeMode TALLER (estado del seed). NO se tocan
-  // sus entidades (Taller La Hormiga + Marca Benítez son parte de su seed); solo
-  // se restaura el activeMode/role que u-04 muta. roles queda [TALLER, MARCA].
+  // sus entidades (Taller La Hormiga + Marca Benítez son parte de su seed) ni sus
+  // pedidos (OM-2026-DUAL1 PUBLICADO + OM-2026-DUAL2 BORRADOR, usados por el
+  // anti-incesto de U-08): este reset SOLO hace user.update, así que ambos pedidos
+  // sobreviven intactos entre corridas. Solo se restaura el activeMode/role que
+  // u-04 muta. roles queda [TALLER, MARCA].
   const julieta = await prisma.user.findUnique({
     where: { email },
     select: { id: true },
