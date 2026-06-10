@@ -17,6 +17,11 @@ export default async function ContenidoLayout({ children }: { children: React.Re
             <span className="font-overpass font-bold text-lg">Panel de Contenidos</span>
           </div>
           <div className="flex items-center gap-4">
+            {/* F-02: CONTENIDO usa este header propio, sin el dropdown del Header
+                compartido. Sin este link, /cuenta solo era accesible por URL. */}
+            <Link href="/cuenta" className="text-sm hover:text-white/70 transition-colors">
+              Mi cuenta
+            </Link>
             <Link href="/" className="text-sm hover:text-white/70 transition-colors">
               Volver al sitio
             </Link>

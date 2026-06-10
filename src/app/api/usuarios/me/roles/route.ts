@@ -50,6 +50,10 @@ export const POST = apiHandler(async (req: NextRequest) => {
       id: true,
       roles: true,
       role: true,
+      // B-02: el CUIT verificado del propio User (caso registro abandonado: CUIT
+      // verificado en User pero sin entidad creada todavía) también habilita el skip.
+      cuit: true,
+      verificadoAfip: true,
       taller: { select: { id: true, cuit: true, verificadoAfip: true } },
       marca: { select: { id: true, cuit: true, verificadoAfip: true } },
     },
@@ -76,6 +80,9 @@ export const POST = apiHandler(async (req: NextRequest) => {
   // ej. registro con ARCA caído o dato de seed) SÍ se manda a ARCA.
   const normalizar = (c: string) => c.replace(/-/g, '')
   const cuitsVerificados = [
+    // B-02: mismo gate semántico (verificadoAfip=true) para las 3 fuentes. El CUIT
+    // a nivel User cubre el caso "registro abandonado" (verificado pero sin entidad).
+    user.verificadoAfip ? user.cuit : null,
     user.taller?.verificadoAfip ? user.taller.cuit : null,
     user.marca?.verificadoAfip ? user.marca.cuit : null,
   ]
