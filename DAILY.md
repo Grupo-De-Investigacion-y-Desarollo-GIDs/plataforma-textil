@@ -3,6 +3,17 @@
 ## 2026-06-10
 
 ### Gerardo Breard
+- **01:10** `1c0e5f1` — feat(u-05): migracion de datos multi-rol + cierre de fuente (refs D-01/D-02)
+  - `.claude/specs/handover/DECISIONS.md`
+  - `.claude/specs/v4-u-05-migracion-datos.md`
+  - `prisma/migrations/20260610120000_u05_backfill_roles_activemode/migration.sql`
+  - `prisma/seed.ts`
+  - `scripts/u05-audit.ts`
+  - `scripts/u05-backfill-validaciones.ts`
+  - `src/__tests__/u-05-cierre-fuente.test.ts`
+  - `src/app/api/auth/registro/completar/route.ts`
+  - `src/app/api/auth/registro/route.ts`
+
 - **00:39** `7e50231` — docs(u-08): corregir supuesto de seed en CI + nota de reseed coordinado
   - `.claude/specs/v4-u-08-tests-e2e-multi-rol.md`
 
