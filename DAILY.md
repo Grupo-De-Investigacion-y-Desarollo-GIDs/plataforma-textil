@@ -3,6 +3,21 @@
 ## 2026-06-09
 
 ### Gerardo Breard
+- **23:53** `8aa40e5` — chore: sprint deuda tecnica batch-1 (F-01/02/03 + B-02/03/04)
+  - `.claude/DEUDA_TECNICA.md`
+  - `src/__tests__/ratelimit.test.ts`
+  - `src/__tests__/u-09-agregar-rol.test.ts`
+  - `src/app/(admin)/layout.tsx`
+  - `src/app/(auth)/registro/page.tsx`
+  - `src/app/(contenido)/layout.tsx`
+  - `src/app/(public)/cuenta/page.tsx`
+  - `src/app/(taller)/layout.tsx`
+  - `src/app/api/test-utils/reset-seed-state/route.ts`
+  - `src/app/api/usuarios/me/roles/route.ts`
+  - `src/compartido/lib/entidades-modo.ts`
+  - `src/compartido/lib/nivel.ts`
+  - `src/compartido/lib/ratelimit.ts`
+
 - **22:58** `99d8dbf` — test(t-04): estabilizar u-09 — esperar respuesta de /me/roles antes del redirect
   - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
 
