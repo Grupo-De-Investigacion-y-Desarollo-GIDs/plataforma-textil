@@ -14,6 +14,9 @@
   - `src/middleware.ts`
   - `tests/e2e/u-04-toggle-multi-rol.spec.ts`
 
+- **01:36** `4535222` — docs: mover D-01/D-02 a Resueltas (U-05 #410)
+  - `.claude/DEUDA_TECNICA.md`
+
 - **01:10** `1c0e5f1` — feat(u-05): migracion de datos multi-rol + cierre de fuente (refs D-01/D-02)
   - `.claude/specs/handover/DECISIONS.md`
   - `.claude/specs/v4-u-05-migracion-datos.md`
