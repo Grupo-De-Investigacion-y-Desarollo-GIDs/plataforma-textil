@@ -18,7 +18,9 @@ async function abrirMenuUsuario(page: import('@playwright/test').Page) {
 // idempotencia depende de que complete.
 test.afterEach(async ({ page }) => {
   try {
-    const res = await page.request.post('/api/test-utils/reset-seed-state')
+    // Resetea SOLO u09 (allowlist). No toca julieta → no contamina a u-04 que
+    // corre en paralelo (fullyParallel, 2 workers).
+    const res = await page.request.post('/api/test-utils/reset-seed-state?user=u09')
     if (!res.ok()) {
       console.warn(`Cleanup u-09: reset devolvió ${res.status()} (idempotencia comprometida)`)
     }
@@ -53,28 +55,20 @@ test('single-rol ve la card "Agregar rol" en /cuenta y crea su perfil de Marca',
 
   // QA #398 r3 — el redirect anterior es client-side (URL optimista). Forzamos una
   // navegación DURA a /marca: el middleware re-evalúa la cookie/JWT real. Si la
-  // sesión NO se refrescó (bug), el JWT sigue single-rol TALLER y el middleware manda
-  // a /unauthorized. Esto es lo que NO atrapaba el chequeo de URL optimista.
+  // sesión NO se refrescó, el JWT sigue single-rol TALLER y el middleware manda a
+  // /unauthorized. Esto es lo que NO atrapaba el chequeo de URL optimista.
   //
-  // El hard-nav corre carrera con el commit de la cookie JWT (Set-Cookie de
-  // session.update). NO es bug de prod —en uso real la cookie propaga a tiempo—,
-  // es timing del test: esperamos determinísticamente a que /api/auth/session ya
-  // refleje MARCA antes de forzar el round-trip al server. Sin esto el goto puede
-  // viajar con la cookie vieja (single-rol) y el middleware mandar a /unauthorized.
-  await expect
-    .poll(
-      async () => {
-        const res = await page.request.get('/api/auth/session')
-        const session = await res.json().catch(() => null)
-        return (session?.user?.roles as string[] | undefined) ?? []
-      },
-      { timeout: 15000 }
-    )
-    .toContain('MARCA')
-
-  await page.goto('/marca')
+  // OJO: NO pollear /api/auth/session acá. Con rolling JWT cada lectura de sesión
+  // re-emite Set-Cookie; un puñado de GETs concurrentes alrededor del update()
+  // pisa la cookie actualizada con el estado previo (last-write-wins → la cookie
+  // vuelve a single-rol). Ver deuda B-05. Reproducir eso es justo lo que rompía el
+  // test. En cambio re-navegamos hasta que la cookie esté propagada: UNA lectura
+  // por intento, sin floodear la sesión.
+  await expect(async () => {
+    await page.goto('/marca')
+    await expect(page).not.toHaveURL(/unauthorized/)
+  }).toPass({ timeout: 15000 })
   await expect(page).toHaveURL(/\/marca/)
-  await expect(page).not.toHaveURL(/unauthorized/)
 
   // Ahora es multi-rol: el toggle SÍ aparece y /cuenta ya no ofrece sumar rol.
   await abrirMenuUsuario(page)

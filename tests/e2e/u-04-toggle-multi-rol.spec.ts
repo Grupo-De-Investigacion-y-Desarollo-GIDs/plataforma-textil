@@ -5,6 +5,12 @@ import { loginAs } from './_helpers/auth-multirol'
 // U-04: toggle "Operando como…" estilo Airbnb. Solo visible para multi-rol.
 // El usuario `dual` (Julieta Benítez) tiene roles [TALLER, MARCA], activeMode TALLER.
 
+// SERIAL: los 4 tests comparten un único usuario mutable (julieta) y mutan su
+// activeMode en DB. Bajo fullyParallel se pisarían entre sí (un test la pone en
+// MARCA mientras otro espera TALLER). En serie + afterEach que la resetea, cada
+// test arranca del estado de seed limpio.
+test.describe.configure({ mode: 'serial' })
+
 async function abrirMenuUsuario(page: import('@playwright/test').Page) {
   await page.getByRole('button', { name: 'Menú de usuario' }).click()
 }
@@ -12,11 +18,12 @@ async function abrirMenuUsuario(page: import('@playwright/test').Page) {
 // T-05: el test de persistencia muta el activeMode de julieta a MARCA en DB y no
 // lo restaura. Como DEV persiste entre runs, sin este cleanup el siguiente login de
 // julieta arranca en /marca y rompe las aserciones que esperan /taller. El afterEach
-// la devuelve a su estado de seed (activeMode TALLER) via endpoint SOLO-CI sin
-// parámetros (reset-seed-state). Best-effort: corre SIEMPRE (try/catch).
+// la devuelve a su estado de seed (activeMode TALLER) via endpoint SOLO-CI.
+// Resetea SOLO julieta (allowlist) → no toca u09 ni contamina a u-09 en paralelo.
+// Best-effort: corre SIEMPRE (try/catch).
 test.afterEach(async ({ page }) => {
   try {
-    const res = await page.request.post('/api/test-utils/reset-seed-state')
+    const res = await page.request.post('/api/test-utils/reset-seed-state?user=julieta')
     if (!res.ok()) {
       console.warn(`Cleanup u-04: reset devolvió ${res.status()} (idempotencia comprometida)`)
     }

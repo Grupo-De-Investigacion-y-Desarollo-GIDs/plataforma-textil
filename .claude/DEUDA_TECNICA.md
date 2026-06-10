@@ -104,12 +104,40 @@ y prioridad sugerida.
   del guard = ruta existe; HTML = ruta no matcheada).
 - **Nota:** el guard de prod usa solo `VERCEL_ENV === 'production'` (NO
   NODE_ENV, que es SIEMPRE 'production' en deploys Vercel incl. preview).
-  Endpoint generalizado: reset-u09 → reset-seed-state (resetea u09.test +
-  julieta a estado de seed, sin parámetros del request).
+  Endpoint: reset-seed-state con allowlist `?user=u09|julieta` (enum cerrado,
+  clave desconocida → 400). Cada spec resetea SOLO su usuario → sin
+  contaminación cruzada entre workers paralelos. El `user` NO es un userId
+  arbitrario (mapea a un email hardcodeado), preserva la propiedad de seguridad.
 - **Prioridad:** baja-media
 - **Solución:** guard dedicado para endpoints mutantes de test,
   separado del bypass de rate-limit
 - **Estimación:** 30 min
+
+### B-05: Race de clobbering de cookie en rolling JWT session
+- **Detectado en:** Diagnóstico de fallos e2e u-09 en T-04 (2026-06-09)
+- **Descripción:** con strategy JWT + rolling session (updateAge 24h), cada
+  lectura de `/api/auth/session` re-emite `Set-Cookie` re-encriptando el token
+  que la request transportó. Lecturas concurrentes alrededor de un `update()`
+  pueden pisar la cookie actualizada con el estado previo (last-write-wins en el
+  cookie jar del browser): una lectura que arrancó con la cookie pre-update la
+  reescribe DESPUÉS del update → la cookie vuelve a single-rol. Un usuario que
+  agrega rol y sufre el race puede recibir `/unauthorized` transitorio. El
+  callback `jwt` es pass-through en lecturas (NO reconstruye desde DB), así que
+  el estado viejo sale de la cookie en vuelo, no del servidor → es patrón JWT
+  normal, NO bug de config.
+- **Severidad:** MEDIA. Re-login restaura (el `authorize` de Credentials lee
+  `roles` de la DB → re-acuña multi-rol). El usuario NO queda permanentemente
+  atascado, pero la cookie no se auto-cura sin acción (hard-nav/esperar no
+  ayudan; `update()` por el toggle manda solo activeMode, no roles; salida =
+  cerrar sesión y volver a entrar).
+- **Probabilidad:** BAJA. `next-auth/react` deduplica los `useSession`; sin
+  `refetchInterval` ni multi-tab agresivo la ventana es chica. El test lo
+  magnificó con `expect.poll` (15 GETs solapados).
+- **Hardening opcional (NO ahora):** (a) respetar `updateAge` para no re-emitir
+  `Set-Cookie` en lecturas planas, o (b) mover el alta de rol a revalidación
+  server-side en vez de `update()` optimista client-side.
+- **Prioridad:** media-baja (no bloqueante, salida disponible)
+- **Estimación:** 2-4h el hardening (no es one-liner)
 
 ## Datos
 

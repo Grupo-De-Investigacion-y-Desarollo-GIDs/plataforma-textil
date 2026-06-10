@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { isCiBypass } from '@/compartido/lib/ratelimit'
 
-// Endpoint SOLO-CI — resetea los usuarios MUTABLES del seed a su estado inicial.
+// Endpoint SOLO-CI — resetea UN usuario mutable del seed a su estado inicial.
 //
 // Varios e2e del bloque U mutan usuarios de forma permanente en DEV y, sin
 // cleanup, la 2da corrida falla por el residuo (deuda T-05):
@@ -13,17 +13,26 @@ import { isCiBypass } from '@/compartido/lib/ratelimit'
 //     no lo restaura. Como DEV persiste entre runs, el siguiente login de
 //     julieta arranca en /marca y rompe las aserciones que esperan /taller.
 //
-// Por eso el reset es SIN PARÁMETROS: no recibe userId/email del request,
-// resetea un conjunto fijo y auditado de usuarios. Así no se puede abusar para
-// mutar una cuenta arbitraria (propiedad de seguridad: el llamante no elige
-// el objetivo).
+// SEGURIDAD: el target NO es un userId/email arbitrario del request, sino una
+// CLAVE de un allowlist cerrado (?user=u09|julieta) que mapea a un email
+// hardcodeado. Una clave desconocida → 400 (no resetea nada). El llamante no
+// puede elegir una cuenta arbitraria como objetivo.
+//
+// AISLAMIENTO: cada spec resetea SOLO su propio usuario. Con e2e en
+// fullyParallel (2 workers), un reset que tocara a AMBOS usuarios haría que el
+// afterEach de u-04 pisara a u09 en pleno test de u-09 (y viceversa) → falsos
+// fallos. Por eso el reset es por-usuario.
 //
 // Doble guard: prod explícito + isCiBypass (CI_BYPASS_TOKEN + header x-ci-bypass
 // + VERCEL_ENV != production). Sin bypass válido devuelve 404 (no revela la ruta).
 // El runner de e2e no tiene DATABASE_URL (no hay acceso directo a DB), por eso el
 // cleanup va por API server-side.
-const U09_EMAIL = 'u09.test@pdt.org.ar'
-const JULIETA_EMAIL = 'julieta.benitez@pdt.org.ar'
+const ALLOWLIST = {
+  u09: 'u09.test@pdt.org.ar',
+  julieta: 'julieta.benitez@pdt.org.ar',
+} as const
+
+type UserKey = keyof typeof ALLOWLIST
 
 export async function POST(req: NextRequest) {
   // Defense-in-depth: guard de prod explícito ANTES de isCiBypass. Si alguien
@@ -40,14 +49,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
 
-  const reset: string[] = []
+  const key = req.nextUrl.searchParams.get('user')
+  if (!key || !(key in ALLOWLIST)) {
+    return NextResponse.json(
+      { error: 'Bad request', detail: 'user debe ser uno de: u09, julieta' },
+      { status: 400 }
+    )
+  }
+  const email = ALLOWLIST[key as UserKey]
 
-  // u09.test → single-rol TALLER (estado del seed, pre-U09).
-  const u09 = await prisma.user.findUnique({
-    where: { email: U09_EMAIL },
-    select: { id: true, marca: { select: { id: true } } },
-  })
-  if (u09) {
+  if (key === 'u09') {
+    // u09.test → single-rol TALLER (estado del seed, pre-U09).
+    const u09 = await prisma.user.findUnique({
+      where: { email },
+      select: { id: true, marca: { select: { id: true } } },
+    })
+    if (!u09) return NextResponse.json({ ok: true, noop: true, user: key })
     await prisma.$transaction(async (tx) => {
       // La MARCA creada por el test es fresca (sin pedidos/notas); borrarla quita
       // el guard yaPoseeEntidad para que la próxima corrida vuelva a ver "Agregar rol".
@@ -61,23 +78,20 @@ export async function POST(req: NextRequest) {
         data: { roles: { set: [] }, activeMode: null, role: 'TALLER' },
       })
     })
-    reset.push('u09.test')
+    return NextResponse.json({ ok: true, user: key })
   }
 
-  // julieta.benitez → dual con activeMode TALLER (estado del seed). NO se tocan
+  // key === 'julieta' → dual con activeMode TALLER (estado del seed). NO se tocan
   // sus entidades (Taller La Hormiga + Marca Benítez son parte de su seed); solo
   // se restaura el activeMode/role que u-04 muta. roles queda [TALLER, MARCA].
   const julieta = await prisma.user.findUnique({
-    where: { email: JULIETA_EMAIL },
+    where: { email },
     select: { id: true },
   })
-  if (julieta) {
-    await prisma.user.update({
-      where: { id: julieta.id },
-      data: { roles: { set: ['TALLER', 'MARCA'] }, activeMode: 'TALLER', role: 'TALLER' },
-    })
-    reset.push('julieta.benitez')
-  }
-
-  return NextResponse.json({ ok: true, reset })
+  if (!julieta) return NextResponse.json({ ok: true, noop: true, user: key })
+  await prisma.user.update({
+    where: { id: julieta.id },
+    data: { roles: { set: ['TALLER', 'MARCA'] }, activeMode: 'TALLER', role: 'TALLER' },
+  })
+  return NextResponse.json({ ok: true, user: key })
 }
