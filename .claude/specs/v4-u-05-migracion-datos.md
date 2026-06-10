@@ -224,17 +224,17 @@ Ninguna nueva. `tsx`, `@prisma/client`, `dotenv` ya están.
 
 ## 9. Criterios de aceptación
 
-- [ ] Build de producción pasa (`npm run build`) — incluye `migrate deploy` con la migración nueva.
-- [ ] Tests unit + E2E existentes verdes.
-- [ ] Sin warnings nuevos de TS/ESLint.
-- [ ] Migración SQL idempotente verificada (correr dev 2×: segunda = 0 filas afectadas).
-- [ ] Post-condición en dev: **0** users con `roles=[]`, **0** con `activeMode=null`, invariante `role==activeMode` y `role ∈ roles` para el 100%.
-- [ ] `registro`, `registro/completar` y `seed` setean `roles`/`activeMode` (tests unit lo cubren).
-- [ ] `db:seed` produce un dataset 100% sano (re-seed no reintroduce `[]`/null).
-- [ ] Script de auditoría: `--dry-run` no escribe; `--verify` pasa post-migración.
-- [ ] Paso D (validaciones): dry-run de prod reportado; aplicado solo tras mergear U-09; talleres reportados quedan con checklist completo.
-- [ ] Handover actualizado.
-- [ ] PR mergeado a develop + merge a main.
+- [~] Build de producción pasa (`npm run build`) — incluye `migrate deploy` con la migración nueva. → lo valida CI/Vercel en el PR.
+- [~] Tests unit + E2E existentes verdes. → lo valida CI (toolchain local roto, T-01).
+- [~] Sin warnings nuevos de TS/ESLint. → lo valida CI.
+- [x] Migración SQL idempotente verificada (correr dev 2×: segunda = 0 filas afectadas). → 1ª: 9+9 filas; 2ª: 0+0 (2026-06-10).
+- [x] Post-condición en dev: **0** users con `roles=[]`, **0** con `activeMode=null`, invariante OK 100%. → `u05-audit --verify` OK.
+- [x] `registro`, `registro/completar` y `seed` setean `roles`/`activeMode`. → tests unit (registro/completar) en `u-05-cierre-fuente.test.ts`; seed = normalización post-seed.
+- [~] `db:seed` produce un dataset 100% sano (re-seed no reintroduce `[]`/null). → bloque de seed agregado; NO re-ejecutado (reseed requiere OK explícito de Gerardo + aviso a Sergio).
+- [x] Script de auditoría: `--dry-run` no escribe; `--verify` pasa post-migración. → verificado en DEV.
+- [x] Paso D (validaciones): dry-run reportado; aplicado en DEV (2 talleres, 14 validaciones); idempotente. PROD = fase posterior gated.
+- [x] Handover actualizado. → `DECISIONS.md` 2026-06-10.
+- [ ] PR mergeado a develop + merge a main. → pendiente (QA de Sergio).
 
 ---
 

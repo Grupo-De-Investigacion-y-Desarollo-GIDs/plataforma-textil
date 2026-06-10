@@ -54,7 +54,10 @@ export async function POST(req: NextRequest) {
     })
     await tx.user.update({
       where: { id: user.id },
-      data: { role, registroCompleto: true },
+      // U-05: el user completa su primera entidad (el guard de arriba garantiza que
+      // no tenía taller/marca → es single-rol). Sincronizamos roles=[role]/activeMode=role
+      // junto al role para no regenerar el dato desincronizado. Ver spec v4-u-05.
+      data: { role, roles: [role], activeMode: role, registroCompleto: true },
     })
   })
 

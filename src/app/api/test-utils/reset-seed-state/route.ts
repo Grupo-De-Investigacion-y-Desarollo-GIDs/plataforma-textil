@@ -72,11 +72,13 @@ export async function POST(req: NextRequest) {
       if (u09.marca) {
         await tx.marca.delete({ where: { id: u09.marca.id } })
       }
-      // Estado del seed: single-rol (roles=[] normalizado a [role] por
-      // rolesEfectivos), activeMode null, role TALLER.
+      // Estado del seed POST-U-05: single-rol TALLER con el invariante sincronizado
+      // en DB (roles=[TALLER], activeMode=TALLER), NO roles=[]/null. U-05 cerró la
+      // fuente: el seed ya no produce roles=[] para u09, así que el reset tampoco debe
+      // re-introducir ese estado (sigue siendo single-rol → "Agregar rol" reaparece).
       await tx.user.update({
         where: { id: u09.id },
-        data: { roles: { set: [] }, activeMode: null, role: 'TALLER' },
+        data: { roles: { set: ['TALLER'] }, activeMode: 'TALLER', role: 'TALLER' },
       })
     })
     return NextResponse.json({ ok: true, user: key })
