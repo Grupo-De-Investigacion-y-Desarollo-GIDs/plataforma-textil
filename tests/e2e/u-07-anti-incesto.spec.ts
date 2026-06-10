@@ -70,7 +70,8 @@ test('cotizar un pedido propio devuelve 403 AUTO_COTIZACION', async ({ page }) =
   })
   expect(res.status()).toBe(403)
   const body = await res.json()
-  expect(body.code).toBe('AUTO_COTIZACION')
+  // errorResponse() envuelve como { error: { code, message, digest } }.
+  expect(body.error?.code).toBe('AUTO_COTIZACION')
 })
 
 test('invitar al taller propio devuelve 400 anti-incesto', async ({ page }) => {

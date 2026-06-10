@@ -18,7 +18,10 @@ test('dual entra a /taller (sin redirect a login/unauthorized)', async ({ page }
   await page.goto('/taller')
   await expect(page).toHaveURL(/\/taller/)
   await expect(page).not.toHaveURL(/unauthorized|login/)
-  await expect(page.locator('main')).toBeVisible()
+  // .first(): React 19 streaming SSR deja brevemente un segundo <main> hidden
+  // (copia de streaming). El primero en el DOM es el visible. La aserción de
+  // gating real son las URLs de arriba; esto solo confirma que el área renderizó.
+  await expect(page.locator('main').first()).toBeVisible()
 })
 
 test('dual entra a /marca (sin redirect a login/unauthorized)', async ({ page }) => {
@@ -28,7 +31,8 @@ test('dual entra a /marca (sin redirect a login/unauthorized)', async ({ page })
   await page.goto('/marca')
   await expect(page).toHaveURL(/\/marca/)
   await expect(page).not.toHaveURL(/unauthorized|login/)
-  await expect(page.locator('main')).toBeVisible()
+  // .first(): ver nota de streaming SSR en el test de /taller.
+  await expect(page.locator('main').first()).toBeVisible()
 })
 
 test('single-rol (taller) entra a /taller pero /marca queda bloqueado', async ({ page }) => {
