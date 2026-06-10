@@ -73,28 +73,7 @@ y prioridad sugerida.
 
 ## Datos
 
-### D-01: Cuentas con role pero sin entidad asociada
-- **Detectado en:** Discovery U-05 + QA #398 (cuentas reales)
-- **Descripción:** users con User.role=TALLER pero sin Taller asociado
-  en DB. Detectado al menos:
-  - srodriguezunq@gmail.com (cuenta real abandonada en registro)
-- **Impacto:** si la persona se loguea, su experiencia está rota
-  (dashboard sin entidad)
-- **Prioridad:** media (afecta a personas reales)
-- **Plan:** U-05 los maneja con opción D (loggear y dejar para revisión
-  manual)
-- **Estimación:** depende de qué se decida para cada caso
-
-### D-02: Talleres sin Validacion (sin checklist)
-- **Detectado en:** Discovery U-05
-- **Descripción:** algunos talleres pre-existen en DB sin Validacion
-  asociada (checklist de formalización). Causa: bug pre-U-09 en
-  /registro/completar que NO creaba Validacion NO_INICIADO.
-- **Impacto:** los talleres no aparecen con su checklist hasta tener
-  Validacion creada
-- **Plan:** U-05 incluye script tsx para regenerar las faltantes.
-  Dry-run primero.
-- **Estimación:** parte de U-05
+_Sin items abiertos. D-01 y D-02 resueltos en U-05 (#410) — ver sección "Resueltas"._
 
 ## Testing / CI
 
@@ -204,6 +183,25 @@ y prioridad sugerida.
 - Items resueltos: mover a sección "Resueltas" con SHA o PR de fix
 
 ## Resueltas
+
+### D-01: Cuentas con role pero sin entidad asociada — RESUELTA
+- **Detectado en:** Discovery U-05 + QA #398 (cuentas reales)
+- **Resuelta en:** U-05 (#410, `ba23b17`, 2026-06-10)
+- **Fix:** opción D (decisión registrada) — la migración SQL las normaliza igual
+  (`roles=[role]`, `activeMode=role`), SIN inventarles entidad. La cuenta abandonada
+  (srodriguezunq) queda single-rol coherente; su dashboard vacío por falta de entidad
+  es ortogonal y se deja para revisión manual. Cierre de fuente (registro/completar/seed)
+  evita nuevos casos. En DEV no aparecía (10 users del seed); aplica al universo prod.
+
+### D-02: Talleres sin Validacion (sin checklist) — RESUELTA
+- **Detectado en:** Discovery U-05
+- **Resuelta en:** U-05 (#410, `ba23b17`, 2026-06-10)
+- **Fix:** (a) `scripts/u05-backfill-validaciones.ts` (dry-run/apply, guard anti-PROD)
+  regenera las `Validacion NO_INICIADO` faltantes por taller — aplicado en DEV (2
+  talleres, 14 validaciones). (b) Cierre de fuente en el seed: el loop post-seed ahora
+  itera TODOS los talleres usando `buildValidacionesFaltantes` (fuente única compartida
+  con el backfill), así U09 y La Hormiga ya no quedan sin checklist tras un reseed.
+  Fase PROD del backfill: paso manual gated (`ALLOW_PROD=1 ... --apply`) tras dimensionar.
 
 ### F-01: Card de perfil muestra Formalización > 100% — RESUELTA
 - **Detectado en:** QA r2 de #398 (U-09) por Sergio, con Carlos Mendoza
