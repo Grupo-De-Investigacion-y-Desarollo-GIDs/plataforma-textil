@@ -9,6 +9,12 @@ import {
   errorResponse,
 } from '@/compartido/lib/api-errors'
 import { rolesEfectivos } from '@/compartido/lib/roles'
+import {
+  decodeSessionToken,
+  setSessionCookie,
+  mergeSessionDelta,
+  SESSION_COOKIE_NAME,
+} from '@/compartido/lib/session-cookie'
 
 const MODOS_VALIDOS: UserRole[] = ['TALLER', 'MARCA', 'ESTADO', 'ADMIN', 'CONTENIDO']
 
@@ -51,5 +57,14 @@ export const PATCH = apiHandler(async (req: NextRequest) => {
     data: { activeMode: modoSolicitado, role: modoSolicitado },
   })
 
-  return NextResponse.json({ activeMode: modoSolicitado })
+  // B-05: setear la cookie de sesion actualizada server-side, en la MISMA response,
+  // para que el nuevo activeMode no dependa del update() client-side (que una lectura
+  // concurrente del rolling JWT podia pisar). El update() del cliente queda como
+  // redundancia (propaga al SessionProvider/broadcast multi-tab).
+  const res = NextResponse.json({ activeMode: modoSolicitado })
+  const tokenActual = await decodeSessionToken(req.cookies.get(SESSION_COOKIE_NAME)?.value)
+  if (tokenActual) {
+    await setSessionCookie(res, mergeSessionDelta(tokenActual, { activeMode: modoSolicitado }))
+  }
+  return res
 })

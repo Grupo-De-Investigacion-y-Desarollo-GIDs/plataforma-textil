@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { encode } from 'next-auth/jwt'
+import { setSessionCookie } from '@/compartido/lib/session-cookie'
 
 export async function GET(
   req: NextRequest,
@@ -32,37 +32,17 @@ export async function GET(
     data: { usadoEn: new Date() },
   })
 
-  // Nombre de cookie segun ambiente (debe coincidir con auth.config.ts)
-  const isProduction = process.env.NODE_ENV === 'production'
-  const cookieName = isProduction
-    ? '__Secure-authjs.session-token'
-    : 'authjs.session-token'
-
-  // Crear sesion NextAuth manualmente
-  // El salt DEBE coincidir con el nombre de la cookie para que decode() funcione
-  const sessionToken = await encode({
-    token: {
-      sub: magicLink.user.id,
-      email: magicLink.user.email,
-      name: magicLink.user.name,
-      role: (magicLink.user as { role?: string }).role,
-      id: magicLink.user.id,
-      registroCompleto: (magicLink.user as { registroCompleto?: boolean }).registroCompleto ?? true,
-    },
-    secret: process.env.NEXTAUTH_SECRET!,
-    salt: cookieName,
-  })
-
-  // Setear cookie de sesion y redirigir al destino
+  // Crear sesion NextAuth manualmente y setear la cookie via el helper unico
+  // (mismo encode + salt = nombre de cookie que usa el login normal). Ver
+  // session-cookie.ts.
   const response = NextResponse.redirect(new URL(magicLink.destino, req.url))
-  response.cookies.set({
-    name: cookieName,
-    value: sessionToken,
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 7 * 24 * 60 * 60, // 7 dias (igual que sesion normal)
+  await setSessionCookie(response, {
+    sub: magicLink.user.id,
+    email: magicLink.user.email,
+    name: magicLink.user.name,
+    role: (magicLink.user as { role?: string }).role,
+    id: magicLink.user.id,
+    registroCompleto: (magicLink.user as { registroCompleto?: boolean }).registroCompleto ?? true,
   })
 
   return response

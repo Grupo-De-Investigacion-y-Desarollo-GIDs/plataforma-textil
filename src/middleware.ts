@@ -1,15 +1,26 @@
-import NextAuth from 'next-auth'
-import { NextResponse } from 'next/server'
-import authConfig from '@/compartido/lib/auth.config'
+import { NextResponse, type NextRequest } from 'next/server'
 import { tieneAlgunRol, modoActivo, type FuenteRoles } from '@/compartido/lib/roles'
+import { decodeSessionToken, SESSION_COOKIE_NAME } from '@/compartido/lib/session-cookie'
 
-const { auth } = NextAuth(authConfig)
-
-export default auth((req) => {
+// B-05: el middleware lee el JWT READ-ONLY (decode), sin re-emitir Set-Cookie.
+// Antes envolvía con el wrapper `auth()`, que bajo strategy jwt re-firma y re-emite
+// la cookie en CADA navegación → una navegación con la cookie vieja pisaba la
+// actualización concurrente de un cambio de modo/rol (last-write-wins en el jar).
+// Ahora la escritura autoritativa de la cookie la hacen los endpoints server-side
+// (active-mode, me/roles); acá SOLO leemos. El sliding-expiry queda a cargo del
+// useSession (SessionProvider en el root layout + Header/FeedbackWidget global). El
+// gating es BYTE-IDÉNTICO al anterior: solo cambia de dónde sale la identidad.
+export default async function middleware(req: NextRequest) {
   const { nextUrl } = req
-  const isLoggedIn = !!req.auth
+
+  // Lectura pura del token desde la cookie. Edge-safe (decode usa jose). null si
+  // falta/expiró/es inválido → se trata como no logueado (igual que antes).
+  const token = await decodeSessionToken(req.cookies.get(SESSION_COOKIE_NAME)?.value)
+  const isLoggedIn = !!token
   // U-03: gating por MEMBRESÍA en roles[] (decisión D1/A), no por el escalar.
-  const sessionUser = req.auth?.user as FuenteRoles | undefined
+  const sessionUser = (token
+    ? { role: token.role, roles: token.roles, activeMode: token.activeMode }
+    : undefined) as FuenteRoles | undefined
 
   // Rutas públicas que no requieren autenticación
   const publicRoutes = [
@@ -68,7 +79,7 @@ export default auth((req) => {
 
   // Usuarios con registro incompleto (OAuth/magic link sin completar)
   const pathname = nextUrl.pathname
-  const registroCompleto = (req.auth?.user as { registroCompleto?: boolean })?.registroCompleto
+  const registroCompleto = (token as { registroCompleto?: boolean } | null)?.registroCompleto
   if (isLoggedIn && registroCompleto === false) {
     if (pathname === '/registro/completar' || pathname.startsWith('/api/')) {
       return NextResponse.next()
@@ -149,7 +160,7 @@ export default auth((req) => {
   }
 
   return NextResponse.next()
-})
+}
 
 export const config = {
   matcher: [

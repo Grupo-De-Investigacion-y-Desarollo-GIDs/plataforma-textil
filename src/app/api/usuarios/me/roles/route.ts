@@ -10,6 +10,12 @@ import {
   errorResponse,
 } from '@/compartido/lib/api-errors'
 import { rolesEfectivos } from '@/compartido/lib/roles'
+import {
+  decodeSessionToken,
+  setSessionCookie,
+  mergeSessionDelta,
+  SESSION_COOKIE_NAME,
+} from '@/compartido/lib/session-cookie'
 import { crearEntidadParaRol } from '@/compartido/lib/crear-entidad-rol'
 import {
   consultarPadron,
@@ -135,5 +141,14 @@ export const POST = apiHandler(async (req: NextRequest) => {
 
   logActividad('ROL_AGREGADO', user.id, { rol, entidadId: entidad.id })
 
-  return NextResponse.json({ rol, entidadId: entidad.id, roles: nuevosRoles, activeMode: rol })
+  // B-05: setear la cookie de sesion expandida server-side, en la MISMA response.
+  // Asi el roles[] nuevo + activeMode viajan en la cookie sin depender del update()
+  // client-side (que una lectura concurrente del rolling JWT podia pisar, dejando el
+  // JWT en single-rol y mandando a /unauthorized). El update() cliente queda redundante.
+  const res = NextResponse.json({ rol, entidadId: entidad.id, roles: nuevosRoles, activeMode: rol })
+  const tokenActual = await decodeSessionToken(req.cookies.get(SESSION_COOKIE_NAME)?.value)
+  if (tokenActual) {
+    await setSessionCookie(res, mergeSessionDelta(tokenActual, { roles: [rol], activeMode: rol }))
+  }
+  return res
 })

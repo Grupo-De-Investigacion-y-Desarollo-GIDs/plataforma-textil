@@ -58,17 +58,12 @@ test('cambiar a Marca redirige a /marca; volver a Taller redirige a /taller', as
   await expect(page).toHaveURL(/\/taller/)
 })
 
-// BLOQUEADO POR B-05 (clobbering de cookie en rolling JWT). El flujo es legítimo
-// —multi-rol cambia a Marca y navega a /— pero la cookie de sesión puede quedar
-// pisada en activeMode=TALLER aunque la DB tenga MARCA: una lectura de sesión
-// concurrente (rolling JWT re-emite Set-Cookie en cada GET) sobrescribe la cookie
-// actualizada con el estado previo. El hard-nav lee la cookie pisada → cae en
-// /taller. Determinístico 3/3 en CI (ver DEUDA_TECNICA.md B-05). page.tsx redirige
-// por el activeMode de la COOKIE, no de la DB, así que re-navegar NO recupera.
-// Des-fixmear cuando B-05 se arregle (spec propio: rediseño de sesión / no re-emitir
-// Set-Cookie en lecturas planas / set de cookie server-side). ESTE test es la
-// validación del fix de B-05.
-test.fixme('el modo activo persiste: tras cambiar a Marca, ir a / redirige a /marca', async ({ page }) => {
+// FIX B-05 (PR fix(b-05)): el clobbering de cookie en rolling JWT está resuelto.
+// El middleware ahora lee el JWT read-only (no re-emite Set-Cookie en cada nav) y los
+// endpoints de modo/rol setean la cookie actualizada server-side en la misma response,
+// así que ninguna lectura concurrente la pisa. ESTE test es la validación del fix:
+// cambiar a Marca y hard-navegar a / debe redirigir a /marca (la cookie refleja la DB).
+test('el modo activo persiste: tras cambiar a Marca, ir a / redirige a /marca', async ({ page }) => {
   await ensureNotProduction(page)
   await loginAs(page, 'dual')
 
@@ -79,6 +74,38 @@ test.fixme('el modo activo persiste: tras cambiar a Marca, ir a / redirige a /ma
   // El middleware redirige la raíz al dashboard del activeMode persistido en DB.
   await page.goto('/')
   await expect(page).toHaveURL(/\/marca/)
+})
+
+// FIX B-05 — validación MULTI-TAB (decisión 4). Dos pestañas comparten el cookie jar.
+// Tab 1 cambia a Marca; tab 2 venía con la sesión montada haciendo lecturas/navegación
+// (la presión concurrente que ANTES pisaba la cookie: el middleware re-emitía el token
+// viejo en cada nav). Con el middleware read-only + cookie server-side, la cookie
+// compartida refleja MARCA y ninguna lectura de tab 2 la revierte. SERIAL + mismo
+// afterEach de reset(julieta) que el resto del archivo.
+test('multi-tab: cambiar a Marca en una pestaña persiste pese a lecturas de otra', async ({ page }) => {
+  await ensureNotProduction(page)
+  await loginAs(page, 'dual')
+  await expect(page).toHaveURL(/\/taller/)
+
+  // Tab 2: misma sesión (cookie jar compartido). Monta la app y navega → lecturas.
+  const tab2 = await page.context().newPage()
+  await tab2.goto('/taller')
+  await expect(tab2).toHaveURL(/\/taller/)
+
+  // Tab 1: cambiar a Marca. La cookie se setea server-side en la response del toggle.
+  await abrirMenuUsuario(page)
+  await page.getByTestId('modo-toggle-option-MARCA').click()
+  await expect(page).toHaveURL(/\/marca/)
+
+  // Tab 2: hard-nav a / — la cookie compartida ya refleja MARCA → cae en /marca.
+  await tab2.goto('/')
+  await expect(tab2).toHaveURL(/\/marca/)
+
+  // Tab 1: hard-nav a / — persiste en /marca (no fue pisada por las lecturas de tab 2).
+  await page.goto('/')
+  await expect(page).toHaveURL(/\/marca/)
+
+  await tab2.close()
 })
 
 test('single-role NO ve el toggle de modo', async ({ page }) => {
