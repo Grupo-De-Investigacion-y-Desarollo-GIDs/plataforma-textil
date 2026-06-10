@@ -3,6 +3,17 @@
 ## 2026-06-10
 
 ### Gerardo Breard
+- **02:14** `2ed80d2` — fix(b-05): race de clobbering de cookie en rolling JWT session
+  - `.claude/specs/v4-b-05-fix-race-sesion.md`
+  - `src/__tests__/session-cookie.test.ts`
+  - `src/app/api/usuarios/me/active-mode/route.ts`
+  - `src/app/api/usuarios/me/roles/route.ts`
+  - `src/app/n/[token]/route.ts`
+  - `src/compartido/lib/auth.config.ts`
+  - `src/compartido/lib/session-cookie.ts`
+  - `src/middleware.ts`
+  - `tests/e2e/u-04-toggle-multi-rol.spec.ts`
+
 - **01:10** `1c0e5f1` — feat(u-05): migracion de datos multi-rol + cierre de fuente (refs D-01/D-02)
   - `.claude/specs/handover/DECISIONS.md`
   - `.claude/specs/v4-u-05-migracion-datos.md`
