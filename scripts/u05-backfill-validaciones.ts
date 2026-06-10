@@ -23,6 +23,7 @@
 //   ALLOW_PROD=1 npx tsx scripts/u05-backfill-validaciones.ts --apply    # aplica en prod (deliberado)
 
 import { PrismaClient } from '@prisma/client'
+import { buildValidacionesFaltantes } from '../prisma/validaciones-helper'
 
 const PROD_REF = 'nefbhacmjrzynnhvgfnl' // ref de prod, ver scripts/check-db-ref.ts
 const dbUrl = process.env.DATABASE_URL ?? ''
@@ -51,23 +52,16 @@ async function main() {
   let validacionesCreadas = 0
 
   for (const t of talleres) {
-    const existentes = new Set(t.validaciones.map((v) => v.tipo))
-    const faltantes = tiposActivos.filter((td) => !existentes.has(td.nombre)) // dedupe por (tallerId, tipo)
+    // Misma definición que el seed (buildValidacionesFaltantes): dedupe por (tallerId, tipo).
+    const faltantes = buildValidacionesFaltantes(tiposActivos, new Set(t.validaciones.map((v) => v.tipo)), t.id)
     if (!faltantes.length) continue
 
     talleresTocados++
     validacionesCreadas += faltantes.length
-    console.log(`  ${t.nombre} (${t.id}): faltan ${faltantes.length} → [${faltantes.map((f) => f.nombre).join(', ')}]`)
+    console.log(`  ${t.nombre} (${t.id}): faltan ${faltantes.length} → [${faltantes.map((f) => f.tipo).join(', ')}]`)
 
     if (apply) {
-      await prisma.validacion.createMany({
-        data: faltantes.map((td) => ({
-          tallerId: t.id,
-          tipo: td.nombre,
-          tipoDocumentoId: td.id,
-          estado: 'NO_INICIADO' as const,
-        })),
-      })
+      await prisma.validacion.createMany({ data: faltantes })
     }
   }
 

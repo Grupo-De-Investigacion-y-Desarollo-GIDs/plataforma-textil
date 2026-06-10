@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
+import { buildValidacionesFaltantes } from './validaciones-helper'
 
 const prisma = new PrismaClient()
 
@@ -524,29 +525,6 @@ async function main() {
 
   console.log('  ✓ Taller ORO: Corte Sur SRL (Avellaneda)')
 
-  // Post-seed: garantizar que cada taller tenga las 7 validaciones.
-  for (const taller of [tallerBronce, tallerPlata, tallerOro]) {
-    const existentes = await prisma.validacion.findMany({
-      where: { tallerId: taller.id },
-      select: { tipo: true },
-    })
-    const nombresExistentes = new Set(existentes.map(v => v.tipo))
-    const faltantes = tiposDoc.filter(td => !nombresExistentes.has(td.nombre))
-
-    if (faltantes.length > 0) {
-      await prisma.validacion.createMany({
-        data: faltantes.map(td => ({
-          tallerId: taller.id,
-          tipo: td.nombre,
-          tipoDocumentoId: td.id,
-          estado: 'NO_INICIADO' as const,
-        })),
-      })
-    }
-  }
-
-  console.log('  ✓ Post-seed: cada taller tiene 7 validaciones')
-
   // ============================================
   // PLANTILLA POR CATEGORÍA DE OFICIO TEXTIL
   // ============================================
@@ -640,6 +618,26 @@ async function main() {
   })
 
   console.log('  ✓ 2 marcas creadas (+ taller/marca del user multi-rol)')
+
+  // U-05 / D-02: garantizar el checklist de validaciones de TODOS los talleres.
+  // Va acá (tras crear La Hormiga y Taller U09, además de bronce/plata/oro) para que
+  // ningún taller del seed quede violando el invariante "1 Validacion NO_INICIADO por
+  // TipoDocumento.activo". Antes el loop solo cubría bronce/plata/oro → U09 y La Hormiga
+  // quedaban sin checklist y obligaban a un backfill manual post-reseed (deuda D-02).
+  // Reusa buildValidacionesFaltantes (misma definición que u05-backfill-validaciones.ts).
+  // Idempotente: solo crea las faltantes (los 3 talleres con checklist rico no se duplican).
+  const tiposActivos = tiposDoc // tiposDoc = tipos activos seedeados arriba
+  for (const taller of await prisma.taller.findMany({ select: { id: true } })) {
+    const existentes = await prisma.validacion.findMany({
+      where: { tallerId: taller.id },
+      select: { tipo: true },
+    })
+    const faltantes = buildValidacionesFaltantes(tiposActivos, new Set(existentes.map((v) => v.tipo)), taller.id)
+    if (faltantes.length > 0) {
+      await prisma.validacion.createMany({ data: faltantes })
+    }
+  }
+  console.log('  ✓ Post-seed: cada taller tiene su checklist de validaciones completo')
 
   // U-08: pedidos publicados/borrador por la marca del user dual (Julieta), para
   // ejercitar la regla anti-incesto E2E. Julieta tiene perfil TALLER y MARCA: no
