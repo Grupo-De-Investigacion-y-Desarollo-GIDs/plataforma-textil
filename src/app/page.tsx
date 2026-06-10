@@ -10,6 +10,7 @@ import { getShowPilotPill } from '@/compartido/lib/env'
 import { CarruselNovedades, type CarruselItem } from '@/compartido/componentes/ui/carrusel-novedades'
 import { IconTaller, IconMarca, IconTrazabilidad, IconCapacitacion, IconPedido } from '@/compartido/iconos'
 import { LANDING_COPY } from '@/compartido/lib/content/institutional'
+import { modoActivo } from '@/compartido/lib/roles'
 
 export const dynamic = 'force-dynamic'
 
@@ -17,7 +18,11 @@ export default async function Home() {
   const session = await auth()
 
   if (session?.user) {
-    const role = (session.user as { role?: string }).role
+    // Redirigir por el MODO ACTIVO, no por session.user.role: un multi-rol
+    // operando como Marca debe ir a /marca aunque su role base sea TALLER.
+    // modoActivo cae a role para roles de equipo (ADMIN/ESTADO/CONTENIDO),
+    // que no togglean. Consistente con (public)/layout.tsx.
+    const role = modoActivo(session.user)
     switch (role) {
       case 'TALLER': redirect('/taller')
       case 'MARCA': redirect('/marca/directorio')

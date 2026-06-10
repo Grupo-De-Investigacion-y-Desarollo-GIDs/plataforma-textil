@@ -82,6 +82,75 @@ y prioridad sugerida.
 - **Prioridad:** muy baja (optimización menor)
 - **Estimación:** 30 min
 
+### B-04: isCiBypass con doble responsabilidad (rate-limit + endpoint mutante)
+- **Detectado en:** Auditoría del endpoint reset de test (2026-06-09)
+- **Descripción:** isCiBypass se diseñó para saltar rate-limit (bajo
+  riesgo). Ahora también autoriza el endpoint mutante
+  /api/test-utils/reset-seed-state (riesgo medio). Una relajación futura de
+  isCiBypass por motivos de rate-limit ensancharía silenciosamente la
+  autorización del endpoint destructivo.
+- **Impacto:** acoplamiento de seguridad. No es vuln activa (el endpoint
+  tiene guard de prod + hardcode a un set fijo de users de seed, sin userId
+  del request), pero es deuda de diseño.
+- **ROOT CAUSE del cleanup roto (2026-06-09):** el endpoint vivía en
+  `src/app/api/_test/...`. En el App Router de Next.js, **una carpeta con
+  prefijo `_` es "private folder" y queda EXCLUIDA del routing** → la ruta
+  `/api/_test/...` NUNCA existió: devolvía el 404 HTML de not-found (no el
+  JSON del guard) en TODOS los runs de CI. El cleanup nunca corrió; el
+  diagnóstico previo (NODE_ENV) era un red herring (el guard jamás se
+  ejecutaba). Fix: renombrado `_test` → `test-utils` (ruta
+  `/api/test-utils/reset-seed-state`). Lección: NO usar prefijo `_` en
+  segmentos de ruta del App Router. Verificar siempre el body del 404 (JSON
+  del guard = ruta existe; HTML = ruta no matcheada).
+- **Nota:** el guard de prod usa solo `VERCEL_ENV === 'production'` (NO
+  NODE_ENV, que es SIEMPRE 'production' en deploys Vercel incl. preview).
+  Endpoint: reset-seed-state con allowlist `?user=u09|julieta` (enum cerrado,
+  clave desconocida → 400). Cada spec resetea SOLO su usuario → sin
+  contaminación cruzada entre workers paralelos. El `user` NO es un userId
+  arbitrario (mapea a un email hardcodeado), preserva la propiedad de seguridad.
+- **Prioridad:** baja-media
+- **Solución:** guard dedicado para endpoints mutantes de test,
+  separado del bypass de rate-limit
+- **Estimación:** 30 min
+
+### B-05: Race de clobbering de cookie en rolling JWT session
+- **Detectado en:** Diagnóstico de fallos e2e u-09 en T-04 (2026-06-09)
+- **Descripción:** con strategy JWT + rolling session (updateAge 24h), cada
+  lectura de `/api/auth/session` re-emite `Set-Cookie` re-encriptando el token
+  que la request transportó. Lecturas concurrentes alrededor de un `update()`
+  pueden pisar la cookie actualizada con el estado previo (last-write-wins en el
+  cookie jar del browser): una lectura que arrancó con la cookie pre-update la
+  reescribe DESPUÉS del update → la cookie vuelve a single-rol. Un usuario que
+  agrega rol y sufre el race puede recibir `/unauthorized` transitorio. El
+  callback `jwt` es pass-through en lecturas (NO reconstruye desde DB), así que
+  el estado viejo sale de la cookie en vuelo, no del servidor → es patrón JWT
+  normal, NO bug de config.
+- **Severidad:** MEDIA-ALTA. Re-login restaura (el `authorize` de Credentials lee
+  `roles`/`activeMode` de la DB → re-acuña el estado correcto). El usuario NO queda
+  permanentemente atascado, pero la cookie no se auto-cura sin acción (hard-nav y
+  esperar NO ayudan: `page.tsx`/middleware redirigen por el activeMode de la COOKIE,
+  no de la DB; `update()` por el toggle re-dispara el mismo race; salida = cerrar
+  sesión y volver a entrar — poco descubrible para el usuario).
+- **Probabilidad:** MEDIA-ALTA (revisada al alza, 2026-06-09). Antes estimada BAJA
+  asumiendo que solo se disparaba con amplificación de test (`expect.poll`, 15 GETs).
+  EVIDENCIA NUEVA: el e2e `u-04 "el modo activo persiste"` reproduce el clobber en
+  un **flujo NORMAL sin amplificación** (toggle a Marca → `goto('/')`), de forma
+  **determinística 3/3 en CI**. Path de usuario legítimo afectado: un multi-rol
+  cambia a modo Marca, navega a `/` (o recarga), y **cae de vuelta en Taller** —y
+  queda así hasta re-login—. DB queda correcta (`activeMode=MARCA`), la cookie no.
+  Reproducible, no es un edge raro.
+- **Cobertura de test:** `u-04 "el modo activo persiste"` quedó en `test.fixme`
+  (ref a este B-05) y es la **validación canónica del fix** — des-fixmear al
+  resolverlo. `u-09` también renunció a su aserción de hard-nav por el mismo race
+  (mismo clobber, lands en `/marca/directorio`; re-navegar no recupera).
+- **Fix de producción (spec propio, NO en #407):** rediseño de sesión. Opciones:
+  (a) no re-emitir `Set-Cookie` en lecturas planas de sesión (respetar `updateAge`),
+  (b) setear la cookie de modo server-side (el endpoint `/me/active-mode` ya persiste
+  en DB; que la respuesta/middleware fijen la cookie autoritativa), o (c) que
+  `page.tsx`/middleware lean `activeMode` de la DB en la navegación raíz.
+- **Prioridad:** MEDIA-ALTA (afecta flujo común multi-rol; merece spec propio).
+- **Estimación:** 4-8h (rediseño + QA), no es one-liner.
+
 ## Datos
 
 ### D-01: Cuentas con role pero sin entidad asociada

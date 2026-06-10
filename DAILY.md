@@ -1,8 +1,58 @@
 # Daily Log
 
+## 2026-06-09
+
+### Gerardo Breard
+- **22:58** `99d8dbf` — test(t-04): estabilizar u-09 — esperar respuesta de /me/roles antes del redirect
+  - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+
+- **22:51** `0b35677` — fix(t-04): endpoint reset con allowlist + u-09 sin poll + deuda B-05
+  - `.claude/DEUDA_TECNICA.md`
+  - `src/app/api/test-utils/reset-seed-state/route.ts`
+  - `tests/e2e/u-04-toggle-multi-rol.spec.ts`
+  - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+
+- **17:48** `9e9f157` — fix(t-04): mover endpoint reset fuera de carpeta privada _test (App Router)
+  - `.claude/DEUDA_TECNICA.md`
+  - `src/app/api/_test/reset-seed-state/route.ts`
+  - `src/app/api/test-utils/reset-seed-state/route.ts`
+  - `tests/e2e/u-04-toggle-multi-rol.spec.ts`
+  - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+
+- **17:22** `1b0d2c8` — fix(t-04): guard NODE_ENV + race u-09 + reset-seed-state para u-04/u-09
+  - `.claude/DEUDA_TECNICA.md`
+  - `src/app/api/_test/reset-seed-state/route.ts`
+  - `src/app/api/_test/reset-u09/route.ts`
+  - `tests/e2e/u-04-toggle-multi-rol.spec.ts`
+  - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+
+- **15:20** `6eb0d96` — fix(u-04/u-09): bugs destapados por primer run real de specs migrados
+  - `src/app/page.tsx`
+  - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+
+- **12:29** `cfc7b57` — fix(t-04): hardening endpoint reset-u09 + deuda B-04
+  - `.claude/DEUDA_TECNICA.md`
+  - `src/app/api/_test/reset-u09/route.ts`
+
+- **10:58** `6ba3ec5` — feat(t-04): migrar 4 U-specs de seguridad a tests/e2e/ + fix idempotencia u-09
+  - `e2e/u-04-toggle-multi-rol.spec.ts`
+  - `e2e/u-06-clasificacion-pedidos.spec.ts`
+  - `e2e/u-07-anti-incesto.spec.ts`
+  - `e2e/u-09-agregar-segundo-rol.spec.ts`
+  - `src/app/api/_test/reset-u09/route.ts`
+  - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+
+
 ## 2026-06-08
 
 ### Gerardo Breard
+- **12:52** `185a619` — wip: T-04 - copia de validacion de 4 U-specs a tests/e2e/
+  - `tests/e2e/_helpers/auth-multirol.ts`
+  - `tests/e2e/u-04-toggle-multi-rol.spec.ts`
+  - `tests/e2e/u-06-clasificacion-pedidos.spec.ts`
+  - `tests/e2e/u-07-anti-incesto.spec.ts`
+  - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+
 - **11:54** `507941a` — fix(e2e): reconciliar tests reales en tests/e2e + corregir diagnostico T-03
   - `.claude/DEUDA_TECNICA.md`
   - `tests/e2e/acceso-verificado.spec.ts`

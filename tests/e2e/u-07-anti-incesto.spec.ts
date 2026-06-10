@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test'
-import { loginAs } from './helpers/auth'
+import { ensureNotProduction } from './_helpers/safety'
+import { loginAs } from './_helpers/auth-multirol'
 
 // U-07 — Regla anti-incesto (bloque multi-rol).
 // Un User con perfil de taller Y marca no puede cotizar/invitar a sus propios pedidos.
@@ -10,6 +11,7 @@ import { loginAs } from './helpers/auth'
 // flujo normal: un taller mirando el pedido de OTRA marca nunca ve el aviso
 // "publicaste como marca".
 test('taller viendo pedido ajeno NO ve el aviso anti-incesto', async ({ page }) => {
+  await ensureNotProduction(page)
   await loginAs(page, 'taller_oro')
   await page.goto('/taller/pedidos/disponibles')
 
