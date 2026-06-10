@@ -47,10 +47,20 @@ test('single-rol ve la card "Agregar rol" en /cuenta y crea su perfil de Marca',
   await expect(card).toBeVisible()
 
   // Completar nombre + CUIT (el CUIT viene pre-cargado; lo dejamos) y enviar.
+  // El submit encadena: POST /me/roles (crea la Marca en DB) -> session update
+  // (POST /api/auth/session) -> router.push('/marca'). En preview con cold-start
+  // ese encadenado puede pasar de 20s y el chequeo de URL optimista (cumulativo)
+  // se volvía flaky. Esperamos determinísticamente la respuesta del POST pesado
+  // (/me/roles) antes de aguardar el redirect, así el timeout no acumula latencias.
   await card.getByLabel('Nombre de la marca').fill('Marca de Tomás')
+  const rolesResp = page.waitForResponse(
+    (r) => r.url().includes('/api/usuarios/me/roles') && r.request().method() === 'POST',
+    { timeout: 30000 }
+  )
   await card.getByTestId('agregar-rol-submit').click()
+  await rolesResp
 
-  // Redirige al dashboard de Marca.
+  // Redirige al dashboard de Marca (client-side, ya disparado el update de sesión).
   await expect(page).toHaveURL(/\/marca/, { timeout: 20000 })
 
   // QA #398 r3 — el redirect anterior es client-side (URL optimista). Forzamos una
