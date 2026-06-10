@@ -3,6 +3,12 @@
 ## 2026-06-09
 
 ### Gerardo Breard
+- **22:51** `0b35677` — fix(t-04): endpoint reset con allowlist + u-09 sin poll + deuda B-05
+  - `.claude/DEUDA_TECNICA.md`
+  - `src/app/api/test-utils/reset-seed-state/route.ts`
+  - `tests/e2e/u-04-toggle-multi-rol.spec.ts`
+  - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+
 - **17:48** `9e9f157` — fix(t-04): mover endpoint reset fuera de carpeta privada _test (App Router)
   - `.claude/DEUDA_TECNICA.md`
   - `src/app/api/_test/reset-seed-state/route.ts`
