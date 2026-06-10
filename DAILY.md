@@ -3,6 +3,9 @@
 ## 2026-06-09
 
 ### Gerardo Breard
+- **22:58** `99d8dbf` — test(t-04): estabilizar u-09 — esperar respuesta de /me/roles antes del redirect
+  - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+
 - **22:51** `0b35677` — fix(t-04): endpoint reset con allowlist + u-09 sin poll + deuda B-05
   - `.claude/DEUDA_TECNICA.md`
   - `src/app/api/test-utils/reset-seed-state/route.ts`
