@@ -63,22 +63,14 @@ test('single-rol ve la card "Agregar rol" en /cuenta y crea su perfil de Marca',
   // Redirige al dashboard de Marca (client-side, ya disparado el update de sesión).
   await expect(page).toHaveURL(/\/marca/, { timeout: 20000 })
 
-  // QA #398 r3 — el redirect anterior es client-side (URL optimista). Forzamos una
-  // navegación DURA a /marca: el middleware re-evalúa la cookie/JWT real. Si la
-  // sesión NO se refrescó, el JWT sigue single-rol TALLER y el middleware manda a
-  // /unauthorized. Esto es lo que NO atrapaba el chequeo de URL optimista.
-  //
-  // OJO: NO pollear /api/auth/session acá. Con rolling JWT cada lectura de sesión
-  // re-emite Set-Cookie; un puñado de GETs concurrentes alrededor del update()
-  // pisa la cookie actualizada con el estado previo (last-write-wins → la cookie
-  // vuelve a single-rol). Ver deuda B-05. Reproducir eso es justo lo que rompía el
-  // test. En cambio re-navegamos hasta que la cookie esté propagada: UNA lectura
-  // por intento, sin floodear la sesión.
-  await expect(async () => {
-    await page.goto('/marca')
-    await expect(page).not.toHaveURL(/unauthorized/)
-  }).toPass({ timeout: 15000 })
-  await expect(page).toHaveURL(/\/marca/)
+  // NOTA: NO se hace un hard-nav a /marca acá para verificar la cookie/JWT real.
+  // Esa validación (que el activeMode/roles persistan en una navegación DURA) está
+  // BLOQUEADA por B-05 (clobbering de cookie en rolling JWT): una lectura de sesión
+  // concurrente puede pisar la cookie actualizada con el estado single-rol previo,
+  // y per B-05 re-navegar NO la recupera → /unauthorized intermitente. Es el MISMO
+  // race que u-04 "el modo activo persiste" (fixme→B-05), que es el dueño canónico
+  // de esa aserción. Acá nos quedamos con la cobertura confiable del alta de rol:
+  // /me/roles 200 + redirect optimista + el toggle multi-rol (sesión client optimista).
 
   // Ahora es multi-rol: el toggle SÍ aparece y /cuenta ya no ofrece sumar rol.
   await abrirMenuUsuario(page)

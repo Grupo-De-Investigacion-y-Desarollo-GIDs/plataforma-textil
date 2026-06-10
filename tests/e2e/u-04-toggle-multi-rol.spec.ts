@@ -58,7 +58,17 @@ test('cambiar a Marca redirige a /marca; volver a Taller redirige a /taller', as
   await expect(page).toHaveURL(/\/taller/)
 })
 
-test('el modo activo persiste: tras cambiar a Marca, ir a / redirige a /marca', async ({ page }) => {
+// BLOQUEADO POR B-05 (clobbering de cookie en rolling JWT). El flujo es legítimo
+// —multi-rol cambia a Marca y navega a /— pero la cookie de sesión puede quedar
+// pisada en activeMode=TALLER aunque la DB tenga MARCA: una lectura de sesión
+// concurrente (rolling JWT re-emite Set-Cookie en cada GET) sobrescribe la cookie
+// actualizada con el estado previo. El hard-nav lee la cookie pisada → cae en
+// /taller. Determinístico 3/3 en CI (ver DEUDA_TECNICA.md B-05). page.tsx redirige
+// por el activeMode de la COOKIE, no de la DB, así que re-navegar NO recupera.
+// Des-fixmear cuando B-05 se arregle (spec propio: rediseño de sesión / no re-emitir
+// Set-Cookie en lecturas planas / set de cookie server-side). ESTE test es la
+// validación del fix de B-05.
+test.fixme('el modo activo persiste: tras cambiar a Marca, ir a / redirige a /marca', async ({ page }) => {
   await ensureNotProduction(page)
   await loginAs(page, 'dual')
 

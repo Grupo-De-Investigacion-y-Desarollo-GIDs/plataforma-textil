@@ -125,19 +125,31 @@ y prioridad sugerida.
   callback `jwt` es pass-through en lecturas (NO reconstruye desde DB), así que
   el estado viejo sale de la cookie en vuelo, no del servidor → es patrón JWT
   normal, NO bug de config.
-- **Severidad:** MEDIA. Re-login restaura (el `authorize` de Credentials lee
-  `roles` de la DB → re-acuña multi-rol). El usuario NO queda permanentemente
-  atascado, pero la cookie no se auto-cura sin acción (hard-nav/esperar no
-  ayudan; `update()` por el toggle manda solo activeMode, no roles; salida =
-  cerrar sesión y volver a entrar).
-- **Probabilidad:** BAJA. `next-auth/react` deduplica los `useSession`; sin
-  `refetchInterval` ni multi-tab agresivo la ventana es chica. El test lo
-  magnificó con `expect.poll` (15 GETs solapados).
-- **Hardening opcional (NO ahora):** (a) respetar `updateAge` para no re-emitir
-  `Set-Cookie` en lecturas planas, o (b) mover el alta de rol a revalidación
-  server-side en vez de `update()` optimista client-side.
-- **Prioridad:** media-baja (no bloqueante, salida disponible)
-- **Estimación:** 2-4h el hardening (no es one-liner)
+- **Severidad:** MEDIA-ALTA. Re-login restaura (el `authorize` de Credentials lee
+  `roles`/`activeMode` de la DB → re-acuña el estado correcto). El usuario NO queda
+  permanentemente atascado, pero la cookie no se auto-cura sin acción (hard-nav y
+  esperar NO ayudan: `page.tsx`/middleware redirigen por el activeMode de la COOKIE,
+  no de la DB; `update()` por el toggle re-dispara el mismo race; salida = cerrar
+  sesión y volver a entrar — poco descubrible para el usuario).
+- **Probabilidad:** MEDIA-ALTA (revisada al alza, 2026-06-09). Antes estimada BAJA
+  asumiendo que solo se disparaba con amplificación de test (`expect.poll`, 15 GETs).
+  EVIDENCIA NUEVA: el e2e `u-04 "el modo activo persiste"` reproduce el clobber en
+  un **flujo NORMAL sin amplificación** (toggle a Marca → `goto('/')`), de forma
+  **determinística 3/3 en CI**. Path de usuario legítimo afectado: un multi-rol
+  cambia a modo Marca, navega a `/` (o recarga), y **cae de vuelta en Taller** —y
+  queda así hasta re-login—. DB queda correcta (`activeMode=MARCA`), la cookie no.
+  Reproducible, no es un edge raro.
+- **Cobertura de test:** `u-04 "el modo activo persiste"` quedó en `test.fixme`
+  (ref a este B-05) y es la **validación canónica del fix** — des-fixmear al
+  resolverlo. `u-09` también renunció a su aserción de hard-nav por el mismo race
+  (mismo clobber, lands en `/marca/directorio`; re-navegar no recupera).
+- **Fix de producción (spec propio, NO en #407):** rediseño de sesión. Opciones:
+  (a) no re-emitir `Set-Cookie` en lecturas planas de sesión (respetar `updateAge`),
+  (b) setear la cookie de modo server-side (el endpoint `/me/active-mode` ya persiste
+  en DB; que la respuesta/middleware fijen la cookie autoritativa), o (c) que
+  `page.tsx`/middleware lean `activeMode` de la DB en la navegación raíz.
+- **Prioridad:** MEDIA-ALTA (afecta flujo común multi-rol; merece spec propio).
+- **Estimación:** 4-8h (rediseño + QA), no es one-liner.
 
 ## Datos
 
