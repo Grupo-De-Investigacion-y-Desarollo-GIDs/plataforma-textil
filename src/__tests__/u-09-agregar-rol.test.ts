@@ -119,6 +119,38 @@ describe('POST /api/usuarios/me/roles', () => {
     expect(mockPadron).toHaveBeenCalledWith('30-71890234-5')
   })
 
+  it('B-02: CUIT verificado en User (sin entidad) → 200 SIN llamar a ARCA', async () => {
+    // Caso registro abandonado: el User tiene cuit + verificadoAfip=true pero NO
+    // creó entidad. El skip debe disparar leyendo User.cuit/verificadoAfip.
+    mockUserFind.mockResolvedValue({
+      id: 'u1', roles: ['TALLER'], role: 'TALLER',
+      cuit: '20123456789', verificadoAfip: true,
+      taller: null, marca: null,
+    })
+    mockCrear.mockResolvedValue({ id: 'marca-1' })
+
+    const res = await post({ rol: 'MARCA', nombre: 'Mi Marca', cuit: '20-12345678-9' })
+    expect(res.status).toBe(200)
+    expect(mockPadron).not.toHaveBeenCalled()
+    const crearArgs = mockCrear.mock.calls[0][1]
+    expect(crearArgs.verificadoAfip).toBe(true)
+  })
+
+  it('B-02: CUIT presente en User pero NO verificado → SÍ llama a ARCA', async () => {
+    // Mismo gate semántico que entidades: presencia de CUIT no implica verificación.
+    mockUserFind.mockResolvedValue({
+      id: 'u1', roles: ['TALLER'], role: 'TALLER',
+      cuit: '20123456789', verificadoAfip: false,
+      taller: null, marca: null,
+    })
+    mockCrear.mockResolvedValue({ id: 'marca-1' })
+
+    const res = await post({ rol: 'MARCA', nombre: 'Mi Marca', cuit: '20-12345678-9' })
+    expect(res.status).toBe(200)
+    expect(mockPadron).toHaveBeenCalledTimes(1)
+    expect(mockPadron).toHaveBeenCalledWith('20-12345678-9')
+  })
+
   it('D: CUIT difiere del verificado → 200 LLAMANDO a ARCA como antes', async () => {
     mockUserFind.mockResolvedValue({
       id: 'u1', roles: ['TALLER'], role: 'TALLER',

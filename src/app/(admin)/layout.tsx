@@ -46,6 +46,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <div className="flex items-center gap-4">
             <NotificacionesBell />
             <span className="text-sm text-white/70">{session.user.name}</span>
+            {/* F-02: roles de equipo (ADMIN) usan este header propio, sin el dropdown
+                del Header compartido. Sin este link, /cuenta solo era accesible por URL. */}
+            <Link href="/cuenta" className="text-sm hover:text-white/70 transition-colors">Mi cuenta</Link>
             <Link href="/" className="text-sm hover:text-white/70 transition-colors">Volver al sitio</Link>
             <LogoutButton />
           </div>

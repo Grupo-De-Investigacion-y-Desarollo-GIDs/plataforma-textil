@@ -9,35 +9,6 @@ y prioridad sugerida.
 
 ## Frontend / UI
 
-### F-01: Card de perfil muestra Formalización > 100%
-- **Detectado en:** QA r2 de #398 (U-09) por Sergio, con Carlos Mendoza
-- **Descripción:** la card "Corte Sur SRL" en /cuenta mostraba
-  "Formalización: 135%". El cálculo de % suma puntos sin tope al 100%.
-- **Impacto:** UI confusa, valor ilegal matemáticamente
-- **Prioridad:** baja-media (no rompe funcionalidad, solo UX)
-- **Estimación:** 30 min (limitar el % a Math.min(100, ...) en el cálculo)
-
-### F-02: Link a /cuenta no visible para roles operativos
-- **Detectado en:** QA r2 de #398 (U-09) por Sergio
-- **Descripción:** roles ADMIN/ESTADO/CONTENIDO solo acceden a /cuenta
-  escribiendo la URL a mano. No hay link en menú/header/dropdown.
-- **Impacto:** los users de equipo no pueden cambiar contraseña o ver
-  sus datos sin saber la URL
-- **Prioridad:** media (UX rota para roles administrativos)
-- **Estimación:** 1h (agregar link al dropdown del avatar para todos
-  los roles)
-
-### F-03: on-blur sin debounce dispara N requests a ARCA
-- **Detectado en:** Discovery del costo CUIT en #398 (U-09)
-- **Descripción:** src/.../registro/page.tsx línea ~251: el input de
-  CUIT dispara consultarPadron en cada blur, sin debounce. Editar
-  4 veces el campo = 4 requests a AFIP SDK.
-- **Impacto:** a escala piloto (250 calls totales) negligible, pero
-  consume cuota innecesariamente. A escala mayor podría llegar al
-  techo del free tier.
-- **Prioridad:** baja (innecesario en piloto, importante post-piloto)
-- **Estimación:** 30 min (agregar debounce o cachear último CUIT validado)
-
 ### F-04: Cosmético dashboards V4 (X-07b)
 - **Detectado en:** Discovery Nivel 5 (2026-06-08)
 - **Descripción:** ajustes cosméticos menores en dashboards: grays,
@@ -61,57 +32,6 @@ y prioridad sugerida.
 - **Impacto:** mantenimiento duplicado, deuda de consistencia
 - **Prioridad:** baja (no rompe nada, pero ensucia)
 - **Estimación:** 2-3h (unificar en un solo helper)
-
-### B-02: Skip ARCA podría leer User.cuit/verificadoAfip
-- **Detectado en:** Fix D r2 de #398 (U-09), nota del agente
-- **Descripción:** el skip de ARCA en POST /me/roles compara contra
-  CUITs de entidades existentes (Taller.cuit/Marca.cuit). Para users
-  con CUIT verificado en User.cuit pero sin entidad (caso registro
-  abandonado tipo srodriguezunq), el skip no se dispara y siempre va
-  a ARCA.
-- **Impacto:** caso borde raro. Genera un request innecesario en muy
-  pocos casos.
-- **Prioridad:** baja (~2 líneas de código)
-- **Estimación:** 15 min
-
-### B-03: Doble query en layout y page de /cuenta
-- **Detectado en:** Fix A r2 de #398 (U-09)
-- **Descripción:** layout y page de /cuenta consultan taller/marca por
-  separado. Una sola consulta podría servir a ambos.
-- **Impacto:** performance marginal, no es bottleneck
-- **Prioridad:** muy baja (optimización menor)
-- **Estimación:** 30 min
-
-### B-04: isCiBypass con doble responsabilidad (rate-limit + endpoint mutante)
-- **Detectado en:** Auditoría del endpoint reset de test (2026-06-09)
-- **Descripción:** isCiBypass se diseñó para saltar rate-limit (bajo
-  riesgo). Ahora también autoriza el endpoint mutante
-  /api/test-utils/reset-seed-state (riesgo medio). Una relajación futura de
-  isCiBypass por motivos de rate-limit ensancharía silenciosamente la
-  autorización del endpoint destructivo.
-- **Impacto:** acoplamiento de seguridad. No es vuln activa (el endpoint
-  tiene guard de prod + hardcode a un set fijo de users de seed, sin userId
-  del request), pero es deuda de diseño.
-- **ROOT CAUSE del cleanup roto (2026-06-09):** el endpoint vivía en
-  `src/app/api/_test/...`. En el App Router de Next.js, **una carpeta con
-  prefijo `_` es "private folder" y queda EXCLUIDA del routing** → la ruta
-  `/api/_test/...` NUNCA existió: devolvía el 404 HTML de not-found (no el
-  JSON del guard) en TODOS los runs de CI. El cleanup nunca corrió; el
-  diagnóstico previo (NODE_ENV) era un red herring (el guard jamás se
-  ejecutaba). Fix: renombrado `_test` → `test-utils` (ruta
-  `/api/test-utils/reset-seed-state`). Lección: NO usar prefijo `_` en
-  segmentos de ruta del App Router. Verificar siempre el body del 404 (JSON
-  del guard = ruta existe; HTML = ruta no matcheada).
-- **Nota:** el guard de prod usa solo `VERCEL_ENV === 'production'` (NO
-  NODE_ENV, que es SIEMPRE 'production' en deploys Vercel incl. preview).
-  Endpoint: reset-seed-state con allowlist `?user=u09|julieta` (enum cerrado,
-  clave desconocida → 400). Cada spec resetea SOLO su usuario → sin
-  contaminación cruzada entre workers paralelos. El `user` NO es un userId
-  arbitrario (mapea a un email hardcodeado), preserva la propiedad de seguridad.
-- **Prioridad:** baja-media
-- **Solución:** guard dedicado para endpoints mutantes de test,
-  separado del bypass de rate-limit
-- **Estimación:** 30 min
 
 ### B-05: Race de clobbering de cookie en rolling JWT session
 - **Detectado en:** Diagnóstico de fallos e2e u-09 en T-04 (2026-06-09)
@@ -284,6 +204,82 @@ y prioridad sugerida.
 - Items resueltos: mover a sección "Resueltas" con SHA o PR de fix
 
 ## Resueltas
+
+### F-01: Card de perfil muestra Formalización > 100% — RESUELTA
+- **Detectado en:** QA r2 de #398 (U-09) por Sergio, con Carlos Mendoza
+- **Resuelta en:** sprint deuda batch-1 (`chore/deuda-tecnica-batch-1`, 2026-06-09)
+- **Causa raíz:** `taller.puntaje` es un SCORE crudo (suma de `puntosOtorgados`
+  de las validaciones COMPLETADO + bonus AFIP), deliberadamente SIN tope (ver
+  `nivel.test.ts` "no hay cap de puntaje"). La UI lo mostraba directo con `%`, así
+  que un taller con score > 100 mostraba "135%". No era solo falta de Math.min: NO
+  había divisor — se mostraban puntos como porcentaje.
+- **Fix:** helpers `maxPuntosFormalizacion()` + `porcentajeFormalizacion(puntaje)`
+  en `src/compartido/lib/nivel.ts` (punto ÚNICO de cálculo). El % = `puntaje / máx
+  alcanzable`, capado a 100 con `Math.min`. El divisor es DINÁMICO (suma de puntos
+  de los tipos de documento requeridos+activos + AFIP_BONUS) → se ajusta solo al
+  agregar/quitar tipos (arregla el "divisor desactualizado"). Render sites migrados:
+  `(public)/cuenta/page.tsx` y el sidebar del taller vía `(taller)/layout.tsx`
+  (label + barra de progreso). `taller/perfil` muestra `{puntaje} pts` (puntos, no
+  %) — correcto, sin tocar.
+
+### F-02: Link a /cuenta no visible para roles operativos — RESUELTA
+- **Detectado en:** QA r2 de #398 (U-09) por Sergio
+- **Resuelta en:** sprint deuda batch-1 (`chore/deuda-tecnica-batch-1`, 2026-06-09)
+- **Causa raíz:** ESTADO ya usaba el `Header` compartido (que tiene "Mi cuenta" en
+  el dropdown del avatar), pero ADMIN y CONTENIDO usan layouts PROPIOS con headers
+  custom que no incluían el link → solo llegaban a /cuenta por URL.
+- **Fix:** agregado `<Link href="/cuenta">Mi cuenta</Link>` en los headers de
+  `(admin)/layout.tsx` y `(contenido)/layout.tsx`. /cuenta ya maneja roles de
+  equipo (oculta "Tus perfiles" y "Agregar rol"). ESTADO ya estaba cubierto.
+
+### F-03: on-blur sin debounce dispara N requests a ARCA — RESUELTA
+- **Detectado en:** Discovery del costo CUIT en #398 (U-09)
+- **Resuelta en:** sprint deuda batch-1 (`chore/deuda-tecnica-batch-1`, 2026-06-09)
+- **Fix:** `registro/page.tsx` cachea el último CUIT con resultado DEFINITIVO
+  (verificado o inválido) en un `useRef`; un blur con el mismo CUIT ya consultado
+  no re-llama a ARCA. Los resultados transitorios (servicio caído / error de red)
+  NO se cachean → permiten reintento. Si el CUIT cambia, se vuelve a validar. Sin
+  librería de debounce (el cache del último valor alcanza).
+
+### B-02: Skip ARCA podría leer User.cuit/verificadoAfip — RESUELTA
+- **Detectado en:** Fix D r2 de #398 (U-09), nota del agente
+- **Resuelta en:** sprint deuda batch-1 (`chore/deuda-tecnica-batch-1`, 2026-06-09)
+- **Fix:** `POST /api/usuarios/me/roles` agrega `User.cuit` + `User.verificadoAfip`
+  a la lista de CUITs verificados contra la que compara el skip de ARCA. MISMO gate
+  semántico (`verificadoAfip === true`): presencia de CUIT no implica verificación.
+  Cubre el caso "registro abandonado" (CUIT verificado en User sin entidad creada).
+  2 tests nuevos en `u-09-agregar-rol.test.ts` (skip con User verificado; SÍ llama
+  a ARCA si User.cuit presente pero no verificado).
+
+### B-03: Doble query en layout y page de /cuenta — RESUELTA
+- **Detectado en:** Fix A r2 de #398 (U-09)
+- **Resuelta en:** sprint deuda batch-1 (`chore/deuda-tecnica-batch-1`, 2026-06-09)
+- **Verificación:** NO estaban deduplicadas (funciones distintas, selects distintos
+  → React `cache()` no las unía). No era no-op.
+- **Fix:** helper `getPerfilesUsuario(userId)` envuelto en `cache()` de React en
+  `entidades-modo.ts`, con el superset de campos. `construirEntidadesModo` (layout)
+  y `cuenta/page.tsx` ahora pasan por él → dentro de un request comparten una sola
+  ejecución (un multi-rol que abre /cuenta colapsa 4 queries → 2). Se preserva el
+  early-return de single-rol (sin DB hit).
+
+### B-04: isCiBypass con doble responsabilidad — RESUELTA
+- **Detectado en:** Auditoría del endpoint reset de test (2026-06-09)
+- **Resuelta en:** sprint deuda batch-1 (`chore/deuda-tecnica-batch-1`, 2026-06-09)
+- **Fix:** función DEDICADA `isTestMutationAllowed(req)` en `ratelimit.ts`, con las
+  mismas validaciones (token + `VERCEL_ENV != production` + header x-ci-bypass) pero
+  SEPARADA de `isCiBypass` a propósito: relajar el bypass de rate-limit ya no
+  ensancha la autorización del endpoint mutante sin tocar esta función. El endpoint
+  `reset-seed-state` usa el guard nuevo; `ratelimit.ts`/`isCiBypass` quedan intactos
+  para rate-limit. 4 unit tests del guard nuevo (token ausente, prod, header
+  incorrecto → false; caso válido → true).
+- **Nota histórica (ROOT CAUSE del cleanup roto, 2026-06-09):** el endpoint vivía en
+  `src/app/api/_test/...`; el prefijo `_` lo volvía "private folder" del App Router
+  → la ruta nunca existió (404 HTML, no JSON del guard). Resuelto en #407 renombrando
+  `_test` → `test-utils`. Regla: nunca prefijo `_` en segmentos de ruta; verificar el
+  body del 404 (JSON = ruta existe; HTML = no matcheó). Guard de prod usa
+  `VERCEL_ENV` (NO NODE_ENV, siempre 'production' en deploys Vercel). Endpoint con
+  allowlist `?user=u09|julieta` (enum cerrado; clave desconocida → 400; no acepta
+  userId arbitrario).
 
 ### T-03: Test e2e checklist-sec9-10.spec.ts con labels stale — RESUELTA (con corrección de diagnóstico)
 - **Detectado en:** Discovery narrativa V4 Etapa 1 (2026-06-07)

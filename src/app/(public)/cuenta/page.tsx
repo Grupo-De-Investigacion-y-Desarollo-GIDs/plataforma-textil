@@ -5,6 +5,8 @@ import { redirect } from 'next/navigation'
 import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { rolesEfectivos } from '@/compartido/lib/roles'
+import { getPerfilesUsuario } from '@/compartido/lib/entidades-modo'
+import { porcentajeFormalizacion } from '@/compartido/lib/nivel'
 import { Bell, User, ShieldCheck, Building2, ShoppingBag, ArrowRight } from 'lucide-react'
 import { CuentaWhatsappForm } from '@/compartido/componentes/cuenta-whatsapp-form'
 import { AgregarRolCard } from '@/compartido/componentes/agregar-rol-card'
@@ -38,10 +40,13 @@ export default async function CuentaPage() {
 
   // Perfiles operativos del USUARIO (puede tener 1 o 2). /cuenta es del user, no del
   // rol activo: mostramos TODOS sus perfiles, sea cual sea el activeMode.
-  const [taller, marca] = await Promise.all([
-    prisma.taller.findFirst({ where: { userId: user.id }, select: { cuit: true, nombre: true, puntaje: true } }),
-    prisma.marca.findFirst({ where: { userId: user.id }, select: { cuit: true, nombre: true } }),
-  ])
+  // B-03: lectura cacheada compartida con el layout (construirEntidadesModo) →
+  // un multi-rol que abre /cuenta no duplica las queries de taller/marca.
+  const { taller, marca } = await getPerfilesUsuario(user.id)
+
+  // F-01: % de formalización capado (0-100). El campo `taller.puntaje` es un score
+  // crudo sin tope; mostrarlo directo con `%` daba valores ilegales (ej. "135%").
+  const formalizacionPct = taller ? await porcentajeFormalizacion(taller.puntaje ?? 0) : 0
 
   // U-09: ofrecer "agregar segundo rol" solo a un single user-rol (tiene exactamente
   // una de las dos entidades). El CUIT existente pre-llena el formulario.
@@ -92,7 +97,7 @@ export default async function CuentaPage() {
                   <Building2 className="w-5 h-5 text-brand-blue" />
                   <h3 className="font-overpass font-semibold text-gray-800 truncate">{taller.nombre}</h3>
                 </div>
-                <p className="text-sm text-gray-500">Formalización: <span className="font-medium text-gray-700">{taller.puntaje ?? 0}%</span></p>
+                <p className="text-sm text-gray-500">Formalización: <span className="font-medium text-gray-700">{formalizacionPct}%</span></p>
                 <Link href="/taller" className="mt-1 inline-flex items-center gap-1 text-sm font-overpass font-semibold text-brand-blue hover:underline">
                   Ir al taller <ArrowRight className="w-4 h-4" />
                 </Link>

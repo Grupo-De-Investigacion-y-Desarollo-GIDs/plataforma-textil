@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { isCiBypass } from '@/compartido/lib/ratelimit'
+import { isTestMutationAllowed } from '@/compartido/lib/ratelimit'
 
 // Endpoint SOLO-CI — resetea UN usuario mutable del seed a su estado inicial.
 //
@@ -23,10 +23,11 @@ import { isCiBypass } from '@/compartido/lib/ratelimit'
 // afterEach de u-04 pisara a u09 en pleno test de u-09 (y viceversa) → falsos
 // fallos. Por eso el reset es por-usuario.
 //
-// Doble guard: prod explícito + isCiBypass (CI_BYPASS_TOKEN + header x-ci-bypass
-// + VERCEL_ENV != production). Sin bypass válido devuelve 404 (no revela la ruta).
-// El runner de e2e no tiene DATABASE_URL (no hay acceso directo a DB), por eso el
-// cleanup va por API server-side.
+// Doble guard: prod explícito + isTestMutationAllowed (B-04: guard DEDICADO para
+// mutaciones de test, separado de isCiBypass/rate-limit; CI_BYPASS_TOKEN + header
+// x-ci-bypass + VERCEL_ENV != production). Sin permiso válido devuelve 404 (no
+// revela la ruta). El runner de e2e no tiene DATABASE_URL (no hay acceso directo a
+// DB), por eso el cleanup va por API server-side.
 const ALLOWLIST = {
   u09: 'u09.test@pdt.org.ar',
   julieta: 'julieta.benitez@pdt.org.ar',
@@ -45,7 +46,7 @@ export async function POST(req: NextRequest) {
   if (process.env.VERCEL_ENV === 'production') {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
-  if (!isCiBypass(req)) {
+  if (!isTestMutationAllowed(req)) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
 
