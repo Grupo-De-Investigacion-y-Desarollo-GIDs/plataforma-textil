@@ -643,3 +643,33 @@ se implementaran como specs aparte despues de X-05.
 - CRUD TipoDocumento para ADMIN (Post-MVP, 3h)
 
 Ver: `AUDITORIA_OPERABILIDAD_2026-05-16.md`
+
+---
+
+## 2026-06-10 — U-05: integridad de datos multi-rol (roles[]/activeMode)
+
+**Problema:** U-02 backfilleó `roles[]`/`activeMode` una vez, pero ninguna fuente
+(registro, registro/completar, seed) los seteaba al crear users → el dato se
+re-desincronizaba (dev en cada seed; prod en cada registro nuevo). El callback `jwt`
+lo enmascaraba derivando desde `role` (fallback load-bearing).
+
+**Decisiones tomadas:**
+- **Backfill núcleo = migración SQL** (`20260610120000_u05_backfill_roles_activemode`),
+  no script: así `prisma migrate deploy` la aplica sola en el build de Vercel contra
+  prod. Idempotente y guardada (`WHERE cardinality(roles)=0` / `activeMode IS NULL`)
+  → no pisa al dual (Julieta) ni el modo elegido por el toggle. Espeja el backfill de U-02.
+- **Cierre de fuente (invariante `roles:[role], activeMode:role`):** se aplicó en los 3
+  puntos — `registro/route.ts` (create), `registro/completar/route.ts` (update, sobre la
+  transacción de U-09 ya mergeado), y `seed.ts` (normalización post-seed, no en cada create).
+- **Scripts:** `scripts/u05-audit.ts` (`--dry-run`/`--verify`, guard anti-PROD) y
+  `scripts/u05-backfill-validaciones.ts` (`--apply`, deuda D-02: talleres sin checklist).
+- **srodriguezunq (registro abandonado sin entidad):** opción D — se migra igual
+  (`roles=[TALLER]`), NO se le inventa entidad. (En DEV no aparece; aplica a prod.)
+
+**Verificado en DEV (2026-06-10):** pre = 9/10 users con `roles=[]`; post-migración =
+0 violaciones (`u05-audit --verify` OK); idempotencia confirmada (2ª corrida = 0 filas).
+Validaciones D-02: 2 talleres incompletos (U09, La Hormiga) → 14 validaciones creadas.
+
+**Pendiente fase PROD (NO ejecutado):** la migración SQL se aplica sola en el próximo
+deploy. El backfill de validaciones en prod requiere `ALLOW_PROD=1 ... --apply` tras
+dimensionar con el dry-run — paso manual y posterior, con OK explícito de Gerardo.

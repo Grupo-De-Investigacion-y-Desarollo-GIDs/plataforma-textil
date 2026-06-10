@@ -1301,6 +1301,25 @@ async function main() {
   console.log('  ✓ 5 novedades')
 
   // ============================================
+  // U-05: NORMALIZACIÓN roles[]/activeMode (cierre de fuente)
+  // ============================================
+  // Espeja la migración u05_backfill_roles_activemode: todo user single-rol queda con
+  // roles=[role] y activeMode=role. Se hace post-seed (no en cada create) para no tocar
+  // los ~10 creates uno por uno; el dual (Julieta) ya trae roles/activeMode explícitos
+  // y los guards (isEmpty / null) NO lo pisan. Idempotente: re-correr = 0 updates.
+  const usersSinNormalizar = await prisma.user.findMany({
+    where: { OR: [{ roles: { isEmpty: true } }, { activeMode: null }] },
+    select: { id: true, role: true },
+  })
+  for (const u of usersSinNormalizar) {
+    await prisma.user.update({
+      where: { id: u.id },
+      data: { roles: [u.role], activeMode: u.role },
+    })
+  }
+  console.log(`  ✓ U-05 normalización: ${usersSinNormalizar.length} users sincronizados (roles/activeMode)`)
+
+  // ============================================
   // RESUMEN
   // ============================================
   const counts = await prisma.$transaction([
