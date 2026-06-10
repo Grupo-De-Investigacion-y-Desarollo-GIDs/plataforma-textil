@@ -203,8 +203,18 @@ Fixture helper `e2e/helpers/auth.ts`: hoy define `dual` = `julieta.benitez@pdt.o
 
 ## 6. Casos borde
 
-- **CI re-seedea fresco** ⇒ los tests mutantes (u-09) pasan; **localmente** una 2ª
-  corrida sin re-seed falla. Documentarlo en el encabezado del test.
+- **⚠️ EL E2E CORRE CONTRA LA DEV DB PERSISTENTE, NO CONTRA UN SEED FRESCO.** El
+  workflow `e2e.yml` ataca el deploy de **preview** (que usa la DB de DEV) y **no**
+  ejecuta `db:seed`. Por eso existe la maquinaria de `reset-seed-state` (la DB
+  persiste entre runs). **Consecuencia operativa:** cualquier cambio en `prisma/seed.ts`
+  que agregue filas que un test E2E necesita (ej. los pedidos DUAL1/DUAL2) **requiere
+  un reseed coordinado de DEV** (`npm run db:check && npm run db:seed`, **avisando a
+  Sergio antes** porque le pisa el estado de QA manual). Sin el reseed, los tests
+  nuevos fallan por falta de datos aunque el código sea correcto. Esto debe ser un
+  paso del checklist, no un hallazgo. (Descubierto al implementar U-08: el supuesto
+  original "CI re-seedea fresco" era falso.)
+- **Tests mutantes (u-09)** ⇒ pasan en CI por el `afterEach` de `reset-seed-state`
+  (no por seed fresco); **localmente** una 2ª corrida sin reset/re-seed falla.
 - **`activeMode` persistente de Julieta** entre tests ⇒ no asumir modo inicial
   (§3.3). Riesgo de flaky por orden de ejecución.
 - **POST autenticado en Playwright** ⇒ usar `page.request` (cookies del context); el
