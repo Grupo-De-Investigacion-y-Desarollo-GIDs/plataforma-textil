@@ -1,5 +1,17 @@
 # Daily Log
 
+## 2026-06-10
+
+### Gerardo Breard
+- **00:23** `f8b5512` — feat(u-08): tests E2E multi-rol + seed dual (cierre bloque U)
+  - `prisma/seed.ts`
+  - `src/app/api/test-utils/reset-seed-state/route.ts`
+  - `tests/e2e/u-06-clasificacion-pedidos.spec.ts`
+  - `tests/e2e/u-07-anti-incesto.spec.ts`
+  - `tests/e2e/u-08-cuenta-multirol.spec.ts`
+  - `tests/e2e/u-08-gating-dual.spec.ts`
+
+
 ## 2026-06-09
 
 ### Gerardo Breard
