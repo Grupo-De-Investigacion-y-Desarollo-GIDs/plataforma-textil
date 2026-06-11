@@ -33,43 +33,29 @@ y prioridad sugerida.
 - **Prioridad:** baja (no rompe nada, pero ensucia)
 - **Estimación:** 2-3h (unificar en un solo helper)
 
-### B-05: Race de clobbering de cookie en rolling JWT session
-- **Detectado en:** Diagnóstico de fallos e2e u-09 en T-04 (2026-06-09)
-- **Descripción:** con strategy JWT + rolling session (updateAge 24h), cada
-  lectura de `/api/auth/session` re-emite `Set-Cookie` re-encriptando el token
-  que la request transportó. Lecturas concurrentes alrededor de un `update()`
-  pueden pisar la cookie actualizada con el estado previo (last-write-wins en el
-  cookie jar del browser): una lectura que arrancó con la cookie pre-update la
-  reescribe DESPUÉS del update → la cookie vuelve a single-rol. Un usuario que
-  agrega rol y sufre el race puede recibir `/unauthorized` transitorio. El
-  callback `jwt` es pass-through en lecturas (NO reconstruye desde DB), así que
-  el estado viejo sale de la cookie en vuelo, no del servidor → es patrón JWT
-  normal, NO bug de config.
-- **Severidad:** MEDIA-ALTA. Re-login restaura (el `authorize` de Credentials lee
-  `roles`/`activeMode` de la DB → re-acuña el estado correcto). El usuario NO queda
-  permanentemente atascado, pero la cookie no se auto-cura sin acción (hard-nav y
-  esperar NO ayudan: `page.tsx`/middleware redirigen por el activeMode de la COOKIE,
-  no de la DB; `update()` por el toggle re-dispara el mismo race; salida = cerrar
-  sesión y volver a entrar — poco descubrible para el usuario).
-- **Probabilidad:** MEDIA-ALTA (revisada al alza, 2026-06-09). Antes estimada BAJA
-  asumiendo que solo se disparaba con amplificación de test (`expect.poll`, 15 GETs).
-  EVIDENCIA NUEVA: el e2e `u-04 "el modo activo persiste"` reproduce el clobber en
-  un **flujo NORMAL sin amplificación** (toggle a Marca → `goto('/')`), de forma
-  **determinística 3/3 en CI**. Path de usuario legítimo afectado: un multi-rol
-  cambia a modo Marca, navega a `/` (o recarga), y **cae de vuelta en Taller** —y
-  queda así hasta re-login—. DB queda correcta (`activeMode=MARCA`), la cookie no.
-  Reproducible, no es un edge raro.
-- **Cobertura de test:** `u-04 "el modo activo persiste"` quedó en `test.fixme`
-  (ref a este B-05) y es la **validación canónica del fix** — des-fixmear al
-  resolverlo. `u-09` también renunció a su aserción de hard-nav por el mismo race
-  (mismo clobber, lands en `/marca/directorio`; re-navegar no recupera).
-- **Fix de producción (spec propio, NO en #407):** rediseño de sesión. Opciones:
-  (a) no re-emitir `Set-Cookie` en lecturas planas de sesión (respetar `updateAge`),
-  (b) setear la cookie de modo server-side (el endpoint `/me/active-mode` ya persiste
-  en DB; que la respuesta/middleware fijen la cookie autoritativa), o (c) que
-  `page.tsx`/middleware lean `activeMode` de la DB en la navegación raíz.
-- **Prioridad:** MEDIA-ALTA (afecta flujo común multi-rol; merece spec propio).
-- **Estimación:** 4-8h (rediseño + QA), no es one-liner.
+### B-06: Pill de modo desincronizado entre pestañas (useSession no recibe el broadcast)
+- **Detectado en:** QA de Sergio sobre #411 (2026-06-10)
+- **Descripción:** con dos pestañas de la misma sesión, togglear modo en una deja
+  la OTRA con el pill del header stale ("Modo Taller") aunque su contenido
+  server-side (tabs, h1, gating) ya renderiza como Marca. El estado real (cookie,
+  DB, server) es correcto; solo el client-side `useSession` de la pestaña pasiva no
+  se entera.
+- **Evidencia de que B-05 funciona:** antes de #411, la navegación de la pestaña
+  pasiva habría clobbereado la cookie de vuelta a Taller (race de datos). Ahora la
+  cookie sobrevive — el problema quedó reducido a UI stale (no a datos).
+- **A determinar en el discovery (NO ahora):**
+  a) ¿Pre-existente o introducido por #411? (sospecha: pre-existente — el pill
+     siempre dependió del broadcast client-side).
+  b) ¿El BroadcastChannel de Auth.js v5 propaga `update()` entre tabs o no? ¿El
+     pill escucha?
+  c) ¿Se auto-corrige on-focus de la pestaña? (`useSession` refetchea on-focus —
+     si sí, severidad BAJA).
+  d) FUSIONAR con el follow-up de B-05 "remover el `update()` cliente redundante":
+     la justificación de mantenerlo era el broadcast multi-tab; si el broadcast no
+     funciona, ambas decisiones (remover update / arreglar pill) son el mismo análisis.
+- **Severidad:** BAJA-MEDIA (cosmético, estado real correcto, probable
+  auto-corrección on-focus — a confirmar).
+- **Prioridad:** baja (PR aparte, no bloqueó #411 — criterio de Sergio).
 
 ## Datos
 
@@ -183,6 +169,35 @@ _Sin items abiertos. D-01 y D-02 resueltos en U-05 (#410) — ver sección "Resu
 - Items resueltos: mover a sección "Resueltas" con SHA o PR de fix
 
 ## Resueltas
+
+### B-05: Race de clobbering de cookie en rolling JWT session — RESUELTA
+- **Detectado en:** Diagnóstico de fallos e2e u-09 en T-04 (2026-06-09)
+- **Resuelta en:** B-05 fix A+B (#411, `c83e4ac`, 2026-06-11). QA de Sergio OK en lo
+  central; smoke manual post-merge realizado.
+- **Causa raíz (confirmada en `@auth/core`):** bajo `strategy: 'jwt'`, Auth.js v5
+  re-firma y re-emite la cookie en CADA lectura de sesión (`updateAge` es inerte para
+  jwt; solo aplica a database-session). El middleware era el escritor dominante: cada
+  navegación re-emitía el token que su request transportó → pisaba la actualización
+  concurrente de `update()` (last-write-wins en el cookie jar). Un multi-rol que
+  cambiaba de modo y navegaba quedaba en el modo viejo hasta re-login.
+- **Fix:**
+  - **A — middleware read-only:** lee el JWT con `decode` (sin re-emitir Set-Cookie);
+    gating byte-idéntico. El sliding-expiry queda a cargo del `useSession` (verificado
+    en el gate: toda ruta autenticada monta `SessionProvider` global + `FeedbackWidget`
+    + `Header`).
+  - **B — cookie server-side:** `active-mode` y `me/roles` setean la cookie actualizada
+    en la MISMA response, vía helper único `src/compartido/lib/session-cookie.ts`
+    (reusado por `n/[token]`, mismo filtro anti-escalación que el callback jwt). El
+    `update()` cliente quedó redundante (broadcast multi-tab); su remoción es follow-up
+    (ver **B-06**).
+  - **C —** corregido el comentario engañoso de `updateAge` en `auth.config.ts`.
+- **Cobertura:** des-fixmeado `u-04 "el modo activo persiste"` (validación canónica,
+  pasa en intento 1) + test multi-tab nuevo + unit test del helper (round-trip +
+  anti-escalación `roles=[ADMIN]` no pasa). Suite e2e verde (118 passed / 0 failed /
+  0 flaky).
+- **Follow-up:** remover el `update()` cliente redundante (fusionado con B-06). La
+  fase PROD del backfill de U-05 (`roles/activeMode`) viaja con el próximo deploy junto
+  con este fix.
 
 ### D-01: Cuentas con role pero sin entidad asociada — RESUELTA
 - **Detectado en:** Discovery U-05 + QA #398 (cuentas reales)
