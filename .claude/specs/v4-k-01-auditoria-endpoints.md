@@ -22,14 +22,16 @@
 
 ### Hallazgos que requieren acción inmediata (🔴)
 
-| # | Endpoint | Problema | Anónimo explotable | Severidad |
-|---|---|---|---|---|
-| C1 | `GET /api/marcas/[id]` | Sin auth. Devuelve **PII** (email, teléfono, CUIT, pedidos) de cualquier marca por ID | **Sí** | Alta |
-| C2 | `GET /api/talleres/[id]` | Sin auth. Devuelve **PII** (email, teléfono, nombre del dueño) de cualquier taller por ID | **Sí** | Alta |
-| C3 | `GET /api/colecciones/[id]` | Sin auth. `include: { evaluacion: true }` filtra el **answer-key** (`preguntas[].correcta`) de las evaluaciones | **Sí** | Alta (integridad de certificación) |
-| C4 | `GET /api/exportar` | Auth ADMIN/ESTADO OK, pero **sin rate-limit** y export de PII masiva (email/teléfono/CUIT de todo el padrón). Inconsistente con su gemelo `/api/estado/exportar` que sí limita | No (requiere rol) | Media (insider / cuenta comprometida) |
+> **ESTADO (2026-06-11):** C1/C2/C3 **RESUELTOS** en el hotfix quirúrgico **#414** (squash `0758fad`, mergeado a develop). C4 y los 🟡 quedan como plan ordenado del bloque K (K-02 + K-05 + barrido de rate-limit). Ver §3 para el detalle de cada fix.
 
-**Mitigante clave para C1/C2/C3:** las páginas públicas (`(public)/perfil/[id]`, `(public)/directorio`, `(public)/perfil-marca/[id]`) **consultan Prisma directamente server-side**, NO a través de estos endpoints. Los tres GET son consumidos **solo por componentes cliente autenticados** (widget de contacto de MARCA, editor propio del TALLER, panel CONTENIDO). → **Se pueden cerrar con `requiereRolApi`/`auth()` sin romper ninguna funcionalidad pública.** Hotfix de bajo riesgo.
+| # | Endpoint | Problema | Anónimo explotable | Severidad | Estado |
+|---|---|---|---|---|---|
+| C1 | `GET /api/marcas/[id]` | Sin auth. Devuelve **PII** (email, teléfono, CUIT, pedidos) de cualquier marca por ID | **Sí** | Alta | ✅ RESUELTO (#414) |
+| C2 | `GET /api/talleres/[id]` | Sin auth. Devuelve **PII** (email, teléfono, nombre del dueño) de cualquier taller por ID | **Sí** | Alta | ✅ RESUELTO (#414) |
+| C3 | `GET /api/colecciones/[id]` | Sin auth. `include: { evaluacion: true }` filtra el **answer-key** (`preguntas[].correcta`) de las evaluaciones | **Sí** | Alta (integridad de certificación) | ✅ RESUELTO (#414) |
+| C4 | `GET /api/exportar` | Auth ADMIN/ESTADO OK, pero **sin rate-limit** y export de PII masiva (email/teléfono/CUIT de todo el padrón). Inconsistente con su gemelo `/api/estado/exportar` que sí limita | No (requiere rol) | Media (insider / cuenta comprometida) | ⏳ Plan bloque K |
+
+**Mitigante clave para C1/C2/C3 (verificado en el hotfix):** las páginas públicas (`(public)/perfil/[id]`, `(public)/directorio`, `(public)/perfil-marca/[id]`) **consultan Prisma directamente server-side**, NO a través de estos endpoints. Además, al re-verificar callers se confirmó que **los GET de C1 y C2 no tienen ningún caller de `fetch`** (solo se usa el PUT de cada recurso — ver §6 "código muerto") y que el único caller del GET de C3 (panel CONTENIDO) no lee `evaluacion`. → cerrarlos con auth no rompió ninguna funcionalidad.
 
 ---
 
@@ -116,10 +118,10 @@ Leyenda — Auth: `RRA`=`requiereRolApi`, `auth()`=chequeo manual de sesión, `N
 |---|---|---|---|---|---|---|---|---|
 | `/api/talleres` | GET | RRA | ADMIN/ESTADO/MARCA | scope `verificadoAfip` | manual | MARCA: full taller (escalares implícitos); ADMIN/ESTADO: +PII user | no | 🟡 |
 | `/api/talleres/me` | GET | auth() | self (su taller) | ✅ implícito | — | full taller propio | no | 🟢 |
-| `/api/talleres/[id]` | GET | **NONE** | — | N/A | — | **full taller + user.{email,phone,name}** | no | **🔴** |
+| `/api/talleres/[id]` | GET | ~~NONE~~ → auth() | dueño/ADMIN/ESTADO | ✅ `taller.userId` | — | full taller + user PII (ya gated) | no | ✅ C2 (#414) |
 | `/api/talleres/[id]` | PUT | auth() | modoActivo dueño/ADMIN | ✅ | whitelist campos | re-fetch acotado | no | 🟢 |
 | `/api/marcas` | GET | RRA | ADMIN | N/A | clamp | full marca + user PII | no | 🟡 |
-| `/api/marcas/[id]` | GET | **NONE** | — | **❌ IDOR** | — | **full marca (CUIT) + user.{email,phone} + pedidos** | no | **🔴** |
+| `/api/marcas/[id]` | GET | ~~NONE~~ → auth() | dueño/ADMIN/ESTADO | ✅ `marca.userId` | — | marca + user PII + pedidos (select explícito, gated) | no | ✅ C1 (#414) |
 | `/api/marcas/[id]` | PUT | auth() | dueño/ADMIN | ✅ `existing.userId` | raw | full marca | no | 🟡 |
 | `/api/validaciones` | GET | RRA | ADMIN, ESTADO | N/A | manual | include taller {id,nombre} | no | 🟢 |
 | `/api/validaciones` | POST | RRA | ADMIN | N/A | raw (tallerId sin validar) | full | no | 🟡 |
@@ -133,7 +135,7 @@ Leyenda — Auth: `RRA`=`requiereRolApi`, `auth()`=chequeo manual de sesión, `N
 |---|---|---|---|---|---|---|---|---|
 | `/api/colecciones` | GET | NONE (público) | — | N/A | parseInt sin guard | full coleccion + _count | no | 🟡 |
 | `/api/colecciones` | POST | RRA | ADMIN, CONTENIDO | N/A | manual | full | no | 🟢 |
-| `/api/colecciones/[id]` | GET | **NONE** | — | N/A | — | **coleccion + evaluacion (answer-key `correcta`)** | no | **🔴** |
+| `/api/colecciones/[id]` | GET | ~~NONE~~ → RRA | ADMIN, CONTENIDO | N/A | — | coleccion + videos (evaluacion removido) | no | ✅ C3 (#414) |
 | `/api/colecciones/[id]` | PUT, DELETE | RRA | ADMIN, CONTENIDO | N/A | raw (PUT) | full | no | 🟢 |
 | `/api/colecciones/[id]/upload` | POST | RRA | ADMIN, CONTENIDO | N/A | MIME+5MB | `{url}` | no | 🟢 |
 | `/api/colecciones/[id]/videos` | POST, DELETE | RRA | ADMIN, CONTENIDO | ✅ scope coleccionId | manual | full video | no | 🟢 |
@@ -161,7 +163,7 @@ Leyenda — Auth: `RRA`=`requiereRolApi`, `auth()`=chequeo manual de sesión, `N
 | `/api/denuncias` | POST | NONE (anónimo) | — | N/A | raw | full | **sí** `denuncias` | 🟡 |
 | `/api/denuncias` | GET | RRA | ADMIN, ESTADO | N/A | parseInt | full denuncia (descripcion, evidencia) | no | 🟡 |
 | `/api/denuncias/[codigo]` | GET | NONE (tracking anónimo) | — | N/A (código opaco) | manual | select acotado {codigo,tipo,estado,...} | no | 🟢 |
-| `/api/exportar` | GET | RRA | ADMIN, ESTADO | N/A | `tipo` sin whitelist estricta | **CSV con email/phone/CUIT** | **no** | **🔴** |
+| `/api/exportar` | GET | RRA | ADMIN, ESTADO | N/A | `tipo` sin whitelist estricta | **CSV con email/phone/CUIT** | **no** | **🔴 C4** (plan K) |
 | `/api/novedades` | GET | NONE (público) | — | N/A | clamp 1-20 | select explícito, sin PII | no | 🟢 |
 | `/api/notificaciones` | GET | auth() | logueado | ✅ where userId | parseInt sin clamp | propias | no | 🟡 |
 | `/api/notificaciones` | PUT | auth() | logueado | ✅ verifica userId | manual | propia | no | 🟢 |
@@ -184,28 +186,28 @@ Leyenda — Auth: `RRA`=`requiereRolApi`, `auth()`=chequeo manual de sesión, `N
 - **Archivo:** `src/app/api/marcas/[id]/route.ts:6-27`.
 - **Qué expone:** el handler GET no llama a `auth()` ni `requiereRolApi`. Devuelve `findUnique` con el objeto **Marca completo** (incluye `cuit`, `ubicacion`, `website`, `volumenMensual`, `frecuenciaCompra`) + `user: { email, name, phone, avatar }` + lista de `pedidos`.
 - **Escenario concreto:** un atacante anónimo itera/adivina IDs de marca (`curl https://.../api/marcas/<id>`) y cosecha email + teléfono + CUIT de todas las marcas → padrón comercial completo con datos de contacto para phishing/scraping.
-- **Mitigante:** consumido solo por `src/marca/componentes/contactar-taller.tsx:55` (componente MARCA autenticado). Las páginas públicas usan Prisma directo. → cerrar no rompe nada público.
-- **Fix propuesto:** agregar al inicio del GET `const x = await requiereRolApi(['ADMIN','ESTADO','MARCA']); if (x instanceof NextResponse) return x` (o `auth()` + ownership como el PUT), y reemplazar `include` por un `select` explícito que omita `email/phone/cuit` salvo para el dueño/roles autorizados.
+- **Mitigante:** consumido solo por `src/marca/componentes/contactar-taller.tsx:55`, y ese caller usa **PUT**, no GET → el GET no tenía ningún caller (ver §6 "código muerto"). Las páginas públicas usan Prisma directo.
+- **✅ RESUELTO (#414, `0758fad`, 2026-06-11):** se agregó `auth()` + gate dueño-o-`ADMIN`/`ESTADO` (mismo modelo que el PUT del archivo) + `select` explícito. Test de regresión `src/__tests__/k-01-criticos.test.ts` (401/403/200 + no-leak).
 
 ### C2 — `GET /api/talleres/[id]` expone PII sin autenticación
 - **Archivo:** `src/app/api/talleres/[id]/route.ts:7-32`.
 - **Qué expone:** sin auth. `include: { user: { select: { email, phone, name } }, ... }` + objeto taller completo, maquinaria, certificaciones, validaciones.
 - **Escenario concreto:** anónimo enumera IDs de taller y cosecha email + teléfono + nombre del dueño de cada taller (los IDs son visibles desde el directorio público).
-- **Mitigante:** consumido solo por componentes del propio taller editando su perfil (`taller/perfil/completar`, `editar-form`, `portfolio-manager`). La página pública `(public)/perfil/[id]` lee Prisma directo. → cerrar no rompe nada público.
-- **Fix propuesto:** exigir `auth()` y aplicar ownership (o `requiereRolApi(['ADMIN','ESTADO','MARCA','TALLER'])`); si se quiere un detalle parcialmente público para el directorio, separar un payload sin `user.email`/`user.phone` con `select` explícito.
+- **Mitigante:** los 4 callers (`taller/perfil/completar`, `editar-form`, `portfolio-manager` ×2) usan **PUT**, no GET → el GET no tenía ningún caller (ver §6 "código muerto"). La página pública `(public)/perfil/[id]` lee Prisma directo.
+- **✅ RESUELTO (#414, `0758fad`, 2026-06-11):** se agregó `auth()` + gate dueño-o-`ADMIN`/`ESTADO` (mismo modelo que el PUT del archivo). El `user` ya estaba en `select` explícito; ahora queda detrás del gate. Test de regresión incluido.
 
 ### C3 — `GET /api/colecciones/[id]` filtra el answer-key de las evaluaciones (sin auth)
 - **Archivo:** `src/app/api/colecciones/[id]/route.ts:6-26` (`include: { evaluacion: true }`).
 - **Qué expone:** el modelo `Evaluacion.preguntas` (Json) almacena el índice de la opción correcta — confirmado por el corrector en `colecciones/[id]/evaluacion/route.ts:94` (`preguntas as Array<{ correcta: number }>`). El GET es anónimo y serializa `evaluacion` completa.
 - **Escenario concreto:** un TALLER (o cualquier anónimo) hace `GET /api/colecciones/<id>`, lee `evaluacion.preguntas[].correcta`, y luego `POST .../evaluacion` con 100% → certificado válido que **sube el nivel del taller** (`aplicarNivel`) sin haber visto el curso. Rompe la integridad de toda la academia/certificación.
-- **Mitigante:** consumido solo por panel `(contenido)` autenticado. La corrección ya ocurre server-side, así que el cliente **nunca necesita** `correcta`.
-- **Fix propuesto:** quitar `evaluacion: true` del `include` del GET (o seleccionar solo `{ id, puntajeMinimo, _count }`), y sanitizar `preguntas` quitando `correcta` antes de serializar en cualquier lectura no-ADMIN/CONTENIDO. Independiente de auth: el answer-key no debe salir nunca al TALLER.
+- **Mitigante:** único caller del GET = panel `(contenido)/colecciones/[id]/page.tsx:47`, que consume solo escalares + `videos` (nunca `evaluacion`). La corrección ocurre server-side (`POST .../evaluacion`: el cliente manda solo `respuestas: number[]`), así que el cliente **nunca necesita** `correcta`.
+- **✅ RESUELTO (#414, `0758fad`, 2026-06-11):** gate `requiereRolApi(['ADMIN','CONTENIDO'])` (igual que PUT/DELETE del archivo y su único caller) + se eliminó `evaluacion` del `include`. No hubo que tocar la corrección (ya era server-side). Test verifica que el response no contiene `evaluacion`/`correcta`.
 
 ### C4 — `GET /api/exportar` exporta PII sin rate-limit
 - **Archivo:** `src/app/api/exportar/route.ts:7-37` (y ramas de marcas/acompañamiento más abajo).
 - **Qué expone:** auth `requiereRolApi(['ADMIN','ESTADO'])` presente (línea 9), pero **sin `rateLimit`** y genera CSVs con email + teléfono + CUIT de todo el padrón de talleres/marcas. Además `tipo` no tiene whitelist estricta (un `tipo` desconocido cae a CSV vacío en vez de 400).
 - **Escenario concreto:** una cuenta ESTADO/ADMIN comprometida o un insider exfiltra el padrón completo con PII en bucle sin throttling. Su gemelo `/api/estado/exportar` **sí** aplica `rateLimit(req,'exportar',...)`, lo que evidencia la omisión.
-- **Severidad menor que C1-C3:** requiere rol (no es anónimo).
+- **Severidad menor que C1-C3:** requiere rol (no es anónimo). **Queda para el plan ordenado del bloque K** (barrido de rate-limit), no entró en el hotfix #414.
 - **Fix propuesto:** insertar `const rl = await rateLimit(req, 'exportar', getClientIp(req)); if (rl) return rl` tras el chequeo de rol (igual que `estado/exportar/route.ts:14`), y validar `tipo` contra whitelist explícita con 400 ante valores no reconocidos.
 
 ---
@@ -280,7 +282,7 @@ Para cada endpoint protegido, el comportamiento esperado por rol que K-02 debe t
 
 **Endpoints públicos (deben dar 200 sin sesión) — K-02 verifica que NO exijan auth:** `/api/auth/registro`, `/api/auth/verificar-cuit`, `/api/auth/verificar-email`, `/api/auth/password-reset(+/[token])`, `/api/catalogos`, `/api/certificados/[id]`, `/api/denuncias` (POST/`[codigo]`), `/api/novedades`, `/api/stats/public`, `/api/health/version`, `/api/qr/[code]`, `/api/feedback*`, `/api/log-error`, `/api/colecciones` (GET).
 
-**Endpoints que HOY son públicos pero NO deberían (los 🔴 — K-02 debe testear que pasen a 401 tras el fix):** `/api/marcas/[id]` GET, `/api/talleres/[id]` GET, `/api/colecciones/[id]` GET.
+**Endpoints que eran públicos pero NO debían (los 🔴 — RESUELTOS en #414):** `/api/marcas/[id]` GET, `/api/talleres/[id]` GET, `/api/colecciones/[id]` GET ahora exigen sesión. K-02 debe codificar el estado correcto: anónimo → **401**, rol sin permiso → **403**, rol correcto → **200** (ya cubierto por `src/__tests__/k-01-criticos.test.ts`, que es el embrión de esa matriz).
 
 ---
 
@@ -288,7 +290,7 @@ Para cada endpoint protegido, el comportamiento esperado por rol que K-02 debe t
 
 > Las **excepciones** al patrón son donde viven los bugs. Cada 🔴 es la excepción a un patrón sano.
 
-1. **Auth por `requiereRolApi([roles])` (membresía sobre `roles[]`).** 50/86 archivos lo usan. → **Excepciones peligrosas:** las rutas de detalle `[id]` GET (`marcas`, `talleres`, `colecciones`) que omiten el chequeo por completo (C1/C2/C3). El patrón "lista usa RRA pero el detalle GET no" es la firma de los tres críticos.
+1. **Auth por `requiereRolApi([roles])` (membresía sobre `roles[]`).** 50/86 archivos lo usan. → **Excepciones peligrosas:** las rutas de detalle `[id]` GET (`marcas`, `talleres`, `colecciones`) que omitían el chequeo por completo (C1/C2/C3). El patrón "lista usa RRA pero el detalle GET no" fue la firma de los tres críticos — **ya cerrados en #414**.
 
 2. **Gating por membresía, no por modo activo.** Casi todo usa `tieneAlgunRol(roles[])`. Algunas rutas (cotizaciones, pedidos, ordenes, talleres/[id] PUT) usan `modoActivo`. → Inconsistencia a decidir: ¿acciones elevadas requieren que el rol sea el modo activo, o basta la membresía? Hoy basta membresía en la mayoría.
 
@@ -301,6 +303,8 @@ Para cada endpoint protegido, el comportamiento esperado por rol que K-02 debe t
 6. **Validación de input con zod.** Presente en mensajes, observaciones, rag, registro, chat, me/roles, cotizaciones POST. → Ausente en la mayoría de mutaciones admin/estado (§4.2). El único caso de **input crudo en endpoint anónimo** es `/api/denuncias` POST (mitigado por rate-limit, pero `codigo` por `count()+1` tiene race).
 
 7. **Guards de test/seed separados a propósito (defensa en profundidad).** `isTestMutationAllowed` ≠ `isCiBypass` (función distinta para que relajar el bypass de rate-limit no ensanche la autorización destructiva). `reset-seed-state` tiene doble guard (404 en prod + token CI) + allowlist cerrado. Patrón ejemplar, sin excepciones.
+
+8. **Código muerto que era superficie de ataque (hallazgo del hotfix #414).** Al re-verificar callers se confirmó que **los GET de `/api/marcas/[id]` y `/api/talleres/[id]` no tienen ningún caller de `fetch`** en el código: solo se usa el **PUT** de cada recurso (contactar-taller usa PUT; los editores de perfil del taller usan PUT). Eran handlers de lectura escritos por simetría con el PUT, nunca consumidos — una superficie anónima de fuga de PII sin función. En #414 quedaron **protegidos** con auth (defensivo, no resta nada operativo). **Decisión diferida a K-05:** si K-05 confirma que siguen sin uso, **eliminar el GET por completo es aún más seguro que mantenerlo protegido** (menos superficie, menos código que auditar). Evaluar en ese momento. (C3 no aplica: su GET sí tiene un caller real, el panel CONTENIDO.)
 
 ---
 
@@ -316,14 +320,14 @@ Los 5 testigos conocidos fueron encontrados y clasificados correctamente:
 
 ---
 
-## 8. ¿Requiere decisión de Gerardo?
+## 8. Decisiones de Gerardo
 
-Sí — **3 puntos:**
+1. **Hotfix de C1/C2/C3 — ✅ RESUELTO (#414, `0758fad`, 2026-06-11).** Se cerraron los 3 críticos con auth + select, scope quirúrgico, antes de K-02. La matriz 401/403/200 de K-02 ya parte del estado correcto (test de regresión `src/__tests__/k-01-criticos.test.ts`).
+2. **C4 (`/api/exportar` sin rate-limit) — ⏳ plan bloque K.** Queda para el barrido de rate-limit (§4.3): añadir `rateLimit('exportar')` + whitelist de `tipo`.
+3. **Confirmaciones de negocio (pendientes, no son bugs):** (a) ¿ESTADO debe ver PII de contacto (§4.4)? (b) ¿la exclusión de ADMIN en `configuracion-niveles/[id]`/`preview` es deliberada o un descuido? (c) ¿`CONTENIDO` con permisos de RAG y colecciones es intencional?
 
-1. **¿Hotfix inmediato de C1/C2/C3 o entran ordenados en el plan K?** Argumento a favor del hotfix: son explotables anónimamente y filtran PII (email/teléfono/CUIT) + answer-keys. Argumento a favor de esperar: el fix es de bajo riesgo (ninguno de los tres GET alimenta páginas públicas — las públicas usan Prisma directo), así que se puede hacer limpio en una PR corta sin urgencia destructiva. **Recomendación:** hotfix corto de los 3 GET (agregar auth + `select`) antes de K-02, para que la matriz 401/403/200 de K-02 ya teste el estado correcto y no codifique la fuga.
-2. **C4 (`/api/exportar` sin rate-limit):** ¿se considera crítico (export de PII) o mejorable? Es auth-gated; sugiero agruparlo con el hotfix de §4.3 (añadir `rateLimit('exportar')` + whitelist de `tipo`).
-3. **Confirmaciones de negocio (no son bugs):** (a) ¿ESTADO debe ver PII de contacto (§4.4)? (b) ¿la exclusión de ADMIN en `configuracion-niveles/[id]`/`preview` es deliberada o un descuido? (c) ¿`CONTENIDO` con permisos de RAG y colecciones es intencional?
+### Plan restante del bloque K
+- **K-02:** test pattern de auth (matriz §5 — 401/403/200 sistemática). Embrión ya en `k-01-criticos.test.ts`.
+- **K-05:** `select` explícito en los ~17 endpoints de §4.1. **Reevaluar** ahí si los GET de `/api/marcas/[id]` y `/api/talleres/[id]` (código muerto, §6.8) se eliminan en vez de mantenerse protegidos.
+- **Barrido de rate-limit:** C4 + los faltantes de §4.3.
 
-**Nada de esto se implementó.** Este documento es solo el insumo de K-02 (matriz §5) y K-05 (lista §4.1).
-</content>
-</invoke>
