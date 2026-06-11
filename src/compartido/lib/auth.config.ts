@@ -29,7 +29,11 @@ export default {
   session: {
     strategy: 'jwt',
     maxAge: 7 * 24 * 60 * 60,   // 7 dias
-    updateAge: 24 * 60 * 60,     // renueva cada 24h si hay actividad
+    // NOTA (B-05): bajo strategy 'jwt', Auth.js v5 re-firma y re-emite la cookie en
+    // CADA lectura de sesion (sliding window) e IGNORA updateAge — updateAge solo se
+    // respeta en la estrategia database-session (throttle de writes a DB). Queda aca
+    // como no-op documentado por si se migra a database-session en el futuro.
+    updateAge: 24 * 60 * 60,
   },
   cookies: {
     sessionToken: {
