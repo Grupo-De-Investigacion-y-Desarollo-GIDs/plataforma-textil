@@ -59,7 +59,21 @@ y prioridad sugerida.
 
 ## Datos
 
-_Sin items abiertos. D-01 y D-02 resueltos en U-05 (#410) — ver sección "Resueltas"._
+### D-03: Reseed coordinado pendiente — 2º paso de recorrido de tallerOro (cobertura plena del test F-1)
+
+- **Detectado en:** cierre niveles / F-1 (#412, `904c498`, 2026-06-11).
+- **Qué:** el seed (`prisma/seed.ts`) ahora le da a `tallerOro` (Carlos Mendoza / Corte Sur SRL)
+  DOS pasos de recorrido (`BRONCE→PLATA` + `PLATA→ORO`) para que su dashboard renderice el bloque
+  **"Historial de tu recorrido"** (requiere `historialNiveles.length > 1`) — la superficie exacta de F-1.
+- **Por qué cuelga:** CI corre contra el **DEV persistente sin reseed**, así que ese 2º log **todavía no
+  existe** en DEV. Hoy el test `tests/e2e/cierre-niveles-f1.spec.ts` pasa igual (el assert negativo
+  `\b(BRONCE|PLATA|ORO)\b` guarda el resto del dashboard), pero el bloque historial **no se ejercita** en CI.
+- **Acción:** en el **próximo reseed coordinado de DEV**, el bloque renderiza y el test pasa a cubrir la
+  superficie exacta de F-1. **NO reseedear de forma aislada por esto** — esperar al reseed coordinado
+  (avisar a Sergio, según [feedback de seed/deploy]). Sin urgencia: la red de regresión ya está commiteada.
+- **Severidad:** muy baja (cobertura latente, no bug). Se cierra solo al próximo reseed.
+
+_D-01 y D-02 resueltos en U-05 (#410) — ver sección "Resueltas"._
 
 ## Testing / CI
 
