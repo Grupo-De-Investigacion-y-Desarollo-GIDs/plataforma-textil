@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-06-11
+
+### Gerardo Breard
+- **12:02** `807d6de` — docs: B-05 a Resueltas + registrar B-06 (pill multi-tab stale)
+  - `.claude/DEUDA_TECNICA.md`
+
+
 ## 2026-06-10
 
 ### Gerardo Breard
