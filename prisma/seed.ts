@@ -1228,6 +1228,11 @@ async function main() {
   await prisma.logActividad.createMany({
     data: [
       { userId: admin.id, accion: 'NIVEL_SUBIDO', detalles: { tallerId: tallerPlata.id, nivelAnterior: 'BRONCE', nivelNuevo: 'PLATA', taller: 'Cooperativa Hilos del Sur' } },
+      // tallerOro tiene DOS pasos de recorrido (BRONCE→PLATA→ORO) para que el dashboard
+      // renderice el bloque "Historial de tu recorrido" (requiere length > 1). Esto da
+      // cobertura real al test de regresión F-1 (cierre-niveles): que ese historial
+      // muestre etapas vía nivelAEtapa(), nunca el enum crudo BRONCE/PLATA/ORO.
+      { userId: admin.id, accion: 'NIVEL_SUBIDO', detalles: { tallerId: tallerOro.id, nivelAnterior: 'BRONCE', nivelNuevo: 'PLATA', taller: 'Corte Sur SRL' } },
       { userId: admin.id, accion: 'NIVEL_SUBIDO', detalles: { tallerId: tallerOro.id, nivelAnterior: 'PLATA', nivelNuevo: 'ORO', taller: 'Corte Sur SRL' } },
       { userId: admin.id, accion: 'VALIDACION_RECHAZADA', detalles: { taller: 'Taller La Aguja', tipo: 'Habilitacion municipal', motivo: 'Documento ilegible' } },
       { userId: admin.id, accion: 'DENUNCIA_RECIBIDA', detalles: { codigo: `DEN-2026-${String(denunciaCount + 1).padStart(5, '0')}`, tipo: 'Trabajo no registrado' } },
@@ -1239,7 +1244,7 @@ async function main() {
     data: { tallerId: tallerBronce.id, coleccionId: col3.id, porcentajeCompletado: 33, videosVistos: 1 },
   })
 
-  console.log('  ✓ 4 logs adicionales + progreso bronce')
+  console.log('  ✓ 5 logs adicionales + progreso bronce')
 
   // ============================================
   // NOVEDADES (contenido público para carrusel landing)

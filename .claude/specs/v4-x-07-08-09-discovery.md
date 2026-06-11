@@ -1,7 +1,7 @@
 # DISCOVERY — Nivel 5 / X-07·X-08·X-09 (aplicación visual a dashboards, listados, detalle + Mi Formalización)
 
 > **Tipo:** discovery + reconciliación master ↔ narrativa V4. **NO implementa.**
-> **Fecha:** 2026-06-08 · **Autor:** Gerardo (vía Claude) · **Estado:** **CERRADO** — 5 decisiones de scope tomadas (§9). Trabajo restante definido.
+> **Fecha:** 2026-06-08 · **Autor:** Gerardo (vía Claude) · **Estado:** **EJECUTADO** — 5 decisiones de scope tomadas (§9) + cierre niveles implementado (§11). **Nivel 5 (X-07/X-09) archivado como cumplido.**
 > **Fuente autoritativa:** en copy/narrativa/formalización manda la **Narrativa V4** (`narrativa-V4-consolidado-niveles-1-a-4.md`). El **master** (`docs/Diseño/MASTER_V4.md-v2.pdf`, mayo 2026) manda en el **patrón visual** (paleta, componentes, tipografía) que la narrativa no toca.
 
 ---
@@ -177,3 +177,31 @@ Ver el resumen ejecutable en "Decisiones cerradas" (arriba). El próximo entrega
 ---
 
 **Fin del discovery.** No se tocó código ni schema. Decisiones §9 **cerradas**. Próximos entregables: (1) spec **"cierre niveles"** (F-1 + skill `niveles-formalizacion`, ~2h); (2) **§1.4** vitrina info marca (spec narrativa propio); (3) **F-04** cosmético en backlog post-piloto.
+
+---
+
+## 11. Cierre niveles — EJECUTADO (2026-06-11)
+
+Implementado en `fix/cierre-niveles-f1` (scope: SOLO F-1 + skill stale, según decisiones §9.2 y §9.5).
+
+- ✅ **F-1 arreglada:** `(taller)/taller/page.tsx`, bloque "Historial de nivel" → renombrado a
+  **"Historial de tu recorrido"**; `{nivelAnterior} → {nivelNuevo}` ahora envuelve ambos extremos con
+  **`nivelAEtapa()`**. El taller ya no ve "BRONCE → PLATA" crudo.
+- ✅ **Barrido de seguridad** (`grep BRONCE|PLATA|ORO` en `src/app` + componentes): **única fuga
+  user-facing era F-1.** El resto son: lógica interna (`taller.nivel ?? 'BRONCE'` → `nivelAEtapa`),
+  `value=` de filtros, vistas de ESTADO/ADMIN (analítica, decisión 3.8) y el propio helper. La vista de
+  detalle de ADMIN (`admin/talleres/[id]`) muestra el enum crudo en su log de actividad interna — es
+  **staff/analítica, no usuario**, por eso queda fuera del scope de F-1 (anotable como pulido interno).
+- ✅ **Skill `niveles-formalizacion` actualizada** (deuda C / decisión §9.5): banner de regla de
+  presentación arriba (niveles = internos; al usuario siempre etapa vía `nivelAEtapa`; sin badges de
+  medalla; sin lenguaje de ranking) + sección "Visualización" reescrita (antes instruía badges
+  bronze/silver/gold al usuario). Referencia a master 3.7-3.10 y Narrativa V4.
+- ✅ **Test de regresión:** `tests/e2e/cierre-niveles-f1.spec.ts` — el dashboard del taller no expone
+  `\b(BRONCE|PLATA|ORO)\b`. Seed: a `tallerOro` (Carlos Mendoza) se le añadió un 2º paso de recorrido
+  (BRONCE→PLATA→ORO) para que renderice el bloque "Historial de tu recorrido" (requiere `length > 1`) y
+  el test cubra la superficie exacta de F-1.
+
+**F-2 (prop muerta `userLevel` en `(taller)/layout.tsx` → `UserSidebar`):** sin fuga visible (no se
+renderiza). Fuera del scope acordado (SOLO F-1) → se deja como está. **X-07b cosmético = F-04 backlog.**
+**§1.4 vitrina info marca = spec narrativa propio.** Con esto **X-07/X-09 del master quedan archivados
+como cumplidos**; X-08 cubierto por §1.4.

@@ -292,10 +292,10 @@ export default async function TallerDashboardPage() {
         </div>
       </div>
 
-      {/* Historial de nivel */}
+      {/* Historial de tu recorrido (F-1: etapas, no niveles crudos) */}
       {historialNiveles.length > 1 && (
         <div className="bg-white rounded-card border border-gray-100 p-6">
-          <h2 className="font-serif font-bold text-gray-800 mb-4">Historial de nivel</h2>
+          <h2 className="font-serif font-bold text-gray-800 mb-4">Historial de tu recorrido</h2>
           <div className="space-y-2">
             {historialNiveles.map(log => {
               const detalles = log.detalles as { nivelAnterior?: string; nivelNuevo?: string }
@@ -310,7 +310,7 @@ export default async function TallerDashboardPage() {
                       {subio ? '↑' : '↓'}
                     </span>
                     <span className="text-gray-600">
-                      {detalles.nivelAnterior} → {detalles.nivelNuevo}
+                      {nivelAEtapa(detalles.nivelAnterior ?? 'BRONCE')} → {nivelAEtapa(detalles.nivelNuevo ?? 'BRONCE')}
                     </span>
                   </div>
                   <span className="text-gray-400 text-xs">
