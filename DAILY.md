@@ -3,6 +3,9 @@
 ## 2026-06-11
 
 ### Gerardo Breard
+- **13:00** `16334b1` — docs: D-03 reseed coordinado pendiente (cobertura test F-1)
+  - `.claude/DEUDA_TECNICA.md`
+
 - **12:02** `807d6de` — docs: B-05 a Resueltas + registrar B-06 (pill multi-tab stale)
   - `.claude/DEUDA_TECNICA.md`
 
