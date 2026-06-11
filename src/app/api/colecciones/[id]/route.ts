@@ -5,12 +5,19 @@ import { logAccionAdmin } from '@/compartido/lib/log'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    // K-01 C3: este GET, ademas de ser anonimo, incluia `evaluacion: true`, que
+    // filtra el answer-key (preguntas[].correcta). Gate a ADMIN/CONTENIDO (igual
+    // que PUT/DELETE de este archivo y su unico caller: el panel de contenido) y
+    // se elimina `evaluacion` del include. La correccion de la evaluacion ocurre
+    // server-side en POST .../evaluacion (el cliente nunca necesita `correcta`).
+    const sesion = await requiereRolApi(['ADMIN', 'CONTENIDO'])
+    if (sesion instanceof NextResponse) return sesion
+
     const { id } = await params
     const coleccion = await prisma.coleccion.findUnique({
       where: { id },
       include: {
         videos: { orderBy: { orden: 'asc' } },
-        evaluacion: true,
       },
     })
 

@@ -3,6 +3,15 @@
 ## 2026-06-11
 
 ### Gerardo Breard
+- **14:56** `882090f` — fix(k-01): cerrar 3 criticos C1/C2/C3 (fugas anonimas de PII y answer-key)
+  - `src/__tests__/k-01-criticos.test.ts`
+  - `src/app/api/colecciones/[id]/route.ts`
+  - `src/app/api/marcas/[id]/route.ts`
+  - `src/app/api/talleres/[id]/route.ts`
+
+- **13:00** `16334b1` — docs: D-03 reseed coordinado pendiente (cobertura test F-1)
+  - `.claude/DEUDA_TECNICA.md`
+
 - **12:02** `807d6de` — docs: B-05 a Resueltas + registrar B-06 (pill multi-tab stale)
   - `.claude/DEUDA_TECNICA.md`
 
