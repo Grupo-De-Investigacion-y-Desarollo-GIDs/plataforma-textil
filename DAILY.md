@@ -3,6 +3,9 @@
 ## 2026-06-11
 
 ### Gerardo Breard
+- **14:19** `452ff90` — docs(k-01): auditoria completa de endpoints
+  - `.claude/specs/v4-k-01-auditoria-endpoints.md`
+
 - **13:00** `16334b1` — docs: D-03 reseed coordinado pendiente (cobertura test F-1)
   - `.claude/DEUDA_TECNICA.md`
 
