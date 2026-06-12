@@ -1,5 +1,14 @@
 # Daily Log
 
+## 2026-06-12
+
+### Gerardo Breard
+- **13:13** `279d658` — test(k-02): test pattern reutilizable de auth (matriz 401/403/200)
+  - `.claude/specs/v4-k-01-auditoria-endpoints.md`
+  - `src/__tests__/_helpers/auth-matrix.ts`
+  - `src/__tests__/k-02-auth-matrix.test.ts`
+
+
 ## 2026-06-11
 
 ### Gerardo Breard
