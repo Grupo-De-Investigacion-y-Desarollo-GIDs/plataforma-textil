@@ -332,18 +332,18 @@ Helper hermano `ownershipMatrix` (mismo archivo `_helpers/auth-matrix.ts`): para
 | `/api/pedidos/[id]/invitaciones` POST | marca dueña | ADMIN | 403 | ✓ bloqueado |
 | `/api/notificaciones` PUT | dueño de la notif | ninguno | **403 (incl. inexistente)** | ✓ bloqueado |
 | `/api/upload/imagenes` POST `portfolio`/`pedido` | ata `entityId` al caller | — | 403 | ✓ bloqueado |
-| **`/api/upload/imagenes` POST `cotizacion`** | — | — | **200 ⚠** | **🔴 IDOR confirmado (C5)** |
+| **`/api/upload/imagenes` POST `cotizacion`** | taller elegible para el pedido | — | **403** | **✅ C5 RESUELTO** |
 
 **Convención 403 vs 404 (fotografiada):** las rutas `[id]` de recurso (pedidos, cotizaciones, ordenes, validaciones, invitaciones) devuelven **404 si no existe** y **403 si existe pero no sos dueño** (revela existencia). `notificaciones` PUT devuelve **403 también para inexistente** (no revela). Inconsistencia menor; no es bug, se documenta.
 
 **Endpoints sin superficie IDOR (self-scoped, verificados):** `/api/colecciones/[id]/progreso` POST, `/api/colecciones/[id]/evaluacion` POST, `/api/auth/mi-cuenta`, `/api/cuenta`, `/api/usuarios/me/*` — el recurso se deriva de la sesión (`findFirst({ userId })`), no de un id del cliente → no hay IDOR posible. La lista `cotizaciones` GET / `pedidos` GET filtran por scope en el `where`, no por `[id]`.
 
-#### 🔴 C5 — `POST /api/upload/imagenes` contexto `cotizacion`: IDOR de escritura (confirmado)
-- **Archivo:** `src/app/api/upload/imagenes/route.ts:77-84`.
-- **Qué pasa:** los contextos `portfolio` y `pedido` atan el `entityId` al caller (`findFirst({ id: entityId, userId })`). El contexto **`cotizacion` NO usa `entityId`** — solo chequea `taller.findFirst({ where: { userId } })` ("¿el caller posee algún taller?"). Cualquier TALLER autenticado puede subir un objeto validado (imagen) a la ruta de almacenamiento `cotizacion/<entityId-ajeno>/...` de **cualquier** cotización.
-- **Escenario:** taller A (cualquiera) → `POST` con `contexto=cotizacion`, `entityId=<cotización de otra marca>`, archivo imagen válido → **200**, objeto escrito bajo el namespace ajeno.
-- **Severidad: MEDIA, no bloqueante de promoción por sí sola.** Requiere usuario TALLER autenticado (no anónimo); **no filtra PII** ni **muta el registro** de la cotización (solo escribe un objeto-imagen en storage bajo una carpeta adivinable; el `{url}` se devuelve al atacante, no se adjunta automáticamente a la cotización ajena). Impacto real = abuso de almacenamiento / inyección de imágenes en namespace ajeno. **Ya estaba documentado como excepción 🟡 en §6.3** — K-02 lo confirma y lo eleva a hallazgo nominado (C5).
-- **Test:** `k-02-idor-matrix.test.ts` **fotografía** el comportamiento actual (`200`) con comentario `[IDOR confirmado]`. **NO se corrigió de oficio.** Fix propuesto (decisión de Gerardo): en la rama `cotizacion`, resolver la cotización por `entityId` y verificar que su `taller.userId === session.user.id` (o que el caller sea la marca dueña del pedido), igual que hacen `portfolio`/`pedido`.
+#### ✅ C5 — `POST /api/upload/imagenes` contexto `cotizacion`: IDOR de escritura — RESUELTO
+- **Archivo:** `src/app/api/upload/imagenes/route.ts` (rama `cotizacion`).
+- **Qué pasaba:** los contextos `portfolio` y `pedido` atan el `entityId` al caller. El contexto **`cotizacion` NO usaba `entityId`** — solo chequeaba `taller.findFirst({ where: { userId } })` ("¿el caller posee algún taller?"). Cualquier TALLER autenticado podía subir un objeto validado (imagen) a la ruta `cotizacion/<entityId-ajeno>/...` de cualquier pedido.
+- **Semántica del hallazgo (clave para el fix):** el `entityId` de este contexto es el **`pedidoId`** que el taller está cotizando (ver `src/taller/componentes/cotizar-form.tsx:32`), y la imagen se sube **antes** de crear la cotización. Por eso el gate correcto no es *ownership* de una cotización (no existe aún) sino **elegibilidad para cotizar el pedido**.
+- **✅ RESUELTO (diseño A — elegibilidad, decisión de Gerardo, PR (squash SHA al mergear)):** se extrajo el criterio de elegibilidad de `POST /api/cotizaciones` a `elegibilidadCotizar(callerUserId, tallerId, pedidoId)` en `src/compartido/lib/cotizaciones.ts` (pedido existe + no-propio + `PUBLICADO` + invitación si `INVITACION`). `POST /api/cotizaciones` ahora la usa (refactor sin cambio de comportamiento; sus tests `acceso-verificado.test.ts` siguen verdes sin tocarse). La rama `cotizacion` del upload resuelve `entityId` como pedidoId y aplica `elegibilidadCotizar` → no elegible **403**. Es **elegibilidad, no ownership** — el taller no posee el pedido.
+- **Test:** `k-02-idor-matrix.test.ts` des-fotografiado: el caso no-elegible pasa de `200` a **403**; se sumó el caso positivo (taller elegible → **200**, flujo legítimo intacto). `cotizaciones-elegibilidad.test.ts` cubre el contrato de la función compartida.
 
 ---
 
@@ -355,7 +355,7 @@ Helper hermano `ownershipMatrix` (mismo archivo `_helpers/auth-matrix.ts`): para
 
 2. **Gating por membresía, no por modo activo.** Casi todo usa `tieneAlgunRol(roles[])`. Algunas rutas (cotizaciones, pedidos, ordenes, talleres/[id] PUT) usan `modoActivo`. → Inconsistencia a decidir: ¿acciones elevadas requieren que el rol sea el modo activo, o basta la membresía? Hoy basta membresía en la mayoría.
 
-3. **Ownership derivado de la sesión (anti-IDOR).** Patrón sano consistente: `findFirst({ where: { userId } })` para resolver el taller/marca del caller (cotizaciones, progreso, evaluacion, validaciones/upload, signed-url, pedidos). → **Excepción:** `/api/upload/imagenes` contexto `cotizacion` no ata el `entityId` al caller (`upload/imagenes/route.ts:77-84`) — escritura de objetos bajo cotización ajena.
+3. **Ownership derivado de la sesión (anti-IDOR).** Patrón sano consistente: `findFirst({ where: { userId } })` para resolver el taller/marca del caller (cotizaciones, progreso, evaluacion, validaciones/upload, signed-url, pedidos). → **Excepción (ya cerrada, C5):** `/api/upload/imagenes` contexto `cotizacion` no ataba el `entityId` al caller — escritura de objetos bajo cotización ajena. **RESUELTO** gateando por elegibilidad-para-cotizar el pedido (`elegibilidadCotizar`, ver §5.2).
 
 4. **`include` vs `select` explícito.** Las rutas nuevas (novedades GET, denuncias/[codigo], cotizaciones GET, validaciones GET) usan `select` acotado. Las más viejas usan `include`/objeto completo. → La sección §4.1 es la lista de excepciones (insumo K-05). El patrón correcto ya existe en el repo; falta propagarlo.
 
@@ -385,14 +385,14 @@ Los 5 testigos conocidos fueron encontrados y clasificados correctamente:
 
 1. **Hotfix de C1/C2/C3 — ✅ RESUELTO (#414, `0758fad`, 2026-06-11).** Se cerraron los 3 críticos con auth + select, scope quirúrgico, antes de K-02. La matriz 401/403/200 de K-02 ya parte del estado correcto (test de regresión `src/__tests__/k-01-criticos.test.ts`).
 2. **C4 (`/api/exportar` sin rate-limit) — ⏳ plan bloque K.** Queda para el barrido de rate-limit (§4.3): añadir `rateLimit('exportar')` + whitelist de `tipo`.
-2bis. **C5 (`/api/upload/imagenes` contexto `cotizacion`, IDOR de escritura) — ⏳ pendiente, descubierto en K-02 tanda 2 (§5.2).** MEDIA, no bloqueante de promoción (requiere TALLER autenticado, no filtra PII ni muta el registro). Fix propuesto en §5.2. **Decisión de Gerardo.**
+2bis. **C5 (`/api/upload/imagenes` contexto `cotizacion`, IDOR de escritura) — ✅ RESUELTO (diseño A — elegibilidad, PR (squash SHA al mergear)).** Gate por `elegibilidadCotizar` (fuente única compartida con `POST /api/cotizaciones`). Ver §5.2.
 3. **Confirmaciones de negocio (pendientes, no son bugs):** (a) ¿ESTADO debe ver PII de contacto (§4.4)? (b) ¿la exclusión de ADMIN en `configuracion-niveles/[id]`/`preview` es deliberada o un descuido? (c) ¿`CONTENIDO` con permisos de RAG y colecciones es intencional?
 
 > **TODO rastreable (ref §8.3.b + §5.1):** `PUT /api/estado/configuracion-niveles/[id]` y `POST .../preview` excluyen ADMIN (`requiereRolApi(['ESTADO'])`), a diferencia del resto de `/api/estado/*`. El test `src/__tests__/k-02-auth-matrix.test.ts` **fotografía** el comportamiento real (`ADMIN→403`) con comentario que apunta a esta sección. **Si la decisión es incluir ADMIN:** cambiar el endpoint y el test juntos (el test fallará y recordará actualizarlo). Decisión post-promoción.
 
 ### Plan restante del bloque K
 - **K-02 tanda 1 — ✅ HECHA (#415, `39159eb`, 2026-06-12).** Helper reutilizable `authMatrix` (`src/__tests__/_helpers/auth-matrix.ts`) + 20 endpoints de auth-por-rol cubiertos, 110 tests (ver §5.1). CI verde. Sin cambios de comportamiento.
-- **K-02 tanda 2 — ✅ HECHA (matriz IDOR, §5.2).** Helper hermano `ownershipMatrix` + 12 recursos cubiertos. **Hallazgo: C5** (`upload/imagenes` contexto `cotizacion`, IDOR de escritura — ver §5.2). El resto de los recursos con ownership bloquean correctamente al no-owner (403). **NO se corrigió ningún endpoint.**
+- **K-02 tanda 2 — ✅ HECHA (matriz IDOR, §5.2).** Helper hermano `ownershipMatrix` + 12 recursos cubiertos. Hallazgo **C5** (`upload/imagenes` contexto `cotizacion`) → **✅ RESUELTO** (diseño A, elegibilidad). El resto de los recursos con ownership bloquean correctamente al no-owner (403).
 - **K-05:** `select` explícito en los ~17 endpoints de §4.1. **Reevaluar** ahí si los GET de `/api/marcas/[id]` y `/api/talleres/[id]` (código muerto, §6.8) se eliminan en vez de mantenerse protegidos.
 - **Barrido de rate-limit:** C4 (`/api/exportar`) + los faltantes de §4.3.
 

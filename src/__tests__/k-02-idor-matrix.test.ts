@@ -349,17 +349,27 @@ describe('POST /api/upload/imagenes — ownership por contexto', () => {
     expect(res.status).toBe(200)
   })
 
-  // ⚠⚠ HALLAZGO IDOR (auditoría §6.3, confirmado): el contexto 'cotizacion' NO
-  // usa entityId — solo chequea que el caller posea ALGÚN taller. Un taller
-  // cualquiera puede escribir un objeto bajo la carpeta de una cotización ajena.
-  // El test FOTOGRAFÍA el comportamiento ACTUAL (200). El comportamiento SEGURO
-  // sería 403 si entityId no pertenece al caller. NO se corrige de oficio:
-  // reportado para decisión (ver §5.1 / hallazgo K-02-IDOR).
-  it('cotizacion: entityId AJENO -> 200 [IDOR confirmado: entityId no atado al caller]', async () => {
+  // C5 CERRADO (fix elegibilidad): el contexto 'cotizacion' usa entityId como
+  // pedidoId y gatea por ELEGIBILIDAD para cotizar ese pedido (elegibilidadCotizar,
+  // misma fuente que POST /api/cotizaciones). entityId = pedido al que el taller
+  // NO es elegible -> 403 (antes 200, era el IDOR). El caso positivo verifica que
+  // el flujo legítimo (taller elegible) sigue subiendo imágenes.
+  it('cotizacion: pedido NO elegible (ajeno/no-publicado) -> 403 [C5 cerrado]', async () => {
     deps.setSession(makeSession('TALLER', 'attacker'))
-    m('taller').findFirst.mockResolvedValue({ id: 'attacker-taller', userId: 'attacker' }) // posee SU taller
-    const res = await post(uploadReq('cotizacion', 'cotizacion-de-otra-marca'))
-    // Comportamiento actual = 200 (vulnerable). Si se arregla a 403, actualizar este test.
+    m('taller').findFirst.mockResolvedValue({ id: 'attacker-taller' }) // posee SU taller
+    m('pedido').findUnique.mockResolvedValue(null) // pedido no resuelve -> no elegible
+    const res = await post(uploadReq('cotizacion', 'pedido-ajeno'))
+    expect(res.status).toBe(403)
+  })
+
+  it('cotizacion: taller ELEGIBLE para el pedido -> 200 (flujo legítimo intacto)', async () => {
+    deps.setSession(makeSession('TALLER', 'taller-user'))
+    m('taller').findFirst.mockResolvedValue({ id: 'mi-taller' })
+    m('pedido').findUnique.mockResolvedValue({
+      id: 'p1', estado: 'PUBLICADO', visibilidad: 'PUBLICO',
+      marca: { userId: 'otra-marca', nombre: 'M' }, omId: 'OM1', tipoPrenda: 'X', cantidad: 1, marcaId: 'mi1',
+    })
+    const res = await post(uploadReq('cotizacion', 'p1'))
     expect(res.status).toBe(200)
   })
 })

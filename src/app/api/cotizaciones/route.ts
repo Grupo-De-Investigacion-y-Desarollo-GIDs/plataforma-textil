@@ -6,6 +6,7 @@ import { notificarCotizacion } from '@/compartido/lib/notificaciones'
 import { logActividad } from '@/compartido/lib/log'
 import { rateLimit } from '@/compartido/lib/ratelimit'
 import { apiHandler, errorForbidden, errorNotFound, errorConflict, errorResponse } from '@/compartido/lib/api-errors'
+import { elegibilidadCotizar } from '@/compartido/lib/cotizaciones'
 import { z } from 'zod'
 
 const cotizacionSchema = z.object({
@@ -98,30 +99,26 @@ export const POST = apiHandler(async (req: NextRequest) => {
   }
   const data = parsed.data
 
-  const pedido = await prisma.pedido.findUnique({
-    where: { id: data.pedidoId },
-    select: { id: true, estado: true, visibilidad: true, marca: { select: { userId: true, nombre: true } }, omId: true, tipoPrenda: true, cantidad: true, marcaId: true },
-  })
-  if (!pedido) return errorNotFound('pedido')
-
-  if (pedido.marca.userId === sesion.userId) {
-    return errorResponse({
-      code: 'AUTO_COTIZACION',
-      message: 'No podés cotizar un pedido que publicaste como marca.',
-      status: 403,
-    })
+  // Elegibilidad del taller para cotizar el pedido (fuente única compartida con
+  // el upload de imágenes de cotización). Mapeo a los mismos códigos/estados.
+  const elegible = await elegibilidadCotizar(sesion.userId, taller.id, data.pedidoId)
+  if (!elegible.ok) {
+    switch (elegible.motivo) {
+      case 'PEDIDO_NO_ENCONTRADO':
+        return errorNotFound('pedido')
+      case 'AUTO_COTIZACION':
+        return errorResponse({
+          code: 'AUTO_COTIZACION',
+          message: 'No podés cotizar un pedido que publicaste como marca.',
+          status: 403,
+        })
+      case 'PEDIDO_NO_DISPONIBLE':
+        return errorResponse({ code: 'INVALID_INPUT', message: 'El pedido no esta disponible para cotizar', status: 400 })
+      case 'NO_INVITADO':
+        return errorForbidden()
+    }
   }
-
-  if (pedido.estado !== 'PUBLICADO') {
-    return errorResponse({ code: 'INVALID_INPUT', message: 'El pedido no esta disponible para cotizar', status: 400 })
-  }
-
-  if (pedido.visibilidad === 'INVITACION') {
-    const invitacion = await prisma.pedidoInvitacion.findUnique({
-      where: { pedidoId_tallerId: { pedidoId: data.pedidoId, tallerId: taller.id } },
-    })
-    if (!invitacion) return errorForbidden()
-  }
+  const pedido = elegible.pedido
 
   const venceEn = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 
