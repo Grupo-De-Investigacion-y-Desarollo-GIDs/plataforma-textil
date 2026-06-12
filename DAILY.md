@@ -3,6 +3,14 @@
 ## 2026-06-12
 
 ### Gerardo Breard
+- **17:18** `9e1f120` — fix(k-02): cerrar C5 IDOR upload/imagenes contexto cotizacion (elegibilidad)
+  - `.claude/specs/v4-k-01-auditoria-endpoints.md`
+  - `src/__tests__/cotizaciones-elegibilidad.test.ts`
+  - `src/__tests__/k-02-idor-matrix.test.ts`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/app/api/upload/imagenes/route.ts`
+  - `src/compartido/lib/cotizaciones.ts`
+
 - **16:27** `9fe8b60` — test(k-02): tanda 2 matriz IDOR (ownership) + hallazgo C5
   - `.claude/specs/v4-k-01-auditoria-endpoints.md`
   - `src/__tests__/_helpers/auth-matrix.ts`
