@@ -3,6 +3,11 @@
 ## 2026-06-12
 
 ### Gerardo Breard
+- **16:27** `9fe8b60` — test(k-02): tanda 2 matriz IDOR (ownership) + hallazgo C5
+  - `.claude/specs/v4-k-01-auditoria-endpoints.md`
+  - `src/__tests__/_helpers/auth-matrix.ts`
+  - `src/__tests__/k-02-idor-matrix.test.ts`
+
 - **15:14** `db4a619` — docs(k-02): tanda 1 hecha (#415); plan explicito de tanda 2 (matriz IDOR)
   - `.claude/specs/v4-k-01-auditoria-endpoints.md`
 
