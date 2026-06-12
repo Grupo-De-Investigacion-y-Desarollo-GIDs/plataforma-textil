@@ -3,6 +3,9 @@
 ## 2026-06-12
 
 ### Gerardo Breard
+- **15:14** `db4a619` — docs(k-02): tanda 1 hecha (#415); plan explicito de tanda 2 (matriz IDOR)
+  - `.claude/specs/v4-k-01-auditoria-endpoints.md`
+
 - **13:13** `279d658` — test(k-02): test pattern reutilizable de auth (matriz 401/403/200)
   - `.claude/specs/v4-k-01-auditoria-endpoints.md`
   - `src/__tests__/_helpers/auth-matrix.ts`
