@@ -3,6 +3,11 @@
 ## 2026-06-11
 
 ### Gerardo Breard
+- **16:14** `a2733e6` — docs(k-01): marcar C1/C2/C3 RESUELTOS (#414) + nota de codigo muerto
+  - `.claude/specs/v4-k-01-auditoria-endpoints.md`
+
+- **14:19** `452ff90` — docs(k-01): auditoria completa de endpoints
+  - `.claude/specs/v4-k-01-auditoria-endpoints.md`
 - **14:56** `882090f` — fix(k-01): cerrar 3 criticos C1/C2/C3 (fugas anonimas de PII y answer-key)
   - `src/__tests__/k-01-criticos.test.ts`
   - `src/app/api/colecciones/[id]/route.ts`
