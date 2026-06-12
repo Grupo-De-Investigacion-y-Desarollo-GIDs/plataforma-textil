@@ -181,3 +181,91 @@ export function publicMatrix(
     expect(res.status).toBe(successStatus)
   })
 }
+
+// ─── K-02 tanda 2 — matriz IDOR (ownership: owner vs no-owner) ────────────────
+//
+// El recurso es el MISMO en todos los casos; lo que cambia es la IDENTIDAD de
+// la sesion. El caso CRITICO es el "no-owner" (mismo rol, otra identidad): si
+// muta/lee el recurso ajeno, es IDOR. `ownershipMatrix` necesita inyectar
+// sesiones con id explicito (owner-1 vs intruder-1), por eso su `deps` recibe
+// `setSession(sessionObject | null)` (firma distinta a la de authMatrix).
+
+export type OwnerSuccess = number | 'passes-ownership'
+
+export interface OwnershipSpec {
+  importer: () => Promise<Record<string, unknown>>
+  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  url: string
+  params?: Record<string, string>
+  body?: unknown
+  /** Rol del dueño legitimo del recurso. */
+  ownerRole: Rol
+  /** Id de usuario que figura como dueño en el recurso mockeado. */
+  ownerId: string
+  /** Rol del intruso (default = ownerRole: mismo rol, otra identidad). */
+  intruderRole?: Rol
+  /** Id del intruso (distinto de ownerId). */
+  intruderId?: string
+  /** Roles con acceso transversal legitimo (ADMIN/ESTADO segun el endpoint). */
+  transversal?: Rol[]
+  /** Status esperado para el intruso: 403 (revela existencia) o 404 (no la revela). */
+  nonOwnerStatus: 403 | 404
+  /** Exito del dueño: status exacto, o 'passes-ownership' (no 401/403) si el 200 exige fixtures pesados. */
+  ownerSuccess: OwnerSuccess
+  /** Monta el recurso en el proxy de prisma (mismo recurso para todos los casos). */
+  setup?: () => void
+}
+
+interface OwnershipDeps {
+  setSession: (session: { user: Record<string, unknown> } | null) => void
+}
+
+/**
+ * Genera la matriz IDOR de un endpoint:
+ *   anonimo -> 401
+ *   owner (rol correcto, su recurso) -> ownerSuccess
+ *   no-owner (mismo rol, otra identidad) -> nonOwnerStatus   ← el caso IDOR
+ *   transversal (ADMIN/ESTADO) -> NO 403
+ * Debe llamarse dentro de un `describe(...)`.
+ */
+export function ownershipMatrix(spec: OwnershipSpec, deps: OwnershipDeps) {
+  const intruderRole = spec.intruderRole ?? spec.ownerRole
+  const intruderId = spec.intruderId ?? 'intruder-1'
+  const transversal = spec.transversal ?? []
+
+  it('anonimo -> 401', async () => {
+    deps.setSession(null)
+    spec.setup?.()
+    const res = await invoke(spec as AuthMatrixSpec)
+    expect(res.status).toBe(401)
+  })
+
+  it(`owner (${spec.ownerRole}, su recurso) -> ${spec.ownerSuccess}`, async () => {
+    deps.setSession(makeSession(spec.ownerRole, spec.ownerId))
+    spec.setup?.()
+    const res = await invoke(spec as AuthMatrixSpec)
+    if (typeof spec.ownerSuccess === 'number') {
+      expect(res.status).toBe(spec.ownerSuccess)
+    } else {
+      expect(res.status).not.toBe(401)
+      expect(res.status).not.toBe(403)
+    }
+  })
+
+  it(`no-owner (${intruderRole}, recurso ajeno) -> ${spec.nonOwnerStatus} [IDOR]`, async () => {
+    deps.setSession(makeSession(intruderRole, intruderId))
+    spec.setup?.()
+    const res = await invoke(spec as AuthMatrixSpec)
+    expect(res.status).toBe(spec.nonOwnerStatus)
+  })
+
+  for (const role of transversal) {
+    it(`${role} transversal -> no 403`, async () => {
+      deps.setSession(makeSession(role, `${role.toLowerCase()}-x`))
+      spec.setup?.()
+      const res = await invoke(spec as AuthMatrixSpec)
+      expect(res.status).not.toBe(401)
+      expect(res.status).not.toBe(403)
+    })
+  }
+}
