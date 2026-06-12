@@ -284,6 +284,35 @@ Para cada endpoint protegido, el comportamiento esperado por rol que K-02 debe t
 
 **Endpoints que eran públicos pero NO debían (los 🔴 — RESUELTOS en #414):** `/api/marcas/[id]` GET, `/api/talleres/[id]` GET, `/api/colecciones/[id]` GET ahora exigen sesión. K-02 debe codificar el estado correcto: anónimo → **401**, rol sin permiso → **403**, rol correcto → **200** (ya cubierto por `src/__tests__/k-01-criticos.test.ts`, que es el embrión de esa matriz).
 
+### 5.1 Estado K-02 — cobertura del test pattern (`src/__tests__/k-02-auth-matrix.test.ts`)
+
+El helper `authMatrix` (en `src/__tests__/_helpers/auth-matrix.ts`) genera, por endpoint, los casos `anónimo→401 / rol-sin-permiso→403 / rol-ok→2xx`, mockeando `auth()` para ejercitar el gating real (`requiereRolApi → tieneAlgunRol`). Endpoints con ✓ ya están testeados sistemáticamente:
+
+| Endpoint (método) | Roles OK | K-02 |
+|---|---|---|
+| `/api/admin/stats` GET | ADMIN | ✓ |
+| `/api/admin/usuarios` GET | ADMIN | ✓ (no-leak PII) |
+| `/api/admin/usuarios-buscar` GET | ADMIN, ESTADO | ✓ |
+| `/api/admin/whatsapp` GET | ADMIN, ESTADO | ✓ |
+| `/api/admin/rag` GET | ADMIN, CONTENIDO | ✓ |
+| `/api/admin/config` GET | ADMIN | ✓ |
+| `/api/marcas` GET | ADMIN | ✓ (no-leak PII) |
+| `/api/talleres` GET | ADMIN, ESTADO, MARCA | ✓ |
+| `/api/validaciones` GET | ADMIN, ESTADO | ✓ |
+| `/api/validaciones` POST | ADMIN | ✓ (201) |
+| `/api/contenido/novedades` GET | CONTENIDO, ADMIN | ✓ |
+| `/api/colecciones/[id]/evaluacion` GET | ADMIN, CONTENIDO | ✓ (no-leak `correcta`) |
+| `/api/colecciones/[id]/evaluacion` POST | TALLER | ✓ (gate) |
+| `/api/auditorias` GET | ADMIN, ESTADO | ✓ |
+| `/api/estado/configuracion-niveles` GET | ESTADO, ADMIN | ✓ |
+| `/api/estado/configuracion-niveles/[id]` PUT | **ESTADO (ADMIN→403)** | ✓ ⚠ inconsistencia fotografiada |
+| `/api/estado/demanda-insatisfecha` GET | ESTADO, ADMIN | ✓ |
+| `/api/exportar` GET | ADMIN, ESTADO | ✓ (no-leak PII; C4 rate-limit sigue pendiente) |
+| `/api/marcas/[id]` GET, `/api/talleres/[id]` GET, `/api/colecciones/[id]` GET | (los 🔴) | ✓ vía `k-01-criticos.test.ts` |
+| `/api/stats/public` GET, `/api/health/version` GET | público | ✓ (anónimo→200, sin gate) |
+
+**Hallazgo de K-02 (punto 4 del reporte):** ningún test reveló un crítico nuevo. La única discrepancia es la ya documentada en §5/§8.3(b): `configuracion-niveles/[id]` PUT (y `/preview`) excluyen ADMIN (`requiereRolApi(['ESTADO'])`), a diferencia del resto de `/api/estado/*`. El test **fotografía** el comportamiento real (`ADMIN→403`) en vez de corregirlo; cambiar el endpoint es decisión post-promoción. Resto de la matriz §5 sin cubrir aún: endpoints con ownership/scope (pedidos/[id], cotizaciones, ordenes, validaciones/[id]) — su 200 depende de pertenencia, no solo de rol; quedan para una segunda tanda de K-02 (matriz IDOR) o K-04.
+
 ---
 
 ## 6. Patrones transversales y sus excepciones
@@ -327,7 +356,7 @@ Los 5 testigos conocidos fueron encontrados y clasificados correctamente:
 3. **Confirmaciones de negocio (pendientes, no son bugs):** (a) ¿ESTADO debe ver PII de contacto (§4.4)? (b) ¿la exclusión de ADMIN en `configuracion-niveles/[id]`/`preview` es deliberada o un descuido? (c) ¿`CONTENIDO` con permisos de RAG y colecciones es intencional?
 
 ### Plan restante del bloque K
-- **K-02:** test pattern de auth (matriz §5 — 401/403/200 sistemática). Embrión ya en `k-01-criticos.test.ts`.
+- **K-02:** test pattern de auth (matriz §5 — 401/403/200 sistemática). 🔵 **En progreso** — helper reutilizable `authMatrix` + 20 endpoints cubiertos (ver §5.1). Falta la segunda tanda (endpoints con ownership/scope → matriz IDOR).
 - **K-05:** `select` explícito en los ~17 endpoints de §4.1. **Reevaluar** ahí si los GET de `/api/marcas/[id]` y `/api/talleres/[id]` (código muerto, §6.8) se eliminan en vez de mantenerse protegidos.
 - **Barrido de rate-limit:** C4 + los faltantes de §4.3.
 
