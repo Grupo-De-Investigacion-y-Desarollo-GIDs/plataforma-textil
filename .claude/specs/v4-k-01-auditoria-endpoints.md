@@ -286,6 +286,8 @@ Para cada endpoint protegido, el comportamiento esperado por rol que K-02 debe t
 
 ### 5.1 Estado K-02 — cobertura del test pattern (`src/__tests__/k-02-auth-matrix.test.ts`)
 
+> **Tanda 1 ✅ MERGEADA (#415, `39159eb`, 2026-06-12, CI verde).** 110 tests sobre 20 endpoints de auth-por-rol. La **tanda 2 (matriz IDOR)** queda pendiente — ver §8 "Plan restante del bloque K".
+
 El helper `authMatrix` (en `src/__tests__/_helpers/auth-matrix.ts`) genera, por endpoint, los casos `anónimo→401 / rol-sin-permiso→403 / rol-ok→2xx`, mockeando `auth()` para ejercitar el gating real (`requiereRolApi → tieneAlgunRol`). Endpoints con ✓ ya están testeados sistemáticamente:
 
 | Endpoint (método) | Roles OK | K-02 |
@@ -355,8 +357,11 @@ Los 5 testigos conocidos fueron encontrados y clasificados correctamente:
 2. **C4 (`/api/exportar` sin rate-limit) — ⏳ plan bloque K.** Queda para el barrido de rate-limit (§4.3): añadir `rateLimit('exportar')` + whitelist de `tipo`.
 3. **Confirmaciones de negocio (pendientes, no son bugs):** (a) ¿ESTADO debe ver PII de contacto (§4.4)? (b) ¿la exclusión de ADMIN en `configuracion-niveles/[id]`/`preview` es deliberada o un descuido? (c) ¿`CONTENIDO` con permisos de RAG y colecciones es intencional?
 
+> **TODO rastreable (ref §8.3.b + §5.1):** `PUT /api/estado/configuracion-niveles/[id]` y `POST .../preview` excluyen ADMIN (`requiereRolApi(['ESTADO'])`), a diferencia del resto de `/api/estado/*`. El test `src/__tests__/k-02-auth-matrix.test.ts` **fotografía** el comportamiento real (`ADMIN→403`) con comentario que apunta a esta sección. **Si la decisión es incluir ADMIN:** cambiar el endpoint y el test juntos (el test fallará y recordará actualizarlo). Decisión post-promoción.
+
 ### Plan restante del bloque K
-- **K-02:** test pattern de auth (matriz §5 — 401/403/200 sistemática). 🔵 **En progreso** — helper reutilizable `authMatrix` + 20 endpoints cubiertos (ver §5.1). Falta la segunda tanda (endpoints con ownership/scope → matriz IDOR).
+- **K-02 tanda 1 — ✅ HECHA (#415, `39159eb`, 2026-06-12).** Helper reutilizable `authMatrix` (`src/__tests__/_helpers/auth-matrix.ts`) + 20 endpoints de auth-por-rol cubiertos, 110 tests (ver §5.1). CI verde. Sin cambios de comportamiento.
+- **K-02 tanda 2 — ⏳ pendiente (matriz IDOR).** Endpoints cuyo 200 depende de **pertenencia**, no solo de rol: `pedidos/[id]` (GET/PUT), `cotizaciones` (GET/PUT/`[id]`), `ordenes/[id]` (PUT), `validaciones/[id]` (PUT/signed-url/upload), `pedidos/[id]/invitaciones` (POST). Requieren matriz owner-vs-no-owner (no la matriz de rol de la tanda 1). Extender `authMatrix` o un helper hermano que parametrice ownership.
 - **K-05:** `select` explícito en los ~17 endpoints de §4.1. **Reevaluar** ahí si los GET de `/api/marcas/[id]` y `/api/talleres/[id]` (código muerto, §6.8) se eliminan en vez de mantenerse protegidos.
-- **Barrido de rate-limit:** C4 + los faltantes de §4.3.
+- **Barrido de rate-limit:** C4 (`/api/exportar`) + los faltantes de §4.3.
 
