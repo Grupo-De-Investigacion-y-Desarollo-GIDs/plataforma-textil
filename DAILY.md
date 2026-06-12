@@ -3,6 +3,9 @@
 ## 2026-06-12
 
 ### Gerardo Breard
+- **19:34** `a8be1b2` — docs: runbook de promocion develop->prod (prep, no ejecutado)
+  - `.claude/specs/RUNBOOK_PROMOCION_PROD.md`
+
 - **17:18** `9e1f120` — fix(k-02): cerrar C5 IDOR upload/imagenes contexto cotizacion (elegibilidad)
   - `.claude/specs/v4-k-01-auditoria-endpoints.md`
   - `src/__tests__/cotizaciones-elegibilidad.test.ts`
