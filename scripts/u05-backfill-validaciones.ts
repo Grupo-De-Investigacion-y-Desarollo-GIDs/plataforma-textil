@@ -21,9 +21,18 @@
 //   ALLOW_PROD=1 npx tsx scripts/u05-backfill-validaciones.ts            # dry-run contra prod (dimensionar)
 //   npx tsx scripts/u05-backfill-validaciones.ts --apply    # aplica en dev
 //   ALLOW_PROD=1 npx tsx scripts/u05-backfill-validaciones.ts --apply    # aplica en prod (deliberado)
+//
+// Exclusión (condición de Sergio: cuenta de smoke intocable). Repetible o CSV, en
+// dry-run y en --apply. Omite del backfill los talleres cuyo user tenga ese email:
+//   ...u05-backfill-validaciones.ts --exclude smoke@ejemplo.com
+//   ...u05-backfill-validaciones.ts --exclude a@x.com,b@y.com --apply
 
 import { PrismaClient } from '@prisma/client'
-import { buildValidacionesFaltantes } from '../prisma/validaciones-helper'
+import {
+  buildValidacionesFaltantes,
+  parseExcludeEmails,
+  particionarExcluidos,
+} from '../prisma/validaciones-helper'
 
 const PROD_REF = 'nefbhacmjrzynnhvgfnl' // ref de prod, ver scripts/check-db-ref.ts
 const dbUrl = process.env.DATABASE_URL ?? ''
@@ -36,6 +45,7 @@ if (isProd) console.warn('⚠️  ALLOW_PROD=1 — operando contra PROD delibera
 
 const prisma = new PrismaClient()
 const apply = process.argv.includes('--apply')
+const excludeEmails = parseExcludeEmails(process.argv)
 
 async function main() {
   const tiposActivos = await prisma.tipoDocumento.findMany({
@@ -44,16 +54,35 @@ async function main() {
   })
   console.log(`\n📋 U-05 backfill validaciones (${apply ? 'APPLY' : 'dry-run'}) — ${tiposActivos.length} tipos activos\n`)
 
-  const talleres = await prisma.taller.findMany({
-    select: { id: true, nombre: true, validaciones: { select: { tipo: true } } },
+  const talleresRaw = await prisma.taller.findMany({
+    select: {
+      id: true,
+      nombre: true,
+      user: { select: { email: true } },
+      validaciones: { select: { tipo: true } },
+    },
   })
+
+  // Aplicar exclusiones (cuenta de smoke u otras). Excluidos quedan fuera del universo
+  // tanto en dry-run como en --apply.
+  const { incluidos, excluidos, sinMatch } = particionarExcluidos(
+    talleresRaw.map((t) => ({ id: t.id, nombre: t.nombre, userEmail: t.user?.email ?? null })),
+    excludeEmails,
+  )
+  for (const ex of excluidos) console.log(`  EXCLUIDO: ${ex.userEmail} (${ex.nombre} / ${ex.id})`)
+  for (const e of sinMatch) console.warn(`  ⚠️  --exclude ${e}: ningún taller con ese email (¿typo?)`)
+  if (excludeEmails.length) console.log('')
+
+  const validacionesPorTaller = new Map(talleresRaw.map((t) => [t.id, t.validaciones]))
+  const talleres = incluidos
 
   let talleresTocados = 0
   let validacionesCreadas = 0
 
   for (const t of talleres) {
     // Misma definición que el seed (buildValidacionesFaltantes): dedupe por (tallerId, tipo).
-    const faltantes = buildValidacionesFaltantes(tiposActivos, new Set(t.validaciones.map((v) => v.tipo)), t.id)
+    const existentes = validacionesPorTaller.get(t.id) ?? []
+    const faltantes = buildValidacionesFaltantes(tiposActivos, new Set(existentes.map((v) => v.tipo)), t.id)
     if (!faltantes.length) continue
 
     talleresTocados++
