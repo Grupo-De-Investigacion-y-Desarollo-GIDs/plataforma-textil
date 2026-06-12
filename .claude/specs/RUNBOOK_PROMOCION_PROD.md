@@ -1,10 +1,15 @@
 # RUNBOOK — Promoción de DEVELOP a PRODUCCIÓN
 
-> **Estado: PREPARACIÓN (no ejecutado).** Hoy solo se prepara. NO mergear a `main`,
-> NO tocar prod, NO correr backfill. La ejecución es mañana, **pendiente del OK de
-> Sergio** (y de su confirmación de horario por el cambio de hora).
+> **Estado: PREPARACIÓN CERRADA (no ejecutado).** Hoy solo se prepara. NO mergear a
+> `main`, NO tocar prod, NO correr backfill. **Deploy confirmado: 2026-06-13 08:30**
+> (OK de Sergio).
 >
-> Fecha de preparación: 2026-06-12 · Autor: Gerardo (asistido) · Deploy objetivo: ~08:30
+> Fecha de preparación: 2026-06-12 · Autor: Gerardo (asistido) · Deploy: **2026-06-13 08:30**
+>
+> **PRs de la preparación:**
+> - **#422** — release `develop → main` (promoción). Abierto para que CI corra de noche. **NO MERGEAR** hasta el operativo.
+> - **#421** — `feat: --exclude` en el backfill (garantía de la cuenta de smoke intocable). Mergear a develop antes del paso (f).
+> - **#420** — este runbook (docs).
 
 ---
 
@@ -43,17 +48,30 @@ verificado.
 Es el mecanismo del runbook porque no depende del plan y deja un artefacto local
 verificable.
 
+> ⚠️ **Versión de pg_dump: el servidor Supabase es PostgreSQL 17.6.** `pg_dump` debe ser
+> **≥ 17** o aborta con `server version mismatch`. El cliente por defecto de Ubuntu 22.04
+> es v14 y **falla** (verificado). Hay que instalar `postgresql-client-17` desde el repo
+> PGDG. **Ya instalado y verificado en esta WSL** (pg_dump 17.10): un `--schema-only`
+> contra DEV devolvió exit 0, 80 tablas, sin errores.
+
 ```bash
-# Pre-requisito: postgresql-client. OJO: pg_dump NO está instalado en esta WSL
-#   (verificado: "pg_dump: command not found"). Instalar antes:
-#   sudo apt-get install -y postgresql-client-16
-# o correr el dump desde una máquina/imagen que ya lo tenga.
+# Pre-requisito YA RESUELTO en esta máquina (pg_dump 17.10). Para reproducir en otra:
+#   sudo install -d /usr/share/postgresql-common/pgdg
+#   sudo curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+#     https://www.postgresql.org/media/keys/ACCC4CF8.asc
+#   echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] \
+#     http://apt.postgresql.org/pub/repos/apt $(. /etc/os-release; echo $VERSION_CODENAME)-pgdg main" \
+#     | sudo tee /etc/apt/sources.list.d/pgdg.list
+#   sudo apt-get -o Acquire::ForceIPv4=true update && \
+#     sudo apt-get -o Acquire::ForceIPv4=true install -y postgresql-client-17
+#   (ForceIPv4: en esta red apt.postgresql.org no resuelve por IPv6)
 
 # Credenciales prod (NO commitear): traer a un archivo gitignored
 vercel env pull --environment=production .env.prod      # trae DIRECT_URL de prod
 
-# Dump custom-format (comprimido, restaurable selectivamente) usando la conexión
-# DIRECTA (no el pooler) — DIRECT_URL, puerto 5432:
+# Dump custom-format (comprimido, restaurable selectivamente). Usar el DIRECT_URL de
+# prod: debe ser el **session pooler, puerto 5432** (el de DEV lo es y pg_dump funciona;
+# NO usar el transaction pooler 6543, que rompe pg_dump).
 source .env.prod
 pg_dump "$DIRECT_URL" --no-owner --no-acl -Fc \
   -f "prod_snapshot_$(date +%Y%m%d_%H%M).dump"
@@ -67,8 +85,7 @@ pg_restore --list prod_snapshot_*.dump | tail -5                # cierra limpio
 - **Destino**: archivo `.dump` fuera del repo (gitignored), copiado a un segundo lugar
   (disco local + nube privada). No subir a ningún servicio público.
 - **Restore de emergencia** (solo si hace falta): `pg_restore --clean --if-exists -d "$DIRECT_URL" prod_snapshot_*.dump`.
-- **NO ejecutar hoy.** Hoy solo dejamos el comando y el pre-requisito (instalar
-  `postgresql-client`) listos.
+- **NO ejecutar hoy.** El comando y el pre-requisito (pg_dump 17) ya están listos.
 
 ---
 
@@ -83,8 +100,10 @@ pg_restore --list prod_snapshot_*.dump | tail -5                # cierra limpio
   prod) y aplica las 6 migraciones pendientes **antes** de publicar.
   - Propiedad de seguridad: si una migración falla, el build falla y **prod queda en el
     deployment viejo** (no se publica a medias). Cada migración corre en su transacción.
-- Branch protection en `main`: confirmar en GitHub si exige PR/checks. Si los exige, la
-  promoción es un PR `develop → main` (no push directo).
+- **Branch protection en `main`: NINGUNA** (verificado: `gh api .../branches/main/protection`
+  → 404 "Branch not protected"). Técnicamente se podría promover con push directo, pero la
+  promoción se hace **vía PR `develop → main` (#422)** para tener CI + revisión. El PR ya
+  está abierto (CI corre de noche); el merge es el acto del operativo de las 08:30.
 
 ### ⚠️ Migraciones pendientes contra prod — son 6, NO solo U-05 (DESTACADO)
 El supuesto "solo U-05" es incorrecto: `main` está 105 commits atrás. `prisma migrate
@@ -118,17 +137,16 @@ deploy` aplicará, en orden:
 
 ## 3. Runbook paso a paso (con horarios)
 
-> Horarios tentativos. **Deploy 08:30 pendiente del OK de Sergio** (cambio de hora).
-> Smoke de Sergio desde las 10:00.
+> **Deploy confirmado 2026-06-13 08:30** (OK de Sergio). Smoke de Sergio desde las 10:00.
 
 | Hora | Paso | Detalle | Gate |
 |---|---|---|---|
-| **08:15** | **a. Snapshot** | `pg_dump` de prod (§1) + verificación de integridad (`pg_restore --list`). Copiar el `.dump` a 2 destinos. | No avanzar sin dump verificado. |
-| **08:25** | **b. Cuenta de smoke INTOCABLE** | Registrar el email de smoke de Sergio como excluido del backfill/normalización del paso (f). ⚠️ El script `u05-backfill-validaciones.ts` **no tiene flag de exclusión** hoy → ver "Decisiones pendientes". | Email de Sergio confirmado y anotado. |
-| **08:30** | **c. Promoción** | Merge `develop → main` (PR si hay branch protection). Vercel buildea: `prisma migrate deploy` aplica las 6 migraciones → `next build` → publica. | Build verde en Vercel. Si el build falla → prod sigue en el deploy viejo, investigar antes de reintentar. |
+| **08:15** | **a. Snapshot** | `pg_dump` (≥17) de prod (§1) + verificación de integridad (`pg_restore --list`). Copiar el `.dump` a 2 destinos. | No avanzar sin dump verificado. |
+| **08:25** | **b. Cuenta de smoke INTOCABLE** | Anotar el email de smoke de Sergio para excluirlo del backfill del paso (f). ✅ **Resuelto:** el script ya tiene `--exclude <email>` (#421). Pre-mergear #421 a develop para tenerlo disponible. | Email de Sergio confirmado. |
+| **08:30** | **c. Promoción** | **Mergear el PR #422** (`develop → main`). Vercel buildea: `prisma migrate deploy` aplica las 6 migraciones → `next build` → publica. | Build verde en Vercel. Si el build falla → prod sigue en el deploy viejo, investigar antes de reintentar. |
 | **08:40** | **d. Verificación técnica nuestra** | Ver checklist (d) abajo. | Todo OK antes de habilitar a Sergio. |
-| **10:00–10:45** | **e. Smoke de Sergio** | Su checklist habitual + la línea de landing (§5). | Veredicto de Sergio. |
-| **post-OK** | **f. Backfill validaciones D-02** | `ALLOW_PROD=1 npx tsx scripts/u05-backfill-validaciones.ts` (dry-run) → revisar reporte → **solo con OK explícito de Gerardo** → `--apply`. Excluir la cuenta de Sergio. Timestamp en `DAILY.md` (condición 3 de Sergio). | OK explícito de Gerardo para el `--apply`. |
+| **10:00–10:45** | **e. Smoke de Sergio** | Checklist ampliado (§5). | Veredicto de Sergio. |
+| **post-OK** | **f. Backfill validaciones D-02** | `ALLOW_PROD=1 npx tsx scripts/u05-backfill-validaciones.ts --exclude <email-smoke>` (dry-run) → revisar reporte (debe loguear `EXCLUIDO: <email-smoke>`) → **solo con OK explícito de Gerardo** → agregar `--apply`. Timestamp en `DAILY.md` (condición 3 de Sergio). | OK explícito de Gerardo para el `--apply`. |
 | n/a | **g. Rollback** | Ver §4. | — |
 
 ### Checklist (d) — verificación técnica post-deploy
@@ -204,22 +222,57 @@ registro es accesible desde el hero (`hero.ctaTaller/ctaMarca → /registro?rol=
 - [ ] **G-20 verificado resuelto:** registro accesible desde la landing sin buscar (hero + header)
 - [ ] Imagen del hero (`/images/landing/hero-taller.png`) y logo PNG cargan
 
-### Smoke de Sergio — línea a agregar a su checklist
-- [ ] **Landing pública: se ve bien, los CTA llevan a donde deben** (registro taller/marca + login)
+### Smoke de Sergio — checklist AMPLIADO (release mayor)
+Porque es un release de 105 commits, no un parche: el smoke cubre las features que entran
+**por primera vez** a prod. Su checklist habitual + estos ítems:
+
+**Público / acceso**
+- [ ] **Landing pública: se ve bien, los CTA del hero llevan a donde deben** (registro taller/marca + login) — bug G-20
+- [ ] Registro nuevo (taller y marca) funciona; el flujo de CUIT/ARCA responde
+- [ ] Login de cada rol (taller, marca, estado, admin) entra a su dashboard
+
+**Multi-rol (U-03/04/05)**
+- [ ] Un user con taller y marca puede **togglear el modo activo** y la app lo lleva al dashboard del modo elegido
+- [ ] Un user de un solo rol no ve el toggle / sigue operando normal
+
+**Taller**
+- [ ] Formulario de taller W-A: los **campos nuevos** (organización, disponibilidad, roles funcionales) se guardan y se ven
+- [ ] Mi recorrido / niveles (bronce/plata/oro) se muestran sin error
+- [ ] Documentos / validaciones: el checklist aparece (post-backfill del paso f)
+
+**Marca / pedidos / cotización**
+- [ ] Crear pedido; el **tipo de pedido** (comercial / subcontratación) se setea y muestra
+- [ ] Un taller **cotiza** un pedido publicado (flujo comercial)
+- [ ] **Subir imagen en una cotización** funciona para el taller elegible y **falla (sin acceso) para un pedido ajeno** (fix C5)
+
+**Contenido / navegación**
+- [ ] Colección con **imagen** (J-05) se ve en academia/colecciones
+- [ ] Navegación F1+F3: sidebar personal, tabs del header y dropdown del avatar funcionan
+
+**Transversal**
+- [ ] Nada que antes funcionaba se rompió (revisar las pantallas core de su checklist habitual)
 
 ---
 
-## 6. Decisiones pendientes antes de mañana
+## 6. Decisiones — estado al cierre de la preparación
 
-1. **Exclusión de la cuenta de smoke en el backfill (paso f).** `u05-backfill-validaciones.ts`
-   **no** tiene flag para excluir un email. Opciones: (a) agregar `--exclude <email>` al
-   script antes de mañana; (b) correr el backfill **antes** de que Sergio use su cuenta;
-   (c) confirmar en el dry-run que su cuenta no aparece entre los talleres tocados.
-   **Decidir cuál.**
-2. **Tier de Supabase / PITR** — confirmar en dashboard si hay backup on-demand nativo o
-   si vamos 100% con `pg_dump` (este runbook asume `pg_dump`).
-3. **Instalar `postgresql-client`** en la máquina que hará el snapshot (no está en esta WSL).
-4. **Branch protection en `main`** — confirmar si la promoción es push directo o PR.
-5. **Conciencia del tamaño del release** — 105 commits / 6 migraciones / landing nueva /
-   RLS K-01 a prod. Confirmar que Sergio dimensiona el smoke en consecuencia.
-6. **Horario 08:30** — pendiente del OK de Sergio por el cambio de hora.
+1. ✅ **Exclusión de la cuenta de smoke en el backfill.** RESUELTO: flag `--exclude <email>`
+   en `u05-backfill-validaciones.ts` (PR **#421**, con unit test). Repetible/CSV, en dry-run
+   y `--apply`, loguea `EXCLUIDO:` y avisa typos. **Pendiente:** mergear #421 a develop antes
+   del paso (f) y confirmar el email exacto de la cuenta de smoke de Sergio.
+2. ⏳ **Tier de Supabase / PITR** — confirmar en dashboard si hay backup on-demand nativo.
+   Igual el runbook va 100% con `pg_dump` (no depende del tier).
+3. ✅ **`postgresql-client`** — RESUELTO: instalado `postgresql-client-17` (pg_dump 17.10) y
+   verificado contra DEV (`--schema-only` → exit 0, 80 tablas). El servidor es PG 17.6, por
+   eso hace falta ≥17 (el v14 de Ubuntu falla).
+4. ✅ **Branch protection en `main`** — RESUELTO: no hay ninguna. Promoción vía PR #422 igual
+   (CI + revisión), merge en el operativo.
+5. ⏳ **Conciencia del tamaño del release** — 105 commits / 6 migraciones / landing nueva /
+   RLS K-01 a prod. Confirmar que Sergio dimensiona el smoke ampliado (§5) en consecuencia.
+6. ✅ **Horario** — CONFIRMADO 2026-06-13 **08:30** (OK de Sergio).
+
+### Qué queda abierto para mañana (además del snapshot y el merge)
+- Confirmar el **email exacto** de la cuenta de smoke de Sergio (para el `--exclude`).
+- **Mergear #421** a develop (queda disponible el flag para el paso f).
+- Confirmar el **tier de Supabase** (decisión 2) — opcional, el `pg_dump` cubre.
+- Que Sergio confirme que correrá el **smoke ampliado** (§5), no solo el habitual.
