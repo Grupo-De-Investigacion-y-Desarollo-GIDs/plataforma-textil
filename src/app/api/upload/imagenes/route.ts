@@ -6,6 +6,7 @@ import { uploadFile } from '@/compartido/lib/storage'
 import { rateLimit } from '@/compartido/lib/ratelimit'
 import { validarArchivo, sanitizarNombreArchivo } from '@/compartido/lib/file-validation'
 import { logActividad } from '@/compartido/lib/log'
+import { elegibilidadCotizar } from '@/compartido/lib/cotizaciones'
 
 // Mapeo de contexto del form al contexto de ConfiguracionUpload
 const CONTEXTO_CONFIG: Record<string, string> = {
@@ -75,11 +76,21 @@ export async function POST(request: NextRequest) {
         }
       }
     } else if (contexto === 'cotizacion') {
+      // K-02 C5: entityId es el pedidoId que el taller esta cotizando (la
+      // cotizacion aun no existe al subir la imagen). Antes solo se chequeaba
+      // "¿el caller posee algun taller?" sin atar entityId -> IDOR de escritura.
+      // Ahora gatea por ELEGIBILIDAD para cotizar ese pedido (misma fuente que
+      // POST /api/cotizaciones). No es ownership: el taller no posee el pedido.
       const taller = await prisma.taller.findFirst({
         where: { userId: session.user.id },
+        select: { id: true },
       })
       if (!taller) {
         return NextResponse.json({ error: 'Sin acceso' }, { status: 403 })
+      }
+      const elegible = await elegibilidadCotizar(session.user.id, taller.id, entityId)
+      if (!elegible.ok) {
+        return NextResponse.json({ error: 'Sin acceso a esta cotizacion' }, { status: 403 })
       }
     }
 
