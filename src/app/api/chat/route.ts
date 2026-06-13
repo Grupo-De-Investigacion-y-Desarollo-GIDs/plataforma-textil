@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/compartido/lib/auth'
+import { modoActivo } from '@/compartido/lib/roles'
 import { prisma } from '@/compartido/lib/prisma'
 import { buscarContexto, generarRespuesta } from '@/compartido/lib/rag'
 import { rateLimit } from '@/compartido/lib/ratelimit'
@@ -14,7 +15,7 @@ export const POST = apiHandler(async (req: NextRequest) => {
   const session = await auth()
   if (!session?.user) return errorAuthRequired()
 
-  const userRole = (session.user as { role?: string }).role
+  const userRole = modoActivo(session.user)
   if (userRole !== 'ADMIN' && userRole !== 'ESTADO') {
     const blocked = await rateLimit(req, 'chat', session.user.id!)
     if (blocked) return blocked

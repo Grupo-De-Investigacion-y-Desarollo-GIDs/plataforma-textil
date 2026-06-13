@@ -2,7 +2,15 @@ import { auth } from '@/compartido/lib/auth'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/compartido/lib/prisma'
 import Link from 'next/link'
-import { ArrowRight, CheckCircle, Search, BookOpen, BarChart3, Shield, Award, ChevronRight } from 'lucide-react'
+import Image from 'next/image'
+import { ArrowRight } from 'lucide-react'
+import { HeaderPublic } from '@/compartido/componentes/layout/header-public'
+import { Footer } from '@/compartido/componentes/layout/footer'
+import { getShowPilotPill } from '@/compartido/lib/env'
+import { CarruselNovedades, type CarruselItem } from '@/compartido/componentes/ui/carrusel-novedades'
+import { IconTaller, IconMarca, IconTrazabilidad, IconCapacitacion, IconPedido } from '@/compartido/iconos'
+import { LANDING_COPY } from '@/compartido/lib/content/institutional'
+import { modoActivo } from '@/compartido/lib/roles'
 
 export const dynamic = 'force-dynamic'
 
@@ -10,440 +18,253 @@ export default async function Home() {
   const session = await auth()
 
   if (session?.user) {
-    const role = (session.user as { role?: string }).role
+    // Redirigir por el MODO ACTIVO, no por session.user.role: un multi-rol
+    // operando como Marca debe ir a /marca aunque su role base sea TALLER.
+    // modoActivo cae a role para roles de equipo (ADMIN/ESTADO/CONTENIDO),
+    // que no togglean. Consistente con (public)/layout.tsx.
+    const role = modoActivo(session.user)
     switch (role) {
       case 'TALLER': redirect('/taller')
       case 'MARCA': redirect('/marca/directorio')
       case 'ESTADO': redirect('/estado')
       case 'ADMIN': redirect('/admin')
+      case 'CONTENIDO': redirect('/contenido')
     }
   }
 
-  // Contadores reales
-  const [talleres, marcas, certificados, colecciones] = await Promise.all([
-    prisma.taller.count(),
+  // Queries paralelas para stats + carrusel
+  const [vidrierasPublicadas, marcasExplorando, cursosPublicados, encuentrosGenerados, novedades, colecciones] = await Promise.all([
+    prisma.taller.count({ where: { verificadoAfip: true } }),
     prisma.marca.count(),
-    prisma.certificado.count({ where: { revocado: false } }),
+    prisma.coleccion.count({ where: { activa: true } }),
+    prisma.pedido.count(),
+    prisma.novedad.findMany({
+      where: { publicado: true },
+      orderBy: { fecha: 'desc' },
+      take: 5,
+      select: { id: true, tipo: true, titulo: true, slug: true, fecha: true, imagenUrl: true },
+    }),
     prisma.coleccion.findMany({
       where: { activa: true },
-      select: { id: true, titulo: true, institucion: true, duracion: true, _count: { select: { videos: true } } },
-      take: 3,
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: 'desc' },
+      take: 6,
+      select: { id: true, titulo: true, duracion: true, imagenUrl: true, videos: { select: { id: true } } },
     }),
-  ]).catch(() => [0, 0, 0, []])
+  ]).catch(() => [0, 0, 0, 0, [], []] as const)
+
+  // Armar items del carrusel (mezcla novedades + cursos)
+  const carruselItems: CarruselItem[] = [
+    ...(novedades as { id: string; tipo: string; titulo: string; slug: string; fecha: Date; imagenUrl: string | null }[]).map(n => ({
+      id: n.id,
+      tipo: (n.tipo === 'INDICADOR' ? 'INDICADOR' : 'NOVEDAD') as CarruselItem['tipo'],
+      titulo: n.titulo,
+      subtitulo: n.fecha.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }),
+      imagen: n.imagenUrl,
+      href: `/novedades/${n.slug}`,
+    })),
+    ...(colecciones as { id: string; titulo: string; duracion: string | null; imagenUrl: string | null; videos: { id: string }[] }[]).map(c => ({
+      id: c.id,
+      tipo: 'CURSO' as const,
+      titulo: c.titulo,
+      subtitulo: `${c.videos.length} videos${c.duracion ? ` · ${c.duracion}` : ''}`,
+      imagen: c.imagenUrl,
+      href: '/academia-publica',
+    })),
+  ]
+
+  const { hero, impacto, carrusel } = LANDING_COPY
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen flex flex-col bg-white">
+      <HeaderPublic showPilotPill={getShowPilotPill()} />
 
-      {/* ── HEADER PÚBLICO ── */}
-      <header className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-brand-blue flex items-center justify-center shrink-0">
-              <span className="font-overpass font-bold text-white text-xs">PDT</span>
-            </div>
-            <span className="font-overpass font-bold text-brand-blue text-base hidden sm:inline">
-              Plataforma Digital Textil
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link href="/directorio" className="text-sm text-gray-600 hover:text-brand-blue transition-colors font-overpass hidden md:inline">
-              Directorio
-            </Link>
-            <Link href="/login" className="text-sm text-gray-600 hover:text-brand-blue transition-colors font-overpass">
-              Ingresar
-            </Link>
-            <Link
-              href="/registro?rol=TALLER"
-              className="text-sm text-brand-blue border border-brand-blue px-3 py-1.5 rounded-lg font-overpass font-semibold hover:bg-blue-50 transition-colors"
-            >
-              Soy taller
-            </Link>
-            <Link
-              href="/registro?rol=MARCA"
-              className="hidden sm:inline text-sm bg-brand-blue text-white px-3 py-1.5 rounded-lg font-overpass font-semibold hover:bg-brand-blue-hover transition-colors"
-            >
-              Soy marca
-            </Link>
-          </div>
-        </div>
-      </header>
+      {/* ═══ HERO ═══ */}
+      <section className="relative bg-white overflow-hidden">
+        <div className="absolute inset-0 pattern-grid opacity-40" />
+        <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-terra-50 opacity-70" />
+        <div className="absolute top-40 -left-20 w-72 h-72 rounded-full bg-pastel-blue opacity-50" />
 
-      {/* ── HERO ── */}
-      <section className="bg-gradient-to-b from-blue-50 to-white pt-16 pb-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="text-sm font-semibold text-brand-blue uppercase tracking-wider mb-4">
-            Desarrollado por UNTREF con el apoyo de la OIT
-          </p>
-          <h1 className="font-overpass font-bold text-4xl sm:text-5xl lg:text-6xl text-brand-blue leading-tight mb-6">
-            Plataforma Digital Textil
-          </h1>
-          <p className="text-gray-600 text-lg sm:text-xl max-w-2xl mx-auto mb-10">
-            Conectamos talleres formalizados con marcas que buscan proveedores confiables
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-14">
-            <Link
-              href="/registro?rol=TALLER"
-              className="inline-flex items-center justify-center gap-2 bg-brand-blue text-white px-8 py-3.5 rounded-lg font-overpass font-semibold text-base hover:bg-brand-blue-hover transition-colors"
-            >
-              Soy taller <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link
-              href="/registro?rol=MARCA"
-              className="inline-flex items-center justify-center gap-2 border-2 border-brand-blue text-brand-blue px-8 py-3.5 rounded-lg font-overpass font-semibold text-base hover:bg-blue-50 transition-colors"
-            >
-              Soy marca
-            </Link>
-          </div>
-
-          {/* Contadores */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-lg mx-auto">
-            {[
-              { value: talleres as number, label: 'Talleres activos' },
-              { value: marcas as number, label: 'Marcas registradas' },
-              { value: certificados as number, label: 'Certificados emitidos' },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <p className="font-overpass font-bold text-3xl text-brand-blue">{stat.value}</p>
-                <p className="text-xs text-gray-500 mt-1">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── ¿QUIÉN SOS? ── */}
-      <section className="py-20 px-4 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="font-overpass font-bold text-3xl text-center text-gray-900 mb-3">
-            ¿Quién sos?
-          </h2>
-          <p className="text-gray-500 text-center mb-12">Elegí tu perfil para ver cómo te ayudamos</p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {/* Taller */}
-            <div className="rounded-2xl border-2 border-gray-100 p-9 hover:border-brand-blue/40 hover:shadow-lg transition-all flex flex-col">
-              <div className="text-5xl mb-3">🏭</div>
-              <h3 className="font-overpass font-bold text-xl text-brand-blue mb-2">Soy Taller</h3>
-              <p className="text-sm text-gray-600 mb-5">
-                Formalizá tu taller, capacitate y accedé a mejores oportunidades comerciales
-              </p>
-              <ul className="space-y-2 mb-6 flex-1">
-                {['Perfil público verificado', 'Capacitación gratuita', 'Certificaciones oficiales', 'Visibilidad ante marcas'].map(item => (
-                  <li key={item} className="flex items-center gap-2 text-sm text-gray-700">
-                    <CheckCircle className="w-4 h-4 text-green-500 shrink-0" /> {item}
-                  </li>
-                ))}
-              </ul>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 grid lg:grid-cols-12 gap-10 items-center">
+          <div className="lg:col-span-7">
+            <h1 className="font-serif font-extrabold text-5xl lg:text-7xl text-ink-primary leading-[1.05] tracking-tight">
+              {hero.titleParts[0]}<br />
+              {hero.titleParts[1]}<br />
+              <span className="italic font-medium text-ink-secondary">{hero.titleParts[2]}</span>
+            </h1>
+            <p className="text-ink-secondary text-lg mt-6 leading-relaxed max-w-xl">
+              {hero.subtitle}
+            </p>
+            <div className="flex flex-wrap gap-3 mt-8">
               <Link
-                href="/registro?rol=TALLER"
-                className="inline-flex items-center justify-center gap-2 bg-brand-blue text-white px-6 py-2.5 rounded-lg font-overpass font-semibold text-sm hover:bg-brand-blue-hover transition-colors"
+                href={hero.ctaTaller.href}
+                className="inline-flex items-center gap-2 px-6 py-3.5 bg-brand-blue text-white font-overpass font-semibold rounded-lg hover:bg-brand-blue-dark shadow-soft transition-colors"
               >
-                Registrarme <ChevronRight className="w-4 h-4" />
+                <IconTaller className="w-4 h-4" />
+                {hero.ctaTaller.label}
+                <ArrowRight className="w-4 h-4" />
               </Link>
-            </div>
-
-            {/* Marca */}
-            <div className="rounded-2xl border-2 border-gray-100 p-9 hover:border-brand-blue/40 hover:shadow-lg transition-all flex flex-col">
-              <div className="text-5xl mb-3">👗</div>
-              <h3 className="font-overpass font-bold text-xl text-brand-blue mb-2">Soy Marca</h3>
-              <p className="text-sm text-gray-600 mb-5">
-                Encontrá proveedores verificados y formalizados para tu cadena de producción
-              </p>
-              <ul className="space-y-2 mb-6 flex-1">
-                {['Directorio con filtros', 'Contacto directo', 'Proveedores certificados', 'Trazabilidad de producción'].map(item => (
-                  <li key={item} className="flex items-center gap-2 text-sm text-gray-700">
-                    <CheckCircle className="w-4 h-4 text-green-500 shrink-0" /> {item}
-                  </li>
-                ))}
-              </ul>
               <Link
-                href="/registro?rol=MARCA"
-                className="inline-flex items-center justify-center gap-2 bg-brand-blue text-white px-6 py-2.5 rounded-lg font-overpass font-semibold text-sm hover:bg-brand-blue-hover transition-colors"
+                href={hero.ctaMarca.href}
+                className="inline-flex items-center gap-2 px-6 py-3.5 border border-ink-primary text-ink-primary font-overpass font-semibold rounded-lg hover:bg-gray-50 transition-colors"
               >
-                Registrarme <ChevronRight className="w-4 h-4" />
+                <IconMarca className="w-4 h-4" />
+                {hero.ctaMarca.label}
               </Link>
             </div>
           </div>
 
-          <p className="text-center text-sm text-gray-500 mt-8">
-            ¿Sos de un organismo publico?{' '}
-            <a
-              href="mailto:soporte@plataformatextil.ar?subject=Solicitud de acceso - Estado"
-              className="text-brand-blue font-semibold hover:underline"
-            >
-              Solicita acceso institucional
-            </a>
-          </p>
-        </div>
-      </section>
+          {/* Hero image + floating cards */}
+          <div className="lg:col-span-5 relative">
+            <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden shadow-card-hover">
+              <Image
+                src="/images/landing/hero-taller.png"
+                alt={hero.imageAlt}
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
 
-      {/* ── CÓMO FUNCIONA ── */}
-      <section className="py-20 px-4 bg-blue-50">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="font-overpass font-bold text-3xl text-center text-gray-900 mb-3">
-            Cómo funciona
-          </h2>
-          <p className="text-gray-500 text-center mb-14">Un camino claro hacia la formalización</p>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-            {[
-              {
-                step: '1',
-                icon: Shield,
-                title: 'Registrate y verificá tu CUIT',
-                desc: 'Verificamos tu CUIT automáticamente con ARCA. Tu taller recibe nivel BRONCE al instante.',
-              },
-              {
-                step: '2',
-                icon: BookOpen,
-                title: 'Capacitate y certificá',
-                desc: 'Cursos gratuitos curados por OIT e INTI. Certificados oficiales con código QR verificable.',
-              },
-              {
-                step: '3',
-                icon: Search,
-                title: 'Conectate con marcas',
-                desc: 'Tu taller aparece en el directorio con nivel verificado y las marcas te contactan directamente.',
-              },
-            ].map((item, i) => (
-              <div key={item.step} className="relative text-center">
-                <div className="w-14 h-14 rounded-full bg-brand-blue text-white flex items-center justify-center mx-auto mb-4 font-overpass font-bold text-xl">
-                  {item.step}
+            {/* Card flotante: trazabilidad */}
+            <div className="absolute -left-6 top-12 bg-white rounded-2xl shadow-card-hover p-4 max-w-[200px] border border-gray-100 hidden md:block">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 rounded-full bg-pastel-terra flex items-center justify-center">
+                  <IconTrazabilidad className="w-4 h-4 text-terra-600" />
                 </div>
-                <item.icon className="w-6 h-6 text-brand-blue mx-auto mb-3" />
-                <h3 className="font-overpass font-bold text-lg text-gray-900 mb-2">{item.title}</h3>
-                <p className="text-sm text-gray-600">{item.desc}</p>
-                {i < 2 && (
-                  <div className="hidden md:block absolute top-7 left-[calc(50%+2.5rem)] w-[calc(100%-5rem)] h-0.5 bg-brand-blue/20" />
-                )}
+                <p className="font-overpass font-bold text-xs text-ink-primary">{hero.cardTrazabilidad.title}</p>
               </div>
-            ))}
+              <p className="text-xs text-ink-secondary leading-snug">{hero.cardTrazabilidad.subtitle}</p>
+            </div>
+
           </div>
         </div>
       </section>
 
-      {/* ── SISTEMA DE NIVELES ── */}
-      <section className="py-20 px-4 bg-white">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="font-overpass font-bold text-3xl text-center text-gray-900 mb-3">
-            Sistema de niveles
-          </h2>
-          <p className="text-gray-500 text-center mb-12">Tu taller crece con vos</p>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                nivel: 'BRONCE',
-                emoji: '🥉',
-                color: 'border-amber-300 bg-amber-50',
-                titleColor: 'text-amber-700',
-                requisitos: ['CUIT verificado en ARCA'],
-                beneficios: ['Nivel inicial al registrarte', 'Perfil en la plataforma'],
-              },
-              {
-                nivel: 'PLATA',
-                emoji: '🥈',
-                color: 'border-gray-300 bg-gray-50',
-                titleColor: 'text-gray-700',
-                requisitos: ['+ Empleados registrados', '+ Capacitación básica'],
-                beneficios: ['Aparecés en el directorio', 'Acceso a marcas formales'],
-              },
-              {
-                nivel: 'ORO',
-                emoji: '🥇',
-                color: 'border-yellow-400 bg-yellow-50',
-                titleColor: 'text-yellow-700',
-                requisitos: ['+ Habilitaciones completas', '+ Certificaciones de calidad'],
-                beneficios: ['Prioridad en búsquedas', 'Acceso a mejores pedidos'],
-              },
-            ].map((item) => (
-              <div key={item.nivel} className={`rounded-2xl border-2 p-6 ${item.color}`}>
-                <div className="text-4xl mb-2">{item.emoji}</div>
-                <h3 className={`font-overpass font-bold text-xl mb-4 ${item.titleColor}`}>{item.nivel}</h3>
-                <div className="mb-3">
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Requisitos</p>
-                  {item.requisitos.map(r => (
-                    <p key={r} className="text-sm text-gray-700 flex items-start gap-1.5 mb-1">
-                      <CheckCircle className="w-3.5 h-3.5 text-green-500 mt-0.5 shrink-0" /> {r}
-                    </p>
-                  ))}
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Beneficios</p>
-                  {item.beneficios.map(b => (
-                    <p key={b} className="text-sm text-gray-700 flex items-start gap-1.5 mb-1">
-                      <Award className="w-3.5 h-3.5 text-brand-blue mt-0.5 shrink-0" /> {b}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── CAPACITACIÓN ── */}
-      {(colecciones as { id: string; titulo: string; institucion: string | null; duracion: string | null; _count: { videos: number } }[]).length > 0 && (
-        <section className="py-20 px-4 bg-blue-50">
-          <div className="max-w-5xl mx-auto">
-            <h2 className="font-overpass font-bold text-3xl text-center text-gray-900 mb-3">
-              Capacitación con certificación oficial
+      {/* ═══ ASI FUNCIONA ═══ */}
+      <section id="como-funciona" className="py-12">
+        <div className="max-w-6xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-6">
+            <p className="text-xs uppercase tracking-widest font-overpass font-bold text-terra-600 mb-2">
+              Asi funciona
+            </p>
+            <h2 className="font-serif font-bold text-4xl lg:text-5xl text-ink-primary mb-4">
+              Acompañamos al sector textil en cada paso del recorrido.
             </h2>
-            <p className="text-gray-500 text-center mb-12">Cursos gratuitos curados por instituciones reconocidas</p>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              {(colecciones as { id: string; titulo: string; institucion: string | null; duracion: string | null; _count: { videos: number } }[]).map((col) => (
-                <div key={col.id} className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-                  <div className="w-10 h-10 rounded-lg bg-brand-blue/10 flex items-center justify-center mb-3">
-                    <BookOpen className="w-5 h-5 text-brand-blue" />
-                  </div>
-                  <h3 className="font-overpass font-bold text-base text-gray-900 mb-1">{col.titulo}</h3>
-                  {col.institucion && (
-                    <p className="text-xs text-brand-blue font-semibold mb-2">{col.institucion}</p>
-                  )}
-                  <p className="text-xs text-gray-500 mb-3">
-                    {col._count.videos} videos{col.duracion ? ` · ${col.duracion}` : ''}
-                  </p>
-                  <p className="text-xs text-green-600 font-semibold flex items-center gap-1">
-                    <Award className="w-3.5 h-3.5" /> Certificado al completar
-                  </p>
-                </div>
-              ))}
-            </div>
+          <div className="mb-2">
+            <Image
+              src="/landing/proceso-textil.webp"
+              alt="Diagrama del proceso: un taller textil se suma, una marca lo descubre, se contactan y trabajan juntos"
+              width={1600}
+              height={900}
+              className="w-full max-w-3xl mx-auto h-[200px] object-cover object-center"
+            />
+          </div>
 
+          <div className="grid md:grid-cols-3 gap-8 mt-2">
             <div className="text-center">
-              <Link href="/registro?rol=TALLER" className="inline-flex items-center gap-2 text-brand-blue font-overpass font-semibold text-sm hover:underline">
-                Ver todos los cursos <ArrowRight className="w-4 h-4" />
-              </Link>
+              <h3 className="font-serif font-bold text-lg text-ink-primary mb-2">
+                1. Un taller textil se suma
+              </h3>
+              <p className="text-sm text-ink-secondary">
+                Aprende con cursos gratuitos, arma su perfil y muestra lo que sabe hacer.
+              </p>
+            </div>
+            <div className="text-center">
+              <h3 className="font-serif font-bold text-lg text-ink-primary mb-2">
+                2. Una marca lo descubre
+              </h3>
+              <p className="text-sm text-ink-secondary">
+                Lo encuentra en el directorio y conoce sus capacidades, su trayectoria y su recorrido.
+              </p>
+            </div>
+            <div className="text-center">
+              <h3 className="font-serif font-bold text-lg text-ink-primary mb-2">
+                3. Se contactan y trabajan juntos
+              </h3>
+              <p className="text-sm text-ink-secondary">
+                Se conectan de forma directa y empiezan a trabajar juntos.
+              </p>
             </div>
           </div>
-        </section>
-      )}
-
-      {/* ── VERIFICAR CERTIFICADO ── */}
-      <section className="py-20 px-4 bg-white">
-        <div className="max-w-xl mx-auto text-center">
-          <Award className="w-10 h-10 text-brand-blue mx-auto mb-4" />
-          <h2 className="font-overpass font-bold text-2xl text-gray-900 mb-2">
-            Verificación de certificados
-          </h2>
-          <p className="text-gray-500 text-sm mb-8">
-            ¿Recibiste un certificado? Verificá su autenticidad
-          </p>
-          <form
-            action="/verificar"
-            method="get"
-            className="flex flex-col sm:flex-row gap-3"
-          >
-            <input
-              name="code"
-              placeholder="Ej: PDT-CERT-2026-001234"
-              className="flex-1 rounded-lg border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent"
-              pattern="PDT-CERT-\d{4}-\d{6}"
-              title="Formato: PDT-CERT-YYYY-XXXXXX"
-            />
-            <button
-              type="submit"
-              className="bg-brand-blue text-white px-6 py-3 rounded-lg font-overpass font-semibold text-sm hover:bg-brand-blue-hover transition-colors whitespace-nowrap"
-            >
-              Verificar
-            </button>
-          </form>
-          <p className="text-xs text-gray-400 mt-3">O escaneá el código QR del certificado impreso</p>
         </div>
       </section>
 
-      {/* ── INSTITUCIONES ── */}
-      <section className="py-16 px-4 bg-gray-50 border-y border-gray-100">
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-8">
-            Instituciones que respaldan
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-10">
-            {['OIT', 'UNTREF', 'INTI', 'FACTA'].map(inst => (
-              <div key={inst} className="w-20 h-12 flex items-center justify-center">
-                <span className="font-overpass font-bold text-lg text-gray-400">{inst}</span>
+      {/* ═══ IMPACTO ═══ */}
+      <section id="impacto" className="bg-ink-primary text-white py-16 relative overflow-hidden">
+        <div className="absolute inset-0 pattern-weave opacity-50" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <p className="text-xs uppercase tracking-widest font-overpass font-bold text-terra-300 mb-3">
+              {impacto.eyebrow}
+            </p>
+            <h2 className="font-serif font-bold text-4xl lg:text-5xl mb-6 leading-tight">
+              {impacto.titleParts[0]} <span className="italic text-terra-300">{impacto.titleParts[1]}</span>
+            </h2>
+            <p className="text-gray-300 leading-relaxed max-w-md">{impacto.subtitle}</p>
+          </div>
+          <div className="grid grid-cols-2 gap-px bg-white/10 rounded-2xl overflow-hidden">
+            {[
+              { value: vidrierasPublicadas, label: 'Vidrieras de talleres publicadas', icon: IconTaller, iconColor: 'text-pastel-blue' },
+              { value: marcasExplorando, label: 'Marcas explorando proveedores formales', icon: IconMarca, iconColor: 'text-pastel-green' },
+              { value: cursosPublicados, label: 'Cursos publicados', icon: IconCapacitacion, iconColor: 'text-terra-300' },
+              { value: encuentrosGenerados, label: 'Encuentros generados', icon: IconPedido, iconColor: 'text-pastel-blue' },
+            ].map(stat => (
+              <div key={stat.label} className="bg-ink-primary p-8">
+                <stat.icon className={`w-6 h-6 ${stat.iconColor} mb-4`} />
+                <div className="font-serif font-extrabold text-5xl lg:text-6xl text-white leading-none">
+                  {stat.value}
+                </div>
+                <p className="text-xs uppercase tracking-wider text-gray-400 mt-3 font-overpass font-bold">
+                  {stat.label}
+                </p>
+                <p className="text-[10px] text-gray-500 mt-1">
+                  Datos a mayo 2026
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── CTA FINAL ── */}
-      <section className="py-20 px-4 bg-brand-blue text-white">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="font-overpass font-bold text-3xl mb-3">
-            Empeza hoy
-          </h2>
-          <p className="text-blue-200 mb-8">El registro es gratuito y toma menos de 5 minutos</p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link
-              href="/registro?rol=TALLER"
-              className="inline-flex items-center justify-center gap-2 bg-white text-brand-blue px-10 py-4 rounded-lg font-overpass font-bold text-base hover:bg-blue-50 transition-colors"
-            >
-              Soy taller <ArrowRight className="w-5 h-5" />
-            </Link>
-            <Link
-              href="/registro?rol=MARCA"
-              className="inline-flex items-center justify-center gap-2 border-2 border-white text-white px-10 py-4 rounded-lg font-overpass font-bold text-base hover:bg-brand-blue-hover transition-colors"
-            >
-              Soy marca <ArrowRight className="w-5 h-5" />
-            </Link>
+      {/* ═══ CARRUSEL NOVEDADES + CURSOS ═══ */}
+      <section className="bg-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+            <div>
+              <p className="text-xs uppercase tracking-widest font-overpass font-bold text-terra-600 mb-2">
+                {carrusel.eyebrow}
+              </p>
+              <h2 className="font-serif font-bold text-4xl lg:text-5xl text-ink-primary">
+                {carrusel.title}
+              </h2>
+              <p className="text-ink-secondary mt-2">{carrusel.subtitle}</p>
+            </div>
           </div>
-          <p className="mt-4 text-sm text-blue-200">
-            ¿Ya tenés cuenta?{' '}
-            <Link href="/login" className="text-white font-semibold hover:underline">
-              Iniciá sesión
-            </Link>
+
+          {carruselItems.length > 0 ? (
+            <CarruselNovedades items={carruselItems} />
+          ) : (
+            <p className="text-center text-ink-secondary py-8">Próximamente</p>
+          )}
+
+        </div>
+      </section>
+
+      {/* ═══ DISCLAIMER PILOTO ═══ */}
+      <section className="bg-pastel-yellow border-t border-yellow-200/50 py-4">
+        <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+          <p className="text-xs text-ink-secondary">
+            <span className="font-overpass font-bold">Programa piloto en curso.</span>{' '}
+            Plataforma Digital Textil — desarrollada por UNTREF con el apoyo de
+            la OIT — se encuentra en fase de piloto, Conurbano Sur, mayo 2026.
+            Los datos y funcionalidades pueden evolucionar durante esta etapa.
           </p>
         </div>
       </section>
 
-      {/* ── FOOTER PÚBLICO ── */}
-      <footer className="bg-gray-900 text-gray-400">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-10">
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 rounded-full bg-brand-blue flex items-center justify-center">
-                  <span className="font-overpass font-bold text-white text-xs">PDT</span>
-                </div>
-                <span className="font-overpass font-bold text-white text-sm">Plataforma Digital Textil</span>
-              </div>
-              <p className="text-xs leading-relaxed">
-                Desarrollado por UNTREF con el apoyo de la OIT para la formalización del sector textil.
-              </p>
-            </div>
-            <div>
-              <p className="font-overpass font-semibold text-white text-sm mb-3">Plataforma</p>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/login" className="hover:text-white transition-colors">Ingresar</Link></li>
-                <li><Link href="/registro?rol=TALLER" className="hover:text-white transition-colors">Registrarse</Link></li>
-                <li><Link href="/directorio" className="hover:text-white transition-colors">Directorio de talleres</Link></li>
-                <li><Link href="/verificar" className="hover:text-white transition-colors">Verificar certificado</Link></li>
-                <li><Link href="/denunciar" className="hover:text-white transition-colors">Hacer una denuncia</Link></li>
-              </ul>
-            </div>
-            <div>
-              <p className="font-overpass font-semibold text-white text-sm mb-3">Legal y contacto</p>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/terminos" className="hover:text-white transition-colors">Términos y condiciones</Link></li>
-                <li><Link href="/privacidad" className="hover:text-white transition-colors">Política de privacidad</Link></li>
-                <li><Link href="/ayuda" className="hover:text-white transition-colors">Ayuda / FAQ</Link></li>
-                <li>
-                  <a href="mailto:soporte@plataformatextil.ar" className="hover:text-white transition-colors">
-                    soporte@plataformatextil.ar
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 pt-6 text-xs text-center">
-            © 2026 Plataforma Digital Textil | Desarrollado por UNTREF con el apoyo de la OIT
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

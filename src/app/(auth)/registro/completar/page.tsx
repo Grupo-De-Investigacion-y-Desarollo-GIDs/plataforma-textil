@@ -107,7 +107,7 @@ export default function CompletarRegistroPage() {
         </div>
       )}
 
-      <h2 className="font-overpass font-bold text-xl text-brand-blue text-center mb-2">
+      <h2 className="font-serif font-bold text-xl text-brand-blue text-center mb-2">
         Completa tu registro
       </h2>
       <p className="text-sm text-gray-500 text-center mb-6">

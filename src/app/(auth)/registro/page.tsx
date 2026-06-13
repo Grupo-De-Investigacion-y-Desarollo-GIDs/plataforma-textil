@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, Suspense } from 'react'
+import { useState, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
@@ -88,7 +88,7 @@ function StepIndicator({ currentStep, totalSteps }: { currentStep: number; total
 function StepRole({ onSelect }: { onSelect: (role: Role) => void }) {
   return (
     <div>
-      <h2 className="font-overpass font-bold text-xl text-brand-blue text-center mb-2">
+      <h2 className="font-serif font-bold text-xl text-brand-blue text-center mb-2">
         Crear cuenta
       </h2>
       <p className="text-sm text-gray-500 text-center mb-6">
@@ -151,7 +151,7 @@ function StepPersonalInfo({
 
   return (
     <div>
-      <h2 className="font-overpass font-bold text-xl text-brand-blue text-center mb-2">
+      <h2 className="font-serif font-bold text-xl text-brand-blue text-center mb-2">
         Datos personales
       </h2>
       <p className="text-sm text-gray-500 text-center mb-6">
@@ -234,12 +234,22 @@ function StepEntidadInfo({
 
   const cuitValue = watch('cuit')
 
+  // F-03: cache del último CUIT con resultado DEFINITIVO (verificado o inválido).
+  // Cada blur con 11 dígitos dispara una call a ARCA; sin esto, volver al campo y
+  // salir sin cambiar nada re-consultaba el mismo CUIT y gastaba cuota. Solo se
+  // cachean resultados definitivos: un "pendiente" (servicio caído) NO se cachea
+  // para permitir reintento. Si el CUIT cambia, se vuelve a validar (ref distinta).
+  const ultimoCuitConsultado = useRef<string | null>(null)
+
   // Errores que indican que el CUIT es realmente invalido (no que el servicio fallo)
   const ERRORES_CUIT_INVALIDO = ['inexistente', 'inactivo', 'invalido']
 
   async function verificarCuitOnBlur() {
     const limpio = (cuitValue || '').replace(/-/g, '')
     if (limpio.length !== 11) return
+
+    // F-03: mismo CUIT ya consultado con resultado definitivo → no re-llamar a ARCA.
+    if (limpio === ultimoCuitConsultado.current) return
 
     setCuitLoading(true)
     setCuitError('')
@@ -253,18 +263,20 @@ function StepEntidadInfo({
       if (data.valid) {
         setCuitVerificado(true)
         setCuitData({ razonSocial: data.razonSocial })
+        ultimoCuitConsultado.current = limpio // F-03: resultado definitivo → cachear
       } else {
         const errorMsg = (typeof data.error === 'string' ? data.error : data.error?.message || '').toLowerCase()
         const esCuitInvalido = ERRORES_CUIT_INVALIDO.some(e => errorMsg.includes(e))
         if (esCuitInvalido) {
           setCuitError(typeof data.error === 'string' ? data.error : data.error?.message || 'CUIT invalido')
+          ultimoCuitConsultado.current = limpio // F-03: inválido es definitivo → cachear
         } else {
-          // Servicio no disponible — permitir continuar
+          // Servicio no disponible — permitir continuar (transitorio, NO cachear: reintenta)
           setCuitPendiente(true)
         }
       }
     } catch {
-      // Error de red — permitir continuar
+      // Error de red — permitir continuar (transitorio, NO cachear: reintenta)
       setCuitPendiente(true)
     } finally {
       setCuitLoading(false)
@@ -278,7 +290,7 @@ function StepEntidadInfo({
 
   return (
     <div>
-      <h2 className="font-overpass font-bold text-xl text-brand-blue text-center mb-2">{titulo}</h2>
+      <h2 className="font-serif font-bold text-xl text-brand-blue text-center mb-2">{titulo}</h2>
       <p className="text-sm text-gray-500 text-center mb-6">{subtitulo}</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

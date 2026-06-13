@@ -92,32 +92,32 @@ export default function OnboardingTallerPage() {
       </section>
 
       <section className="bg-white rounded-xl border border-gray-200 p-6">
-        <h2 className="font-overpass font-bold text-xl text-brand-blue mb-3">Niveles del taller</h2>
-        <p className="text-sm text-gray-600 mb-4">A medida que completas documentos y trabajos, subis de nivel:</p>
+        <h2 className="font-overpass font-bold text-xl text-brand-blue mb-3">Etapas del recorrido</h2>
+        <p className="text-sm text-gray-600 mb-4">A medida que completas documentos y capacitaciones, avanzas en tu formalización:</p>
         <div className="space-y-3">
-          <div className="flex items-center gap-3 p-3 bg-amber-50 rounded-lg">
-            <span className="text-2xl">🥉</span>
+          <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+            <span className="text-2xl">1</span>
             <div>
-              <p className="font-overpass font-semibold text-amber-800">BRONCE</p>
-              <p className="text-sm text-amber-700">Nivel inicial al registrarte</p>
+              <p className="font-overpass font-semibold text-blue-800">Etapa inicial</p>
+              <p className="text-sm text-blue-700">Al registrarte en la plataforma</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-3 bg-gray-100 rounded-lg">
-            <span className="text-2xl">🥈</span>
+          <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+            <span className="text-2xl">2</span>
             <div>
-              <p className="font-overpass font-semibold text-gray-800">PLATA</p>
-              <p className="text-sm text-gray-600">Con documentos clave aprobados + 1 capacitacion</p>
+              <p className="font-overpass font-semibold text-blue-800">En proceso de formalización</p>
+              <p className="text-sm text-blue-700">Con documentos clave aprobados + capacitación</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 p-3 bg-yellow-50 rounded-lg">
-            <span className="text-2xl">🥇</span>
+          <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+            <span className="text-2xl">3</span>
             <div>
-              <p className="font-overpass font-semibold text-yellow-800">ORO</p>
-              <p className="text-sm text-yellow-700">Tope, con todos los documentos + capacitaciones avanzadas</p>
+              <p className="font-overpass font-semibold text-blue-800">Formalización consolidada</p>
+              <p className="text-sm text-blue-700">Todos los requisitos completados</p>
             </div>
           </div>
         </div>
-        <p className="text-sm text-gray-500 mt-3">Cada nivel te da acceso a mejores pedidos.</p>
+        <p className="text-sm text-gray-500 mt-3">Cada etapa te da acceso a más oportunidades en la plataforma.</p>
       </section>
 
       <section className="bg-brand-blue/5 rounded-xl border border-brand-blue/20 p-6">

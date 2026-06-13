@@ -132,7 +132,7 @@ export function AuditoriaInformeClient({
 
   return (
     <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-4">
-      <h2 className="font-overpass font-bold text-gray-800">Informe de auditoria</h2>
+      <h2 className="font-serif font-bold text-gray-800">Informe de auditoria</h2>
 
       <div>
         <label className="text-sm font-medium text-gray-700">Estado</label>

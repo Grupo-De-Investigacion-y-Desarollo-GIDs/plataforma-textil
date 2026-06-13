@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
-import { apiHandler, errorAuthRequired, errorForbidden } from '@/compartido/lib/api-errors'
+import { apiHandler } from '@/compartido/lib/api-errors'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 
 export const GET = apiHandler(async (req: NextRequest) => {
-  const session = await auth()
-  if (!session?.user?.id) return errorAuthRequired()
-  if (!['ADMIN', 'ESTADO'].includes(session.user.role)) return errorForbidden('ADMIN o ESTADO')
+  const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
+  if (sesion instanceof NextResponse) return sesion
 
   const url = req.nextUrl.searchParams
   const q = url.get('q') || ''

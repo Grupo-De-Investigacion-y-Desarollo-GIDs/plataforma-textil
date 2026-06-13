@@ -70,7 +70,7 @@ export function ErrorPage({ error, reset, contexto = 'publico' }: Props) {
           Si el problema persiste, podes{' '}
           <button
             onClick={() => abrirFeedback(error.digest)}
-            className="underline text-brand-blue hover:text-blue-800"
+            className="underline text-brand-blue hover:text-brand-blue-dark"
           >
             reportarlo aca
           </button>

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { sendEmail, buildCertificadoEmail } from '@/compartido/lib/email'
 import { generateQrBuffer } from '@/compartido/lib/qr'
 import { uploadFile } from '@/compartido/lib/storage'
@@ -9,10 +9,8 @@ import { aplicarNivel } from '@/compartido/lib/nivel'
 // GET /api/colecciones/[id]/evaluacion — devuelve evaluacion existente (admin)
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN' && role !== 'CONTENIDO') return NextResponse.json({ error: 'Solo ADMIN o CONTENIDO' }, { status: 403 })
+    const sesion = await requiereRolApi(['ADMIN', 'CONTENIDO'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { id: coleccionId } = await params
     const evaluacion = await prisma.evaluacion.findUnique({ where: { coleccionId } })
@@ -27,10 +25,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 // Body: { preguntas: Pregunta[], puntajeMinimo: number }
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN' && role !== 'CONTENIDO') return NextResponse.json({ error: 'Solo ADMIN o CONTENIDO' }, { status: 403 })
+    const sesion = await requiereRolApi(['ADMIN', 'CONTENIDO'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { id: coleccionId } = await params
     const { preguntas, puntajeMinimo } = await req.json()
@@ -51,13 +47,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 // Body: { respuestas: number[] }  (índice de opción elegida por pregunta)
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'TALLER') return NextResponse.json({ error: 'Solo talleres pueden rendir evaluaciones' }, { status: 403 })
+    const sesion = await requiereRolApi(['TALLER'])
+    if (sesion instanceof NextResponse) return sesion
 
     const taller = await prisma.taller.findFirst({
-      where: { userId: session.user.id },
+      where: { userId: sesion.userId },
       select: { id: true, nombre: true, user: { select: { email: true } } },
     })
     if (!taller) return NextResponse.json({ error: 'Taller no encontrado' }, { status: 404 })
@@ -144,7 +138,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       })
       // Recalcular nivel del taller (certificados suman puntaje)
       try {
-        await aplicarNivel(taller.id, session.user.id)
+        await aplicarNivel(taller.id, sesion.userId)
       } catch (err) {
         console.error('[academia] Error recalculando nivel tras certificado:', err)
       }

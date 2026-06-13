@@ -39,7 +39,7 @@ export default async function MarcaDashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-overpass font-bold text-3xl text-brand-blue">
+        <h1 className="font-serif font-bold text-3xl text-ink-primary">
           Bienvenido, {marca?.nombre ?? session.user.name}
         </h1>
         <p className="text-gray-500 mt-1">Tu panel de gestión de producción</p>
@@ -106,8 +106,8 @@ export default async function MarcaDashboardPage() {
       </div>
 
       {cotizacionesRecibidas > 0 && (
-        <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
-          <p className="text-sm font-medium text-blue-800">
+        <div className="p-4 bg-pastel-blue border border-brand-blue/30 rounded-xl">
+          <p className="text-sm font-medium text-brand-blue-dark">
             Tenés {cotizacionesRecibidas} cotización{cotizacionesRecibidas > 1 ? 'es' : ''} pendiente{cotizacionesRecibidas > 1 ? 's' : ''} de revisión
           </p>
           <Link href="/marca/pedidos" className="text-xs text-brand-blue font-semibold hover:underline mt-1 block">

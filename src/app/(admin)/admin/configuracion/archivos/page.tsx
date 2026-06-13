@@ -93,7 +93,7 @@ export default function AdminConfiguracionArchivosPage() {
       <div className="flex items-center gap-3 mb-1">
         <a href="/admin/configuracion" className="text-brand-blue hover:underline text-sm">&larr; Configuracion</a>
       </div>
-      <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Configuracion de Archivos</h1>
+      <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">Configuracion de Archivos</h1>
       <p className="text-gray-500 text-sm mb-6">Define que tipos de archivo y tamano maximo se aceptan en cada contexto de la plataforma</p>
 
       {loading && (

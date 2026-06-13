@@ -35,18 +35,15 @@ test.describe('D-01 Roles ESTADO — flujos principales', () => {
     await expect(page.getByRole('heading', { name: 'Auditorias' })).toBeVisible()
   })
 
-  test('ESTADO sidebar muestra 9 items', async ({ page }) => {
+  test('ESTADO sidebar muestra accesos personales (F1+F3)', async ({ page }) => {
     await ensureNotProduction(page)
     await loginEstado(page)
-    // Abrir sidebar hamburger
-    const menuBtn = page.locator('button[aria-label="Abrir menú"]').or(page.locator('button[aria-label="Menu"]'))
-    if (await menuBtn.isVisible()) {
-      await menuBtn.click()
-    }
-    // Contar items de navegacion en el sidebar
-    // 10 items: Dashboard, Talleres, Documentos, Auditorias, Niveles, Demanda insatisfecha, Datos sectoriales, Exportar Datos, Notificaciones, Mi Cuenta
-    const navItems = page.locator('nav ul li')
-    await expect(navItems).toHaveCount(10)
+    // F1: sidebar visible en desktop sin necesidad de hamburguesa
+    const sidebar = page.locator('aside[aria-label="Menú principal"]')
+    await expect(sidebar).toBeVisible()
+    // F3: solo accesos personales (Notificaciones + Mi cuenta + Ayuda)
+    const navItems = sidebar.locator('nav ul li')
+    await expect(navItems).toHaveCount(3)
   })
 
   test('ESTADO ve tabs Formalizacion/Historial/Datos en detalle taller', async ({ page }) => {

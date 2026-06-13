@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { logAccionAdmin } from '@/compartido/lib/log'
 import bcrypt from 'bcryptjs'
 
 export async function GET(req: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user || (session.user as { role?: string }).role !== 'ADMIN') {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const sesion = await requiereRolApi(['ADMIN'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { searchParams } = req.nextUrl
 
@@ -51,10 +49,8 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user || (session.user as { role?: string }).role !== 'ADMIN') {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
+    const sesion = await requiereRolApi(['ADMIN'])
+    if (sesion instanceof NextResponse) return sesion
 
     const body = await req.json()
     const exists = await prisma.user.findUnique({ where: { email: body.email } })
@@ -62,10 +58,12 @@ export async function POST(req: NextRequest) {
 
     const hashedPassword = await bcrypt.hash(body.password, 10)
     const user = await prisma.user.create({
-      data: { email: body.email, password: hashedPassword, name: body.name, role: body.role, phone: body.phone },
+      // MITIGACION #307 (temporal): emailVerified al crear para no bloquear el
+      // onboarding (mismo motivo que en auth/registro). Revertir con flujo real.
+      data: { email: body.email, password: hashedPassword, name: body.name, role: body.role, phone: body.phone, emailVerified: new Date() },
       select: { id: true, email: true, name: true, role: true, active: true },
     })
-    logAccionAdmin('ADMIN_USUARIO_CREADO', session.user.id, {
+    logAccionAdmin('ADMIN_USUARIO_CREADO', sesion.userId, {
       entidad: 'usuario',
       entidadId: user.id,
       metadata: { role: body.role, email: body.email },

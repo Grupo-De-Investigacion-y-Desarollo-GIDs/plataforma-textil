@@ -118,7 +118,7 @@ export default function AdminConfiguracionPage() {
 
   return (
     <div className="max-w-3xl mx-auto py-6 px-4">
-      <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Configuración General</h1>
+      <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">Configuración General</h1>
       <p className="text-gray-500 text-sm mb-6">Parámetros del sistema</p>
 
       {loading && (
@@ -147,7 +147,7 @@ export default function AdminConfiguracionPage() {
       {tab === 'general' && (
         <>
           <Card className="mb-6">
-            <h2 className="font-overpass font-bold text-brand-blue mb-4">Información de la Plataforma</h2>
+            <h2 className="font-serif font-bold text-brand-blue mb-4">Información de la Plataforma</h2>
             <div className="space-y-4">
               <Input label="Nombre de la plataforma" value={nombrePlataforma} onChange={e => setNombrePlataforma(e.target.value)} />
               <Input label="Email de soporte" value={emailSoporte} onChange={e => setEmailSoporte(e.target.value)} />
@@ -156,7 +156,7 @@ export default function AdminConfiguracionPage() {
           </Card>
 
           <Card className="mb-6">
-            <h2 className="font-overpass font-bold text-brand-blue mb-4">Registro de Usuarios</h2>
+            <h2 className="font-serif font-bold text-brand-blue mb-4">Registro de Usuarios</h2>
             <div className="space-y-3">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" checked={permitirTalleres} onChange={e => setPermitirTalleres(e.target.checked)} className="rounded" />
@@ -174,7 +174,7 @@ export default function AdminConfiguracionPage() {
           </Card>
 
           <Card className="mb-6">
-            <h2 className="font-overpass font-bold text-brand-blue mb-4">Certificados</h2>
+            <h2 className="font-serif font-bold text-brand-blue mb-4">Certificados</h2>
             <div className="space-y-4">
               <Input label="Prefijo de código de certificado" value={prefijoCertificado} onChange={e => setPrefijoCertificado(e.target.value)} />
               <Input label="Institución que firma certificados" value={institucionFirma} onChange={e => setInstitucionFirma(e.target.value)} />
@@ -185,14 +185,14 @@ export default function AdminConfiguracionPage() {
 
       {tab === 'emails' && (
         <Card className="mb-6">
-          <h2 className="font-overpass font-bold text-brand-blue mb-4">Configuración de Email</h2>
+          <h2 className="font-serif font-bold text-brand-blue mb-4">Configuración de Email</h2>
           <p className="text-sm text-gray-500">Configurá los proveedores de email en <a href="/admin/integraciones/email" className="text-brand-blue hover:underline">Integraciones - Email</a></p>
         </Card>
       )}
 
       {tab === 'integraciones' && (
         <Card className="mb-6">
-          <h2 className="font-overpass font-bold text-brand-blue mb-4">Integraciones</h2>
+          <h2 className="font-serif font-bold text-brand-blue mb-4">Integraciones</h2>
           <p className="text-sm text-gray-500">Configurá las integraciones externas en <a href="/admin/integraciones" className="text-brand-blue hover:underline">Integraciones</a></p>
         </Card>
       )}
@@ -200,7 +200,7 @@ export default function AdminConfiguracionPage() {
       {tab === 'features' && (
         <>
           <Card className="mb-6">
-            <h2 className="font-overpass font-bold text-brand-blue mb-4">Escenario 1 — Formalizacion</h2>
+            <h2 className="font-serif font-bold text-brand-blue mb-4">Escenario 1 — Formalizacion</h2>
             <div className="space-y-3">
               {Object.entries(flagsE1).map(([clave, activo]) => (
                 <label key={clave} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
@@ -220,7 +220,7 @@ export default function AdminConfiguracionPage() {
           </Card>
 
           <Card className="mb-6">
-            <h2 className="font-overpass font-bold text-brand-blue mb-4">Escenario 2 — Marketplace</h2>
+            <h2 className="font-serif font-bold text-brand-blue mb-4">Escenario 2 — Marketplace</h2>
             <div className="space-y-3">
               {Object.entries(flagsE2).map(([clave, activo]) => (
                 <label key={clave} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">

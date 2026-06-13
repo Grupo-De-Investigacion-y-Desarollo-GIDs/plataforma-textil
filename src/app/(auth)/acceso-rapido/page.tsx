@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { Card } from '@/compartido/componentes/ui/card'
-import { Factory, ShoppingBag, BarChart3, Shield } from 'lucide-react'
+import { Factory, ShoppingBag, BarChart3, Shield, FileText } from 'lucide-react'
 
 const usuarios = [
   {
@@ -21,8 +21,8 @@ const usuarios = [
     email: 'roberto.gimenez@pdt.org.ar',
     password: 'pdt2026',
     nombre: 'Roberto Giménez',
-    rol: 'TALLER BRONCE',
-    descripcion: 'Taller La Aguja — Florencio Varela',
+    rol: 'TALLER',
+    descripcion: 'Taller La Aguja — Florencio Varela (etapa inicial)',
     redirect: '/taller',
     icon: Factory,
     color: 'bg-orange-500',
@@ -31,8 +31,8 @@ const usuarios = [
     email: 'graciela.sosa@pdt.org.ar',
     password: 'pdt2026',
     nombre: 'Graciela Sosa',
-    rol: 'TALLER PLATA',
-    descripcion: 'Cooperativa Hilos del Sur — La Matanza',
+    rol: 'TALLER',
+    descripcion: 'Cooperativa Hilos del Sur — La Matanza (en proceso)',
     redirect: '/taller',
     icon: Factory,
     color: 'bg-gray-400',
@@ -41,8 +41,8 @@ const usuarios = [
     email: 'carlos.mendoza@pdt.org.ar',
     password: 'pdt2026',
     nombre: 'Carlos Mendoza',
-    rol: 'TALLER ORO',
-    descripcion: 'Corte Sur SRL — Avellaneda',
+    rol: 'TALLER',
+    descripcion: 'Corte Sur SRL — Avellaneda (consolidado)',
     redirect: '/taller',
     icon: Factory,
     color: 'bg-yellow-500',
@@ -66,6 +66,16 @@ const usuarios = [
     redirect: '/estado',
     icon: BarChart3,
     color: 'bg-green-600',
+  },
+  {
+    email: 'sofia.martinez@pdt.org.ar',
+    password: 'pdt2026',
+    nombre: 'Sofía Martínez',
+    rol: 'CONTENIDO',
+    descripcion: 'Gestión de contenido público',
+    redirect: '/contenido',
+    icon: FileText,
+    color: 'bg-purple-500',
   },
 ]
 
@@ -105,7 +115,7 @@ export default function AccesoRapidoPage() {
         <div className="w-16 h-16 rounded-full bg-brand-blue flex items-center justify-center mx-auto mb-4">
           <span className="font-overpass font-bold text-white text-xl">PDT</span>
         </div>
-        <h1 className="font-overpass font-bold text-2xl text-brand-blue">Acceso rapido</h1>
+        <h1 className="font-overpass font-bold text-2xl text-ink-primary">Acceso rapido</h1>
         <p className="text-gray-500 text-sm mt-1">Selecciona un usuario para ingresar al sistema</p>
       </div>
 

@@ -54,7 +54,7 @@ export default function OnboardingMarcaPage() {
         <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
           <li>Precio por unidad y total</li>
           <li>Plazo de entrega propuesto</li>
-          <li>Nivel del taller (Bronce, Plata, Oro)</li>
+          <li>Grado de formalización del taller</li>
           <li>Badges de verificacion (CUIT verificado, documentos aprobados)</li>
           <li>Rating y pedidos completados</li>
         </ul>
@@ -85,8 +85,8 @@ export default function OnboardingMarcaPage() {
             <span>Tiene documentacion de formalizacion aprobada</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-xs font-semibold">Nivel</span>
-            <span>Bronce, Plata u Oro indica su grado de formalizacion</span>
+            <span className="px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-xs font-semibold">Formalización</span>
+            <span>Etapa de formalización del taller</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-semibold">Certificados</span>

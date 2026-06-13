@@ -15,11 +15,11 @@ interface ActivityTimelineProps {
 }
 
 const iconByAction: Record<string, { icon: typeof Info; color: string }> = {
-  PEDIDO_PUBLICADO: { icon: Package, color: 'text-blue-500 bg-blue-50' },
-  COTIZACION_RECIBIDA: { icon: FileText, color: 'text-blue-500 bg-blue-50' },
+  PEDIDO_PUBLICADO: { icon: Package, color: 'text-brand-blue bg-pastel-blue' },
+  COTIZACION_RECIBIDA: { icon: FileText, color: 'text-brand-blue bg-pastel-blue' },
   COTIZACION_ACEPTADA: { icon: CheckCircle, color: 'text-green-500 bg-green-50' },
   COTIZACION_RECHAZADA: { icon: XCircle, color: 'text-red-500 bg-red-50' },
-  ORDEN_CREADA: { icon: Package, color: 'text-blue-500 bg-blue-50' },
+  ORDEN_CREADA: { icon: Package, color: 'text-brand-blue bg-pastel-blue' },
   ORDEN_ACEPTADA: { icon: CheckCircle, color: 'text-green-500 bg-green-50' },
   ORDEN_RECHAZADA: { icon: XCircle, color: 'text-red-500 bg-red-50' },
   PROGRESO_ACTUALIZADO: { icon: TrendingUp, color: 'text-yellow-500 bg-yellow-50' },

@@ -139,12 +139,12 @@ export default function AdminUsuariosPage() {
 
   return (
     <div className="max-w-5xl mx-auto py-6 px-4">
-      <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Usuarios</h1>
+      <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">Usuarios</h1>
       <p className="text-gray-500 text-sm mb-6">Gestión de usuarios de la plataforma</p>
 
       {registrosIncompletos.length > 0 && (
         <Card className="mb-6 border-l-4 border-l-amber-400">
-          <h2 className="font-overpass font-bold text-brand-blue mb-3">Registros incompletos</h2>
+          <h2 className="font-serif font-bold text-brand-blue mb-3">Registros incompletos</h2>
           <p className="text-sm text-gray-500 mb-3">Usuarios que iniciaron registro con Google o magic link pero no completaron el CUIT y rol.</p>
           <div className="divide-y divide-gray-100">
             {registrosIncompletos.map((r) => (

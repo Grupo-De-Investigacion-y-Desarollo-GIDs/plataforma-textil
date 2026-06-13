@@ -9,7 +9,6 @@ import { Badge } from '@/compartido/componentes/ui/badge'
 import { EmptyState } from '@/compartido/componentes/ui/empty-state'
 import { SkeletonTable } from '@/compartido/componentes/ui/skeleton'
 import Link from 'next/link'
-import { Package } from 'lucide-react'
 
 const statusLabel: Record<string, string> = {
   PENDIENTE: 'Pendiente',
@@ -36,17 +35,7 @@ async function ListaOrdenes() {
 
   if (!taller) redirect('/login')
 
-  const [disponiblesCount, ordenes] = await Promise.all([
-    prisma.pedido.count({
-      where: {
-        estado: 'PUBLICADO',
-        OR: [
-          { visibilidad: 'PUBLICO' },
-          { invitaciones: { some: { tallerId: taller.id } } },
-        ],
-      },
-    }),
-    prisma.ordenManufactura.findMany({
+  const ordenes = await prisma.ordenManufactura.findMany({
       where: { tallerId: taller.id },
       include: {
         pedido: {
@@ -59,8 +48,7 @@ async function ListaOrdenes() {
         },
       },
       orderBy: { createdAt: 'desc' },
-    }),
-  ])
+    })
 
   const total = ordenes.length
   const enEjecucion = ordenes.filter(o => o.estado === 'EN_EJECUCION').length
@@ -69,21 +57,9 @@ async function ListaOrdenes() {
 
   return (
     <>
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="font-overpass font-bold text-3xl text-brand-blue">Pedidos Recibidos</h1>
-          <p className="text-gray-600 mt-2">Ordenes de manufactura asignadas a {taller.nombre}</p>
-        </div>
-        <Link
-          href="/taller/pedidos/disponibles"
-          className="inline-flex items-center gap-2 bg-brand-blue text-white px-4 py-2.5 rounded-lg text-sm font-overpass font-semibold hover:bg-brand-blue-hover transition-colors"
-        >
-          <Package className="w-4 h-4" />
-          Pedidos disponibles
-          {disponiblesCount > 0 && (
-            <span className="bg-white text-brand-blue text-xs font-bold px-1.5 py-0.5 rounded-full">{disponiblesCount}</span>
-          )}
-        </Link>
+      <div>
+        <h1 className="font-serif font-bold text-3xl text-ink-primary">Pedidos recibidos</h1>
+        <p className="text-gray-600 mt-2">Ordenes de manufactura asignadas a {taller.nombre}</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -118,7 +94,7 @@ async function ListaOrdenes() {
               <Link
                 key={orden.id}
                 href={`/taller/pedidos/${orden.id}`}
-                className="block border border-gray-100 rounded-lg p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3 hover:border-brand-blue hover:bg-blue-50/30 transition-colors"
+                className="block border border-gray-100 rounded-lg p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3 hover:border-brand-blue hover:bg-pastel-blue/30 transition-colors"
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">

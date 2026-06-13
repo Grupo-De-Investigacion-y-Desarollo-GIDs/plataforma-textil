@@ -25,8 +25,29 @@ de vista pero sin bloquear avance del MVP.
 **Evidencia:** `updatedAt = 2026-05-15T23:52:08` coincide con el E2E run
   del PR #325 (X-04) que corrio a las 23:41 UTC.
 **Fix aplicado:** UPDATE manual a `activo=true` en Supabase REST API.
-**Prevencion:** considerar agregar un beforeAll o afterAll global en
-  `file-validation.spec.ts` que garantice reactivar TODOS los contextos
-  de upload al final del describe, independiente de si tests individuales
-  fallan. Alternativa: que el test `:159` use un contexto de prueba
-  dedicado en vez de desactivar uno real.
+**Prevencion:** PR #337 implemento `test.afterEach` que garantiza
+  reactivacion despues de cada test. Fix mergeado.
+
+## smoke.spec.ts:6 — degradacion progresiva (net::ERR_ABORTED)
+
+**Detectado en:** PR #324 (X-02 rebase), 2026-05-16
+**Sintoma:** net::ERR_ABORTED en page.goto a /admin/logs durante test
+  de Playwright con sesion de admin.
+
+**Patron historico:**
+- W-A1 (PR #326): 1 fallo, pasa en retry 1
+- PR #337 (config fix): 2 fallos, pasa en retry 2
+- X-02 (PR #324 rebase): 3 fallos, no pasa sin re-run
+
+**Diagnostico:** NO es regresion de codigo. Es problema intermitente de
+  la funcion serverless Vercel que afecta navegacion autenticada en
+  Playwright. Verificado:
+- /admin/logs responde 307 al curl en 0.5s (funcion OK)
+- X-02 no modifico nada en src/app/(admin)/ ni layout admin
+- Diff de X-02 es puramente visual (CSS + variantes nuevas)
+
+**Workaround:** re-run del test fallido. Si CI vuelve verde, mergear.
+
+**Fix sugerido (futuro):** cambiar waitUntil: 'load' a
+  waitUntil: 'domcontentloaded' en el test. Menos estricto con SSR
+  streaming. Pendiente para spec de mantenimiento E2E.

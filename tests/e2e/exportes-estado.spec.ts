@@ -21,7 +21,7 @@ test.describe('F-04 Exportes del Estado', () => {
     // Verificar que hay tarjetas de reportes
     await expect(page.getByRole('heading', { name: 'Talleres', exact: true })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Marcas', exact: true })).toBeVisible()
-    await expect(page.getByText('Informe mensual completo')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Informe mensual completo' })).toBeVisible()
   })
 
   test('Botones CSV y Excel visibles en cada tarjeta', async ({ page }) => {

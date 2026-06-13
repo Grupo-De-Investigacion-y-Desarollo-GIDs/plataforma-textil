@@ -114,9 +114,9 @@ export default function NotificacionesClient() {
               {[
                 { value: 'todos', label: 'Todos los usuarios' },
                 { value: 'talleres', label: 'Todos los talleres' },
-                { value: 'talleres_bronce', label: 'Talleres Bronce' },
-                { value: 'talleres_plata', label: 'Talleres Plata' },
-                { value: 'talleres_oro', label: 'Talleres Oro' },
+                { value: 'talleres_bronce', label: 'Talleres — Etapa inicial' },
+                { value: 'talleres_plata', label: 'Talleres — En proceso' },
+                { value: 'talleres_oro', label: 'Talleres — Consolidados' },
                 { value: 'marcas', label: 'Todas las marcas' },
               ].map(opt => (
                 <label key={opt.value} className="flex items-center gap-2 cursor-pointer">

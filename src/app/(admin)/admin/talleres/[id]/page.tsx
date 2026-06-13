@@ -12,6 +12,7 @@ import { MapPin, Mail, Phone, AlertTriangle, Award } from 'lucide-react'
 import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 import { BotonEnviarMensaje } from '@/admin/componentes/boton-enviar-mensaje'
 import { NotasSeguimiento } from '@/admin/componentes/notas-seguimiento'
+import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 
 export default async function AdminDetalleTallerPage({ params, searchParams }: {
   params: Promise<{ id: string }>
@@ -103,7 +104,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
             {taller.nombre.charAt(0)}
           </div>
           <div className="flex-1">
-            <h1 className="font-overpass font-bold text-xl text-brand-blue">{taller.nombre}</h1>
+            <h1 className="font-serif font-bold text-xl text-ink-primary">{taller.nombre}</h1>
             <p className="text-sm text-gray-500">CUIT: {taller.cuit} {taller.verificadoAfip && <span className="text-green-500">&#10003;</span>}</p>
             <div className="flex flex-wrap gap-3 mt-2 text-sm text-gray-500">
               {taller.provincia && <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {taller.provincia}{taller.partido ? `, ${taller.partido}` : ''}</span>}
@@ -111,7 +112,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
               {taller.user.phone && <span className="flex items-center gap-1"><Phone className="w-3.5 h-3.5" /> {taller.user.phone}</span>}
             </div>
             <div className="flex items-center gap-3 mt-3">
-              <Badge variant={nivelVariant}>{taller.nivel}</Badge>
+              <Badge variant={nivelVariant}>{nivelAEtapa(taller.nivel)}</Badge>
               <Badge variant="outline">{taller.puntaje} pts</Badge>
               <Badge variant={taller.user.active ? 'success' : 'warning'}>{taller.user.active ? 'Activo' : 'Inactivo'}</Badge>
               <BotonEnviarMensaje
@@ -125,7 +126,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
         </div>
         {taller.sam && (
           <div className="mt-4 pt-4 border-t grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-            <div><span className="text-gray-500">SAM:</span> {taller.sam} min</div>
+            <div><span className="text-gray-500">Tiempo estándar:</span> {taller.sam} min</div>
             <div><span className="text-gray-500">Capacidad:</span> {taller.capacidadMensual}/mes</div>
             <div><span className="text-gray-500">Organizacion:</span> {taller.organizacion || '—'}</div>
             <div><span className="text-gray-500">Trabajadores:</span> {taller.trabajadoresRegistrados}</div>
@@ -134,7 +135,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
       </Card>
 
       {/* Link a vista ESTADO */}
-      <div className="mb-4 rounded-lg bg-blue-50 border border-blue-200 px-4 py-3 text-sm text-blue-700">
+      <div className="mb-4 rounded-lg bg-pastel-blue border border-brand-blue/30 px-4 py-3 text-sm text-brand-blue-dark">
         Las acciones de formalizacion (aprobar/rechazar documentos) son responsabilidad del Estado.{' '}
         <Link href={`/estado/talleres/${id}`} className="font-semibold text-brand-blue hover:underline">
           Ver vista de formalizacion
@@ -259,7 +260,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
       {/* Tab: Historial */}
       {tab === 'historial' && (
         <Card>
-          <h2 className="font-overpass font-bold text-brand-blue mb-3">Historial del taller</h2>
+          <h2 className="font-serif font-bold text-brand-blue mb-3">Historial del taller</h2>
           {historialLogs.length === 0 ? (
             <p className="text-sm text-gray-500">Sin actividad registrada.</p>
           ) : (
@@ -295,7 +296,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
       {/* Tab: Actividad */}
       {tab === 'actividad' && (
         <Card>
-          <h2 className="font-overpass font-bold text-brand-blue mb-3">Actividad Reciente</h2>
+          <h2 className="font-serif font-bold text-brand-blue mb-3">Actividad Reciente</h2>
           {logs.length === 0 ? (
             <p className="text-sm text-gray-500">Sin actividad registrada.</p>
           ) : (
@@ -319,7 +320,7 @@ export default async function AdminDetalleTallerPage({ params, searchParams }: {
 
       {/* Notas */}
       <Card className="mt-6">
-        <h2 className="font-overpass font-bold text-brand-blue mb-3">Notas Internas</h2>
+        <h2 className="font-serif font-bold text-brand-blue mb-3">Notas Internas</h2>
         <form action={guardarNota} className="flex gap-2 mb-4">
           <input
             type="text"

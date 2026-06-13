@@ -45,6 +45,10 @@ const cacheReglas = new Map<string, { data: ReglaNivel[]; expira: number }>()
 const cacheTipos = new Map<string, { data: TipoDocCache[]; expira: number }>()
 const CACHE_TTL_MS = 60_000
 
+// Bonus de puntaje por CUIT verificado en ARCA. Universal (no atado a un tipo de
+// documento), por eso se suma aparte del reduce de validaciones.
+const AFIP_BONUS = 10
+
 async function getReglasNivel(): Promise<ReglaNivel[]> {
   const cached = cacheReglas.get('all')
   if (cached && cached.expira > Date.now()) return cached.data
@@ -106,7 +110,7 @@ export async function calcularNivel(tallerId: string): Promise<ResultadoNivel> {
   // Sumar puntosOtorgados de cada validacion COMPLETADO + bonus AFIP
   const puntaje = taller.validaciones.reduce(
     (sum, v) => sum + v.tipoDocumento.puntosOtorgados, 0
-  ) + (taller.verificadoAfip ? 10 : 0)
+  ) + (taller.verificadoAfip ? AFIP_BONUS : 0)
 
   const certificados = taller.certificados.length
   const tiposCompletados = new Set(taller.validaciones.map(v => v.tipoDocumento.id))
@@ -201,7 +205,7 @@ export async function calcularProximoNivel(tallerId: string): Promise<ProximoNiv
 
   const puntosActuales = taller.validaciones.reduce(
     (sum, v) => sum + v.tipoDocumento.puntosOtorgados, 0
-  ) + (taller.verificadoAfip ? 10 : 0)
+  ) + (taller.verificadoAfip ? AFIP_BONUS : 0)
 
   const certificados = taller.certificados.length
   const tiposCompletados = new Set(taller.validaciones.map(v => v.tipoDocumento.id))
@@ -263,4 +267,39 @@ export async function calcularProximoNivel(tallerId: string): Promise<ProximoNiv
     certificadosFaltantes: certsFaltantes,
     beneficiosProximoNivel: reglaProximo.beneficios,
   }
+}
+
+// --- Porcentaje de formalizacion (F-01) ---
+
+// F-01: `taller.puntaje` es un SCORE crudo (suma de puntosOtorgados de las
+// validaciones COMPLETADO + AFIP_BONUS), deliberadamente SIN tope (ver
+// nivel.test.ts "no hay cap de puntaje"). La UI lo mostraba directo con un `%`,
+// así que un taller con score > 100 mostraba "135%". La causa raíz no es solo la
+// falta de Math.min: es que NO había divisor — se mostraban puntos como porcentaje.
+//
+// El fix calcula un porcentaje real contra el MÁXIMO alcanzable y lo capa a 100.
+// El máximo es dinámico (suma de los puntos de todos los tipos de documento
+// requeridos activos + AFIP_BONUS): si se agregan/quitan tipos de documento, el
+// divisor se ajusta solo (evita el "divisor desactualizado" del diagnóstico).
+
+/**
+ * Puntaje máximo alcanzable de formalización: suma de puntos de los tipos de
+ * documento requeridos+activos + el bonus de AFIP. Divisor del % de formalización.
+ * Usa la caché de tipos (TTL 60s) — no agrega carga en hot paths.
+ */
+export async function maxPuntosFormalizacion(): Promise<number> {
+  const tipos = await getTiposActivos()
+  const puntosDocs = tipos.reduce((sum, t) => sum + t.puntosOtorgados, 0)
+  return puntosDocs + AFIP_BONUS
+}
+
+/**
+ * Convierte el score crudo `puntaje` en un porcentaje de formalización 0-100,
+ * capado a 100 (Math.min). 100% = todos los requisitos cubiertos. Punto ÚNICO de
+ * cálculo: todos los renders del % deben usar este helper, nunca `puntaje` directo.
+ */
+export async function porcentajeFormalizacion(puntaje: number): Promise<number> {
+  const max = await maxPuntosFormalizacion()
+  if (max <= 0) return 0
+  return Math.min(100, Math.round((puntaje / max) * 100))
 }

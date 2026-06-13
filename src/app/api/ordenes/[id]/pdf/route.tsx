@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/compartido/lib/auth'
+import { modoActivo } from '@/compartido/lib/roles'
 import { prisma } from '@/compartido/lib/prisma'
 import { renderToBuffer } from '@react-pdf/renderer'
 import { OrdenPDF } from '@/compartido/componentes/pdf/orden-pdf'
@@ -37,7 +38,7 @@ export async function GET(
   }
 
   // Verificar ownership: taller asignado, marca dueña del pedido, o ADMIN
-  const role = (session.user as { role?: string }).role
+  const role = modoActivo(session.user)
   const userId = session.user.id
   if (role !== 'ADMIN') {
     const esTaller = orden.taller.userId === userId

@@ -1,12 +1,23 @@
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
+import { buildValidacionesFaltantes } from './validaciones-helper'
 
 const prisma = new PrismaClient()
 
 async function main() {
-  if (process.env.VERCEL_ENV === 'production') {
-    console.log('Seed skipped in production')
-    return
+  // Guard robusto: bloquear si la DB parece PROD, salvo opt-in explícito.
+  // El check anterior (VERCEL_ENV) no disparaba en local porque .env no define
+  // VERCEL_ENV — y este seed empieza por borrar TODAS las tablas (deleteMany).
+  const DB_URL = process.env.DATABASE_URL || ''
+  const PROD_REF = 'nefbhacmjrzynnhvgfnl' // ref de prod, ver .claude/specs/handover/DECISIONS.md
+  const isProdDb = DB_URL.includes(PROD_REF)
+
+  if (isProdDb && process.env.ALLOW_PROD_SEED !== '1') {
+    throw new Error(
+      '🔴 BLOQUEADO: el seed apunta a una DB que parece PROD.\n' +
+      'Si REALMENTE querés seedear PROD, corré con ALLOW_PROD_SEED=1.\n' +
+      'Si no, configurá .env para apuntar a DEV.'
+    )
   }
 
   console.log('🌱 Seeding database...')
@@ -85,7 +96,46 @@ async function main() {
     data: { email: 'sofia.martinez@pdt.org.ar', password: hash, name: 'Sofía Martínez', role: 'CONTENIDO', phone: '+5491101234567', active: true },
   })
 
-  console.log('  ✓ 8 usuarios creados (incl. CONTENIDO)')
+  // U-04: usuario MULTI-ROL (taller + marca) para probar el toggle "Operando como…".
+  // roles[] poblado explícitamente + activeMode/role invariante. Su Taller y Marca
+  // se crean más abajo (mismo userId). Para otorgar un 2do rol a un user existente
+  // de forma manual: Prisma Studio → User → editar `roles` (array) + `activeMode`.
+  const userDual = await prisma.user.create({
+    data: {
+      email: 'julieta.benitez@pdt.org.ar',
+      password: hash,
+      name: 'Julieta Benítez',
+      role: 'TALLER',
+      roles: ['TALLER', 'MARCA'],
+      activeMode: 'TALLER',
+      phone: '+5491102020202',
+      active: true,
+    },
+  })
+
+  // U-09: usuario single-rol TALLER dedicado al e2e de "agregar segundo rol".
+  // Aislado para que el test pueda convertirlo a multi-rol sin pisar a otros users.
+  await prisma.user.create({
+    data: {
+      email: 'u09.test@pdt.org.ar',
+      password: hash,
+      name: 'Tomás U09',
+      role: 'TALLER',
+      phone: '+5491109090909',
+      active: true,
+      taller: {
+        create: {
+          nombre: 'Taller U09',
+          cuit: '20-40404040-4',
+          nivel: 'BRONCE',
+          ubicacion: 'Quilmes, Buenos Aires',
+          verificadoAfip: true,
+        },
+      },
+    },
+  })
+
+  console.log('  ✓ 10 usuarios creados (incl. CONTENIDO + multi-rol + e2e U-09)')
 
   // ============================================
   // PROCESOS PRODUCTIVOS (5)
@@ -230,7 +280,7 @@ async function main() {
         puntosMinimos: 0,
         requiereVerificadoAfip: false,
         certificadosAcademiaMin: 0,
-        descripcion: 'Nivel inicial — el taller esta registrado en la plataforma',
+        descripcion: 'Etapa inicial — el taller está registrado en la plataforma',
         beneficios: ['Aparece en el directorio publico', 'Recibe pedidos compatibles con su capacidad'],
       },
       {
@@ -239,7 +289,7 @@ async function main() {
         requiereVerificadoAfip: true,
         certificadosAcademiaMin: 1,
         descripcion: 'El taller demuestra formalizacion basica y compromiso con la capacitacion',
-        beneficios: ['Aparece mas arriba en el directorio', 'Acceso a pedidos de marcas medianas', 'Distintivo PLATA visible'],
+        beneficios: ['Aparece mas arriba en el directorio', 'Acceso a pedidos de marcas medianas', 'Distintivo de formalización visible en el directorio'],
       },
       {
         nivel: 'ORO',
@@ -247,7 +297,7 @@ async function main() {
         requiereVerificadoAfip: true,
         certificadosAcademiaMin: 0,
         descripcion: 'Taller plenamente formalizado con capacitacion avanzada',
-        beneficios: ['Top del directorio', 'Acceso a marcas grandes', 'Invitaciones directas a pedidos premium', 'Distintivo ORO visible'],
+        beneficios: ['Top del directorio', 'Acceso a marcas grandes', 'Invitaciones directas a pedidos premium', 'Distintivo de formalización consolidada visible en el directorio'],
       },
     ],
   })
@@ -475,29 +525,6 @@ async function main() {
 
   console.log('  ✓ Taller ORO: Corte Sur SRL (Avellaneda)')
 
-  // Post-seed: garantizar que cada taller tenga las 7 validaciones.
-  for (const taller of [tallerBronce, tallerPlata, tallerOro]) {
-    const existentes = await prisma.validacion.findMany({
-      where: { tallerId: taller.id },
-      select: { tipo: true },
-    })
-    const nombresExistentes = new Set(existentes.map(v => v.tipo))
-    const faltantes = tiposDoc.filter(td => !nombresExistentes.has(td.nombre))
-
-    if (faltantes.length > 0) {
-      await prisma.validacion.createMany({
-        data: faltantes.map(td => ({
-          tallerId: taller.id,
-          tipo: td.nombre,
-          tipoDocumentoId: td.id,
-          estado: 'NO_INICIADO' as const,
-        })),
-      })
-    }
-  }
-
-  console.log('  ✓ Post-seed: cada taller tiene 7 validaciones')
-
   // ============================================
   // PLANTILLA POR CATEGORÍA DE OFICIO TEXTIL
   // ============================================
@@ -562,7 +589,97 @@ async function main() {
     },
   })
 
-  console.log('  ✓ 2 marcas creadas')
+  // U-04: Taller + Marca del usuario multi-rol (Julieta Benítez). Le dan al
+  // toggle ambos nombres de entidad ("Taller La Hormiga" / "Marca Benítez").
+  await prisma.taller.create({
+    data: {
+      userId: userDual.id,
+      nombre: 'Taller La Hormiga',
+      cuit: '27-30111222-3',
+      nivel: 'BRONCE',
+      ubicacion: 'Avellaneda, Buenos Aires',
+      provincia: 'Buenos Aires',
+      partido: 'Avellaneda',
+      descripcion: 'Taller propio de Julieta, que además tiene su marca.',
+      capacidadMensual: 500,
+      trabajadoresRegistrados: 2,
+      verificadoAfip: true,
+    },
+  })
+  const marcaBenitez = await prisma.marca.create({
+    data: {
+      userId: userDual.id,
+      nombre: 'Marca Benítez',
+      cuit: '27-30111222-4',
+      ubicacion: 'Avellaneda, Buenos Aires',
+      tipo: 'Diseño independiente',
+      volumenMensual: 200,
+    },
+  })
+
+  console.log('  ✓ 2 marcas creadas (+ taller/marca del user multi-rol)')
+
+  // U-05 / D-02: garantizar el checklist de validaciones de TODOS los talleres.
+  // Va acá (tras crear La Hormiga y Taller U09, además de bronce/plata/oro) para que
+  // ningún taller del seed quede violando el invariante "1 Validacion NO_INICIADO por
+  // TipoDocumento.activo". Antes el loop solo cubría bronce/plata/oro → U09 y La Hormiga
+  // quedaban sin checklist y obligaban a un backfill manual post-reseed (deuda D-02).
+  // Reusa buildValidacionesFaltantes (misma definición que u05-backfill-validaciones.ts).
+  // Idempotente: solo crea las faltantes (los 3 talleres con checklist rico no se duplican).
+  const tiposActivos = tiposDoc // tiposDoc = tipos activos seedeados arriba
+  for (const taller of await prisma.taller.findMany({ select: { id: true } })) {
+    const existentes = await prisma.validacion.findMany({
+      where: { tallerId: taller.id },
+      select: { tipo: true },
+    })
+    const faltantes = buildValidacionesFaltantes(tiposActivos, new Set(existentes.map((v) => v.tipo)), taller.id)
+    if (faltantes.length > 0) {
+      await prisma.validacion.createMany({ data: faltantes })
+    }
+  }
+  console.log('  ✓ Post-seed: cada taller tiene su checklist de validaciones completo')
+
+  // U-08: pedidos publicados/borrador por la marca del user dual (Julieta), para
+  // ejercitar la regla anti-incesto E2E. Julieta tiene perfil TALLER y MARCA: no
+  // puede cotizar/invitarse a sí misma en pedidos que publicó como marca
+  // (pedido.marca.userId === su propio userId). Ver v4-u-08-tests-e2e-multi-rol.md.
+  //
+  // Son DOS pedidos a propósito, por el orden de los guards en cada ruta:
+  //   - DUAL1 PUBLICADO/PUBLICO → cotizar: AUTO_COTIZACION dispara antes que el
+  //     chequeo de estado (cotizaciones/route.ts), y disponibles lo excluye por
+  //     ser propio. Necesita estar PUBLICADO+PUBLICO para que la exclusión del
+  //     listado sea significativa (un BORRADOR no aparecería igual).
+  //   - DUAL2 BORRADOR → invitar: en invitaciones/route.ts el gate `estado !==
+  //     'BORRADOR'` (400) dispara ANTES que el anti-incesto ("No podés invitarte
+  //     a vos mismo", 400). Para ejercitar el guard REAL hace falta un pedido en
+  //     BORRADOR; sobre uno PUBLICADO el test pasaría por la razón equivocada.
+  // El reset-seed-state?user=julieta NO toca estos pedidos (solo hace user.update),
+  // así que sobreviven intactos entre corridas E2E.
+  await prisma.pedido.create({
+    data: {
+      omId: 'OM-2026-DUAL1',
+      marcaId: marcaBenitez.id,
+      tipoPrenda: 'Remera',
+      tipoPrendaId: prRemera.id,
+      cantidad: 300,
+      estado: 'PUBLICADO',
+      visibilidad: 'PUBLICO',
+      montoTotal: 270000,
+    },
+  })
+  await prisma.pedido.create({
+    data: {
+      omId: 'OM-2026-DUAL2',
+      marcaId: marcaBenitez.id,
+      tipoPrenda: 'Remera',
+      tipoPrendaId: prRemera.id,
+      cantidad: 150,
+      estado: 'BORRADOR',
+      montoTotal: 135000,
+    },
+  })
+
+  console.log('  ✓ 2 pedidos del user dual (DUAL1 publicado, DUAL2 borrador) para anti-incesto')
 
   // ============================================
   // PEDIDOS
@@ -901,6 +1018,7 @@ async function main() {
       montoTotal: 0,
       presupuesto: 2700000,
       descripcion: 'Buzos con capucha oversize para coleccion invierno. Tela french terry 280gr. Estampa en frente y espalda.',
+      imagenes: [`${process.env.SUPABASE_URL || 'https://fjddgukwydsdcrqoxvns.supabase.co'}/storage/v1/object/public/imagenes/pedido/seed/buzo.png`],
     },
   })
 
@@ -916,6 +1034,7 @@ async function main() {
       montoTotal: 0,
       presupuesto: 1800000,
       descripcion: 'Remeras lisas de algodon 24/1 para sublimacion. Colores: blanco, negro, gris melange. Talles S a XXL.',
+      imagenes: [`${process.env.SUPABASE_URL || 'https://fjddgukwydsdcrqoxvns.supabase.co'}/storage/v1/object/public/imagenes/pedido/seed/remera.png`],
     },
   })
 
@@ -931,6 +1050,7 @@ async function main() {
       montoTotal: 0,
       presupuesto: 900000,
       descripcion: 'Camisas manga larga en gabardina. Corte regular. Para uniforme corporativo.',
+      imagenes: [`${process.env.SUPABASE_URL || 'https://fjddgukwydsdcrqoxvns.supabase.co'}/storage/v1/object/public/imagenes/pedido/seed/camisa.png`],
     },
   })
 
@@ -1108,6 +1228,11 @@ async function main() {
   await prisma.logActividad.createMany({
     data: [
       { userId: admin.id, accion: 'NIVEL_SUBIDO', detalles: { tallerId: tallerPlata.id, nivelAnterior: 'BRONCE', nivelNuevo: 'PLATA', taller: 'Cooperativa Hilos del Sur' } },
+      // tallerOro tiene DOS pasos de recorrido (BRONCE→PLATA→ORO) para que el dashboard
+      // renderice el bloque "Historial de tu recorrido" (requiere length > 1). Esto da
+      // cobertura real al test de regresión F-1 (cierre-niveles): que ese historial
+      // muestre etapas vía nivelAEtapa(), nunca el enum crudo BRONCE/PLATA/ORO.
+      { userId: admin.id, accion: 'NIVEL_SUBIDO', detalles: { tallerId: tallerOro.id, nivelAnterior: 'BRONCE', nivelNuevo: 'PLATA', taller: 'Corte Sur SRL' } },
       { userId: admin.id, accion: 'NIVEL_SUBIDO', detalles: { tallerId: tallerOro.id, nivelAnterior: 'PLATA', nivelNuevo: 'ORO', taller: 'Corte Sur SRL' } },
       { userId: admin.id, accion: 'VALIDACION_RECHAZADA', detalles: { taller: 'Taller La Aguja', tipo: 'Habilitacion municipal', motivo: 'Documento ilegible' } },
       { userId: admin.id, accion: 'DENUNCIA_RECIBIDA', detalles: { codigo: `DEN-2026-${String(denunciaCount + 1).padStart(5, '0')}`, tipo: 'Trabajo no registrado' } },
@@ -1119,7 +1244,7 @@ async function main() {
     data: { tallerId: tallerBronce.id, coleccionId: col3.id, porcentajeCompletado: 33, videosVistos: 1 },
   })
 
-  console.log('  ✓ 4 logs adicionales + progreso bronce')
+  console.log('  ✓ 5 logs adicionales + progreso bronce')
 
   // ============================================
   // NOVEDADES (contenido público para carrusel landing)
@@ -1177,6 +1302,25 @@ async function main() {
   }
 
   console.log('  ✓ 5 novedades')
+
+  // ============================================
+  // U-05: NORMALIZACIÓN roles[]/activeMode (cierre de fuente)
+  // ============================================
+  // Espeja la migración u05_backfill_roles_activemode: todo user single-rol queda con
+  // roles=[role] y activeMode=role. Se hace post-seed (no en cada create) para no tocar
+  // los ~10 creates uno por uno; el dual (Julieta) ya trae roles/activeMode explícitos
+  // y los guards (isEmpty / null) NO lo pisan. Idempotente: re-correr = 0 updates.
+  const usersSinNormalizar = await prisma.user.findMany({
+    where: { OR: [{ roles: { isEmpty: true } }, { activeMode: null }] },
+    select: { id: true, role: true },
+  })
+  for (const u of usersSinNormalizar) {
+    await prisma.user.update({
+      where: { id: u.id },
+      data: { roles: [u.role], activeMode: u.role },
+    })
+  }
+  console.log(`  ✓ U-05 normalización: ${usersSinNormalizar.length} users sincronizados (roles/activeMode)`)
 
   // ============================================
   // RESUMEN

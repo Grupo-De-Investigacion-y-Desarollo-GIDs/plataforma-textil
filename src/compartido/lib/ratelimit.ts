@@ -126,6 +126,28 @@ export function isCiBypass(req: NextRequest): boolean {
 }
 
 /**
+ * B-04: guard DEDICADO para endpoints mutantes de test (ej. reset-seed-state).
+ *
+ * Tiene las MISMAS validaciones que isCiBypass hoy (token presente + VERCEL_ENV !=
+ * production + header x-ci-bypass coincide), pero es una función SEPARADA a
+ * propósito: isCiBypass autoriza saltar rate-limit (riesgo bajo) y podría relajarse
+ * en el futuro por motivos de rate-limit; si los endpoints mutantes dependieran de
+ * él, esa relajación ensancharía silenciosamente la autorización destructiva. Al
+ * ser una función distinta, ampliar el bypass de rate-limit NO afecta esto sin
+ * tocar esta función explícitamente.
+ */
+export function isTestMutationAllowed(req: NextRequest): boolean {
+  const bypassToken = process.env.CI_BYPASS_TOKEN
+  if (!bypassToken) return false
+
+  const currentEnv = process.env.VERCEL_ENV ?? 'development'
+  if (currentEnv === 'production') return false
+
+  const headerValue = req.headers.get('x-ci-bypass')
+  return headerValue === bypassToken
+}
+
+/**
  * Aplica rate limiting a una request.
  * Retorna NextResponse con 429 si se excede el limite, null si pasa.
  *

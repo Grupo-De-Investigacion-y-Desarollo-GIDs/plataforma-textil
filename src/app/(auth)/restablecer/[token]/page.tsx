@@ -63,7 +63,7 @@ export default function RestablecerPage() {
         <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
           <CheckCircle className="w-8 h-8 text-green-600" />
         </div>
-        <h2 className="font-overpass font-bold text-xl text-brand-blue mb-2">Contraseña restablecida</h2>
+        <h2 className="font-serif font-bold text-xl text-brand-blue mb-2">Contraseña restablecida</h2>
         <p className="text-sm text-gray-600 mb-6">Tu contraseña fue actualizada. Redirigiendo al login...</p>
         <Link href="/login" className="text-sm font-semibold text-brand-blue hover:underline">
           Ir al login
@@ -78,7 +78,7 @@ export default function RestablecerPage() {
         <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
           <XCircle className="w-8 h-8 text-red-600" />
         </div>
-        <h2 className="font-overpass font-bold text-xl text-red-600 mb-2">Error</h2>
+        <h2 className="font-serif font-bold text-xl text-red-600 mb-2">Error</h2>
         <p className="text-sm text-gray-600 mb-6">{errorMsg}</p>
         <Link href="/olvide-contrasena" className="text-sm font-semibold text-brand-blue hover:underline">
           Solicitar nuevo enlace
@@ -89,7 +89,7 @@ export default function RestablecerPage() {
 
   return (
     <Card className="p-8">
-      <h2 className="font-overpass font-bold text-xl text-brand-blue text-center mb-2">Nueva contraseña</h2>
+      <h2 className="font-serif font-bold text-xl text-brand-blue text-center mb-2">Nueva contraseña</h2>
       <p className="text-sm text-gray-500 text-center mb-6">Ingresá tu nueva contraseña.</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

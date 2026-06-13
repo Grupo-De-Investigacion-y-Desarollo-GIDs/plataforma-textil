@@ -79,3 +79,19 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Imagenes mal ubicadas en specs (un spec nunca es una imagen)
+.claude/specs/*.png
+.claude/specs/*.webp
+
+# Iteraciones throwaway de generacion de imagenes (no son assets finales)
+docs/Diseño/ChatGPT Image*.png
+
+# Fuentes de diseño de marca (no usadas por el código; las versiones
+# servidas viven en public/ y las prendas en Supabase Storage)
+docs/Diseño/PDT_logo_sin_fondo.png
+docs/Diseño/logo_PDT.png
+docs/Diseño/proceso_nuevo_sin_fondo.png
+docs/Diseño/buzo.png
+docs/Diseño/camisa.png
+docs/Diseño/remera.png

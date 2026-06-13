@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { apiHandler, errorAuthRequired, errorForbidden, errorInvalidInput, errorResponse } from '@/compartido/lib/api-errors'
-import { auth } from '@/compartido/lib/auth'
+import { apiHandler, errorInvalidInput, errorResponse } from '@/compartido/lib/api-errors'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { prisma } from '@/compartido/lib/prisma'
 import { z } from 'zod'
 
@@ -10,11 +10,8 @@ const SchemaCrearNota = z.object({
 })
 
 export const GET = apiHandler(async (req: NextRequest) => {
-  const session = await auth()
-  if (!session?.user) return errorAuthRequired()
-  if (!['ADMIN', 'ESTADO'].includes(session.user.role)) {
-    return errorForbidden('ADMIN o ESTADO')
-  }
+  const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
+  if (sesion instanceof NextResponse) return sesion
 
   const userId = req.nextUrl.searchParams.get('userId')
   if (!userId) return errorResponse({ code: 'INVALID_INPUT', message: 'userId requerido', status: 400 })
@@ -29,11 +26,8 @@ export const GET = apiHandler(async (req: NextRequest) => {
 })
 
 export const POST = apiHandler(async (req: NextRequest) => {
-  const session = await auth()
-  if (!session?.user) return errorAuthRequired()
-  if (!['ADMIN', 'ESTADO'].includes(session.user.role)) {
-    return errorForbidden('ADMIN o ESTADO')
-  }
+  const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
+  if (sesion instanceof NextResponse) return sesion
 
   const body = await req.json()
   const parsed = SchemaCrearNota.safeParse(body)
@@ -42,7 +36,7 @@ export const POST = apiHandler(async (req: NextRequest) => {
   const nota = await prisma.notaSeguimiento.create({
     data: {
       userId: parsed.data.userId,
-      autorId: session.user.id,
+      autorId: sesion.userId,
       contenido: parsed.data.contenido,
     },
     include: { autor: { select: { name: true, role: true } } },

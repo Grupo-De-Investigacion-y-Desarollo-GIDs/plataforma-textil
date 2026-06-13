@@ -1,17 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 import { logAccionAdmin } from '@/compartido/lib/log'
 import { toCsv } from '@/compartido/lib/csv'
 
 export async function GET(req: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN' && role !== 'ESTADO') {
-      return NextResponse.json({ error: 'Solo ADMIN o ESTADO' }, { status: 403 })
-    }
+    const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
+    if (sesion instanceof NextResponse) return sesion
 
     const tipo = req.nextUrl.searchParams.get('tipo') || 'talleres'
     const desde = req.nextUrl.searchParams.get('desde')
@@ -162,7 +158,7 @@ export async function GET(req: NextRequest) {
       filename = 'denuncias.csv'
     }
 
-    logAccionAdmin('DATOS_EXPORTADOS', session.user.id, {
+    logAccionAdmin('DATOS_EXPORTADOS', sesion.userId, {
       entidad: 'exportacion',
       entidadId: tipo,
       metadata: { formato: 'csv' },

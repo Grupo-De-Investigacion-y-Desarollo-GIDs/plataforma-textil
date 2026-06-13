@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { verificarCuit } from '@/compartido/lib/afip'
+import { crearEntidadParaRol } from '@/compartido/lib/crear-entidad-rol'
 import { z } from 'zod'
 
 const schema = z.object({
@@ -42,20 +43,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: afipResult.error || 'CUIT invalido' }, { status: 400 })
   }
 
-  // Transaccion: crear entidad + actualizar usuario
-  await prisma.$transaction([
-    role === 'TALLER'
-      ? prisma.taller.create({
-          data: { userId: user.id, nombre, cuit: cuit.replace(/-/g, ''), verificadoAfip: true },
-        })
-      : prisma.marca.create({
-          data: { userId: user.id, nombre, cuit: cuit.replace(/-/g, ''), verificadoAfip: true },
-        }),
-    prisma.user.update({
+  // Transaccion: crear entidad (+ validaciones si es taller) + actualizar usuario
+  await prisma.$transaction(async (tx) => {
+    await crearEntidadParaRol(tx, {
+      userId: user.id,
+      rol: role,
+      nombre,
+      cuit: cuit.replace(/-/g, ''),
+      verificadoAfip: true,
+    })
+    await tx.user.update({
       where: { id: user.id },
-      data: { role, registroCompleto: true },
-    }),
-  ])
+      // U-05: el user completa su primera entidad (el guard de arriba garantiza que
+      // no tenía taller/marca → es single-rol). Sincronizamos roles=[role]/activeMode=role
+      // junto al role para no regenerar el dato desincronizado. Ver spec v4-u-05.
+      data: { role, roles: [role], activeMode: role, registroCompleto: true },
+    })
+  })
 
   return NextResponse.json({ ok: true })
 }

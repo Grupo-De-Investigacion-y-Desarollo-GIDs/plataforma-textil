@@ -88,7 +88,7 @@ export function AsistenteChat() {
                 value={pregunta}
                 onChange={e => setPregunta(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && !cargando && handlePreguntar()}
-                placeholder="Ej: ¿Como calculo el SAM de una remera?"
+                placeholder="Ej: ¿Como calculo el tiempo estándar de una remera?"
                 className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/30"
                 disabled={cargando}
                 maxLength={500}

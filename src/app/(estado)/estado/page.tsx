@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Factory, Store, FileCheck, Award, Clock, TrendingUp, TrendingDown, AlertCircle, BookOpen, ShoppingBag } from 'lucide-react'
+import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 
 export default async function EstadoDashboardPage() {
   const session = await auth()
@@ -86,13 +87,13 @@ export default async function EstadoDashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-overpass font-bold text-3xl text-brand-blue">Dashboard del Sector</h1>
+        <h1 className="font-serif font-bold text-3xl text-ink-primary">Dashboard del Sector</h1>
         <p className="text-gray-500 text-sm mt-1">Monitoreo de la Plataforma Digital Textil</p>
       </div>
 
       {/* ── SECCION 1: Como esta el sector? ── */}
       <div>
-        <h2 className="font-overpass font-bold text-lg text-gray-700 mb-4">Como esta el sector?</h2>
+        <h2 className="font-serif font-bold text-lg text-gray-700 mb-4">Como esta el sector?</h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
           <Card className="text-center">
@@ -118,12 +119,12 @@ export default async function EstadoDashboardPage() {
         </div>
 
         <Card title="Progreso de formalización">
-          <p className="text-xs text-gray-400 mb-3">Porcentaje de documentos completados sobre el total requerido por nivel. Bronce = requisitos básicos, Plata = intermedios, Oro = avanzados.</p>
+          <p className="text-xs text-gray-400 mb-3">Distribución de talleres por etapa de formalización.</p>
           <div className="space-y-3">
             {[
-              { label: 'Bronce', count: bronce, color: 'bg-orange-400', textColor: 'text-orange-600' },
-              { label: 'Plata', count: plata, color: 'bg-gray-400', textColor: 'text-gray-500' },
-              { label: 'Oro', count: oro, color: 'bg-yellow-400', textColor: 'text-yellow-600' },
+              { label: nivelAEtapa('BRONCE'), count: bronce, color: 'bg-blue-300', textColor: 'text-blue-600' },
+              { label: nivelAEtapa('PLATA'), count: plata, color: 'bg-blue-400', textColor: 'text-blue-700' },
+              { label: nivelAEtapa('ORO'), count: oro, color: 'bg-blue-600', textColor: 'text-blue-800' },
             ].map(({ label, count, color, textColor }) => (
               <div key={label}>
                 <div className="flex justify-between text-sm mb-1">
@@ -141,14 +142,14 @@ export default async function EstadoDashboardPage() {
           </div>
           <div className="mt-4 pt-3 border-t border-gray-100 flex justify-between text-xs text-gray-400">
             <span>{totalTalleres} talleres en total</span>
-            <span>{totalTalleres > 0 ? Math.round(((plata + oro) / totalTalleres) * 100) : 0}% formalizados (Plata+Oro)</span>
+            <span>{totalTalleres > 0 ? Math.round(((plata + oro) / totalTalleres) * 100) : 0}% en proceso o consolidados</span>
           </div>
         </Card>
       </div>
 
       {/* ── SECCION 2: Donde hay que actuar? ── */}
       <div>
-        <h2 className="font-overpass font-bold text-lg text-gray-700 mb-4">Donde hay que actuar?</h2>
+        <h2 className="font-serif font-bold text-lg text-gray-700 mb-4">Donde hay que actuar?</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card className="border-l-4 border-l-amber-400">
@@ -225,7 +226,7 @@ export default async function EstadoDashboardPage() {
 
       {/* ── SECCION 3: Que esta funcionando? ── */}
       <div>
-        <h2 className="font-overpass font-bold text-lg text-gray-700 mb-4">Que esta funcionando?</h2>
+        <h2 className="font-serif font-bold text-lg text-gray-700 mb-4">Que esta funcionando?</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card className="border-l-4 border-l-green-400">
@@ -245,7 +246,7 @@ export default async function EstadoDashboardPage() {
                 <p className="text-2xl font-bold text-gray-800">{subieronNivelMes}</p>
                 <p className="text-sm text-gray-500">Subieron de nivel este mes</p>
               </div>
-              <TrendingUp className="w-8 h-8 text-blue-400" />
+              <TrendingUp className="w-8 h-8 text-brand-blue/70" />
             </div>
           </Card>
 
@@ -268,7 +269,7 @@ export default async function EstadoDashboardPage() {
             },
             NIVEL_SUBIDO: {
               texto: 'subio de nivel',
-              icono: <TrendingUp className="w-4 h-4 text-blue-500 shrink-0" />,
+              icono: <TrendingUp className="w-4 h-4 text-brand-blue shrink-0" />,
             },
             NIVEL_BAJADO: {
               texto: 'bajo de nivel',

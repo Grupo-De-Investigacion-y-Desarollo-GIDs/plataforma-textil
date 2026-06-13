@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { getClientIp, isCiBypass } from '@/compartido/lib/ratelimit'
+import { getClientIp, isCiBypass, isTestMutationAllowed } from '@/compartido/lib/ratelimit'
 import { NextRequest } from 'next/server'
 
 function makeReq(headers: Record<string, string> = {}): NextRequest {
@@ -89,5 +89,50 @@ describe('isCiBypass', () => {
     process.env.VERCEL_ENV = 'preview'
     const req = makeReq()
     expect(isCiBypass(req)).toBe(false)
+  })
+})
+
+// B-04: guard dedicado para endpoints mutantes de test, separado de isCiBypass.
+describe('isTestMutationAllowed', () => {
+  const savedEnv: Record<string, string | undefined> = {}
+
+  beforeEach(() => {
+    savedEnv.CI_BYPASS_TOKEN = process.env.CI_BYPASS_TOKEN
+    savedEnv.VERCEL_ENV = process.env.VERCEL_ENV
+  })
+
+  afterEach(() => {
+    if (savedEnv.CI_BYPASS_TOKEN === undefined) delete process.env.CI_BYPASS_TOKEN
+    else process.env.CI_BYPASS_TOKEN = savedEnv.CI_BYPASS_TOKEN
+    if (savedEnv.VERCEL_ENV === undefined) delete process.env.VERCEL_ENV
+    else process.env.VERCEL_ENV = savedEnv.VERCEL_ENV
+  })
+
+  it('permite si token matchea y env es preview', () => {
+    process.env.CI_BYPASS_TOKEN = 'test-secret-token'
+    process.env.VERCEL_ENV = 'preview'
+    const req = makeReq({ 'x-ci-bypass': 'test-secret-token' })
+    expect(isTestMutationAllowed(req)).toBe(true)
+  })
+
+  it('NO permite sin token configurado', () => {
+    delete process.env.CI_BYPASS_TOKEN
+    process.env.VERCEL_ENV = 'preview'
+    const req = makeReq({ 'x-ci-bypass': 'any-token' })
+    expect(isTestMutationAllowed(req)).toBe(false)
+  })
+
+  it('NO permite en production (aunque token matchee)', () => {
+    process.env.CI_BYPASS_TOKEN = 'test-secret-token'
+    process.env.VERCEL_ENV = 'production'
+    const req = makeReq({ 'x-ci-bypass': 'test-secret-token' })
+    expect(isTestMutationAllowed(req)).toBe(false)
+  })
+
+  it('NO permite si el header no coincide', () => {
+    process.env.CI_BYPASS_TOKEN = 'real-token'
+    process.env.VERCEL_ENV = 'preview'
+    const req = makeReq({ 'x-ci-bypass': 'wrong-token' })
+    expect(isTestMutationAllowed(req)).toBe(false)
   })
 })

@@ -50,7 +50,7 @@ export default async function UnauthorizedPage() {
             </div>
           </div>
 
-          <h1 className="font-overpass font-bold text-3xl text-brand-blue mb-3">
+          <h1 className="font-overpass font-bold text-3xl text-ink-primary mb-3">
             Acceso No Autorizado
           </h1>
 

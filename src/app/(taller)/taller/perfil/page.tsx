@@ -10,8 +10,7 @@ import { Button } from '@/compartido/componentes/ui/button'
 import { ProgressRing } from '@/compartido/componentes/ui/progress-ring'
 import { Star, MapPin, Users, TrendingUp, Clock, Award, Download } from 'lucide-react'
 import { PortfolioManager } from '@/taller/componentes/portfolio-manager'
-
-const nivelColor: Record<string, 'warning' | 'default' | 'success'> = { BRONCE: 'warning', PLATA: 'default', ORO: 'success' }
+import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 
 export default async function TallerPerfilPage() {
   const session = await auth()
@@ -37,7 +36,7 @@ export default async function TallerPerfilPage() {
   if (!taller) {
     return (
       <div className="space-y-6">
-        <h1 className="font-overpass font-bold text-3xl text-brand-blue">Mi Perfil</h1>
+        <h1 className="font-serif font-bold text-3xl text-ink-primary">Mi taller</h1>
         <Card className="text-center py-12">
           <p className="text-gray-600 mb-4">Todavía no completaste tu perfil.</p>
           <Link href="/taller/perfil/completar">
@@ -62,8 +61,8 @@ export default async function TallerPerfilPage() {
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <h1 className="font-overpass font-bold text-3xl text-brand-blue">{taller.nombre}</h1>
-            <Badge variant={nivelColor[taller.nivel]}>{taller.nivel}</Badge>
+            <h1 className="font-serif font-bold text-3xl text-ink-primary">{taller.nombre}</h1>
+            <Badge variant="default">{nivelAEtapa(taller.nivel)}</Badge>
           </div>
           {taller.provincia && (
             <p className="flex items-center gap-1 text-gray-600">
@@ -114,7 +113,7 @@ export default async function TallerPerfilPage() {
           <p className="text-xs text-gray-500">Cap. mensual</p>
         </Card>
         <Card className="text-center p-4">
-          <Clock className="w-5 h-5 text-blue-500 mx-auto mb-1" />
+          <Clock className="w-5 h-5 text-brand-blue mx-auto mb-1" />
           <p className="font-overpass font-bold text-2xl text-brand-blue">{taller.ontimeRate}%</p>
           <p className="text-xs text-gray-500">On-time</p>
         </Card>
@@ -244,7 +243,7 @@ export default async function TallerPerfilPage() {
 
             {(taller.sam ?? 0) > 0 && (
               <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-gray-500 text-xs mb-1">SAM ({taller.prendaPrincipal})</p>
+                <p className="text-gray-500 text-xs mb-1">Tiempo estándar ({taller.prendaPrincipal})</p>
                 <p className="font-medium text-gray-800">{taller.sam} min</p>
               </div>
             )}
@@ -253,7 +252,7 @@ export default async function TallerPerfilPage() {
 
           <p className="text-xs text-gray-400 mt-4">
             Esta información es visible para el equipo de la plataforma y organismos del Estado.
-            No afecta tu nivel de formalización.
+            No afecta tu recorrido de formalización.
           </p>
         </Card>
       )}
@@ -284,7 +283,7 @@ export default async function TallerPerfilPage() {
       )}
 
       {taller.certificados.length > 0 && (
-        <Card title="Certificados de Academia">
+        <Card title="Certificados de cursos">
           <div className="space-y-2">
             {taller.certificados.map((c) => (
               <div key={c.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">

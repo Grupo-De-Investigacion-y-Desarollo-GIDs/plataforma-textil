@@ -1,6 +1,5 @@
 import Link from 'next/link'
-import { auth } from '@/compartido/lib/auth'
-import { redirect } from 'next/navigation'
+import { requiereRol } from '@/compartido/lib/permisos'
 import {
   LayoutDashboard, BookOpen, Users, Building2, ShoppingCart, ClipboardCheck,
   Settings, Shield, BarChart3, FileText, Bell, Award,
@@ -15,7 +14,7 @@ const sidebarItems = [
   { label: 'Talleres', href: '/admin/talleres', icon: Building2 },
   { label: 'Marcas', href: '/admin/marcas', icon: Briefcase },
   { label: 'Pedidos', href: '/admin/pedidos', icon: ShoppingCart },
-  { label: 'Colecciones', href: '/admin/colecciones', icon: BookOpen },
+  { label: 'Colecciones', href: '/contenido/colecciones', icon: BookOpen },
   { label: 'Evaluaciones', href: '/admin/evaluaciones', icon: ClipboardCheck },
   { label: 'Certificados', href: '/admin/certificados', icon: Award },
   { label: 'Procesos', href: '/admin/procesos', icon: UserCheck },
@@ -32,13 +31,7 @@ const sidebarItems = [
 ]
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth()
-  if (!session?.user) {
-    redirect('/login')
-  }
-  if (session.user.role !== 'ADMIN') {
-    redirect('/unauthorized')
-  }
+  const session = await requiereRol(['ADMIN'])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -52,8 +45,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </div>
           <div className="flex items-center gap-4">
             <NotificacionesBell />
-            <span className="text-sm text-blue-200">{session.user.name}</span>
-            <Link href="/" className="text-sm hover:text-blue-200 transition-colors">Volver al sitio</Link>
+            <span className="text-sm text-white/70">{session.user.name}</span>
+            {/* F-02: roles de equipo (ADMIN) usan este header propio, sin el dropdown
+                del Header compartido. Sin este link, /cuenta solo era accesible por URL. */}
+            <Link href="/cuenta" className="text-sm hover:text-white/70 transition-colors">Mi cuenta</Link>
+            <Link href="/" className="text-sm hover:text-white/70 transition-colors">Volver al sitio</Link>
             <LogoutButton />
           </div>
         </div>

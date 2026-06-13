@@ -1,16 +1,10 @@
-import { auth } from '@/compartido/lib/auth'
-import { redirect } from 'next/navigation'
+import { requiereRol } from '@/compartido/lib/permisos'
 import Link from 'next/link'
 import { LogoutButton } from '@/compartido/componentes/ui/logout-button'
 import { ContenidoSidebar } from './contenido-sidebar'
 
 export default async function ContenidoLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth()
-  if (!session?.user) redirect('/login')
-  const role = (session.user as { role?: string }).role
-  if (role !== 'CONTENIDO' && role !== 'ADMIN') {
-    redirect('/unauthorized')
-  }
+  await requiereRol(['CONTENIDO', 'ADMIN'])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -23,7 +17,12 @@ export default async function ContenidoLayout({ children }: { children: React.Re
             <span className="font-overpass font-bold text-lg">Panel de Contenidos</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/" className="text-sm hover:text-blue-200 transition-colors">
+            {/* F-02: CONTENIDO usa este header propio, sin el dropdown del Header
+                compartido. Sin este link, /cuenta solo era accesible por URL. */}
+            <Link href="/cuenta" className="text-sm hover:text-white/70 transition-colors">
+              Mi cuenta
+            </Link>
+            <Link href="/" className="text-sm hover:text-white/70 transition-colors">
               Volver al sitio
             </Link>
             <LogoutButton />

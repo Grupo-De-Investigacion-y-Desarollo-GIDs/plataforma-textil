@@ -51,12 +51,12 @@ export default async function AcademiaDetallePage({
     <div className="max-w-4xl mx-auto space-y-6">
       <Breadcrumbs items={[
         { label: 'Taller', href: '/taller' },
-        { label: 'Academia', href: '/taller/aprender' },
+        { label: 'Cursos', href: '/taller/aprender' },
         { label: coleccion.titulo },
       ]} />
 
       <div className="mt-2">
-        <h1 className="font-overpass font-bold text-2xl text-brand-blue">{coleccion.titulo}</h1>
+        <h1 className="font-serif font-bold text-2xl text-ink-primary">{coleccion.titulo}</h1>
         {coleccion.institucion && (
           <p className="text-sm text-gray-500 mt-0.5">Contenido curado por {coleccion.institucion}</p>
         )}

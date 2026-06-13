@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { modoActivo } from '@/compartido/lib/roles'
 import { getSignedUrl } from '@/compartido/lib/storage'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -9,7 +10,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
     const { id } = await params
-    const role = (session.user as { role?: string }).role
+    const role = modoActivo(session.user)
 
     const validacion = await prisma.validacion.findUnique({
       where: { id },
@@ -18,8 +19,9 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 
     if (!validacion) return NextResponse.json({ error: 'No encontrada' }, { status: 404 })
 
-    // Solo el taller dueño o ADMIN pueden ver el documento
-    if (role !== 'ADMIN' && validacion.taller.userId !== session.user.id) {
+    // Solo el taller dueño, ADMIN o ESTADO pueden ver el documento
+    const canAccess = role === 'ADMIN' || role === 'ESTADO' || validacion.taller.userId === session.user.id
+    if (!canAccess) {
       return NextResponse.json({ error: 'Sin acceso' }, { status: 403 })
     }
 

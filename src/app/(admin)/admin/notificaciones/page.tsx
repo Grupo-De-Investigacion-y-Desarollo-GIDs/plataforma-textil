@@ -47,7 +47,7 @@ export default async function AdminNotificacionesPage({
     <div className="max-w-4xl mx-auto py-6 px-4">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Comunicaciones</h1>
+          <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">Comunicaciones</h1>
           <p className="text-gray-500 text-sm">Envio de comunicaciones a usuarios</p>
         </div>
         <NotificacionesClient />
@@ -57,7 +57,7 @@ export default async function AdminNotificacionesPage({
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
           <div className="flex items-center gap-3">
-            <Send className="w-5 h-5 text-blue-600" />
+            <Send className="w-5 h-5 text-brand-blue" />
             <div>
               <p className="text-2xl font-bold text-gray-800">{total}</p>
               <p className="text-xs text-gray-500">Total enviadas</p>

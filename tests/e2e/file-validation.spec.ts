@@ -18,6 +18,23 @@ function exeBuffer(): Buffer {
 test.describe.configure({ mode: 'serial' })
 
 test.describe('File validation — S-03', () => {
+  // Restaurar config imagenes-portfolio al inicio del run.
+  // Si un run anterior fallo/timeout antes de que afterEach completara,
+  // la config puede quedar desactivada en la DB compartida.
+  test.beforeAll(async ({ browser }) => {
+    const page = await browser.newPage()
+    await loginAs(page, 'admin')
+    const res = await page.request.get('/api/admin/configuracion-upload')
+    if (res.ok()) {
+      const configs = await res.json()
+      const pc = configs.find((c: { contexto: string }) => c.contexto === 'imagenes-portfolio')
+      if (pc && !pc.activo) {
+        await page.request.put(`/api/admin/configuracion-upload/${pc.id}`, { data: { activo: true } })
+      }
+    }
+    await page.close()
+  })
+
   // Garantizar que la config imagenes-portfolio quede activa despues de
   // cada test, incluso si el test aborta por timeout. Esto previene que
   // el test :159 (que desactiva la config) deje la DB en estado sucio.

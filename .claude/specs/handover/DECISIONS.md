@@ -292,6 +292,53 @@ Este documento registra las decisiones importantes tomadas durante el proyecto, 
 - **Implicancias:** Integración via SDK, RPC en Supabase para búsqueda vectorial
 - **Estado:** Vigente
 
+### 26. Eliminar la rama ADMIN muerta en `POST /api/pedidos`
+
+- **Fecha:** 2026-06
+- **Categoría:** Técnica (seguridad / limpieza)
+- **Contexto:** El handler `POST /api/pedidos` tenía una rama `role === 'ADMIN'` que permitía, vía API, publicar un pedido en nombre de cualquier marca tomando `body.marcaId` — **sin ninguna validación de permiso**. Era una puerta de escritura sin control.
+- **Origen del código:** `git blame`/`git log -S` → commit `a710bde` (17 feb 2026, "filtros directorio, pedidos marca…"). Nació por **simetría con el handler GET** (que sí distingue ADMIN para filtrar por `marcaId`), no por un requerimiento de producto.
+- **Evidencia de código muerto:** sin UI que la invoque, sin tests, sin cliente. El único `POST` real a `/api/pedidos` es el form de la marca, que resuelve `marcaId` desde la sesión y ni siquiera manda `body.marcaId`. El diseño (`semana2-schema-e2.md`, `publicacion-pedidos-ui.md`) canaliza la acción admin sobre pedidos por **Prisma Studio**, no por endpoint.
+- **Alternativas consideradas:**
+  - A) Dejarla y agregarle validación de permiso (construir una función que el producto no pide)
+  - B) Eliminarla — solo rol MARCA crea pedidos vía API; el resto recibe 403
+- **Decisión tomada:** B
+- **Razonamiento:** era una superficie de escritura sin validación (riesgo de seguridad latente) para una función que el diseño no contempla. Mantenerla obliga a custodiarla; eliminarla cierra la puerta. Si en el futuro se necesita que admin cree pedidos vía API, se agrega con validación de permiso explícita y su propio test.
+- **Implicancias:**
+  - `POST /api/pedidos`: solo `role === 'MARCA'` crea; cualquier otro rol → `errorForbidden()` (403).
+  - La clasificación automática U-06 (COMERCIAL/SUBCONTRATACION) vive después del bloque de resolución de marca, sobre `ownerUserId`, así que la rama MARCA (camino real) la conserva intacta. La clasificación "defensiva" que U-06 había puesto dentro de la rama ADMIN se va con la rama (correcto: era para un camino muerto).
+  - Se simplificó `estado: role === 'ADMIN' ? body.estado : 'BORRADOR'` → `estado: 'BORRADOR'` (ADMIN ya no llega a crear).
+- **Estado:** Vigente
+
+### 27. Incidente de seguridad — leak de datos en dev (RLS deshabilitado)
+
+- **Fecha:** 03-jun-2026 (verificado y tapado el mismo día; alerta inicial 31-may-2026)
+- **Categoría:** Técnica (seguridad / respuesta a incidente)
+- **Contexto:** El Supabase Security Advisor alertó (31-may) "RLS disabled" + columnas sensibles expuestas en el proyecto **dev** (`fjddgukwydsdcrqoxvns`). Verificación empírica (03-jun): con la **anon key PÚBLICA** (pública por diseño), las tablas sensibles devolvían datos reales vía PostgREST (HTTP 200): `users` con **hashes bcrypt**, CUITs, `cotizaciones`, `pedidos`, `notificaciones`.
+- **Causa raíz:** footgun de Supabase — el bootstrap por defecto otorga `USAGE` + `SELECT` al rol `anon` sobre `public.*`, y RLS estaba OFF; las tablas nuevas heredaban esos grants. **Ninguna migración de Prisma causó esto** (se revisaron las 31 migraciones: cero `GRANT`); es configuración de proyecto por defecto.
+- **Alcance:**
+  - **dev: LEAK ACTIVO** — expuestos 13 users, 6 talleres, 4 marcas, 87 cotizaciones, 98 pedidos, 173 notificaciones. 5 de las 13 cuentas eran **personas reales** (gmails), no seed.
+  - **prod** (`nefbhacmjrzynnhvgfnl`): **NO afectada**. Verificada: anon recibe `42501 permission denied`. Protegida "accidentalmente" (sin grants a anon ni USAGE de schema, no por RLS).
+- **Alternativas consideradas:**
+  - A) Crear policies de lectura para anon (mantener el Data API expuesto)
+  - B) Habilitar RLS + revocar todo grant a anon/authenticated, sin policies (la app no accede vía anon)
+- **Decisión tomada:** B (spec K-01, PR #389)
+- **Razonamiento:** la app accede a la DB **100% vía Prisma** (rol `postgres`, dueño de las tablas, **bypassa RLS**) y a Storage vía `service_role`; las páginas públicas (landing, directorio, perfil) leen vía Prisma server-side, **nunca como anon**. Por eso no se necesita ninguna policy y revocar a anon no rompe nada. Crear policies de lectura para anon sería reabrir la superficie.
+- **Resolución (K-01, PR #389):**
+  - Capa A: `ENABLE ROW LEVEL SECURITY` en las 44 tablas de `public.*`.
+  - Capa B: `REVOKE` grants + `USAGE` + default privileges a `anon`/`authenticated`.
+  - Capa C: sin policies.
+  - Aplicado a **dev** vía Vercel preview build (`prisma migrate deploy`). Verificado: las 6 tablas ahora dan `42501`; **e2e verde con RLS ON** (la app no se rompió).
+- **Implicancias / Pendiente:**
+  - **prod:** aplicar el mismo hardening (RLS explícito) para no depender del grant ausente no documentado — **Fase 3**.
+  - **Rotación de las 5 cuentas reales** (coordinada con Sergio): el leak se tapó pero los hashes ya expuestos no se des-filtran. Existe flujo de reset (`/olvide-contrasena`); invalidación inmediata seteando `password=null` (login lo rechaza sin crashear).
+  - **8 cuentas seed:** cambiar la constante `pdt2026` en el próximo re-seed.
+- **Lección / prevención:**
+  - Toda migración futura que **cree una tabla DEBE incluir `ENABLE ROW LEVEL SECURITY`** (RLS no se auto-habilita en tablas nuevas).
+  - Al clonar/crear entornos Supabase: verificar que `public.*` no esté expuesto al Data API y que `anon` no tenga grants. Revisar la asimetría entre entornos.
+  - Revisar el Security Advisor de Supabase periódicamente.
+- **Estado:** Leak tapado en dev (PR #389). Prod hardening + rotación de cuentas reales pendientes.
+
 ---
 
 ## Decisiones Institucionales
@@ -418,6 +465,56 @@ Este documento registra las decisiones importantes tomadas durante el proyecto, 
   - Noto Sans se mantiene pero ya no es body font (migración gradual)
 - **Estado:** Vigente
 
+### 23. Arquitectura multi-rol: Opción A — array de roles en User (bloque U, D1)
+
+- **Fecha:** 18-may-2026
+- **Categoría:** Técnica
+- **Contexto:** Para implementar el modelo Airbnb (decisión 3), había que elegir cómo modelar que un mismo User opere como taller y como marca. Esta es la decisión fundacional (D1) del análisis U-01 y define la arquitectura de todo el bloque U.
+- **Alternativas consideradas:**
+  - A) Array de roles en `User`: `User.roles UserRole[]` + `User.activeMode` + CUIT y datos ARCA centralizados en `User`
+  - B) Modelos de perfil separados: `PerfilTaller` + `PerfilMarca` como modelos nuevos
+- **Decisión tomada:** A
+- **Razonamiento:** Refactor más liviano. Las tablas `Taller`/`Marca` ya son relaciones 1:1 opcionales con `User`, así que no hace falta migrarlas a modelos de perfil nuevos: alcanza con agregar el array de roles, el modo activo y centralizar el CUIT y los datos ARCA en `User`.
+- **Implicancias:**
+  - Define la arquitectura de todo el bloque U (U-03 a U-08)
+  - `activeMode` y `roles` ya existen en el schema (migración #348) pero ningún código los lee todavía
+  - Reemplaza el framing de "PerfilTaller + PerfilMarca" mencionado en la decisión 3
+- **Referencia:** `.claude/specs/U-01_multi-rol-airbnb_v2-tipos-corregidos.md`
+- **Estado:** Vigente
+
+### 24. Mitigación #307: setear `emailVerified` al crear la cuenta
+
+- **Fecha:** 31-may-2026
+- **Categoría:** Técnica
+- **Contexto:** El issue #307 (rol MARCA) reportó que no se podían completar los pasos del onboarding. El checklist (`onboarding.ts:86` y `:135`) gatea el paso "Verificar email" con `!!user.emailVerified`, pero el campo `emailVerified` (`DateTime?`, sin `@default`) nunca se seteaba al registrar: ni `auth/registro` ni `admin/usuarios` lo escribían, y no existe flujo de verificación de email. Resultado: el paso quedaba en `false` para todos los usuarios y bloqueaba el onboarding.
+- **Alternativas consideradas:**
+  - A) Implementar el flujo real de verificación ahora (endpoint `/api/auth/send-verification` + magic link, 2-4h)
+  - B) Sacar el paso "Verificar email" del checklist
+  - C) Setear `emailVerified: new Date()` al crear la cuenta (mitigación temporal)
+- **Decisión tomada:** C
+- **Razonamiento:** No bloquea el piloto, no requiere cambios de UX ni migración de schema, y se revierte trivialmente (borrar una línea por endpoint) cuando se implemente el flujo real. La opción B perdería el paso del checklist; la A no entra en el tiempo del piloto.
+- **Implicancias:**
+  - Usuarios nuevos del piloto quedan con `emailVerified` sin haber verificado realmente el correo.
+  - Riesgo: una cuenta con email mal escrito queda sin medio de recuperación verificado. Bajo para un piloto chico.
+  - Aplicado en `src/app/api/auth/registro/route.ts` y `src/app/api/admin/usuarios/route.ts` con comentario que marca el carácter temporal.
+- **Estado:** Temporal — reemplazar al implementar el flujo real de verificación (`/api/auth/send-verification` + magic link).
+
+### 25. Mitigación #305: ocultar el botón "Continuar con Google" sin credenciales OAuth
+
+- **Fecha:** 31-may-2026
+- **Categoría:** Técnica
+- **Contexto:** El botón "Continuar con Google" en `/login` estaba cableado a `signIn('google', { callbackUrl: '/' })`, pero el provider de Google solo se registra si existen `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` (`auth.ts`). Esas vars no están configuradas en ningún entorno, así que el botón fallaba silenciosamente al clickearlo (issue #305).
+- **Alternativas consideradas:**
+  - A) Configurar OAuth real ahora (alta en Google Cloud + vars en Vercel, 1-2h + trámite)
+  - B) Ocultar el botón temporalmente hasta tener las credenciales
+- **Decisión tomada:** B
+- **Razonamiento:** Sin credenciales, el botón ofrece una acción que siempre falla en silencio — peor UX que no mostrarlo. Ocultarlo es trivialmente reversible y no bloquea el piloto, que usa login por credenciales.
+- **Implicancias:**
+  - El login del piloto queda solo con email + contraseña (credenciales).
+  - Se ocultó el botón y el divisor "o continúa con" en `src/app/(auth)/login/page.tsx` con un comentario que marca el carácter temporal.
+  - El provider condicional de Google en `auth.ts` se deja intacto: cuando se configuren las vars, basta con reponer el botón.
+- **Estado:** Temporal — reactivar cuando se configure `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` (Google Cloud + vars en Vercel).
+
 ---
 
 ## Decisiones revisadas o anuladas
@@ -454,3 +551,125 @@ Si una decisión existente cambia:
 **Última actualización:** Mayo 2026
 
 Si encontrás una decisión faltante o desactualizada, actualizá este documento y avisá al equipo.
+
+---
+
+## 2026-05-16 — Lecciones operativas del dia
+
+### 1. DB compartida + migraciones destructivas = riesgo
+
+**Problema:** Cuando un PR contiene una migracion destructiva (DROP COLUMN,
+DROP TABLE), Vercel la aplica a la DB compartida de dev/preview cuando
+deploya el branch. Si el branch tarda en mergear, otros branches y develop
+quedan con codigo desalineado contra la DB modificada → 500 en SSR.
+
+**Caso:** W-A1 dropeo experienciaPromedio. Develop y X-02 quedaron rotos
+2h 48min hasta el merge de W-A1. 9 issues abiertos durante ese periodo
+(#297, #298, #327-#336) fueron falsos positivos resueltos al alinear.
+
+**Mitigaciones adoptadas:**
+- Default branch del repo cambiado a develop (no main) — evita PRs
+  mergeados a main por error
+- Aceptar QA post-merge en dev (no esperar aprobacion previa por preview URL)
+- Mergear lo antes posible cuando hay migracion destructiva pendiente
+
+### 2. Tests que modifican estado global usan afterEach
+
+**Problema:** file-validation.spec.ts:159 desactivaba la config
+imagenes-portfolio y la reactivaba en finally. Cuando Playwright aborta
+por timeout o error, el finally no se ejecuta → config queda desactivada
+→ tests siguientes fallan.
+
+**Fix aplicado (PR #337):** Migrar a test.afterEach con cleanup robusto.
+
+**Patron general:** tests que modifican DB, archivos compartidos o
+configuraciones deben usar test.afterEach con cleanup, no try/finally
+dentro del test.
+
+### 3. Default branch del repo importa
+
+**Problema:** gh pr create sin --base usa el default branch del repo.
+Como el default era main, PRs #326 y #337 se mergearon a main
+directamente sin pasar por develop. Aunque tecnicamente OK, generaba
+grafo de git confuso.
+
+**Fix:** Default branch cambiado a develop via GitHub UI.
+
+### 4. Cambio de modelo de QA: Sergio post-merge, no pre-merge
+
+**Antes:** Sergio revisa preview URL antes de cada merge.
+**Ahora:** Gerardo hace smoke test tras CI verde, mergea, equipo prueba en
+dev y reporta issues.
+
+**Razon:** DB compartida no permite branches abiertos por dias. Aprobacion
+previa de Sergio se vuelve cuello de botella incompatible con la
+infraestructura. Mejor velocidad + QA post-merge en dev real.
+
+**Excepciones:** cambios de identidad visual fuertes, refactors de UX
+critica (registro, validacion CUIT, cotizacion).
+
+### 5. "Pasa en retry" no es "funciona"
+
+**Lecciones reforzadas hoy:**
+- Tests flaky deben investigarse antes de re-run
+- Distinguir "flaky de infraestructura" (re-run OK) de "regresion empeorada"
+  (no mergear)
+- Patron de degradacion (1 fail → 2 → 3 retries) es senal de algo que
+  empeora, no excusa para mergear
+
+---
+
+## 2026-05-16 (auditoria) — Gap de operabilidad detectado
+
+Al disenar X-05 (Header + Footer) se descubrio que varias entidades
+existen en el modelo de datos pero no tienen UI para administracion.
+
+**Gaps encontrados:**
+- Novedad: modelo existe, API GET existe, seed carga 5 — pero NO hay UI para crear/editar
+- TipoPrenda: catalogo solo via seed, sin CRUD admin
+- TipoDocumento: catalogo solo via seed, sin CRUD admin
+
+**Decision tomada:** Implementar X-05 con contenido hardcodeado (lista
+de links del footer, instituciones, etc.) pero estructurar el codigo
+para facilitar la migracion a CMS cuando los specs nuevos se
+implementen.
+
+El CMS de novedades (X-04b) y catalogos (TipoPrenda, TipoDocumento)
+se implementaran como specs aparte despues de X-05.
+
+**Specs nuevos identificados:**
+- X-04b: CRUD Novedades para CONTENIDO (MVP, 3-4h)
+- CRUD TipoPrenda para ADMIN (MVP, 2h)
+- CRUD TipoDocumento para ADMIN (Post-MVP, 3h)
+
+Ver: `AUDITORIA_OPERABILIDAD_2026-05-16.md`
+
+---
+
+## 2026-06-10 — U-05: integridad de datos multi-rol (roles[]/activeMode)
+
+**Problema:** U-02 backfilleó `roles[]`/`activeMode` una vez, pero ninguna fuente
+(registro, registro/completar, seed) los seteaba al crear users → el dato se
+re-desincronizaba (dev en cada seed; prod en cada registro nuevo). El callback `jwt`
+lo enmascaraba derivando desde `role` (fallback load-bearing).
+
+**Decisiones tomadas:**
+- **Backfill núcleo = migración SQL** (`20260610120000_u05_backfill_roles_activemode`),
+  no script: así `prisma migrate deploy` la aplica sola en el build de Vercel contra
+  prod. Idempotente y guardada (`WHERE cardinality(roles)=0` / `activeMode IS NULL`)
+  → no pisa al dual (Julieta) ni el modo elegido por el toggle. Espeja el backfill de U-02.
+- **Cierre de fuente (invariante `roles:[role], activeMode:role`):** se aplicó en los 3
+  puntos — `registro/route.ts` (create), `registro/completar/route.ts` (update, sobre la
+  transacción de U-09 ya mergeado), y `seed.ts` (normalización post-seed, no en cada create).
+- **Scripts:** `scripts/u05-audit.ts` (`--dry-run`/`--verify`, guard anti-PROD) y
+  `scripts/u05-backfill-validaciones.ts` (`--apply`, deuda D-02: talleres sin checklist).
+- **srodriguezunq (registro abandonado sin entidad):** opción D — se migra igual
+  (`roles=[TALLER]`), NO se le inventa entidad. (En DEV no aparece; aplica a prod.)
+
+**Verificado en DEV (2026-06-10):** pre = 9/10 users con `roles=[]`; post-migración =
+0 violaciones (`u05-audit --verify` OK); idempotencia confirmada (2ª corrida = 0 filas).
+Validaciones D-02: 2 talleres incompletos (U09, La Hormiga) → 14 validaciones creadas.
+
+**Pendiente fase PROD (NO ejecutado):** la migración SQL se aplica sola en el próximo
+deploy. El backfill de validaciones en prod requiere `ALLOW_PROD=1 ... --apply` tras
+dimensionar con el dry-run — paso manual y posterior, con OK explícito de Gerardo.

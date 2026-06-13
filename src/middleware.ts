@@ -1,13 +1,26 @@
-import NextAuth from 'next-auth'
-import { NextResponse } from 'next/server'
-import authConfig from '@/compartido/lib/auth.config'
+import { NextResponse, type NextRequest } from 'next/server'
+import { tieneAlgunRol, modoActivo, type FuenteRoles } from '@/compartido/lib/roles'
+import { decodeSessionToken, SESSION_COOKIE_NAME } from '@/compartido/lib/session-cookie'
 
-const { auth } = NextAuth(authConfig)
-
-export default auth((req) => {
+// B-05: el middleware lee el JWT READ-ONLY (decode), sin re-emitir Set-Cookie.
+// Antes envolvía con el wrapper `auth()`, que bajo strategy jwt re-firma y re-emite
+// la cookie en CADA navegación → una navegación con la cookie vieja pisaba la
+// actualización concurrente de un cambio de modo/rol (last-write-wins en el jar).
+// Ahora la escritura autoritativa de la cookie la hacen los endpoints server-side
+// (active-mode, me/roles); acá SOLO leemos. El sliding-expiry queda a cargo del
+// useSession (SessionProvider en el root layout + Header/FeedbackWidget global). El
+// gating es BYTE-IDÉNTICO al anterior: solo cambia de dónde sale la identidad.
+export default async function middleware(req: NextRequest) {
   const { nextUrl } = req
-  const isLoggedIn = !!req.auth
-  const userRole = req.auth?.user?.role as string | undefined
+
+  // Lectura pura del token desde la cookie. Edge-safe (decode usa jose). null si
+  // falta/expiró/es inválido → se trata como no logueado (igual que antes).
+  const token = await decodeSessionToken(req.cookies.get(SESSION_COOKIE_NAME)?.value)
+  const isLoggedIn = !!token
+  // U-03: gating por MEMBRESÍA en roles[] (decisión D1/A), no por el escalar.
+  const sessionUser = (token
+    ? { role: token.role, roles: token.roles, activeMode: token.activeMode }
+    : undefined) as FuenteRoles | undefined
 
   // Rutas públicas que no requieren autenticación
   const publicRoutes = [
@@ -28,6 +41,15 @@ export default auth((req) => {
     '/perfil/',        // Perfil público taller /perfil/[id]
     '/perfil-marca/',  // Perfil público marca /perfil-marca/[id]
     '/n/',             // Magic links WhatsApp (F-02)
+    // Marketing pages (X-06)
+    '/taller-info',
+    '/marca-info',
+    '/impacto',
+    '/recursos',
+    '/academia-publica',
+    '/novedades',
+    '/contacto',
+    '/accesibilidad',
   ]
 
   // Verificar si es ruta pública (incluyendo rutas dinámicas)
@@ -57,7 +79,7 @@ export default auth((req) => {
 
   // Usuarios con registro incompleto (OAuth/magic link sin completar)
   const pathname = nextUrl.pathname
-  const registroCompleto = (req.auth?.user as { registroCompleto?: boolean })?.registroCompleto
+  const registroCompleto = (token as { registroCompleto?: boolean } | null)?.registroCompleto
   if (isLoggedIn && registroCompleto === false) {
     if (pathname === '/registro/completar' || pathname.startsWith('/api/')) {
       return NextResponse.next()
@@ -67,46 +89,48 @@ export default auth((req) => {
 
   // Protección por rol
 
-  // Rutas de ADMIN — ADMIN siempre, CONTENIDO colecciones/evaluaciones
+  // Rutas de ADMIN — ADMIN siempre, CONTENIDO solo evaluaciones
   // ESTADO ya no accede a /admin/* (tiene sus propias rutas /estado/*)
+  // Colecciones se gestiona desde /contenido/colecciones (J-03)
   if (pathname.startsWith('/admin')) {
-    if (userRole === 'ADMIN') return NextResponse.next()
-    if (userRole === 'CONTENIDO' && (
-      pathname.startsWith('/admin/colecciones') ||
+    if (sessionUser && tieneAlgunRol(sessionUser, ['ADMIN'])) return NextResponse.next()
+    if (
+      sessionUser &&
+      tieneAlgunRol(sessionUser, ['CONTENIDO']) &&
       pathname.startsWith('/admin/evaluaciones')
-    )) {
+    ) {
       return NextResponse.next()
     }
     return NextResponse.redirect(new URL('/unauthorized', nextUrl))
   }
 
-  // Rutas de TALLER - solo para rol TALLER
+  // Rutas de TALLER - membresía TALLER
   if (pathname.startsWith('/taller')) {
-    if (userRole !== 'TALLER') {
+    if (!sessionUser || !tieneAlgunRol(sessionUser, ['TALLER'])) {
       return NextResponse.redirect(new URL('/unauthorized', nextUrl))
     }
     return NextResponse.next()
   }
 
-  // Rutas de MARCA - solo para rol MARCA
+  // Rutas de MARCA - membresía MARCA
   if (pathname.startsWith('/marca')) {
-    if (userRole !== 'MARCA') {
+    if (!sessionUser || !tieneAlgunRol(sessionUser, ['MARCA'])) {
       return NextResponse.redirect(new URL('/unauthorized', nextUrl))
     }
     return NextResponse.next()
   }
 
-  // Rutas de ESTADO - para rol ESTADO y ADMIN
+  // Rutas de ESTADO - membresía ESTADO o ADMIN
   if (pathname.startsWith('/estado')) {
-    if (userRole !== 'ESTADO' && userRole !== 'ADMIN') {
+    if (!sessionUser || !tieneAlgunRol(sessionUser, ['ESTADO', 'ADMIN'])) {
       return NextResponse.redirect(new URL('/unauthorized', nextUrl))
     }
     return NextResponse.next()
   }
 
-  // Rutas de CONTENIDO - para rol CONTENIDO y ADMIN
+  // Rutas de CONTENIDO - membresía CONTENIDO o ADMIN
   if (pathname.startsWith('/contenido')) {
-    if (userRole !== 'CONTENIDO' && userRole !== 'ADMIN') {
+    if (!sessionUser || !tieneAlgunRol(sessionUser, ['CONTENIDO', 'ADMIN'])) {
       return NextResponse.redirect(new URL('/unauthorized', nextUrl))
     }
     return NextResponse.next()
@@ -117,9 +141,9 @@ export default auth((req) => {
     return NextResponse.next()
   }
 
-  // Redirigir a dashboard según rol si accede a raíz estando logueado
+  // Redirigir a dashboard según el modo activo si accede a raíz estando logueado
   if (pathname === '/' && isLoggedIn) {
-    switch (userRole) {
+    switch (sessionUser ? modoActivo(sessionUser) : undefined) {
       case 'TALLER':
         return NextResponse.redirect(new URL('/taller', nextUrl))
       case 'MARCA':
@@ -136,7 +160,7 @@ export default auth((req) => {
   }
 
   return NextResponse.next()
-})
+}
 
 export const config = {
   matcher: [

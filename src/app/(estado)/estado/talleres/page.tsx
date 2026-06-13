@@ -9,6 +9,7 @@ import { StatCard } from '@/compartido/componentes/ui/stat-card'
 import { Eye } from 'lucide-react'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { SyncArcaButton } from './sync-arca-button'
+import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 
 export default async function EstadoTalleresPage({
   searchParams,
@@ -56,14 +57,14 @@ export default async function EstadoTalleresPage({
 
   return (
     <div className="max-w-5xl mx-auto py-6 px-4">
-      <h1 className="font-overpass font-bold text-2xl text-brand-blue mb-1">Talleres</h1>
+      <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">Talleres</h1>
       <p className="text-gray-500 text-sm mb-6">Vista regulatoria — estado de formalización y documentación</p>
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
         <StatCard value={String(talleres.length)} label="Total" variant="success" />
-        <StatCard value={String(byNivel('ORO'))} label="Oro" variant="success" />
-        <StatCard value={String(byNivel('PLATA'))} label="Plata" variant="muted" />
-        <StatCard value={String(byNivel('BRONCE'))} label="Bronce" variant="warning" />
+        <StatCard value={String(byNivel('ORO'))} label="Consolidada" variant="success" />
+        <StatCard value={String(byNivel('PLATA'))} label="En proceso" variant="muted" />
+        <StatCard value={String(byNivel('BRONCE'))} label="Etapa inicial" variant="warning" />
         <StatCard value={String(sinVerificar)} label="Sin verificar" variant={sinVerificar > 0 ? 'warning' : 'muted'} />
       </div>
 
@@ -84,10 +85,10 @@ export default async function EstadoTalleresPage({
       <Card className="mb-4">
         <form method="get" className="grid grid-cols-1 sm:grid-cols-4 gap-3">
           <select name="nivel" defaultValue={nivel || ''} className="rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue">
-            <option value="">Todos los niveles</option>
-            <option value="BRONCE">Bronce</option>
-            <option value="PLATA">Plata</option>
-            <option value="ORO">Oro</option>
+            <option value="">Todas las etapas</option>
+            <option value="BRONCE">Etapa inicial</option>
+            <option value="PLATA">En proceso de formalización</option>
+            <option value="ORO">Formalización consolidada</option>
           </select>
           <select name="provincia" defaultValue={provincia || ''} className="rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue">
             <option value="">Todas las provincias</option>
@@ -119,7 +120,7 @@ export default async function EstadoTalleresPage({
             <thead>
               <tr className="border-b border-gray-200">
                 <th className="text-left px-4 py-3 text-sm font-overpass font-semibold text-gray-600">Taller</th>
-                <th className="text-left px-4 py-3 text-sm font-overpass font-semibold text-gray-600">Nivel</th>
+                <th className="text-left px-4 py-3 text-sm font-overpass font-semibold text-gray-600">Etapa</th>
                 <th className="text-left px-4 py-3 text-sm font-overpass font-semibold text-gray-600">Provincia</th>
                 <th className="text-left px-4 py-3 text-sm font-overpass font-semibold text-gray-600">Docs pendientes</th>
                 <th className="text-left px-4 py-3 text-sm font-overpass font-semibold text-gray-600">Progreso</th>
@@ -137,7 +138,7 @@ export default async function EstadoTalleresPage({
                     <BadgeArca verificado={t.verificadoAfip} fecha={t.verificadoAfipAt} />
                   </td>
                   <td className="px-4 py-3">
-                    <Badge variant={t.nivel === 'ORO' ? 'success' : t.nivel === 'PLATA' ? 'default' : 'warning'}>{t.nivel}</Badge>
+                    <Badge variant={t.nivel === 'ORO' ? 'success' : t.nivel === 'PLATA' ? 'default' : 'warning'}>{nivelAEtapa(t.nivel)}</Badge>
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-600">{t.provincia || '-'}</td>
                   <td className="px-4 py-3">

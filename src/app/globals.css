@@ -201,3 +201,17 @@ nav, button, select, input, label {
   background-size: 20px 20px;
   background-repeat: repeat;
 }
+
+/* Pattern grid sutil — puntos para hero landing */
+.pattern-grid {
+  background-image: radial-gradient(circle, rgba(30, 45, 190, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Card lift — hover elevation para cards interactivas */
+.card-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-lift:hover {
+  transform: translateY(-2px);
+}

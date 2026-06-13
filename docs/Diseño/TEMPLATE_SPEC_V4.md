@@ -1,8 +1,64 @@
-# SPEC N — [ID]: [Título descriptivo del spec]
+# SPEC N — [ID]: [Titulo descriptivo del spec]
 
 > **Plantilla V4** — Reemplazar todos los `[placeholders]` con contenido real.
-> Esta plantilla sigue la metodología V4 definida en `.claude/METODOLOGIA_V4.md`.
-> Las 12 secciones son obligatorias. Si una sección no aplica, marcar como "N/A" con razón breve.
+> Las 14 secciones son obligatorias. Si una seccion no aplica, marcar como "N/A" con razon breve.
+>
+> **SECCION 0 es BLOQUEANTE** — No se implementa nada hasta que pre-flight pase.
+> **SECCION 13 NO SE MODIFICA** durante implementacion — solo durante pre-flight.
+
+---
+
+## 0. Pre-flight checks (BLOQUEANTE)
+
+> **REGLA:** Ejecutar ANTES de escribir una sola linea de codigo.
+> Si pre-flight encuentra problemas, se genera un spec v2 corregido y se descarta la v1.
+
+### 0.1 Verificacion de dependencias
+
+- [ ] Specs listados en dependencias estan mergeados a develop
+- [ ] Archivos/componentes referenciados en el spec EXISTEN en el repo actual
+- [ ] Branch base (`develop`) esta actualizada
+
+### 0.2 Verificacion de schema y datos
+
+- [ ] Campos Prisma usados en el spec coinciden con `prisma/schema.prisma` ACTUAL
+- [ ] Valores de enums Prisma usados en queries son los REALES (no asumidos)
+- [ ] Defaults de columnas revisados (ej: `publicado @default(false)` — ajustar logica si se necesita otro valor)
+- [ ] Relaciones entre modelos son correctas
+- [ ] Indices necesarios existen o se crean en el spec
+
+### 0.3 Discovery de impacto tecnico (extendido)
+
+Verificar:
+
+- [ ] Schema actual de los modelos Prisma involucrados (campos REALES, no asumir nombres)
+- [ ] VALORES de enums Prisma usados en queries (ej: `EN_EJECUCION`, no `EN_PROCESO`)
+- [ ] Defaults de columnas (ej: `publicado: false` en DB, forzar `true` en create si se necesita)
+- [ ] Endpoints existentes que se podrian reutilizar (storage, upload, etc.)
+- [ ] Componentes existentes que se podrian reutilizar (file-upload, forms, tables)
+- [ ] Layout existente del rol involucrado (sidebar, auth, breadcrumbs)
+- [ ] Migraciones recientes que cambien estructura
+- [ ] Middleware: rutas ya permitidas vs rutas nuevas necesarias
+- [ ] `next.config.ts`: configuraciones que afecten (remotePatterns, redirects, etc.)
+- [ ] Utilidades compartidas en `src/compartido/lib/` que se puedan reusar
+
+### 0.4 Verificacion de componentes y patrones
+
+- [ ] Componentes UI referenciados existen con la API correcta (props, eventos)
+- [ ] Patrones de pagina (server component, force-dynamic, loading.tsx) coinciden con el proyecto
+- [ ] Imports usan paths correctos del proyecto (`@/compartido/...`, no `@/lib/...`)
+
+### 0.5 Reporte pre-flight
+
+**Si TODO pasa:** proceder con implementacion.
+
+**Si hay discrepancias:** generar tabla de correcciones:
+
+| # | Problema | En el spec dice | En el codigo real es | Correccion |
+|---|----------|-----------------|---------------------|------------|
+| C1 | ... | ... | ... | ... |
+
+Y producir spec v2 corregido antes de implementar.
 
 ---
 
@@ -10,17 +66,17 @@
 
 | Campo | Valor |
 |---|---|
-| **Tipo** | [refactor visual / refactor funcional / feature nueva / bug fix / análisis] |
+| **Tipo** | [refactor visual / refactor funcional / feature nueva / bug fix / analisis] |
 | **Bloque** | [X / U / W-A / W-B / K / Q / R / S / G / etc.] |
-| **Categoría** | [MVP no negociable / Deseable / Espera] |
-| **Estimación** | [Xh] |
+| **Categoria** | [MVP no negociable / Deseable / Espera] |
+| **Estimacion** | [Xh] |
 | **Riesgo** | [Bajo / Medio / Alto] |
 | **Dependencias** | [Spec N (debe estar mergeado antes) / Ninguna] |
 | **Branch** | `feature/v4-[id]-[slug]` |
-| **Validación sectorial** | N/A — Diferida a validación grupal post-MVP V4 |
-| **Perspectivas relevantes** | [Politólogo / Sociólogo / Economista / Contador / Sectorial / N/A] |
+| **Validacion sectorial** | N/A — Diferida a validacion grupal post-MVP V4 |
+| **Perspectivas relevantes** | [Politologo / Sociologo / Economista / Contador / Sectorial / N/A] |
 | **Autor** | Gerardo Breard |
-| **Fecha de creación** | YYYY-MM-DD |
+| **Fecha de creacion** | YYYY-MM-DD |
 | **Aprobado por** | [Pendiente / Equipo PDT / etc.] |
 | **Issue GitHub vinculado** | [#N / N/A] |
 | **PR vinculado** | [URL / Pendiente] |
@@ -29,48 +85,48 @@
 
 ## 2. Contexto
 
-### Por qué existe este spec
+### Por que existe este spec
 
-[Explicar qué hallazgo, decisión o problema originó este spec. ¿Vino del piloto V3? ¿De un colega del equipo? ¿De auditoría Fase 2? ¿De una decisión del master?]
+[Explicar que hallazgo, decision o problema origino este spec.]
 
-### Qué resuelve
+### Que resuelve
 
-[Describir qué cambia en la experiencia del usuario o en el sistema después de implementar este spec.]
+[Describir que cambia en la experiencia del usuario o en el sistema despues de implementar este spec.]
 
-### Documentación de referencia
+### Documentacion de referencia
 
 - [Link a documento relevante del master, hallazgos, propuesta visual, etc.]
-- [Link a issue o conversación relevante]
+- [Link a issue o conversacion relevante]
 
 ---
 
-## 3. Validación interdisciplinaria
+## 3. Validacion interdisciplinaria
 
 ### Perspectivas relevantes para este spec
 
-**Politólogo:** [APLICA / N/A]
-- [Si APLICA: observación que se consideró + decisión tomada en el spec]
-- [Si N/A: razón breve por la que no aplica]
+**Politologo:** [APLICA / N/A]
+- [Si APLICA: observacion que se considero + decision tomada en el spec]
+- [Si N/A: razon breve por la que no aplica]
 
-**Sociólogo:** [APLICA / N/A]
-- [Observación + decisión, o razón de N/A]
+**Sociologo:** [APLICA / N/A]
+- [Observacion + decision, o razon de N/A]
 
 **Economista:** [APLICA / N/A]
-- [Observación + decisión, o razón de N/A]
+- [Observacion + decision, o razon de N/A]
 
 **Contador:** [APLICA / N/A]
-- [Observación + decisión, o razón de N/A]
+- [Observacion + decision, o razon de N/A]
 
 **Sectorial:** [APLICA / N/A]
-- [Observación + decisión, o razón de N/A]
+- [Observacion + decision, o razon de N/A]
 
-> Si NINGUNA perspectiva aplica al spec, reemplazar toda esta sección por:
+> Si NINGUNA perspectiva aplica al spec, reemplazar toda esta seccion por:
 >
-> **N/A — Spec puramente técnico-interno sin impacto interdisciplinario.**
+> **N/A — Spec puramente tecnico-interno sin impacto interdisciplinario.**
 
 ---
 
-## 4. Qué construir
+## 4. Que construir
 
 ### Funcionalidades
 
@@ -82,24 +138,9 @@
 
 [Si aplica: wireframes ASCII, links a mockup HTML, screenshots, etc.]
 
-```
-[Ejemplo de wireframe ASCII si aplica]
-
-┌─────────────────────────────────┐
-│ Header                          │
-├─────────────────────────────────┤
-│ Contenido principal             │
-│                                 │
-│   ┌─────────┐  ┌─────────┐      │
-│   │ Card 1  │  │ Card 2  │      │
-│   └─────────┘  └─────────┘      │
-│                                 │
-└─────────────────────────────────┘
-```
-
 ### Consideraciones de lenguaje
 
-[Si aplica: decisiones de copy, terminología, narrativa según decisiones del master.]
+[Si aplica: decisiones de copy, terminologia, narrativa segun decisiones del master.]
 
 ---
 
@@ -107,7 +148,7 @@
 
 ### Cambios en schema Prisma
 
-[Si aplica: nuevas tablas, modificaciones a tablas existentes, índices nuevos, etc.]
+[Si aplica: nuevas tablas, modificaciones a tablas existentes, indices nuevos, etc.]
 
 ```prisma
 // Ejemplo
@@ -119,7 +160,7 @@ model NuevoModelo {
 
 ### Migraciones SQL
 
-[Si aplica: SQL específico, raw queries, etc.]
+[Si aplica: SQL especifico, raw queries, etc.]
 
 ### Queries o relaciones nuevas
 
@@ -133,18 +174,18 @@ model NuevoModelo {
 
 ---
 
-## 6. Prescripciones técnicas
+## 6. Prescripciones tecnicas
 
-Decisiones técnicas obligatorias que la implementación DEBE respetar:
+Decisiones tecnicas obligatorias que la implementacion DEBE respetar:
 
-- [Decisión 1: ej. "Usar `cn()` de `lib/utils.ts` para concatenar clases Tailwind"]
-- [Decisión 2: ej. "NO hardcodear colores en `style={{}}`, usar variables CSS"]
-- [Decisión 3: ej. "Endpoint debe usar `apiHandler` de `lib/api-handler.ts`"]
-- [Decisión 4: ej. "Mantener compat con `var(--brand-blue)` legacy"]
+- [Decision 1: ej. "Usar `cn()` de `lib/utils.ts` para concatenar clases Tailwind"]
+- [Decision 2: ej. "NO hardcodear colores en `style={{}}`, usar variables CSS"]
+- [Decision 3: ej. "Endpoint debe usar patron inline auth check"]
+- [Decision 4: ej. "Server component con `force-dynamic` para listados"]
 
-### Librerías o paquetes nuevos
+### Librerias o paquetes nuevos
 
-[Si aplica: listar nuevas dependencias con versión y justificación.]
+[Si aplica: listar nuevas dependencias con version y justificacion.]
 
 ### Convenciones del proyecto a mantener
 
@@ -154,58 +195,46 @@ Decisiones técnicas obligatorias que la implementación DEBE respetar:
 
 ## 7. Edge cases
 
-| # | Caso límite | Comportamiento esperado |
+| # | Caso limite | Comportamiento esperado |
 |---|---|---|
-| 1 | [Datos vacíos] | [Cómo se comporta el sistema] |
-| 2 | [Concurrencia] | [Política de resolución] |
+| 1 | [Datos vacios] | [Como se comporta el sistema] |
+| 2 | [Concurrencia] | [Politica de resolucion] |
 | 3 | [Error de red] | [Mensaje al usuario / retry / etc.] |
 | 4 | [Permisos faltantes] | [Redirect / mensaje / log] |
 | 5 | [...] | [...] |
 
 ---
 
-## 8. Validación sectorial
+## 8. Validacion sectorial
 
-**N/A — Diferida a validación grupal post-MVP V4**
+**N/A — Diferida a validacion grupal post-MVP V4**
 
-> En casos excepcionales (UX muy crítica que justifica validación previa), reemplazar este texto por:
->
-> ```
-> APLICA — Validación previa con [N] talleres + [N] marcas
->
-> Momento: [antes de implementar / después de implementar antes de mergear]
-> Formato: [sesión individual remota / sesión grupal / asincrónico con formulario]
-> Preguntas a responder:
-> 1. ...
-> 2. ...
-> 3. ...
-> Criterio de aprobado: [qué tiene que pasar para considerar validado]
-> ```
+> En casos excepcionales (UX muy critica que justifica validacion previa), reemplazar este texto por el formato de validacion.
 
 ---
 
-## 9. Criterios de aceptación
+## 9. Criterios de aceptacion
 
-Condiciones técnicas/funcionales binarias que deben cumplirse para considerar el spec terminado:
+Condiciones tecnicas/funcionales binarias que deben cumplirse para considerar el spec terminado:
 
-- [ ] Build de producción pasa sin errores (`npm run build`)
+- [ ] Build de produccion pasa sin errores (`npm run build`)
 - [ ] Tests E2E existentes siguen pasando
 - [ ] No hay warnings nuevos de TypeScript
 - [ ] No hay warnings nuevos de ESLint
-- [ ] [Criterio específico del spec 1]
-- [ ] [Criterio específico del spec 2]
-- [ ] Documentación de handover actualizada (ver sección 11)
+- [ ] [Criterio especifico del spec 1]
+- [ ] [Criterio especifico del spec 2]
+- [ ] Documentacion de handover actualizada (ver seccion 11)
 - [ ] PR creado, revisado y mergeado a develop
-- [ ] Verificación visual en `dev.plataformatextil.com.ar` OK
+- [ ] Verificacion visual en `dev.plataformatextil.com.ar` OK
 - [ ] Merge a main exitoso
 
 ---
 
 ## 10. Tests (QAs basados en flujos)
 
-[5-10 flujos esperados que describen QUÉ debería verificar el QA. Estructura: rol + precondiciones + pasos + resultado esperado + verificaciones cruzadas + tipo (automatizado/manual).]
+[5-10 flujos esperados que describen QUE deberia verificar el QA.]
 
-### Flujo 1: [Título descriptivo del flujo]
+### Flujo 1: [Titulo descriptivo del flujo]
 
 - **Rol:** [taller / marca / ESTADO / ADMIN / no autenticado]
 - **Precondiciones:** [estado de la base de datos necesario]
@@ -213,23 +242,14 @@ Condiciones técnicas/funcionales binarias que deben cumplirse para considerar e
   1. [Paso 1]
   2. [Paso 2]
   3. [Paso 3]
-- **Resultado esperado:** [qué debe pasar al final]
-- **Verificaciones cruzadas:** [si involucra varios roles, qué ve cada uno]
+- **Resultado esperado:** [que debe pasar al final]
+- **Verificaciones cruzadas:** [si involucra varios roles, que ve cada uno]
 - **Tipo:** [automatizado Playwright / manual]
 
-### Flujo 2: [Título descriptivo]
-
-[Mismo formato]
-
-### Flujo 3: [Título descriptivo]
-
-[Mismo formato]
-
-[Continuar con tantos flujos como aplique según tamaño del spec:
+[Continuar con tantos flujos como aplique:
 - 2-3 flujos para spec chiquito (<2h)
 - 4-6 flujos para spec mediano (2-5h)
-- 7-10 flujos para spec grande (5h+)
-- 10-15 flujos para refactor de fondo]
+- 7-10 flujos para spec grande (5h+)]
 
 ---
 
@@ -237,43 +257,44 @@ Condiciones técnicas/funcionales binarias que deben cumplirse para considerar e
 
 Documentos de `.claude/specs/handover/` a crear o actualizar al terminar este spec:
 
-- **[NOMBRE_DOC.md]** → [qué se agrega o cambia]
-- **[OTRO_DOC.md]** → [qué se agrega o cambia]
-- **N/A** [si ningún doc aplica]
-
-### Ejemplo
-
-```
-- ARCHITECTURE.md → agregar sección "Design tokens V4" con paleta y tipografía
-- DECISIONS.md → registrar adopción de propuesta visual de Sergio
-- KNOWN_ISSUES.md → N/A (no se descubrieron issues nuevos)
-```
-
-> Si NINGÚN documento aplica: **N/A — Spec no genera cambios documentables en handover.**
+- **[NOMBRE_DOC.md]** -> [que se agrega o cambia]
+- **N/A** [si ningun doc aplica]
 
 ---
 
 ## 12. Riesgos y mitigaciones
 
-| # | Riesgo | Probabilidad | Impacto | Mitigación |
+| # | Riesgo | Probabilidad | Impacto | Mitigacion |
 |---|---|---|---|---|
-| 1 | [Descripción del riesgo] | [Alta/Media/Baja] | [Alto/Medio/Bajo] | [Cómo se mitiga] |
+| 1 | [Descripcion del riesgo] | [Alta/Media/Baja] | [Alto/Medio/Bajo] | [Como se mitiga] |
 | 2 | [...] | [...] | [...] | [...] |
-| 3 | [...] | [...] | [...] | [...] |
-
-### Ejemplo
-
-| # | Riesgo | Probabilidad | Impacto | Mitigación |
-|---|---|---|---|---|
-| 1 | FOIT (Flash of Invisible Text) al cargar fuentes nuevas | Media | Bajo | Configurar `font-display: swap` explícito en `@font-face` |
-| 2 | Tests E2E fallan por cambios de selectores visuales | Baja | Medio | Actualizar tests si fallan; mantener data-testid estables |
-| 3 | Browsers viejos no soportan `@theme inline` (Tailwind v4) | Baja | Alto | Verificar versión de Tailwind del repo antes de empezar |
 
 ---
 
-## Notas finales
+## 13. Selectores criticos (NO MODIFICAR en implementacion)
 
-[Espacio libre para cualquier nota adicional, contexto que no encajó en otra sección, o links útiles.]
+> **REGLA:** Esta tabla se completa durante el pre-flight (seccion 0) y NO se modifica durante implementacion.
+> Si un selector se rompe, la regresion es inmediata y visible en produccion.
+
+| Selector / Concepto | Donde se usa | Riesgo si se rompe |
+|---|---|---|
+| [Query Prisma critica] | [archivo:linea] | [Que deja de funcionar] |
+| [Campo de enum] | [Schema + queries] | [Build error / data corruption] |
+| [Componente reutilizado] | [archivos que lo importan] | [UI rota en N paginas] |
+| [Ruta API] | [frontend que la consume] | [Feature completa deja de funcionar] |
+| [Config/env var] | [donde se lee] | [Runtime error en deploy] |
+
+---
+
+## 14. Plan de implementacion
+
+[Pasos ordenados con estimacion de tiempo. Cada paso debe ser un commit atomico.]
+
+1. **[Paso 1] (X min)** — [Que se hace]
+2. **[Paso 2] (X min)** — [Que se hace]
+3. **[Paso N] (X min)** — [Que se hace]
+
+**Total estimado: Xh Xmin**
 
 ---
 

@@ -1,15 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { auth } from '@/compartido/lib/auth'
+import { requiereRolApi } from '@/compartido/lib/permisos'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN' && role !== 'ESTADO') {
-      return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 })
-    }
+    const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { id } = await params
     const auditoria = await prisma.auditoria.findUnique({
@@ -26,12 +22,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await auth()
-    if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    const role = (session.user as { role?: string }).role
-    if (role !== 'ADMIN' && role !== 'ESTADO') {
-      return NextResponse.json({ error: 'Acceso denegado' }, { status: 403 })
-    }
+    const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
+    if (sesion instanceof NextResponse) return sesion
 
     const { id } = await params
     const body = await req.json()

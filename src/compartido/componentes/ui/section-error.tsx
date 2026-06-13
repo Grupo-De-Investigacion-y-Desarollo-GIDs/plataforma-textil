@@ -15,7 +15,7 @@ export function SectionError({ section, reset }: { section: string; reset: () =>
       <div className="flex gap-3">
         <button
           onClick={reset}
-          className="px-5 py-2.5 bg-brand-blue text-white rounded-lg font-overpass font-semibold text-sm hover:bg-blue-800 transition-colors"
+          className="px-5 py-2.5 bg-brand-blue text-white rounded-lg font-overpass font-semibold text-sm hover:bg-brand-blue-dark transition-colors"
         >
           Reintentar
         </button>

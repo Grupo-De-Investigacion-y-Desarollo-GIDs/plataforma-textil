@@ -1,11 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { modoActivo } from '@/compartido/lib/roles'
 import { logAccionAdmin } from '@/compartido/lib/log'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    // K-01 C2: este GET exponia PII del dueño (email/telefono/nombre) sin auth.
+    // Gate: mismo modelo que el PUT de este archivo (dueño o ADMIN) + ESTADO
+    // para lectura de supervision. El GET no tiene callers de fetch; la pagina
+    // publica perfil/[id] y el directorio leen Prisma directo (no esta ruta).
+    const session = await auth()
+    if (!session?.user) {
+      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    }
+
     const { id } = await params
+    const role = modoActivo(session.user)
 
     const taller = await prisma.taller.findUnique({
       where: { id },
@@ -23,6 +34,12 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: 'Taller no encontrado' }, { status: 404 })
     }
 
+    const esDueno = taller.userId === session.user.id
+    const esSupervision = role === 'ADMIN' || role === 'ESTADO'
+    if (!esDueno && !esSupervision) {
+      return NextResponse.json({ error: 'Sin acceso a este taller' }, { status: 403 })
+    }
+
     return NextResponse.json(taller)
   } catch (error) {
     console.error('Error en GET /api/talleres/[id]:', error)
@@ -38,7 +55,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     }
 
     const { id } = await params
-    const role = (session.user as { role?: string }).role
+    const role = modoActivo(session.user)
 
     // Ownership check: solo el dueño o ADMIN
     const existing = await prisma.taller.findUnique({ where: { id }, select: { userId: true } })
@@ -54,9 +71,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     const fields = [
       'nombre', 'ubicacion', 'website', 'provincia', 'partido', 'ubicacionDetalle', 'descripcion',
       'capacidadMensual', 'trabajadoresRegistrados', 'fundado',
-      'sam', 'prendaPrincipal', 'organizacion', 'metrosCuadrados',
+      'sam', 'prendaPrincipal', 'organizacion', 'organizacionDetalle', 'metrosCuadrados',
       'areas', 'polivalencia', 'horario',
-      'registroProduccion', 'escalabilidad', 'paradasFrecuencia',
+      'registroProduccion', 'escalabilidad', 'disponibilidad', 'paradasFrecuencia',
+      'rolesFuncionales',
       'portfolioFotos',
     ]
     for (const f of fields) {

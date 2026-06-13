@@ -1,178 +1,262 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Globe, Search, Menu, X, User } from 'lucide-react'
+import { Menu, User, LogOut } from 'lucide-react'
+import { signOut, useSession } from 'next-auth/react'
+import type { UserRole } from '@prisma/client'
+import { LogoPDT } from '@/compartido/componentes/ui/logo-pdt'
 import { NotificacionesBell } from './notificaciones-bell'
-import { cn } from '@/compartido/lib/utils'
-import { UserSidebar } from './user-sidebar'
-
-interface Tab {
-  id: string
-  label: string
-  href: string
-}
-
-const tabsByRole: Record<string, Tab[]> = {
-  TALLER: [
-    { id: 'tablero', label: 'Tablero', href: '/taller' },
-    { id: 'pedidos', label: 'Pedidos', href: '/taller/pedidos' },
-    { id: 'formalizacion', label: 'Formalización', href: '/taller/formalizacion' },
-    { id: 'perfil', label: 'Mi Perfil', href: '/taller/perfil' },
-    { id: 'aprender', label: 'Academia', href: '/taller/aprender' },
-  ],
-  MARCA: [
-    { id: 'tablero', label: 'Tablero', href: '/marca' },
-    { id: 'directorio', label: 'Directorio', href: '/marca/directorio' },
-    { id: 'pedidos', label: 'Pedidos', href: '/marca/pedidos' },
-    { id: 'perfil', label: 'Mi Perfil', href: '/marca/perfil' },
-  ],
-  ESTADO: [
-    { id: 'dashboard', label: 'Dashboard', href: '/estado' },
-    { id: 'demanda', label: 'Demanda insatisfecha', href: '/estado/demanda-insatisfecha' },
-    { id: 'sector', label: 'Datos sectoriales', href: '/estado/sector' },
-    { id: 'exportar', label: 'Exportar', href: '/estado/exportar' },
-  ],
-  ADMIN: [
-    { id: 'dashboard', label: 'Dashboard', href: '/admin' },
-    { id: 'usuarios', label: 'Usuarios', href: '/admin/usuarios' },
-    { id: 'configuracion', label: 'Configuración', href: '/admin/configuracion' },
-  ],
-}
+import { ModoToggle } from './modo-toggle'
+import { useSidebar } from './sidebar-context'
+import { INSTITUTIONAL, TABS_BY_ROLE } from '@/compartido/lib/content/institutional'
 
 interface HeaderProps {
-  activeTab?: string
   userName?: string
-  userRole?: 'TALLER' | 'MARCA' | 'ESTADO' | 'ADMIN'
-  userProgress?: number
-  userLevel?: string
+  userRole?: 'TALLER' | 'MARCA' | 'ESTADO'
+  showPilotPill?: boolean
+  /** U-04: roles del usuario; el toggle de modo solo aparece si hay 2+. */
+  roles?: UserRole[]
+  /** U-04: modo activo actual. */
+  activeMode?: UserRole
+  /** U-04: nombre amable de la entidad por rol, para el toggle. */
+  entidades?: Partial<Record<UserRole, string>>
+}
+
+// U-04: nombre amable + acentos de color por modo activo (§4.4 narrativa V4).
+const MODO_LABEL: Partial<Record<UserRole, string>> = {
+  TALLER: 'Modo Taller',
+  MARCA: 'Modo Marca',
+  ESTADO: 'Modo Ente',
+}
+const MODO_PILL: Partial<Record<UserRole, string>> = {
+  TALLER: 'bg-brand-bg-light text-brand-blue',
+  MARCA: 'bg-terra-100 text-terra-600',
+}
+const MODO_BORDE: Partial<Record<UserRole, string>> = {
+  TALLER: 'border-b-brand-blue',
+  MARCA: 'border-b-terra-600',
+}
+const MODO_AVATAR: Partial<Record<UserRole, string>> = {
+  TALLER: 'ring-4 ring-brand-blue',
+  MARCA: 'ring-4 ring-terra-600',
 }
 
 export function Header({
   userName = 'Usuario',
   userRole = 'TALLER',
-  userProgress = 40,
-  userLevel = 'Bronce'
+  showPilotPill = false,
+  roles = [],
+  activeMode,
+  entidades,
 }: HeaderProps) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { open } = useSidebar()
   const pathname = usePathname()
-  const tabs = tabsByRole[userRole] || tabsByRole.TALLER
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
 
-  // Detectar tab activo por la ruta actual
-  const activeTab = (() => {
-    // Buscar match mas especifico primero (ordenar por longitud de href desc)
-    const sorted = [...tabs].sort((a, b) => b.href.length - a.href.length)
-    const match = sorted.find(tab => pathname.startsWith(tab.href))
-    return match?.id || tabs[0]?.id || ''
-  })()
+  // BUG B (QA #398): el Pill "Modo X" tomaba activeMode/roles de un prop server-side
+  // que quedaba vencido tras session.update() (se veía "Modo Marca" y luego "Modo Taller").
+  // La sesión viva de useSession() es la fuente autoritativa; caemos al prop solo mientras
+  // la sesión cliente aún no hidrató (evita parpadeo/mismatch en el primer paint).
+  const { data: liveSession } = useSession()
+  const liveRoles = liveSession?.user?.roles ?? roles
+  const liveActiveMode = (liveSession?.user?.activeMode ?? activeMode) ?? undefined
+
+  // Tabs segun rol
+  const tabs = TABS_BY_ROLE[userRole] ?? []
+
+  // Tab activo: match mas especifico primero (ordenar por longitud de href desc)
+  const sortedTabs = [...tabs].sort((a, b) => b.href.length - a.href.length)
+  const activeTab = sortedTabs.find(
+    tab => pathname === tab.href || pathname.startsWith(tab.href + '/')
+  )
+
+  // Iniciales del usuario para avatar
+  const initials = userName
+    .split(' ')
+    .filter(Boolean)
+    .map(n => n[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase() || '?'
+
+  // U-04: modo activo efectivo + diferenciación visual solo para multi-rol.
+  const modoActual: UserRole = liveActiveMode ?? (userRole as UserRole)
+  const esMultiRol = liveRoles.length > 1
+  const borderAccent = esMultiRol ? MODO_BORDE[modoActual] ?? '' : ''
+  const avatarAccent = esMultiRol ? MODO_AVATAR[modoActual] ?? '' : ''
+
+  // Avatar click: mobile abre sidebar, desktop abre dropdown
+  function handleAvatarClick() {
+    const isDesktop = window.matchMedia('(min-width: 1024px)').matches
+    if (isDesktop) {
+      setMenuOpen(prev => !prev)
+    } else {
+      open()
+    }
+  }
+
+  // Cerrar dropdown al click afuera o ESC
+  useEffect(() => {
+    if (!menuOpen) return
+    function handleClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false)
+      }
+    }
+    function handleEscape(e: KeyboardEvent) {
+      if (e.key === 'Escape') setMenuOpen(false)
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('keydown', handleEscape)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleEscape)
+    }
+  }, [menuOpen])
 
   return (
-    <>
-      <UserSidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-        userRole={userRole}
-        userName={userName}
-        userProgress={userProgress}
-        userLevel={userLevel}
-      />
+    <header
+      className={`sticky top-0 z-40 bg-white border-b ${
+        borderAccent ? `border-b-4 ${borderAccent}` : 'border-gray-100'
+      }`}
+    >
+      {/* Banda 1: topbar */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14">
+          {/* Izquierda: menu + logo + nombre */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={open}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors lg:hidden"
+              aria-label="Abrir menú"
+            >
+              <Menu className="w-5 h-5 text-ink-primary" />
+            </button>
+            <Link href={`/${userRole.toLowerCase()}`} className="flex items-center gap-2.5">
+              <LogoPDT variant="icon" size="sm" />
+              <div className="hidden sm:flex flex-col leading-tight">
+                <span className="font-serif font-bold text-sm text-ink-primary">
+                  {INSTITUTIONAL.brandName}
+                </span>
+                <span className="font-overpass font-bold text-[9px] text-terra-600 uppercase tracking-wider mt-0.5">
+                  {INSTITUTIONAL.brandSubtitle}
+                </span>
+              </div>
+            </Link>
 
-      <header className="sticky top-0 z-50">
-        <div className="bg-brand-topbar text-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-10 text-sm">
-              <button
-                onClick={() => setSidebarOpen(true)}
-                className="flex items-center gap-2 hover:bg-white/10 px-3 py-1.5 rounded transition-colors"
-                aria-label="Abrir menú personal"
+            {/* U-04: pill "Modo X" (solo multi-rol) */}
+            {esMultiRol && MODO_LABEL[modoActual] && (
+              <span
+                data-testid="modo-pill"
+                className={`inline-flex items-center px-2.5 py-1 rounded-full text-sm font-overpass font-bold ${
+                  MODO_PILL[modoActual] ?? 'bg-gray-100 text-ink-secondary'
+                }`}
               >
-                <Menu className="w-4 h-4" />
-                <span className="hidden sm:inline">Menú</span>
+                {MODO_LABEL[modoActual]}
+              </span>
+            )}
+          </div>
+
+          {/* Derecha: pill ambiente + bell + avatar */}
+          <div className="flex items-center gap-3">
+            {showPilotPill && (
+              <span className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-overpass font-medium bg-pastel-yellow text-amber-900">
+                <span className="w-1.5 h-1.5 rounded-full bg-yellow-500" />
+                Ambiente piloto
+              </span>
+            )}
+
+            <NotificacionesBell />
+
+            <div className="relative" ref={menuRef}>
+              <button
+                onClick={handleAvatarClick}
+                className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label="Menú de usuario"
+                aria-expanded={menuOpen}
+                aria-haspopup="true"
+              >
+                <div
+                  className={`w-8 h-8 rounded-full bg-brand-blue text-white flex items-center justify-center font-overpass font-bold text-xs ${avatarAccent}`}
+                >
+                  {initials}
+                </div>
+                <span className="hidden lg:inline text-sm font-medium text-ink-primary font-overpass">
+                  {userName}
+                </span>
               </button>
 
-              <div className="flex items-center gap-6">
-                <button className="flex items-center gap-2 hover:text-blue-200 transition-colors">
-                  <Globe className="w-4 h-4" />
-                  <span className="hidden sm:inline">ESPAÑOL</span>
-                </button>
-                <nav className="hidden md:flex items-center gap-6">
-                  <span className="text-green-400 font-semibold">V2.0</span>
-                  <NotificacionesBell />
-                  <button
-                    onClick={() => setSidebarOpen(true)}
-                    className="hover:text-blue-200 transition-colors flex items-center gap-2"
+              {menuOpen && (
+                <div className="absolute right-0 top-full mt-1 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                  <div className="px-4 py-3 border-b border-gray-100">
+                    <p className="text-sm font-overpass font-semibold text-ink-primary truncate">{userName}</p>
+                    <p className="text-xs font-overpass text-ink-secondary mt-0.5">
+                      {userRole === 'TALLER' && 'Taller'}
+                      {userRole === 'MARCA' && 'Marca'}
+                      {userRole === 'ESTADO' && 'Ente Estatal'}
+                    </p>
+                  </div>
+                  {/* U-04: toggle multi-rol (se auto-oculta si roles <= 1) */}
+                  <ModoToggle
+                    roles={liveRoles}
+                    activeMode={modoActual}
+                    entidades={entidades}
+                    onCambio={() => setMenuOpen(false)}
+                  />
+                  <Link
+                    href="/cuenta"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm font-overpass text-gray-700 hover:bg-gray-50 transition-colors"
                   >
-                    <User className="w-4 h-4" />
-                    {userName}
+                    <User className="w-4 h-4 text-gray-400" />
+                    Mi cuenta
+                  </Link>
+                  <button
+                    onClick={() => { setMenuOpen(false); signOut({ callbackUrl: '/login' }) }}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-overpass text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+                  >
+                    <LogOut className="w-4 h-4 text-gray-400" />
+                    Cerrar sesión
                   </button>
-                </nav>
-              </div>
+                </div>
+              )}
             </div>
-          </div>
-        </div>
-
-      <div className="bg-brand-blue text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            <div className="flex items-center gap-4">
-              <Link href="/" className="w-14 h-14 rounded-full bg-white flex items-center justify-center flex-shrink-0">
-                <span className="font-overpass font-bold text-brand-blue text-lg">PDT</span>
-              </Link>
-              <div className="hidden sm:block">
-                <h1 className="font-overpass font-bold text-xl">Plataforma Digital Textil</h1>
-                {userName && <p className="text-blue-200 text-sm font-overpass">{userRole}: {userName}</p>}
-              </div>
-            </div>
-            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2">
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
           </div>
         </div>
       </div>
 
-      <div className="bg-brand-tabnav text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="hidden md:flex items-center justify-between">
-            <div className="flex">
-              {tabs.map((tab) => (
-                <Link key={tab.id} href={tab.href}
-                  className={cn(
-                    'px-6 py-4 font-overpass font-medium transition-colors relative',
-                    activeTab === tab.id ? 'bg-white text-brand-blue' : 'text-white hover:bg-white/10'
-                  )}>
-                  {tab.label}
-                  {activeTab === tab.id && <div className="absolute bottom-0 left-0 right-0 h-1 bg-brand-red" />}
-                </Link>
-              ))}
-            </div>
-            <button className="p-4 hover:bg-white/10 transition-colors">
-              <Search className="w-5 h-5" />
-            </button>
-          </nav>
-        </div>
-      </div>
-
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-brand-blue border-t border-white/20">
-          <nav className="px-4 py-2">
-            {tabs.map((tab) => (
-              <Link key={tab.id} href={tab.href}
-                className={cn(
-                  'block px-4 py-3 font-overpass font-medium rounded-lg',
-                  activeTab === tab.id ? 'bg-white text-brand-blue' : 'text-white hover:bg-white/10'
-                )}>
-                {tab.label}
-              </Link>
-            ))}
-            <div className="px-4 py-3">
-              <NotificacionesBell />
-            </div>
-          </nav>
-        </div>
+      {/* Banda 2: tabs */}
+      {tabs.length > 0 && (
+        <nav className="border-t border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <ul className="flex gap-1 overflow-x-auto">
+              {tabs.map(tab => {
+                const isActive = activeTab?.href === tab.href
+                return (
+                  <li key={tab.href}>
+                    <Link
+                      href={tab.href}
+                      className={`
+                        inline-flex items-center px-4 py-3 text-sm font-overpass font-semibold whitespace-nowrap
+                        border-b-2 transition-colors
+                        ${isActive
+                          ? 'border-brand-blue text-brand-blue'
+                          : 'border-transparent text-ink-secondary hover:text-ink-primary hover:border-gray-300'
+                        }
+                      `}
+                    >
+                      {tab.label}
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        </nav>
       )}
-      </header>
-    </>
+    </header>
   )
 }

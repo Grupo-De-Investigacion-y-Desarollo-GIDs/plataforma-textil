@@ -1,8 +1,1000 @@
 # Daily Log
 
+## 2026-06-12
+
+### Gerardo Breard
+- **19:34** `a8be1b2` — docs: runbook de promocion develop->prod (prep, no ejecutado)
+  - `.claude/specs/RUNBOOK_PROMOCION_PROD.md`
+
+- **17:18** `9e1f120` — fix(k-02): cerrar C5 IDOR upload/imagenes contexto cotizacion (elegibilidad)
+  - `.claude/specs/v4-k-01-auditoria-endpoints.md`
+  - `src/__tests__/cotizaciones-elegibilidad.test.ts`
+  - `src/__tests__/k-02-idor-matrix.test.ts`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/app/api/upload/imagenes/route.ts`
+  - `src/compartido/lib/cotizaciones.ts`
+
+- **16:27** `9fe8b60` — test(k-02): tanda 2 matriz IDOR (ownership) + hallazgo C5
+  - `.claude/specs/v4-k-01-auditoria-endpoints.md`
+  - `src/__tests__/_helpers/auth-matrix.ts`
+  - `src/__tests__/k-02-idor-matrix.test.ts`
+
+- **15:14** `db4a619` — docs(k-02): tanda 1 hecha (#415); plan explicito de tanda 2 (matriz IDOR)
+  - `.claude/specs/v4-k-01-auditoria-endpoints.md`
+
+- **13:13** `279d658` — test(k-02): test pattern reutilizable de auth (matriz 401/403/200)
+  - `.claude/specs/v4-k-01-auditoria-endpoints.md`
+  - `src/__tests__/_helpers/auth-matrix.ts`
+  - `src/__tests__/k-02-auth-matrix.test.ts`
+
+
+## 2026-06-11
+
+### Gerardo Breard
+- **16:14** `a2733e6` — docs(k-01): marcar C1/C2/C3 RESUELTOS (#414) + nota de codigo muerto
+  - `.claude/specs/v4-k-01-auditoria-endpoints.md`
+
+- **14:19** `452ff90` — docs(k-01): auditoria completa de endpoints
+  - `.claude/specs/v4-k-01-auditoria-endpoints.md`
+- **14:56** `882090f` — fix(k-01): cerrar 3 criticos C1/C2/C3 (fugas anonimas de PII y answer-key)
+  - `src/__tests__/k-01-criticos.test.ts`
+  - `src/app/api/colecciones/[id]/route.ts`
+  - `src/app/api/marcas/[id]/route.ts`
+  - `src/app/api/talleres/[id]/route.ts`
+
+- **13:00** `16334b1` — docs: D-03 reseed coordinado pendiente (cobertura test F-1)
+  - `.claude/DEUDA_TECNICA.md`
+
+- **12:02** `807d6de` — docs: B-05 a Resueltas + registrar B-06 (pill multi-tab stale)
+  - `.claude/DEUDA_TECNICA.md`
+
+
+## 2026-06-10
+
+### Gerardo Breard
+- **02:14** `2ed80d2` — fix(b-05): race de clobbering de cookie en rolling JWT session
+  - `.claude/specs/v4-b-05-fix-race-sesion.md`
+  - `src/__tests__/session-cookie.test.ts`
+  - `src/app/api/usuarios/me/active-mode/route.ts`
+  - `src/app/api/usuarios/me/roles/route.ts`
+  - `src/app/n/[token]/route.ts`
+  - `src/compartido/lib/auth.config.ts`
+  - `src/compartido/lib/session-cookie.ts`
+  - `src/middleware.ts`
+  - `tests/e2e/u-04-toggle-multi-rol.spec.ts`
+
+- **01:36** `4535222` — docs: mover D-01/D-02 a Resueltas (U-05 #410)
+  - `.claude/DEUDA_TECNICA.md`
+
+- **01:10** `1c0e5f1` — feat(u-05): migracion de datos multi-rol + cierre de fuente (refs D-01/D-02)
+  - `.claude/specs/handover/DECISIONS.md`
+  - `.claude/specs/v4-u-05-migracion-datos.md`
+  - `prisma/migrations/20260610120000_u05_backfill_roles_activemode/migration.sql`
+  - `prisma/seed.ts`
+  - `scripts/u05-audit.ts`
+  - `scripts/u05-backfill-validaciones.ts`
+  - `src/__tests__/u-05-cierre-fuente.test.ts`
+  - `src/app/api/auth/registro/completar/route.ts`
+  - `src/app/api/auth/registro/route.ts`
+
+- **00:39** `7e50231` — docs(u-08): corregir supuesto de seed en CI + nota de reseed coordinado
+  - `.claude/specs/v4-u-08-tests-e2e-multi-rol.md`
+
+- **00:23** `f8b5512` — feat(u-08): tests E2E multi-rol + seed dual (cierre bloque U)
+  - `prisma/seed.ts`
+  - `src/app/api/test-utils/reset-seed-state/route.ts`
+  - `tests/e2e/u-06-clasificacion-pedidos.spec.ts`
+  - `tests/e2e/u-07-anti-incesto.spec.ts`
+  - `tests/e2e/u-08-cuenta-multirol.spec.ts`
+  - `tests/e2e/u-08-gating-dual.spec.ts`
+
+
+## 2026-06-09
+
+### Gerardo Breard
+- **23:53** `8aa40e5` — chore: sprint deuda tecnica batch-1 (F-01/02/03 + B-02/03/04)
+  - `.claude/DEUDA_TECNICA.md`
+  - `src/__tests__/ratelimit.test.ts`
+  - `src/__tests__/u-09-agregar-rol.test.ts`
+  - `src/app/(admin)/layout.tsx`
+  - `src/app/(auth)/registro/page.tsx`
+  - `src/app/(contenido)/layout.tsx`
+  - `src/app/(public)/cuenta/page.tsx`
+  - `src/app/(taller)/layout.tsx`
+  - `src/app/api/test-utils/reset-seed-state/route.ts`
+  - `src/app/api/usuarios/me/roles/route.ts`
+  - `src/compartido/lib/entidades-modo.ts`
+  - `src/compartido/lib/nivel.ts`
+  - `src/compartido/lib/ratelimit.ts`
+
+- **22:58** `99d8dbf` — test(t-04): estabilizar u-09 — esperar respuesta de /me/roles antes del redirect
+  - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+
+- **22:51** `0b35677` — fix(t-04): endpoint reset con allowlist + u-09 sin poll + deuda B-05
+  - `.claude/DEUDA_TECNICA.md`
+  - `src/app/api/test-utils/reset-seed-state/route.ts`
+  - `tests/e2e/u-04-toggle-multi-rol.spec.ts`
+  - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+
+- **17:48** `9e9f157` — fix(t-04): mover endpoint reset fuera de carpeta privada _test (App Router)
+  - `.claude/DEUDA_TECNICA.md`
+  - `src/app/api/_test/reset-seed-state/route.ts`
+  - `src/app/api/test-utils/reset-seed-state/route.ts`
+  - `tests/e2e/u-04-toggle-multi-rol.spec.ts`
+  - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+
+- **17:22** `1b0d2c8` — fix(t-04): guard NODE_ENV + race u-09 + reset-seed-state para u-04/u-09
+  - `.claude/DEUDA_TECNICA.md`
+  - `src/app/api/_test/reset-seed-state/route.ts`
+  - `src/app/api/_test/reset-u09/route.ts`
+  - `tests/e2e/u-04-toggle-multi-rol.spec.ts`
+  - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+
+- **15:20** `6eb0d96` — fix(u-04/u-09): bugs destapados por primer run real de specs migrados
+  - `src/app/page.tsx`
+  - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+
+- **12:29** `cfc7b57` — fix(t-04): hardening endpoint reset-u09 + deuda B-04
+  - `.claude/DEUDA_TECNICA.md`
+  - `src/app/api/_test/reset-u09/route.ts`
+
+- **10:58** `6ba3ec5` — feat(t-04): migrar 4 U-specs de seguridad a tests/e2e/ + fix idempotencia u-09
+  - `e2e/u-04-toggle-multi-rol.spec.ts`
+  - `e2e/u-06-clasificacion-pedidos.spec.ts`
+  - `e2e/u-07-anti-incesto.spec.ts`
+  - `e2e/u-09-agregar-segundo-rol.spec.ts`
+  - `src/app/api/_test/reset-u09/route.ts`
+  - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+
+
+## 2026-06-08
+
+### Gerardo Breard
+- **12:52** `185a619` — wip: T-04 - copia de validacion de 4 U-specs a tests/e2e/
+  - `tests/e2e/_helpers/auth-multirol.ts`
+  - `tests/e2e/u-04-toggle-multi-rol.spec.ts`
+  - `tests/e2e/u-06-clasificacion-pedidos.spec.ts`
+  - `tests/e2e/u-07-anti-incesto.spec.ts`
+  - `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+
+- **11:54** `507941a` — fix(e2e): reconciliar tests reales en tests/e2e + corregir diagnostico T-03
+  - `.claude/DEUDA_TECNICA.md`
+  - `tests/e2e/acceso-verificado.spec.ts`
+  - `tests/e2e/smoke.spec.ts`
+
+- **11:02** `d8b28ac` — docs(deuda): T-03 resuelta en commit 66ebee8 (Narrativa V4 Etapa 1)
+  - `.claude/DEUDA_TECNICA.md`
+
+- **11:02** `66ebee8` — feat(narrativa-v4): Etapa 1 §1.1 + §1.2 - renombres y reordenamiento
+  - `e2e/checklist-sec9-10.spec.ts`
+  - `src/app/(marca)/marca/directorio/[id]/page.tsx`
+  - `src/app/(marca)/marca/directorio/page.tsx`
+  - `src/app/(marca)/marca/pedidos/page.tsx`
+  - `src/app/(marca)/marca/perfil/page.tsx`
+  - `src/app/(public)/directorio/page.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+
+- **10:28** `e86102f` — Merge remote-tracking branch 'origin/develop' into feature/u-09-agregar-segundo-rol
+
+
+- **00:26** `c09e67f` — docs: spec Narrativa V4 Etapa 1 (§1.1+§1.2) + nueva deuda T-03
+  - `.claude/DEUDA_TECNICA.md`
+  - `.claude/specs/v4-narrativa-etapa-1.md`
+
+
+## 2026-06-07
+
+### Gerardo Breard
+- **23:36** `e953cfd` — docs: archivo de deuda tecnica pre-existente
+  - `.claude/DEUDA_TECNICA.md`
+
+- **22:38** `92d2a52` — docs: spec U-08 - tests E2E con seed dual
+  - `.claude/specs/v4-u-08-tests-e2e-multi-rol.md`
+
+- **20:54** `4d64713` — docs: spec U-05 - migracion de datos existentes
+  - `.claude/specs/v4-u-05-migracion-datos.md`
+
+
+## 2026-06-05
+
+### Gerardo Breard
+- **14:41** `233e155` — feat(u-04): toggle UI multi-rol estilo Airbnb
+  - `.claude/specs/v4-u-04-toggle-multi-rol.md`
+  - `e2e/helpers/auth.ts`
+  - `e2e/u-04-toggle-multi-rol.spec.ts`
+  - `prisma/seed.ts`
+  - `src/__tests__/roles-multirol.test.ts`
+  - `src/__tests__/u-04-active-mode.test.ts`
+  - `src/app/(estado)/layout.tsx`
+  - `src/app/(marca)/layout.tsx`
+  - `src/app/(taller)/layout.tsx`
+  - `src/app/api/certificados/[id]/pdf/route.tsx`
+  - `src/app/api/ordenes/[id]/pdf/route.tsx`
+  - `src/app/api/usuarios/me/active-mode/route.ts`
+  - `src/compartido/componentes/layout/header.tsx`
+  - `src/compartido/componentes/layout/modo-toggle.tsx`
+  - `src/compartido/lib/auth.config.ts`
+  - `src/compartido/lib/entidades-modo.ts`
+
+- **11:51** `d05c766` — merge: resolver conflicto de DAILY.md (bitacora autogenerada) con develop
+
+
+- **10:54** `c333683` — chore: trigger Actions sobre PR #396
+  - `README.md`
+
+- **00:29** `70dfaf0` — ci: trigger Actions tras destrabar budget de la org
+
+
+
+## 2026-06-04
+
+### Gerardo Breard
+- **14:51** `59cbab7` — ci: re-trigger checks for PR2b
+
+
+- **14:44** `240df5a` — feat(u-03): PR2b - ownership/branching + cast cleanup
+  - `src/__tests__/u-03-pr2b-ownership.test.ts`
+  - `src/app/api/admin/observaciones/[id]/route.ts`
+  - `src/app/api/admin/onboarding/reenviar-invitacion/route.ts`
+  - `src/app/api/chat/route.ts`
+  - `src/app/api/cotizaciones/[id]/route.ts`
+  - `src/app/api/feedback/route.ts`
+  - `src/app/api/marcas/[id]/route.ts`
+  - `src/app/api/pedidos/[id]/invitaciones/route.ts`
+  - `src/app/api/pedidos/[id]/ordenes/route.ts`
+  - `src/app/api/pedidos/[id]/route.ts`
+  - `src/app/api/talleres/[id]/route.ts`
+  - `src/app/api/upload/imagenes/route.ts`
+  - `src/app/api/validaciones/[id]/route.ts`
+  - `src/app/api/validaciones/[id]/signed-url/route.ts`
+  - `src/app/api/validaciones/[id]/upload/route.ts`
+
+- **11:57** `bdb7e24` — chore: env safety - DEV por defecto + guards anti-PROD
+  - `.env.example`
+  - `CLAUDE.md`
+  - `README.md`
+  - `package.json`
+  - `prisma/seed.ts`
+  - `scripts/check-db-ref.ts`
+
+
+## 2026-06-03
+
+### Gerardo Breard
+- **22:45** `f051a9e` — feat(u-03): PR2a burn-down mecanico - 40 endpoints al helper
+  - `src/__tests__/admin-logs-api.test.ts`
+  - `src/__tests__/permisos.test.ts`
+  - `src/app/api/admin/config/route.ts`
+  - `src/app/api/admin/configuracion-upload/[id]/route.ts`
+  - `src/app/api/admin/configuracion-upload/route.ts`
+  - `src/app/api/admin/logs/route.ts`
+  - `src/app/api/admin/mensajes-individuales/route.ts`
+  - `src/app/api/admin/notas-seguimiento/route.ts`
+  - `src/app/api/admin/notas/route.ts`
+  - `src/app/api/admin/notificaciones/route.ts`
+  - `src/app/api/admin/observaciones/route.ts`
+  - `src/app/api/admin/rag/[id]/route.ts`
+  - `src/app/api/admin/rag/route.ts`
+  - `src/app/api/admin/reporte-mensual/route.ts`
+  - `src/app/api/admin/reporte-piloto/route.ts`
+  - `src/app/api/admin/stats/route.ts`
+  - `src/app/api/admin/usuarios-buscar/route.ts`
+  - `src/app/api/admin/usuarios/[id]/route.ts`
+  - `src/app/api/admin/usuarios/route.ts`
+  - `src/app/api/admin/whatsapp/route.ts`
+  - `src/app/api/auditorias/[id]/route.ts`
+  - `src/app/api/auditorias/route.ts`
+  - `src/app/api/certificados/route.ts`
+  - `src/app/api/colecciones/[id]/evaluacion/route.ts`
+  - `src/app/api/colecciones/[id]/progreso/route.ts`
+  - `src/app/api/colecciones/[id]/route.ts`
+  - `src/app/api/colecciones/[id]/upload/route.ts`
+  - `src/app/api/colecciones/[id]/videos/route.ts`
+  - `src/app/api/colecciones/route.ts`
+  - `src/app/api/contenido/novedades/[id]/route.ts`
+  - `src/app/api/contenido/novedades/route.ts`
+  - `src/app/api/contenido/novedades/upload/route.ts`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/app/api/denuncias/route.ts`
+  - `src/app/api/estado/exportar/route.ts`
+  - `src/app/api/exportar/route.ts`
+  - `src/app/api/marcas/route.ts`
+  - `src/app/api/ordenes/[id]/route.ts`
+  - `src/app/api/pedidos/route.ts`
+  - `src/app/api/procesos/route.ts`
+  - `src/app/api/tipos-documento/route.ts`
+  - `src/app/api/validaciones/route.ts`
+
+- **21:58** `65c1263` — merge: develop en feature/u-03-auth-multirol (resuelve DAILY.md)
+
+
+- **15:16** `413a0e7` — feat(u-03): PR1 sesion multi-rol + helper por membresia + middleware/layouts
+  - `.claude/specs/v4-u-03-auth-multirol.md`
+  - `src/__tests__/roles-multirol.test.ts`
+  - `src/app/(admin)/layout.tsx`
+  - `src/app/(contenido)/layout.tsx`
+  - `src/app/(estado)/layout.tsx`
+  - `src/app/(marca)/layout.tsx`
+  - `src/app/(public)/layout.tsx`
+  - `src/app/(taller)/layout.tsx`
+  - `src/compartido/lib/auth.config.ts`
+  - `src/compartido/lib/auth.ts`
+  - `src/compartido/lib/permisos.ts`
+  - `src/compartido/lib/roles.ts`
+  - `src/compartido/types/next-auth.d.ts`
+  - `src/middleware.ts`
+
+- **18:18** `62f49f8` — chore: rate-limit en POST /api/pedidos aplica a todos los roles
+  - `src/app/api/pedidos/route.ts`
+
+
+## 2026-06-02
+
+### Gerardo Breard
+- **18:00** `f2485b5` — chore: gitignore para fuentes de diseno de marca
+  - `.gitignore`
+
+- **17:18** `3a437c9` — chore: trackear specs vigentes del bloque X y K
+  - `.claude/specs/07-spec-mejoras-landing-FINAL.md`
+  - `.claude/specs/k-01-rls-supabase.md`
+  - `.claude/specs/k-02-bucket-documentos-publico.md`
+  - `.claude/specs/narrativa-V4-consolidado-niveles-1-a-4.md`
+  - `.claude/specs/v4-x-04b-cms-novedades-v2.md`
+  - `.claude/specs/v4-x-05-header-app-footer.md`
+  - `.claude/specs/v4-x-06-header-public-landing-v2.md`
+  - `.claude/specs/v4-x-07a-paleta-dashboards-critico.md`
+
+- **16:53** `c5dfe4e` — chore: gitignore para imagenes throwaway y mal ubicadas
+  - `.gitignore`
+
+
+## 2026-06-01
+
+### Gerardo Breard
+- **18:42** `4243067` — test: arreglar asercion fragil en acceso-verificado
+  - `src/__tests__/acceso-verificado.test.ts`
+
+- **18:03** `43d0fd7` — ci: agregar workflow Vitest (modo informativo)
+  - `.github/workflows/test.yml`
+
+- **17:21** `cdf735b` — feat(u-06): clasificacion automatica de pedidos COMERCIAL/SUBCONTRATACION
+  - `.claude/specs/v4-u-06-clasificacion-pedidos.md`
+  - `e2e/u-06-clasificacion-pedidos.spec.ts`
+  - `prisma/migrations/20260601120000_agregar_tipo_pedido/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/__tests__/u-06-clasificacion-pedidos.test.ts`
+  - `src/app/api/pedidos/route.ts`
+
+- **14:34** `5ecc879` — feat(u-07): regla anti-incesto multi-rol
+  - `.claude/specs/v4-u-07-anti-incesto.md`
+  - `e2e/u-07-anti-incesto.spec.ts`
+  - `src/app/(taller)/taller/pedidos/disponibles/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/app/api/pedidos/[id]/invitaciones/route.ts`
+
+- **10:55** `4a85e04` — fix(admin): UI de integraciones email decia 'SendGrid', es 'Resend'
+  - `e2e/checklist-sec5-6.spec.ts`
+  - `src/app/(admin)/admin/integraciones/email/page.tsx`
+  - `src/app/(admin)/admin/integraciones/page.tsx`
+
+
+## 2026-05-31
+
+### Gerardo Breard
+- **22:15** `6c2216b` — chore(fase-0): actualizar CLAUDE.md - Resend en lugar de SendGrid
+  - `CLAUDE.md`
+
+- **21:02** `9249325` — fix(#305): ocultar boton Google sin credenciales OAuth
+  - `.claude/specs/handover/DECISIONS.md`
+  - `src/app/(auth)/login/page.tsx`
+
+- **20:24** `3aa2a1b` — fix(#307): setear emailVerified al crear cuenta (mitigacion temporal)
+  - `.claude/specs/handover/DECISIONS.md`
+  - `src/app/api/admin/usuarios/route.ts`
+  - `src/app/api/auth/registro/route.ts`
+
+- **14:44** `808b88d` — chore: registrar D1 del bloque U en DECISIONS (faltante de d48a37e)
+  - `.claude/specs/handover/DECISIONS.md`
+
+- **14:32** `d48a37e` — chore: limpiar v1 obsoleta U-01 + registrar D1 en DECISIONS
+  - `.claude/specs/v4-u-01-analisis-multi-rol-airbnb.md`
+  - `.claude/specs/v4-u-02-schema-multi-rol.md`
+  - `docs/analisis/U-01_multi-rol-airbnb.md`
+
+
+## 2026-05-26
+
+### Gerardo Breard
+- **15:12** `01d8199` — feat(f1-f3): avatar como dropdown (Mi cuenta + Cerrar sesion)
+  - `src/compartido/componentes/layout/header.tsx`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+  - `tests/e2e/roles-estado.spec.ts`
+
+- **13:54** `8440a54` — feat(f1-f3): sidebar visible en desktop + solo accesos personales
+  - `.claude/specs/v4-f1-f3-sidebar-navegacion.md`
+  - `src/app/(estado)/layout.tsx`
+  - `src/app/(marca)/layout.tsx`
+  - `src/app/(public)/layout.tsx`
+  - `src/app/(taller)/layout.tsx`
+  - `src/compartido/componentes/layout/header.tsx`
+  - `src/compartido/componentes/layout/index.ts`
+  - `src/compartido/componentes/layout/sidebar-context.tsx`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+  - `tests/e2e/roles-estado.spec.ts`
+  - `tests/e2e/smoke.spec.ts`
+
+- **10:58** `820acd4` — fix(e2e): usar exact:true para tab Disponibles (strict mode)
+  - `tests/e2e/ux-mejoras.spec.ts`
+
+- **10:49** `e8c9fa0` — fix(e2e): actualizar tests para tabs en pedidos taller
+  - `tests/e2e/ux-mejoras.spec.ts`
+
+- **10:26** `c3c39ce` — feat(f2): tabs internos en Pedidos del taller [Recibidos | Disponibles]
+  - `.claude/specs/v4-f2-tabs-pedidos.md`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+  - `src/app/(taller)/taller/pedidos/layout.tsx`
+  - `src/app/(taller)/taller/pedidos/page.tsx`
+
+- **00:05** `2971791` — feat(j-05): soporte de imagen en colecciones (hallazgo A)
+  - `.claude/specs/v4-j-05-imagen-colecciones.md`
+  - `prisma/migrations/20260526000000_agregar_imagen_coleccion/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/app/(contenido)/contenido/colecciones/[id]/page.tsx`
+  - `src/app/api/colecciones/[id]/route.ts`
+  - `src/app/api/colecciones/[id]/upload/route.ts`
+  - `src/app/page.tsx`
+
+
+## 2026-05-25
+
+### Gerardo Breard
+- **23:44** `860b82e` — feat(nav): renombrar tabs del taller segun modelo Showcase+Match
+  - `.claude/specs/v4-renombres-tabs-taller.md`
+  - `src/app/(admin)/logout-button.tsx`
+  - `src/app/(auth)/mi-cuenta/page.tsx`
+  - `src/app/(marca)/marca/pedidos/page.tsx`
+  - `src/app/(marca)/marca/perfil/page.tsx`
+  - `src/app/(public)/ayuda/page.tsx`
+  - `src/app/(public)/cuenta/page.tsx`
+  - `src/app/(taller)/taller/aprender/[id]/page.tsx`
+  - `src/app/(taller)/taller/aprender/page.tsx`
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+  - `src/compartido/componentes/ui/logout-button.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+  - `tests/e2e/roles-estado.spec.ts`
+  - `tests/e2e/smoke.spec.ts`
+
+- **23:23** `de790d3` — fix(j-04): flujo de publicacion de cursos (hallazgo B)
+  - `.claude/specs/v4-j-04-flujo-publicacion-cursos.md`
+  - `src/app/(contenido)/contenido/colecciones/[id]/page.tsx`
+  - `src/app/(contenido)/contenido/colecciones/nueva/page.tsx`
+  - `src/app/page.tsx`
+
+- **21:31** `9968623` — fix(e2e): renombrar prefijo tipoPrenda del test para que no sea filtrado
+  - `tests/e2e/flujo-comercial.spec.ts`
+
+- **21:24** `97f820f` — feat(g-19): vitrina de demanda para el taller con imagenes
+  - `.claude/specs/v4-g-19-vitrina-demanda.md`
+  - `prisma/seed.ts`
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+
+- **17:07** `e67beb9` — fix(j-03): CONTENIDO puede gestionar colecciones (bug #355)
+  - `.claude/specs/j-03-contenido-rutas-colecciones.md`
+  - `src/app/(admin)/admin/colecciones/[id]/page.tsx`
+  - `src/app/(admin)/admin/colecciones/[id]/videos/page.tsx`
+  - `src/app/(admin)/admin/colecciones/nueva/page.tsx`
+  - `src/app/(admin)/admin/colecciones/page.tsx`
+  - `src/app/(admin)/admin/dashboard/page.tsx`
+  - `src/app/(admin)/layout.tsx`
+  - `src/app/(contenido)/contenido/colecciones/[id]/page.tsx`
+  - `src/app/(contenido)/contenido/colecciones/[id]/videos/page.tsx`
+  - `src/app/(contenido)/contenido/colecciones/nueva/page.tsx`
+  - `src/app/(contenido)/contenido/colecciones/page.tsx`
+  - `src/middleware.ts`
+
+- **16:28** `8d1c49d` — docs(w-a): spec retroactivo + QA del formulario taller
+  - `.claude/auditorias/QA_v4-w-a-formulario-taller.md`
+  - `.claude/specs/v4-w-a-formulario-taller.md`
+
+- **15:49** `ac01d3f` — fix(w-a): ajustar scores de escalabilidad (optica solidez productiva)
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+
+- **15:37** `ba5f0f0` — feat(w-a): completar formulario taller (W-A2 a W-A5)
+  - `prisma/migrations/20260525180000_agregar_campos_formulario_taller/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+  - `src/app/api/talleres/[id]/route.ts`
+
+- **12:05** `612b951` — feat(leyenda): aplicar leyenda institucional oficial de OIT
+  - `src/app/page.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+  - `src/compartido/lib/email.ts`
+
+- **11:41** `e8b69db` — chore: trigger e2e after rebase to develop
+
+- **11:25** `401a8fc` — fix(test): exact:true en los 3 selectores de etapa (no solo Etapa inicial)
+  - `tests/e2e/configuracion-niveles.spec.ts`
+
+- **11:19** `eb835f5` — fix(test): desambiguar selectores en configuracion-niveles e2e
+  - `tests/e2e/configuracion-niveles.spec.ts`
+
+- **11:11** `98c63da` — fix(x-06b): recortar aire vertical del diagrama de proceso (QA Sergio)
+  - `src/app/page.tsx`
+
+- **11:04** `90e35ff` — fix(x-07c): corregir textos de nivel en seed reglas_nivel (BUG 1)
+  - `prisma/seed.ts`
+
+- **10:52** `9913013` — fix(x-07c): resolver 4 bugs del QA de Sergio
+  - `src/app/(estado)/estado/documentos/page.tsx`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+
+
+## 2026-05-24
+
+### Gerardo Breard
+- **23:31** `e70fd9d` — feat(x-09): mi formalizacion en 3 cards por etapa + SAM a tiempo estandar
+  - `src/app/(admin)/admin/evaluaciones/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(contenido)/contenido/evaluaciones/page.tsx`
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/taller/componentes/asistente-chat.tsx`
+
+- **22:57** `37c4ee8` — fix(x-07c): actualizar e2e test de configuracion-niveles al nuevo copy
+  - `tests/e2e/configuracion-niveles.spec.ts`
+
+- **22:50** `8d8ddc5` — feat(x-07c): ocultar niveles en ESTADO y ADMIN (fase 2)
+  - `src/app/(admin)/admin/notificaciones/notificaciones-client.tsx`
+  - `src/app/(admin)/admin/reportes/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(admin)/admin/talleres/page.tsx`
+  - `src/app/(estado)/estado/configuracion-niveles/page.tsx`
+  - `src/app/(estado)/estado/documentos/page.tsx`
+  - `src/app/(estado)/estado/exportar/page.tsx`
+  - `src/app/(estado)/estado/page.tsx`
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/(estado)/estado/talleres/page.tsx`
+  - `src/compartido/lib/formalizacion.ts`
+
+- **22:27** `f14f47e` — feat(x-07b): ocultar niveles en UI de taller y marca (fase 1)
+  - `src/app/(auth)/acceso-rapido/page.tsx`
+  - `src/app/(marca)/marca/directorio/page.tsx`
+  - `src/app/(public)/ayuda/onboarding-marca/page.tsx`
+  - `src/app/(public)/ayuda/onboarding-taller/page.tsx`
+  - `src/app/(public)/directorio/page.tsx`
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/app/api/cotizaciones/route.ts`
+  - `src/compartido/componentes/feedback-widget.tsx`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+  - `src/compartido/lib/email.ts`
+  - `src/compartido/lib/formalizacion.ts`
+  - `src/taller/componentes/proximo-nivel-card.tsx`
+
+- **21:31** `6295a46` — fix(k-02): preparar codigo para bucket documentos privado
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/api/validaciones/[id]/signed-url/route.ts`
+
+- **21:05** `d023292` — fix(x-06b): assets con transparencia real
+  - `public/landing/proceso-textil.webp`
+  - `public/logo-pdt.png`
+
+## 2026-05-21
+
+### Gerardo Breard
+- **14:12** `536d601` — fix(landing): traer mas novedades al carrusel (take 2 → 5)
+  - `src/app/page.tsx`
+
+- **13:29** `c75cf44` — fix(novedades): error reporting claro en upload + crear buckets faltantes
+  - `src/app/api/contenido/novedades/upload/route.ts`
+
+- **12:28** `32fa815` — fix(x-06b): aplicar feedback QA de Sergio
+  - `public/seed/novedades/capacitacion-inti.jpg`
+  - `public/seed/novedades/caso-taller-sur.jpg`
+  - `public/seed/novedades/convenio-oit.jpg`
+  - `src/app/page.tsx`
+
+
+## 2026-05-20
+
+### Gerardo Breard
+- **22:47** `54650c9` — feat(novedades): pagina de detalle publica /novedades/[slug]
+  - `src/app/(public)/novedades/[slug]/page.tsx`
+
+- **22:47** `b60f9d1` — refactor(logo): <LogoPDT> usa next/image en vez de SVG inline
+  - `src/compartido/componentes/ui/logo-pdt.tsx`
+
+- **22:47** `184b7dc` — feat(landing): imagen de proceso en seccion 'Asi funciona'
+  - `public/landing/proceso-textil.webp`
+  - `src/app/page.tsx`
+
+- **22:46** `272ed12` — docs+chore(x-06b): spec FINAL + logo optimizado (985KB → 9.3KB)
+  - `.claude/specs/v4-x-06b-mejoras-landing.md`
+  - `public/logo-pdt.png`
+
+- **15:35** `d562934` — chore: trigger deploy
+  - `README.md`
+
+- **13:53** `9f29dc5` — fix(tests): resolver duplicacion RSC streaming en 5 tests
+  - `KNOWN_ISSUES.md`
+  - `tests/e2e/acceso-verificado.spec.ts`
+  - `tests/e2e/demanda-insatisfecha.spec.ts`
+  - `tests/e2e/roles-estado.spec.ts`
+  - `tests/e2e/smoke.spec.ts`
+
+
+## 2026-05-19
+
+### Gerardo Breard
+- **18:01** `41a50fd` — feat(u-02): schema multi-rol con CUIT y ARCA centralizados
+  - `prisma/migrations/20260519200000_agregar_multirol_y_arca_a_user/migration.sql`
+  - `prisma/schema.prisma`
+
+- **17:35** `cbf0b39` — docs(u-01): corregir tipos ARCA tras pre-flight U-02 (v2.1)
+  - `docs/analisis/U-01_multi-rol-airbnb.md`
+
+- **17:01** `e85a08e` — docs(u-01): consolidar v2 con 10 decisiones de Gerardo
+  - `docs/analisis/U-01_multi-rol-airbnb.md`
+
+- **16:10** `21d454c` — Merge remote-tracking branch 'origin/develop' into feature/v4-x-07a-paleta-dashboards-critico
+
+
+- **11:32** `f05047c` — fix(x-07a): consistencia H1 ink-primary + H2 font-serif
+  - `src/app/(admin)/admin/auditorias/[id]/page.tsx`
+  - `src/app/(admin)/admin/auditorias/page.tsx`
+  - `src/app/(admin)/admin/certificados/page.tsx`
+  - `src/app/(admin)/admin/colecciones/[id]/page.tsx`
+  - `src/app/(admin)/admin/colecciones/[id]/videos/page.tsx`
+  - `src/app/(admin)/admin/colecciones/nueva/page.tsx`
+  - `src/app/(admin)/admin/colecciones/page.tsx`
+  - `src/app/(admin)/admin/configuracion/archivos/page.tsx`
+  - `src/app/(admin)/admin/configuracion/page.tsx`
+  - `src/app/(admin)/admin/dashboard/page.tsx`
+  - `src/app/(admin)/admin/evaluaciones/page.tsx`
+  - `src/app/(admin)/admin/feedback/page.tsx`
+  - `src/app/(admin)/admin/integraciones/email/page.tsx`
+  - `src/app/(admin)/admin/integraciones/llm/page.tsx`
+  - `src/app/(admin)/admin/integraciones/page.tsx`
+  - `src/app/(admin)/admin/logs/page.tsx`
+  - `src/app/(admin)/admin/marcas/[id]/page.tsx`
+  - `src/app/(admin)/admin/marcas/page.tsx`
+  - `src/app/(admin)/admin/notificaciones/page.tsx`
+  - `src/app/(admin)/admin/observaciones/[id]/editar/page.tsx`
+  - `src/app/(admin)/admin/observaciones/nueva/page.tsx`
+  - `src/app/(admin)/admin/observaciones/page.tsx`
+  - `src/app/(admin)/admin/onboarding/page.tsx`
+  - `src/app/(admin)/admin/pedidos/page.tsx`
+  - `src/app/(admin)/admin/procesos/page.tsx`
+  - `src/app/(admin)/admin/reportes/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(admin)/admin/talleres/page.tsx`
+  - `src/app/(admin)/admin/usuarios/page.tsx`
+  - `src/app/(auth)/acceso-rapido/page.tsx`
+  - `src/app/(auth)/layout.tsx`
+  - `src/app/(auth)/login/page.tsx`
+  - `src/app/(auth)/mi-cuenta/page.tsx`
+  - `src/app/(auth)/olvide-contrasena/page.tsx`
+  - `src/app/(auth)/registro/completar/page.tsx`
+  - `src/app/(auth)/registro/page.tsx`
+  - `src/app/(auth)/restablecer/[token]/page.tsx`
+  - `src/app/(contenido)/contenido/colecciones/page.tsx`
+  - `src/app/(contenido)/contenido/evaluaciones/page.tsx`
+  - `src/app/(contenido)/contenido/notificaciones/page.tsx`
+  - `src/app/(contenido)/contenido/novedades/[id]/editar/page.tsx`
+  - `src/app/(contenido)/contenido/novedades/nueva/page.tsx`
+  - `src/app/(contenido)/contenido/novedades/page.tsx`
+  - `src/app/(estado)/estado/auditorias/page.tsx`
+  - `src/app/(estado)/estado/configuracion-niveles/page.tsx`
+  - `src/app/(estado)/estado/demanda-insatisfecha/page.tsx`
+  - `src/app/(estado)/estado/documentos/page.tsx`
+  - `src/app/(estado)/estado/exportar/page.tsx`
+  - `src/app/(estado)/estado/page.tsx`
+  - `src/app/(estado)/estado/sector/page.tsx`
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/(estado)/estado/talleres/page.tsx`
+  - `src/app/(marca)/marca/directorio/[id]/page.tsx`
+  - `src/app/(marca)/marca/directorio/page.tsx`
+  - `src/app/(marca)/marca/page.tsx`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(marca)/marca/pedidos/nuevo/nuevo-pedido-form.tsx`
+  - `src/app/(marca)/marca/pedidos/page.tsx`
+  - `src/app/(marca)/marca/perfil/page.tsx`
+  - `src/app/(taller)/taller/aprender/[id]/page.tsx`
+  - `src/app/(taller)/taller/aprender/page.tsx`
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/app/(taller)/taller/pedidos/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+  - `src/app/(taller)/taller/pedidos/page.tsx`
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+  - `src/app/(taller)/taller/perfil/editar/editar-form.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/app/unauthorized/page.tsx`
+
+- **11:24** `364640e` — fix(x-07a): refactor /taller dashboard a V4 (paridad con /marca)
+  - `src/app/(taller)/taller/page.tsx`
+
+- **10:32** `1c5709f` — docs(u-01): análisis funcional y técnico multi-rol Airbnb
+  - `docs/analisis/U-01_multi-rol-airbnb.md`
+
+
+## 2026-05-18
+
+### Gerardo Breard
+- **16:34** `8dcf0b0` — feat(x-07a): font-serif en titulares H1/H2 de dashboards
+  - `src/app/(admin)/admin/auditorias/[id]/informe-client.tsx`
+  - `src/app/(admin)/admin/auditorias/[id]/page.tsx`
+  - `src/app/(admin)/admin/auditorias/page.tsx`
+  - `src/app/(admin)/admin/certificados/page.tsx`
+  - `src/app/(admin)/admin/colecciones/[id]/page.tsx`
+  - `src/app/(admin)/admin/colecciones/[id]/videos/page.tsx`
+  - `src/app/(admin)/admin/colecciones/nueva/page.tsx`
+  - `src/app/(admin)/admin/colecciones/page.tsx`
+  - `src/app/(admin)/admin/configuracion/archivos/page.tsx`
+  - `src/app/(admin)/admin/configuracion/page.tsx`
+  - `src/app/(admin)/admin/dashboard/page.tsx`
+  - `src/app/(admin)/admin/evaluaciones/page.tsx`
+  - `src/app/(admin)/admin/feedback/page.tsx`
+  - `src/app/(admin)/admin/integraciones/email/page.tsx`
+  - `src/app/(admin)/admin/integraciones/llm/page.tsx`
+  - `src/app/(admin)/admin/integraciones/page.tsx`
+  - `src/app/(admin)/admin/logs/page.tsx`
+  - `src/app/(admin)/admin/marcas/[id]/page.tsx`
+  - `src/app/(admin)/admin/marcas/page.tsx`
+  - `src/app/(admin)/admin/notificaciones/page.tsx`
+  - `src/app/(admin)/admin/observaciones/[id]/editar/page.tsx`
+  - `src/app/(admin)/admin/observaciones/nueva/page.tsx`
+  - `src/app/(admin)/admin/observaciones/page.tsx`
+  - `src/app/(admin)/admin/onboarding/page.tsx`
+  - `src/app/(admin)/admin/pedidos/page.tsx`
+  - `src/app/(admin)/admin/procesos/page.tsx`
+  - `src/app/(admin)/admin/reportes/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(admin)/admin/talleres/page.tsx`
+  - `src/app/(admin)/admin/usuarios/page.tsx`
+  - `src/app/(contenido)/contenido/colecciones/page.tsx`
+  - `src/app/(contenido)/contenido/evaluaciones/page.tsx`
+  - `src/app/(contenido)/contenido/notificaciones/page.tsx`
+  - `src/app/(contenido)/contenido/novedades/[id]/editar/page.tsx`
+  - `src/app/(contenido)/contenido/novedades/nueva/page.tsx`
+  - `src/app/(contenido)/contenido/novedades/page.tsx`
+  - `src/app/(estado)/estado/auditorias/page.tsx`
+  - `src/app/(estado)/estado/configuracion-niveles/page.tsx`
+  - `src/app/(estado)/estado/demanda-insatisfecha/page.tsx`
+  - `src/app/(estado)/estado/documentos/page.tsx`
+  - `src/app/(estado)/estado/exportar/page.tsx`
+  - `src/app/(estado)/estado/page.tsx`
+  - `src/app/(estado)/estado/sector/page.tsx`
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/(estado)/estado/talleres/page.tsx`
+  - `src/app/(marca)/marca/directorio/[id]/page.tsx`
+  - `src/app/(marca)/marca/directorio/page.tsx`
+  - `src/app/(marca)/marca/page.tsx`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(marca)/marca/pedidos/nuevo/nuevo-pedido-form.tsx`
+  - `src/app/(marca)/marca/pedidos/page.tsx`
+  - `src/app/(marca)/marca/perfil/page.tsx`
+  - `src/app/(taller)/taller/aprender/[id]/page.tsx`
+  - `src/app/(taller)/taller/aprender/page.tsx`
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/app/(taller)/taller/pedidos/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/disponibles/page.tsx`
+  - `src/app/(taller)/taller/pedidos/page.tsx`
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+  - `src/app/(taller)/taller/perfil/editar/editar-form.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+
+- **16:22** `60192c1` — feat(x-07a): paleta V4 en 21 paginas con clases blue inline
+  - `src/app/(admin)/admin/auditorias/page.tsx`
+  - `src/app/(admin)/admin/notificaciones/page.tsx`
+  - `src/app/(admin)/admin/observaciones/page.tsx`
+  - `src/app/(admin)/admin/onboarding/page.tsx`
+  - `src/app/(admin)/admin/talleres/[id]/page.tsx`
+  - `src/app/(admin)/layout.tsx`
+  - `src/app/(contenido)/contenido/notificaciones/page.tsx`
+  - `src/app/(contenido)/contenido/novedades/formulario-novedad.tsx`
+  - `src/app/(contenido)/contenido/novedades/page.tsx`
+  - `src/app/(contenido)/layout.tsx`
+  - `src/app/(estado)/estado/exportar/page.tsx`
+  - `src/app/(estado)/estado/page.tsx`
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/(marca)/marca/directorio/[id]/page.tsx`
+  - `src/app/(marca)/marca/page.tsx`
+  - `src/app/(marca)/marca/pedidos/[id]/page.tsx`
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/app/(taller)/taller/pedidos/[id]/page.tsx`
+  - `src/app/(taller)/taller/pedidos/page.tsx`
+  - `src/app/(taller)/taller/perfil/completar/page.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+
+- **16:14** `7d58d2b` — feat(x-07a): paleta V4 en componentes layout y secundarios
+  - `src/compartido/componentes/activity-timeline.tsx`
+  - `src/compartido/componentes/badge-arca.tsx`
+  - `src/compartido/componentes/error-page.tsx`
+  - `src/compartido/componentes/feedback-widget.tsx`
+  - `src/compartido/componentes/layout/notificaciones-bell.tsx`
+  - `src/compartido/componentes/layout/user-sidebar.tsx`
+  - `src/compartido/componentes/ui/progress-ring.tsx`
+  - `src/compartido/componentes/ui/section-error.tsx`
+
+- **15:58** `8cccda2` — feat(x-07a): paleta V4 en componentes UI base — toast.tsx
+  - `src/compartido/componentes/ui/toast.tsx`
+
+- **14:34** `971e673` — docs: lecciones de investigacion CI flaky (18-mayo-2026)
+  - `KNOWN_ISSUES.md`
+
+- **14:12** `7183d39` — fix(tests): eliminar doble navegacion en smoke admin/logs
+  - `tests/e2e/smoke.spec.ts`
+
+- **13:43** `f7cbcaf` — fix(tests): usar getByRole heading en exportes-estado
+  - `tests/e2e/exportes-estado.spec.ts`
+
+- **13:43** `574a35b` — fix(tests): scope selector a 'header nav' en demanda-insatisfecha
+  - `tests/e2e/demanda-insatisfecha.spec.ts`
+
+- **13:35** `8a1759f` — fix(tests): beforeAll para restaurar config imagenes-portfolio
+  - `tests/e2e/file-validation.spec.ts`
+
+- **13:35** `caf3b6d` — fix(tests): eliminar waitUntil 'load' en smoke admin/logs
+  - `tests/e2e/smoke.spec.ts`
+
+
+## 2026-05-17
+
+### Gerardo Breard
+- **23:10** `9964df2` — feat(x-06b): footer con links limpios (sin destinos 404)
+  - `src/compartido/lib/content/institutional.ts`
+
+- **23:09** `e57309d` — feat(x-06b): disclaimer piloto antes del footer + limpiar carrusel
+  - `src/app/page.tsx`
+
+- **23:08** `16d2b49` — refactor(x-06b): eliminar secciones obsoletas (Para Talleres + Banner Sumate)
+  - `src/app/page.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+
+- **23:00** `2491b17` — feat(x-06b): impacto con stats reformuladas (metricas V4)
+  - `src/app/page.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+
+- **22:55** `7e6492a` — feat(x-06b): nueva seccion 'Asi funciona' narrativa
+  - `src/app/page.tsx`
+
+- **22:47** `98bb682` — feat(x-06b): hero rediseñado con copy alineado a master V4
+  - `src/app/page.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+
+- **22:46** `8c19d3a` — feat(x-06b): HeaderPublic con pill ambiente piloto + nav reducido
+  - `src/app/(public)/layout.tsx`
+  - `src/app/page.tsx`
+  - `src/compartido/componentes/layout/header-public.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+
+- **22:44** `f8a1300` — refactor(x-06b): centralizar logica showPilotPill en util
+  - `src/app/(public)/layout.tsx`
+  - `src/compartido/lib/env.ts`
+
+- **21:48** `cf0a354` — docs: oficializar TEMPLATE_SPEC_V4 con pre-flight y selectores criticos
+  - `"docs/Dise\303\261o/TEMPLATE_SPEC_V4.md"`
+
+- **20:51** `680b4bd` — fix: add Supabase Storage to next/image remotePatterns
+  - `next.config.ts`
+
+- **20:36** `bcd5fbe` — feat(x-04b): add CMS novedades pages + sidebar entry
+  - `src/app/(contenido)/contenido-sidebar.tsx`
+  - `src/app/(contenido)/contenido/novedades/[id]/editar/page.tsx`
+  - `src/app/(contenido)/contenido/novedades/formulario-novedad.tsx`
+  - `src/app/(contenido)/contenido/novedades/loading.tsx`
+  - `src/app/(contenido)/contenido/novedades/nueva/page.tsx`
+  - `src/app/(contenido)/contenido/novedades/page.tsx`
+
+- **20:29** `81a92fe` — feat(x-04b): add CRUD + upload endpoints for novedades
+  - `src/app/api/contenido/novedades/[id]/route.ts`
+  - `src/app/api/contenido/novedades/route.ts`
+  - `src/app/api/contenido/novedades/upload/route.ts`
+
+- **20:27** `cca786b` — feat(x-04b): add slugify utility for novedades
+  - `src/compartido/lib/slugify.ts`
+
+- **18:48** `ccfb7f0` — fix(x-06): corregir valor de enum EstadoPedido
+  - `src/app/page.tsx`
+
+- **18:28** `d75cfd8` — feat(x-06): landing rediseñado V4
+  - `src/app/page.tsx`
+
+- **18:25** `048a00e` — feat(x-06): componente CarruselNovedades con flechas prev/next
+  - `src/compartido/componentes/ui/carrusel-novedades.tsx`
+
+- **18:25** `3b51b15` — feat(x-06): layout (public) usa HeaderPublic para anonimos
+  - `src/app/(public)/layout.tsx`
+
+- **18:23** `bbc75f7` — feat(x-06): assets del landing (hero + placeholders novedades)
+  - `public/images/landing/hero-taller.png`
+  - `public/seed/novedades/capacitacion-inti.jpg`
+  - `public/seed/novedades/caso-taller-sur.jpg`
+  - `public/seed/novedades/convenio-oit.jpg`
+  - `public/seed/novedades/placeholder.svg`
+
+- **18:21** `dcdd034` — feat(x-06): agregar publicRoutes para paginas marketing
+  - `src/middleware.ts`
+
+- **18:19** `85694f2` — feat(x-06): componente HeaderPublic (1 banda sticky)
+  - `src/compartido/componentes/layout/header-public.tsx`
+
+- **18:16** `1d5138c` — feat(x-06): extender institutional.ts con textos del landing
+  - `src/compartido/lib/content/institutional.ts`
+
+- **18:14** `5a61586` — feat(x-06): agregar utilities pattern-grid y card-lift
+  - `src/app/globals.css`
+
+- **00:16** `4189077` — fix(x-05): simplificar smoke test del header
+  - `tests/e2e/smoke.spec.ts`
+
+- **00:11** `b2fcd3d` — fix(x-05): scoped sidebar selector + robust pill assertion
+  - `tests/e2e/roles-estado.spec.ts`
+  - `tests/e2e/smoke.spec.ts`
+
+- **00:02** `2af3fbf` — fix(x-05): tests E2E y aria-label compatible
+  - `src/compartido/componentes/layout/header.tsx`
+  - `tests/e2e/smoke.spec.ts`
+
+
 ## 2026-05-16
 
 ### Gerardo Breard
+- **23:48** `8ebba81` — feat(x-05): refactor Header a 2 bandas + montar Footer en layouts
+  - `src/app/(auth)/layout.tsx`
+  - `src/app/(estado)/layout.tsx`
+  - `src/app/(marca)/layout.tsx`
+  - `src/app/(public)/layout.tsx`
+  - `src/app/(taller)/layout.tsx`
+  - `src/app/layout.tsx`
+  - `src/compartido/componentes/layout/header.tsx`
+
+- **23:45** `a8b89a6` — feat(x-05): componente Footer institucional 4 columnas
+  - `src/compartido/componentes/layout/footer.tsx`
+
+- **23:44** `074c380` — feat(x-05): paginas stub para links del footer
+  - `src/app/(public)/academia-publica/page.tsx`
+  - `src/app/(public)/accesibilidad/page.tsx`
+  - `src/app/(public)/contacto/page.tsx`
+  - `src/app/(public)/impacto/page.tsx`
+  - `src/app/(public)/marca-info/page.tsx`
+  - `src/app/(public)/novedades/page.tsx`
+  - `src/app/(public)/recursos/page.tsx`
+  - `src/app/(public)/taller-info/page.tsx`
+
+- **23:43** `fb9efb2` — feat(x-05): institutional.ts con textos centralizados
+  - `src/compartido/lib/content/institutional.ts`
+
+- **23:07** `f449ace` — docs(handover): auditoria operabilidad + specs CMS pendientes
+  - `.claude/specs/ORDEN_IMPLEMENTACION.md`
+  - `.claude/specs/handover/AUDITORIA_OPERABILIDAD_2026-05-16.md`
+  - `.claude/specs/handover/DECISIONS.md`
+
+- **21:09** `6fb4683` — fix(acceso-rapido): restaurar usuario CONTENIDO
+  - `src/app/(auth)/acceso-rapido/page.tsx`
+
+- **20:30** `7d65e27` — fix(notificaciones): tab 'Todas' por default en pagina cuenta
+  - `src/app/(public)/cuenta/notificaciones/page.tsx`
+
+- **19:28** `f6c6950` — fix(api): include solo con relaciones en /api/talleres
+  - `src/app/api/talleres/route.ts`
+
+- **18:19** `6ead85f` — docs(handover): lecciones operativas del 2026-05-16
+  - `.claude/specs/handover/DECISIONS.md`
+
 - **16:26** `3de1276` — merge: traer W-A1 de main a develop
 
 

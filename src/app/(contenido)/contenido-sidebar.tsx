@@ -2,9 +2,10 @@
 
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { BookOpen, ClipboardList, Bell } from 'lucide-react'
+import { BookOpen, ClipboardList, Bell, Newspaper } from 'lucide-react'
 
 const sidebarItems = [
+  { label: 'Novedades', href: '/contenido/novedades', icon: Newspaper },
   { label: 'Colecciones', href: '/contenido/colecciones', icon: BookOpen },
   { label: 'Evaluaciones', href: '/contenido/evaluaciones', icon: ClipboardList },
   { label: 'Notificaciones', href: '/contenido/notificaciones', icon: Bell },

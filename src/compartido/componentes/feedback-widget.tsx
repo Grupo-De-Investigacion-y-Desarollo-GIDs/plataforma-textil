@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react'
 
 const TIPOS = [
   { value: 'bug', label: '🐛 Algo no funciona', color: 'text-red-600' },
-  { value: 'mejora', label: '✨ Podria mejorar', color: 'text-blue-600' },
+  { value: 'mejora', label: '✨ Podria mejorar', color: 'text-brand-blue' },
   { value: 'falta', label: '🔍 Me falta algo', color: 'text-amber-600' },
   { value: 'confusion', label: '😕 No entendi como usar esto', color: 'text-purple-600' },
 ]
@@ -30,9 +30,7 @@ function parsearEntidad(pathname: string): { entidad: string; id: string } | nul
 }
 
 const ROLES_AUDITOR = [
-  { value: 'TALLER_BRONCE', label: 'Taller Bronce' },
-  { value: 'TALLER_PLATA', label: 'Taller Plata' },
-  { value: 'TALLER_ORO', label: 'Taller Oro' },
+  { value: 'TALLER', label: 'Taller' },
   { value: 'MARCA', label: 'Marca' },
   { value: 'ADMIN', label: 'Admin' },
   { value: 'ESTADO', label: 'Estado' },

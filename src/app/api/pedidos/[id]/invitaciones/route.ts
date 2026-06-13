@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { modoActivo } from '@/compartido/lib/roles'
 import { sendEmail, buildInvitacionCotizarEmail } from '@/compartido/lib/email'
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -23,7 +24,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     })
     if (!pedido) return NextResponse.json({ error: 'Pedido no encontrado' }, { status: 404 })
 
-    const role = (session.user as { role?: string }).role
+    const role = modoActivo(session.user)
     if (role !== 'ADMIN' && pedido.marca.userId !== session.user.id) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
     }
@@ -40,6 +41,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       where: { id: { in: tallerIds } },
       include: { user: { select: { id: true, email: true } } },
     })
+
+    const propios = talleresConUser.filter(t => t.user.id === pedido.marca.userId)
+    if (propios.length > 0) {
+      return NextResponse.json(
+        { error: 'No podés invitarte a vos mismo a cotizar tu propio pedido.' },
+        { status: 400 }
+      )
+    }
 
     const noVerificados = talleresConUser.filter(t => !t.verificadoAfip)
     if (noVerificados.length > 0) {
