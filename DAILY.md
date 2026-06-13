@@ -3,6 +3,49 @@
 ## 2026-06-13
 
 ### Gerardo Breard
+- **16:20** `575c3f2` — feat: K barrido de rate-limit (C4 + §4.3)
+  - `src/app/api/auth/mi-cuenta/route.ts`
+  - `src/app/api/auth/password-reset/[token]/route.ts`
+  - `src/app/api/auth/password-reset/route.ts`
+  - `src/app/api/auth/registro/completar/route.ts`
+  - `src/app/api/contenido/novedades/upload/route.ts`
+  - `src/app/api/cotizaciones/[id]/route.ts`
+  - `src/app/api/estado/arca/route.ts`
+  - `src/app/api/exportar/route.ts`
+  - `src/app/api/log-error/route.ts`
+  - `src/app/api/pedidos/[id]/invitaciones/route.ts`
+  - `src/app/api/validaciones/[id]/signed-url/route.ts`
+  - `src/compartido/lib/ratelimit.ts`
+
+- **16:14** `71e92f5` — refactor: K-05 borrar GET muertos (§6.8 + vestigiales) — decision de Gerardo
+  - `src/__tests__/k-01-criticos.test.ts`
+  - `src/__tests__/k-02-auth-matrix.test.ts`
+  - `src/app/api/admin/notas/route.ts`
+  - `src/app/api/auditorias/[id]/route.ts`
+  - `src/app/api/auditorias/route.ts`
+  - `src/app/api/contenido/novedades/route.ts`
+  - `src/app/api/denuncias/route.ts`
+  - `src/app/api/marcas/[id]/route.ts`
+  - `src/app/api/talleres/[id]/route.ts`
+
+- **13:48** `aec1908` — feat: K-05 select explicito en endpoints de §4.1 (Fase 1)
+  - `src/__tests__/k-01-criticos.test.ts`
+  - `src/app/api/admin/config/route.ts`
+  - `src/app/api/admin/logs/route.ts`
+  - `src/app/api/catalogos/route.ts`
+  - `src/app/api/certificados/[id]/route.ts`
+  - `src/app/api/colecciones/[id]/route.ts`
+  - `src/app/api/colecciones/route.ts`
+  - `src/app/api/contenido/novedades/[id]/route.ts`
+  - `src/app/api/estado/configuracion-niveles/[id]/route.ts`
+  - `src/app/api/estado/configuracion-niveles/route.ts`
+  - `src/app/api/marcas/route.ts`
+  - `src/app/api/ordenes/[id]/route.ts`
+  - `src/app/api/pedidos/[id]/route.ts`
+  - `src/app/api/talleres/route.ts`
+  - `src/app/api/tipos-documento/route.ts`
+  - `src/app/api/validaciones/[id]/route.ts`
+
 - **10:39** `c4289db` — docs: registrar deploy a prod 2026-06-13 en DAILY.md (#422, merge 3333016)
   - `DAILY.md`
 

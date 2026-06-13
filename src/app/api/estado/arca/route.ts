@@ -3,11 +3,16 @@ import { requiereRolApi } from '@/compartido/lib/permisos'
 import { sincronizarTaller } from '@/compartido/lib/arca'
 import { prisma } from '@/compartido/lib/prisma'
 import { logActividad } from '@/compartido/lib/log'
+import { rateLimit } from '@/compartido/lib/ratelimit'
 
 // POST /api/estado/arca — Sincronización masiva de talleres contra ARCA
 export async function POST(req: NextRequest) {
   const sesion = await requiereRolApi(['ESTADO', 'ADMIN'])
   if (sesion instanceof NextResponse) return sesion
+
+  // K (§4.3): rate-limit por usuario — la sync masiva hace un loop O(N) contra AFIP.
+  const blocked = await rateLimit(req, 'arca', sesion.userId)
+  if (blocked) return blocked
 
   const body = await req.json().catch(() => ({}))
   const force = body.force === true

@@ -57,6 +57,31 @@ y prioridad sugerida.
   auto-corrección on-focus — a confirmar).
 - **Prioridad:** baja (PR aparte, no bloqueó #411 — criterio de Sergio).
 
+### B-07: `verificar` declara taller/coleccion como string pero recibe objeto
+- **Detectado en:** Fase 1 de K-05 (2026-06-13), al auditar callers de `/api/certificados/[id]`.
+- **Descripción:** `src/app/(public)/verificar/page.tsx` tipa su `CertificadoResult`
+  con `taller: string` y `coleccion: string`, pero `GET /api/certificados/[id]`
+  devuelve **objetos** (`taller: {id,nombre,nivel}`, `coleccion: {id,titulo,categoria}`).
+  La página renderiza `{resultado.taller}` y `{resultado.coleccion}` directo (líneas
+  ~109/113/151/155). Si la consulta devuelve un certificado, React intentaría
+  renderizar un objeto → error "Objects are not valid as a React child" (o muestra
+  `[object Object]` según el path). El render correcto sería `resultado.taller.nombre`
+  y `resultado.coleccion.titulo`.
+- **Por qué pasó desapercibido:** muy probablemente NO hay certificados emitidos aún
+  (la emisión requiere talleres pasando evaluaciones de academia), así que la rama de
+  éxito de la página nunca se ejercitó. **Pendiente confirmar el conteo en prod** (SQL
+  `SELECT count(*) FROM certificados;` — ver reporte de cierre del bloque K).
+- **Pre-existente:** sí — anterior a K-05. La Fase 1 de K-05 **preservó la forma exacta**
+  de la respuesta (mismo sub-select de taller/coleccion), así que no introdujo ni agravó
+  el bug; solo lo expuso al leer los callers.
+- **Impacto:** latente si hay 0 certificados; bug visible (página de verificación rota)
+  apenas exista 1 certificado emitido.
+- **Fix sugerido:** en `verificar/page.tsx`, tipar `taller`/`coleccion` como objetos y
+  renderizar `.nombre`/`.titulo`. Fuera de scope de K-05 (es preexistente y de la página,
+  no del endpoint).
+- **Prioridad:** media si prod tiene/tendrá certificados pronto; baja si el flujo de
+  academia no arranca en el piloto.
+
 ## Datos
 
 ### D-03: Reseed coordinado pendiente — 2º paso de recorrido de tallerOro (cobertura plena del test F-1)

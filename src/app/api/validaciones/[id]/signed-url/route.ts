@@ -3,11 +3,16 @@ import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { modoActivo } from '@/compartido/lib/roles'
 import { getSignedUrl } from '@/compartido/lib/storage'
+import { rateLimit } from '@/compartido/lib/ratelimit'
 
-export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await auth()
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+
+    // K (§4.3): rate-limit por usuario — cada hit genera una signed URL nueva.
+    const blocked = await rateLimit(req, 'upload', session.user.id!)
+    if (blocked) return blocked
 
     const { id } = await params
     const role = modoActivo(session.user)

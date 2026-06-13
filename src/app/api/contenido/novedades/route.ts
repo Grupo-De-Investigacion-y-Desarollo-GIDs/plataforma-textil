@@ -3,16 +3,8 @@ import { requiereRolApi } from '@/compartido/lib/permisos'
 import { prisma } from '@/compartido/lib/prisma'
 import { generarSlugUnico } from '@/compartido/lib/slugify'
 
-export async function GET() {
-  const sesion = await requiereRolApi(['CONTENIDO', 'ADMIN'])
-  if (sesion instanceof NextResponse) return sesion
-
-  const novedades = await prisma.novedad.findMany({
-    orderBy: { createdAt: 'desc' },
-  })
-
-  return NextResponse.json({ novedades })
-}
+// K-05/§6.8: el GET (list) era codigo muerto — el panel de contenido lee Prisma
+// server-side y el publico usa /api/novedades. Se elimino. El POST (alta) sigue vivo.
 
 export async function POST(req: NextRequest) {
   const sesion = await requiereRolApi(['CONTENIDO', 'ADMIN'])

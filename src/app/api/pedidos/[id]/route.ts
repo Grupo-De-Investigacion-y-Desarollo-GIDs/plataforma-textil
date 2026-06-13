@@ -81,11 +81,13 @@ export const PUT = apiHandler(async (req: NextRequest, ctx) => {
       })
     }
 
+    // K-05: los callers (cancelar/publicar-pedido) hacen router.refresh() y no leen el body.
     if (body.estado === 'CANCELADO') {
-      const [pedido] = await prisma.$transaction([
+      await prisma.$transaction([
         prisma.pedido.update({
           where: { id: id as string },
           data: { estado: 'CANCELADO' },
+          select: { id: true },
         }),
         prisma.ordenManufactura.updateMany({
           where: {
@@ -96,12 +98,13 @@ export const PUT = apiHandler(async (req: NextRequest, ctx) => {
         }),
       ])
       logActividad('PEDIDO_CANCELADO', session.user.id, { pedidoId: id })
-      return NextResponse.json(pedido)
+      return NextResponse.json({ ok: true })
     }
 
-    const pedido = await prisma.pedido.update({
+    await prisma.pedido.update({
       where: { id: id as string },
       data: { estado: body.estado },
+      select: { id: true },
     })
 
     if (body.estado === 'PUBLICADO') {
@@ -113,17 +116,18 @@ export const PUT = apiHandler(async (req: NextRequest, ctx) => {
       logActividad('PEDIDO_COMPLETADO', session.user.id, { pedidoId: id })
     }
 
-    return NextResponse.json(pedido)
+    return NextResponse.json({ ok: true })
   }
 
-  const pedido = await prisma.pedido.update({
+  await prisma.pedido.update({
     where: { id: id as string },
     data: {
       progresoTotal: body.progresoTotal,
       fechaObjetivo: body.fechaObjetivo ? new Date(body.fechaObjetivo) : undefined,
       montoTotal: body.montoTotal,
     },
+    select: { id: true },
   })
 
-  return NextResponse.json(pedido)
+  return NextResponse.json({ ok: true })
 })

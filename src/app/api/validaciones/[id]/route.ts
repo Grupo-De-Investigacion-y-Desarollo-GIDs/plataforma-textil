@@ -50,9 +50,11 @@ export const PUT = apiHandler(async (req: NextRequest, ctx) => {
     }
   }
 
-  const validacion = await prisma.validacion.update({
+  // K-05: el caller (marcar-realizado-button) hace location.reload() y no lee el body.
+  await prisma.validacion.update({
     where: { id: id as string },
     data,
+    select: { id: true },
   })
 
   if (role === 'ESTADO' && body.estado) {
@@ -72,5 +74,5 @@ export const PUT = apiHandler(async (req: NextRequest, ctx) => {
     aplicarNivel(existing.tallerId, session.user.id!)
   }
 
-  return NextResponse.json(validacion)
+  return NextResponse.json({ ok: true })
 })

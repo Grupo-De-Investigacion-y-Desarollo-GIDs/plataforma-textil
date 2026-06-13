@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
+import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
 import bcrypt from 'bcryptjs'
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ token: string }> }) {
   try {
+    // K (§4.3): rate-limit por IP — endpoint publico (consumo de token + bcrypt).
+    const blocked = await rateLimit(req, 'passwordReset', getClientIp(req))
+    if (blocked) return blocked
+
     const { token } = await params
     const { password } = await req.json()
 

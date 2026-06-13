@@ -13,7 +13,15 @@ export async function GET(req: NextRequest) {
 
     const [marcas, total] = await Promise.all([
       prisma.marca.findMany({
-        include: { user: { select: { email: true, name: true, phone: true, active: true } } },
+        // K-05: select explicito — el listado admin solo usa id/nombre/cuit/createdAt
+        // y user.{email, active}. Evita exponer el resto de la PII de la marca/usuario.
+        select: {
+          id: true,
+          nombre: true,
+          cuit: true,
+          createdAt: true,
+          user: { select: { email: true, active: true } },
+        },
         skip: (page - 1) * limit,
         take: limit,
         orderBy: { rating: 'desc' },

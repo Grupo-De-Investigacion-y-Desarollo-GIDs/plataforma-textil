@@ -2,37 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { requiereRolApi } from '@/compartido/lib/permisos'
 
-export async function GET(req: NextRequest) {
-  try {
-    const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
-    if (sesion instanceof NextResponse) return sesion
-
-    const { searchParams } = req.nextUrl
-    const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '10')
-    const estado = searchParams.get('estado')
-    const tallerId = searchParams.get('tallerId')
-
-    const where: Record<string, unknown> = {}
-    if (estado) where.estado = estado
-    if (tallerId) where.tallerId = tallerId
-
-    const [auditorias, total] = await Promise.all([
-      prisma.auditoria.findMany({
-        where,
-        include: { taller: { select: { nombre: true, nivel: true } }, acciones: true },
-        skip: (page - 1) * limit,
-        take: limit,
-        orderBy: { createdAt: 'desc' },
-      }),
-      prisma.auditoria.count({ where }),
-    ])
-
-    return NextResponse.json({ auditorias, total, page, totalPages: Math.ceil(total / limit) })
-  } catch (error) {
-    return NextResponse.json({ error: 'Error al obtener auditorias' }, { status: 500 })
-  }
-}
+// K-05/§6.8: el GET (list) era codigo muerto — el panel admin/estado de auditorias
+// lee Prisma server-side, no este endpoint. Se elimino. El POST (alta) sigue vivo.
 
 export async function POST(req: NextRequest) {
   try {

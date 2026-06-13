@@ -24,7 +24,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: 'Certificados minimos debe ser >= 0' }, { status: 400 })
     }
 
-    const regla = await prisma.reglaNivel.update({
+    // K-05: el caller re-fetchea el GET tras un PUT exitoso; no lee este body.
+    await prisma.reglaNivel.update({
       where: { id },
       data: {
         puntosMinimos: body.puntosMinimos ?? existing.puntosMinimos,
@@ -33,6 +34,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         descripcion: body.descripcion !== undefined ? body.descripcion : existing.descripcion,
         beneficios: body.beneficios ?? existing.beneficios,
       },
+      select: { id: true },
     })
 
     invalidarCacheNivel()
@@ -43,7 +45,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       metadata: { nivel: existing.nivel, cambios: body },
     })
 
-    return NextResponse.json(regla)
+    return NextResponse.json({ ok: true })
   } catch (error) {
     console.error('Error en PUT /api/estado/configuracion-niveles/[id]:', error)
     return NextResponse.json({ error: 'Error al actualizar regla' }, { status: 500 })

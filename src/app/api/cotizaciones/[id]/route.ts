@@ -5,12 +5,18 @@ import { modoActivo } from '@/compartido/lib/roles'
 import { notificarCotizacion } from '@/compartido/lib/notificaciones'
 import { logActividad } from '@/compartido/lib/log'
 import { apiHandler, errorAuthRequired, errorNotFound, errorForbidden, errorResponse } from '@/compartido/lib/api-errors'
+import { rateLimit } from '@/compartido/lib/ratelimit'
 
 export const PUT = apiHandler(async (req: NextRequest, ctx) => {
   const session = await auth()
   if (!session?.user) return errorAuthRequired()
   const role = modoActivo(session.user)
   const userId = session.user.id!
+
+  // K (§4.3): rate-limit por usuario (mutacion: acepta/rechaza/retira + crea orden).
+  const blocked = await rateLimit(req, 'cotizaciones', userId)
+  if (blocked) return blocked
+
   const { id } = await ctx.params!
 
   const cotizacion = await prisma.cotizacion.findUnique({

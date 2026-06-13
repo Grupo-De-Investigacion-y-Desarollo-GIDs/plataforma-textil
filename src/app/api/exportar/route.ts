@@ -3,13 +3,25 @@ import { prisma } from '@/compartido/lib/prisma'
 import { requiereRolApi } from '@/compartido/lib/permisos'
 import { logAccionAdmin } from '@/compartido/lib/log'
 import { toCsv } from '@/compartido/lib/csv'
+import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
+
+// C4 (K): whitelist explicita de tipos. Un tipo desconocido antes caia a CSV
+// vacio (200); ahora devuelve 400 (igual que el gemelo /api/estado/exportar valida).
+const TIPOS_VALIDOS = ['talleres', 'resumen', 'capacitaciones', 'acompanamiento', 'marcas', 'pedidos', 'denuncias']
 
 export async function GET(req: NextRequest) {
   try {
     const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
     if (sesion instanceof NextResponse) return sesion
 
+    // C4 (K): rate-limit — mismo patron que su gemelo /api/estado/exportar.
+    const rateLimitResponse = await rateLimit(req, 'exportar', getClientIp(req))
+    if (rateLimitResponse) return rateLimitResponse
+
     const tipo = req.nextUrl.searchParams.get('tipo') || 'talleres'
+    if (!TIPOS_VALIDOS.includes(tipo)) {
+      return NextResponse.json({ error: `Tipo invalido: ${tipo}` }, { status: 400 })
+    }
     const desde = req.nextUrl.searchParams.get('desde')
     const whereBase = desde ? { createdAt: { gte: new Date(desde) } } : {}
 

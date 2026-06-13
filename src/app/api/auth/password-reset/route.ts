@@ -2,9 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { randomBytes } from 'crypto'
 import { sendEmail, buildPasswordResetEmail } from '@/compartido/lib/email'
+import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
 
 export async function POST(req: NextRequest) {
   try {
+    // K (§4.3): rate-limit por IP — endpoint publico que dispara email + escritura.
+    const blocked = await rateLimit(req, 'passwordReset', getClientIp(req))
+    if (blocked) return blocked
+
     const { email } = await req.json()
     if (!email) {
       return NextResponse.json({ error: 'Email requerido' }, { status: 400 })
