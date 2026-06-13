@@ -36,11 +36,20 @@ export async function GET(req: NextRequest) {
       where.timestamp = timestamp
     }
 
+    // K-05: select explicito del log (los callers leen id/accion/detalles/timestamp/user).
+    const selectLog = {
+      id: true,
+      accion: true,
+      detalles: true,
+      timestamp: true,
+      user: { select: { email: true, name: true, role: true } },
+    }
+
     // CSV export — sin paginacion
     if (exportCsv) {
       const logs = await prisma.logActividad.findMany({
         where,
-        include: { user: { select: { email: true, name: true, role: true } } },
+        select: selectLog,
         orderBy: { timestamp: 'desc' },
         take: 10000,
       })
@@ -87,7 +96,7 @@ export async function GET(req: NextRequest) {
     const [logs, total] = await Promise.all([
       prisma.logActividad.findMany({
         where,
-        include: { user: { select: { email: true, name: true, role: true } } },
+        select: selectLog,
         skip: (page - 1) * limit,
         take: limit,
         orderBy: { timestamp: 'desc' },

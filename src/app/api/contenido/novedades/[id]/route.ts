@@ -26,12 +26,14 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     updates.slug = await generarSlugUnico(body.titulo, id)
   }
 
-  const novedad = await prisma.novedad.update({
+  // K-05: el caller (formulario-novedad) solo chequea res.ok y redirige; no lee el body.
+  await prisma.novedad.update({
     where: { id },
     data: updates,
+    select: { id: true },
   })
 
-  return NextResponse.json({ novedad })
+  return NextResponse.json({ ok: true })
 }
 
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

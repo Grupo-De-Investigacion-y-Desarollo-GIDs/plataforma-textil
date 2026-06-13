@@ -54,9 +54,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       }
     }
 
-    const ordenActualizada = await prisma.ordenManufactura.update({
+    // K-05: el caller (orden-actions) hace router.refresh() y solo lee error; no usa este body.
+    await prisma.ordenManufactura.update({
       where: { id },
       data,
+      select: { id: true },
     })
 
     // Logs de actividad
@@ -105,7 +107,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       },
     })
 
-    return NextResponse.json(ordenActualizada)
+    return NextResponse.json({ ok: true })
   } catch (error) {
     console.error('Error en PUT /api/ordenes/[id]:', error)
     return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })

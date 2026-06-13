@@ -2,15 +2,23 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { requiereRolApi } from '@/compartido/lib/permisos'
 
-// Include solo con relaciones — Prisma trae todos los escalares automaticamente
-const includeMarca = {
-  procesos: { include: { proceso: true } },
-  prendas: { include: { prenda: true } },
+// K-05: select explicito por rama. El unico caller MARCA (invitar-a-cotizar) usa
+// {id, nombre, ubicacion, capacidadMensual}; el caller ADMIN (listado de talleres)
+// usa ademas cuit/nivel/createdAt + user.{email, active}. procesos/prendas solo se
+// usan en el `where` (filtros), no en la respuesta, asi que no se seleccionan.
+const selectMarca = {
+  id: true,
+  nombre: true,
+  ubicacion: true,
+  capacidadMensual: true,
 }
 
-const includeAdmin = {
-  ...includeMarca,
-  user: { select: { email: true, phone: true, active: true } },
+const selectAdmin = {
+  ...selectMarca,
+  cuit: true,
+  nivel: true,
+  createdAt: true,
+  user: { select: { email: true, active: true } },
 }
 
 export async function GET(req: NextRequest) {
@@ -45,12 +53,12 @@ export async function GET(req: NextRequest) {
       where.prendas = { some: { prenda: { nombre: { contains: prenda, mode: 'insensitive' } } } }
     }
 
-    const include = esAdmin ? includeAdmin : includeMarca
+    const select = esAdmin ? selectAdmin : selectMarca
 
     const [talleres, total] = await Promise.all([
       prisma.taller.findMany({
         where,
-        include,
+        select,
         skip: (page - 1) * limit,
         take: limit,
         orderBy: { puntaje: 'desc' },

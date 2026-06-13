@@ -150,9 +150,11 @@ describe('C3 — GET /api/colecciones/[id]: cierra fuga del answer-key', () => {
     const res = await GET(getReq('http://localhost/api/colecciones/c1'), { params: Promise.resolve({ id: 'c1' }) })
     const body = await res.json()
     expect(res.status).toBe(200)
-    // El include NO debe pedir evaluacion (de ahi salia preguntas[].correcta).
-    const includeArg = mockPrisma.coleccion.findUnique.mock.calls[0][0].include
-    expect(includeArg.evaluacion).toBeUndefined()
+    // K-05: el query usa `select` explicito (antes `include`). Ninguno debe pedir
+    // evaluacion (de ahi salia preguntas[].correcta).
+    const queryArg = mockPrisma.coleccion.findUnique.mock.calls[0][0]
+    expect(queryArg.include?.evaluacion).toBeUndefined()
+    expect(queryArg.select?.evaluacion).toBeUndefined()
     // Y el body no contiene ni la relacion ni el campo correcta.
     expect(body.evaluacion).toBeUndefined()
     expect(JSON.stringify(body)).not.toContain('correcta')

@@ -14,10 +14,23 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     if (sesion instanceof NextResponse) return sesion
 
     const { id } = await params
+    // K-05: select explicito — el panel de contenido usa estos escalares + videos.
+    // (evaluacion ya fue removida en C3; aqui se acota el resto del modelo.)
     const coleccion = await prisma.coleccion.findUnique({
       where: { id },
-      include: {
-        videos: { orderBy: { orden: 'asc' } },
+      select: {
+        id: true,
+        titulo: true,
+        descripcion: true,
+        institucion: true,
+        categoria: true,
+        duracion: true,
+        activa: true,
+        imagenUrl: true,
+        videos: {
+          select: { id: true, titulo: true, youtubeUrl: true, duracion: true, orden: true },
+          orderBy: { orden: 'asc' },
+        },
       },
     })
 

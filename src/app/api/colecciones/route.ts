@@ -15,7 +15,13 @@ export async function GET(req: NextRequest) {
     const [colecciones, total] = await Promise.all([
       prisma.coleccion.findMany({
         where,
-        include: {
+        // K-05: select explicito — los callers (panel contenido, evaluaciones)
+        // solo usan id/titulo/institucion/activa y el conteo de videos.
+        select: {
+          id: true,
+          titulo: true,
+          institucion: true,
+          activa: true,
           _count: { select: { videos: true } },
         },
         skip: (page - 1) * limit,
