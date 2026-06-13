@@ -91,6 +91,31 @@ function crearLimiters() {
       analytics: false,
       prefix: `rl:${env}:vemail`,
     }),
+    // K (§4.3): cobertura extendida del barrido de rate-limit.
+    passwordReset: new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(5, '1 h'),
+      analytics: false,
+      prefix: `rl:${env}:pwreset`,
+    }),
+    cuenta: new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(10, '1 h'),
+      analytics: false,
+      prefix: `rl:${env}:cuenta`,
+    }),
+    arca: new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(5, '1 h'),
+      analytics: false,
+      prefix: `rl:${env}:arca`,
+    }),
+    logError: new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(30, '1 m'),
+      analytics: false,
+      prefix: `rl:${env}:logerr`,
+    }),
   } as const
 }
 

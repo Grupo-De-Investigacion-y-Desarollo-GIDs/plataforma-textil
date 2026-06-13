@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requiereRolApi } from '@/compartido/lib/permisos'
 import { uploadFile } from '@/compartido/lib/storage'
+import { rateLimit } from '@/compartido/lib/ratelimit'
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 const MAX_SIZE = 5 * 1024 * 1024 // 5MB
@@ -9,6 +10,10 @@ export async function POST(req: NextRequest) {
   try {
     const sesion = await requiereRolApi(['CONTENIDO', 'ADMIN'])
     if (sesion instanceof NextResponse) return sesion
+
+    // K (§4.3): rate-limit por usuario — subida de archivos (mismo limiter que /upload/imagenes).
+    const blocked = await rateLimit(req, 'upload', sesion.userId)
+    if (blocked) return blocked
 
     const formData = await req.formData()
     const file = formData.get('file') as File | null
