@@ -3,6 +3,24 @@
 ## 2026-06-13
 
 ### Gerardo Breard
+- **13:48** `aec1908` — feat: K-05 select explicito en endpoints de §4.1 (Fase 1)
+  - `src/__tests__/k-01-criticos.test.ts`
+  - `src/app/api/admin/config/route.ts`
+  - `src/app/api/admin/logs/route.ts`
+  - `src/app/api/catalogos/route.ts`
+  - `src/app/api/certificados/[id]/route.ts`
+  - `src/app/api/colecciones/[id]/route.ts`
+  - `src/app/api/colecciones/route.ts`
+  - `src/app/api/contenido/novedades/[id]/route.ts`
+  - `src/app/api/estado/configuracion-niveles/[id]/route.ts`
+  - `src/app/api/estado/configuracion-niveles/route.ts`
+  - `src/app/api/marcas/route.ts`
+  - `src/app/api/ordenes/[id]/route.ts`
+  - `src/app/api/pedidos/[id]/route.ts`
+  - `src/app/api/talleres/route.ts`
+  - `src/app/api/tipos-documento/route.ts`
+  - `src/app/api/validaciones/[id]/route.ts`
+
 - **10:39** `c4289db` — docs: registrar deploy a prod 2026-06-13 en DAILY.md (#422, merge 3333016)
   - `DAILY.md`
 
