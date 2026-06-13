@@ -3,6 +3,20 @@
 ## 2026-06-13
 
 ### Gerardo Breard
+- **16:20** `575c3f2` — feat: K barrido de rate-limit (C4 + §4.3)
+  - `src/app/api/auth/mi-cuenta/route.ts`
+  - `src/app/api/auth/password-reset/[token]/route.ts`
+  - `src/app/api/auth/password-reset/route.ts`
+  - `src/app/api/auth/registro/completar/route.ts`
+  - `src/app/api/contenido/novedades/upload/route.ts`
+  - `src/app/api/cotizaciones/[id]/route.ts`
+  - `src/app/api/estado/arca/route.ts`
+  - `src/app/api/exportar/route.ts`
+  - `src/app/api/log-error/route.ts`
+  - `src/app/api/pedidos/[id]/invitaciones/route.ts`
+  - `src/app/api/validaciones/[id]/signed-url/route.ts`
+  - `src/compartido/lib/ratelimit.ts`
+
 - **16:14** `71e92f5` — refactor: K-05 borrar GET muertos (§6.8 + vestigiales) — decision de Gerardo
   - `src/__tests__/k-01-criticos.test.ts`
   - `src/__tests__/k-02-auth-matrix.test.ts`
