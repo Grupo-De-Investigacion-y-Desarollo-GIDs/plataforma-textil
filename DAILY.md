@@ -3,6 +3,17 @@
 ## 2026-06-13
 
 ### Gerardo Breard
+- **16:14** `71e92f5` — refactor: K-05 borrar GET muertos (§6.8 + vestigiales) — decision de Gerardo
+  - `src/__tests__/k-01-criticos.test.ts`
+  - `src/__tests__/k-02-auth-matrix.test.ts`
+  - `src/app/api/admin/notas/route.ts`
+  - `src/app/api/auditorias/[id]/route.ts`
+  - `src/app/api/auditorias/route.ts`
+  - `src/app/api/contenido/novedades/route.ts`
+  - `src/app/api/denuncias/route.ts`
+  - `src/app/api/marcas/[id]/route.ts`
+  - `src/app/api/talleres/[id]/route.ts`
+
 - **13:48** `aec1908` — feat: K-05 select explicito en endpoints de §4.1 (Fase 1)
   - `src/__tests__/k-01-criticos.test.ts`
   - `src/app/api/admin/config/route.ts`
