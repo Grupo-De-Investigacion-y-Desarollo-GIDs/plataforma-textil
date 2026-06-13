@@ -2,23 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { requiereRolApi } from '@/compartido/lib/permisos'
 
-export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
-    if (sesion instanceof NextResponse) return sesion
-
-    const { id } = await params
-    const auditoria = await prisma.auditoria.findUnique({
-      where: { id },
-      include: { taller: { select: { nombre: true, nivel: true, ubicacion: true } }, acciones: true },
-    })
-    if (!auditoria) return NextResponse.json({ error: 'Auditoria no encontrada' }, { status: 404 })
-    return NextResponse.json(auditoria)
-  } catch (error) {
-    console.error('Error en GET /api/auditorias/[id]:', error)
-    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })
-  }
-}
+// K-05/§6.8: el GET de detalle era codigo muerto — el panel de auditorias lee Prisma
+// server-side (informe-client solo usa el PUT). Se elimino. El PUT sigue vivo.
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
