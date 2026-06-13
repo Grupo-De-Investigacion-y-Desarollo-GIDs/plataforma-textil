@@ -3,6 +3,9 @@
 ## 2026-06-13
 
 ### Gerardo Breard
+- **10:39** `c4289db` — docs: registrar deploy a prod 2026-06-13 en DAILY.md (#422, merge 3333016)
+  - `DAILY.md`
+
 - **10:04** `3333016` — 🚀 DEPLOY A PROD (release mayor) — merge `develop` → `main` (#422, merge commit, preserva historia)
   - **Release mayor:** 105 commits; prod no se actualizaba desde el 01-jun. Vercel deploy `plataforma-textil-rrld0fe3i` → ● Ready.
   - **Migraciones aplicadas:** 4 que estaban pendientes en la DB (`agregar_imagen_coleccion`, `agregar_tipo_pedido`, `k01_rls_revoke_anon`, `u05_backfill_roles_activemode`). Las otras 2 (`multirol_y_arca`, `formulario_taller`) ya estaban en prod desde mayo → `migrate deploy` solo aplicó las pendientes. "All migrations successfully applied", sin error.
