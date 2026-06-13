@@ -1,5 +1,17 @@
 # Daily Log
 
+## 2026-06-13
+
+### Gerardo Breard
+- **10:04** `3333016` — 🚀 DEPLOY A PROD (release mayor) — merge `develop` → `main` (#422, merge commit, preserva historia)
+  - **Release mayor:** 105 commits; prod no se actualizaba desde el 01-jun. Vercel deploy `plataforma-textil-rrld0fe3i` → ● Ready.
+  - **Migraciones aplicadas:** 4 que estaban pendientes en la DB (`agregar_imagen_coleccion`, `agregar_tipo_pedido`, `k01_rls_revoke_anon`, `u05_backfill_roles_activemode`). Las otras 2 (`multirol_y_arca`, `formulario_taller`) ya estaban en prod desde mayo → `migrate deploy` solo aplicó las pendientes. "All migrations successfully applied", sin error.
+  - **Contenido del release:** bloque U multi-rol completo, B-05 (fix race sesión), formulario taller W-A, tipo de pedido, endurecimiento RLS K-01 (Fase 3 efectiva en prod), landing X-06 (G-20 "no se encuentra cómo registrarse" RESUELTO), hotfixes de seguridad C1/C2/C3 (fugas anónimas de PII) + C5 (IDOR upload cotización).
+  - **Punto de retorno:** backup diario de Supabase 03:27 AR (PITR no contratado; el pg_dump del runbook no fue viable porque `DATABASE_URL`/`DIRECT_URL` de prod son Sensitive en Vercel y `env pull` las trae vacías).
+  - **Verificación técnica (checklist a-e):** home 200 + landing X-06 (CTAs de registro presentes); 3 endpoints hotfix (`marcas`/`talleres`/`colecciones` [id]) → 401 anónimo; `/api/auth/session` 200; Prisma lee post-RLS (dropdowns de directorio poblados con filas reales). **Prod sano**, sin rollback.
+  - **Nota:** directorio vacío de talleres en prod = esperado (filtro `verificadoAfip: true`, aún sin talleres verificados en AFIP). No es regresión.
+  - **PENDIENTE post-deploy (sin correr):** crear cuenta de Sergio en prod (faltan email + rol), su smoke, y backfill validaciones D-02 con `--exclude <email-smoke>` (solo con OK explícito de Gerardo).
+
 ## 2026-06-12
 
 ### Gerardo Breard
