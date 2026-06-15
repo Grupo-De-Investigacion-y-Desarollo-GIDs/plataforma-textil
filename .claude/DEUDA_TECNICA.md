@@ -161,6 +161,19 @@ _D-01 y D-02 resueltos en U-05 (#410) — ver sección "Resueltas"._
   en la práctica
 - **Estimación:** 1-2h (el cleanup hook es lo más limpio)
 
+### T-06: Sin e2e de W-A2–W-A5 (formulario del taller refactorizado)
+- **Detectado en:** discovery W-A (2026-06-13, `v4-w-a-discovery.md`).
+- **Descripción:** el refactor del formulario `/taller/perfil/completar` (W-A) está
+  implementado y deployado, pero solo **W-A1** tiene e2e dedicado
+  (`tests/e2e/desglose-plantilla.spec.ts`). **W-A2–W-A5 no tienen cobertura e2e:**
+  opción "Organización mixta" + campo abierto, "Sin registro sistemático",
+  desdoblamiento de capacidad en 2 preguntas (disponibilidad + escalabilidad), y los
+  10 roles funcionales. No hay test que recorra el wizard y verifique que esas opciones
+  existen y que el `PUT /api/talleres/[id]` las persiste.
+- **Impacto:** un cambio futuro al wizard podría romper estas opciones sin que CI lo note.
+- **Prioridad:** baja-media (la funcionalidad está en prod y funciona; es red de regresión).
+- **Estimación:** 2-3h (`tests/e2e/w-a-formulario.spec.ts` que recorra los pasos nuevos).
+
 ## Producto
 
 ### P-01: Notificaciones — comportamiento en multi-rol
