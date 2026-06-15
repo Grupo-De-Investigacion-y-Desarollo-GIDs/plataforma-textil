@@ -7,6 +7,8 @@
 
 ---
 
+> **ACTUALIZACIÓN (2026-06-13, al implementar el fix):** el bug era **más amplio** que lo que este discovery detectó. Al editar los archivos se confirmó que **`organizacion` y `registroProduccion` tenían el mismo problema de labels viejos** (no solo `escalabilidad`): el dashboard sectorial no etiquetaba `mixta` y el perfil del taller mostraba `mixta` como "Prenda completa" y `sin-sistematico` como "Sin registro". El discovery los había marcado "new-aware" mirando solo las queries `groupBy` (correctas) y no los mapas de labels (incompletos). **Los 3 campos se corrigieron juntos** vía fuente única `src/compartido/lib/taller-formulario.ts`. La clasificación de §3 (bug de consistencia chico, ~1–2h) se mantiene; solo aumentó el alcance dentro de los mismos 2 archivos.
+
 ## 0. TL;DR
 
 **SÍ existe un reporte sectorial** (`(estado)/estado/sector/page.tsx`) que agrega los datos del formulario del taller. **Está casi todo new-aware**, salvo **un campo: `escalabilidad`**, cuyo mapeo de etiquetas quedó con los **valores VIEJOS**. Eso produce un **bug de consistencia chico y concreto** en dos lugares.

@@ -161,18 +161,22 @@ _D-01 y D-02 resueltos en U-05 (#410) — ver sección "Resueltas"._
   en la práctica
 - **Estimación:** 1-2h (el cleanup hook es lo más limpio)
 
-### T-06: Sin e2e de W-A2–W-A5 (formulario del taller refactorizado)
+### T-06: Sin e2e del FLUJO de W-A2–W-A5 (formulario del taller refactorizado)
 - **Detectado en:** discovery W-A (2026-06-13, `v4-w-a-discovery.md`).
 - **Descripción:** el refactor del formulario `/taller/perfil/completar` (W-A) está
-  implementado y deployado, pero solo **W-A1** tiene e2e dedicado
-  (`tests/e2e/desglose-plantilla.spec.ts`). **W-A2–W-A5 no tienen cobertura e2e:**
-  opción "Organización mixta" + campo abierto, "Sin registro sistemático",
-  desdoblamiento de capacidad en 2 preguntas (disponibilidad + escalabilidad), y los
-  10 roles funcionales. No hay test que recorra el wizard y verifique que esas opciones
-  existen y que el `PUT /api/talleres/[id]` las persiste.
-- **Impacto:** un cambio futuro al wizard podría romper estas opciones sin que CI lo note.
-- **Prioridad:** baja-media (la funcionalidad está en prod y funciona; es red de regresión).
-- **Estimación:** 2-3h (`tests/e2e/w-a-formulario.spec.ts` que recorra los pasos nuevos).
+  implementado y deployado. **Parcialmente cubierto ahora:**
+  - **W-A1** tiene e2e dedicado (`tests/e2e/desglose-plantilla.spec.ts`).
+  - La **consistencia de labels** de W-A2 (organizacion/mixta), W-A3 (registro/
+    sin-sistematico) y W-A4 (escalabilidad/turnos/maquinaria) quedó cubierta por
+    `src/__tests__/taller-formulario-labels.test.ts` (fix de consistencia, PR de labels)
+    — verifica que perfil y dashboard sectorial muestran los valores nuevos bien.
+- **Lo que QUEDA (no cubierto):** un e2e que **recorra el wizard** end-to-end y verifique
+  que las opciones nuevas se seleccionan y que el `PUT /api/talleres/[id]` las **persiste**
+  (incluye los 10 roles de W-A5 y la pregunta 1 de disponibilidad de W-A4, que no tienen
+  ningún test). Es cobertura de FLUJO, no de mapeo de labels.
+- **Impacto:** un cambio futuro al wizard podría romper la selección/persistencia sin que CI lo note.
+- **Prioridad:** baja (la funcionalidad está en prod y funciona; el mapeo de display ya tiene unit).
+- **Estimación:** 1.5-2h (`tests/e2e/w-a-formulario.spec.ts` que recorra los pasos nuevos y asserte persistencia).
 
 ## Producto
 

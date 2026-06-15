@@ -4,33 +4,15 @@ import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { redirect } from 'next/navigation'
 import { Card } from '@/compartido/componentes/ui/card'
+import { labelOrganizacion, labelRegistro, labelEscalabilidad } from '@/compartido/lib/taller-formulario'
 
-const orgLabels: Record<string, string> = {
-  linea: 'En línea',
-  modular: 'Modular',
-  completa: 'Prenda completa',
-}
-
+// W-A: organizacion/registro/escalabilidad usan la fuente unica compartida
+// (taller-formulario.ts). catLabels (plantilla) queda local — ya refleja el enum vigente.
 const catLabels: Record<string, string> = {
   APRENDIZ: 'Aprendices',
   MEDIO_OFICIAL: 'Medio oficial',
   OFICIAL: 'Oficial',
   OFICIAL_CALIFICADO: 'Oficial calificado',
-}
-
-const regLabels: Record<string, string> = {
-  software: 'Software',
-  excel: 'Excel/planilla',
-  papel: 'Papel',
-  ninguno: 'Sin registro',
-}
-
-const escLabels: Record<string, string> = {
-  turno: 'Segundo turno',
-  tercerizar: 'Tercerización',
-  contratar: 'Contratando personal',
-  'horas-extra': 'Horas extra',
-  no: 'Sin capacidad',
 }
 
 function BarChart({ items, total, unit = 'talleres' }: { items: { label: string; count: number }[]; total: number; unit?: string }) {
@@ -178,7 +160,7 @@ export default async function DiagnosticoSectorPage() {
       <Card title="Organización productiva">
         <BarChart
           items={distribucionOrganizacion.map(d => ({
-            label: orgLabels[d.organizacion ?? ''] ?? d.organizacion ?? 'Desconocido',
+            label: labelOrganizacion(d.organizacion, d.organizacion ?? 'Desconocido'),
             count: d._count._all,
           }))}
           total={totalConWizard}
@@ -189,7 +171,7 @@ export default async function DiagnosticoSectorPage() {
       <Card title="Gestión y registro">
         <BarChart
           items={distribucionRegistro.map(d => ({
-            label: regLabels[d.registroProduccion ?? ''] ?? d.registroProduccion ?? 'Desconocido',
+            label: labelRegistro(d.registroProduccion, d.registroProduccion ?? 'Desconocido'),
             count: d._count._all,
           }))}
           total={totalConWizard}
@@ -200,7 +182,7 @@ export default async function DiagnosticoSectorPage() {
       <Card title="Capacidad de escalar">
         <BarChart
           items={distribucionEscalabilidad.map(d => ({
-            label: escLabels[d.escalabilidad ?? ''] ?? d.escalabilidad ?? 'Desconocido',
+            label: labelEscalabilidad(d.escalabilidad, d.escalabilidad ?? 'Desconocido'),
             count: d._count._all,
           }))}
           total={totalConWizard}

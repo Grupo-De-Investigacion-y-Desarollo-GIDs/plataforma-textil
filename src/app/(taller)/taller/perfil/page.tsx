@@ -10,6 +10,7 @@ import { Button } from '@/compartido/componentes/ui/button'
 import { ProgressRing } from '@/compartido/componentes/ui/progress-ring'
 import { Star, MapPin, Users, TrendingUp, Clock, Award, Download } from 'lucide-react'
 import { PortfolioManager } from '@/taller/componentes/portfolio-manager'
+import { labelOrganizacion, labelRegistro, labelEscalabilidad } from '@/compartido/lib/taller-formulario'
 import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 
 export default async function TallerPerfilPage() {
@@ -179,9 +180,7 @@ export default async function TallerPerfilPage() {
             <div className="bg-gray-50 rounded-lg p-3">
               <p className="text-gray-500 text-xs mb-1">Organización</p>
               <p className="font-medium text-gray-800">
-                {taller.organizacion === 'linea' ? 'En línea'
-                 : taller.organizacion === 'modular' ? 'Modular'
-                 : 'Prenda completa'}
+                {labelOrganizacion(taller.organizacion)}
               </p>
             </div>
 
@@ -220,10 +219,7 @@ export default async function TallerPerfilPage() {
               <div className="bg-gray-50 rounded-lg p-3">
                 <p className="text-gray-500 text-xs mb-1">Registro de producción</p>
                 <p className="font-medium text-gray-800">
-                  {taller.registroProduccion === 'software' ? 'Software'
-                   : taller.registroProduccion === 'excel' ? 'Excel/planilla'
-                   : taller.registroProduccion === 'papel' ? 'Papel'
-                   : 'Sin registro'}
+                  {labelRegistro(taller.registroProduccion)}
                 </p>
               </div>
             )}
@@ -232,11 +228,7 @@ export default async function TallerPerfilPage() {
               <div className="bg-gray-50 rounded-lg p-3">
                 <p className="text-gray-500 text-xs mb-1">Puede escalar</p>
                 <p className="font-medium text-gray-800">
-                  {taller.escalabilidad === 'turno' ? 'Segundo turno'
-                   : taller.escalabilidad === 'tercerizar' ? 'Tercerización'
-                   : taller.escalabilidad === 'contratar' ? 'Contratando personal'
-                   : taller.escalabilidad === 'horas-extra' ? 'Horas extra'
-                   : 'Sin capacidad de escalar'}
+                  {labelEscalabilidad(taller.escalabilidad)}
                 </p>
               </div>
             )}
