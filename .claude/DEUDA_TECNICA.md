@@ -217,6 +217,24 @@ _D-01 y D-02 resueltos en U-05 (#410) — ver sección "Resueltas"._
 
 ---
 
+## Candidatos al próximo deploy a PROD
+
+> Cambios mergeados a `develop` que corrigen algo **vivo en prod** y esperan el próximo
+> deploy. No justifican un deploy dedicado salvo que se indique; viajan con el próximo
+> cambio que vaya a prod.
+
+### DEPLOY-01 (CANDIDATO #1): Fix de consistencia de labels W-A
+- **PR / SHA:** #427, develop `64ecedf` (mergeado 2026-06-13, CI verde unit+e2e+Vercel).
+- **Qué corrige:** el perfil del taller y el dashboard sectorial de ESTADO mostraban
+  **labels viejos** de `escalabilidad` (`turnos`/`maquinaria` → "Sin capacidad de escalar"),
+  `organizacion` (`mixta` → "Prenda completa") y `registroProduccion` (`sin-sistematico`
+  → "Sin registro"). Fuente única `src/compartido/lib/taller-formulario.ts`.
+- **Por qué está vivo en prod:** W-A se deployó a prod el 2026-06-13; el bug viaja con él.
+  **Visible al taller en su propio perfil** (ve su escalabilidad/organización mal).
+- **Urgencia de deploy:** NO urge deploy dedicado. **Viaja con el próximo cambio que vaya a
+  prod**, o deploy chico solo si pasan **~4 días (≈2026-06-17)** sin nada más que promover.
+- **Riesgo de deploy:** bajo (solo presentación; sin schema/migración).
+
 ## Cómo usar este archivo
 
 - Agregar items nuevos cuando se detecten deudas pre-existentes
