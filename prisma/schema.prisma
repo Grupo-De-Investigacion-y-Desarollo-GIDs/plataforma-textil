@@ -172,6 +172,11 @@ model User {
   empleadosRegistradosSipa     Int?
   empleadosSipaActualizadoAt   DateTime?
 
+  // Consentimiento legal (registro) — versión de T&C/privacidad aceptada y cuándo.
+  // Nullable: cuentas previas a esta migración y altas creadas por ADMIN no lo tienen.
+  terminosAceptadosVersion     String?
+  terminosAceptadosEn          DateTime?
+
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 

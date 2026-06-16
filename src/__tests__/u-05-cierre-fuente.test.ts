@@ -78,6 +78,7 @@ describe('U-05 cierre de fuente — POST /api/auth/registro', () => {
       email: 'm@x.com',
       password: 'password123',
       role: 'MARCA',
+      aceptaTerminos: true,
       marcaData: { nombre: 'Mi Marca', cuit: '27-99999999-1' },
     })
 
@@ -97,6 +98,7 @@ describe('U-05 cierre de fuente — POST /api/auth/registro', () => {
       email: 't@x.com',
       password: 'password123',
       role: 'TALLER',
+      aceptaTerminos: true,
       tallerData: { nombre: 'Mi Taller', cuit: '20-12345678-9' },
     })
 
@@ -110,7 +112,7 @@ describe('U-05 cierre de fuente — POST /api/auth/registro', () => {
   it('invariante: roles contiene siempre al role y activeMode == role', async () => {
     mockUserFind.mockResolvedValue(null)
     mockUserCreate.mockResolvedValue({ id: 'u3', email: 'm2@x.com', name: null, role: 'MARCA' })
-    await reqRegistro({ email: 'm2@x.com', password: 'password123', role: 'MARCA', marcaData: { nombre: 'M', cuit: '27-1-1' } })
+    await reqRegistro({ email: 'm2@x.com', password: 'password123', role: 'MARCA', aceptaTerminos: true, marcaData: { nombre: 'M', cuit: '27-1-1' } })
     const { role, roles, activeMode } = mockUserCreate.mock.calls[0][0].data
     expect(roles).toContain(role)
     expect(activeMode).toBe(role)

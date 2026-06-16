@@ -40,7 +40,7 @@ const personalInfoSchema = z
     password: z.string().min(8, 'La contrasena debe tener al menos 8 caracteres'),
     confirmPassword: z.string().min(1, 'Confirma tu contrasena'),
     phone: z.string().optional(),
-    terminos: z.boolean().refine(v => v === true, 'Debes aceptar los terminos y condiciones'),
+    terminos: z.boolean().refine(v => v === true, 'Debes aceptar los terminos y condiciones y la politica de privacidad'),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Las contrasenas no coinciden',
@@ -186,6 +186,8 @@ function StepPersonalInfo({
           <span className="text-sm text-gray-600">
             Acepto los{' '}
             <a href="/terminos" target="_blank" className="text-brand-blue font-semibold hover:underline">terminos y condiciones</a>
+            {' '}y la{' '}
+            <a href="/privacidad" target="_blank" className="text-brand-blue font-semibold hover:underline">politica de privacidad</a>
             {' '}de la Plataforma Digital Textil
           </span>
         </label>
@@ -404,6 +406,7 @@ function RegistroContent() {
           password: personalInfo.password,
           phone: personalInfo.phone || undefined,
           role,
+          aceptaTerminos: personalInfo.terminos,
           ...(role === 'TALLER' ? { tallerData: entidadPayload } : { marcaData: entidadPayload }),
         }),
       })
