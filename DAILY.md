@@ -1,5 +1,18 @@
 # Daily Log
 
+## 2026-06-15
+
+### Gerardo Breard
+- **21:54** `cac4574` — feat(registro): persistir consentimiento legal server-side (T&C + privacidad)
+  - `prisma/migrations/20260615120000_agregar_consentimiento_terminos/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/__tests__/registro-consentimiento.test.ts`
+  - `src/__tests__/u-05-cierre-fuente.test.ts`
+  - `src/app/(auth)/registro/page.tsx`
+  - `src/app/api/auth/registro/route.ts`
+  - `src/compartido/lib/legal.ts`
+
+
 ## 2026-06-12
 
 ### Gerardo Breard
