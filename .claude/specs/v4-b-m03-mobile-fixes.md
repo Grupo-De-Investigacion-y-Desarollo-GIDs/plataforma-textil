@@ -7,7 +7,10 @@
 **Branch:** `feature/m03-mobile-flujo-taller`.
 
 > **ESTADO: ✅ HECHO — mergeado a `develop` en PR #431 (squash `bafcc2a`).** FIX 1a / 1b / 2 / 3 implementados; FIX 4 verificado sin cambios. Los 4 verificados visualmente en preview de Vercel (Playwright, viewports 320/375/414). Verde unit+e2e+Vercel.
-> **Pendiente del Bloque B:** Acción 3 (reactivar E2E mobile, PR aparte) + opcionales post-MVP (header-public hamburguesa, data-table cards).
+>
+> **🟢 BLOQUE B CRÍTICO — CERRADO.** Fixes de layout (#431 `bafcc2a`) + red de seguridad E2E mobile (#433 `b834835`: projects `mobile-chrome` 393px + `mobile-small` 320px, 8 tests que protegen cada fix; desktop intacto en 134 tests). Verde unit+e2e+Vercel en develop.
+> **Pendiente del Bloque B = solo opcionales post-MVP:** header-public hamburguesa, data-table cards (vista mobile). NO bloquean el piloto.
+> **Hallazgo abierto (no #431):** ~17px de desborde horizontal en `/taller` a 320px (contenedor `fixed` de toasts) → ver `DEUDA_TECNICA.md` F-05.
 
 ---
 
