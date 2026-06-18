@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-06-18
+
+### Gerardo Breard
+- **17:51** `64688d0` — test(t-04): recuperar cobertura del FeedbackWidget como spec fresco
+  - `tests/e2e/feedback-widget.spec.ts`
+
+
 ## 2026-06-13
 
 ### Gerardo Breard
