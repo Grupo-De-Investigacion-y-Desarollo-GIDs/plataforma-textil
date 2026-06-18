@@ -4,7 +4,10 @@
 **Alcance (decisión Gerardo):** SOLO bloque CRÍTICO + (en PASO SIGUIENTE) E2E mobile. Opcionales (header-public hamburguesa, data-table cards) → post-MVP.
 **Momento (decisión Gerardo):** ahora, antes del rediseño visual. Estos son fixes de **layout** (breakpoints, wrap, sticky), sobreviven a un rediseño de estilos.
 **Regla dura:** NO tocar colores / tipografía / identidad visual. Solo que funcione bien en pantalla chica (320 / 375 / 414px).
-**Branch:** `feature/m03-mobile-flujo-taller`. **No mergear — revisa Gerardo.**
+**Branch:** `feature/m03-mobile-flujo-taller`.
+
+> **ESTADO: ✅ HECHO — mergeado a `develop` en PR #431 (squash `bafcc2a`).** FIX 1a / 1b / 2 / 3 implementados; FIX 4 verificado sin cambios. Los 4 verificados visualmente en preview de Vercel (Playwright, viewports 320/375/414). Verde unit+e2e+Vercel.
+> **Pendiente del Bloque B:** Acción 3 (reactivar E2E mobile, PR aparte) + opcionales post-MVP (header-public hamburguesa, data-table cards).
 
 ---
 
@@ -19,13 +22,13 @@ El discovery midió que la base responsive ya está (~85% de componentes). Queda
 ### FIX 1 — Wizard perfil productivo (mayor riesgo UX)
 **Archivo:** `src/app/(taller)/taller/perfil/completar/page.tsx`
 
-#### 1a. Fila de 5 botones de tamaño de equipo sin wrap
+#### 1a. Fila de 5 botones de tamaño de equipo sin wrap — ✅ HECHO (`bafcc2a`)
 - **Dónde:** l.332 (contenedor) y l.334-335 (botones). Paso 3 "Equipo".
 - **Hoy:** `<div className="flex gap-2 mb-4">` con 5 botones `flex-1` (`1-2`, `3-5`, `6-10`, `11-20`, `+20`). En 320px quedan estrechos e ilegibles.
 - **Cambio:** contenedor → `grid grid-cols-3 sm:grid-cols-5 gap-2 mb-4`. Quitar `flex-1` del botón (no-op en grid). En mobile: 3+2 botones; en sm+ idéntico a hoy (5 en fila, anchos iguales).
 - **Hecho cuando:** en 320-375px los 5 botones se ven completos y legibles en 2 filas; en ≥640px siguen en una fila igual que antes.
 
-#### 1b. Navegación Atrás/Siguiente sin sticky en mobile
+#### 1b. Navegación Atrás/Siguiente sin sticky en mobile — ✅ HECHO (`bafcc2a`)
 - **Dónde:** l.705-710.
 - **Hoy:** `<div className="flex justify-between mt-6">` — al final del contenido; en pasos largos hay que scrollear hasta abajo para encontrarla.
 - **Cambio:** hacerla sticky-bottom SOLO en mobile, estática en desktop. Contenedor →
@@ -33,19 +36,19 @@ El discovery midió que la base responsive ya está (~85% de componentes). Queda
   El `-mx-4 px-4` extiende la barra hasta los bordes (el padre tiene `px-4`); en sm+ se resetea todo a como está hoy. No cambia colores de marca (usa blanco/gris neutro de fondo de barra, no identidad).
 - **Hecho cuando:** en mobile los botones quedan fijos abajo mientras se scrollea el paso; en desktop se ven exactamente como hoy (sin barra, sin borde, estáticos).
 
-#### 1c. Revisión de los 14 pasos en 320-375px
+#### 1c. Revisión de los 14 pasos en 320-375px — ✅ HECHO (sin cambios adicionales)
 - **Acción:** recorrer los pasos verificando que inputs, grids (`grid-cols-2 sm:grid-cols-3` en máquinas/roles/prendas), step-indicators (`overflow-x-auto`, l.258) y cards no desborden horizontalmente.
 - **Esperado:** sin cambios adicionales salvo que aparezca un desborde real. Los grids ya tienen prefijo; los indicadores ya scrollean.
 - **Hecho cuando:** ningún paso produce scroll horizontal de página en 320px.
 
-### FIX 2 — Dashboard taller: KPI grid sin breakpoint
+### FIX 2 — Dashboard taller: KPI grid sin breakpoint — ✅ HECHO (`bafcc2a`)
 **Archivo:** `src/app/(taller)/taller/page.tsx`
 - **Dónde:** l.273.
 - **Hoy:** `<div className="grid grid-cols-2 gap-4">` con 4 cards de stats `text-3xl`. En 320px los números grandes quedan apretados.
 - **Cambio:** → `grid grid-cols-1 sm:grid-cols-2 gap-4` (mismo patrón que ya usa l.329 en este archivo). 1 columna en pantallas chicas, 2 en sm+.
 - **Hecho cuando:** en 320-375px las 4 cards se ven una por fila sin apretar el `text-3xl`; en ≥640px quedan en 2×2 como hoy.
 
-### FIX 3 — Login: form magic-link sin wrap
+### FIX 3 — Login: form magic-link sin wrap — ✅ HECHO (`bafcc2a`)
 **Archivo:** `src/app/(auth)/login/page.tsx`
 - **Dónde:** l.50.
 - **Hoy:** `<form ... className="mt-3 flex gap-2">` (input `flex-1` + botón). En 320px input y botón quedan apretados en una fila.
@@ -53,7 +56,7 @@ El discovery midió que la base responsive ya está (~85% de componentes). Queda
   - Nota: `flex-wrap` puro NO sirve acá porque el input es `flex-1` (se encoge a 0 y nunca fuerza el wrap). El stack `flex-col sm:flex-row` es la realización efectiva del "wrap" pedido.
 - **Hecho cuando:** en 320px input full-width arriba, botón debajo; en ≥640px en fila igual que hoy.
 
-### FIX 4 — Verificar "Crear cotización" en mobile
+### FIX 4 — Verificar "Crear cotización" en mobile — ✅ VERIFICADO OK (sin cambios de código)
 **Archivos:** `src/taller/componentes/cotizar-form.tsx` + host `src/app/(taller)/taller/pedidos/disponibles/[id]/page.tsx`
 - **Resultado de la verificación (este discovery):** **el form YA es responsive** — `grid grid-cols-1 sm:grid-cols-2` para precio/plazo (l.73), inputs/textarea/FileUpload/submit todos `w-full`. **No requiere cambios.**
 - El info-grid del pedido (host l.47, `grid-cols-2` con label/valor cortos en `text-lg`) funciona en 320px (valores cortos, ubicación larga wrappea sin desbordar). Se deja como está — consistente con cómo el discovery juzgó `grid-cols-2 md:grid-cols-4` de perfil (aceptable).
