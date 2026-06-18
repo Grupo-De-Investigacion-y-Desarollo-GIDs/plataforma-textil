@@ -270,7 +270,7 @@ export default async function TallerDashboardPage() {
         </div>
 
         {/* Stats secundarios */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="bg-white rounded-card shadow-card p-5 border border-gray-100">
             <p className="text-xs uppercase text-gray-500 font-semibold mb-1">Formalización</p>
             <p className="text-3xl font-bold text-brand-blue">{completadas}/{totalValidaciones}</p>
