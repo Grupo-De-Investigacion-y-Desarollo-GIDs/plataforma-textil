@@ -114,6 +114,15 @@ _D-01 y D-02 resueltos en U-05 (#410) — ver sección "Resueltas"._
 - **Prioridad:** media (problema de productividad del agente)
 - **Estimación:** investigar (puede ser configuración WSL, devcontainer,
   o setup)
+- **Utilidad descubierta (M-03, 2026-06-18):** pese a T-01, **Playwright
+  SÍ funciona para verificación visual de UI**. `require('playwright')` y
+  `@playwright/test` están corruptos en /mnt/d (igual que tsc/vitest), pero
+  **`require('playwright-core')` carga bien** y usa el chromium ya instalado
+  en `~/.cache/ms-playwright`. Vía válida: script CJS dentro del dir del
+  proyecto (ESM desde /tmp no resuelve node_modules) → `chromium.launch()`
+  → navegar el **preview de Vercel del PR** (login público 200; para
+  rutas con auth, loguear con credenciales del seed) → screenshots en
+  320/375/414px → `Read` de los PNG. Para no redescubrirlo.
 
 ### T-02: GitHub Actions outage intermitente selectivo
 - **Detectado en:** 2026-06-04 y volvió el 2026-06-07
