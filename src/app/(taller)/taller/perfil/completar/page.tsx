@@ -329,10 +329,10 @@ export default function WizardPage() {
         <div>
           <h2 className="font-serif font-bold text-xl text-brand-blue mb-4">Contanos sobre tu equipo de trabajo</h2>
           <p className="text-sm font-semibold mb-2">¿Cuántas personas trabajan en producción?</p>
-          <div className="flex gap-2 mb-4">
+          <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 mb-4">
             {['1-2', '3-5', '6-10', '11-20', '+20'].map(v => (
               <button key={v} type="button" onClick={() => setTamanoEquipo(v)}
-                className={`flex-1 py-2 rounded-lg border text-sm font-semibold transition-colors ${tamanoEquipo === v ? 'bg-brand-blue text-white border-brand-blue' : 'bg-white border-gray-300 hover:border-brand-blue'}`}>
+                className={`py-2 rounded-lg border text-sm font-semibold transition-colors ${tamanoEquipo === v ? 'bg-brand-blue text-white border-brand-blue' : 'bg-white border-gray-300 hover:border-brand-blue'}`}>
                 {v}
               </button>
             ))}
@@ -703,7 +703,7 @@ export default function WizardPage() {
 
       {/* Navigation */}
       {step > 0 && step < 13 && (
-        <div className="flex justify-between mt-6">
+        <div className="flex justify-between mt-6 sticky bottom-0 -mx-4 px-4 py-3 bg-white/95 backdrop-blur border-t border-gray-100 sm:static sm:mx-0 sm:px-0 sm:py-0 sm:bg-transparent sm:backdrop-blur-none sm:border-0">
           <Button variant="secondary" onClick={prev} icon={<ArrowLeft className="w-4 h-4" />}>Atrás</Button>
           <Button onClick={next} icon={<ArrowRight className="w-4 h-4" />}>Siguiente</Button>
         </div>
