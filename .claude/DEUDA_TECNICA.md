@@ -18,6 +18,27 @@ y prioridad sugerida.
 - **Prioridad:** baja (backlog post-piloto, decisión de Gerardo)
 - **Estimación:** 3-4h
 
+### F-05: Desborde horizontal ~17px en /taller a 320px (contenedor de toasts)
+- **Detectado en:** Acción 3 del Bloque B / E2E mobile (#433, 2026-06-18),
+  al validar el flujo del taller en 320px con playwright-core.
+- **Descripción:** el dashboard del taller (`/taller`) produce ~17px de
+  scroll horizontal a 320px. La fuente es un contenedor `fixed bottom-4
+  right-4 ... flex flex-col` (viewport de toasts) que renderiza ~337px de
+  ancho (> viewport 320). NO es del flujo de contenido (login, wizard y
+  pedidos disponibles dan desborde 0 a 320px) ni del fix de #431 (el KPI
+  grid ya apila bien); es un contenedor accesorio.
+- **Pre-existente:** sí — anterior a #431/#433. Los fixes de #431 no lo
+  introdujeron ni lo tocan.
+- **Impacto:** cosmético (leve rubber-band horizontal en 320px). No afecta
+  funcionalidad ni el piloto.
+- **Por qué el e2e no lo cubre:** el test mobile del dashboard (#433) NO
+  assertea desborde de página en `/taller` por este hallazgo; sí cubre el
+  FIX 2 (#431) vía el stacking de KPIs. Login/wizard/disponibles sí
+  assertean desborde 0.
+- **Prioridad:** **baja** (solo 320px, contenedor accesorio).
+- **Follow-up:** revisar el `max-width`/`overflow` del contenedor de toasts
+  (ej. acotar a `max-w-[calc(100vw-2rem)]` o `inset-x` en mobile). PR chico.
+
 ## Backend / Arquitectura
 
 ### B-01: Tres paths de verificación de CUIT sin unificar
