@@ -3,6 +3,9 @@
 ## 2026-06-19
 
 ### Gerardo Breard
+- **11:26** `175953b` — test(t-06): e2e de flujo del formulario del taller (W-A2..W-A5)
+  - `tests/e2e/w-a-formulario.spec.ts`
+
 - **11:18** `31f6473` — test(t-04): borrar directorio e2e/ huerfano (16 specs V3 + helper)
   - `e2e/admin.spec.ts`
   - `e2e/auth.spec.ts`
