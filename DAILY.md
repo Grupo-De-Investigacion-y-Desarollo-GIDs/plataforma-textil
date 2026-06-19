@@ -1,5 +1,28 @@
 # Daily Log
 
+## 2026-06-19
+
+### Gerardo Breard
+- **11:18** `31f6473` — test(t-04): borrar directorio e2e/ huerfano (16 specs V3 + helper)
+  - `e2e/admin.spec.ts`
+  - `e2e/auth.spec.ts`
+  - `e2e/checklist-sec1-2.spec.ts`
+  - `e2e/checklist-sec3-4.spec.ts`
+  - `e2e/checklist-sec5-6.spec.ts`
+  - `e2e/checklist-sec7-8.spec.ts`
+  - `e2e/checklist-sec9-10.spec.ts`
+  - `e2e/contenido.spec.ts`
+  - `e2e/estado.spec.ts`
+  - `e2e/feedback.spec.ts`
+  - `e2e/helpers/auth.ts`
+  - `e2e/marca.spec.ts`
+  - `e2e/pedidos.spec.ts`
+  - `e2e/publico.spec.ts`
+  - `e2e/registro.spec.ts`
+  - `e2e/seguridad-roles.spec.ts`
+  - `e2e/taller.spec.ts`
+
+
 ## 2026-06-18
 
 ### Gerardo Breard
