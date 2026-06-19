@@ -3,6 +3,9 @@
 ## 2026-06-19
 
 ### Gerardo Breard
+- **12:21** `d7b5e3c` — fix(f-05): acotar ancho del contenedor de toasts (desborde 320px)
+  - `src/compartido/componentes/ui/toast.tsx`
+
 - **12:17** `78edbdc` — fix(b-07): verificar/page.tsx renderiza taller/coleccion como objetos
   - `src/app/(public)/verificar/page.tsx`
   - `tests/e2e/verificar-certificado.spec.ts`
