@@ -3,6 +3,9 @@
 ## 2026-06-19
 
 ### Gerardo Breard
+- **12:24** `cf1106f` — docs(deuda): cerrar T-04/T-05/T-06/B-07/F-05 + A-01/A-02; T-07 denuncia
+  - `.claude/DEUDA_TECNICA.md`
+
 - **12:21** `d7b5e3c` — fix(f-05): acotar ancho del contenedor de toasts (desborde 320px)
   - `src/compartido/componentes/ui/toast.tsx`
 
