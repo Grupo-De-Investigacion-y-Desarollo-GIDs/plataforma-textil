@@ -3,6 +3,10 @@
 ## 2026-06-19
 
 ### Gerardo Breard
+- **12:17** `78edbdc` — fix(b-07): verificar/page.tsx renderiza taller/coleccion como objetos
+  - `src/app/(public)/verificar/page.tsx`
+  - `tests/e2e/verificar-certificado.spec.ts`
+
 - **11:26** `175953b` — test(t-06): e2e de flujo del formulario del taller (W-A2..W-A5)
   - `tests/e2e/w-a-formulario.spec.ts`
 
