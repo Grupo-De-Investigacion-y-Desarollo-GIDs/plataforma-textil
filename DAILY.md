@@ -3,6 +3,9 @@
 ## 2026-06-19
 
 ### Gerardo Breard
+- **14:34** `7cc1ec1` — fix(f-05): truncar titulo en colecciones recomendadas (/taller 320px)
+  - `src/app/(taller)/taller/page.tsx`
+
 - **12:24** `cf1106f` — docs(deuda): cerrar T-04/T-05/T-06/B-07/F-05 + A-01/A-02; T-07 denuncia
   - `.claude/DEUDA_TECNICA.md`
 
