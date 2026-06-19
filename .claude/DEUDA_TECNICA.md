@@ -218,12 +218,20 @@ _A-01 y A-02 resueltos (confirmado por Gerardo, 2026-06-19) — ver sección "Re
   `not [object Object]`); + smoke del path inválido (404 → "Certificado no encontrado", recupera
   la conducta del huérfano `e2e/`). Locators scopeados a `<main>` (duplicado de streaming SSR R19).
 
-### F-05: Desborde horizontal ~17px en /taller a 320px (contenedor de toasts) — RESUELTA
-- **Resuelta en:** cierre de deuda e2e (PR #435, `d7b5e3c`, 2026-06-19).
-- **Fix:** el viewport de toasts (`fixed bottom-4 right-4 ... w-full max-w-sm`) medía 100vw en
-  pantallas chicas; con `right-4`, su borde izquierdo se salía del viewport → ~17px de scroll
-  horizontal. Se acota a `max-w-[min(24rem,calc(100vw-2rem))]`: en desktop sigue 24rem
-  (= `max-w-sm`, idéntico), en mobile nunca excede `100vw-2rem`. Layout puro.
+### F-05: Desborde horizontal ~17px en /taller a 320px — RESUELTA
+- **Resuelta en:** cierre de deuda e2e (PR #435, `d7b5e3c` + commit de colecciones, 2026-06-19).
+- **Causa raíz (corregida durante la verificación):** el diagnóstico previo (#433) atribuía el
+  desborde al contenedor de toasts, pero al verificar a 320px con playwright-core la fuente
+  REAL del scroll a la derecha (scrollWidth 337 > 320) era la fila de **"colecciones
+  recomendadas"** del dashboard (`Link flex justify-between`): el título `{col.titulo}` no
+  truncaba y empujaba el bloque CTA derecho fuera del viewport. El contenedor de toasts era
+  una fuente secundaria (rubber-band a la izquierda con un toast visible).
+- **Fix (layout puro, dos partes):** (a) bloque izquierdo de la fila → `min-w-0 flex-1` con
+  título `truncate`; bloque derecho → `shrink-0`. (b) viewport de toasts acotado a
+  `max-w-[min(24rem,calc(100vw-2rem))]` (desktop sigue 24rem = `max-w-sm`). **Verificado a
+  320px y 375px: overflow 0.**
+- **Regresión:** `tests/e2e/taller-flujo.mobile.spec.ts` ahora asserta `expectNoHorizontalOverflow`
+  en `/taller` (antes lo omitía por F-05) → corre en los projects mobile (320/393px).
 
 ### A-01: GitHub Pro suscripción accidental — RESUELTA
 - **Resuelta:** confirmado por Gerardo (2026-06-19). Suscripción cancelada.
