@@ -5,10 +5,14 @@ import { useSearchParams } from 'next/navigation'
 import { Search, CheckCircle, XCircle, Award } from 'lucide-react'
 import { Button, Input, Card } from '@/compartido/componentes/ui'
 
+// B-07: el endpoint GET /api/certificados/[id] devuelve taller y coleccion como
+// OBJETOS (select { id, nombre, nivel } / { id, titulo, categoria }), no strings.
+// Tipar como string hacia renderizar {resultado.taller} -> objeto como hijo de
+// React = "Objects are not valid as a React child" apenas existiera 1 certificado.
 interface CertificadoResult {
   codigo: string
-  taller: string
-  coleccion: string
+  taller: { id: string; nombre: string; nivel: string } | null
+  coleccion: { id: string; titulo: string; categoria: string } | null
   fecha: string
   calificacion: number
   revocado: boolean
@@ -106,11 +110,11 @@ function VerificarContent() {
                 </div>
                 <div className="flex justify-between py-2 border-b border-gray-100">
                   <span className="text-gray-500">Taller</span>
-                  <span className="font-semibold text-gray-900">{resultado.taller}</span>
+                  <span className="font-semibold text-gray-900">{resultado.taller?.nombre ?? '—'}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b border-gray-100">
                   <span className="text-gray-500">Curso</span>
-                  <span className="font-semibold text-gray-900">{resultado.coleccion}</span>
+                  <span className="font-semibold text-gray-900">{resultado.coleccion?.titulo ?? '—'}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b border-gray-100">
                   <span className="text-gray-500">Fecha de emisión</span>
@@ -148,11 +152,11 @@ function VerificarContent() {
                 </div>
                 <div className="flex justify-between py-2 border-b border-gray-100">
                   <span className="text-gray-500">Taller</span>
-                  <span className="font-semibold text-gray-900">{resultado.taller}</span>
+                  <span className="font-semibold text-gray-900">{resultado.taller?.nombre ?? '—'}</span>
                 </div>
                 <div className="flex justify-between py-2">
                   <span className="text-gray-500">Curso</span>
-                  <span className="font-semibold text-gray-900">{resultado.coleccion}</span>
+                  <span className="font-semibold text-gray-900">{resultado.coleccion?.titulo ?? '—'}</span>
                 </div>
               </div>
             </div>
