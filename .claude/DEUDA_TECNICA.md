@@ -18,26 +18,7 @@ y prioridad sugerida.
 - **Prioridad:** baja (backlog post-piloto, decisión de Gerardo)
 - **Estimación:** 3-4h
 
-### F-05: Desborde horizontal ~17px en /taller a 320px (contenedor de toasts)
-- **Detectado en:** Acción 3 del Bloque B / E2E mobile (#433, 2026-06-18),
-  al validar el flujo del taller en 320px con playwright-core.
-- **Descripción:** el dashboard del taller (`/taller`) produce ~17px de
-  scroll horizontal a 320px. La fuente es un contenedor `fixed bottom-4
-  right-4 ... flex flex-col` (viewport de toasts) que renderiza ~337px de
-  ancho (> viewport 320). NO es del flujo de contenido (login, wizard y
-  pedidos disponibles dan desborde 0 a 320px) ni del fix de #431 (el KPI
-  grid ya apila bien); es un contenedor accesorio.
-- **Pre-existente:** sí — anterior a #431/#433. Los fixes de #431 no lo
-  introdujeron ni lo tocan.
-- **Impacto:** cosmético (leve rubber-band horizontal en 320px). No afecta
-  funcionalidad ni el piloto.
-- **Por qué el e2e no lo cubre:** el test mobile del dashboard (#433) NO
-  assertea desborde de página en `/taller` por este hallazgo; sí cubre el
-  FIX 2 (#431) vía el stacking de KPIs. Login/wizard/disponibles sí
-  assertean desborde 0.
-- **Prioridad:** **baja** (solo 320px, contenedor accesorio).
-- **Follow-up:** revisar el `max-width`/`overflow` del contenedor de toasts
-  (ej. acotar a `max-w-[calc(100vw-2rem)]` o `inset-x` en mobile). PR chico.
+_F-04 sigue abierto (cosmético dashboards). F-05 resuelto — ver sección "Resueltas"._
 
 ## Backend / Arquitectura
 
@@ -78,32 +59,7 @@ y prioridad sugerida.
   auto-corrección on-focus — a confirmar).
 - **Prioridad:** baja (PR aparte, no bloqueó #411 — criterio de Sergio).
 
-### B-07: `verificar` declara taller/coleccion como string pero recibe objeto
-- **Detectado en:** Fase 1 de K-05 (2026-06-13), al auditar callers de `/api/certificados/[id]`.
-- **Descripción:** `src/app/(public)/verificar/page.tsx` tipa su `CertificadoResult`
-  con `taller: string` y `coleccion: string`, pero `GET /api/certificados/[id]`
-  devuelve **objetos** (`taller: {id,nombre,nivel}`, `coleccion: {id,titulo,categoria}`).
-  La página renderiza `{resultado.taller}` y `{resultado.coleccion}` directo (líneas
-  ~109/113/151/155). Si la consulta devuelve un certificado, React intentaría
-  renderizar un objeto → error "Objects are not valid as a React child" (o muestra
-  `[object Object]` según el path). El render correcto sería `resultado.taller.nombre`
-  y `resultado.coleccion.titulo`.
-- **Por qué pasó desapercibido:** NO hay certificados emitidos aún (la emisión requiere
-  talleres pasando evaluaciones de academia), así que la rama de éxito de la página nunca
-  se ejercitó. **Confirmado en prod (2026-06-13):** `SELECT count(*) FILTER (WHERE NOT
-  revocado) FROM certificados` → **0 vigentes**. → latente **sin impacto** hoy.
-- **Pre-existente:** sí — anterior a K-05. La Fase 1 de K-05 **preservó la forma exacta**
-  de la respuesta (mismo sub-select de taller/coleccion), así que no introdujo ni agravó
-  el bug; solo lo expuso al leer los callers.
-- **Impacto:** ninguno mientras haya 0 certificados; la página de verificación se rompe
-  apenas exista **1** certificado emitido.
-- **Fix sugerido:** en `verificar/page.tsx`, tipar `taller`/`coleccion` como objetos y
-  renderizar `.nombre`/`.titulo`. Fuera de scope de K-05 (es preexistente y de la página,
-  no del endpoint).
-- **Prioridad:** **baja** (latente, prod = 0 certificados vigentes confirmado).
-- **Trigger de arreglo:** cuando se construya/active el flujo de **emisión de certificados**,
-  arreglar `verificar/page.tsx` **ANTES de que existan filas** en `certificados` — apenas
-  se emita el primero, la página de verificación queda rota.
+_B-07 resuelto — ver sección "Resueltas" (se arregló en frío, antes de que existan certificados)._
 
 ## Datos
 
@@ -153,60 +109,22 @@ _D-01 y D-02 resueltos en U-05 (#410) — ver sección "Resueltas"._
 - **Estado:** ticket abierto a GitHub Support
 - **Plan:** monitorear ticket; mientras tanto usar admin bypass
 
-### T-04: Directorio `e2e/` huérfano (no lo corre Playwright)
-- **Detectado en:** implementación Narrativa V4 Etapa 1 (2026-06-08)
-- **Descripción:** existen DOS carpetas de tests Playwright: `tests/e2e/`
-  (la real — `playwright.config.ts` tiene `testDir: './tests/e2e'`) y
-  `e2e/` (huérfana). Los archivos `e2e/checklist-sec*.spec.ts`,
-  `e2e/admin.spec.ts`, `e2e/auth.spec.ts`, etc. **nunca se ejecutan** en
-  CI ni con `npm run test:e2e`. Son ~12 specs de mantenimiento muerto.
-- **Impacto:** falsa sensación de cobertura. Cualquiera que edite `e2e/*`
-  (como pedía el spec de Etapa 1 para T-03) cree estar arreglando tests
-  que en realidad están inertes. Riesgo de divergencia silenciosa.
-- **Prioridad:** media (deuda de confiabilidad de la suite)
-- **Plan:** decidir entre (a) **migrar** los specs útiles de `e2e/` a
-  `tests/e2e/` y borrar la carpeta, o (b) **borrar** `e2e/` si son
-  duplicados/obsoletos de los de `tests/e2e/`. Verificar solapamiento
-  antes de borrar.
-- **Estimación:** 1-2h (auditar solapamiento + migrar/borrar)
+_T-04, T-05 y T-06 resueltos — ver sección "Resueltas"._
 
-### T-05: Test e2e u-09 no es idempotente (muta estado permanente)
-- **Detectado en:** Validación de T-04 (2026-06-08)
-- **Descripción:** e2e u-09-agregar-segundo-rol muta u09.test de
-  single-rol a multi-rol de forma irreversible. La DEV DB persiste
-  entre corridas, así que el test pasa la 1ra vez y falla la 2da
-  (ya no aparece agregar-rol-card porque el user ya tiene 2 roles).
-- **Impacto:** el test NO es CI-confiable sin un reseed previo en cada
-  corrida. Bloquea la migración limpia de u-09 a tests/e2e/ (los otros
-  3 U-specs no tienen este problema).
-- **Prioridad:** media — bloquea cerrar T-04 al 100% (3 de 4 specs
-  migran limpio, u-09 queda pendiente de este fix)
-- **Soluciones posibles:**
-  - Hook de cleanup en afterEach que resetee u09.test a single-rol
-    (vía API o DB directa)
-  - Usar un user throwaway creado/destruido en el propio test
-  - Documentar como "one-shot" (NO recomendado: rompe en 2da corrida)
-- **Relación:** ya estaba anticipado en el spec de U-08
-  (v4-u-08-tests-e2e-multi-rol.md, §3.3 aislamiento) — esto lo confirma
-  en la práctica
-- **Estimación:** 1-2h (el cleanup hook es lo más limpio)
-
-### T-06: Sin e2e del FLUJO de W-A2–W-A5 (formulario del taller refactorizado)
-- **Detectado en:** discovery W-A (2026-06-13, `v4-w-a-discovery.md`).
-- **Descripción:** el refactor del formulario `/taller/perfil/completar` (W-A) está
-  implementado y deployado. **Parcialmente cubierto ahora:**
-  - **W-A1** tiene e2e dedicado (`tests/e2e/desglose-plantilla.spec.ts`).
-  - La **consistencia de labels** de W-A2 (organizacion/mixta), W-A3 (registro/
-    sin-sistematico) y W-A4 (escalabilidad/turnos/maquinaria) quedó cubierta por
-    `src/__tests__/taller-formulario-labels.test.ts` (fix de consistencia, PR de labels)
-    — verifica que perfil y dashboard sectorial muestran los valores nuevos bien.
-- **Lo que QUEDA (no cubierto):** un e2e que **recorra el wizard** end-to-end y verifique
-  que las opciones nuevas se seleccionan y que el `PUT /api/talleres/[id]` las **persiste**
-  (incluye los 10 roles de W-A5 y la pregunta 1 de disponibilidad de W-A4, que no tienen
-  ningún test). Es cobertura de FLUJO, no de mapeo de labels.
-- **Impacto:** un cambio futuro al wizard podría romper la selección/persistencia sin que CI lo note.
-- **Prioridad:** baja (la funcionalidad está en prod y funciona; el mapeo de display ya tiene unit).
-- **Estimación:** 1.5-2h (`tests/e2e/w-a-formulario.spec.ts` que recorra los pasos nuevos y asserte persistencia).
+### T-07: Sin e2e del flujo de DENUNCIA (condicionado a G-14)
+- **Detectado en:** cierre de T-04 (2026-06-19), al auditar el huérfano `e2e/`.
+- **Descripción:** el flujo público de denuncia (`/denunciar` → código `DEN-2026-XXXXX`
+  → consultar estado) solo lo ejercitaban specs del directorio huérfano `e2e/`
+  (borrado en T-04). En la suite real `tests/e2e/` no hay cobertura del flujo.
+- **Por qué NO se recuperó en T-04:** el flujo **muta DB** (crea denuncias), así que un
+  e2e fiel necesitaría su propio reset (patrón T-05) — excede el scope de "borrar el
+  huérfano". Las otras conductas no cubiertas sí se recuperaron (FeedbackWidget →
+  `feedback-widget.spec.ts`; `/verificar` inválido → `verificar-certificado.spec.ts`).
+- **Condicionado a G-14:** existe una decisión institucional pendiente (master, **G-14**)
+  de **deshabilitar las denuncias**. **NO invertir en este e2e hasta resolver G-14** — si
+  la feature se deshabilita, la cobertura es trabajo perdido.
+- **Prioridad:** muy baja / bloqueada (depende de G-14).
+- **Estimación (si G-14 mantiene la feature):** 1.5-2h (flujo + reset de denuncias).
 
 ## Producto
 
@@ -228,22 +146,7 @@ _D-01 y D-02 resueltos en U-05 (#410) — ver sección "Resueltas"._
 
 ## Pendientes administrativos no técnicos (snapshot del sprint)
 
-### A-01: GitHub Pro suscripción accidental
-- **Detectado en:** 2026-06-04 durante destrabe del budget de Actions
-- **Descripción:** se contrató GitHub Pro USD 4/mes accidentalmente
-- **Acción:** cancelar en https://github.com/settings/billing/plans
-- **Urgencia:** ALTA (cobro recurrente real)
-
-### A-02: Aviso a 5 cuentas reales del incidente RLS
-- **Detectado en:** 2026-06-03 (incidente RLS)
-- **Descripción:** 5 cuentas reales (sebanestor83, cp.alanplummer,
-  sofia.rojo.sr, plummer.latam, cecilia.lavena) tienen sus hashes
-  bcrypt filtrados. Necesitan ser avisadas y se les debe pedir cambio
-  de contraseña.
-- **Estado:** pendiente desde el miércoles
-- **Sexta cuenta posible:** srodriguezunq (registro abandonado, posible
-  cuenta real adicional)
-- **Urgencia:** ALTA (afecta a personas reales)
+_A-01 y A-02 resueltos (confirmado por Gerardo, 2026-06-19) — ver sección "Resueltas"._
 
 ---
 
@@ -275,6 +178,66 @@ _D-01 y D-02 resueltos en U-05 (#410) — ver sección "Resueltas"._
 - Items resueltos: mover a sección "Resueltas" con SHA o PR de fix
 
 ## Resueltas
+
+### T-04: Directorio `e2e/` huérfano — RESUELTA
+- **Resuelta en:** cierre de deuda e2e (PR #435, rama `fix/t05-t04-cobertura-e2e`,
+  2026-06-19). Commits `64688d0` (recuperar FeedbackWidget) + `31f6473` (borrar `e2e/`).
+- **Qué se hizo:** se auditó el huérfano (17 specs V3, live-login, copy stale) vs la
+  suite mantenida `tests/e2e/` (storageState). Cobertura mapeada 1:1 a specs modernos.
+  Se **borró** el directorio `e2e/` completo (nada lo importaba; Playwright nunca lo
+  corrió). Se **recuperó** la única conducta no cubierta: el FeedbackWidget → spec fresco
+  `tests/e2e/feedback-widget.spec.ts` (no copia literal: el huérfano asertaba "no aparece
+  sin sesión", hoy FALSO porque se monta en root layout). El `/verificar` inválido se
+  recuperó junto a B-07. La denuncia quedó como follow-up condicionado (**T-07**).
+
+### T-05: e2e u-09 no idempotente — RESUELTA (estaba stale)
+- **Resuelta en:** **#407** (`6365708`, 2026-06-09) — la entrada quedó stale en DEUDA.
+- **Verificado en:** cierre de deuda e2e (2026-06-19). `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+  tiene un `afterEach` que llama a `POST /api/test-utils/reset-seed-state?user=u09`: borra la
+  Marca creada por el test y restaura al usuario a single-rol (`roles=[TALLER]`,
+  `activeMode=TALLER`). Endpoint SOLO-CI con allowlist cerrado (`u09|julieta`), reset
+  por-usuario (no choca con u-04 en paralelo) y doble guard de prod. El test corre N veces
+  con el mismo resultado.
+
+### T-06: Sin e2e del FLUJO de W-A2–W-A5 — RESUELTA
+- **Resuelta en:** cierre de deuda e2e (PR #435, `175953b`, 2026-06-19).
+- **Fix:** `tests/e2e/w-a-formulario.spec.ts`, dos tests por aislamiento (DEV persiste +
+  fullyParallel): (a) UI — recorre el wizard y prueba el control condicional de W-A2
+  ("Organización mixta" revela el detalle), sin guardar; (b) persistencia — PUT parcial de
+  los campos W-A escalares (organizacion/detalle, registroProduccion, disponibilidad+
+  escalabilidad de W-A4, rolesFuncionales de W-A5) + re-lee `/api/talleres/me`. Campos
+  DISJUNTOS de `plantilla` → race-safe contra `desglose-plantilla.spec.ts`. Validado en
+  preview develop via playwright-core (UI reveal + PUT 200 + re-read de los 6 campos).
+
+### B-07: `verificar/page.tsx` renderizaba taller/coleccion como objetos — RESUELTA
+- **Resuelta en:** cierre de deuda e2e (PR #435, `78edbdc`, 2026-06-19). **En frío**, antes
+  de que existan certificados (prod/dev = 0) — desactiva la bomba latente.
+- **Fix:** tipar `taller`/`coleccion` como objetos (nullable) y renderizar `.nombre`/`.titulo`
+  en las 4 ubicaciones (válido + revocado). Test e2e `tests/e2e/verificar-certificado.spec.ts`:
+  mockea la forma REAL del endpoint y asserta que renderiza nombre/título como texto (guard
+  `not [object Object]`); + smoke del path inválido (404 → "Certificado no encontrado", recupera
+  la conducta del huérfano `e2e/`). Locators scopeados a `<main>` (duplicado de streaming SSR R19).
+
+### F-05: Desborde horizontal ~17px en /taller a 320px — RESUELTA
+- **Resuelta en:** cierre de deuda e2e (PR #435, `d7b5e3c` + commit de colecciones, 2026-06-19).
+- **Causa raíz (corregida durante la verificación):** el diagnóstico previo (#433) atribuía el
+  desborde al contenedor de toasts, pero al verificar a 320px con playwright-core la fuente
+  REAL del scroll a la derecha (scrollWidth 337 > 320) era la fila de **"colecciones
+  recomendadas"** del dashboard (`Link flex justify-between`): el título `{col.titulo}` no
+  truncaba y empujaba el bloque CTA derecho fuera del viewport. El contenedor de toasts era
+  una fuente secundaria (rubber-band a la izquierda con un toast visible).
+- **Fix (layout puro, dos partes):** (a) bloque izquierdo de la fila → `min-w-0 flex-1` con
+  título `truncate`; bloque derecho → `shrink-0`. (b) viewport de toasts acotado a
+  `max-w-[min(24rem,calc(100vw-2rem))]` (desktop sigue 24rem = `max-w-sm`). **Verificado a
+  320px y 375px: overflow 0.**
+- **Regresión:** `tests/e2e/taller-flujo.mobile.spec.ts` ahora asserta `expectNoHorizontalOverflow`
+  en `/taller` (antes lo omitía por F-05) → corre en los projects mobile (320/393px).
+
+### A-01: GitHub Pro suscripción accidental — RESUELTA
+- **Resuelta:** confirmado por Gerardo (2026-06-19). Suscripción cancelada.
+
+### A-02: Aviso a 5 cuentas reales del incidente RLS — RESUELTA
+- **Resuelta:** confirmado por Gerardo (2026-06-19). Cuentas avisadas / gestionadas.
 
 ### B-05: Race de clobbering de cookie en rolling JWT session — RESUELTA
 - **Detectado en:** Diagnóstico de fallos e2e u-09 en T-04 (2026-06-09)

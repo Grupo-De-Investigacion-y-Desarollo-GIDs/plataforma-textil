@@ -1,5 +1,51 @@
 # Daily Log
 
+## 2026-06-19
+
+### Gerardo Breard
+- **14:34** `7cc1ec1` — fix(f-05): truncar titulo en colecciones recomendadas (/taller 320px)
+  - `src/app/(taller)/taller/page.tsx`
+
+- **12:24** `cf1106f` — docs(deuda): cerrar T-04/T-05/T-06/B-07/F-05 + A-01/A-02; T-07 denuncia
+  - `.claude/DEUDA_TECNICA.md`
+
+- **12:21** `d7b5e3c` — fix(f-05): acotar ancho del contenedor de toasts (desborde 320px)
+  - `src/compartido/componentes/ui/toast.tsx`
+
+- **12:17** `78edbdc` — fix(b-07): verificar/page.tsx renderiza taller/coleccion como objetos
+  - `src/app/(public)/verificar/page.tsx`
+  - `tests/e2e/verificar-certificado.spec.ts`
+
+- **11:26** `175953b` — test(t-06): e2e de flujo del formulario del taller (W-A2..W-A5)
+  - `tests/e2e/w-a-formulario.spec.ts`
+
+- **11:18** `31f6473` — test(t-04): borrar directorio e2e/ huerfano (16 specs V3 + helper)
+  - `e2e/admin.spec.ts`
+  - `e2e/auth.spec.ts`
+  - `e2e/checklist-sec1-2.spec.ts`
+  - `e2e/checklist-sec3-4.spec.ts`
+  - `e2e/checklist-sec5-6.spec.ts`
+  - `e2e/checklist-sec7-8.spec.ts`
+  - `e2e/checklist-sec9-10.spec.ts`
+  - `e2e/contenido.spec.ts`
+  - `e2e/estado.spec.ts`
+  - `e2e/feedback.spec.ts`
+  - `e2e/helpers/auth.ts`
+  - `e2e/marca.spec.ts`
+  - `e2e/pedidos.spec.ts`
+  - `e2e/publico.spec.ts`
+  - `e2e/registro.spec.ts`
+  - `e2e/seguridad-roles.spec.ts`
+  - `e2e/taller.spec.ts`
+
+
+## 2026-06-18
+
+### Gerardo Breard
+- **17:51** `64688d0` — test(t-04): recuperar cobertura del FeedbackWidget como spec fresco
+  - `tests/e2e/feedback-widget.spec.ts`
+
+
 ## 2026-06-13
 
 ### Gerardo Breard

@@ -409,17 +409,17 @@ export default async function TallerDashboardPage() {
                   href={`/taller/aprender/${col.id}`}
                   className="flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
                     <span className="text-xl">📖</span>
-                    <div>
-                      <p className="font-medium text-gray-800 text-sm">{col.titulo}</p>
+                    <div className="min-w-0">
+                      <p className="font-medium text-gray-800 text-sm truncate">{col.titulo}</p>
                       <p className="text-xs text-gray-400 mt-0.5">
                         {col._count.videos} videos
                         {col.duracion ? ` · ${col.duracion}` : ''}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 shrink-0">
                     {progreso && progreso.porcentajeCompletado > 0 && (
                       <div className="flex items-center gap-1.5">
                         <div className="w-16 h-1.5 bg-gray-200 rounded-full overflow-hidden">

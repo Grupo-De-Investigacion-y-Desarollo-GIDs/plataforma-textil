@@ -53,10 +53,10 @@ test.describe('M-03 mobile — flujo critico del taller (regresion #431)', () =>
     // Nav mobile: la hamburguesa (lg:hidden) esta visible (en desktop estaria oculta)
     await expect(page.getByRole('button', { name: 'Abrir menú' })).toBeVisible()
 
-    // NOTA: NO se asserta desborde de pagina en /taller — hay un desborde
-    // pre-existente de ~17px en 320px causado por un contenedor fixed
-    // bottom-right (viewport de toasts), AJENO a #431. Documentado como
-    // hallazgo en el reporte/DEUDA. FIX 2 se cubre con el stacking de KPIs ↓.
+    // F-05 (RESUELTA): /taller ya no desborda a 320px. La fuente real era la fila
+    // de "colecciones recomendadas" (titulo sin truncar) + el contenedor de toasts;
+    // ambos acotados. Este assert es ahora la red de regresion de F-05.
+    await expectNoHorizontalOverflow(page, '/taller')
 
     // FIX 2: los KPIs secundarios apilan en 1 columna (grid-cols-1 sm:grid-cols-2).
     // En mobile (<640px) "Capacidad" queda DEBAJO de "Formalizacion", misma x.
