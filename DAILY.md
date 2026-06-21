@@ -3,6 +3,10 @@
 ## 2026-06-21
 
 ### Gerardo Breard
+- **16:23** `ff546e0` — docs(deuda): OBS-01 — setup externo de observabilidad PENDIENTE (gate del deploy)
+  - `.claude/BITACORA_PROD.md`
+  - `.claude/DEUDA_TECNICA.md`
+
 - **15:56** `7e30efd` — docs(observabilidad): bitacora de prod + runbook de observabilidad
   - `.claude/BITACORA_PROD.md`
   - `.claude/specs/RUNBOOK_OBSERVABILIDAD.md`
