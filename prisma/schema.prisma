@@ -291,6 +291,12 @@ model Taller {
   paradasFrecuencia    String?
   rolesFuncionales     Json?      // W-A5: roles funcionales del taller
 
+  // Etapa 2.2 / Modelo B (§1.3): visibilidad por bloque de la vidriera.
+  // Objeto { formacion?, equipo?, espacio?, capacidad?, organizacion?, maquinaria? } (bool).
+  // null o key ausente = visible (default behavior-preserving). Solo `false` explicito oculta.
+  // Credenciales (etapa + ARCA) nunca se oculta; SAM nunca se expone en publico.
+  visibilidadVidriera  Json?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
