@@ -168,6 +168,23 @@ _A-01 y A-02 resueltos (confirmado por Gerardo, 2026-06-19) — ver sección "Re
   prod**, o deploy chico solo si pasan **~4 días (≈2026-06-17)** sin nada más que promover.
 - **Riesgo de deploy:** bajo (solo presentación; sin schema/migración).
 
+### OBS-01 (PRERREQUISITO — bloquea el próximo deploy): setup externo de observabilidad
+- **Estado:** PENDIENTE (lo hace Gerardo; cuentas externas, Claude no puede crearlas).
+- **Qué falta (las 3 piezas externas):**
+  1. **UptimeRobot** — monitor tipo Keyword `"db":"up"` sobre `/api/health` cada 5 min.
+  2. **Canal Telegram** (recomendado) conectado a UptimeRobot como alert contact.
+  3. **Confirmar notificaciones de Vercel** (email de deploy fallido + integración Slack opcional).
+  - Antes de (1): **confirmar el dominio canónico de prod** para la URL del health
+    (`plataformatextil.com.ar` vs `plataforma-textil.vercel.app`).
+- **Por qué bloquea:** la parte de código ya está en develop (`/api/health`, runbook,
+  bitácora — #436, `dbec4e7`), pero sin el setup externo no hay alerta si algo se cae
+  en el piloto. Es **prerrequisito explícito del próximo deploy a prod según Sergio**
+  ("si algo se rompe en el piloto necesito poder verlo").
+- **Orden (importante):** hacer OBS-01 **ANTES** de coordinar la ventana de deploy con
+  Sergio, no después. La ventana no se agenda hasta que las 3 piezas estén activas.
+- **Guía paso a paso:** `.claude/specs/RUNBOOK_OBSERVABILIDAD.md` (§1 Vercel, §2 uptime,
+  §3 canal). Sentry queda **diferido** por decisión (no es parte de este gate).
+
 ## Cómo usar este archivo
 
 - Agregar items nuevos cuando se detecten deudas pre-existentes

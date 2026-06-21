@@ -12,6 +12,12 @@ Es la lectura previa de la **revisión semanal** del piloto (pedido de Sergio:
 - La observabilidad que alimenta esta bitácora (uptime, alertas, health-check)
   está documentada en `.claude/specs/RUNBOOK_OBSERVABILIDAD.md`.
 
+> ⚠️ **Gate del próximo deploy a prod:** el setup externo de observabilidad
+> (UptimeRobot + Telegram + confirmar notificaciones de Vercel) está **PENDIENTE**
+> y es **prerrequisito del próximo deploy según Sergio**. Hacerlo **ANTES** de
+> coordinar la ventana de deploy, no después. Detalle y pasos: `OBS-01` en
+> `.claude/DEUDA_TECNICA.md` + `RUNBOOK_OBSERVABILIDAD.md`.
+
 ## Severidades
 
 | Sev | Significado | Ejemplo |
