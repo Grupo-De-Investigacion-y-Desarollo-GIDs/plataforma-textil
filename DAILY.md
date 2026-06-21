@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-06-21
+
+### Gerardo Breard
+- **15:43** `ee10ad9` — docs(narrativa): guardar copy de Etapas 2-3 como spec de referencia
+  - `.claude/specs/v4-narrativa-etapas-2-3-copy.md`
+
+
 ## 2026-06-19
 
 ### Gerardo Breard
