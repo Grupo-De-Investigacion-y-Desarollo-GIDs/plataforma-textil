@@ -1,5 +1,19 @@
 # Daily Log
 
+## 2026-06-21
+
+### Gerardo Breard
+- **15:56** `7e30efd` — docs(observabilidad): bitacora de prod + runbook de observabilidad
+  - `.claude/BITACORA_PROD.md`
+  - `.claude/specs/RUNBOOK_OBSERVABILIDAD.md`
+
+- **15:54** `fcc260e` — feat(health): endpoint /api/health con check de DB para sondas externas
+  - `src/app/api/health/route.ts`
+
+- **15:43** `ee10ad9` — docs(narrativa): guardar copy de Etapas 2-3 como spec de referencia
+  - `.claude/specs/v4-narrativa-etapas-2-3-copy.md`
+
+
 ## 2026-06-19
 
 ### Gerardo Breard
