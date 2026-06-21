@@ -3,6 +3,9 @@
 ## 2026-06-21
 
 ### Gerardo Breard
+- **16:50** `4cbe96b` — docs(spec): discovery Etapa 2 narrativa V4 (relevamiento, no implementa)
+  - `.claude/specs/v4-narrativa-etapa-2-discovery.md`
+
 - **16:23** `ff546e0` — docs(deuda): OBS-01 — setup externo de observabilidad PENDIENTE (gate del deploy)
   - `.claude/BITACORA_PROD.md`
   - `.claude/DEUDA_TECNICA.md`
