@@ -3,6 +3,9 @@
 ## 2026-06-21
 
 ### Gerardo Breard
+- **15:54** `fcc260e` — feat(health): endpoint /api/health con check de DB para sondas externas
+  - `src/app/api/health/route.ts`
+
 - **15:43** `ee10ad9` — docs(narrativa): guardar copy de Etapas 2-3 como spec de referencia
   - `.claude/specs/v4-narrativa-etapas-2-3-copy.md`
 
