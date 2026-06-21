@@ -3,6 +3,10 @@
 ## 2026-06-21
 
 ### Gerardo Breard
+- **15:56** `7e30efd` — docs(observabilidad): bitacora de prod + runbook de observabilidad
+  - `.claude/BITACORA_PROD.md`
+  - `.claude/specs/RUNBOOK_OBSERVABILIDAD.md`
+
 - **15:54** `fcc260e` — feat(health): endpoint /api/health con check de DB para sondas externas
   - `src/app/api/health/route.ts`
 
