@@ -3,6 +3,9 @@
 ## 2026-06-21
 
 ### Gerardo Breard
+- **17:48** `66676ab` — docs(spec): propuesta schema visibilidad vidriera (Etapa 2.2 / Modelo B)
+  - `.claude/specs/v4-etapa2-visibilidad-schema-propuesta.md`
+
 - **16:50** `4cbe96b` — docs(spec): discovery Etapa 2 narrativa V4 (relevamiento, no implementa)
   - `.claude/specs/v4-narrativa-etapa-2-discovery.md`
 
