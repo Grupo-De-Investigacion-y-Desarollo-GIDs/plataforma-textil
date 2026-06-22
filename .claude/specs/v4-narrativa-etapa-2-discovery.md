@@ -22,10 +22,23 @@ La Etapa 2 tiene **5 componentes** (el copy enumera 2.1 a 2.5):
 | 2.1 | Sub-tabs "Mi taller" | 🟡 Parcial | Falta el split en 2 sub-tabs + header común + botón preview | ~1–1.5 d | ✅ Sí |
 | 2.2 | Tres dimensiones de la vidriera | 🟡 Parcial | Reorg + **mecanismo de visibilidad (base ya en develop, #437)** + badges Formación | ~3–4 d | ✅ Sí (Formación: badges ya; contenido Academia para prod) |
 | 2.3 🔧 | Tres umbrales escalonados | 🔴 Ausente (como modelo) | Gracia 60d→**inactiva**, vidriera mínima (4 reqs). **Cotizar=solo CUIT (ya existe)** | ~2–3 d | ✅ Sí (modelo ya cerrado) |
-| 2.4 🔧 | Filtros del directorio | 🟢 Casi listo | Rubro/Servicios/Ubicación + copy gate ARCA | ~0.5–1 d | ✅ Sí (filtros ya definidos) |
-| 2.5 🔧 | Comms al taller no dicen "Estado" | 🟡 Acotado | Fix de copy en notif/WhatsApp/4 páginas. **Rename interno → V4.5** | ~0.5 d | ✅ Sí (el rename de ~70 archivos sale de Etapa 2) |
+| 2.4 ✅ | Filtros del directorio | ✅ **HECHO** (#438, `f35e39a`) | Rubro/Servicios/Ubicación (cascada) + copy gate ARCA — mergeado en develop | — | ✅ Listo |
+| 2.5 ✅ | Comms al taller no dicen "Estado" | ✅ **HECHO** (#438, `f35e39a`) | 7 puntos user-facing → "Coordinación". **Rename interno sigue → V4.5** | — | ✅ Listo |
 
 **Total ajustado: ~6.5–9 días** de Sergio (antes ~10–13). Bajó porque: cotizar simplificado a solo-CUIT (que ya existe, elimina el cálculo holístico de %), el mecanismo de visibilidad ya tiene su base mergeada (#437), y el rename pesado ESTADO→COORD (~1.5–2 d) sale de Etapa 2 hacia V4.5 (queda solo el fix de copy ~0.5 d). El grueso restante es net-new de 2.3 (gracia + vidriera mínima) y el render/UI de 2.2.
+
+### 📦 Estado de la Etapa 2 (actualizado 2026-06-22)
+
+**El paquete del piloto ("coherencia externa") está COMPLETO en develop:**
+- ✅ **2.5 — fix de comms** (`#438`, `f35e39a`): los 7 puntos user-facing que leía el taller dicen "Coordinación", no "Estado". Base schema de visibilidad de 2.2 también ya en develop (`#437`).
+- ✅ **2.4 — filtros del directorio** (`#438`, `f35e39a`): Rubro / Servicios / Ubicación (cascada provincia→partido) + texto fijo del gate ARCA, en el directorio público y la vista marca.
+
+**Pendiente de la Etapa 2 (no bloquea el piloto salvo lo indicado):**
+- 🟡 **2.1 — sub-tabs "Mi taller"** (Mi vidriera | Mi gestión productiva + header común + botón preview).
+- 🟡 **2.2 — UI de visibilidad** (escribir el JSONB ya mergeado en #437) + reorg en 3 bloques + badges de Formación (granular por badge).
+- 🔴 **2.3 — gracia 60d→inactiva + vidriera mínima (4 reqs)** (el mayor net-new restante; necesita decisión cron on-read vs job).
+
+**Único prerrequisito externo del próximo deploy a prod (orden de Sergio):** **OBS-01 — setup externo de observabilidad** (UptimeRobot + Telegram + notificaciones de Vercel). Es operativo/manual, no de código; el código de `/api/health` + runbook ya están. El paquete del piloto en develop NO depende de OBS-01 para funcionar, pero OBS-01 debe quedar montado antes de promover a prod.
 
 ---
 
@@ -151,7 +164,9 @@ Baja porque se descarta el cálculo de % y la reescritura del gate de cotizar. Q
 
 ---
 
-## 2.4 — Filtros del directorio
+## 2.4 — Filtros del directorio · ✅ HECHO (PR #438, `f35e39a`)
+
+> **Implementado y mergeado en develop (2026-06-22).** Componente compartido `DirectorioFiltros` con los 3 filtros (Rubro=prenda / Servicios=proceso / Ubicación=cascada provincia→partido vía `derivarUbicaciones()`), texto fijo del gate ARCA, heading "Filtrar talleres" y botón "Aplicar filtros", en el directorio público y la vista marca. Capacidad NO se filtra. El resto de esta sección queda como registro del relevamiento.
 
 ### Qué existe hoy
 - **Dos directorios:** público `src/app/(public)/directorio/page.tsx` y marca `src/app/(marca)/marca/directorio/page.tsx`.
@@ -181,7 +196,9 @@ Ya no es decisión pendiente. Sergio fijó los **3 filtros** (master 3.11):
 
 ---
 
-## 2.5 🔧 — El taller no debe leer "Estado" (comms en Etapa 2; rename interno → V4.5)
+## 2.5 — El taller no debe leer "Estado" · ✅ HECHO (PR #438, `f35e39a`) — rename interno → V4.5
+
+> **Implementado y mergeado en develop (2026-06-22).** Los **7** puntos user-facing que leía el taller dicen "Coordinación" (los 6 detectados + el 7º `taller/perfil:246` que el grep destapó, confirmado por Gerardo). El **rename interno** del rol (enum + rutas + ~70 archivos) **sigue diferido a V4.5**. El resto de esta sección queda como registro del relevamiento.
 
 > **Corrección Sergio:** el rename técnico ESTADO→COORD (enum + rutas + ~70 archivos) **se difiere a V4.5**. En Etapa 2 / piloto solo queda la **condición de Sergio**: el taller nunca debe **leer** la palabra "Estado". Eso es un **fix de copy acotado** en las comms al taller, separado del rename interno.
 
