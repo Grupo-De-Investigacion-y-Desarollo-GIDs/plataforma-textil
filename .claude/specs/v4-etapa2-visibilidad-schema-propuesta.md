@@ -5,6 +5,8 @@
 > **Insumos:** copy `v4-narrativa-etapas-2-3-copy.md` §2.2 · master `narrativa-V4-consolidado-niveles-1-a-4.md` §1.3 + §4.5 (Modelo B) · `prisma/schema.prisma` (model Taller) · `src/app/(public)/perfil/[id]/page.tsx`.
 > **Decisión previa de Gerardo:** toggle **por bloque, NO granular** por ahora.
 
+> ✅ **EJECUTADO (fundacional) — rama `feature/etapa2-visibilidad-schema`.** Gerardo aprobó las 6 decisiones (Opción A JSONB; Formación on/off bloque; SAM siempre privado; visibilidad de marca diferida; 6 bloques + Credenciales fijo; Gerardo modela/migra). Este PR trae **solo lo fundacional**: campo `visibilidadVidriera Json?` + migración aditiva `20260621120000_agregar_visibilidad_vidriera` (aplicada a DEV), helper `src/compartido/lib/visibilidad-vidriera.ts` + tests, y el filtro en el render público. **Behavior-preserving:** todos los talleres actuales tienen `null` ⇒ todo visible ⇒ sin cambio percibido hasta que exista la UI de toggle. **NO incluye** (PRs siguientes): UI "Configuración de visibilidad", sub-tabs (2.1), "Mi gestión productiva", endpoint de escritura.
+
 Es el **cuello de botella técnico de la Etapa 2**: lo usan los 3 bloques de la vidriera y no depende de decisiones de producto. Una vez resuelto, desbloquea 2.1 (sub-tabs), 2.2 (reorg + Formación) y el botón "Ver cómo me ve el directorio".
 
 ---
@@ -136,6 +138,8 @@ model Taller {
 - §1.3 también incluía **1.4 (vitrina con info de marca en cada pedido)** — no es visibilidad de perfil, fuera de alcance.
 
 **Conclusión:** cubre el **núcleo taller de §1.3 Modelo B completo**, salvo la pieza simétrica de marca y la granularidad por-badge (ambas explícitamente fuera del alcance "por bloque, taller").
+
+> ✅ **El núcleo taller de §1.3 (datos + helper + filtro) queda cubierto por el PR `feature/etapa2-visibilidad-schema`.** Pendiente sobre esta base (PRs siguientes): UI de toggles, botón "Ver cómo me ve el directorio", "Mi gestión productiva". Diferido: visibilidad de marca y Formación por-badge.
 
 ---
 

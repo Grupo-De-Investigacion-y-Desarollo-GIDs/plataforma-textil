@@ -7,6 +7,7 @@ import { Card } from '@/compartido/componentes/ui/card'
 import { Star, MapPin, Users, TrendingUp, Clock, Award, ShieldCheck } from 'lucide-react'
 import { GaleriaFotos } from '@/taller/componentes/galeria-fotos'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
+import { bloqueVisible } from '@/compartido/lib/visibilidad-vidriera'
 
 export default async function PerfilPublicoPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -109,7 +110,7 @@ export default async function PerfilPublicoPage({ params }: { params: Promise<{ 
         </Card>
       )}
 
-      {taller.maquinaria.length > 0 && (
+      {taller.maquinaria.length > 0 && bloqueVisible(taller, 'maquinaria') && (
         <Card title="Maquinaria" className="mb-4">
           <ul className="space-y-1 text-sm">
             {taller.maquinaria.map((m: { id: string; nombre: string; cantidad: number }) => (
@@ -134,7 +135,7 @@ export default async function PerfilPublicoPage({ params }: { params: Promise<{ 
         </Card>
       )}
 
-      {taller.certificados.length > 0 && (
+      {taller.certificados.length > 0 && bloqueVisible(taller, 'formacion') && (
         <Card title="Capacitaciones certificadas">
           <div className="space-y-2">
             {taller.certificados.map((cert: { id: string; codigo: string; coleccion: { titulo: string; institucion: string | null } }) => (
