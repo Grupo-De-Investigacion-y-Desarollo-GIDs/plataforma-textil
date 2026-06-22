@@ -9,11 +9,13 @@ import { Card } from '@/compartido/componentes/ui/card'
 import { Star, MapPin, Users, ArrowRight, Factory } from 'lucide-react'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { EmptyState } from '@/compartido/componentes/ui/empty-state'
+import { DirectorioFiltros } from '@/compartido/componentes/directorio-filtros'
+import { derivarUbicaciones } from '@/compartido/lib/directorio-ubicaciones'
 
 export default async function DirectorioPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ q?: string; proceso?: string; prenda?: string; page?: string }> | { q?: string; proceso?: string; prenda?: string; page?: string }
+  searchParams?: Promise<{ q?: string; proceso?: string; prenda?: string; provincia?: string; partido?: string; page?: string }> | { q?: string; proceso?: string; prenda?: string; provincia?: string; partido?: string; page?: string }
 }) {
   if (!await getFeatureFlag('directorio_publico')) notFound()
 
@@ -21,6 +23,8 @@ export default async function DirectorioPage({
   const query = (params.q || '').trim()
   const procesoId = (params.proceso || '').trim()
   const prendaId = (params.prenda || '').trim()
+  const provincia = (params.provincia || '').trim()
+  const partido = (params.partido || '').trim()
   const page = Math.max(1, parseInt(params.page || '1'))
   const PAGE_SIZE = 12
 
@@ -29,14 +33,14 @@ export default async function DirectorioPage({
     ...(query ? { OR: [
       { nombre: { contains: query, mode: 'insensitive' as const } },
       { ubicacion: { contains: query, mode: 'insensitive' as const } },
-      { provincia: { contains: query, mode: 'insensitive' as const } },
-      { partido: { contains: query, mode: 'insensitive' as const } },
     ]} : {}),
     ...(procesoId ? { procesos: { some: { procesoId } } } : {}),
     ...(prendaId ? { prendas: { some: { prendaId } } } : {}),
+    ...(provincia ? { provincia } : {}),
+    ...(partido ? { partido } : {}),
   }
 
-  const [procesos, prendas, talleres, totalTalleres] = await Promise.all([
+  const [procesos, prendas, ubicaciones, talleres, totalTalleres] = await Promise.all([
     prisma.procesoProductivo.findMany({
       where: { activo: true },
       select: { id: true, nombre: true },
@@ -47,6 +51,7 @@ export default async function DirectorioPage({
       select: { id: true, nombre: true },
       orderBy: { nombre: 'asc' },
     }),
+    derivarUbicaciones(),
     prisma.taller.findMany({
       where: tallerWhere,
       include: {
@@ -64,7 +69,7 @@ export default async function DirectorioPage({
     prisma.taller.count({ where: tallerWhere }),
   ])
 
-  const hasFilters = query || procesoId || prendaId
+  const hasFilters = query || procesoId || prendaId || provincia || partido
 
   return (
     <div>
@@ -73,41 +78,18 @@ export default async function DirectorioPage({
         <p className="text-gray-600">Encontra talleres textiles registrados y verificados en la plataforma.</p>
       </div>
 
-      <form method="get" className="bg-white rounded-xl border border-gray-100 p-4 mb-6">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <input
-            name="q"
-            defaultValue={query}
-            placeholder="Buscar por nombre o ubicacion..."
-            aria-label="Buscar por nombre o ubicacion"
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/30"
-          />
-          <select name="proceso" defaultValue={procesoId}
-            aria-label="Filtrar por proceso productivo"
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm">
-            <option value="">Todos los procesos</option>
-            {procesos.map(p => <option key={p.id} value={p.id}>{p.nombre}</option>)}
-          </select>
-          <select name="prenda" defaultValue={prendaId}
-            aria-label="Filtrar por tipo de prenda"
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm">
-            <option value="">Todas las prendas</option>
-            {prendas.map(p => <option key={p.id} value={p.id}>{p.nombre}</option>)}
-          </select>
-        </div>
-        <div className="flex gap-2 mt-3">
-          <button type="submit"
-            className="bg-brand-blue text-white px-4 py-2 rounded-lg text-sm hover:bg-brand-blue/90">
-            Filtrar
-          </button>
-          {hasFilters && (
-            <a href="/directorio"
-              className="border border-gray-300 text-gray-600 px-4 py-2 rounded-lg text-sm hover:bg-gray-50">
-              Limpiar filtros
-            </a>
-          )}
-        </div>
-      </form>
+      <DirectorioFiltros
+        basePath="/directorio"
+        q={query}
+        procesoId={procesoId}
+        prendaId={prendaId}
+        provincia={provincia}
+        partido={partido}
+        procesos={procesos}
+        prendas={prendas}
+        provincias={ubicaciones.provincias}
+        partidosPorProvincia={ubicaciones.partidosPorProvincia}
+      />
 
       <p className="text-sm text-gray-500 mb-4">
         {totalTalleres} {totalTalleres === 1 ? 'taller encontrado' : 'talleres encontrados'}
@@ -185,7 +167,7 @@ export default async function DirectorioPage({
         <div className="flex items-center justify-center gap-2 mt-8">
           {page > 1 && (
             <Link
-              href={`/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), page: String(page - 1) }).toString()}`}
+              href={`/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), ...(provincia ? { provincia } : {}), ...(partido ? { partido } : {}), page: String(page - 1) }).toString()}`}
               className="px-4 py-2 rounded-lg border border-gray-300 text-sm text-gray-600 hover:bg-gray-50"
             >
               ← Anterior
@@ -194,7 +176,7 @@ export default async function DirectorioPage({
           {Array.from({ length: Math.ceil(totalTalleres / PAGE_SIZE) }, (_, i) => i + 1).map(p => (
             <Link
               key={p}
-              href={`/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), page: String(p) }).toString()}`}
+              href={`/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), ...(provincia ? { provincia } : {}), ...(partido ? { partido } : {}), page: String(p) }).toString()}`}
               className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium ${
                 p === page ? 'bg-brand-blue text-white' : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
               }`}
@@ -204,7 +186,7 @@ export default async function DirectorioPage({
           ))}
           {page < Math.ceil(totalTalleres / PAGE_SIZE) && (
             <Link
-              href={`/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), page: String(page + 1) }).toString()}`}
+              href={`/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), ...(provincia ? { provincia } : {}), ...(partido ? { partido } : {}), page: String(page + 1) }).toString()}`}
               className="px-4 py-2 rounded-lg border border-gray-300 text-sm text-gray-600 hover:bg-gray-50"
             >
               Siguiente →

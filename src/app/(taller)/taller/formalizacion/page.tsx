@@ -133,7 +133,7 @@ export default async function TallerFormalizacionPage() {
                       title={td.label}
                       status={status}
                       description={
-                        estado === 'COMPLETADO'   ? `Verificado por ${validacion?.usuarioAprobador?.role === 'ESTADO' ? 'el Estado' : 'el equipo de PDT'}${validacion?.usuarioAprobador?.name ? ` (${validacion.usuarioAprobador.name})` : ''}`
+                        estado === 'COMPLETADO'   ? `Verificado por ${validacion?.usuarioAprobador?.role === 'ESTADO' ? 'la Coordinación' : 'el equipo de PDT'}${validacion?.usuarioAprobador?.name ? ` (${validacion.usuarioAprobador.name})` : ''}`
                       : estado === 'PENDIENTE'    ? 'En revisión por el equipo de PDT'
                       : estado === 'VENCIDO'      ? 'Documento vencido — requiere actualización'
                       : estado === 'RECHAZADO'    ? `Rechazado: ${validacion?.detalle || 'Revisá la documentación'}`

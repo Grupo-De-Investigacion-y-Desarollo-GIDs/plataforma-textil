@@ -185,7 +185,7 @@ export default async function TallerDashboardPage() {
             Tu taller esta en proceso de formalizacion
           </p>
           <p className="text-sm text-amber-700">
-            Podes navegar la plataforma, capacitarte y subir documentos para avanzar. Una vez que el Estado verifique tu CUIT, vas a poder cotizar pedidos y aparecer en el directorio.
+            Podes navegar la plataforma, capacitarte y subir documentos para avanzar. Una vez que la Coordinación verifique tu CUIT, vas a poder cotizar pedidos y aparecer en el directorio.
           </p>
           <Link
             href="/taller/formalizacion"
