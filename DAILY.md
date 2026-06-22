@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-06-22
+
+### Gerardo Breard
+- **12:30** `614392f` — docs(deuda): T-01 — patron migracion manual + migrate deploy (pgvector rompe migrate dev)
+  - `.claude/DEUDA_TECNICA.md`
+
+
 ## 2026-06-21
 
 ### Gerardo Breard
