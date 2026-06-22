@@ -9,6 +9,8 @@ import Link from 'next/link'
 import { MapPin, Star, MessageCircle, Factory } from 'lucide-react'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { EmptyState } from '@/compartido/componentes/ui/empty-state'
+import { DirectorioFiltros } from '@/compartido/componentes/directorio-filtros'
+import { derivarUbicaciones } from '@/compartido/lib/directorio-ubicaciones'
 
 const PAGE_SIZE = 12
 
@@ -16,6 +18,8 @@ type SearchParams = {
   q?: string
   proceso?: string
   prenda?: string
+  provincia?: string
+  partido?: string
   page?: string
 }
 
@@ -31,10 +35,12 @@ export default async function DirectorioPage({
   const query = (resolvedSearchParams.q || '').trim()
   const procesoId = (resolvedSearchParams.proceso || '').trim()
   const prendaId = (resolvedSearchParams.prenda || '').trim()
+  const provincia = (resolvedSearchParams.provincia || '').trim()
+  const partido = (resolvedSearchParams.partido || '').trim()
   const page = Math.max(1, parseInt(resolvedSearchParams.page || '1'))
 
   // Cargar opciones para los selects
-  const [procesos, prendas] = await Promise.all([
+  const [procesos, prendas, ubicaciones] = await Promise.all([
     prisma.procesoProductivo.findMany({
       where: { activo: true },
       select: { id: true, nombre: true },
@@ -45,6 +51,7 @@ export default async function DirectorioPage({
       select: { id: true, nombre: true },
       orderBy: { nombre: 'asc' },
     }),
+    derivarUbicaciones(),
   ])
 
   // Query principal con filtros dinámicos — solo talleres verificados
@@ -60,6 +67,8 @@ export default async function DirectorioPage({
       : {}),
     ...(procesoId ? { procesos: { some: { procesoId } } } : {}),
     ...(prendaId ? { prendas: { some: { prendaId } } } : {}),
+    ...(provincia ? { provincia } : {}),
+    ...(partido ? { partido } : {}),
   }
 
   const [talleres, total] = await Promise.all([
@@ -81,7 +90,7 @@ export default async function DirectorioPage({
   ])
 
   const totalPages = Math.ceil(total / PAGE_SIZE)
-  const hasFilters = query || procesoId || prendaId
+  const hasFilters = query || procesoId || prendaId || provincia || partido
 
   return (
     <div className="space-y-6">
@@ -94,72 +103,18 @@ export default async function DirectorioPage({
         </p>
       </div>
 
-      <Card>
-        <form method="get" className="space-y-3">
-          <div>
-            <label htmlFor="q" className="block text-sm font-medium text-brand-blue mb-1.5">
-              Buscar por nombre o ubicación
-            </label>
-            <input
-              id="q"
-              name="q"
-              defaultValue={query}
-              placeholder="Ej: Corte Sur, Avellaneda..."
-              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent"
-            />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div>
-              <label htmlFor="proceso" className="block text-sm font-medium text-brand-blue mb-1.5">
-                Proceso
-              </label>
-              <select
-                id="proceso"
-                name="proceso"
-                defaultValue={procesoId}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent"
-              >
-                <option value="">Todos</option>
-                {procesos.map((p) => (
-                  <option key={p.id} value={p.id}>{p.nombre}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="prenda" className="block text-sm font-medium text-brand-blue mb-1.5">
-                Tipo de prenda
-              </label>
-              <select
-                id="prenda"
-                name="prenda"
-                defaultValue={prendaId}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent"
-              >
-                <option value="">Todos</option>
-                {prendas.map((p) => (
-                  <option key={p.id} value={p.id}>{p.nombre}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              type="submit"
-              className="inline-flex items-center justify-center rounded-lg font-overpass font-semibold transition-colors bg-brand-blue hover:bg-brand-blue-hover text-white px-4 py-2.5 text-sm"
-            >
-              Filtrar
-            </button>
-            {hasFilters && (
-              <Link
-                href="/marca/directorio"
-                className="inline-flex items-center justify-center rounded-lg font-overpass font-semibold transition-colors bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2.5 text-sm"
-              >
-                Limpiar filtros
-              </Link>
-            )}
-          </div>
-        </form>
-      </Card>
+      <DirectorioFiltros
+        basePath="/marca/directorio"
+        q={query}
+        procesoId={procesoId}
+        prendaId={prendaId}
+        provincia={provincia}
+        partido={partido}
+        procesos={procesos}
+        prendas={prendas}
+        provincias={ubicaciones.provincias}
+        partidosPorProvincia={ubicaciones.partidosPorProvincia}
+      />
 
       <p className="text-sm text-gray-500">
         Mostrando {talleres.length} de {total} {total === 1 ? 'taller' : 'talleres'}
@@ -256,7 +211,7 @@ export default async function DirectorioPage({
         <div className="flex items-center justify-center gap-3 mt-2">
           {page > 1 && (
             <Link
-              href={`/marca/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), page: String(page - 1) }).toString()}`}
+              href={`/marca/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), ...(provincia ? { provincia } : {}), ...(partido ? { partido } : {}), page: String(page - 1) }).toString()}`}
               className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50"
             >
               Anterior
@@ -265,7 +220,7 @@ export default async function DirectorioPage({
           <span className="text-sm text-gray-500">Pagina {page} de {totalPages}</span>
           {page < totalPages && (
             <Link
-              href={`/marca/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), page: String(page + 1) }).toString()}`}
+              href={`/marca/directorio?${new URLSearchParams({ ...(query ? { q: query } : {}), ...(procesoId ? { proceso: procesoId } : {}), ...(prendaId ? { prenda: prendaId } : {}), ...(provincia ? { provincia } : {}), ...(partido ? { partido } : {}), page: String(page + 1) }).toString()}`}
               className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50"
             >
               Siguiente

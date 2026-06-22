@@ -74,7 +74,7 @@ export default function OnboardingTallerPage() {
           <li>Habilitacion municipal (si la tenes)</li>
           <li>Constancia de ART (si tenes empleados)</li>
         </ul>
-        <p className="text-sm text-gray-500 mt-3">El Estado los revisa y aprueba en 24-48hs habiles.</p>
+        <p className="text-sm text-gray-500 mt-3">La Coordinación los revisa y aprueba en 24-48hs habiles.</p>
       </section>
 
       <section className="bg-white rounded-xl border border-gray-200 p-6">

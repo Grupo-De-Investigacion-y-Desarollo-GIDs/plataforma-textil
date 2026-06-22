@@ -100,7 +100,7 @@ export default async function PedidoDisponibleDetallePage({ params }: { params: 
               Para enviar cotizaciones, tu taller necesita tener el CUIT verificado
             </p>
             <p className="text-sm text-gray-600 mb-4">
-              Subi tu documentacion en Formalizacion — el Estado revisa y aprueba en dias habiles.
+              Subi tu documentacion en Formalizacion — la Coordinación revisa y aprueba en dias habiles.
             </p>
             <Link
               href="/taller/formalizacion"

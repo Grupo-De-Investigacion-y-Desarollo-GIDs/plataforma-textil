@@ -108,7 +108,7 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
         userId: taller!.userId,
         tipo: 'VALIDACION',
         titulo: `Documento aprobado: ${validacion.tipo}`,
-        mensaje: `El Estado aprobo tu ${validacion.tipo}.`,
+        mensaje: `La Coordinacion aprobo tu ${validacion.tipo}.`,
         canal: 'PLATAFORMA',
         link: '/taller/formalizacion',
       },
