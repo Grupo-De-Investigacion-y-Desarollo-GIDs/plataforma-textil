@@ -100,6 +100,23 @@ _D-01 y D-02 resueltos en U-05 (#410) — ver sección "Resueltas"._
   → navegar el **preview de Vercel del PR** (login público 200; para
   rutas con auth, loguear con credenciales del seed) → screenshots en
   320/375/414px → `Read` de los PNG. Para no redescubrirlo.
+- **Patrón de migraciones — `prisma migrate dev` ROTO por pgvector (2026-06-22, PR #437):**
+  `prisma migrate dev` falla con **P3006** porque valida contra una *shadow
+  database* que NO tiene la extensión `vector` (pgvector) que usa una migración
+  previa (`agregar_documento_rag`) → `ERROR: type "vector" does not exist`. **No
+  es un bug del cambio que se está migrando.** Patrón establecido del repo para
+  agregar una migración:
+  1. Editar `prisma/schema.prisma`.
+  2. **Crear la migración a mano**: `prisma/migrations/<TIMESTAMP>_<nombre>/migration.sql`
+     con el SQL (timestamp posterior a la última; formato `YYYYMMDDHHMMSS`).
+  3. Aplicar a DEV con **`prisma migrate deploy`** (NO usa shadow DB) tras
+     `npm run db:check` (guard anti-PROD). Confirmar `migrate status` "up to date" antes.
+  4. `prisma migrate generate`/`generate` para refrescar el client.
+  - Ojo extra (T-01): el `prisma` local de /mnt/d está roto → usar `npx prisma@6.19.2`
+    (la v7 que agarra npx por default ya no soporta `directUrl` en el schema).
+  - A futuro se podría arreglar `migrate dev` habilitando `vector` en la shadow DB
+    (config `prisma.config.ts` / `shadowDatabaseUrl` con la extensión), pero mientras
+    tanto: **migración manual + `migrate deploy`**.
 
 ### T-02: GitHub Actions outage intermitente selectivo
 - **Detectado en:** 2026-06-04 y volvió el 2026-06-07
