@@ -3,6 +3,9 @@
 ## 2026-06-22
 
 ### Gerardo Breard
+- **13:05** `5b4c113` — docs(spec): Etapa 2 — modelo corregido por Sergio (21-jun)
+  - `.claude/specs/v4-narrativa-etapa-2-discovery.md`
+
 - **12:30** `614392f` — docs(deuda): T-01 — patron migracion manual + migrate deploy (pgvector rompe migrate dev)
   - `.claude/DEUDA_TECNICA.md`
 
