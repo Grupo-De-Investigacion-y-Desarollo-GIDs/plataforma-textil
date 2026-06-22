@@ -243,7 +243,7 @@ export default async function TallerPerfilPage() {
           </div>
 
           <p className="text-xs text-gray-400 mt-4">
-            Esta información es visible para el equipo de la plataforma y organismos del Estado.
+            Esta información es visible para el equipo de la plataforma y la Coordinación.
             No afecta tu recorrido de formalización.
           </p>
         </Card>
