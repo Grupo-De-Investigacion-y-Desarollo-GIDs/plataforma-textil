@@ -6,12 +6,20 @@
 
 ---
 
-## 🔒 Bloqueos (leer primero)
+## 🔒 Bloqueos por PR (leer primero)
 
-La implementación de 2.2 **está bloqueada** por:
-1. **Merge de #439 (2.1).** Re-QA de Sergio pendiente. 2.2 se construye sobre el layout/sub-tabs y "Mi gestión productiva". **No arrancar 2.2 hasta que #439 mergee.**
-2. **Confirmación de Sergio sobre Efic/Result.** Define si los pasos de **eficiencia** y **resultado de capacidad** del wizard (derivados del SAM) entran en **FORZADO-PRIVADO** junto con el SAM completo. Bloquea cerrar la taxonomía de la categoría privada (afecta el PR de render+flag).
-3. **Que Gerardo modele/migre 2 cosas de schema** (regla del repo: Sergio no toca schema): el **flag `modeloB_revisado`** y, si se confirma, la **expansión del set de bloques toggleables** (solo afecta el type TS + el array, no el schema — el JSONB ya lo soporta).
+> Mapa de **qué decisión bloquea qué PR**. Cada PR arranca solo cuando sus bloqueos están levantados.
+
+| PR | Bloqueado por | NO bloqueado por |
+|---|---|---|
+| **2.2-A** (estructura: 3er sub-tab + reorder + sync) | **Solo** el merge de **#439** | D3/D4/Efic-Result, flag — nada de visibilidad lo toca |
+| **2.2-B** (taxonomía + flag + render condicional) | #439 · **confirmación Efic/Result** (cierra FORZADO-PRIVADO) · **Gerardo modela/migra el flag `modeloB_revisado`** | D3/D4 (son taxonomía fina de toggles, no afectan el render-condicional ni el flag) |
+| **2.2-C** (config UI + toggles + escritura) | #439 · 2.2-B mergeado · **D3 ("tiempos")** · **D4 (acreditaciones 1-vs-2 / granularidad)** | — |
+
+**Resumen accionable:**
+- **2.2-A queda LISTA para arrancar apenas mergee #439.** No espera nada más.
+- **2.2-B** espera #439 + Efic/Result + el flag modelado por Gerardo.
+- **2.2-C** espera 2.2-B + las 2 decisiones de Sergio (D3, D4).
 
 ---
 
@@ -37,7 +45,7 @@ Esto **reemplaza** las decisiones parciales del discovery anterior (Opción A de
 | 6 bloques toggleables | **~12 bloques** (3 categorías; el set toggleable se amplía — ver §4) |
 | Default null=visible (#437 directo) | **Privacy-by-default** condicionado por `modeloB_revisado` |
 | Sin flag nuevo | **Flag `modeloB_revisado Boolean @default(false)`** (1 migración aditiva) |
-| Bordes B1–B4 abiertos | B1–B4 mayormente resueltos por la taxonomía de §4; quedan abiertos **Efic/Result**, **año**, **"tiempos"**, **acreditaciones 1-vs-2** (ver §10) |
+| Bordes B1–B4 abiertos | B1–B4 + año (D2) + portfolio (D5) + R-DIR **resueltos**; quedan **solo** abiertos **Efic/Result** (D1, bloquea 2.2-B) y **"tiempos"** (D3) / **acreditaciones 1-vs-2** (D4) — D3/D4 bloquean **solo 2.2-C** (ver §10) |
 | Plan 2 PRs | **3 PRs** (el sub-tab estructural va aparte) |
 
 ---
@@ -116,17 +124,22 @@ Esto **reemplaza** las decisiones parciales del discovery anterior (Opción A de
 | Mi espacio físico | `espacio` | `metrosCuadrados` | ❌ net-new | |
 | Procesos | `procesos` *(nuevo)* | `procesos[]` | ✅ (hoy sin gate) | pasa a toggleable |
 | Prendas / rubros | `prendas` *(nuevo)* | `prendas[]` | ✅ (hoy sin gate) | pasa a toggleable |
-| Tiempos | `tiempos` *(nuevo)* | **¿qué campo?** | — | **distinto del SAM privado** → §10 |
+| Tiempos | `tiempos` *(nuevo)* | **¿qué campo?** | — | 🟡 **D3 pendiente Sergio** (distinto del SAM privado y del rango; bloquea solo 2.2-C) |
 | Organización | `organizacion` | `organizacion`, `registroProduccion` | ❌ net-new | |
 | Maquinaria | `maquinaria` | `maquinaria[]` | ✅ ya gateado | |
 | Capacidad (rango) | `capacidad` | `capacidadMensual` **como rango**, `escalabilidad` | parcial | público = **rango bucketizado**, nunca SAM |
-| Año de fundación | `anioFundacion` *(nuevo)* | `Taller.fundado` | — | **choca con §2 (auto-visible)** → §10 |
-| Acreditaciones | `formacion` (Academia, granular) + `certificaciones` *(nuevo)* | `certificados[]` + `certificaciones[]` | parcial | **¿1 toggle o 2?** → §10 |
-| Portfolio | `portfolio` *(nuevo)* | `portfolioFotos[]` | ✅ (hoy sin gate) | **cambia de comportamiento**: pasa a oculto-por-default |
+| Año de fundación | `anioFundacion` *(nuevo)* | `Taller.fundado` | — | ✅ D2: el dato sincroniza (§3), el toggle gatea su visibilidad |
+| Acreditaciones | `formacion` (Academia, granular) + `certificaciones` *(nuevo)* | `certificados[]` + `certificaciones[]` | parcial | 🟡 **D4 pendiente Sergio: ¿1 toggle o 2?** (bloquea solo 2.2-C) |
+| Portfolio | `portfolio` *(nuevo)* | `portfolioFotos[]` | ✅ (hoy sin gate) | ✅ D5: pasa a oculto-por-default (existentes lo mantienen vía revisado=true) |
 
-### 4.4 Regla de elegibilidad para el directorio
+### 4.4 Regla de elegibilidad para el directorio ✅ (R-DIR confirmado por Gerardo)
 Para **aparecer en `/directorio`**, además de FORZADO-VISIBLE completo (nombre, descripción ≥50, ubicación, etapa, ARCA) se exige **≥1 `proceso` o `rubro` con su toggle activo**.
-⚠️ **Esto rompe el invariante "render-only" de #437** (la visibilidad ahora afecta una **inclusión en listado**, no solo el render). Implementación: el filtro del directorio debe evaluar el estado del toggle (probablemente **post-query en app**, ya que la visibilidad vive en JSONB y no es queryable en SQL eficientemente). Ver riesgo R-DIR en §9.
+
+⚠️ **CAMBIO DE SUPUESTO vs #437:** la propuesta #437 decía "los toggles son render-only, nunca entran en un WHERE". **Eso ya no es cierto:** la visibilidad ahora **SÍ condiciona la inclusión en el listado** del directorio, no solo el render del perfil. Documentado explícitamente para que nadie asuma lo viejo.
+
+- **Implementación (mitigación aceptada):** **filtro post-query en app** evaluando el estado del toggle (la visibilidad vive en JSONB; no es queryable eficientemente en SQL). El directorio trae los candidatos por `verificadoAfip` + FORZADO-VISIBLE y descarta en app los que no tienen ≥1 proceso/rubro con toggle activo.
+- **REQUISITO de test de 2.2 (obligatorio):** caso **"taller con todos sus bloques toggle-libre ocultos → NO aparece en el directorio"**. Es la prueba de que el cambio de supuesto está bien implementado. (Va en el PR donde se cablea la elegibilidad — ver §9.)
+- Riesgo asociado: R-DIR en §9.
 
 ### 4.5 Resolución de B1–B4 del discovery anterior
 - **B1 Credenciales** → FORZADO-VISIBLE (resuelto: nunca toggle).
@@ -279,11 +292,11 @@ export function badgeFormacionVisible(taller, certificadoId): boolean {
 - Schema (`modeloB_revisado`) ← **Gerardo** modela/migra (antes de 2.2-B).
 
 **Riesgos:**
-- **R-DIR — elegibilidad de directorio rompe "render-only" (§4.4).** La visibilidad ahora condiciona aparecer en `/directorio`. Mitigación: filtro post-query en app evaluando el toggle de procesos/prendas; **cubrir con test** (taller sin procesos visibles ⇒ no aparece).
+- **R-DIR — elegibilidad de directorio rompe "render-only" (§4.4). ✅ confirmado (Gerardo).** La visibilidad ahora condiciona aparecer en `/directorio` (cambio de supuesto vs #437). Va en **2.2-B** (usa el mismo `bloqueVisiblePublico`; behavior-preserving para existentes con revisado=true). Mitigación: filtro post-query en app evaluando el toggle de procesos/prendas. **Test obligatorio de 2.2:** "taller con todo toggle-libre oculto ⇒ NO aparece en el directorio".
 - **R-FLAG — flip del flag expone bloques (§5.3).** Mitigación: **escribir mapa completo** en el primer guardado (regla crítica). Test: taller nuevo activa 1 toggle ⇒ solo ese bloque aparece, los demás siguen ocultos.
 - **R-GAP — ventana 2.2-B→2.2-C.** Talleres **nuevos** entre B y C quedan en privacy-by-default sin UI para exponer nada (solo FORZADO-VISIBLE). Es el default seguro y los talleres nuevos tienen pocos bloques cargados; mitigación: shipear B y C cerca, o incluir el panel mínimo en B. Aceptable.
 - **R-DOBLE — doble superficie de render.** Los bloques se pintan en `/perfil/[id]` y en "Mi vidriera". Mitigación: **componentes compartidos** parametrizados por `contexto: 'publico' | 'privado'` (mismo contrato que `samVisible`).
-- **R-PORT — portfolio cambia de comportamiento.** Hoy público sin gate; pasa a oculto-por-default para nuevos. Confirmar que es aceptable (§10).
+- **R-PORT — portfolio cambia de comportamiento. ✅ confirmado (Gerardo, D5).** Hoy público sin gate; pasa a oculto-por-default para nuevos (existentes lo mantienen vía revisado=true).
 - **R-MOBILE — 3 tabs + panel de toggles** en 320/375. Verificar con playwright-core (protocolo 2.1).
 
 ---
@@ -293,13 +306,21 @@ export function badgeFormacionVisible(taller, certificadoId): boolean {
 ### ✅ Confirmadas por Sergio (2026-06-23)
 Las 7 del bloque "Modelo CONFIRMADO" arriba (3 sub-tabs, sync por lectura compartida, flag `modeloB_revisado`, 3 categorías, Formación granular, aviso al activar, Opción A de UI).
 
-### 🟡 Abiertas — BLOQUEAN o condicionan la implementación
-- **D1 — Efic/Result (BLOQUEA 2.2-B).** ¿Los pasos de eficiencia y resultado de capacidad (derivados del SAM) entran en FORZADO-PRIVADO junto con el SAM completo? *(Pendiente de Sergio.)*
-- **D2 — "año de fundación" contradicción.** Decisión #2 lo lista como **auto a vidriera** (junto a nombre/descr/ubicación); decisión #4 lo lista como **TOGGLE-LIBRE**. Reconciliación propuesta: el **dato** se sincroniza (sin doble carga) pero su **visibilidad pública** la gatea el toggle `anioFundacion` (a diferencia de nombre/descr/ubicación que son forzado-visibles). **Confirmar.**
-- **D3 — "tiempos" (TOGGLE-LIBRE) vs SAM (FORZADO-PRIVADO).** ¿Qué expone exactamente el bloque `tiempos` que NO sea el SAM privado ni el rango de `capacidad`? Definir el/los campo(s). **Confirmar.**
-- **D4 — "Acreditaciones": ¿1 toggle o 2?** ¿Un solo toggle "Acreditaciones" cubre Academia (`formacion`) + calidad (`certificaciones`), o son 2 toggles independientes bajo un encabezado? ¿`certificaciones` lleva granularidad como `formacion`? **Confirmar.**
-- **D5 — Portfolio default oculto.** Hoy es público sin gate; pasa a oculto-por-default para talleres nuevos. ¿Aceptable? **Confirmar.**
-- **D6 — Dismiss del banner "Revisá tu vidriera"** (existentes): `localStorage` vs 2º flag en DB. *(Menor; preferible localStorage para no migrar otra columna.)*
+### ✅ Resueltas por Gerardo (2026-06-23)
+- **D2 — "año de fundación".** **Sin contradicción:** "el dato existe" ≠ "el dato es visible". El año **se sincroniza** (fuente única, §3) y su **visibilidad pública la gatea el toggle `anioFundacion`** (a diferencia de nombre/descr/ubicación, que son FORZADO-VISIBLE). **Confirmado.**
+- **D5 — Portfolio default oculto.** **Confirmado.** Coherente con el modelo: nuevos quedan oculto-por-default; **existentes lo mantienen** porque `modeloB_revisado=true` (revisado ⇒ null=visible).
+- **R-DIR — elegibilidad de directorio (§4.4).** **Mitigación aceptada** (filtro post-query). Marcado como **REQUISITO de 2.2**: test "taller con todo toggle-libre oculto ⇒ NO aparece en el directorio". Cambio de supuesto vs #437 **documentado** en §4.4.
+
+### 🟡 Pendientes de Sergio — NO resolver acá
+> Bloquean la **taxonomía fina de 2.2-C**. **NO** bloquean 2.2-A ni 2.2-B.
+- **D3 — "tiempos" (TOGGLE-LIBRE) vs SAM (FORZADO-PRIVADO).** ¿Qué expone exactamente el bloque `tiempos` que NO sea el SAM privado ni el rango de `capacidad`? Definir el/los campo(s).
+- **D4 — "Acreditaciones": ¿1 toggle o 2?** ¿Un solo toggle "Acreditaciones" cubre Academia (`formacion`) + calidad (`certificaciones`), o son 2 toggles independientes bajo un encabezado? ¿`certificaciones` lleva granularidad como `formacion`?
+
+### 🟡 Pendiente de Sergio — bloquea 2.2-B
+- **D1 — Efic/Result.** ¿Los pasos de eficiencia y resultado de capacidad (derivados del SAM) entran en FORZADO-PRIVADO junto con el SAM completo? Cierra la categoría privada.
+
+### 🔧 Menor
+- **D6 — Dismiss del banner "Revisá tu vidriera"** (existentes): `localStorage` vs 2º flag en DB. *(Preferible localStorage para no migrar otra columna.)*
 
 ### 🔧 Schema (Gerardo)
 - Modelar/migrar **`modeloB_revisado Boolean @default(false)`** + backfill existentes→true (§5.1).
