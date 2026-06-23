@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import { prisma } from '@/compartido/lib/prisma'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
-import { Star, MapPin, Users, TrendingUp, Clock, Award, ShieldCheck } from 'lucide-react'
+import { MapPin, Award, ShieldCheck } from 'lucide-react'
 import { GaleriaFotos } from '@/taller/componentes/galeria-fotos'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { bloqueVisible } from '@/compartido/lib/visibilidad-vidriera'
@@ -61,28 +61,10 @@ export default async function PerfilPublicoPage({ params }: { params: Promise<{ 
         )}
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <Card className="text-center p-4">
-          <Star className="w-5 h-5 text-yellow-500 mx-auto mb-1" />
-          <p className="font-overpass font-bold text-2xl text-brand-blue">{taller.rating.toFixed(1)}</p>
-          <p className="text-xs text-gray-500">Rating</p>
-        </Card>
-        <Card className="text-center p-4">
-          <Users className="w-5 h-5 text-brand-blue mx-auto mb-1" />
-          <p className="font-overpass font-bold text-2xl text-brand-blue">{taller.trabajadoresRegistrados}</p>
-          <p className="text-xs text-gray-500">Trabajadores</p>
-        </Card>
-        <Card className="text-center p-4">
-          <TrendingUp className="w-5 h-5 text-green-600 mx-auto mb-1" />
-          <p className="font-overpass font-bold text-2xl text-brand-blue">{taller.capacidadMensual.toLocaleString()}</p>
-          <p className="text-xs text-gray-500">Cap. mensual</p>
-        </Card>
-        <Card className="text-center p-4">
-          <Clock className="w-5 h-5 text-blue-500 mx-auto mb-1" />
-          <p className="font-overpass font-bold text-2xl text-brand-blue">{taller.ontimeRate}%</p>
-          <p className="text-xs text-gray-500">On-time</p>
-        </Card>
-      </div>
+      {/* Cleanup re-QA: tarjetas de marketplace eliminadas de la vista PÚBLICA
+          (mismo criterio que "Mi vidriera"). Rating / On-time = fuera total
+          (no aplican al modelo PDT). Trabajadores / Cap. mensual = su lugar
+          final es el bloque "capacidad" (toggleable) de la Etapa 2.2. */}
 
       {taller.procesos.length > 0 && (
         <Card title="Procesos" className="mb-4">
