@@ -6,20 +6,22 @@
 
 ---
 
-## 🔒 Bloqueos por PR (leer primero)
+## 🔒 Bloqueos por PR (leer primero) — SPEC CERRADO
 
-> Mapa de **qué decisión bloquea qué PR**. Cada PR arranca solo cuando sus bloqueos están levantados.
+> ✅ **El spec de 2.2 está CERRADO (2026-06-23): no queda NINGUNA decisión de Sergio pendiente para 2.2-A/B/C.** La matriz final (§4) resolvió Efic/Result, D3 ("tiempos") y D4 (acreditaciones). Lo único pendiente son **tareas de plataforma/Gerardo**, no decisiones de producto.
 
 | PR | Bloqueado por | NO bloqueado por |
 |---|---|---|
-| **2.2-A** (estructura: 3er sub-tab + reorder + sync) | **Solo** el merge de **#439** | D3/D4/Efic-Result, flag — nada de visibilidad lo toca |
-| **2.2-B** (taxonomía + flag + render condicional) | #439 · **confirmación Efic/Result** (cierra FORZADO-PRIVADO) · **Gerardo modela/migra el flag `modeloB_revisado`** | D3/D4 (son taxonomía fina de toggles, no afectan el render-condicional ni el flag) |
-| **2.2-C** (config UI + toggles + escritura) | #439 · 2.2-B mergeado · **D3 ("tiempos")** · **D4 (acreditaciones 1-vs-2 / granularidad)** | — |
+| **2.2-A** (estructura: 3er sub-tab + reorder + sync) | **Solo** el merge de **#439** | nada más |
+| **2.2-B** (taxonomía + flag + render condicional) | #439 · **Gerardo modela/migra el flag `modeloB_revisado`** | Efic/Result ✅ resuelto · D3/D4 ✅ resueltos |
+| **2.2-C** (config UI + toggles + escritura) | #439 · 2.2-B mergeado | D3/D4 ✅ resueltos |
 
 **Resumen accionable:**
 - **2.2-A queda LISTA para arrancar apenas mergee #439.** No espera nada más.
-- **2.2-B** espera #439 + Efic/Result + el flag modelado por Gerardo.
-- **2.2-C** espera 2.2-B + las 2 decisiones de Sergio (D3, D4).
+- **2.2-B** espera #439 + **el flag modelado por Gerardo** (único pendiente; ya no espera Efic/Result).
+- **2.2-C** espera 2.2-B mergeado. **Nada de Sergio pendiente.**
+
+> **Pendientes que NO bloquean 2.2** (mejoras posteriores, no gate): (A) revisión completa del SAM, (B) taxonomía oficial de rubros/procesos (CIAI/FECOSET). Ver §10.
 
 ---
 
@@ -45,7 +47,7 @@ Esto **reemplaza** las decisiones parciales del discovery anterior (Opción A de
 | 6 bloques toggleables | **~12 bloques** (3 categorías; el set toggleable se amplía — ver §4) |
 | Default null=visible (#437 directo) | **Privacy-by-default** condicionado por `modeloB_revisado` |
 | Sin flag nuevo | **Flag `modeloB_revisado Boolean @default(false)`** (1 migración aditiva) |
-| Bordes B1–B4 abiertos | B1–B4 + año (D2) + portfolio (D5) + R-DIR **resueltos**; quedan **solo** abiertos **Efic/Result** (D1, bloquea 2.2-B) y **"tiempos"** (D3) / **acreditaciones 1-vs-2** (D4) — D3/D4 bloquean **solo 2.2-C** (ver §10) |
+| Bordes B1–B4 abiertos | **TODOS resueltos** (B1–B4, año/D2, portfolio/D5, R-DIR, Efic-Result, tiempos/D3, acreditaciones/D4). **Spec CERRADO** — ver matriz final §4 |
 | Plan 2 PRs | **3 PRs** (el sub-tab estructural va aparte) |
 
 ---
@@ -57,7 +59,7 @@ Esto **reemplaza** las decisiones parciales del discovery anterior (Opción A de
 - **Cabecera común** (`perfil-header-tabs.tsx`): `nombre` + `Badge(nivelAEtapa(nivel))` + `BadgeArca` + ubicación + **solo** botón "Editar datos básicos". (Email/teléfono **ya salieron** de la cabecera; los 2 botones movidos — ver abajo.)
 - **`page.tsx` — "Mi vidriera"** (`/taller/perfil`, índice): botón **"Ver cómo me ve el directorio"** (movido acá) · Descripción · Procesos · Tipos de prenda · **Mi portfolio** (editable) · Maquinaria · Certificaciones · Certificados de cursos. **Sin** `bloqueVisible` (no fiel al público todavía). Ya **no** tiene barra de completitud / Rating / On-time / stats grid (eliminados en QA). Trabajadores y Cap. mensual **fuera** del grid — su lugar final es el bloque `capacidad` de 2.2.
 - **`gestion/page.tsx` — "Mi gestión productiva"** (`/taller/perfil/gestion`): card **"Datos del responsable"** (nombre/email/teléfono, privado, leyenda de minimización) · Información General (CUIT, fundado, pedidos, puntaje) · Perfil productivo (organización, espacio, equipo `plantilla`, registro, escalabilidad, **SAM**) + botón "Actualizar perfil productivo".
-- **Render público `/perfil/[id]`** (fuente de verdad, **verificado limpio de PII**): nombre · `BadgeArca`+validaciones · ubicación · descripción · stats grid · Procesos · Tipos de prenda · Trabajos realizados · **Maquinaria** `&& bloqueVisible('maquinaria')` · Certificaciones *(sin gate)* · **Capacitaciones certificadas** `&& bloqueVisible('formacion')`.
+- **Render público `/perfil/[id]`** (fuente de verdad, **verificado limpio de PII**; re-QA `5f3eedb`): nombre · `BadgeArca`+validaciones · ubicación · descripción · Procesos · Tipos de prenda · Trabajos realizados · **Maquinaria** `&& bloqueVisible('maquinaria')` · Certificaciones *(sin gate)* · **Capacitaciones certificadas** `&& bloqueVisible('formacion')`. **El stats grid de marketplace (Rating/Trabajadores/Cap.mensual/On-time) fue eliminado** (re-QA, igual que en Mi vidriera).
 
 **Hallazgos que siguen vigentes:** solo **2/6 gates** cableados en público (`maquinaria`, `formacion`); `equipo/espacio/capacidad/organizacion` **no existen en público** hoy (net-new); "Mi vidriera" no aplica el filtro (no es fiel); `Certificaciones` de calidad sin gate; el stats grid público aún muestra "Cap. mensual" como número suelto.
 
@@ -109,28 +111,30 @@ Esto **reemplaza** las decisiones parciales del discovery anterior (Opción A de
 | Etapa de formalización | `nivelAEtapa(nivel)` | nunca enum crudo |
 | ARCA | `verificadoAfip` → `BadgeArca` | invariante #437 |
 
-### 4.2 FORZADO-PRIVADO (nunca se expone públicamente; sin toggle)
+### 4.2 FORZADO-PRIVADO (nunca se expone públicamente; sin toggle) ✅ matriz final
 | Bloque | Campo | Nota |
 |---|---|---|
 | CUIT | `Taller.cuit` | |
-| Contacto del responsable | `User.name/email/phone` | minimización (OIT IGDS 457); vive en Datos básicos + Coordinación |
-| **SAM completo** | `Taller.sam` + Efic/Result | `samVisible('publico')===false` (invariante #437). **Efic/Result: PENDIENTE confirmación de Sergio** (¿entran acá?) → §10 |
+| **Nombre del responsable** + email + teléfono | `User.name/email/phone` | ✅ confirmado: nombre del responsable = **forzado-privado** (nunca en superficie pública — confirma el bug b del re-QA). Minimización (OIT IGDS 457); vive en Datos básicos + Coordinación |
+| **SAM completo (Tiempo + Eficiencia + Resultado)** | `Taller.sam` + pasos Efic/Result del wizard | ✅ **D1 resuelto:** los 3 (Tiempo estándar, Eficiencia y Resultado de capacidad) son **forzado-privados siempre**. `samVisible('publico')===false` (invariante #437) |
+| **Tiempos** | = SAM | ✅ **D3 resuelto:** "Tiempos" **ES el SAM** → forzado-privado, **NO toggle-libre**. (Eliminado del set toggleable.) |
 | Los 7 ítems del recorrido | datos del recorrido/umbrales | privados al taller + Coordinación |
 
-### 4.3 TOGGLE-LIBRE (default OCULTO con privacy-by-default; aviso al activar)
+### 4.3 TOGGLE-LIBRE (default OCULTO con privacy-by-default; aviso al activar) ✅ matriz final
 | Bloque | Key de visibilidad | Campo(s) | ¿En público hoy? | Nota |
 |---|---|---|---|---|
 | Mi equipo de trabajo | `equipo` | `plantilla[]` | ❌ net-new | |
 | Mi espacio físico | `espacio` | `metrosCuadrados` | ❌ net-new | |
-| Procesos | `procesos` *(nuevo)* | `procesos[]` | ✅ (hoy sin gate) | pasa a toggleable |
-| Prendas / rubros | `prendas` *(nuevo)* | `prendas[]` | ✅ (hoy sin gate) | pasa a toggleable |
-| Tiempos | `tiempos` *(nuevo)* | **¿qué campo?** | — | 🟡 **D3 pendiente Sergio** (distinto del SAM privado y del rango; bloquea solo 2.2-C) |
+| Procesos | `procesos` *(nuevo)* | `procesos[]` | ✅ (hoy sin gate) | pasa a toggleable. Catálogo: seed actual (ver pendiente B, §10) |
+| Prendas / rubros | `prendas` *(nuevo)* | `prendas[]` | ✅ (hoy sin gate) | pasa a toggleable. Catálogo: seed actual (ver pendiente B, §10) |
 | Organización | `organizacion` | `organizacion`, `registroProduccion` | ❌ net-new | |
 | Maquinaria | `maquinaria` | `maquinaria[]` | ✅ ya gateado | |
 | Capacidad (rango) | `capacidad` | `capacidadMensual` **como rango**, `escalabilidad` | parcial | público = **rango bucketizado**, nunca SAM |
 | Año de fundación | `anioFundacion` *(nuevo)* | `Taller.fundado` | — | ✅ D2: el dato sincroniza (§3), el toggle gatea su visibilidad |
-| Acreditaciones | `formacion` (Academia, granular) + `certificaciones` *(nuevo)* | `certificados[]` + `certificaciones[]` | parcial | 🟡 **D4 pendiente Sergio: ¿1 toggle o 2?** (bloquea solo 2.2-C) |
+| **Academia** | `formacion` (granular vía `formacionBadges`) | `certificados[]` (badges PDT) | parcial | ✅ **D4 resuelto:** para el **piloto**, **1 solo toggle "Academia"** (badges de cursos PDT), granular por badge. **Certificaciones externas (`TallerCertificacion`) quedan FUERA del piloto** (sin toggle propio). |
 | Portfolio | `portfolio` *(nuevo)* | `portfolioFotos[]` | ✅ (hoy sin gate) | ✅ D5: pasa a oculto-por-default (existentes lo mantienen vía revisado=true) |
+
+> **Eliminados del set toggleable respecto del borrador anterior:** `tiempos` (= SAM → forzado-privado, D3) y `certificaciones` (externas, fuera del piloto, D4). El set toggleable del **piloto** queda en **10 keys**: `equipo, espacio, procesos, prendas, organizacion, maquinaria, capacidad, anioFundacion, formacion, portfolio`.
 
 ### 4.4 Regla de elegibilidad para el directorio ✅ (R-DIR confirmado por Gerardo)
 Para **aparecer en `/directorio`**, además de FORZADO-VISIBLE completo (nombre, descripción ≥50, ubicación, etapa, ARCA) se exige **≥1 `proceso` o `rubro` con su toggle activo**.
@@ -144,7 +148,7 @@ Para **aparecer en `/directorio`**, además de FORZADO-VISIBLE completo (nombre,
 ### 4.5 Resolución de B1–B4 del discovery anterior
 - **B1 Credenciales** → FORZADO-VISIBLE (resuelto: nunca toggle).
 - **B2 procesos/prendas** → **TOGGLE-LIBRE** (Sergio los hace toggleables; antes sugeríamos fijos).
-- **B3 Certificaciones de calidad** → entra como **TOGGLE-LIBRE** dentro de "Acreditaciones" (con `formacion`). Queda abierto si es 1 toggle o 2 (§10).
+- **B3 Certificaciones de calidad** → ✅ **fuera del piloto** (D4). Solo entra "Academia" (`formacion`, badges PDT, granular). Las certificaciones externas se retoman post-piloto.
 - **B4 Capacidad pública** → muestra **rango** (no el número exacto) + escalabilidad; SAM nunca. El "Cap. mensual" suelto del stats grid público se reemplaza por este bloque.
 
 ---
@@ -201,19 +205,19 @@ Al pasar un toggle de **oculto→visible**, modal/confirm:
 
 ## 6. Type de visibilidad extendido + resolver
 
-### 6.1 Union de bloques (aditivo — solo TS + array; el JSONB ya lo soporta, sin migración)
+### 6.1 Union de bloques — set del PILOTO, 10 keys (aditivo — solo TS + array; el JSONB ya lo soporta, sin migración)
 ```ts
 export type BloqueVidriera =
-  | 'formacion'        // Academia (badges) — granular vía formacionBadges
-  | 'certificaciones'  // [NUEVO] certificaciones de calidad (TallerCertificacion)
+  | 'formacion'        // Academia (badges PDT) — granular vía formacionBadges
   | 'equipo' | 'espacio' | 'organizacion' | 'maquinaria' | 'capacidad'
   | 'procesos'         // [NUEVO]
   | 'prendas'          // [NUEVO]
-  | 'tiempos'          // [NUEVO] (definir campo — §10)
   | 'anioFundacion'    // [NUEVO]
+  // NO incluidos en el piloto: 'tiempos' (= SAM, forzado-privado, D3) ·
+  // 'certificaciones' externas (fuera del piloto, D4) · 'portfolio' es key nueva ↓
   | 'portfolio'        // [NUEVO]
 ```
-`BLOQUES_VIDRIERA` (el array) se amplía igual; `normalizarVisibilidad` itera el array → sigue funcionando sin cambios de lógica.
+`BLOQUES_VIDRIERA` (el array) se amplía igual; `normalizarVisibilidad` itera el array → sigue funcionando sin cambios de lógica. (Si post-piloto se suman `certificaciones` u otros, es aditivo: solo TS, sin migración.)
 
 ### 6.2 Formación granular (confirmado)
 ```ts
@@ -287,9 +291,10 @@ export function badgeFormacionVisible(taller, certificadoId): boolean {
 - **Total 2.2: ~4.5–5.5 días.**
 
 **Qué bloquea qué:**
-- Todo 2.2 ← **merge de #439** (re-QA pendiente).
-- Cerrar la categoría FORZADO-PRIVADO (y por ende 2.2-B) ← **confirmación Efic/Result**.
-- Schema (`modeloB_revisado`) ← **Gerardo** modela/migra (antes de 2.2-B).
+- Todo 2.2 ← **merge de #439** (3er re-QA en curso).
+- FORZADO-PRIVADO ✅ **cerrado** (Efic/Result resuelto, §4.2) — ya no bloquea 2.2-B.
+- Schema (`modeloB_revisado`) ← **Gerardo** modela/migra (único pendiente de plataforma, antes de 2.2-B).
+- **Ninguna decisión de Sergio pendiente** para A/B/C.
 
 **Riesgos:**
 - **R-DIR — elegibilidad de directorio rompe "render-only" (§4.4). ✅ confirmado (Gerardo).** La visibilidad ahora condiciona aparecer en `/directorio` (cambio de supuesto vs #437). Va en **2.2-B** (usa el mismo `bloqueVisiblePublico`; behavior-preserving para existentes con revisado=true). Mitigación: filtro post-query en app evaluando el toggle de procesos/prendas. **Test obligatorio de 2.2:** "taller con todo toggle-libre oculto ⇒ NO aparece en el directorio".
@@ -301,27 +306,30 @@ export function badgeFormacionVisible(taller, certificadoId): boolean {
 
 ---
 
-## 10. Decisiones — confirmadas vs abiertas
+## 10. Decisiones — SPEC CERRADO
+
+> ✅ **No queda ninguna decisión de producto/Sergio pendiente para 2.2-A/B/C.** Todo lo abierto del discovery quedó resuelto.
 
 ### ✅ Confirmadas por Sergio (2026-06-23)
-Las 7 del bloque "Modelo CONFIRMADO" arriba (3 sub-tabs, sync por lectura compartida, flag `modeloB_revisado`, 3 categorías, Formación granular, aviso al activar, Opción A de UI).
+Las 7 del bloque "Modelo CONFIRMADO" arriba (3 sub-tabs, sync por lectura compartida, flag `modeloB_revisado`, 3 categorías, Formación granular, aviso al activar, Opción A de UI), **más la matriz final**:
+- **D1 — Efic/Result → RESUELTO.** El **SAM completo (Tiempo estándar + Eficiencia + Resultado de capacidad)** es **forzado-privado siempre** (§4.2).
+- **D3 — "Tiempos" → RESUELTO.** "Tiempos" **es el SAM** → forzado-privado, **NO toggle-libre**. Eliminado del set toggleable (§4.2/§4.3).
+- **D4 — Acreditaciones → RESUELTO.** Para el **piloto**, **1 solo toggle "Academia"** (badges PDT, granular por badge). **Certificaciones externas FUERA del piloto** (§4.3).
+- **Nombre del responsable → forzado-privado** (confirma el bug b del re-QA; §4.2).
 
 ### ✅ Resueltas por Gerardo (2026-06-23)
-- **D2 — "año de fundación".** **Sin contradicción:** "el dato existe" ≠ "el dato es visible". El año **se sincroniza** (fuente única, §3) y su **visibilidad pública la gatea el toggle `anioFundacion`** (a diferencia de nombre/descr/ubicación, que son FORZADO-VISIBLE). **Confirmado.**
-- **D5 — Portfolio default oculto.** **Confirmado.** Coherente con el modelo: nuevos quedan oculto-por-default; **existentes lo mantienen** porque `modeloB_revisado=true` (revisado ⇒ null=visible).
-- **R-DIR — elegibilidad de directorio (§4.4).** **Mitigación aceptada** (filtro post-query). Marcado como **REQUISITO de 2.2**: test "taller con todo toggle-libre oculto ⇒ NO aparece en el directorio". Cambio de supuesto vs #437 **documentado** en §4.4.
+- **D2 — "año de fundación".** Sin contradicción: el dato **se sincroniza** (§3), el toggle `anioFundacion` gatea su **visibilidad**.
+- **D5 — Portfolio default oculto.** Confirmado; existentes lo mantienen vía `modeloB_revisado=true`.
+- **R-DIR — elegibilidad de directorio (§4.4).** Mitigación aceptada (filtro post-query) + **REQUISITO de test** "taller con todo toggle-libre oculto ⇒ NO aparece en el directorio". Cambio de supuesto vs #437 documentado.
 
-### 🟡 Pendientes de Sergio — NO resolver acá
-> Bloquean la **taxonomía fina de 2.2-C**. **NO** bloquean 2.2-A ni 2.2-B.
-- **D3 — "tiempos" (TOGGLE-LIBRE) vs SAM (FORZADO-PRIVADO).** ¿Qué expone exactamente el bloque `tiempos` que NO sea el SAM privado ni el rango de `capacidad`? Definir el/los campo(s).
-- **D4 — "Acreditaciones": ¿1 toggle o 2?** ¿Un solo toggle "Acreditaciones" cubre Academia (`formacion`) + calidad (`certificaciones`), o son 2 toggles independientes bajo un encabezado? ¿`certificaciones` lleva granularidad como `formacion`?
+### ⏳ Pendientes que **NO bloquean** 2.2 (mejoras posteriores)
+> El piloto arranca sin esperar esto; quedan anotados para no perderlos.
+- **A — Revisión completa del SAM.** Qué preguntas hace el wizard, cómo se procesa, y qué uso le da Coordinación. No bloquea 2.2 (el SAM ya es forzado-privado; el detalle del cálculo/uso es trabajo aparte).
+- **B — Taxonomía oficial de rubros/procesos.** El catálogo definitivo viene de la **taxonomía oficial (CIAI/FECOSET, vía Matías)**. **2.2 arranca con el seed actual de procesos/prendas**; **queda EXPLÍCITO que el catálogo final reemplaza el seed cuando la taxonomía oficial esté disponible** (los toggles `procesos`/`prendas` no cambian; solo cambia el catálogo subyacente).
 
-### 🟡 Pendiente de Sergio — bloquea 2.2-B
-- **D1 — Efic/Result.** ¿Los pasos de eficiencia y resultado de capacidad (derivados del SAM) entran en FORZADO-PRIVADO junto con el SAM completo? Cierra la categoría privada.
+### 🔧 Menor (no bloquea)
+- **D6 — Dismiss del banner "Revisá tu vidriera"** (existentes): `localStorage` vs 2º flag. *(Preferible localStorage.)*
 
-### 🔧 Menor
-- **D6 — Dismiss del banner "Revisá tu vidriera"** (existentes): `localStorage` vs 2º flag en DB. *(Preferible localStorage para no migrar otra columna.)*
-
-### 🔧 Schema (Gerardo)
+### 🔧 Único pendiente de plataforma (Gerardo) para 2.2-B
 - Modelar/migrar **`modeloB_revisado Boolean @default(false)`** + backfill existentes→true (§5.1).
-- La expansión de `BloqueVidriera` es **solo TS** (JSONB ya lo soporta) — no requiere migración.
+- La expansión de `BloqueVidriera` (10 keys del piloto) es **solo TS** (JSONB ya lo soporta) — no requiere migración.
