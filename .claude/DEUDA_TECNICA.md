@@ -18,7 +18,24 @@ y prioridad sugerida.
 - **Prioridad:** baja (backlog post-piloto, decisión de Gerardo)
 - **Estimación:** 3-4h
 
-_F-04 sigue abierto (cosmético dashboards). F-05 resuelto — ver sección "Resueltas"._
+### F-06: Label de `ProgressRing` (`text-4xl` fijo) desborda el anillo a ≤320px
+- **Detectado en:** QA mobile de Etapa 2.1 (PR #439, 2026-06-22)
+- **Descripción:** `ProgressRing` renderiza el porcentaje con fuente fija
+  `text-4xl` (`src/compartido/componentes/ui/progress-ring.tsx:26`) que no
+  escala con la prop `size`. En usos chicos (`size=100`, card "Perfil X%
+  completo" de la vidriera del taller) el "100%" se desborda del anillo y
+  pisa el texto adyacente en pantallas ≤320px.
+- **Pre-existente:** la card es byte-idéntica a la vista anterior de
+  `/taller/perfil`; 2.1 solo la movió de lugar, no la introdujo. Afecta a
+  cualquier uso chico de `ProgressRing` (también el dashboard a `size=120`,
+  más leve).
+- **Impacto:** estético menor, solo a ≤320px; no afecta funcionalidad ni el
+  flujo del piloto. La página no tiene overflow horizontal.
+- **Prioridad:** baja (backlog post-piloto). Fix sugerido: escalar el
+  font-size del label con `size` (o pasar una clase de tamaño por prop).
+- **Estimación:** ~30 min
+
+_F-04 sigue abierto (cosmético dashboards). F-06 abierto (ProgressRing mobile). F-05 resuelto — ver sección "Resueltas"._
 
 ## Backend / Arquitectura
 
