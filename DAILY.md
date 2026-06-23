@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-06-23
+
+### Gerardo Breard
+- **17:35** `6c11c22` — docs(etapa2): cerrar spec 2.2 con la matriz final de Sergio
+  - `.claude/specs/v4-etapa2-2-vidriera-discovery.md`
+
+
 ## 2026-06-22
 
 ### Gerardo Breard
