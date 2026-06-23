@@ -7,8 +7,7 @@ import Link from 'next/link'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
-import { ProgressRing } from '@/compartido/componentes/ui/progress-ring'
-import { Star, Users, TrendingUp, Clock, Award, Download } from 'lucide-react'
+import { Award, Download, ExternalLink } from 'lucide-react'
 import { PortfolioManager } from '@/taller/componentes/portfolio-manager'
 
 // Etapa 2.1 — "Mi vidriera": lo que ven las marcas en el directorio.
@@ -44,53 +43,22 @@ export default async function TallerVidrieraPage() {
     )
   }
 
-  const checks = ['nombre', 'cuit', 'descripcion', 'provincia', 'fundado'] as const
-  const campos = checks.length + 4
-  let completos = checks.filter(c => (taller as Record<string, unknown>)[c]).length
-  if (taller.capacidadMensual > 0) completos++
-  if (taller.trabajadoresRegistrados > 0) completos++
-  if (taller.procesos.length > 0) completos++
-  if (taller.maquinaria.length > 0) completos++
-  const completitud = Math.round((completos / campos) * 100)
-
   return (
     <div className="space-y-6">
-      <Card>
-        <div className="flex items-center gap-6">
-          <ProgressRing percentage={completitud} size={100} />
-          <div>
-            <p className="font-overpass font-bold text-brand-blue text-lg">Perfil {completitud}% completo</p>
-            <p className="text-sm text-gray-500">
-              {completitud < 100
-                ? 'Completá tu perfil para mejorar tu visibilidad en el directorio.'
-                : 'Tu perfil está completo. Las marcas pueden encontrarte fácilmente.'}
-            </p>
-          </div>
-        </div>
-      </Card>
-
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="text-center p-4">
-          <Star className="w-5 h-5 text-yellow-500 mx-auto mb-1" />
-          <p className="font-overpass font-bold text-2xl text-brand-blue">{taller.rating.toFixed(1)}</p>
-          <p className="text-xs text-gray-500">Rating</p>
-        </Card>
-        <Card className="text-center p-4">
-          <Users className="w-5 h-5 text-brand-blue mx-auto mb-1" />
-          <p className="font-overpass font-bold text-2xl text-brand-blue">{taller.trabajadoresRegistrados}</p>
-          <p className="text-xs text-gray-500">Trabajadores</p>
-        </Card>
-        <Card className="text-center p-4">
-          <TrendingUp className="w-5 h-5 text-green-600 mx-auto mb-1" />
-          <p className="font-overpass font-bold text-2xl text-brand-blue">{taller.capacidadMensual.toLocaleString()}</p>
-          <p className="text-xs text-gray-500">Cap. mensual</p>
-        </Card>
-        <Card className="text-center p-4">
-          <Clock className="w-5 h-5 text-brand-blue mx-auto mb-1" />
-          <p className="font-overpass font-bold text-2xl text-brand-blue">{taller.ontimeRate}%</p>
-          <p className="text-xs text-gray-500">On-time</p>
-        </Card>
+      {/* "Ver cómo me ve el directorio": previsualizar la vidriera pública.
+          Movido acá desde la cabecera común (vive en la vidriera, no en la metadata global). */}
+      <div className="flex justify-end">
+        <Link href={`/perfil/${taller.id}`} target="_blank" rel="noopener noreferrer">
+          <Button variant="secondary" size="sm" icon={<ExternalLink className="w-4 h-4" />}>
+            Ver cómo me ve el directorio
+          </Button>
+        </Link>
       </div>
+
+      {/* NOTA (2.2): "Trabajadores" y "Cap. mensual" salieron del grid destacado de
+          marketplace (junto con Rating / On-time / barra de completitud, descartados del
+          modelo V4). Su ubicación final es el bloque "Mi capacidad de producción"
+          (toggleable) que arma la Etapa 2.2 — no se renderizan acá por ahora. */}
 
       {taller.descripcion && (
         <Card title="Descripción">

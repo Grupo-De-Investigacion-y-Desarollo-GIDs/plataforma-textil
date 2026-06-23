@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Button } from '@/compartido/componentes/ui/button'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
-import { MapPin, ExternalLink } from 'lucide-react'
+import { MapPin } from 'lucide-react'
 
 // Etapa 2.1 — contenedor "Mi taller": cabecera común + sub-tabs.
 // Cabecera (nombre + etapa actual + ARCA verificado) y sub-tabs viven sobre
@@ -28,10 +28,6 @@ export function PerfilHeaderTabs({
   provincia,
   partido,
   ubicacionDetalle,
-  email,
-  phone,
-  tallerId,
-  samCompletado,
 }: {
   nombre: string
   etapa: string
@@ -39,10 +35,6 @@ export function PerfilHeaderTabs({
   provincia: string | null
   partido: string | null
   ubicacionDetalle: string | null
-  email: string
-  phone: string | null
-  tallerId: string
-  samCompletado: boolean
 }) {
   const pathname = usePathname()
   if (!mostrarCromo(pathname)) return null
@@ -66,28 +58,16 @@ export function PerfilHeaderTabs({
               {ubicacionDetalle && <span className="text-gray-400"> · {ubicacionDetalle}</span>}
             </p>
           )}
-          <p className="text-sm text-gray-500 mt-1 break-words">
-            {email}
-            {phone && ` · ${phone}`}
-          </p>
+          {/* PII del responsable (nombre/email/teléfono) vive en "Mi gestión productiva"
+              (privado), no en la cabecera común — minimización de datos (OIT IGDS 457). */}
         </div>
 
         <div className="flex flex-col gap-2 sm:items-end shrink-0">
-          <Link href={`/perfil/${tallerId}`} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
-            <Button variant="secondary" size="sm" icon={<ExternalLink className="w-4 h-4" />} className="w-full sm:w-auto">
-              Ver cómo me ve el directorio
-            </Button>
+          {/* "Ver cómo me ve el directorio" → movido a "Mi vidriera".
+              "Completar perfil productivo" → movido a "Mi gestión productiva". */}
+          <Link href="/taller/perfil/editar">
+            <Button variant="secondary" size="sm">Editar datos básicos</Button>
           </Link>
-          <div className="flex flex-wrap gap-2">
-            <Link href="/taller/perfil/editar">
-              <Button variant="secondary" size="sm">Editar datos básicos</Button>
-            </Link>
-            <Link href="/taller/perfil/completar">
-              <Button variant="ghost" size="sm">
-                {samCompletado ? 'Actualizar perfil productivo' : 'Completar perfil productivo'}
-              </Button>
-            </Link>
-          </div>
         </div>
       </div>
 

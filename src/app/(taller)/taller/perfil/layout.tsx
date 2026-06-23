@@ -18,15 +18,12 @@ export default async function PerfilLayout({ children }: { children: React.React
   const taller = await prisma.taller.findFirst({
     where: { userId: session.user.id },
     select: {
-      id: true,
       nombre: true,
       nivel: true,
       verificadoAfip: true,
       provincia: true,
       partido: true,
       ubicacionDetalle: true,
-      sam: true,
-      user: { select: { email: true, phone: true } },
     },
   })
 
@@ -42,10 +39,6 @@ export default async function PerfilLayout({ children }: { children: React.React
         provincia={taller.provincia}
         partido={taller.partido}
         ubicacionDetalle={taller.ubicacionDetalle}
-        email={taller.user.email}
-        phone={taller.user.phone}
-        tallerId={taller.id}
-        samCompletado={Boolean(taller.sam)}
       />
       {children}
     </div>

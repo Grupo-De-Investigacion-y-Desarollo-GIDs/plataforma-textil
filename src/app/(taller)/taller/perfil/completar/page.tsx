@@ -7,6 +7,7 @@ import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
 import { Input } from '@/compartido/componentes/ui/input'
 import { Badge } from '@/compartido/componentes/ui/badge'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 import { useToast } from '@/compartido/componentes/ui/toast'
 
 const STEPS = [
@@ -243,6 +244,13 @@ export default function WizardPage() {
 
   return (
     <div className="max-w-3xl mx-auto py-6 px-4">
+      {/* Salida del wizard: el taller no queda "atrapado" en el flujo de pasos. */}
+      <Breadcrumbs items={[
+        { label: 'Mi taller', href: '/taller/perfil' },
+        { label: 'Mi gestión productiva', href: '/taller/perfil/gestion' },
+        { label: 'Completar perfil productivo' },
+      ]} />
+
       {/* Progress bar */}
       <div className="mb-2 flex items-center gap-2">
         <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
