@@ -3,6 +3,9 @@
 ## 2026-06-24
 
 ### Gerardo Breard
+- **18:26** `7a67b40` — docs(2.2): flag modeloB_revisado YA en develop (#441) — 2.2-B desbloqueada
+  - `.claude/specs/v4-etapa2-2-vidriera-discovery.md`
+
 - **17:58** `856e5b4` — feat(schema): flag modeloB_revisado en Taller (prep 2.2-B, privacy-by-default)
   - `prisma/migrations/20260624120000_agregar_modelob_revisado/migration.sql`
   - `prisma/schema.prisma`
