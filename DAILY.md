@@ -1,5 +1,13 @@
 # Daily Log
 
+## 2026-06-24
+
+### Gerardo Breard
+- **17:58** `856e5b4` — feat(schema): flag modeloB_revisado en Taller (prep 2.2-B, privacy-by-default)
+  - `prisma/migrations/20260624120000_agregar_modelob_revisado/migration.sql`
+  - `prisma/schema.prisma`
+
+
 ## 2026-06-23
 
 ### Gerardo Breard

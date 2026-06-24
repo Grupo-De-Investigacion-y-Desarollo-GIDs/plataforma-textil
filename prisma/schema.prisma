@@ -297,6 +297,12 @@ model Taller {
   // Credenciales (etapa + ARCA) nunca se oculta; SAM nunca se expone en publico.
   visibilidadVidriera  Json?
 
+  // Etapa 2.2-B (§5): privacy-by-default. Decide como se interpreta el null de
+  // visibilidadVidriera. false (taller nuevo) => null se trata como OCULTO; true
+  // (existentes via backfill, o tras revisar la config) => respeta null=visible (#437).
+  // La logica de render condicional que LO USA es 2.2-B; este campo solo lo modela.
+  modeloB_revisado  Boolean  @default(false)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
