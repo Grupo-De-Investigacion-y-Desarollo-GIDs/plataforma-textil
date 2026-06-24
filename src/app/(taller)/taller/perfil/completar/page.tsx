@@ -700,7 +700,7 @@ export default function WizardPage() {
 
           <div className="flex gap-3 justify-center">
             <Button onClick={() => handleSave('/taller/perfil')} variant="secondary" disabled={saving}>
-              {saving ? 'Guardando...' : 'Ver mi perfil'}
+              {saving ? 'Guardando...' : 'Ver mi vidriera'}
             </Button>
             <Button onClick={() => handleSave('/taller/aprender')} disabled={saving}>
               {saving ? 'Guardando...' : 'Guardar e ir a Cursos'}

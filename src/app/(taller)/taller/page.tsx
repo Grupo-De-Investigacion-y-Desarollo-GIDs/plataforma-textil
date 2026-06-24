@@ -4,14 +4,11 @@ import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ProgressRing } from '@/compartido/componentes/ui/progress-ring'
 import { ProximoNivelCard } from '@/taller/componentes/proximo-nivel-card'
 import { SincronizarNivel } from '@/taller/componentes/sincronizar-nivel'
 import { calcularPasosTaller } from '@/compartido/lib/onboarding'
 import { ChecklistOnboarding } from '@/compartido/componentes/ui/checklist-onboarding'
 import { nivelAEtapa } from '@/compartido/lib/formalizacion'
-const PTS_VERIFICADO_AFIP = 10 // bonus AFIP fijo
-const PTS_POR_CERTIFICADO = 15 // bonus por certificado fijo
 
 export default async function TallerDashboardPage() {
   const session = await auth()
@@ -20,9 +17,6 @@ export default async function TallerDashboardPage() {
   const taller = await prisma.taller.findFirst({
     where: { userId: session.user.id },
     include: {
-      validaciones: {
-        include: { tipoDocumento: { select: { puntosOtorgados: true } } },
-      },
       certificados: { where: { revocado: false } },
       progresoCapacitacion: {
         include: { coleccion: { select: { titulo: true } } },
@@ -35,8 +29,6 @@ export default async function TallerDashboardPage() {
       },
     },
   })
-
-  const certificadosActivos = taller?.certificados.length ?? 0
 
   // Queries paralelas: logs de nivel + datos para recomendaciones
   const hace24hs = new Date(Date.now() - 24 * 60 * 60 * 1000)
@@ -154,15 +146,6 @@ export default async function TallerDashboardPage() {
     })
   }
 
-  // Calcular progreso de formalización
-  const validaciones = taller?.validaciones ?? []
-  const totalValidaciones = validaciones.length
-  const completadas = validaciones.filter((v) => v.estado === 'COMPLETADO').length
-  const pendientes = validaciones.filter((v) => v.estado === 'PENDIENTE').length
-  const porcentajeFormal = totalValidaciones > 0
-    ? Math.round((completadas / totalValidaciones) * 100)
-    : 0
-
   const nivel = taller?.nivel ?? 'BRONCE'
   const etapa = nivelAEtapa(nivel)
 
@@ -235,60 +218,18 @@ export default async function TallerDashboardPage() {
         </>
       )}
 
-      {/* Progreso principal */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Ring formalización */}
-        <div className="bg-white rounded-card shadow-card p-6 border border-gray-100">
-          <h3 className="font-overpass font-semibold text-gray-700 text-sm uppercase mb-4">
-            Progreso de Formalización
-          </h3>
-          <div className="flex items-center gap-6">
-            <ProgressRing percentage={porcentajeFormal} size={120} strokeWidth={10} />
-            <div className="space-y-2 text-sm">
-              <div className="flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-green-100 text-green-700 flex items-center justify-center text-xs font-bold">✓</span>
-                <span className="text-gray-600">{completadas} completadas</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-yellow-100 text-yellow-700 flex items-center justify-center text-xs">⏳</span>
-                <span className="text-gray-600">{pendientes} pendientes</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center text-xs">○</span>
-                <span className="text-gray-600">
-                  {totalValidaciones - completadas - pendientes} sin iniciar
-                </span>
-              </div>
-            </div>
-          </div>
-          <Link
-            href="/taller/formalizacion"
-            className="mt-4 inline-block text-sm text-brand-blue font-medium hover:underline"
-          >
-            Ver detalle →
-          </Link>
+      {/* Stats del taller. La barra/ring de "Progreso de Formalización", la métrica
+          "documentos completados" y "Capacidad (prendas/mes)" se removieron: la V4
+          descartó la mecánica de porcentaje/X-de-N como gamificación. El recorrido de
+          formalización se ve por requisito (badges COMPLETADO/PENDIENTE) en "Mi recorrido". */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="bg-white rounded-card shadow-card p-5 border border-gray-100">
+          <p className="text-xs uppercase text-gray-500 font-semibold mb-1">Certificados</p>
+          <p className="text-3xl font-bold text-brand-blue">{taller?.certificados.length ?? 0}</p>
         </div>
-
-        {/* Stats secundarios */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-white rounded-card shadow-card p-5 border border-gray-100">
-            <p className="text-xs uppercase text-gray-500 font-semibold mb-1">Formalización</p>
-            <p className="text-3xl font-bold text-brand-blue">{completadas}/{totalValidaciones}</p>
-            <p className="text-xs text-gray-400 mt-1">documentos completados</p>
-          </div>
-          <div className="bg-white rounded-card shadow-card p-5 border border-gray-100">
-            <p className="text-xs uppercase text-gray-500 font-semibold mb-1">Capacidad</p>
-            <p className="text-3xl font-bold text-green-600">{taller?.capacidadMensual ?? 0}</p>
-            <p className="text-xs text-gray-400 mt-1">prendas/mes</p>
-          </div>
-          <div className="bg-white rounded-card shadow-card p-5 border border-gray-100">
-            <p className="text-xs uppercase text-gray-500 font-semibold mb-1">Certificados</p>
-            <p className="text-3xl font-bold text-brand-blue">{taller?.certificados.length ?? 0}</p>
-          </div>
-          <div className="bg-white rounded-card shadow-card p-5 border border-gray-100">
-            <p className="text-xs uppercase text-gray-500 font-semibold mb-1">Pedidos activos</p>
-            <p className="text-3xl font-bold text-gray-700">{taller?.ordenesManufactura.length ?? 0}</p>
-          </div>
+        <div className="bg-white rounded-card shadow-card p-5 border border-gray-100">
+          <p className="text-xs uppercase text-gray-500 font-semibold mb-1">Pedidos activos</p>
+          <p className="text-3xl font-bold text-gray-700">{taller?.ordenesManufactura.length ?? 0}</p>
         </div>
       </div>
 
@@ -328,7 +269,7 @@ export default async function TallerDashboardPage() {
         <h2 className="font-serif font-bold text-lg text-gray-800 mb-3">Acciones rápidas</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Link
-            href="/taller/perfil/completar"
+            href="/taller/perfil/gestion"
             className="flex flex-col items-center gap-2 bg-white rounded-card p-5 border border-gray-100 shadow-card hover:shadow-md hover:border-brand-blue transition-all text-center"
           >
             <span className="text-3xl">📝</span>
