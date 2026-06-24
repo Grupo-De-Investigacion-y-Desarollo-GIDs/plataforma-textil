@@ -19,7 +19,7 @@ La Etapa 2 tiene **5 componentes** (el copy enumera 2.1 a 2.5):
 
 | # | Componente | Estado global | Brecha | Esfuerzo | ¿Arrancable ya? |
 |---|---|---|---|---|---|
-| 2.1 | Sub-tabs "Mi taller" | 🟡 Parcial | Falta el split en 2 sub-tabs + header común + botón preview | ~1–1.5 d | ✅ Sí |
+| 2.1 ✅ | Sub-tabs "Mi taller" | ✅ **HECHO** (#439, `2b3a3fd`) | Split en sub-tabs (Mi vidriera \| Mi gestión productiva) + cabecera común + botón/modal preview + ajustes de QA (3 pases) | — | ✅ Listo |
 | 2.2 | Tres dimensiones de la vidriera | 🟡 Parcial | Reorg + **mecanismo de visibilidad (base ya en develop, #437)** + badges Formación | ~3–4 d | ✅ Sí (Formación: badges ya; contenido Academia para prod) |
 | 2.3 🔧 | Tres umbrales escalonados | 🔴 Ausente (como modelo) | Gracia 60d→**inactiva**, vidriera mínima (4 reqs). **Cotizar=solo CUIT (ya existe)** | ~2–3 d | ✅ Sí (modelo ya cerrado) |
 | 2.4 ✅ | Filtros del directorio | ✅ **HECHO** (#438, `f35e39a`) | Rubro/Servicios/Ubicación (cascada) + copy gate ARCA — mergeado en develop | — | ✅ Listo |
@@ -27,15 +27,16 @@ La Etapa 2 tiene **5 componentes** (el copy enumera 2.1 a 2.5):
 
 **Total ajustado: ~6.5–9 días** de Sergio (antes ~10–13). Bajó porque: cotizar simplificado a solo-CUIT (que ya existe, elimina el cálculo holístico de %), el mecanismo de visibilidad ya tiene su base mergeada (#437), y el rename pesado ESTADO→COORD (~1.5–2 d) sale de Etapa 2 hacia V4.5 (queda solo el fix de copy ~0.5 d). El grueso restante es net-new de 2.3 (gracia + vidriera mínima) y el render/UI de 2.2.
 
-### 📦 Estado de la Etapa 2 (actualizado 2026-06-22)
+### 📦 Estado de la Etapa 2 (actualizado 2026-06-24)
 
-**El paquete del piloto ("coherencia externa") está COMPLETO en develop:**
+**HECHO en develop:**
 - ✅ **2.5 — fix de comms** (`#438`, `f35e39a`): los 7 puntos user-facing que leía el taller dicen "Coordinación", no "Estado". Base schema de visibilidad de 2.2 también ya en develop (`#437`).
 - ✅ **2.4 — filtros del directorio** (`#438`, `f35e39a`): Rubro / Servicios / Ubicación (cascada provincia→partido) + texto fijo del gate ARCA, en el directorio público y la vista marca.
+- ✅ **2.1 — sub-tabs "Mi taller"** (`#439`, `2b3a3fd`, mergeado 2026-06-24): split en sub-tabs (Mi vidriera | Mi gestión productiva) + cabecera común con `nivelAEtapa` + ARCA + "Ver cómo me ve el directorio" como **modal** sobre Mi vidriera. Incluye 3 pases de QA de Sergio: cleanup de marketplace en Mi vidriera **y** en la vista pública `/perfil/[id]`, PII del responsable → privada (gestión), breadcrumb del wizard, "Guardar y completar después" en pasos intermedios, "Puntaje" eliminado, y diagnóstico/fix de pedidos de test (T-08). CI verde sobre develop (unit + e2e).
 
-**Pendiente de la Etapa 2 (no bloquea el piloto salvo lo indicado):**
-- 🟡 **2.1 — sub-tabs "Mi taller"** (Mi vidriera | Mi gestión productiva + header común + botón preview).
-- 🟡 **2.2 — UI de visibilidad** (escribir el JSONB ya mergeado en #437) + reorg en 3 bloques + badges de Formación (granular por badge).
+**Pendiente de la Etapa 2:**
+- 🟡 **2.2 — vidriera por categorías de visibilidad + privacy-by-default.** Spec **CERRADO** (matriz final de Sergio) en `v4-etapa2-2-vidriera-discovery.md`. Se parte en **3 PRs**: **2.2-A** (3er sub-tab "Datos básicos" + reorder + sync) · **2.2-B** (taxonomía 3 categorías + flag `modeloB_revisado` + render condicional) · **2.2-C** (UI de toggles + escritura + Formación granular). Bloqueos: 2.2-A solo espera que **#439 esté mergeado (✅ ya está)** → **arrancable ya**; 2.2-B espera que Gerardo modele el flag; 2.2-C espera 2.2-B. **Ninguna decisión de Sergio pendiente.**
+- 🟡 **#439b — hallazgos del barrido** (PR aparte): los hallazgos detectados en el QA de #439 que NO eran parte de 2.1 (gráficos "Formalización 19%", métricas del dashboard, lo de Lucía Fernández, audit de links). No bloquea 2.2.
 - 🔴 **2.3 — gracia 60d→inactiva + vidriera mínima (4 reqs)** (el mayor net-new restante; necesita decisión cron on-read vs job).
 
 **Único prerrequisito externo del próximo deploy a prod (orden de Sergio):** **OBS-01 — setup externo de observabilidad** (UptimeRobot + Telegram + notificaciones de Vercel). Es operativo/manual, no de código; el código de `/api/health` + runbook ya están. El paquete del piloto en develop NO depende de OBS-01 para funcionar, pero OBS-01 debe quedar montado antes de promover a prod.
@@ -70,7 +71,7 @@ Es el **sello que ve la marca**. Tres etapas, que mapean 1:1 a los niveles inter
 
 ---
 
-## 2.1 — Sub-tabs "Mi taller"
+## 2.1 — Sub-tabs "Mi taller" · ✅ HECHO (PR #439, `2b3a3fd`, 2026-06-24)
 
 ### Qué existe hoy
 - El tab top-level **ya se llama "Mi taller"** → `src/compartido/lib/content/institutional.ts:28` (`{ label: 'Mi taller', href: '/taller/perfil' }`). El nombre paraguas que pide el copy ya está.
