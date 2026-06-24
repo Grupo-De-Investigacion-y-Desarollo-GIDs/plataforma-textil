@@ -7,147 +7,69 @@ import Link from 'next/link'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
-import { ProgressRing } from '@/compartido/componentes/ui/progress-ring'
-import { Star, MapPin, Users, TrendingUp, Clock, Award, Download } from 'lucide-react'
+import { Award, Download } from 'lucide-react'
 import { PortfolioManager } from '@/taller/componentes/portfolio-manager'
-import { labelOrganizacion, labelRegistro, labelEscalabilidad } from '@/compartido/lib/taller-formulario'
-import { nivelAEtapa } from '@/compartido/lib/formalizacion'
+import { VerVidrieraModal } from '@/taller/componentes/ver-vidriera-modal'
+import { VidrieraPublicaContenido } from '@/taller/componentes/vidriera-publica-contenido'
 
-export default async function TallerPerfilPage() {
+// Etapa 2.1 — "Mi vidriera": lo que ven las marcas en el directorio.
+// La cabecera común (nombre + etapa + ARCA) y las sub-tabs viven en el layout.
+// El reparto público/privado es 2.1; el filtrado por visibilidad es 2.2.
+export default async function TallerVidrieraPage() {
   const session = await auth()
   if (!session?.user) redirect('/login')
 
   const taller = await prisma.taller.findFirst({
     where: { userId: session.user.id },
     include: {
-      user: { select: { email: true, phone: true } },
       procesos: { include: { proceso: true } },
       prendas: { include: { prenda: true } },
-      plantilla: { orderBy: { categoria: 'asc' } },
       maquinaria: true,
       certificaciones: { where: { activa: true } },
       certificados: {
         where: { revocado: false },
-        include: { coleccion: { select: { titulo: true } } },
+        include: { coleccion: { select: { titulo: true, institucion: true } } },
         orderBy: { fecha: 'desc' },
+      },
+      validaciones: {
+        where: { estado: 'COMPLETADO' },
+        select: { tipoDocumento: { select: { nombre: true } } },
       },
     },
   })
 
   if (!taller) {
     return (
-      <div className="space-y-6">
-        <h1 className="font-serif font-bold text-3xl text-ink-primary">Mi taller</h1>
-        <Card className="text-center py-12">
-          <p className="text-gray-600 mb-4">Todavía no completaste tu perfil.</p>
-          <Link href="/taller/perfil/completar">
-            <Button>Completar Perfil</Button>
-          </Link>
-        </Card>
-      </div>
+      <Card className="text-center py-12">
+        <p className="text-gray-600 mb-4">Todavía no completaste tu perfil.</p>
+        <Link href="/taller/perfil/completar">
+          <Button>Completar Perfil</Button>
+        </Link>
+      </Card>
     )
   }
 
-  const checks = ['nombre', 'cuit', 'descripcion', 'provincia', 'fundado'] as const
-  const campos = checks.length + 4
-  let completos = checks.filter(c => (taller as Record<string, unknown>)[c]).length
-  if (taller.capacidadMensual > 0) completos++
-  if (taller.trabajadoresRegistrados > 0) completos++
-  if (taller.procesos.length > 0) completos++
-  if (taller.maquinaria.length > 0) completos++
-  const completitud = Math.round((completos / campos) * 100)
-
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <div className="flex items-center gap-3 mb-1">
-            <h1 className="font-serif font-bold text-3xl text-ink-primary">{taller.nombre}</h1>
-            <Badge variant="default">{nivelAEtapa(taller.nivel)}</Badge>
-          </div>
-          {taller.provincia && (
-            <p className="flex items-center gap-1 text-gray-600">
-              <MapPin className="w-4 h-4" /> {taller.provincia}{taller.partido ? `, ${taller.partido}` : ''}
-              {taller.ubicacionDetalle && <span className="text-gray-400"> · {taller.ubicacionDetalle}</span>}
-            </p>
-          )}
-          <p className="text-sm text-gray-500 mt-1">{taller.user.email} {taller.user.phone && `· ${taller.user.phone}`}</p>
-        </div>
-        <div className="flex gap-2">
-          <Link href="/taller/perfil/editar">
-            <Button variant="secondary" size="sm">Editar datos básicos</Button>
-          </Link>
-          <Link href="/taller/perfil/completar">
-            <Button variant="ghost" size="sm">{taller.sam ? 'Actualizar perfil productivo' : 'Completar perfil productivo'}</Button>
-          </Link>
-        </div>
+      {/* "Ver cómo me ve el directorio": MODAL sobre Mi vidriera (no navega a la
+          página pública). El contenido es la vidriera pública filtrada por #437;
+          al cerrar, el taller queda en su contexto privado. */}
+      <div className="flex justify-end">
+        <VerVidrieraModal>
+          <VidrieraPublicaContenido taller={taller} />
+        </VerVidrieraModal>
       </div>
 
-      <Card>
-        <div className="flex items-center gap-6">
-          <ProgressRing percentage={completitud} size={100} />
-          <div>
-            <p className="font-overpass font-bold text-brand-blue text-lg">Perfil {completitud}% completo</p>
-            <p className="text-sm text-gray-500">
-              {completitud < 100
-                ? 'Completá tu perfil para mejorar tu visibilidad en el directorio.'
-                : 'Tu perfil está completo. Las marcas pueden encontrarte fácilmente.'}
-            </p>
-          </div>
-        </div>
-      </Card>
-
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="text-center p-4">
-          <Star className="w-5 h-5 text-yellow-500 mx-auto mb-1" />
-          <p className="font-overpass font-bold text-2xl text-brand-blue">{taller.rating.toFixed(1)}</p>
-          <p className="text-xs text-gray-500">Rating</p>
-        </Card>
-        <Card className="text-center p-4">
-          <Users className="w-5 h-5 text-brand-blue mx-auto mb-1" />
-          <p className="font-overpass font-bold text-2xl text-brand-blue">{taller.trabajadoresRegistrados}</p>
-          <p className="text-xs text-gray-500">Trabajadores</p>
-        </Card>
-        <Card className="text-center p-4">
-          <TrendingUp className="w-5 h-5 text-green-600 mx-auto mb-1" />
-          <p className="font-overpass font-bold text-2xl text-brand-blue">{taller.capacidadMensual.toLocaleString()}</p>
-          <p className="text-xs text-gray-500">Cap. mensual</p>
-        </Card>
-        <Card className="text-center p-4">
-          <Clock className="w-5 h-5 text-brand-blue mx-auto mb-1" />
-          <p className="font-overpass font-bold text-2xl text-brand-blue">{taller.ontimeRate}%</p>
-          <p className="text-xs text-gray-500">On-time</p>
-        </Card>
-      </div>
+      {/* NOTA (2.2): "Trabajadores" y "Cap. mensual" salieron del grid destacado de
+          marketplace (junto con Rating / On-time / barra de completitud, descartados del
+          modelo V4). Su ubicación final es el bloque "Mi capacidad de producción"
+          (toggleable) que arma la Etapa 2.2 — no se renderizan acá por ahora. */}
 
       {taller.descripcion && (
         <Card title="Descripción">
           <p className="text-sm text-gray-700 whitespace-pre-wrap">{taller.descripcion}</p>
         </Card>
       )}
-
-      <Card title="Información General">
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <p className="text-gray-500">CUIT</p>
-            <p className="font-medium">{taller.cuit}</p>
-          </div>
-          {taller.fundado && (
-            <div>
-              <p className="text-gray-500">Fundado</p>
-              <p className="font-medium">{taller.fundado}</p>
-            </div>
-          )}
-          <div>
-            <p className="text-gray-500">Pedidos completados</p>
-            <p className="font-medium">{taller.pedidosCompletados}</p>
-          </div>
-          <div>
-            <p className="text-gray-500">Puntaje</p>
-            <p className="font-medium">{taller.puntaje} pts</p>
-          </div>
-        </div>
-      </Card>
 
       {taller.procesos.length > 0 && (
         <Card title="Procesos Productivos">
@@ -172,82 +94,6 @@ export default async function TallerPerfilPage() {
       <Card title="Mi portfolio">
         <PortfolioManager tallerId={taller.id} fotosActuales={taller.portfolioFotos} />
       </Card>
-
-      {taller.organizacion && (
-        <Card title="Perfil productivo">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-
-            <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-gray-500 text-xs mb-1">Organización</p>
-              <p className="font-medium text-gray-800">
-                {labelOrganizacion(taller.organizacion)}
-              </p>
-            </div>
-
-            {(taller.metrosCuadrados ?? 0) > 0 && (
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-gray-500 text-xs mb-1">Espacio</p>
-                <p className="font-medium text-gray-800">{taller.metrosCuadrados} m²</p>
-              </div>
-            )}
-
-            {taller.plantilla.length > 0 && taller.plantilla.some(p => p.cantidad > 0) ? (
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-gray-500 text-xs mb-1">Composición del equipo</p>
-                <div className="space-y-1">
-                  {taller.plantilla.filter(p => p.cantidad > 0).map(p => (
-                    <p key={p.categoria} className="font-medium text-gray-800 text-sm">
-                      {p.categoria === 'APRENDIZ' ? 'Aprendices'
-                       : p.categoria === 'MEDIO_OFICIAL' ? 'Medio oficial'
-                       : p.categoria === 'OFICIAL' ? 'Oficial'
-                       : 'Oficial calificado'}: {p.cantidad}
-                    </p>
-                  ))}
-                  <p className="text-xs text-gray-500 mt-1">
-                    Total: {taller.plantilla.reduce((sum, p) => sum + p.cantidad, 0)} personas
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-gray-500 text-xs mb-1">Composición del equipo</p>
-                <p className="text-sm text-gray-400 italic">Pendiente de completar</p>
-              </div>
-            )}
-
-            {taller.registroProduccion && (
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-gray-500 text-xs mb-1">Registro de producción</p>
-                <p className="font-medium text-gray-800">
-                  {labelRegistro(taller.registroProduccion)}
-                </p>
-              </div>
-            )}
-
-            {taller.escalabilidad && (
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-gray-500 text-xs mb-1">Puede escalar</p>
-                <p className="font-medium text-gray-800">
-                  {labelEscalabilidad(taller.escalabilidad)}
-                </p>
-              </div>
-            )}
-
-            {(taller.sam ?? 0) > 0 && (
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-gray-500 text-xs mb-1">Tiempo estándar ({taller.prendaPrincipal})</p>
-                <p className="font-medium text-gray-800">{taller.sam} min</p>
-              </div>
-            )}
-
-          </div>
-
-          <p className="text-xs text-gray-400 mt-4">
-            Esta información es visible para el equipo de la plataforma y la Coordinación.
-            No afecta tu recorrido de formalización.
-          </p>
-        </Card>
-      )}
 
       {taller.maquinaria.length > 0 && (
         <Card title="Maquinaria">
