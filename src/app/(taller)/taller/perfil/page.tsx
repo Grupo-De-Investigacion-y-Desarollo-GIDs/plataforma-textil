@@ -7,8 +7,10 @@ import Link from 'next/link'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
-import { Award, Download, ExternalLink } from 'lucide-react'
+import { Award, Download } from 'lucide-react'
 import { PortfolioManager } from '@/taller/componentes/portfolio-manager'
+import { VerVidrieraModal } from '@/taller/componentes/ver-vidriera-modal'
+import { VidrieraPublicaContenido } from '@/taller/componentes/vidriera-publica-contenido'
 
 // Etapa 2.1 — "Mi vidriera": lo que ven las marcas en el directorio.
 // La cabecera común (nombre + etapa + ARCA) y las sub-tabs viven en el layout.
@@ -26,8 +28,12 @@ export default async function TallerVidrieraPage() {
       certificaciones: { where: { activa: true } },
       certificados: {
         where: { revocado: false },
-        include: { coleccion: { select: { titulo: true } } },
+        include: { coleccion: { select: { titulo: true, institucion: true } } },
         orderBy: { fecha: 'desc' },
+      },
+      validaciones: {
+        where: { estado: 'COMPLETADO' },
+        select: { tipoDocumento: { select: { nombre: true } } },
       },
     },
   })
@@ -45,14 +51,13 @@ export default async function TallerVidrieraPage() {
 
   return (
     <div className="space-y-6">
-      {/* "Ver cómo me ve el directorio": previsualizar la vidriera pública.
-          Movido acá desde la cabecera común (vive en la vidriera, no en la metadata global). */}
+      {/* "Ver cómo me ve el directorio": MODAL sobre Mi vidriera (no navega a la
+          página pública). El contenido es la vidriera pública filtrada por #437;
+          al cerrar, el taller queda en su contexto privado. */}
       <div className="flex justify-end">
-        <Link href={`/perfil/${taller.id}`} target="_blank" rel="noopener noreferrer">
-          <Button variant="secondary" size="sm" icon={<ExternalLink className="w-4 h-4" />}>
-            Ver cómo me ve el directorio
-          </Button>
-        </Link>
+        <VerVidrieraModal>
+          <VidrieraPublicaContenido taller={taller} />
+        </VerVidrieraModal>
       </div>
 
       {/* NOTA (2.2): "Trabajadores" y "Cap. mensual" salieron del grid destacado de

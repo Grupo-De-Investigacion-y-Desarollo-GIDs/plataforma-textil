@@ -80,10 +80,7 @@ export default async function TallerGestionPage() {
             <p className="text-gray-500">Pedidos completados</p>
             <p className="font-medium">{taller.pedidosCompletados}</p>
           </div>
-          <div>
-            <p className="text-gray-500">Puntaje</p>
-            <p className="font-medium">{taller.puntaje} pts</p>
-          </div>
+          {/* "Puntaje" eliminado: la mecánica de scoring fue descartada en la V4. */}
         </div>
       </Card>
 

@@ -711,10 +711,24 @@ export default function WizardPage() {
 
       {/* Navigation */}
       {step > 0 && step < 13 && (
-        <div className="flex justify-between mt-6 sticky bottom-0 -mx-4 px-4 py-3 bg-white/95 backdrop-blur border-t border-gray-100 sm:static sm:mx-0 sm:px-0 sm:py-0 sm:bg-transparent sm:backdrop-blur-none sm:border-0">
-          <Button variant="secondary" onClick={prev} icon={<ArrowLeft className="w-4 h-4" />}>Atrás</Button>
-          <Button onClick={next} icon={<ArrowRight className="w-4 h-4" />}>Siguiente</Button>
-        </div>
+        <>
+          <div className="flex justify-between mt-6 sticky bottom-0 -mx-4 px-4 py-3 bg-white/95 backdrop-blur border-t border-gray-100 sm:static sm:mx-0 sm:px-0 sm:py-0 sm:bg-transparent sm:backdrop-blur-none sm:border-0">
+            <Button variant="secondary" onClick={prev} icon={<ArrowLeft className="w-4 h-4" />}>Atrás</Button>
+            <Button onClick={next} icon={<ArrowRight className="w-4 h-4" />}>Siguiente</Button>
+          </div>
+          {/* Salida guardando progreso parcial desde cualquier paso intermedio.
+              Reusa handleSave (PUT con el estado actual) y vuelve a Mi gestión productiva. */}
+          <div className="text-center mt-3">
+            <button
+              type="button"
+              onClick={() => handleSave('/taller/perfil/gestion')}
+              disabled={saving}
+              className="text-sm text-gray-500 hover:underline disabled:opacity-50"
+            >
+              {saving ? 'Guardando...' : 'Guardar y completar después'}
+            </button>
+          </div>
+        </>
       )}
     </div>
   )
