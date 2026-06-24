@@ -12,13 +12,13 @@
 
 | PR | Bloqueado por | NO bloqueado por |
 |---|---|---|
-| **2.2-A** (estructura: 3er sub-tab + reorder + sync) | **Solo** el merge de **#439** | nada más |
-| **2.2-B** (taxonomía + flag + render condicional) | #439 · **Gerardo modela/migra el flag `modeloB_revisado`** | Efic/Result ✅ resuelto · D3/D4 ✅ resueltos |
-| **2.2-C** (config UI + toggles + escritura) | #439 · 2.2-B mergeado | D3/D4 ✅ resueltos |
+| **2.2-A** (estructura: 3er sub-tab + reorder + sync) | **Nada — arrancable YA** (#439 ✅ mergeado, `2b3a3fd`) | — |
+| **2.2-B** (taxonomía + render condicional) | **Nada — arrancable YA** (#439 ✅ · flag `modeloB_revisado` ✅ en develop, #441 `306dd3e`) | Efic/Result ✅ resuelto · D3/D4 ✅ resueltos · flag ✅ ya modelado |
+| **2.2-C** (config UI + toggles + escritura) | 2.2-B mergeado | D3/D4 ✅ resueltos |
 
 **Resumen accionable:**
-- **2.2-A queda LISTA para arrancar apenas mergee #439.** No espera nada más.
-- **2.2-B** espera #439 + **el flag modelado por Gerardo** (único pendiente; ya no espera Efic/Result).
+- **2.2-A arrancable YA** (#439 mergeado). No espera nada.
+- **2.2-B arrancable YA:** #439 ✅ + el flag `modeloB_revisado` ✅ ya está en develop (#441, schema + migración + backfill aplicado). Ya no espera el modelado del flag ni Efic/Result. Su scope restante es taxonomía + `bloqueVisiblePublico` (render condicional), no el campo.
 - **2.2-C** espera 2.2-B mergeado. **Nada de Sergio pendiente.**
 
 > **Pendientes que NO bloquean 2.2** (mejoras posteriores, no gate): (A) revisión completa del SAM, (B) taxonomía oficial de rubros/procesos (CIAI/FECOSET). Ver §10.
@@ -155,7 +155,7 @@ Para **aparecer en `/directorio`**, además de FORZADO-VISIBLE completo (nombre,
 
 ## 5. El flag `modeloB_revisado` (privacy-by-default)
 
-### 5.1 Schema (migración aditiva — la modela/migra Gerardo)
+### 5.1 Schema (migración aditiva) — ✅ YA EN DEVELOP (#441, `306dd3e`)
 ```prisma
 model Taller {
   // ...
@@ -163,7 +163,9 @@ model Taller {
 }
 ```
 - **Aditiva:** columna con default, sin tocar nada existente.
-- **Backfill en la misma migración:** `UPDATE "Taller" SET "modeloB_revisado" = true;` → **todos los talleres EXISTENTES quedan en `true`** (no se les cambia la visibilidad: seguían en `null=visible` de #437, y `true` preserva eso). Talleres **nuevos** entran en `false` (default).
+- **Backfill en la misma migración:** `UPDATE "talleres" SET "modeloB_revisado" = true;` → **todos los talleres EXISTENTES quedan en `true`** (no se les cambia la visibilidad: seguían en `null=visible` de #437, y `true` preserva eso). Talleres **nuevos** entran en `false` (default).
+  - ⚠️ **Nombre real de la tabla = `"talleres"`** (vía `@@map("talleres")`), NO `"Taller"`. No copiar el nombre del modelo Prisma al SQL.
+- **Estado:** schema + migración (`20260624120000_agregar_modelob_revisado`) **aplicados a DEV** y mergeados a develop (#441). Backfill verificado: 6/6 talleres en `true`, 0 en `false`. **2.2-B ya no espera el modelado del flag** — solo espera arrancar.
 
 ### 5.2 Render condicional (público + "Mi vidriera")
 Para un bloque **TOGGLE-LIBRE**, la visibilidad pública se resuelve así:
@@ -262,10 +264,10 @@ export function badgeFormacionVisible(taller, certificadoId): boolean {
 - Aclaración de sync = lectura compartida (no código nuevo de sync; solo asegurar que el render público no SELECT-ee privados).
 - **Sin** lógica de visibilidad nueva. Bajo riesgo, QA trivial.
 
-### PR **2.2-B — Taxonomía + flag + render condicional** *(render-only, behavior-preserving para existentes)*
+### PR **2.2-B — Taxonomía + render condicional** *(render-only, behavior-preserving para existentes)*
 - Reorg de "Mi vidriera" y `/perfil/[id]` en las 3 categorías (§4) + estados vacíos/mensajes del copy.
 - Expandir `BloqueVidriera` (§6.1) + cablear los gates faltantes en público y en "Mi vidriera".
-- **Flag `modeloB_revisado`** (migración + backfill existentes→true, §5.1) + `bloqueVisiblePublico` (§5.2) en ambos renders.
+- **Flag `modeloB_revisado`: ✅ YA en develop** (#441, schema + migración + backfill, §5.1). 2.2-B solo agrega `bloqueVisiblePublico` (§5.2) en ambos renders, que **lee** el flag.
 - **Banners** (§5.4).
 - **Behavior-preserving para talleres existentes** (revisado=true ⇒ null=visible, como hoy). Talleres **nuevos** quedan en privacy-by-default (solo FORZADO-VISIBLE) hasta el PR-C. ⚠️ Ver "gap" en §9.
 - **Sin UI de toggles / sin escritura.** Tests: `bloqueVisiblePublico` con flag true/false; render de las 3 categorías.
@@ -286,15 +288,15 @@ export function badgeFormacionVisible(taller, certificadoId): boolean {
 
 **Estimación (Sergio, spec cerrado):**
 - 2.2-A: ~1 día (routing + mover responsable + mobile 3 tabs).
-- 2.2-B: ~1.5–2 días (taxonomía ×2 superficies + expandir type + flag migración+backfill + render condicional + banners + tests).
+- 2.2-B: ~1.5–2 días (taxonomía ×2 superficies + expandir type + render condicional + banners + tests). *(flag migración+backfill ya hecho, #441.)*
 - 2.2-C: ~2–2.5 días (panel UI + aviso + server action con mapa completo + granular + e2e).
 - **Total 2.2: ~4.5–5.5 días.**
 
 **Qué bloquea qué:**
-- Todo 2.2 ← **merge de #439** (3er re-QA en curso).
+- #439 ✅ **mergeado** (`2b3a3fd`) — Etapa 2.1 cerrada. 2.2-A/B ya no lo esperan.
 - FORZADO-PRIVADO ✅ **cerrado** (Efic/Result resuelto, §4.2) — ya no bloquea 2.2-B.
-- Schema (`modeloB_revisado`) ← **Gerardo** modela/migra (único pendiente de plataforma, antes de 2.2-B).
-- **Ninguna decisión de Sergio pendiente** para A/B/C.
+- Schema (`modeloB_revisado`) ✅ **mergeado** (#441, `306dd3e`) — migración + backfill aplicados a DEV. **2.2-B ya no espera nada de plataforma.**
+- **Ninguna decisión de Sergio pendiente** para A/B/C. **2.2-A y 2.2-B son arrancables YA.**
 
 **Riesgos:**
 - **R-DIR — elegibilidad de directorio rompe "render-only" (§4.4). ✅ confirmado (Gerardo).** La visibilidad ahora condiciona aparecer en `/directorio` (cambio de supuesto vs #437). Va en **2.2-B** (usa el mismo `bloqueVisiblePublico`; behavior-preserving para existentes con revisado=true). Mitigación: filtro post-query en app evaluando el toggle de procesos/prendas. **Test obligatorio de 2.2:** "taller con todo toggle-libre oculto ⇒ NO aparece en el directorio".
@@ -330,6 +332,7 @@ Las 7 del bloque "Modelo CONFIRMADO" arriba (3 sub-tabs, sync por lectura compar
 ### 🔧 Menor (no bloquea)
 - **D6 — Dismiss del banner "Revisá tu vidriera"** (existentes): `localStorage` vs 2º flag. *(Preferible localStorage.)*
 
-### 🔧 Único pendiente de plataforma (Gerardo) para 2.2-B
-- Modelar/migrar **`modeloB_revisado Boolean @default(false)`** + backfill existentes→true (§5.1).
-- La expansión de `BloqueVidriera` (10 keys del piloto) es **solo TS** (JSONB ya lo soporta) — no requiere migración.
+### ✅ Pendiente de plataforma (Gerardo) para 2.2-B — RESUELTO
+- ✅ **`modeloB_revisado Boolean @default(false)`** modelado + migrado + backfill existentes→true — **en develop (#441, `306dd3e`)**. Tabla real `"talleres"` (no `"Taller"`). Verificado: 6/6 en `true`.
+- La expansión de `BloqueVidriera` (10 keys del piloto) es **solo TS** (JSONB ya lo soporta) — no requiere migración. Se hace dentro de 2.2-B.
+- **No queda ningún pendiente de plataforma para arrancar 2.2-B.**
