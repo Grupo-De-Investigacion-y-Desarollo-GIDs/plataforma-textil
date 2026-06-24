@@ -160,6 +160,22 @@ _T-04, T-05 y T-06 resueltos — ver sección "Resueltas"._
 - **Prioridad:** muy baja / bloqueada (depende de G-14).
 - **Estimación (si G-14 mantiene la feature):** 1.5-2h (flujo + reset de denuncias).
 
+### T-08: `limpiarPedidoTest` es un NO-OP silencioso (endpoint DELETE inexistente)
+- **Detectado en:** #439a (re-QA #439, 2026-06-24), al diagnosticar los "pedidos mock" del dashboard del taller.
+- **Descripción:** el helper `limpiarPedidoTest` en `tests/e2e/_helpers/cleanup.ts` llama a
+  `DELETE /api/pedidos/{omId}`, pero **ese endpoint no tiene handler DELETE** (`src/app/api/pedidos/[id]/route.ts`
+  solo expone GET y PUT). El `page.request.delete` devuelve 405, el helper hace `console.warn` y sigue → **limpieza
+  silenciosamente nula**. Además usa `omId` cuando el route resuelve por `id` interno (otro mismatch).
+- **Consecuencia:** los pedidos de test del e2e `flujo-comercial.spec.ts` **nunca se limpiaban** y se acumularon
+  en DEV (se encontraron **85** "Test-Prenda-*" que aparecían como "Pedidos activos" en el dashboard del taller del seed).
+- **Mitigado en #439a:** (a) `flujo-comercial.spec.ts` ahora cancela el pedido creado vía `PUT estado=CANCELADO`
+  (lo saca del filtro PENDIENTE/EN_EJECUCION del dashboard); (b) cleanup one-off en DEV (85 pedidos cancelados).
+  **El helper roto queda igual** (ningún test lo usa hoy).
+- **Severidad:** baja (ya mitigado; no afecta prod — el query del dashboard es correcto).
+- **Fix:** arreglar el helper (agregar handler DELETE con cascada, o cambiar a PUT→CANCELADO por `id`) **o eliminarlo**,
+  en un PR de limpieza.
+- **Relacionado:** **T-05** (patrón de e2e que mutan DB sin limpiar estado).
+
 ## Producto
 
 ### P-01: Notificaciones — comportamiento en multi-rol
