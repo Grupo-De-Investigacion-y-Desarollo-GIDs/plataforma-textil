@@ -175,8 +175,11 @@ export default async function TallerFormalizacionPage() {
             <p className="font-overpass font-bold text-brand-blue">¿Necesitás ayuda para formalizarte?</p>
             <p className="text-sm text-gray-500">Nuestros cursos gratuitos te guían paso a paso.</p>
           </div>
+          {/* Apunta a la Academia general. Label "relacionados" (no "por requisito")
+              para no prometer un curso puntual por requisito que todavía no existe;
+              el mapeo requisito→curso queda pendiente (curaduría de Matías) — DEUDA_TECNICA. */}
           <Link href="/taller/aprender">
-            <Button variant="secondary">Ver cursos</Button>
+            <Button variant="secondary">Ver cursos relacionados</Button>
           </Link>
         </div>
       </Card>

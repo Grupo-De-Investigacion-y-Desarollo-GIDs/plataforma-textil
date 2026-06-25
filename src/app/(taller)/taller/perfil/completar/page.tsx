@@ -699,7 +699,10 @@ export default function WizardPage() {
           </Card>
 
           <div className="flex gap-3 justify-center">
-            <Button onClick={() => handleSave('/taller/perfil')} variant="secondary" disabled={saving}>
+            {/* Coordinación 2.2-A (#442): la vidriera se movió de /taller/perfil
+                (ahora "Datos básicos") a /taller/perfil/vidriera. El botón apunta
+                ahí para que "Ver mi vidriera" caiga en la vidriera real. */}
+            <Button onClick={() => handleSave('/taller/perfil/vidriera')} variant="secondary" disabled={saving}>
               {saving ? 'Guardando...' : 'Ver mi vidriera'}
             </Button>
             <Button onClick={() => handleSave('/taller/aprender')} disabled={saving}>
