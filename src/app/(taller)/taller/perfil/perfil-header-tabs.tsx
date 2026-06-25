@@ -7,18 +7,24 @@ import { Button } from '@/compartido/componentes/ui/button'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { MapPin } from 'lucide-react'
 
-// Etapa 2.1 — contenedor "Mi taller": cabecera común + sub-tabs.
-// Cabecera (nombre + etapa actual + ARCA verificado) y sub-tabs viven sobre
-// ambas vistas (vidriera / gestión). En los formularios (editar / completar)
-// el cromo se oculta — molde tomado de `taller/pedidos/layout.tsx` (PR #374).
+// Etapa 2.2-A — contenedor "Mi taller": cabecera común + sub-tabs.
+// 3 sub-tabs en orden secuencial: Datos básicos (índice) → Mi gestión productiva
+// → Mi vidriera (obligatorio → productivo → curatorial). Cabecera (nombre + etapa
+// + ARCA) y sub-tabs viven sobre las 3 vistas. En los formularios (editar /
+// completar) el cromo se oculta — molde de `taller/pedidos/layout.tsx` (PR #374).
 
 const subTabs = [
-  { label: 'Mi vidriera', href: '/taller/perfil' },
+  { label: 'Datos básicos', href: '/taller/perfil' },
   { label: 'Mi gestión productiva', href: '/taller/perfil/gestion' },
+  { label: 'Mi vidriera', href: '/taller/perfil/vidriera' },
 ]
 
 function mostrarCromo(pathname: string) {
-  return pathname === '/taller/perfil' || pathname === '/taller/perfil/gestion'
+  return (
+    pathname === '/taller/perfil' ||
+    pathname === '/taller/perfil/gestion' ||
+    pathname === '/taller/perfil/vidriera'
+  )
 }
 
 export function PerfilHeaderTabs({
@@ -71,7 +77,7 @@ export function PerfilHeaderTabs({
         </div>
       </div>
 
-      {/* Sub-tabs: Mi vidriera | Mi gestión productiva */}
+      {/* Sub-tabs: Datos básicos | Mi gestión productiva | Mi vidriera */}
       <nav className="flex gap-1 border-b border-gray-200 overflow-x-auto">
         {subTabs.map((tab) => {
           const isActive =
