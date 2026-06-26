@@ -68,17 +68,23 @@ export function PerfilHeaderTabs({
               (privado), no en la cabecera común — minimización de datos (OIT IGDS 457). */}
         </div>
 
-        <div className="flex flex-col gap-2 sm:items-end shrink-0">
-          {/* "Ver cómo me ve el directorio" → movido a "Mi vidriera".
-              "Completar perfil productivo" → movido a "Mi gestión productiva". */}
-          <Link href="/taller/perfil/editar">
-            <Button variant="secondary" size="sm">Editar datos básicos</Button>
-          </Link>
-        </div>
+        {/* "Editar datos básicos" vive SOLO en el tab "Datos básicos" (QA #442):
+            la edición de identidad pertenece a esa pestaña, no a gestión/vidriera.
+            "Ver cómo me ve el directorio" → "Mi vidriera"; "Completar perfil
+            productivo" → "Mi gestión productiva". */}
+        {pathname === '/taller/perfil' && (
+          <div className="flex flex-col gap-2 sm:items-end shrink-0">
+            <Link href="/taller/perfil/editar">
+              <Button variant="secondary" size="sm">Editar datos básicos</Button>
+            </Link>
+          </div>
+        )}
       </div>
 
-      {/* Sub-tabs: Datos básicos | Mi gestión productiva | Mi vidriera */}
-      <nav className="flex gap-1 border-b border-gray-200 overflow-x-auto">
+      {/* Sub-tabs (pills): Datos básicos | Mi gestión productiva | Mi vidriera.
+          Pills con contraste fuerte (activo = azul lleno) para que se lean como
+          navegación, no como texto. Responsive: overflow-x-auto + nowrap en 320/375. */}
+      <nav className="flex gap-2 overflow-x-auto pb-1" aria-label="Secciones de Mi taller">
         {subTabs.map((tab) => {
           const isActive =
             tab.href === '/taller/perfil'
@@ -89,10 +95,11 @@ export function PerfilHeaderTabs({
             <Link
               key={tab.href}
               href={tab.href}
-              className={`px-4 py-2.5 text-sm font-overpass font-semibold border-b-2 transition-colors -mb-px whitespace-nowrap ${
+              aria-current={isActive ? 'page' : undefined}
+              className={`px-4 py-2 rounded-lg text-sm font-overpass font-semibold whitespace-nowrap transition-colors ${
                 isActive
-                  ? 'border-brand-blue text-brand-blue'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'bg-brand-blue text-white shadow-sm'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-800'
               }`}
             >
               {tab.label}

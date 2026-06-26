@@ -168,14 +168,12 @@ export default async function TallerDashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Encabezado */}
+      {/* Encabezado. "Tu recorrido de formalización" se movió desde acá a la card
+          "Tus primeros pasos" (ChecklistOnboarding) / ProximoNivelCard (QA #442). */}
       <div>
         <h1 className="font-serif font-bold text-3xl text-ink-primary">
           Bienvenido, {taller?.nombre ?? session.user.name}
         </h1>
-        <p className="text-gray-500 mt-1">
-          Tu recorrido de formalización: <span className="font-semibold">{etapa}</span>
-        </p>
       </div>
 
       {/* Banner taller no verificado */}
@@ -229,7 +227,7 @@ export default async function TallerDashboardPage() {
           {onboardingCompleto ? (
             <ProximoNivelCard tallerId={taller.id} />
           ) : (
-            <ChecklistOnboarding pasos={pasosOnboarding} />
+            <ChecklistOnboarding pasos={pasosOnboarding} etapa={etapa} />
           )}
           <SincronizarNivel tallerId={taller.id} nivelActual={taller.nivel} />
         </>

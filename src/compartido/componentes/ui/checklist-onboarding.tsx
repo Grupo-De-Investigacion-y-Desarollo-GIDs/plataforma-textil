@@ -4,19 +4,29 @@ import type { PasoOnboarding } from '@/compartido/lib/onboarding'
 
 interface Props {
   pasos: PasoOnboarding[]
+  /** Etapa de formalización actual (nivelAEtapa). Se muestra como subtítulo del
+   *  recorrido dentro de la card — movido desde el header del dashboard (QA #442). */
+  etapa?: string
 }
 
-export function ChecklistOnboarding({ pasos }: Props) {
+export function ChecklistOnboarding({ pasos, etapa }: Props) {
   const primerPendiente = pasos.find(p => !p.completado)
   const completados = pasos.filter(p => p.completado).length
 
   return (
     <div className="rounded-xl border border-brand-blue/20 bg-brand-blue/5 p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="font-overpass font-bold text-lg text-brand-blue">
-          Tus primeros pasos en la plataforma
-        </h2>
-        <span className="text-xs text-gray-500 font-medium">
+      <div className="flex items-start justify-between gap-3 mb-4">
+        <div className="min-w-0">
+          <h2 className="font-overpass font-bold text-lg text-brand-blue">
+            Tus primeros pasos en la plataforma
+          </h2>
+          {etapa && (
+            <p className="text-sm text-gray-500 mt-0.5">
+              Tu recorrido de formalización: <span className="font-semibold">{etapa}</span>
+            </p>
+          )}
+        </div>
+        <span className="text-xs text-gray-500 font-medium shrink-0">
           {completados}/{pasos.length} completados
         </span>
       </div>

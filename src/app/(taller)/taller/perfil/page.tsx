@@ -23,9 +23,6 @@ export default async function TallerDatosBasicosPage() {
     select: {
       descripcion: true,
       fundado: true,
-      provincia: true,
-      partido: true,
-      ubicacionDetalle: true,
       cuit: true,
       pedidosCompletados: true,
       user: { select: { name: true, email: true, phone: true } },
@@ -43,14 +40,12 @@ export default async function TallerDatosBasicosPage() {
     )
   }
 
-  const ubicacion = [taller.provincia, taller.partido, taller.ubicacionDetalle]
-    .filter(Boolean)
-    .join(', ')
-
   return (
     <div className="space-y-6">
       {/* Información del taller — campos públicos. Estos se LEEN en la vidriera
-          (misma fila Taller): editarlos acá los actualiza también allá, sin copia. */}
+          (misma fila Taller): editarlos acá los actualiza también allá, sin copia.
+          La ubicación NO se repite acá: ya vive en la cabecera común (metadata
+          global), debajo del nombre — evita la duplicación que marcó el QA (#442). */}
       <Card title="Información del taller">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div className="sm:col-span-2">
@@ -64,10 +59,6 @@ export default async function TallerDatosBasicosPage() {
           <div>
             <p className="text-gray-500">Año de fundación</p>
             <p className="font-medium">{taller.fundado ?? <span className="text-gray-400 italic">Sin completar</span>}</p>
-          </div>
-          <div>
-            <p className="text-gray-500">Ubicación</p>
-            <p className="font-medium break-words">{ubicacion || <span className="text-gray-400 italic">Sin completar</span>}</p>
           </div>
         </div>
         <p className="flex items-center gap-1 text-xs text-gray-400 mt-4">
