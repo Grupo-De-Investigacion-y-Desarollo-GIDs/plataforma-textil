@@ -95,7 +95,7 @@ export default async function TallerVidrieraPage() {
 
       {/* DIMENSIÓN 1 — Credenciales (forzado-VISIBLE: siempre se muestra a la marca) */}
       <h2 className="font-overpass font-bold text-xs uppercase tracking-wide text-gray-400">Credenciales</h2>
-      <Card title="Credenciales">
+      <Card>
         <div className="flex flex-wrap items-center gap-2 mb-3">
           <Badge variant="default"><Milestone className="w-3 h-3 mr-1" />{nivelAEtapa(taller.nivel)}</Badge>
           <BadgeArca verificado={taller.verificadoAfip} />
