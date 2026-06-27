@@ -13,7 +13,8 @@ import { Lock, Eye } from 'lucide-react'
 // ubicación) que SINCRONIZA a la vidriera por lectura del mismo registro Taller
 // (spec §3 — sin copia ni trigger), + datos del responsable (privados, sólo el
 // taller y la Coordinación). La edición es vía el form existente
-// `/taller/perfil/editar` (botón "Editar datos básicos" en la cabecera del layout).
+// `/taller/perfil/editar`, con el botón "Editar datos básicos" como acción del
+// CUERPO de este tab (card "Información del taller"), no en la cabecera (QA #442 A).
 export default async function TallerDatosBasicosPage() {
   const session = await auth()
   if (!session?.user) redirect('/login')
@@ -61,10 +62,17 @@ export default async function TallerDatosBasicosPage() {
             <p className="font-medium">{taller.fundado ?? <span className="text-gray-400 italic">Sin completar</span>}</p>
           </div>
         </div>
-        <p className="flex items-center gap-1 text-xs text-gray-400 mt-4">
-          <Eye className="w-3 h-3 shrink-0" />
-          Esta información aparece en tu vidriera pública. Editala desde &ldquo;Editar datos básicos&rdquo;.
-        </p>
+        {/* Acción contextual: editar los datos básicos. Vive en el CUERPO del tab
+            (QA #442 A), no flotando junto al título global de Mi taller. */}
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="flex items-center gap-1 text-xs text-gray-400">
+            <Eye className="w-3 h-3 shrink-0" />
+            Esta información aparece en tu vidriera pública.
+          </p>
+          <Link href="/taller/perfil/editar">
+            <Button variant="secondary" size="sm">Editar datos básicos</Button>
+          </Link>
+        </div>
       </Card>
 
       {/* Datos del responsable — PII privada, movida desde "Mi gestión productiva"

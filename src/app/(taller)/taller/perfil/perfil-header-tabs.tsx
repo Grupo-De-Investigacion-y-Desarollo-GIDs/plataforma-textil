@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Badge } from '@/compartido/componentes/ui/badge'
-import { Button } from '@/compartido/componentes/ui/button'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { MapPin } from 'lucide-react'
 
@@ -47,38 +46,28 @@ export function PerfilHeaderTabs({
 
   return (
     <div className="space-y-4">
-      {/* Cabecera común — nombre + etapa actual (nivelAEtapa) + ARCA verificado */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2 mb-1">
-            <h1 className="font-serif font-bold text-3xl text-ink-primary break-words">{nombre}</h1>
-            <Badge variant="default">{etapa}</Badge>
-          </div>
-          <div className="mb-1">
-            <BadgeArca verificado={verificadoAfip} />
-          </div>
-          {provincia && (
-            <p className="flex items-center gap-1 text-gray-600">
-              <MapPin className="w-4 h-4 shrink-0" /> {provincia}
-              {partido ? `, ${partido}` : ''}
-              {ubicacionDetalle && <span className="text-gray-400"> · {ubicacionDetalle}</span>}
-            </p>
-          )}
-          {/* PII del responsable (nombre/email/teléfono) vive en "Mi gestión productiva"
-              (privado), no en la cabecera común — minimización de datos (OIT IGDS 457). */}
+      {/* Cabecera común — nombre + etapa actual (nivelAEtapa) + ARCA verificado.
+          El botón "Editar datos básicos" NO vive acá (QA #442 A): es una acción del
+          CUERPO del tab Datos básicos (card "Información del taller"), no de la
+          cabecera. "Ver cómo me ve el directorio" → Mi vidriera; "Completar perfil
+          productivo" → Mi gestión productiva. */}
+      <div className="min-w-0">
+        <div className="flex flex-wrap items-center gap-2 mb-1">
+          <h1 className="font-serif font-bold text-3xl text-ink-primary break-words">{nombre}</h1>
+          <Badge variant="default">{etapa}</Badge>
         </div>
-
-        {/* "Editar datos básicos" vive SOLO en el tab "Datos básicos" (QA #442):
-            la edición de identidad pertenece a esa pestaña, no a gestión/vidriera.
-            "Ver cómo me ve el directorio" → "Mi vidriera"; "Completar perfil
-            productivo" → "Mi gestión productiva". */}
-        {pathname === '/taller/perfil' && (
-          <div className="flex flex-col gap-2 sm:items-end shrink-0">
-            <Link href="/taller/perfil/editar">
-              <Button variant="secondary" size="sm">Editar datos básicos</Button>
-            </Link>
-          </div>
+        <div className="mb-1">
+          <BadgeArca verificado={verificadoAfip} />
+        </div>
+        {provincia && (
+          <p className="flex items-center gap-1 text-gray-600">
+            <MapPin className="w-4 h-4 shrink-0" /> {provincia}
+            {partido ? `, ${partido}` : ''}
+            {ubicacionDetalle && <span className="text-gray-400"> · {ubicacionDetalle}</span>}
+          </p>
         )}
+        {/* PII del responsable (nombre/email/teléfono) vive en "Mi gestión productiva"
+            (privado), no en la cabecera común — minimización de datos (OIT IGDS 457). */}
       </div>
 
       {/* Sub-tabs (pills): Datos básicos | Mi gestión productiva | Mi vidriera.
