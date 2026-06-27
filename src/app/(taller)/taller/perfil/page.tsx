@@ -24,7 +24,11 @@ export default async function TallerDatosBasicosPage() {
     select: {
       descripcion: true,
       fundado: true,
+      provincia: true,
+      partido: true,
+      ubicacionDetalle: true,
       cuit: true,
+      verificadoAfip: true,
       pedidosCompletados: true,
       user: { select: { name: true, email: true, phone: true } },
     },
@@ -41,12 +45,16 @@ export default async function TallerDatosBasicosPage() {
     )
   }
 
+  const ubicacion = [taller.provincia, taller.partido, taller.ubicacionDetalle]
+    .filter(Boolean)
+    .join(', ')
+
   return (
     <div className="space-y-6">
-      {/* Información del taller — campos públicos. Estos se LEEN en la vidriera
-          (misma fila Taller): editarlos acá los actualiza también allá, sin copia.
-          La ubicación NO se repite acá: ya vive en la cabecera común (metadata
-          global), debajo del nombre — evita la duplicación que marcó el QA (#442). */}
+      {/* Información del taller — identidad pública del taller. En el modelo de
+          Sergio (cabecera = solo nombre), la UBICACIÓN vive acá (su hogar de
+          identidad), no en la cabecera. Estos campos se LEEN en la vidriera
+          (misma fila Taller): editarlos acá los actualiza también allá, sin copia. */}
       <Card title="Información del taller">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div className="sm:col-span-2">
@@ -60,6 +68,10 @@ export default async function TallerDatosBasicosPage() {
           <div>
             <p className="text-gray-500">Año de fundación</p>
             <p className="font-medium">{taller.fundado ?? <span className="text-gray-400 italic">Sin completar</span>}</p>
+          </div>
+          <div>
+            <p className="text-gray-500">Ubicación</p>
+            <p className="font-medium break-words">{ubicacion || <span className="text-gray-400 italic">Sin completar</span>}</p>
           </div>
         </div>
         {/* Acción contextual: editar los datos básicos. Vive en el CUERPO del tab
@@ -102,12 +114,18 @@ export default async function TallerDatosBasicosPage() {
         </p>
       </Card>
 
-      {/* Datos de registro — identidad fiscal/operativa. CUIT es privado. */}
+      {/* Datos de registro — identidad fiscal/operativa. CUIT es privado.
+          Change 3 (Sergio): el CUIT muestra el número + texto chico "Verificado por
+          ARCA" al lado (no el badge prominente — ese vive en Inicio / Mi recorrido
+          / Mi vidriera>Credenciales). */}
       <Card title="Datos de registro">
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <p className="text-gray-500">CUIT</p>
             <p className="font-medium">{taller.cuit}</p>
+            <p className="text-xs text-gray-400 mt-0.5">
+              {taller.verificadoAfip ? 'Verificado por ARCA' : 'Sin verificar en ARCA'}
+            </p>
           </div>
           <div>
             <p className="text-gray-500">Pedidos completados</p>

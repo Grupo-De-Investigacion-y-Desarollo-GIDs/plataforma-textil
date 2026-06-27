@@ -2,15 +2,16 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Badge } from '@/compartido/componentes/ui/badge'
-import { BadgeArca } from '@/compartido/componentes/badge-arca'
-import { MapPin } from 'lucide-react'
 
-// Etapa 2.2-A — contenedor "Mi taller": cabecera común + sub-tabs.
-// 3 sub-tabs en orden secuencial: Datos básicos (índice) → Mi gestión productiva
-// → Mi vidriera (obligatorio → productivo → curatorial). Cabecera (nombre + etapa
-// + ARCA) y sub-tabs viven sobre las 3 vistas. En los formularios (editar /
-// completar) el cromo se oculta — molde de `taller/pedidos/layout.tsx` (PR #374).
+// Etapa 2.2-A — contenedor "Mi taller": cabecera + sub-tabs.
+// Modelo de distribución de Sergio (QA combinado, 2026-06-27): la cabecera
+// compartida queda con SOLO el nombre del taller + los pills de navegación.
+// La metadata de identidad vive donde corresponde por contexto:
+//   - ubicación → "Datos básicos" (card "Información del taller")
+//   - etapa + ARCA → Inicio (card "Tu recorrido"), Mi recorrido, y Credenciales
+//     de Mi vidriera (esto último es 2.2-B/C).
+// En los formularios (editar / completar) el cromo se oculta — molde de
+// `taller/pedidos/layout.tsx` (PR #374).
 
 const subTabs = [
   { label: 'Datos básicos', href: '/taller/perfil' },
@@ -26,48 +27,16 @@ function mostrarCromo(pathname: string) {
   )
 }
 
-export function PerfilHeaderTabs({
-  nombre,
-  etapa,
-  verificadoAfip,
-  provincia,
-  partido,
-  ubicacionDetalle,
-}: {
-  nombre: string
-  etapa: string
-  verificadoAfip: boolean
-  provincia: string | null
-  partido: string | null
-  ubicacionDetalle: string | null
-}) {
+export function PerfilHeaderTabs({ nombre }: { nombre: string }) {
   const pathname = usePathname()
   if (!mostrarCromo(pathname)) return null
 
   return (
     <div className="space-y-4">
-      {/* Cabecera común — nombre + etapa actual (nivelAEtapa) + ARCA verificado.
-          El botón "Editar datos básicos" NO vive acá (QA #442 A): es una acción del
-          CUERPO del tab Datos básicos (card "Información del taller"), no de la
-          cabecera. "Ver cómo me ve el directorio" → Mi vidriera; "Completar perfil
-          productivo" → Mi gestión productiva. */}
+      {/* Cabecera = SOLO el nombre del taller (sin etapa/ARCA/ubicación — se
+          distribuyen por contexto, modelo Sergio QA combinado). */}
       <div className="min-w-0">
-        <div className="flex flex-wrap items-center gap-2 mb-1">
-          <h1 className="font-serif font-bold text-3xl text-ink-primary break-words">{nombre}</h1>
-          <Badge variant="default">{etapa}</Badge>
-        </div>
-        <div className="mb-1">
-          <BadgeArca verificado={verificadoAfip} />
-        </div>
-        {provincia && (
-          <p className="flex items-center gap-1 text-gray-600">
-            <MapPin className="w-4 h-4 shrink-0" /> {provincia}
-            {partido ? `, ${partido}` : ''}
-            {ubicacionDetalle && <span className="text-gray-400"> · {ubicacionDetalle}</span>}
-          </p>
-        )}
-        {/* PII del responsable (nombre/email/teléfono) vive en "Mi gestión productiva"
-            (privado), no en la cabecera común — minimización de datos (OIT IGDS 457). */}
+        <h1 className="font-serif font-bold text-3xl text-ink-primary break-words">{nombre}</h1>
       </div>
 
       {/* Sub-tabs (pills): Datos básicos | Mi gestión productiva | Mi vidriera.
