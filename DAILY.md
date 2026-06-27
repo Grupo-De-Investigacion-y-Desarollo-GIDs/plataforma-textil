@@ -3,6 +3,9 @@
 ## 2026-06-27
 
 ### Gerardo Breard
+- **18:09** `52fc53f` — docs(etapa2): 2.2-A HECHO (#442, a12c798) + #439b (#440) + sidebar (#443) mergeados
+  - `.claude/specs/v4-narrativa-etapa-2-discovery.md`
+
 - **15:51** `074c260` — fix: 2.2-A — modelo de distribución de info por contexto (QA Sergio, reemplaza issue B)
   - `src/app/(taller)/taller/page.tsx`
   - `src/app/(taller)/taller/perfil/layout.tsx`
