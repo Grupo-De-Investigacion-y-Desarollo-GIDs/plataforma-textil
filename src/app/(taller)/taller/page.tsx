@@ -10,6 +10,7 @@ import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { calcularPasosTaller } from '@/compartido/lib/onboarding'
 import { ChecklistOnboarding } from '@/compartido/componentes/ui/checklist-onboarding'
 import { nivelAEtapa } from '@/compartido/lib/formalizacion'
+import { BannerVidriera } from '@/taller/componentes/banner-vidriera'
 
 export default async function TallerDashboardPage() {
   const session = await auth()
@@ -209,6 +210,13 @@ export default async function TallerDashboardPage() {
             </div>
           </div>
         )
+      )}
+
+      {/* Banner de vidriera (2.2-B, §5.4): invita a revisar/mostrar la vidriera.
+          Solo para talleres verificados (los no verificados aún no aparecen en el
+          directorio: su banner de formalización ya cubre el foco). */}
+      {taller && taller.verificadoAfip && (
+        <BannerVidriera revisado={taller.modeloB_revisado} />
       )}
 
       {/* Tu recorrido de formalización (change 2, QA Sergio): estado de un vistazo —

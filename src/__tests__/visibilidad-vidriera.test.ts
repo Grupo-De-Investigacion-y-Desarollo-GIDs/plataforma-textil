@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
   BLOQUES_VIDRIERA,
   bloqueVisible,
+  bloqueVisiblePublico,
   normalizarVisibilidad,
   samVisible,
   type BloqueVidriera,
@@ -98,6 +99,93 @@ describe('visibilidad-vidriera', () => {
       const taller = { visibilidadVidriera: { capacidad: true } }
       expect(bloqueVisible(taller, 'capacidad')).toBe(true)
       expect(samVisible('publico')).toBe(false)
+    })
+  })
+
+  describe('set del piloto (Etapa 2.2-B): 10 keys toggle-libre', () => {
+    it('incluye las nuevas keys ademas de las de #437', () => {
+      const esperadas = [
+        'formacion', 'equipo', 'espacio', 'capacidad', 'organizacion',
+        'maquinaria', 'procesos', 'prendas', 'anioFundacion', 'portfolio',
+      ]
+      expect([...BLOQUES_VIDRIERA].sort()).toEqual([...esperadas].sort())
+      expect(BLOQUES_VIDRIERA).toHaveLength(10)
+    })
+
+    it('NO incluye tiempos (= SAM) ni certificaciones externas (fuera del piloto)', () => {
+      expect((BLOQUES_VIDRIERA as readonly string[]).includes('tiempos')).toBe(false)
+      expect((BLOQUES_VIDRIERA as readonly string[]).includes('certificaciones')).toBe(false)
+    })
+  })
+
+  // Matriz flag × visibilidad — el corazon de 2.2-B (privacy-by-default).
+  describe('bloqueVisiblePublico: render condicional por modeloB_revisado', () => {
+    describe('modeloB_revisado=true (existentes) => BEHAVIOR-PRESERVING (#437)', () => {
+      it('flag=true + visibilidad=null => todo visible (existentes intactos)', () => {
+        const taller = { modeloB_revisado: true, visibilidadVidriera: null }
+        for (const b of BLOQUES_VIDRIERA) {
+          expect(bloqueVisiblePublico(taller, b)).toBe(true)
+        }
+      })
+
+      it('flag=true + campo ausente => todo visible', () => {
+        const taller = { modeloB_revisado: true }
+        for (const b of BLOQUES_VIDRIERA) {
+          expect(bloqueVisiblePublico(taller, b)).toBe(true)
+        }
+      })
+
+      it('flag=true + un bloque en false explicito => ese bloque oculto, resto visible', () => {
+        const taller = { modeloB_revisado: true, visibilidadVidriera: { maquinaria: false } }
+        expect(bloqueVisiblePublico(taller, 'maquinaria')).toBe(false)
+        expect(bloqueVisiblePublico(taller, 'procesos')).toBe(true)
+        expect(bloqueVisiblePublico(taller, 'portfolio')).toBe(true)
+      })
+    })
+
+    describe('modeloB_revisado=false (nuevos) => privacy-by-default', () => {
+      it('flag=false + visibilidad=null => bloques toggle-libre OCULTOS', () => {
+        const taller = { modeloB_revisado: false, visibilidadVidriera: null }
+        for (const b of BLOQUES_VIDRIERA) {
+          expect(bloqueVisiblePublico(taller, b)).toBe(false)
+        }
+      })
+
+      it('flag ausente (default Prisma) se comporta como false => oculto', () => {
+        const taller = { visibilidadVidriera: null }
+        for (const b of BLOQUES_VIDRIERA) {
+          expect(bloqueVisiblePublico(taller, b)).toBe(false)
+        }
+      })
+
+      it('flag=false + un bloque en true explicito => SOLO ese bloque visible', () => {
+        const taller = { modeloB_revisado: false, visibilidadVidriera: { procesos: true } }
+        expect(bloqueVisiblePublico(taller, 'procesos')).toBe(true)
+        expect(bloqueVisiblePublico(taller, 'prendas')).toBe(false)
+        expect(bloqueVisiblePublico(taller, 'maquinaria')).toBe(false)
+      })
+
+      it('flag=false + un bloque en false explicito => oculto (igual que el default)', () => {
+        const taller = { modeloB_revisado: false, visibilidadVidriera: { maquinaria: false } }
+        expect(bloqueVisiblePublico(taller, 'maquinaria')).toBe(false)
+      })
+
+      it('flag=false + valor no-booleano (string "true") => NO se muestra (defensivo)', () => {
+        const taller = { modeloB_revisado: false, visibilidadVidriera: { procesos: 'true' } }
+        expect(bloqueVisiblePublico(taller, 'procesos')).toBe(false)
+      })
+    })
+
+    describe('robustez de tipos crudos', () => {
+      it('visibilidadVidriera array u otros tipos => oculto si flag=false', () => {
+        expect(bloqueVisiblePublico({ modeloB_revisado: false, visibilidadVidriera: [] }, 'equipo')).toBe(false)
+        expect(bloqueVisiblePublico({ modeloB_revisado: false, visibilidadVidriera: 'x' }, 'equipo')).toBe(false)
+      })
+
+      it('visibilidadVidriera array u otros tipos => visible si flag=true', () => {
+        expect(bloqueVisiblePublico({ modeloB_revisado: true, visibilidadVidriera: [] }, 'equipo')).toBe(true)
+        expect(bloqueVisiblePublico({ modeloB_revisado: true, visibilidadVidriera: 42 }, 'equipo')).toBe(true)
+      })
     })
   })
 })
