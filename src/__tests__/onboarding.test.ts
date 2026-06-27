@@ -55,9 +55,9 @@ describe('T-03 Protocolos de onboarding', () => {
       expect(paso.href).toMatch(/^\//)
     })
 
-    test('taller tiene 5 pasos', () => {
-      const pasos = ['cuenta', 'email', 'perfil', 'documentos', 'cotizacion']
-      expect(pasos).toHaveLength(5)
+    test('taller tiene 4 pasos (sin "Verificar email" — paso fantasma, #439b)', () => {
+      const pasos = ['cuenta', 'perfil', 'documentos', 'cotizacion']
+      expect(pasos).toHaveLength(4)
     })
 
     test('marca tiene 5 pasos', () => {

@@ -62,28 +62,23 @@ export async function calcularEtapa(userId: string, role: string): Promise<Etapa
 }
 
 export async function calcularPasosTaller(userId: string): Promise<PasoOnboarding[]> {
-  const [user, taller] = await Promise.all([
-    prisma.user.findUnique({ where: { id: userId }, select: { emailVerified: true } }),
-    prisma.taller.findUnique({
-      where: { userId },
-      include: {
-        _count: { select: { validaciones: true } },
-        cotizaciones: { where: { estado: 'ACEPTADA' }, take: 1, select: { id: true } },
-      },
-    }),
-  ])
+  const taller = await prisma.taller.findUnique({
+    where: { userId },
+    include: {
+      _count: { select: { validaciones: true } },
+      cotizaciones: { where: { estado: 'ACEPTADA' }, take: 1, select: { id: true } },
+    },
+  })
 
+  // El paso "Verificar email" se removió del checklist (#439b): era un paso
+  // fantasma — `emailVerified` se setea al crear la cuenta (mitigación #307,
+  // ver registro/route.ts), así que nunca queda pendiente. El checklist de
+  // Marca mantiene el mismo paso; limpiarlo queda fuera del barrido del rol Taller.
   return [
     {
       id: 'cuenta',
       texto: 'Crear cuenta',
       completado: true,
-      href: '/cuenta',
-    },
-    {
-      id: 'email',
-      texto: 'Verificar email',
-      completado: !!user?.emailVerified,
       href: '/cuenta',
     },
     {

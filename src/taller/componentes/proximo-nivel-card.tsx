@@ -176,8 +176,11 @@ export async function ProximoNivelCard({ tallerId }: { tallerId: string }) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
       <div className="mb-4">
+        {/* "Próximos pasos para avanzar" (no "Tu recorrido de formalización"): el
+            estado del recorrido vive ahora en la card dedicada del dashboard (change 2
+            QA Sergio). Esta card es complementaria — los pasos para avanzar de etapa. */}
         <h2 className="font-overpass font-bold text-lg text-brand-blue">
-          Tu recorrido de formalización
+          Próximos pasos para avanzar
         </h2>
         <p className="text-sm text-zinc-500 mt-1">Próxima etapa: {etapaProxima}</p>
         <div className="mt-2">

@@ -244,6 +244,10 @@ export function badgeFormacionVisible(taller, certificadoId): boolean {
 
 - **Panel "Configuración de visibilidad"** en **Mi gestión productiva** (`/taller/perfil/gestion`): un toggle (ojo on/off) por bloque TOGGLE-LIBRE + sub-toggles por badge dentro de Formación. Agrupado por las 3 categorías (las FORZADO-* se muestran informativas, sin control).
 - **Mi vidriera = read-only** (preview fiel): donde un bloque está oculto, muestra *"Este bloque no se muestra a las marcas. Cambialo desde Configuración de visibilidad si querés exponerlo."* con **deep-link** al panel (anchor/scroll en gestión).
+- **Patrón "dónde se edita cada bloque" (pedido en QA del combinado #439b+#442, 2026-06-27).** Cada card de "Mi vidriera" muestra un link directo al tab donde se edita su contenido, para reforzar el modelo conceptual *vidriera = curaduría, edición en otro tab* (hoy el taller no sabe a dónde ir sin probar tab por tab). Mapa card → destino:
+  - **Descripción**, **Tipos de prenda/rubros**, **Año** → *"Editado en Datos básicos →"* (`/taller/perfil`).
+  - **Procesos**, **Maquinaria**, **Portfolio**, **Equipo/Espacio/Organización/Capacidad** → *"Editado en Mi gestión productiva →"* (`/taller/perfil/gestion`, vía el wizard `completar` donde corresponda).
+  - Formato: micro-link bajo el título de cada card (ej. bajo "Descripción" un `Editado en Datos básicos →`). No confundir con el deep-link de "bloque oculto" (ese va al panel de visibilidad); este apunta a **dónde se edita el dato**, no dónde se togglea su visibilidad.
 - **Aviso de confirmación** (§5.5) al activar.
 - **Endpoint: server action dedicada** `actualizarVisibilidadVidriera(input)`:
   - Autoriza `auth()` + `taller.userId === session.user.id`.
