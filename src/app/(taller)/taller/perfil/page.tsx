@@ -4,37 +4,33 @@ import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
-import { Award, Download } from 'lucide-react'
-import { PortfolioManager } from '@/taller/componentes/portfolio-manager'
-import { VerVidrieraModal } from '@/taller/componentes/ver-vidriera-modal'
-import { VidrieraPublicaContenido } from '@/taller/componentes/vidriera-publica-contenido'
+import { Lock, Eye } from 'lucide-react'
 
-// Etapa 2.1 — "Mi vidriera": lo que ven las marcas en el directorio.
-// La cabecera común (nombre + etapa + ARCA) y las sub-tabs viven en el layout.
-// El reparto público/privado es 2.1; el filtrado por visibilidad es 2.2.
-export default async function TallerVidrieraPage() {
+// Etapa 2.2-A — "Datos básicos": primer sub-tab (ruta índice). Lo obligatorio
+// que el taller carga UNA vez: identidad pública del taller (descripción, año,
+// ubicación) que SINCRONIZA a la vidriera por lectura del mismo registro Taller
+// (spec §3 — sin copia ni trigger), + datos del responsable (privados, sólo el
+// taller y la Coordinación). La edición es vía el form existente
+// `/taller/perfil/editar`, con el botón "Editar datos básicos" como acción del
+// CUERPO de este tab (card "Información del taller"), no en la cabecera (QA #442 A).
+export default async function TallerDatosBasicosPage() {
   const session = await auth()
   if (!session?.user) redirect('/login')
 
   const taller = await prisma.taller.findFirst({
     where: { userId: session.user.id },
-    include: {
-      procesos: { include: { proceso: true } },
-      prendas: { include: { prenda: true } },
-      maquinaria: true,
-      certificaciones: { where: { activa: true } },
-      certificados: {
-        where: { revocado: false },
-        include: { coleccion: { select: { titulo: true, institucion: true } } },
-        orderBy: { fecha: 'desc' },
-      },
-      validaciones: {
-        where: { estado: 'COMPLETADO' },
-        select: { tipoDocumento: { select: { nombre: true } } },
-      },
+    select: {
+      descripcion: true,
+      fundado: true,
+      provincia: true,
+      partido: true,
+      ubicacionDetalle: true,
+      cuit: true,
+      verificadoAfip: true,
+      pedidosCompletados: true,
+      user: { select: { name: true, email: true, phone: true } },
     },
   })
 
@@ -49,101 +45,94 @@ export default async function TallerVidrieraPage() {
     )
   }
 
+  const ubicacion = [taller.provincia, taller.partido, taller.ubicacionDetalle]
+    .filter(Boolean)
+    .join(', ')
+
   return (
     <div className="space-y-6">
-      {/* "Ver cómo me ve el directorio": MODAL sobre Mi vidriera (no navega a la
-          página pública). El contenido es la vidriera pública filtrada por #437;
-          al cerrar, el taller queda en su contexto privado. */}
-      <div className="flex justify-end">
-        <VerVidrieraModal>
-          <VidrieraPublicaContenido taller={taller} />
-        </VerVidrieraModal>
-      </div>
-
-      {/* NOTA (2.2): "Trabajadores" y "Cap. mensual" salieron del grid destacado de
-          marketplace (junto con Rating / On-time / barra de completitud, descartados del
-          modelo V4). Su ubicación final es el bloque "Mi capacidad de producción"
-          (toggleable) que arma la Etapa 2.2 — no se renderizan acá por ahora. */}
-
-      {taller.descripcion && (
-        <Card title="Descripción">
-          <p className="text-sm text-gray-700 whitespace-pre-wrap">{taller.descripcion}</p>
-        </Card>
-      )}
-
-      {taller.procesos.length > 0 && (
-        <Card title="Procesos Productivos">
-          <div className="flex flex-wrap gap-2">
-            {taller.procesos.map((tp) => (
-              <Badge key={tp.id} variant="outline">{tp.proceso.nombre}</Badge>
-            ))}
+      {/* Información del taller — identidad pública del taller. En el modelo de
+          Sergio (cabecera = solo nombre), la UBICACIÓN vive acá (su hogar de
+          identidad), no en la cabecera. Estos campos se LEEN en la vidriera
+          (misma fila Taller): editarlos acá los actualiza también allá, sin copia. */}
+      <Card title="Información del taller">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+          <div className="sm:col-span-2">
+            <p className="text-gray-500">Descripción</p>
+            {taller.descripcion ? (
+              <p className="font-medium whitespace-pre-wrap break-words">{taller.descripcion}</p>
+            ) : (
+              <p className="text-gray-400 italic">Sin descripción todavía</p>
+            )}
           </div>
-        </Card>
-      )}
-
-      {taller.prendas.length > 0 && (
-        <Card title="Tipos de Prenda">
-          <div className="flex flex-wrap gap-2">
-            {taller.prendas.map((tp) => (
-              <Badge key={tp.id} variant="default">{tp.prenda.nombre}</Badge>
-            ))}
+          <div>
+            <p className="text-gray-500">Año de fundación</p>
+            <p className="font-medium">{taller.fundado ?? <span className="text-gray-400 italic">Sin completar</span>}</p>
           </div>
-        </Card>
-      )}
-
-      <Card title="Mi portfolio">
-        <PortfolioManager tallerId={taller.id} fotosActuales={taller.portfolioFotos} />
+          <div>
+            <p className="text-gray-500">Ubicación</p>
+            <p className="font-medium break-words">{ubicacion || <span className="text-gray-400 italic">Sin completar</span>}</p>
+          </div>
+        </div>
+        {/* Acción contextual: editar los datos básicos. Vive en el CUERPO del tab
+            (QA #442 A), no flotando junto al título global de Mi taller. */}
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="flex items-center gap-1 text-xs text-gray-400">
+            <Eye className="w-3 h-3 shrink-0" />
+            Esta información aparece en tu vidriera pública.
+          </p>
+          <Link href="/taller/perfil/editar">
+            <Button variant="secondary" size="sm">Editar datos básicos</Button>
+          </Link>
+        </div>
       </Card>
 
-      {taller.maquinaria.length > 0 && (
-        <Card title="Maquinaria">
-          <ul className="space-y-1 text-sm">
-            {taller.maquinaria.map((m) => (
-              <li key={m.id} className="flex justify-between">
-                <span>{m.nombre} {m.tipo && <span className="text-gray-400">({m.tipo})</span>}</span>
-                <span className="text-gray-500 font-medium">x{m.cantidad}</span>
-              </li>
-            ))}
-          </ul>
-        </Card>
-      )}
-
-      {taller.certificaciones.length > 0 && (
-        <Card title="Certificaciones">
-          <div className="flex flex-wrap gap-2">
-            {taller.certificaciones.map((c) => (
-              <Badge key={c.id} variant="success">
-                <Award className="w-3 h-3 mr-1" />{c.nombre}
-              </Badge>
-            ))}
+      {/* Datos del responsable — PII privada, movida desde "Mi gestión productiva"
+          (2.2-A). No visible para las marcas (minimización de datos, OIT IGDS 457). */}
+      <Card title="Datos del responsable">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+          {taller.user.name && (
+            <div>
+              <p className="text-gray-500">Responsable</p>
+              <p className="font-medium break-words">{taller.user.name}</p>
+            </div>
+          )}
+          <div>
+            <p className="text-gray-500">Email</p>
+            <p className="font-medium break-words">{taller.user.email}</p>
           </div>
-        </Card>
-      )}
+          {taller.user.phone && (
+            <div>
+              <p className="text-gray-500">Teléfono</p>
+              <p className="font-medium break-words">{taller.user.phone}</p>
+            </div>
+          )}
+        </div>
+        <p className="flex items-center gap-1 text-xs text-gray-400 mt-4">
+          <Lock className="w-3 h-3 shrink-0" />
+          Esta información de contacto es privada. Las marcas no la ven en tu vidriera.
+        </p>
+      </Card>
 
-      {taller.certificados.length > 0 && (
-        <Card title="Certificados de cursos">
-          <div className="space-y-2">
-            {taller.certificados.map((c) => (
-              <div key={c.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
-                <div className="flex items-center gap-2">
-                  <Award className="w-4 h-4 text-green-600" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-800">{c.coleccion.titulo}</p>
-                    <p className="text-xs text-gray-500">Código: {c.codigo} · Calificación: {c.calificacion}%</p>
-                  </div>
-                </div>
-                <a
-                  href={`/api/certificados/${c.id}/pdf`}
-                  download
-                  className="inline-flex items-center gap-1 text-xs text-brand-blue hover:underline"
-                >
-                  <Download className="w-3 h-3" /> PDF
-                </a>
-              </div>
-            ))}
+      {/* Datos de registro — identidad fiscal/operativa. CUIT es privado.
+          Change 3 (Sergio): el CUIT muestra el número + texto chico "Verificado por
+          ARCA" al lado (no el badge prominente — ese vive en Inicio / Mi recorrido
+          / Mi vidriera>Credenciales). */}
+      <Card title="Datos de registro">
+        <div className="grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <p className="text-gray-500">CUIT</p>
+            <p className="font-medium">{taller.cuit}</p>
+            <p className="text-xs text-gray-400 mt-0.5">
+              {taller.verificadoAfip ? 'Verificado por ARCA' : 'Sin verificar en ARCA'}
+            </p>
           </div>
-        </Card>
-      )}
+          <div>
+            <p className="text-gray-500">Pedidos completados</p>
+            <p className="font-medium">{taller.pedidosCompletados}</p>
+          </div>
+        </div>
+      </Card>
     </div>
   )
 }
