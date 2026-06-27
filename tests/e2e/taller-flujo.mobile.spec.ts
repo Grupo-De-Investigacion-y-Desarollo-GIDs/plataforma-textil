@@ -58,15 +58,21 @@ test.describe('M-03 mobile — flujo critico del taller (regresion #431)', () =>
     // ambos acotados. Este assert es ahora la red de regresion de F-05.
     await expectNoHorizontalOverflow(page, '/taller')
 
-    // FIX 2: los KPIs secundarios apilan en 1 columna (grid-cols-1 sm:grid-cols-2).
-    // En mobile (<640px) "Capacidad" queda DEBAJO de "Formalizacion", misma x.
+    // FIX 2: los KPIs del dashboard apilan en 1 columna (grid-cols-1 sm:grid-cols-2).
+    // En mobile (<640px) la 2da tarjeta queda DEBAJO de la 1ra, misma x.
     // Si regresara a grid-cols-2 sin breakpoint, quedarian lado a lado (misma y).
-    // Scope a <main> + toHaveCount(1): el dashboard es server component con
-    // streaming SSR (React 19) que duplica texto transitoriamente durante la
-    // hidratacion; toHaveCount(1) espera a que el duplicado se resuelva.
-    const main = page.locator('main')
-    const form = main.getByText('documentos completados')
-    const cap = main.getByText('prendas/mes')
+    // #439b: los KPIs "documentos completados" y "prendas/mes" se removieron
+    // (gamificacion descartada en V4). Las tarjetas que sobreviven en ese mismo grid
+    // son "Certificados" y "Pedidos activos" — esta regresion ahora las usa a ellas.
+    // Scope al grid de stats (filtrado por ambas etiquetas) + first(): el dashboard es
+    // server component con streaming SSR (React 19) que duplica <main> transitoriamente;
+    // first() toma el grid del primer main y aisla del heading "Pedidos activos" externo.
+    const grid = page.locator('main').locator('div.grid')
+      .filter({ hasText: 'Certificados' })
+      .filter({ hasText: 'Pedidos activos' })
+      .first()
+    const form = grid.getByText('Certificados', { exact: true })
+    const cap = grid.getByText('Pedidos activos', { exact: true })
     // timeout amplio: el server component puede tardar en streamear + hidratar
     // en cold start de CI; toHaveCount(1) reintenta hasta que el duplicado cede.
     await expect(form).toHaveCount(1, { timeout: 15_000 })
@@ -75,9 +81,9 @@ test.describe('M-03 mobile — flujo critico del taller (regresion #431)', () =>
     await expect(cap).toBeVisible()
     const bf = await form.boundingBox()
     const bc = await cap.boundingBox()
-    expect(bf, 'bbox KPI formalizacion').not.toBeNull()
-    expect(bc, 'bbox KPI capacidad').not.toBeNull()
-    expect(bc!.y, 'KPI Capacidad debe estar debajo de Formalizacion (1 columna)').toBeGreaterThan(bf!.y + 4)
+    expect(bf, 'bbox KPI Certificados').not.toBeNull()
+    expect(bc, 'bbox KPI Pedidos activos').not.toBeNull()
+    expect(bc!.y, 'KPI Pedidos activos debe estar debajo de Certificados (1 columna)').toBeGreaterThan(bf!.y + 4)
     expect(Math.abs(bc!.x - bf!.x), 'KPIs deben compartir columna (misma x)').toBeLessThanOrEqual(2)
   })
 

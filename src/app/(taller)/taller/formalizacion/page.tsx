@@ -7,7 +7,6 @@ import Link from 'next/link'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { ChecklistItem } from '@/compartido/componentes/ui/checklist-item'
-import { ProgressRing } from '@/compartido/componentes/ui/progress-ring'
 import { Button } from '@/compartido/componentes/ui/button'
 import { ExternalLink } from 'lucide-react'
 import { UploadButton } from '@/taller/componentes/upload-button'
@@ -50,7 +49,7 @@ export default async function TallerFormalizacionPage() {
     }),
     prisma.validacion.findMany({
       where: { tallerId: taller.id },
-      include: { usuarioAprobador: { select: { name: true, role: true } } },
+      include: { usuarioAprobador: { select: { role: true } } },
       orderBy: { createdAt: 'asc' },
     }),
   ])
@@ -59,32 +58,24 @@ export default async function TallerFormalizacionPage() {
     validaciones.map(v => [v.tipo, v])
   )
 
-  const completadas = validaciones.filter(v => v.estado === 'COMPLETADO').length
-  const total = tiposDocumento.length
-  const progreso = Math.round((completadas / total) * 100)
-
   return (
     <div className="space-y-6">
       <h1 className="font-serif font-bold text-3xl text-ink-primary">Mi recorrido</h1>
 
-      {/* Resumen */}
+      {/* Resumen. La V4 descartó el porcentaje/ring de avance como gamificación:
+          el recorrido se comunica por requisito (badges COMPLETADO/PENDIENTE más abajo),
+          no con una barra de progreso ni un contador "X de N". */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="md:col-span-2">
-          <div className="flex items-center gap-6">
-            <ProgressRing percentage={progreso} size={100} />
-            <div>
-              <p className="font-overpass font-bold text-2xl text-brand-blue">{completadas}/{total} completadas</p>
-              <p className="text-sm text-gray-500 mt-1">
-                {progreso === 100
-                  ? '¡Felicitaciones! Tu taller está completamente formalizado.'
-                  : 'Completá los requisitos para avanzar en tu recorrido de formalización.'}
-              </p>
-              <div className="flex gap-2 mt-3">
-                <Badge variant="default">
-                  {nivelAEtapa(taller.nivel)}
-                </Badge>
-              </div>
+          <div>
+            <div className="flex gap-2">
+              <Badge variant="default">
+                {nivelAEtapa(taller.nivel)}
+              </Badge>
             </div>
+            <p className="text-sm text-gray-500 mt-3">
+              Completá los requisitos de cada etapa para avanzar en tu recorrido de formalización.
+            </p>
           </div>
         </Card>
         <Card>
@@ -104,20 +95,11 @@ export default async function TallerFormalizacionPage() {
       {(['BRONCE', 'PLATA', 'ORO'] as const).map(nivel => {
         const docsEtapa = tiposDocumento.filter(td => td.nivelMinimo === nivel)
         if (docsEtapa.length === 0) return null
-        const completadasEtapa = docsEtapa.filter(td => {
-          const v = validacionesPorNombre[td.nombre]
-          return v?.estado === 'COMPLETADO'
-        }).length
-        const progresoEtapa = Math.round((completadasEtapa / docsEtapa.length) * 100)
 
         return (
           <Card key={nivel}>
-            <div className="flex items-center gap-4 mb-4">
-              <ProgressRing percentage={progresoEtapa} size={64} strokeWidth={6} />
-              <div>
-                <h2 className="font-serif font-bold text-lg text-ink-primary">{nivelAEtapa(nivel)}</h2>
-                <p className="text-sm text-gray-500">{completadasEtapa} de {docsEtapa.length} requisitos completados</p>
-              </div>
+            <div className="mb-4">
+              <h2 className="font-serif font-bold text-lg text-ink-primary">{nivelAEtapa(nivel)}</h2>
             </div>
             <div className="divide-y divide-gray-100">
               {docsEtapa.map(td => {
@@ -133,7 +115,7 @@ export default async function TallerFormalizacionPage() {
                       title={td.label}
                       status={status}
                       description={
-                        estado === 'COMPLETADO'   ? `Verificado por ${validacion?.usuarioAprobador?.role === 'ESTADO' ? 'la Coordinación' : 'el equipo de PDT'}${validacion?.usuarioAprobador?.name ? ` (${validacion.usuarioAprobador.name})` : ''}`
+                        estado === 'COMPLETADO'   ? `Verificado por ${validacion?.usuarioAprobador?.role === 'ESTADO' ? 'la Coordinación' : 'el equipo de PDT'}`
                       : estado === 'PENDIENTE'    ? 'En revisión por el equipo de PDT'
                       : estado === 'VENCIDO'      ? 'Documento vencido — requiere actualización'
                       : estado === 'RECHAZADO'    ? `Rechazado: ${validacion?.detalle || 'Revisá la documentación'}`
@@ -193,8 +175,11 @@ export default async function TallerFormalizacionPage() {
             <p className="font-overpass font-bold text-brand-blue">¿Necesitás ayuda para formalizarte?</p>
             <p className="text-sm text-gray-500">Nuestros cursos gratuitos te guían paso a paso.</p>
           </div>
+          {/* Apunta a la Academia general. Label "relacionados" (no "por requisito")
+              para no prometer un curso puntual por requisito que todavía no existe;
+              el mapeo requisito→curso queda pendiente (curaduría de Matías) — DEUDA_TECNICA. */}
           <Link href="/taller/aprender">
-            <Button variant="secondary">Ver cursos</Button>
+            <Button variant="secondary">Ver cursos relacionados</Button>
           </Link>
         </div>
       </Card>

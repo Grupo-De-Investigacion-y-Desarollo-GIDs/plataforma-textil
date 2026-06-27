@@ -35,7 +35,21 @@ y prioridad sugerida.
   font-size del label con `size` (o pasar una clase de tamaño por prop).
 - **Estimación:** ~30 min
 
-_F-04 sigue abierto (cosmético dashboards). F-06 abierto (ProgressRing mobile). F-05 resuelto — ver sección "Resueltas"._
+### F-07: Mapeo requisito→curso de Academia (Mi recorrido)
+- **Detectado en:** Barrido del rol Taller (PR #439b, 2026-06-25)
+- **Descripción:** en "Mi recorrido" (`/taller/formalizacion`) el CTA de cursos
+  apunta a la Academia general (`/taller/aprender`), no a un curso puntual por
+  requisito. En #439b se ajustó el label a "Ver cursos relacionados" (en vez de
+  prometer un curso por requisito) justamente porque ese mapeo todavía no existe.
+- **Pendiente:** cuando **Matías cierre la curaduría** de cursos, mapear cada
+  requisito del recorrido a su curso específico de la Academia y enlazar el CTA
+  (o un botón por ítem del checklist) al curso correspondiente.
+- **Impacto:** menor (el CTA general ya funciona; solo se pierde el deep-link
+  fino requisito→curso). No bloquea el piloto.
+- **Prioridad:** media (depende de la curaduría de contenido de Matías).
+- **Estimación:** ~2-4h una vez disponible el catálogo curado.
+
+_F-04 sigue abierto (cosmético dashboards). F-06 abierto (ProgressRing mobile). F-07 abierto (mapeo requisito→curso, depende de Matías). F-05 resuelto — ver sección "Resueltas"._
 
 ## Backend / Arquitectura
 
