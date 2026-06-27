@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { ProgressRing } from '@/compartido/componentes/ui/progress-ring'
 import { ProximoNivelCard } from '@/taller/componentes/proximo-nivel-card'
 import { SincronizarNivel } from '@/taller/componentes/sincronizar-nivel'
+import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { calcularPasosTaller } from '@/compartido/lib/onboarding'
 import { ChecklistOnboarding } from '@/compartido/componentes/ui/checklist-onboarding'
 import { nivelAEtapa } from '@/compartido/lib/formalizacion'
@@ -95,6 +96,12 @@ export default async function TallerDashboardPage() {
   const tiposPendientes = tiposRequeridos.map(t => t.nombre).filter(t => !completadasSet.has(t))
   const procesosTaller = procesosDelTaller.map(p => p.procesoId)
 
+  // Card "Tu recorrido" (change 2 QA Sergio): verificados de los requisitos del
+  // recorrido. Se computa desde completadasSet + tiposRequeridos (ambos existen
+  // también en #439b), NO desde taller.validaciones (que #439b elimina).
+  const totalRequisitos = tiposRequeridos.length
+  const requisitosVerificados = tiposRequeridos.filter(t => completadasSet.has(t.nombre)).length
+
   type ColeccionConCount = Awaited<ReturnType<typeof prisma.coleccion.findMany<{ include: { _count: { select: { videos: true } } } }>>>[number]
   let coleccionesRecomendadas: ColeccionConCount[]
   if (taller) {
@@ -168,14 +175,12 @@ export default async function TallerDashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Encabezado */}
+      {/* Encabezado. "Tu recorrido de formalización" se movió desde acá a la card
+          "Tus primeros pasos" (ChecklistOnboarding) / ProximoNivelCard (QA #442). */}
       <div>
         <h1 className="font-serif font-bold text-3xl text-ink-primary">
           Bienvenido, {taller?.nombre ?? session.user.name}
         </h1>
-        <p className="text-gray-500 mt-1">
-          Tu recorrido de formalización: <span className="font-semibold">{etapa}</span>
-        </p>
       </div>
 
       {/* Banner taller no verificado */}
@@ -223,7 +228,42 @@ export default async function TallerDashboardPage() {
         )
       )}
 
-      {/* Checklist onboarding (T-03) o ProximoNivelCard (F-01) */}
+      {/* Tu recorrido de formalización (change 2, QA Sergio): estado de un vistazo —
+          etapa actual + ARCA + requisitos verificados + link al recorrido completo.
+          Es el hogar de etapa+ARCA en Inicio (la cabecera de Mi taller ya no los
+          muestra). Reemplaza conceptualmente al ring de gamificación que #439b
+          elimina. El recorrido salió de la card "Tus primeros pasos" (issue 6):
+          ahora vive acá, prominente, sin duplicarse. */}
+      {taller && (
+        <div className="bg-white rounded-card shadow-card p-6 border border-gray-100">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <h2 className="font-overpass font-bold text-lg text-brand-blue mb-2">
+                Tu recorrido de formalización
+              </h2>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-brand-blue/10 text-brand-blue">
+                  {etapa}
+                </span>
+                <BadgeArca verificado={taller.verificadoAfip} />
+              </div>
+              <p className="text-sm text-gray-500 mt-2">
+                {requisitosVerificados} de {totalRequisitos} requisitos verificados
+              </p>
+            </div>
+            <Link
+              href="/taller/formalizacion"
+              className="inline-flex items-center gap-1 text-sm font-overpass font-semibold text-brand-blue hover:underline shrink-0"
+            >
+              Ver mi recorrido completo →
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Checklist onboarding (T-03) o ProximoNivelCard (F-01).
+          El subtítulo de recorrido del issue 6 se quitó de acá: ahora vive en la
+          card "Tu recorrido de formalización" de arriba (sin duplicar). */}
       {taller && (
         <>
           {onboardingCompleto ? (

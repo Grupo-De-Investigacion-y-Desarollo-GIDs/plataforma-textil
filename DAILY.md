@@ -1,5 +1,16 @@
 # Daily Log
 
+## 2026-06-27
+
+### Gerardo Breard
+- **15:51** `074c260` — fix: 2.2-A — modelo de distribución de info por contexto (QA Sergio, reemplaza issue B)
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/app/(taller)/taller/perfil/layout.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/app/(taller)/taller/perfil/perfil-header-tabs.tsx`
+  - `src/compartido/componentes/ui/checklist-onboarding.tsx`
+
+
 ## 2026-06-24
 
 ### Gerardo Breard

@@ -6,12 +6,13 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
-import { Lock } from 'lucide-react'
 import { labelOrganizacion, labelRegistro, labelEscalabilidad } from '@/compartido/lib/taller-formulario'
 
-// Etapa 2.1 — "Mi gestión productiva": datos privados del taller (solo el taller
-// y el acompañamiento los ven; no aparecen en el directorio). Contenido repartido
-// desde la vista única anterior de perfil. El filtrado por visibilidad es 2.2.
+// Etapa 2.2-A — "Mi gestión productiva": segundo sub-tab (Datos básicos →
+// gestión → vidriera). Queda SÓLO con el Perfil productivo (organización,
+// espacio, equipo, registro, escalabilidad, SAM). Las cards "Datos del
+// responsable" e "Información General" se movieron a "Datos básicos" (dedup, §4).
+// El panel de "Configuración de visibilidad" se agrega acá en 2.2-C.
 export default async function TallerGestionPage() {
   const session = await auth()
   if (!session?.user) redirect('/login')
@@ -20,7 +21,6 @@ export default async function TallerGestionPage() {
     where: { userId: session.user.id },
     include: {
       plantilla: { orderBy: { categoria: 'asc' } },
-      user: { select: { name: true, email: true, phone: true } },
     },
   })
 
@@ -37,53 +37,8 @@ export default async function TallerGestionPage() {
 
   return (
     <div className="space-y-6">
-      {/* Datos del responsable — PII privada, movida desde la cabecera común.
-          No visible para las marcas (minimización de datos, OIT IGDS 457). */}
-      <Card title="Datos del responsable">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-          {taller.user.name && (
-            <div>
-              <p className="text-gray-500">Responsable</p>
-              <p className="font-medium break-words">{taller.user.name}</p>
-            </div>
-          )}
-          <div>
-            <p className="text-gray-500">Email</p>
-            <p className="font-medium break-words">{taller.user.email}</p>
-          </div>
-          {taller.user.phone && (
-            <div>
-              <p className="text-gray-500">Teléfono</p>
-              <p className="font-medium break-words">{taller.user.phone}</p>
-            </div>
-          )}
-        </div>
-        <p className="flex items-center gap-1 text-xs text-gray-400 mt-4">
-          <Lock className="w-3 h-3 shrink-0" />
-          Esta información de contacto es privada. Las marcas no la ven en tu vidriera.
-        </p>
-      </Card>
-
-      <Card title="Información General">
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <p className="text-gray-500">CUIT</p>
-            <p className="font-medium">{taller.cuit}</p>
-          </div>
-          {taller.fundado && (
-            <div>
-              <p className="text-gray-500">Fundado</p>
-              <p className="font-medium">{taller.fundado}</p>
-            </div>
-          )}
-          <div>
-            <p className="text-gray-500">Pedidos completados</p>
-            <p className="font-medium">{taller.pedidosCompletados}</p>
-          </div>
-          {/* "Puntaje" eliminado: la mecánica de scoring fue descartada en la V4. */}
-        </div>
-      </Card>
-
+      {/* "Datos del responsable" e "Información General" se movieron a "Datos
+          básicos" (2.2-A, dedup §4). Esta vista queda con el Perfil productivo. */}
       {taller.organizacion && (
         <Card title="Perfil productivo">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
