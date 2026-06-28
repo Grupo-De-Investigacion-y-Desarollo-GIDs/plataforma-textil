@@ -591,7 +591,7 @@ async function main() {
 
   // U-04: Taller + Marca del usuario multi-rol (Julieta Benítez). Le dan al
   // toggle ambos nombres de entidad ("Taller La Hormiga" / "Marca Benítez").
-  await prisma.taller.create({
+  const tallerHormiga = await prisma.taller.create({
     data: {
       userId: userDual.id,
       nombre: 'Taller La Hormiga',
@@ -606,6 +606,11 @@ async function main() {
       verificadoAfip: true,
     },
   })
+  // BRONCE exige >=1 proceso declarado; ademas, sin proceso/rubro visible no aparece en
+  // el directorio (R-DIR, 2.2-C1 §4.4) y el e2e u-07 lo busca alli. Le damos confeccion
+  // + remera para que sea un taller valido y descubrible.
+  await prisma.tallerProceso.create({ data: { tallerId: tallerHormiga.id, procesoId: pConfeccion.id, precio: 600 } })
+  await prisma.tallerPrenda.create({ data: { tallerId: tallerHormiga.id, prendaId: prRemera.id } })
   const marcaBenitez = await prisma.marca.create({
     data: {
       userId: userDual.id,
