@@ -7,13 +7,21 @@ import Link from 'next/link'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
-import { Award, Download, MapPin, Milestone, ShieldCheck, EyeOff } from 'lucide-react'
+import { Award, Download, MapPin, Milestone, ShieldCheck, EyeOff, Users, Ruler, Gauge, Workflow, Calendar } from 'lucide-react'
 import { PortfolioManager } from '@/taller/componentes/portfolio-manager'
 import { VerVidrieraModal } from '@/taller/componentes/ver-vidriera-modal'
 import { VidrieraPublicaContenido } from '@/taller/componentes/vidriera-publica-contenido'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { nivelAEtapa } from '@/compartido/lib/formalizacion'
-import { bloqueVisiblePublico, type BloqueVidriera } from '@/compartido/lib/visibilidad-vidriera'
+import { labelOrganizacion, labelRegistro, labelEscalabilidad, rangoCapacidad } from '@/compartido/lib/taller-formulario'
+import { bloqueVisibleVidriera, type BloqueVidriera } from '@/compartido/lib/visibilidad-vidriera'
+
+const CATEGORIA_LABEL: Record<string, string> = {
+  APRENDIZ: 'Aprendices',
+  MEDIO_OFICIAL: 'Medio oficial',
+  OFICIAL: 'Oficial',
+  OFICIAL_CALIFICADO: 'Oficial calificado',
+}
 
 // Etapa 2.2-B — "Mi vidriera": lo que ven las marcas, reorganizado en las 3
 // DIMENSIONES de V4 2.2 (Credenciales / Formación / Descripción).
@@ -55,6 +63,7 @@ export default async function TallerVidrieraPage() {
       procesos: { include: { proceso: true } },
       prendas: { include: { prenda: true } },
       maquinaria: true,
+      plantilla: true,
       certificaciones: { where: { activa: true } },
       certificados: {
         where: { revocado: false },
@@ -80,7 +89,9 @@ export default async function TallerVidrieraPage() {
   }
 
   // Fiel a lo que ve la marca (mismo helper que la vidriera pública).
-  const visible = (b: BloqueVidriera) => bloqueVisiblePublico(taller, b)
+  const visible = (b: BloqueVidriera) => bloqueVisibleVidriera(taller, b)
+  const equipoConDatos = taller.plantilla.filter((p) => p.cantidad > 0)
+  const rango = rangoCapacidad(taller.capacidadMensual)
 
   return (
     <div className="space-y-6">
@@ -107,6 +118,12 @@ export default async function TallerVidrieraPage() {
           <p className="flex items-center gap-1 text-sm text-gray-600 mb-2">
             <MapPin className="w-4 h-4" /> {taller.provincia}{taller.partido ? `, ${taller.partido}` : ''}
             {taller.ubicacionDetalle && <span className="text-gray-400"> · {taller.ubicacionDetalle}</span>}
+          </p>
+        )}
+        {taller.fundado != null && (
+          <p className="flex flex-wrap items-center gap-2 text-sm text-gray-500 mb-2">
+            <span className="flex items-center gap-1"><Calendar className="w-4 h-4" /> Fundado en {taller.fundado}</span>
+            {!visible('anioFundacion') && <MarcadorOculto />}
           </p>
         )}
         {taller.descripcion && (
@@ -180,6 +197,57 @@ export default async function TallerVidrieraPage() {
               </li>
             ))}
           </ul>
+        </Card>
+      )}
+
+      {equipoConDatos.length > 0 && (
+        <Card title={<TituloConMarcador texto="Equipo de trabajo" oculto={!visible('equipo')} />}>
+          <ul className="space-y-1 text-sm">
+            {equipoConDatos.map((p) => (
+              <li key={p.categoria} className="flex items-center justify-between">
+                <span className="flex items-center gap-1.5">
+                  <Users className="w-3.5 h-3.5 text-gray-400" />
+                  {CATEGORIA_LABEL[p.categoria] ?? p.categoria}
+                </span>
+                <span className="text-gray-500">{p.cantidad}</span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
+
+      {(taller.metrosCuadrados ?? 0) > 0 && (
+        <Card title={<TituloConMarcador texto="Espacio físico" oculto={!visible('espacio')} />}>
+          <p className="flex items-center gap-1.5 text-sm text-gray-700">
+            <Ruler className="w-4 h-4 text-gray-400" /> {taller.metrosCuadrados} m²
+          </p>
+        </Card>
+      )}
+
+      {/* Capacidad: RANGO bucketizado, NUNCA el SAM ni el número exacto (§4.5). */}
+      {rango != null && (
+        <Card title={<TituloConMarcador texto="Capacidad productiva" oculto={!visible('capacidad')} />}>
+          <p className="flex items-center gap-1.5 text-sm text-gray-700">
+            <Gauge className="w-4 h-4 text-gray-400" /> {rango}
+          </p>
+          {taller.escalabilidad && (
+            <p className="text-xs text-gray-500 mt-1">
+              Puede escalar: {labelEscalabilidad(taller.escalabilidad)}
+            </p>
+          )}
+        </Card>
+      )}
+
+      {taller.organizacion && (
+        <Card title={<TituloConMarcador texto="Organización del trabajo" oculto={!visible('organizacion')} />}>
+          <p className="flex items-center gap-1.5 text-sm text-gray-700">
+            <Workflow className="w-4 h-4 text-gray-400" /> {labelOrganizacion(taller.organizacion)}
+          </p>
+          {taller.registroProduccion && (
+            <p className="text-xs text-gray-500 mt-1">
+              Registro de producción: {labelRegistro(taller.registroProduccion)}
+            </p>
+          )}
         </Card>
       )}
 

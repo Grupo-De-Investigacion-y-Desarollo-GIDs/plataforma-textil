@@ -11,6 +11,7 @@ import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { EmptyState } from '@/compartido/componentes/ui/empty-state'
 import { DirectorioFiltros } from '@/compartido/componentes/directorio-filtros'
 import { derivarUbicaciones } from '@/compartido/lib/directorio-ubicaciones'
+import { tallerElegibleDirectorio, bloqueVisiblePublico } from '@/compartido/lib/visibilidad-vidriera'
 
 const PAGE_SIZE = 12
 
@@ -71,23 +72,25 @@ export default async function DirectorioPage({
     ...(partido ? { partido } : {}),
   }
 
-  const [talleres, total] = await Promise.all([
-    prisma.taller.findMany({
-      where,
-      include: {
-        procesos: { include: { proceso: true } },
-        prendas: { include: { prenda: true } },
-        validaciones: {
-          where: { estado: 'COMPLETADO' },
-          select: { tipoDocumento: { select: { nombre: true } } },
-        },
+  // R-DIR (§4.4): la visibilidad vive en JSONB (no queryable en SQL); traemos los
+  // candidatos por verificadoAfip + filtros y filtramos en app por elegibilidad
+  // (>=1 proceso/rubro con toggle activo). Paginación en app.
+  const candidatos = await prisma.taller.findMany({
+    where,
+    include: {
+      procesos: { include: { proceso: true } },
+      prendas: { include: { prenda: true } },
+      validaciones: {
+        where: { estado: 'COMPLETADO' },
+        select: { tipoDocumento: { select: { nombre: true } } },
       },
-      orderBy: [{ verificadoAfip: 'desc' }, { puntaje: 'desc' }],
-      skip: (page - 1) * PAGE_SIZE,
-      take: PAGE_SIZE,
-    }),
-    prisma.taller.count({ where }),
-  ])
+    },
+    orderBy: [{ verificadoAfip: 'desc' }, { puntaje: 'desc' }],
+  })
+
+  const elegibles = candidatos.filter(tallerElegibleDirectorio)
+  const total = elegibles.length
+  const talleres = elegibles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
   const totalPages = Math.ceil(total / PAGE_SIZE)
   const hasFilters = query || procesoId || prendaId || provincia || partido
@@ -167,14 +170,14 @@ export default async function DirectorioPage({
                   <span className="text-gray-400 ml-1">({taller.pedidosCompletados} pedidos)</span>
                 </p>
 
-                {taller.procesos.length > 0 && (
+                {taller.procesos.length > 0 && bloqueVisiblePublico(taller, 'procesos') && (
                   <p className="text-sm text-gray-600 mb-1">
                     <span className="font-medium">Procesos:</span>{' '}
                     {taller.procesos.map((tp) => tp.proceso.nombre).join(', ')}
                   </p>
                 )}
 
-                {taller.prendas.length > 0 && (
+                {taller.prendas.length > 0 && bloqueVisiblePublico(taller, 'prendas') && (
                   <p className="text-sm text-gray-600 mb-1">
                     <span className="font-medium">Prendas:</span>{' '}
                     {taller.prendas.map((tp) => tp.prenda.nombre).join(', ')}

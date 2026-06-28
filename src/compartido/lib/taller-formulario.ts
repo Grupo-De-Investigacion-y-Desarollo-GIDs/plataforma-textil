@@ -53,3 +53,16 @@ function label(map: Record<string, string>, valor: string | null | undefined, fa
 export const labelOrganizacion = (v: string | null | undefined, fallback = 'Desconocido') => label(ORGANIZACION_LABELS, v, fallback)
 export const labelRegistro = (v: string | null | undefined, fallback = 'Desconocido') => label(REGISTRO_LABELS, v, fallback)
 export const labelEscalabilidad = (v: string | null | undefined, fallback = 'Desconocido') => label(ESCALABILIDAD_LABELS, v, fallback)
+
+// Etapa 2.2-C1 (§4.3/§4.5) — capacidad PUBLICA = rango bucketizado, NUNCA el SAM ni
+// el numero exacto. El bloque `capacidad` muestra esto en la vidriera publica; el SAM
+// (Taller.sam) queda forzado-privado (samVisible('publico')===false).
+export function rangoCapacidad(unidadesMes: number | null | undefined): string | null {
+  const n = unidadesMes ?? 0
+  if (n <= 0) return null
+  if (n <= 500) return 'Hasta 500 u/mes'
+  if (n <= 2000) return '500 a 2.000 u/mes'
+  if (n <= 5000) return '2.000 a 5.000 u/mes'
+  if (n <= 10000) return '5.000 a 10.000 u/mes'
+  return 'Más de 10.000 u/mes'
+}

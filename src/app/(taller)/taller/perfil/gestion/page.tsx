@@ -7,12 +7,14 @@ import Link from 'next/link'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
 import { labelOrganizacion, labelRegistro, labelEscalabilidad } from '@/compartido/lib/taller-formulario'
+import { ConfiguracionVisibilidad } from '@/taller/componentes/configuracion-visibilidad'
+import type { BloqueVidriera } from '@/compartido/lib/visibilidad-vidriera'
 
 // Etapa 2.2-A — "Mi gestión productiva": segundo sub-tab (Datos básicos →
-// gestión → vidriera). Queda SÓLO con el Perfil productivo (organización,
-// espacio, equipo, registro, escalabilidad, SAM). Las cards "Datos del
-// responsable" e "Información General" se movieron a "Datos básicos" (dedup, §4).
-// El panel de "Configuración de visibilidad" se agrega acá en 2.2-C.
+// gestión → vidriera). Tiene el Perfil productivo (organización, espacio, equipo,
+// registro, escalabilidad, SAM) + el panel "Configuración de visibilidad" (2.2-C1).
+// Las cards "Datos del responsable" e "Información General" se movieron a "Datos
+// básicos" (dedup, §4).
 export default async function TallerGestionPage() {
   const session = await auth()
   if (!session?.user) redirect('/login')
@@ -21,6 +23,14 @@ export default async function TallerGestionPage() {
     where: { userId: session.user.id },
     include: {
       plantilla: { orderBy: { categoria: 'asc' } },
+      procesos: { select: { id: true } },
+      prendas: { select: { id: true } },
+      maquinaria: { select: { id: true } },
+      certificados: {
+        where: { revocado: false },
+        select: { id: true, coleccion: { select: { titulo: true } } },
+        orderBy: { fecha: 'desc' },
+      },
     },
   })
 
@@ -34,6 +44,24 @@ export default async function TallerGestionPage() {
       </Card>
     )
   }
+
+  // Bloques toggle-libre (sin `formacion`, que es master granular aparte) + si tienen
+  // datos cargados, para el panel de visibilidad (§4.3).
+  const bloquesVisibilidad: { key: BloqueVidriera; label: string; tieneDatos: boolean }[] = [
+    { key: 'procesos', label: 'Procesos productivos', tieneDatos: taller.procesos.length > 0 },
+    { key: 'prendas', label: 'Tipos de prenda / rubros', tieneDatos: taller.prendas.length > 0 },
+    { key: 'maquinaria', label: 'Maquinaria', tieneDatos: taller.maquinaria.length > 0 },
+    { key: 'portfolio', label: 'Portfolio (trabajos realizados)', tieneDatos: taller.portfolioFotos.length > 0 },
+    { key: 'equipo', label: 'Mi equipo de trabajo', tieneDatos: taller.plantilla.some((p) => p.cantidad > 0) },
+    { key: 'espacio', label: 'Mi espacio físico', tieneDatos: (taller.metrosCuadrados ?? 0) > 0 },
+    { key: 'capacidad', label: 'Capacidad productiva (rango)', tieneDatos: (taller.capacidadMensual ?? 0) > 0 },
+    { key: 'organizacion', label: 'Organización del trabajo', tieneDatos: !!taller.organizacion },
+    { key: 'anioFundacion', label: 'Año de fundación', tieneDatos: !!taller.fundado },
+  ]
+  const certificadosVisibilidad = taller.certificados.map((c) => ({
+    id: c.id,
+    titulo: c.coleccion.titulo,
+  }))
 
   return (
     <div className="space-y-6">
@@ -131,6 +159,15 @@ export default async function TallerGestionPage() {
           </Link>
         </Card>
       )}
+
+      {/* Etapa 2.2-C1 (§7, Opción A): panel de toggles de visibilidad de la vidriera. */}
+      <ConfiguracionVisibilidad
+        visibilidadInicial={taller.visibilidadVidriera}
+        modeloBRevisado={taller.modeloB_revisado}
+        bloques={bloquesVisibilidad}
+        certificados={certificadosVisibilidad}
+        tieneFormacion={taller.certificados.length > 0}
+      />
     </div>
   )
 }

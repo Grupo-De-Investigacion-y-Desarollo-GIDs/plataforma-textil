@@ -3,6 +3,9 @@ import {
   BLOQUES_VIDRIERA,
   bloqueVisible,
   bloqueVisiblePublico,
+  bloqueVisibleVidriera,
+  badgeFormacionVisible,
+  tallerElegibleDirectorio,
   normalizarVisibilidad,
   samVisible,
   type BloqueVidriera,
@@ -186,6 +189,129 @@ describe('visibilidad-vidriera', () => {
         expect(bloqueVisiblePublico({ modeloB_revisado: true, visibilidadVidriera: [] }, 'equipo')).toBe(true)
         expect(bloqueVisiblePublico({ modeloB_revisado: true, visibilidadVidriera: 42 }, 'equipo')).toBe(true)
       })
+    })
+  })
+
+  // Resolver de render (Etapa 2.2-C1): net-new = SOLO-OPT-IN, legacy = flag-aware.
+  describe('bloqueVisibleVidriera: net-new opt-in vs legacy flag-aware', () => {
+    const NET_NEW: BloqueVidriera[] = ['equipo', 'espacio', 'capacidad', 'organizacion', 'anioFundacion']
+    const LEGACY: BloqueVidriera[] = ['procesos', 'prendas', 'maquinaria', 'portfolio', 'formacion']
+
+    it('CRÍTICO: existente (flag=true, null) NO expone bloques net-new (vidriera igual a 2.2-B)', () => {
+      const taller = { modeloB_revisado: true, visibilidadVidriera: null }
+      for (const b of NET_NEW) expect(bloqueVisibleVidriera(taller, b)).toBe(false)
+    })
+
+    it('existente (flag=true, null) SIGUE mostrando los bloques legacy (behavior-preserving)', () => {
+      const taller = { modeloB_revisado: true, visibilidadVidriera: null }
+      for (const b of LEGACY) expect(bloqueVisibleVidriera(taller, b)).toBe(true)
+    })
+
+    it('net-new se muestra SOLO con true explícito, sin importar el flag', () => {
+      for (const b of NET_NEW) {
+        expect(bloqueVisibleVidriera({ modeloB_revisado: true, visibilidadVidriera: { [b]: true } }, b)).toBe(true)
+        expect(bloqueVisibleVidriera({ modeloB_revisado: false, visibilidadVidriera: { [b]: true } }, b)).toBe(true)
+        expect(bloqueVisibleVidriera({ modeloB_revisado: true, visibilidadVidriera: { [b]: false } }, b)).toBe(false)
+      }
+    })
+
+    it('nuevo (flag=false, null) no muestra nada (net-new ni legacy)', () => {
+      const taller = { modeloB_revisado: false, visibilidadVidriera: null }
+      for (const b of [...NET_NEW, ...LEGACY]) expect(bloqueVisibleVidriera(taller, b)).toBe(false)
+    })
+
+    it('legacy coincide con bloqueVisiblePublico (flag-aware)', () => {
+      const t1 = { modeloB_revisado: true, visibilidadVidriera: { maquinaria: false } }
+      expect(bloqueVisibleVidriera(t1, 'maquinaria')).toBe(bloqueVisiblePublico(t1, 'maquinaria'))
+      const t2 = { modeloB_revisado: false, visibilidadVidriera: { procesos: true } }
+      expect(bloqueVisibleVidriera(t2, 'procesos')).toBe(bloqueVisiblePublico(t2, 'procesos'))
+    })
+  })
+
+  // Formación granular (Etapa 2.2-C1, §6.2).
+  describe('badgeFormacionVisible: master + override por badge', () => {
+    it('master oculto (flag=false, null) => ningun badge se muestra', () => {
+      const taller = { modeloB_revisado: false, visibilidadVidriera: null }
+      expect(badgeFormacionVisible(taller, 'cert-1')).toBe(false)
+    })
+
+    it('master visible (flag=true) + badge ausente => visible', () => {
+      const taller = { modeloB_revisado: true, visibilidadVidriera: { formacion: true } }
+      expect(badgeFormacionVisible(taller, 'cert-1')).toBe(true)
+    })
+
+    it('master visible + badge en false explicito => oculto', () => {
+      const taller = {
+        modeloB_revisado: true,
+        visibilidadVidriera: { formacion: true, formacionBadges: { 'cert-1': false } },
+      }
+      expect(badgeFormacionVisible(taller, 'cert-1')).toBe(false)
+      expect(badgeFormacionVisible(taller, 'cert-2')).toBe(true) // otro badge sigue visible
+    })
+
+    it('master visible + badge en true explicito => visible', () => {
+      const taller = {
+        modeloB_revisado: false,
+        visibilidadVidriera: { formacion: true, formacionBadges: { 'cert-1': true } },
+      }
+      expect(badgeFormacionVisible(taller, 'cert-1')).toBe(true)
+    })
+
+    it('si el master esta oculto, el override por badge se ignora', () => {
+      const taller = {
+        modeloB_revisado: true,
+        visibilidadVidriera: { formacion: false, formacionBadges: { 'cert-1': true } },
+      }
+      expect(badgeFormacionVisible(taller, 'cert-1')).toBe(false)
+    })
+
+    it('formacionBadges no-objeto (defensivo) => badge visible si master on', () => {
+      const taller = {
+        modeloB_revisado: true,
+        visibilidadVidriera: { formacion: true, formacionBadges: 'x' },
+      }
+      expect(badgeFormacionVisible(taller, 'cert-1')).toBe(true)
+    })
+  })
+
+  // R-DIR — elegibilidad de directorio (Etapa 2.2-C1, §4.4). Cambio de supuesto vs #437.
+  describe('tallerElegibleDirectorio: visibilidad condiciona inclusion', () => {
+    const conProcesos = [{ id: 'p1' }]
+    const conPrendas = [{ id: 'r1' }]
+
+    it('existente (flag=true, null) con procesos => elegible (behavior-preserving)', () => {
+      const taller = { modeloB_revisado: true, visibilidadVidriera: null, procesos: conProcesos, prendas: [] }
+      expect(tallerElegibleDirectorio(taller)).toBe(true)
+    })
+
+    it('CASO OBLIGATORIO: nuevo (flag=false) con todo toggle-libre oculto => NO aparece', () => {
+      const taller = { modeloB_revisado: false, visibilidadVidriera: null, procesos: conProcesos, prendas: conPrendas }
+      expect(tallerElegibleDirectorio(taller)).toBe(false)
+    })
+
+    it('nuevo (flag=false) con procesos activado explicito => elegible', () => {
+      const taller = { modeloB_revisado: false, visibilidadVidriera: { procesos: true }, procesos: conProcesos, prendas: [] }
+      expect(tallerElegibleDirectorio(taller)).toBe(true)
+    })
+
+    it('nuevo (flag=false) con solo rubro/prenda activado => elegible (via rubro)', () => {
+      const taller = { modeloB_revisado: false, visibilidadVidriera: { prendas: true }, procesos: [], prendas: conPrendas }
+      expect(tallerElegibleDirectorio(taller)).toBe(true)
+    })
+
+    it('existente (flag=true) que oculto procesos Y prendas => NO aparece', () => {
+      const taller = {
+        modeloB_revisado: true,
+        visibilidadVidriera: { procesos: false, prendas: false },
+        procesos: conProcesos,
+        prendas: conPrendas,
+      }
+      expect(tallerElegibleDirectorio(taller)).toBe(false)
+    })
+
+    it('sin procesos ni prendas cargados => no elegible aunque flag=true', () => {
+      const taller = { modeloB_revisado: true, visibilidadVidriera: null, procesos: [], prendas: [] }
+      expect(tallerElegibleDirectorio(taller)).toBe(false)
     })
   })
 })
