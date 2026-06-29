@@ -326,6 +326,7 @@ async function main() {
       fundado: 2021,
       verificadoAfip: true,
       modeloB_revisado: true,
+      tipoInscripcionAfip: 'MONOTRIBUTO',
       pedidosCompletados: 4,
       ontimeRate: 75,
       retrabajoRate: 8,
@@ -379,6 +380,7 @@ async function main() {
       fundado: 2018,
       verificadoAfip: true,
       modeloB_revisado: true,
+      tipoInscripcionAfip: 'RESPONSABLE_INSCRIPTO',
       pedidosCompletados: 18,
       ontimeRate: 88,
       retrabajoRate: 4,
@@ -458,6 +460,7 @@ async function main() {
       fundado: 2012,
       verificadoAfip: true,
       modeloB_revisado: true,
+      tipoInscripcionAfip: 'RESPONSABLE_INSCRIPTO',
       pedidosCompletados: 47,
       ontimeRate: 96,
       retrabajoRate: 2,
@@ -609,6 +612,7 @@ async function main() {
       trabajadoresRegistrados: 2,
       verificadoAfip: true,
       modeloB_revisado: true,
+      tipoInscripcionAfip: 'MONOTRIBUTO',
     },
   })
   // BRONCE exige >=1 proceso declarado; ademas, sin proceso/rubro visible no aparece en
