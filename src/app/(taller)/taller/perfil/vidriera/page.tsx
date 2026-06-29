@@ -102,9 +102,14 @@ export default async function TallerVidrieraPage() {
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="default"><Milestone className="w-3 h-3 mr-1" />{nivelAEtapa(taller.nivel)}</Badge>
           <BadgeArca verificado={taller.verificadoAfip} />
-          {taller.validaciones.map((v, i) => (
-            <Badge key={i} variant="success"><ShieldCheck className="w-3 h-3 mr-1" />{v.tipoDocumento.nombre}</Badge>
-          ))}
+          {/* La validación "CUIT/Monotributo" se omite acá: es redundante con el bloque
+              "Tipo de inscripción" (S2). El resto de validaciones (Habilitación
+              municipal, ART, etc.) se siguen mostrando. */}
+          {taller.validaciones
+            .filter((v) => v.tipoDocumento.nombre !== 'CUIT/Monotributo')
+            .map((v, i) => (
+              <Badge key={i} variant="success"><ShieldCheck className="w-3 h-3 mr-1" />{v.tipoDocumento.nombre}</Badge>
+            ))}
         </div>
         <p className="text-xs text-gray-400 mt-3">Siempre visible para las marcas.</p>
       </Card>
@@ -311,18 +316,10 @@ export default async function TallerVidrieraPage() {
         )}
       </TarjetaBloqueVidriera>
 
-      {/* Certificaciones de calidad (externas): fuera del piloto de toggles (D4),
-          se mantienen sin gate como hasta hoy para no ocultar datos ya visibles. */}
-      {taller.certificaciones.length > 0 && (
-        <Card>
-          <h3 className="font-overpass font-bold text-gray-800 mb-3">Certificaciones</h3>
-          <div className="flex flex-wrap gap-2">
-            {taller.certificaciones.map((c) => (
-              <Badge key={c.id} variant="success"><Award className="w-3 h-3 mr-1" />{c.nombre}</Badge>
-            ))}
-          </div>
-        </Card>
-      )}
+      {/* Certificaciones de calidad externas (ISO, sellos sectoriales): FUERA del
+          render de la vidriera por ahora (decisión B de Sergio). El dato se conserva
+          intacto en DB (relación `certificaciones`); se reincorpora post-piloto con
+          los criterios de Matías. Esto es solo render: no hay borrado ni migración. */}
 
       {/* ── S4 FORMACIÓN ── */}
       <SeccionTitulo>Formación</SeccionTitulo>

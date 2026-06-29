@@ -1,6 +1,6 @@
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
-import { MapPin, Award, ShieldCheck, Milestone, Users, Ruler, Gauge, Workflow, Calendar, FileText } from 'lucide-react'
+import { MapPin, ShieldCheck, Milestone, Users, Ruler, Gauge, Workflow, Calendar, FileText } from 'lucide-react'
 import { GaleriaFotos } from '@/taller/componentes/galeria-fotos'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { bloqueVisibleVidriera, badgeFormacionVisible } from '@/compartido/lib/visibilidad-vidriera'
@@ -92,9 +92,13 @@ export function VidrieraPublicaContenido({ taller }: { taller: VidrieraPublicaTa
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="default"><Milestone className="w-3 h-3 mr-1" />{nivelAEtapa(taller.nivel)}</Badge>
           {taller.verificadoAfip && <BadgeArca verificado={true} />}
-          {taller.validaciones.map((v, i) => (
-            <Badge key={i} variant="success"><ShieldCheck className="w-3 h-3 mr-1" />{v.tipoDocumento.nombre}</Badge>
-          ))}
+          {/* "CUIT/Monotributo" se omite (redundante con el bloque "Tipo de inscripción",
+              S2). El resto de validaciones (Habilitación municipal, ART, etc.) siguen. */}
+          {taller.validaciones
+            .filter((v) => v.tipoDocumento.nombre !== 'CUIT/Monotributo')
+            .map((v, i) => (
+              <Badge key={i} variant="success"><ShieldCheck className="w-3 h-3 mr-1" />{v.tipoDocumento.nombre}</Badge>
+            ))}
         </div>
       </div>
 
@@ -205,17 +209,9 @@ export function VidrieraPublicaContenido({ taller }: { taller: VidrieraPublicaTa
         </Card>
       )}
 
-      {/* Certificaciones de calidad (externas): fuera del piloto de toggles (D4),
-          sin gate como hasta hoy. */}
-      {taller.certificaciones.length > 0 && (
-        <Card title="Certificaciones" className="mb-4">
-          <div className="flex flex-wrap gap-2">
-            {taller.certificaciones.map((c) => (
-              <Badge key={c.id} variant="success"><Award className="w-3 h-3 mr-1" />{c.nombre}</Badge>
-            ))}
-          </div>
-        </Card>
-      )}
+      {/* Certificaciones de calidad externas: FUERA del render por ahora (decisión B
+          de Sergio). El dato se conserva en DB (relación `certificaciones`); se
+          reincorpora post-piloto con criterios de Matías. Solo render, sin borrado. */}
 
       {/* ── S4 FORMACIÓN ── */}
       {verFormacion && (
