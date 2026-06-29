@@ -105,14 +105,15 @@ describe('visibilidad-vidriera', () => {
     })
   })
 
-  describe('set del piloto (Etapa 2.2-B): 10 keys toggle-libre', () => {
-    it('incluye las nuevas keys ademas de las de #437', () => {
+  describe('set del piloto (Etapa 2.2-C1): 11 keys toggle-libre', () => {
+    it('incluye las nuevas keys ademas de las de #437 (+ inscripcion en la 2a vuelta)', () => {
       const esperadas = [
         'formacion', 'equipo', 'espacio', 'capacidad', 'organizacion',
         'maquinaria', 'procesos', 'prendas', 'anioFundacion', 'portfolio',
+        'inscripcion',
       ]
       expect([...BLOQUES_VIDRIERA].sort()).toEqual([...esperadas].sort())
-      expect(BLOQUES_VIDRIERA).toHaveLength(10)
+      expect(BLOQUES_VIDRIERA).toHaveLength(11)
     })
 
     it('NO incluye tiempos (= SAM) ni certificaciones externas (fuera del piloto)', () => {
@@ -194,7 +195,7 @@ describe('visibilidad-vidriera', () => {
 
   // Resolver de render (Etapa 2.2-C1): net-new = SOLO-OPT-IN, legacy = flag-aware.
   describe('bloqueVisibleVidriera: net-new opt-in vs legacy flag-aware', () => {
-    const NET_NEW: BloqueVidriera[] = ['equipo', 'espacio', 'capacidad', 'organizacion', 'anioFundacion']
+    const NET_NEW: BloqueVidriera[] = ['equipo', 'espacio', 'capacidad', 'organizacion', 'anioFundacion', 'inscripcion']
     const LEGACY: BloqueVidriera[] = ['procesos', 'prendas', 'maquinaria', 'portfolio', 'formacion']
 
     it('CRÍTICO: existente (flag=true, null) NO expone bloques net-new (vidriera igual a 2.2-B)', () => {

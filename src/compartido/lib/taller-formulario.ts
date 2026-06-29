@@ -54,6 +54,19 @@ export const labelOrganizacion = (v: string | null | undefined, fallback = 'Desc
 export const labelRegistro = (v: string | null | undefined, fallback = 'Desconocido') => label(REGISTRO_LABELS, v, fallback)
 export const labelEscalabilidad = (v: string | null | undefined, fallback = 'Desconocido') => label(ESCALABILIDAD_LABELS, v, fallback)
 
+// Etapa 2.2-C1 (2a vuelta) — tipo de inscripcion tributaria para la vidriera.
+// SOLO el tipo, NUNCA la categoria de monotributo (Cat. F/G expone franja de
+// facturacion — minimizacion). Mapea el enum TipoInscripcionAfip a label legible.
+export const TIPO_INSCRIPCION_LABELS: Record<string, string> = {
+  RESPONSABLE_INSCRIPTO: 'Responsable Inscripto',
+  MONOTRIBUTO: 'Monotributista',
+  EXENTO: 'Exento',
+  NO_INSCRIPTO: 'No inscripto',
+}
+
+export const labelTipoInscripcion = (v: string | null | undefined): string | null =>
+  v ? (TIPO_INSCRIPCION_LABELS[v] ?? null) : null
+
 // Etapa 2.2-C1 (§4.3/§4.5) — capacidad PUBLICA = rango bucketizado, NUNCA el SAM ni
 // el numero exacto. El bloque `capacidad` muestra esto en la vidriera publica; el SAM
 // (Taller.sam) queda forzado-privado (samVisible('publico')===false).

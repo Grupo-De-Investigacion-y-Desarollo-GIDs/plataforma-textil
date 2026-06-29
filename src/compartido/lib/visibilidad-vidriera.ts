@@ -31,6 +31,7 @@ export type BloqueVidriera =
   | 'prendas'
   | 'anioFundacion'
   | 'portfolio'
+  | 'inscripcion'
 
 /** Lista canonica de bloques toggleables (Credenciales no esta: es fijo). */
 export const BLOQUES_VIDRIERA: readonly BloqueVidriera[] = [
@@ -44,6 +45,10 @@ export const BLOQUES_VIDRIERA: readonly BloqueVidriera[] = [
   'prendas',
   'anioFundacion',
   'portfolio',
+  // Etapa 2.2-C1 2a vuelta: tipo de inscripcion tributaria (S2 "Datos generales").
+  // SOLO el tipo (Monotributista / Responsable Inscripto), NUNCA la categoria
+  // (Cat. F/G expone franja de facturacion — minimizacion). Net-new al render.
+  'inscripcion',
 ] as const
 
 /**
@@ -149,6 +154,7 @@ const BLOQUES_SOLO_OPT_IN: ReadonlySet<BloqueVidriera> = new Set([
   'capacidad',
   'organizacion',
   'anioFundacion',
+  'inscripcion',
 ])
 
 function bloqueActivadoExplicito(
