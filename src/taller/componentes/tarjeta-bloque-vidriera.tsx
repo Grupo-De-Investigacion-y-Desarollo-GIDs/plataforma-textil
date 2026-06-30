@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
-import { Eye, EyeOff, Check, Plus } from 'lucide-react'
+import { Eye, EyeOff, Check, Plus, Pencil, ArrowRight } from 'lucide-react'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Modal } from '@/compartido/componentes/ui/modal'
 import { Button } from '@/compartido/componentes/ui/button'
@@ -40,7 +40,30 @@ interface Props {
   wizardCta: string
   /** Portfolio: render del contenido siempre, con banner de estado. */
   contenidoSiempre?: boolean
+  /**
+   * Etapa 2.2-C2 — indicador "Editado en [destino] →": dónde edita el taller este
+   * contenido (la vidriera cura; la edición vive en otro tab/wizard). Solo se
+   * muestra en estados con datos (ON/OFF); el estado sin-datos ya tiene su propio
+   * CTA "Cargar X". Si se omite (ej. Portfolio, editable inline acá), no se renderiza.
+   */
+  editadoEn?: { href: string; label: string }
   children?: React.ReactNode
+}
+
+// Indicador "Editado en [destino] →" (Etapa 2.2-C2). Reutilizable: lo usan tanto las
+// cards toggleables como las forzado-visibles (Ubicación, Descripción) de Mi vidriera.
+// SOLO vive en Mi vidriera (vista del taller): la vidriera pública no lo renderiza.
+export function IndicadorEdicion({ href, label }: { href: string; label: string }) {
+  return (
+    <Link
+      href={href}
+      className="mt-3 inline-flex items-center gap-1 text-xs text-gray-400 hover:text-brand-blue hover:underline w-fit"
+    >
+      <Pencil className="w-3 h-3 shrink-0" />
+      <span>Editado en {label}</span>
+      <ArrowRight className="w-3 h-3 shrink-0" />
+    </Link>
+  )
 }
 
 function Switch({
@@ -85,6 +108,7 @@ export function TarjetaBloqueVidriera({
   wizardHref,
   wizardCta,
   contenidoSiempre = false,
+  editadoEn,
   children,
 }: Props) {
   const { toast } = useToast()
@@ -167,6 +191,7 @@ export function TarjetaBloqueVidriera({
           </p>
         )}
         {children}
+        {editadoEn && <div><IndicadorEdicion href={editadoEn.href} label={editadoEn.label} /></div>}
         {ConfirmModal}
       </Card>
     )
@@ -183,6 +208,7 @@ export function TarjetaBloqueVidriera({
         <p className="flex items-center gap-1.5 text-sm text-gray-400 mt-2">
           <EyeOff className="w-4 h-4" /> Oculto a las marcas
         </p>
+        {editadoEn && <div><IndicadorEdicion href={editadoEn.href} label={editadoEn.label} /></div>}
         {ConfirmModal}
       </Card>
     )
@@ -196,6 +222,7 @@ export function TarjetaBloqueVidriera({
         {Toggle}
       </div>
       {children}
+      {editadoEn && <div><IndicadorEdicion href={editadoEn.href} label={editadoEn.label} /></div>}
       {ConfirmModal}
     </Card>
   )

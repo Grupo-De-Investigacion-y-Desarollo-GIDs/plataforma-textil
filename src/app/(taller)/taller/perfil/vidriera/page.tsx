@@ -11,7 +11,7 @@ import { Award, Download, MapPin, Milestone, ShieldCheck, Lock, Users, Ruler, Ga
 import { PortfolioManager } from '@/taller/componentes/portfolio-manager'
 import { VerVidrieraModal } from '@/taller/componentes/ver-vidriera-modal'
 import { VidrieraPublicaContenido } from '@/taller/componentes/vidriera-publica-contenido'
-import { TarjetaBloqueVidriera } from '@/taller/componentes/tarjeta-bloque-vidriera'
+import { TarjetaBloqueVidriera, IndicadorEdicion } from '@/taller/componentes/tarjeta-bloque-vidriera'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 import { labelOrganizacion, labelRegistro, labelEscalabilidad, rangoCapacidad, labelTipoInscripcion } from '@/compartido/lib/taller-formulario'
@@ -45,6 +45,15 @@ function SeccionTitulo({ children }: { children: React.ReactNode }) {
 const WIZARD = '/taller/perfil/completar'
 const DATOS_BASICOS = '/taller/perfil'
 const EDITAR = '/taller/perfil/editar'
+
+// Etapa 2.2-C2 — destinos de edición para el indicador "Editado en [X] →".
+// Cada bloque apunta al tab/wizard donde el taller carga ese dato (la vidriera cura,
+// la edición vive en otro lado). Todas las rutas existen (verificado). Formación
+// apunta a Academia: la card "Mis cursos" (PR B) todavía no existe → sin link roto.
+const ED_DATOS_BASICOS = { href: EDITAR, label: 'Datos básicos' }
+const ED_INSCRIPCION = { href: DATOS_BASICOS, label: 'Datos básicos' }
+const ED_PERFIL_PRODUCTIVO = { href: WIZARD, label: 'Perfil productivo' }
+const ED_ACADEMIA = { href: '/taller/aprender', label: 'Academia' }
 
 export default async function TallerVidrieraPage() {
   const session = await auth()
@@ -126,6 +135,7 @@ export default async function TallerVidrieraPage() {
         <p className="flex items-center gap-1.5 text-sm text-gray-700 mt-2">
           <MapPin className="w-4 h-4 text-gray-400" /> {ubicacion || <span className="text-gray-400 italic">Sin completar</span>}
         </p>
+        <IndicadorEdicion {...ED_DATOS_BASICOS} />
       </Card>
 
       {/* Tipo de inscripción: toggle (solo el tipo, nunca la categoría) */}
@@ -137,6 +147,7 @@ export default async function TallerVidrieraPage() {
         sinDatosTexto="Verificá tu CUIT en ARCA para mostrar tu tipo de inscripción."
         wizardHref={DATOS_BASICOS}
         wizardCta="Ir a Datos básicos"
+        editadoEn={ED_INSCRIPCION}
       >
         <p className="flex items-center gap-1.5 text-sm text-gray-700">
           <FileText className="w-4 h-4 text-gray-400" /> {tipoInscripcion}
@@ -152,6 +163,7 @@ export default async function TallerVidrieraPage() {
         sinDatosTexto="Sumá el año en que empezó tu taller."
         wizardHref={EDITAR}
         wizardCta="Agregar año de fundación"
+        editadoEn={ED_DATOS_BASICOS}
       >
         <p className="flex items-center gap-1.5 text-sm text-gray-700">
           <Calendar className="w-4 h-4 text-gray-400" /> Fundado en {taller.fundado}
@@ -168,7 +180,10 @@ export default async function TallerVidrieraPage() {
           <span className="text-xs text-gray-400">Siempre visible</span>
         </div>
         {taller.descripcion ? (
-          <p className="text-sm text-gray-700 whitespace-pre-wrap mt-2">{taller.descripcion}</p>
+          <>
+            <p className="text-sm text-gray-700 whitespace-pre-wrap mt-2">{taller.descripcion}</p>
+            <IndicadorEdicion {...ED_DATOS_BASICOS} />
+          </>
         ) : (
           <div className="mt-2">
             <p className="text-sm text-gray-400">Contá a qué se dedica tu taller.</p>
@@ -200,6 +215,7 @@ export default async function TallerVidrieraPage() {
         sinDatosTexto="Declará los procesos que hacés (corte, confección, etc.)."
         wizardHref={WIZARD}
         wizardCta="Cargar procesos"
+        editadoEn={ED_PERFIL_PRODUCTIVO}
       >
         <div className="flex flex-wrap gap-2">
           {taller.procesos.map((tp) => (
@@ -217,6 +233,7 @@ export default async function TallerVidrieraPage() {
         sinDatosTexto="Sumá los rubros/prendas que producís."
         wizardHref={WIZARD}
         wizardCta="Cargar prendas"
+        editadoEn={ED_PERFIL_PRODUCTIVO}
       >
         <div className="flex flex-wrap gap-2">
           {taller.prendas.map((tp) => (
@@ -234,6 +251,7 @@ export default async function TallerVidrieraPage() {
         sinDatosTexto="Indicá tu capacidad mensual para mostrar un rango a las marcas."
         wizardHref={WIZARD}
         wizardCta="Cargar capacidad"
+        editadoEn={ED_PERFIL_PRODUCTIVO}
       >
         <p className="flex items-center gap-1.5 text-sm text-gray-700">
           <Gauge className="w-4 h-4 text-gray-400" /> {rango}
@@ -252,6 +270,7 @@ export default async function TallerVidrieraPage() {
         sinDatosTexto="Mostrá la composición de tu equipo."
         wizardHref={WIZARD}
         wizardCta="Cargar equipo"
+        editadoEn={ED_PERFIL_PRODUCTIVO}
       >
         <ul className="space-y-1 text-sm">
           {equipoConDatos.map((p) => (
@@ -272,6 +291,7 @@ export default async function TallerVidrieraPage() {
         sinDatosTexto="Sumá los metros cuadrados de tu taller."
         wizardHref={WIZARD}
         wizardCta="Cargar espacio"
+        editadoEn={ED_PERFIL_PRODUCTIVO}
       >
         <p className="flex items-center gap-1.5 text-sm text-gray-700">
           <Ruler className="w-4 h-4 text-gray-400" /> {taller.metrosCuadrados} m²
@@ -287,6 +307,7 @@ export default async function TallerVidrieraPage() {
         sinDatosTexto="Cargá tu maquinaria para mostrarla a las marcas."
         wizardHref={WIZARD}
         wizardCta="Cargar maquinaria"
+        editadoEn={ED_PERFIL_PRODUCTIVO}
       >
         <ul className="space-y-1 text-sm">
           {taller.maquinaria.map((m) => (
@@ -307,6 +328,7 @@ export default async function TallerVidrieraPage() {
         sinDatosTexto="Contá cómo organizás la producción."
         wizardHref={WIZARD}
         wizardCta="Cargar organización"
+        editadoEn={ED_PERFIL_PRODUCTIVO}
       >
         <p className="flex items-center gap-1.5 text-sm text-gray-700">
           <Workflow className="w-4 h-4 text-gray-400" /> {labelOrganizacion(taller.organizacion)}
@@ -332,6 +354,7 @@ export default async function TallerVidrieraPage() {
           sinDatosTexto=""
           wizardHref="/taller/aprender"
           wizardCta=""
+          editadoEn={ED_ACADEMIA}
         >
           <div className="space-y-2">
             {taller.certificados.map((c) => (
