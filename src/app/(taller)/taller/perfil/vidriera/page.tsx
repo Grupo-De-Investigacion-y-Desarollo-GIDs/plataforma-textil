@@ -50,9 +50,13 @@ const EDITAR = '/taller/perfil/editar'
 // Cada bloque apunta al tab/wizard donde el taller carga ese dato (la vidriera cura,
 // la edición vive en otro lado). Todas las rutas existen (verificado). Formación
 // apunta a Academia: la card "Mis cursos" (PR B) todavía no existe → sin link roto.
+const GESTION = '/taller/perfil/gestion'
 const ED_DATOS_BASICOS = { href: EDITAR, label: 'Datos básicos' }
 const ED_INSCRIPCION = { href: DATOS_BASICOS, label: 'Datos básicos' }
-const ED_PERFIL_PRODUCTIVO = { href: WIZARD, label: 'Perfil productivo' }
+// Perfil productivo → tab "Mi gestión productiva" (no el wizard /completar): el taller
+// llega a sus datos cargados + botón "Actualizar perfil productivo" (que abre el wizard
+// solo si decide), en vez de arrancar el wizard de cero (QA Sergio 2.2-C2).
+const ED_PERFIL_PRODUCTIVO = { href: GESTION, label: 'Perfil productivo' }
 const ED_ACADEMIA = { href: '/taller/aprender', label: 'Academia' }
 
 export default async function TallerVidrieraPage() {
