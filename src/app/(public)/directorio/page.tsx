@@ -11,6 +11,8 @@ import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { EmptyState } from '@/compartido/componentes/ui/empty-state'
 import { DirectorioFiltros } from '@/compartido/componentes/directorio-filtros'
 import { derivarUbicaciones } from '@/compartido/lib/directorio-ubicaciones'
+import { tallerElegibleDirectorio, bloqueVisiblePublico } from '@/compartido/lib/visibilidad-vidriera'
+import { rangoCapacidad } from '@/compartido/lib/taller-formulario'
 
 export default async function DirectorioPage({
   searchParams,
@@ -40,7 +42,7 @@ export default async function DirectorioPage({
     ...(partido ? { partido } : {}),
   }
 
-  const [procesos, prendas, ubicaciones, talleres, totalTalleres] = await Promise.all([
+  const [procesos, prendas, ubicaciones, candidatos] = await Promise.all([
     prisma.procesoProductivo.findMany({
       where: { activo: true },
       select: { id: true, nombre: true },
@@ -52,6 +54,9 @@ export default async function DirectorioPage({
       orderBy: { nombre: 'asc' },
     }),
     derivarUbicaciones(),
+    // R-DIR (§4.4): la visibilidad vive en JSONB (no queryable eficiente en SQL), así
+    // que traemos los candidatos por verificadoAfip + filtros y filtramos en app por
+    // elegibilidad (>=1 proceso/rubro con toggle activo). La paginación también es en app.
     prisma.taller.findMany({
       where: tallerWhere,
       include: {
@@ -63,11 +68,13 @@ export default async function DirectorioPage({
         },
       },
       orderBy: [{ verificadoAfip: 'desc' }, { puntaje: 'desc' }],
-      skip: (page - 1) * PAGE_SIZE,
-      take: PAGE_SIZE,
     }),
-    prisma.taller.count({ where: tallerWhere }),
   ])
+
+  // R-DIR: solo talleres con >=1 proceso o rubro visible aparecen en el directorio.
+  const elegibles = candidatos.filter(tallerElegibleDirectorio)
+  const totalTalleres = elegibles.length
+  const talleres = elegibles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
   const hasFilters = query || procesoId || prendaId || provincia || partido
 
@@ -141,10 +148,13 @@ export default async function DirectorioPage({
                   <span className="flex items-center gap-1">
                     <Users className="w-3.5 h-3.5" /> {taller.trabajadoresRegistrados}
                   </span>
-                  <span>{taller.capacidadMensual.toLocaleString()} u/mes</span>
+                  {/* Capacidad: RANGO, nunca el número exacto en público (§4.5). */}
+                  {rangoCapacidad(taller.capacidadMensual) && (
+                    <span>{rangoCapacidad(taller.capacidadMensual)}</span>
+                  )}
                 </div>
 
-                {taller.procesos.length > 0 && (
+                {taller.procesos.length > 0 && bloqueVisiblePublico(taller, 'procesos') && (
                   <div className="flex flex-wrap gap-1 mb-3">
                     {taller.procesos.map((tp) => (
                       <Badge key={tp.id} variant="outline" className="text-xs">{tp.proceso.nombre}</Badge>

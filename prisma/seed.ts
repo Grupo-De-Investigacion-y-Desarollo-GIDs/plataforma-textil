@@ -130,6 +130,7 @@ async function main() {
           nivel: 'BRONCE',
           ubicacion: 'Quilmes, Buenos Aires',
           verificadoAfip: true,
+          modeloB_revisado: true,
         },
       },
     },
@@ -324,6 +325,8 @@ async function main() {
       trabajadoresRegistrados: 3,
       fundado: 2021,
       verificadoAfip: true,
+      modeloB_revisado: true,
+      tipoInscripcionAfip: 'MONOTRIBUTO',
       pedidosCompletados: 4,
       ontimeRate: 75,
       retrabajoRate: 8,
@@ -376,6 +379,8 @@ async function main() {
       trabajadoresRegistrados: 6,
       fundado: 2018,
       verificadoAfip: true,
+      modeloB_revisado: true,
+      tipoInscripcionAfip: 'RESPONSABLE_INSCRIPTO',
       pedidosCompletados: 18,
       ontimeRate: 88,
       retrabajoRate: 4,
@@ -454,6 +459,8 @@ async function main() {
       trabajadoresRegistrados: 14,
       fundado: 2012,
       verificadoAfip: true,
+      modeloB_revisado: true,
+      tipoInscripcionAfip: 'RESPONSABLE_INSCRIPTO',
       pedidosCompletados: 47,
       ontimeRate: 96,
       retrabajoRate: 2,
@@ -591,7 +598,7 @@ async function main() {
 
   // U-04: Taller + Marca del usuario multi-rol (Julieta Benítez). Le dan al
   // toggle ambos nombres de entidad ("Taller La Hormiga" / "Marca Benítez").
-  await prisma.taller.create({
+  const tallerHormiga = await prisma.taller.create({
     data: {
       userId: userDual.id,
       nombre: 'Taller La Hormiga',
@@ -604,8 +611,15 @@ async function main() {
       capacidadMensual: 500,
       trabajadoresRegistrados: 2,
       verificadoAfip: true,
+      modeloB_revisado: true,
+      tipoInscripcionAfip: 'MONOTRIBUTO',
     },
   })
+  // BRONCE exige >=1 proceso declarado; ademas, sin proceso/rubro visible no aparece en
+  // el directorio (R-DIR, 2.2-C1 §4.4) y el e2e u-07 lo busca alli. Le damos confeccion
+  // + remera para que sea un taller valido y descubrible.
+  await prisma.tallerProceso.create({ data: { tallerId: tallerHormiga.id, procesoId: pConfeccion.id, precio: 600 } })
+  await prisma.tallerPrenda.create({ data: { tallerId: tallerHormiga.id, prendaId: prRemera.id } })
   const marcaBenitez = await prisma.marca.create({
     data: {
       userId: userDual.id,

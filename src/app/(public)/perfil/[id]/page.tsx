@@ -12,6 +12,7 @@ export default async function PerfilPublicoPage({ params }: { params: Promise<{ 
       procesos: { include: { proceso: true } },
       prendas: { include: { prenda: true } },
       maquinaria: true,
+      plantilla: true,
       certificaciones: { where: { activa: true } },
       certificados: {
         where: { revocado: false },

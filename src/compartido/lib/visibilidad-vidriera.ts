@@ -31,6 +31,7 @@ export type BloqueVidriera =
   | 'prendas'
   | 'anioFundacion'
   | 'portfolio'
+  | 'inscripcion'
 
 /** Lista canonica de bloques toggleables (Credenciales no esta: es fijo). */
 export const BLOQUES_VIDRIERA: readonly BloqueVidriera[] = [
@@ -44,10 +45,34 @@ export const BLOQUES_VIDRIERA: readonly BloqueVidriera[] = [
   'prendas',
   'anioFundacion',
   'portfolio',
+  // Etapa 2.2-C1 2a vuelta: tipo de inscripcion tributaria (S2 "Datos generales").
+  // SOLO el tipo (Monotributista / Responsable Inscripto), NUNCA la categoria
+  // (Cat. F/G expone franja de facturacion — minimizacion). Net-new al render.
+  'inscripcion',
 ] as const
 
-/** Forma persistida en `Taller.visibilidadVidriera` (todas las keys opcionales). */
-export type VisibilidadVidriera = Partial<Record<BloqueVidriera, boolean>>
+/**
+ * Forma persistida en `Taller.visibilidadVidriera`.
+ * - Keys de bloque (todas opcionales): solo `false` oculta; ausente = visible (#437).
+ * - `formacionBadges`: override granular por badge de Academia (Etapa 2.2-C1, §6.2).
+ *   Key = `Certificado.id`. Solo `false` oculta; ausente = visible. Se ignora si el
+ *   master `formacion` esta oculto.
+ */
+export type VisibilidadVidriera = Partial<Record<BloqueVidriera, boolean>> & {
+  formacionBadges?: Record<string, boolean>
+}
+
+/**
+ * Input de la server action `actualizarVisibilidadVidriera` (Etapa 2.2-C1). Vive aca
+ * (no en el archivo 'use server') porque un modulo 'use server' solo puede exportar
+ * funciones async; el panel cliente y la action comparten este tipo desde la lib.
+ */
+export interface VisibilidadInput {
+  /** Estado on/off por bloque toggle-libre, tal como lo dejo el panel. */
+  bloques: Partial<Record<BloqueVidriera, boolean>>
+  /** Override por badge de Academia. Key = Certificado.id. Solo `false` oculta. */
+  formacionBadges?: Record<string, boolean>
+}
 
 /**
  * Normaliza el JSON crudo del campo a forma canonica: devuelve TODOS los bloques
@@ -112,6 +137,113 @@ export function bloqueVisiblePublico(
   }
   // Privacy-by-default: SOLO el `true` explicito se muestra.
   return raw === true
+}
+
+/**
+ * Bloques que NUNCA fueron públicos antes de 2.2-C1 (net-new al render): equipo,
+ * espacio, capacidad, organización, año de fundación. Para estos, "default oculto"
+ * se interpreta como SOLO-OPT-IN: solo se muestran con `true` explícito, sin importar
+ * `modeloB_revisado`. Asi un taller EXISTENTE (flag=true, visibilidad null) NO los
+ * expone al deployar — su vidriera sigue IDÉNTICA a 2.2-B hasta que los active en el
+ * panel. Los demas bloques (procesos/prendas/maquinaria/portfolio/formacion) ya eran
+ * públicos en 2.2-B y siguen flag-aware (#437 behavior-preserving).
+ */
+const BLOQUES_SOLO_OPT_IN: ReadonlySet<BloqueVidriera> = new Set([
+  'equipo',
+  'espacio',
+  'capacidad',
+  'organizacion',
+  'anioFundacion',
+  'inscripcion',
+])
+
+function bloqueActivadoExplicito(
+  taller: { visibilidadVidriera?: unknown },
+  bloque: BloqueVidriera,
+): boolean {
+  const obj =
+    taller?.visibilidadVidriera &&
+    typeof taller.visibilidadVidriera === 'object' &&
+    !Array.isArray(taller.visibilidadVidriera)
+      ? (taller.visibilidadVidriera as Record<string, unknown>)
+      : {}
+  return obj[bloque] === true
+}
+
+/**
+ * Resolver de render de la vidriera (Etapa 2.2-C1). Es el helper que deben usar TODAS
+ * las superficies que pintan bloques (vidriera pública y "Mi vidriera"):
+ *
+ * - Bloques net-new (BLOQUES_SOLO_OPT_IN): SOLO-OPT-IN → `true` explícito, ignorando
+ *   el flag. Garantiza que los existentes no expongan datos nuevos hasta activarlos.
+ * - Resto: `bloqueVisiblePublico` (flag-aware, behavior-preserving para existentes).
+ *
+ * Nota: la elegibilidad de directorio (`tallerElegibleDirectorio`) y el master de
+ * Academia (`badgeFormacionVisible`) operan sobre procesos/prendas/formacion, que son
+ * bloques pre-existentes → usan `bloqueVisiblePublico` directo (no pasan por aca).
+ */
+export function bloqueVisibleVidriera(
+  taller: { visibilidadVidriera?: unknown; modeloB_revisado?: boolean },
+  bloque: BloqueVidriera,
+): boolean {
+  if (BLOQUES_SOLO_OPT_IN.has(bloque)) {
+    return bloqueActivadoExplicito(taller, bloque)
+  }
+  return bloqueVisiblePublico(taller, bloque)
+}
+
+/**
+ * ¿Se muestra este badge individual de Academia (Etapa 2.2-C1, §6.2)?
+ *
+ * - Si el master `formacion` esta oculto (segun el flag), NINGUN badge se muestra.
+ * - Si el master esta visible, cada badge se muestra salvo override `false` explicito
+ *   en `formacionBadges[certificadoId]` (ausente = visible). Aditivo: no toca
+ *   `bloqueVisible`/`normalizarVisibilidad` ni los tests #437.
+ */
+export function badgeFormacionVisible(
+  taller: { visibilidadVidriera?: unknown; modeloB_revisado?: boolean },
+  certificadoId: string,
+): boolean {
+  if (!bloqueVisiblePublico(taller, 'formacion')) return false
+  const obj =
+    taller?.visibilidadVidriera &&
+    typeof taller.visibilidadVidriera === 'object' &&
+    !Array.isArray(taller.visibilidadVidriera)
+      ? (taller.visibilidadVidriera as Record<string, unknown>)
+      : {}
+  const map =
+    obj.formacionBadges &&
+    typeof obj.formacionBadges === 'object' &&
+    !Array.isArray(obj.formacionBadges)
+      ? (obj.formacionBadges as Record<string, unknown>)
+      : {}
+  return map[certificadoId] !== false
+}
+
+/**
+ * Elegibilidad de un taller para aparecer en el directorio (Etapa 2.2-C1, §4.4 / R-DIR).
+ *
+ * ⚠️ CAMBIO DE SUPUESTO vs #437: la visibilidad ahora SI condiciona la inclusion en
+ * el listado (no solo el render del perfil). Para aparecer, ademas de FORZADO-VISIBLE
+ * (verificadoAfip, etc., que filtra el query) se exige >=1 `proceso` o `prenda`/rubro
+ * con su toggle ACTIVO. La visibilidad vive en JSONB (no queryable eficiente en SQL):
+ * por eso es un filtro post-query en app.
+ *
+ * Behavior-preserving: los talleres EXISTENTES (modeloB_revisado=true, visibilidad
+ * null) tienen procesos/prendas en null=visible → siguen siendo elegibles. Un taller
+ * NUEVO sin ningun toggle activo (privacy-by-default) NO aparece.
+ */
+export function tallerElegibleDirectorio(taller: {
+  visibilidadVidriera?: unknown
+  modeloB_revisado?: boolean
+  procesos?: unknown[]
+  prendas?: unknown[]
+}): boolean {
+  const procesoVisible =
+    (taller.procesos?.length ?? 0) > 0 && bloqueVisiblePublico(taller, 'procesos')
+  const prendaVisible =
+    (taller.prendas?.length ?? 0) > 0 && bloqueVisiblePublico(taller, 'prendas')
+  return procesoVisible || prendaVisible
 }
 
 /**

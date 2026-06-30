@@ -9,10 +9,11 @@ import { Button } from '@/compartido/componentes/ui/button'
 import { labelOrganizacion, labelRegistro, labelEscalabilidad } from '@/compartido/lib/taller-formulario'
 
 // Etapa 2.2-A — "Mi gestión productiva": segundo sub-tab (Datos básicos →
-// gestión → vidriera). Queda SÓLO con el Perfil productivo (organización,
-// espacio, equipo, registro, escalabilidad, SAM). Las cards "Datos del
-// responsable" e "Información General" se movieron a "Datos básicos" (dedup, §4).
-// El panel de "Configuración de visibilidad" se agrega acá en 2.2-C.
+// gestión → vidriera). Queda SÓLO con el Perfil productivo (organización, espacio,
+// equipo, registro, escalabilidad, SAM). Los toggles de visibilidad pasaron a ser
+// INLINE en cada card de "Mi vidriera" (2.2-C1 2a vuelta): el panel de configuración
+// que vivía acá se eliminó. Las cards "Datos del responsable" e "Información General"
+// se movieron a "Datos básicos" (dedup, §4).
 export default async function TallerGestionPage() {
   const session = await auth()
   if (!session?.user) redirect('/login')
