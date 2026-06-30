@@ -6,6 +6,26 @@
 
 ---
 
+## ✅ ESTADO: ETAPA 2.2 COMPLETA (2026-06-30)
+
+Los 3 PRs del plan (§8) están **mergeados a develop**, CI verde:
+
+| PR | Qué entregó | SHA en develop |
+|---|---|---|
+| **2.2-A** (#442) | 3er sub-tab "Datos básicos" + reorder + sync por lectura | `a12c798` |
+| **2.2-B** (#444) | Taxonomía + render condicional (`bloqueVisiblePublico`, flag `modeloB_revisado`) + banners | `66992f6` |
+| **2.2-C1** (#445) | Toggles **inline** + 4 secciones + descubribilidad (3 estados) + escritura (anti-footgun) + net-new (incl. `inscripcion`) + R-DIR + Formación + seed `modeloB_revisado=true`/`tipoInscripcionAfip` | `dbf5971` |
+
+> El plan original tenía 2.2-C como un solo PR; se partió en **2.2-C1** (núcleo funcional: toggles + escritura + render, **mergeado**) y **2.2-C2** (capa de descubribilidad fina, **pendiente**). La descubribilidad básica (3 estados por card) entró en 2.2-C1; 2.2-C2 cubre los refinamientos (indicadores "Editado en X →", estados visuales avanzados).
+
+**Qué queda de la Etapa 2 (NO bloquea el cierre de 2.2):**
+- **B — "Mis cursos"** (card de Academia en Mi gestión productiva): PR aparte, fuera del piloto de visibilidad.
+- **2.2-C2** — capa de descubribilidad fina: indicadores "Editado en [tab] →" por card, refinamientos visuales.
+- **Etapa 2.3** — gracia 60d + vidriera mínima (net-new).
+- **Pendientes que NO gatean** (§10): revisión completa del SAM; taxonomía oficial de rubros/procesos (CIAI/FECOSET, vía Matías) que reemplaza el seed actual.
+
+---
+
 ## 🔒 Bloqueos por PR (leer primero) — SPEC CERRADO
 
 > ✅ **El spec de 2.2 está CERRADO (2026-06-23): no queda NINGUNA decisión de Sergio pendiente para 2.2-A/B/C.** La matriz final (§4) resolvió Efic/Result, D3 ("tiempos") y D4 (acreditaciones). Lo único pendiente son **tareas de plataforma/Gerardo**, no decisiones de producto.
