@@ -6,12 +6,13 @@ import { redirect } from 'next/navigation'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import Link from 'next/link'
-import { MapPin, Star, MessageCircle, Factory } from 'lucide-react'
+import { MapPin, Star, MessageCircle } from 'lucide-react'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { EmptyState } from '@/compartido/componentes/ui/empty-state'
 import { DirectorioFiltros } from '@/compartido/componentes/directorio-filtros'
+import { TallerFotoPlaceholder } from '@/compartido/componentes/taller-foto-placeholder'
 import { derivarUbicaciones } from '@/compartido/lib/directorio-ubicaciones'
-import { tallerElegibleDirectorio, bloqueVisiblePublico } from '@/compartido/lib/visibilidad-vidriera'
+import { tallerCumpleVidrieraMinima, bloqueVisiblePublico } from '@/compartido/lib/visibilidad-vidriera'
 
 const PAGE_SIZE = 12
 
@@ -72,9 +73,10 @@ export default async function DirectorioPage({
     ...(partido ? { partido } : {}),
   }
 
-  // R-DIR (§4.4): la visibilidad vive en JSONB (no queryable en SQL); traemos los
-  // candidatos por verificadoAfip + filtros y filtramos en app por elegibilidad
-  // (>=1 proceso/rubro con toggle activo). Paginación en app.
+  // Vidriera mínima (Etapa 2.3-A) + R-DIR (§4.4): la visibilidad vive en JSONB (no
+  // queryable en SQL); traemos los candidatos por verificadoAfip + filtros y filtramos
+  // en app por la vidriera mínima (descripción ≥50, ubicación, ≥1 rubro visible vía
+  // R-DIR; foto opcional en el piloto). Paginación en app.
   const candidatos = await prisma.taller.findMany({
     where,
     include: {
@@ -88,7 +90,7 @@ export default async function DirectorioPage({
     orderBy: [{ verificadoAfip: 'desc' }, { puntaje: 'desc' }],
   })
 
-  const elegibles = candidatos.filter(tallerElegibleDirectorio)
+  const elegibles = candidatos.filter(tallerCumpleVidrieraMinima)
   const total = elegibles.length
   const talleres = elegibles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
@@ -146,9 +148,7 @@ export default async function DirectorioPage({
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Factory className="w-8 h-8 text-gray-300" />
-                    </div>
+                    <TallerFotoPlaceholder />
                   )}
                 </div>
                 <div className="p-4">

@@ -12,6 +12,7 @@ import { PortfolioManager } from '@/taller/componentes/portfolio-manager'
 import { VerVidrieraModal } from '@/taller/componentes/ver-vidriera-modal'
 import { VidrieraPublicaContenido } from '@/taller/componentes/vidriera-publica-contenido'
 import { TarjetaBloqueVidriera, IndicadorEdicion } from '@/taller/componentes/tarjeta-bloque-vidriera'
+import { VidrieraMinimaAviso } from '@/taller/componentes/vidriera-minima-aviso'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 import { labelOrganizacion, labelRegistro, labelEscalabilidad, rangoCapacidad, labelTipoInscripcion } from '@/compartido/lib/taller-formulario'
@@ -102,6 +103,9 @@ export default async function TallerVidrieraPage() {
 
   return (
     <div className="space-y-4">
+      {/* Vidriera mínima (Etapa 2.3-A): ¿aparece en el directorio? ¿qué le falta? */}
+      <VidrieraMinimaAviso taller={taller} />
+
       {/* "Ver cómo me ve el directorio": MODAL con la vidriera pública filtrada. */}
       <div className="flex justify-end">
         <VerVidrieraModal>

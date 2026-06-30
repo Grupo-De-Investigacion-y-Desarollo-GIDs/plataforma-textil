@@ -6,12 +6,13 @@ import { prisma } from '@/compartido/lib/prisma'
 import { getFeatureFlag } from '@/compartido/lib/features'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
-import { Star, MapPin, Users, ArrowRight, Factory } from 'lucide-react'
+import { Star, MapPin, Users, ArrowRight } from 'lucide-react'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { EmptyState } from '@/compartido/componentes/ui/empty-state'
 import { DirectorioFiltros } from '@/compartido/componentes/directorio-filtros'
+import { TallerFotoPlaceholder } from '@/compartido/componentes/taller-foto-placeholder'
 import { derivarUbicaciones } from '@/compartido/lib/directorio-ubicaciones'
-import { tallerElegibleDirectorio, bloqueVisiblePublico } from '@/compartido/lib/visibilidad-vidriera'
+import { tallerCumpleVidrieraMinima, bloqueVisiblePublico } from '@/compartido/lib/visibilidad-vidriera'
 import { rangoCapacidad } from '@/compartido/lib/taller-formulario'
 
 export default async function DirectorioPage({
@@ -54,9 +55,10 @@ export default async function DirectorioPage({
       orderBy: { nombre: 'asc' },
     }),
     derivarUbicaciones(),
-    // R-DIR (§4.4): la visibilidad vive en JSONB (no queryable eficiente en SQL), así
-    // que traemos los candidatos por verificadoAfip + filtros y filtramos en app por
-    // elegibilidad (>=1 proceso/rubro con toggle activo). La paginación también es en app.
+    // Vidriera mínima (Etapa 2.3-A) + R-DIR (§4.4): la visibilidad vive en JSONB (no
+    // queryable eficiente en SQL), así que traemos los candidatos por verificadoAfip +
+    // filtros y filtramos en app por la vidriera mínima (descripción ≥50, ubicación,
+    // ≥1 rubro visible vía R-DIR; foto opcional en el piloto). La paginación es en app.
     prisma.taller.findMany({
       where: tallerWhere,
       include: {
@@ -71,8 +73,9 @@ export default async function DirectorioPage({
     }),
   ])
 
-  // R-DIR: solo talleres con >=1 proceso o rubro visible aparecen en el directorio.
-  const elegibles = candidatos.filter(tallerElegibleDirectorio)
+  // Vidriera mínima: solo talleres que cumplen los requisitos (descripción ≥50,
+  // ubicación declarada, ≥1 rubro visible) aparecen en el directorio. Foto opcional.
+  const elegibles = candidatos.filter(tallerCumpleVidrieraMinima)
   const totalTalleres = elegibles.length
   const talleres = elegibles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
@@ -124,9 +127,7 @@ export default async function DirectorioPage({
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Factory className="w-8 h-8 text-gray-300" />
-                    </div>
+                    <TallerFotoPlaceholder />
                   )}
                 </div>
                 <div className="p-4">

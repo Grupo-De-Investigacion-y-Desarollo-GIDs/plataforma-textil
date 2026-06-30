@@ -254,3 +254,95 @@ export function tallerElegibleDirectorio(taller: {
 export function samVisible(contexto: 'publico' | 'privado'): boolean {
   return contexto === 'privado'
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// VIDRIERA MÍNIMA (Etapa 2.3-A) — requisitos para aparecer en el directorio.
+//
+// Además de `verificadoAfip` (gate SQL del query) Sergio definió 4 requisitos:
+//   1. Descripción ≥ DESCRIPCION_MIN_CHARS caracteres
+//   2. Ubicación declarada manualmente (provincia + partido)
+//   3. ≥1 rubro/proceso visible  → YA lo cubre R-DIR (`tallerElegibleDirectorio`),
+//      incluso más estricto (exige el toggle visible). Se REUSA tal cual, no se
+//      reimplementa: esta capa lo EXTIENDE con 1, 2 y 4.
+//   4. Foto del taller — OPCIONAL en el piloto (`FOTO_OBLIGATORIA = false`): no
+//      excluye del directorio; la card usa un placeholder institucional. Flipear la
+//      constante a `true` post-piloto la vuelve requisito excluyente, sin más cambios.
+//
+// Se evalúa EN RENDER (filtro post-query del directorio), igual que R-DIR: la
+// visibilidad vive en JSONB no-queryable y no hay campo calculado → sin migración,
+// sin staleness.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Longitud mínima de la descripción para la vidriera mínima (req 1). */
+export const DESCRIPCION_MIN_CHARS = 50
+
+/**
+ * Foto del taller como requisito de vidriera mínima (req 4). PILOTO: `false`
+ * (opcional, con placeholder institucional en la card). Post-piloto: poner en `true`
+ * para exigirla — es el único cambio necesario para volverla excluyente.
+ */
+export const FOTO_OBLIGATORIA = false
+
+/** Requisitos de la vidriera mínima que pueden faltar (para feedback al taller). */
+export type RequisitoVidriera = 'descripcion' | 'ubicacion' | 'rubro' | 'foto'
+
+export interface ResultadoVidrieraMinima {
+  completa: boolean
+  /** Requisitos NO cumplidos, en orden. Vacío ⇒ `completa === true`. */
+  faltan: RequisitoVidriera[]
+}
+
+type TallerVidrieraMinima = {
+  descripcion?: string | null
+  provincia?: string | null
+  partido?: string | null
+  portfolioFotos?: unknown[]
+  // Lo que necesita R-DIR (`tallerElegibleDirectorio`) para el req 3:
+  visibilidadVidriera?: unknown
+  modeloB_revisado?: boolean
+  procesos?: unknown[]
+  prendas?: unknown[]
+}
+
+/** Req 1: descripción con al menos `DESCRIPCION_MIN_CHARS` caracteres (sin espacios al borde). */
+export function descripcionVidrieraOk(taller: { descripcion?: string | null }): boolean {
+  return (taller.descripcion?.trim().length ?? 0) >= DESCRIPCION_MIN_CHARS
+}
+
+/**
+ * Req 2: ubicación DECLARADA manualmente = `provincia` + `partido` (campos
+ * estructurados del formulario de registro/edición). El `ubicacion` libre es legacy
+ * y no cuenta como declaración formal para el gate.
+ */
+export function ubicacionVidrieraOk(taller: { provincia?: string | null; partido?: string | null }): boolean {
+  return Boolean(taller.provincia?.trim() && taller.partido?.trim())
+}
+
+/** Req 4: el taller tiene al menos una foto cargada (portfolio). */
+export function fotoVidrieraOk(taller: { portfolioFotos?: unknown[] }): boolean {
+  return (taller.portfolioFotos?.length ?? 0) > 0
+}
+
+/**
+ * Evalúa la vidriera mínima (Etapa 2.3-A). Devuelve qué requisitos faltan para que el
+ * taller pueda mostrarle al usuario "te falta X para aparecer en el directorio".
+ * El req 3 delega en `tallerElegibleDirectorio` (R-DIR intacto). La foto solo cuenta
+ * si `FOTO_OBLIGATORIA` está activo.
+ */
+export function evaluarVidrieraMinima(taller: TallerVidrieraMinima): ResultadoVidrieraMinima {
+  const faltan: RequisitoVidriera[] = []
+  if (!descripcionVidrieraOk(taller)) faltan.push('descripcion')
+  if (!ubicacionVidrieraOk(taller)) faltan.push('ubicacion')
+  if (!tallerElegibleDirectorio(taller)) faltan.push('rubro')
+  if (FOTO_OBLIGATORIA && !fotoVidrieraOk(taller)) faltan.push('foto')
+  return { completa: faltan.length === 0, faltan }
+}
+
+/**
+ * Gate completo de vidriera mínima para el `.filter` del directorio (público + marca).
+ * Reemplaza la llamada suelta a `tallerElegibleDirectorio` (que queda subsumida como
+ * el req 3). `verificadoAfip` se sigue exigiendo aguas arriba en el `where` SQL.
+ */
+export function tallerCumpleVidrieraMinima(taller: TallerVidrieraMinima): boolean {
+  return evaluarVidrieraMinima(taller).completa
+}
