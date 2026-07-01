@@ -1,6 +1,6 @@
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
-import { MapPin, ShieldCheck, Milestone, Users, Ruler, Gauge, Workflow, Calendar, FileText } from 'lucide-react'
+import { MapPin, Milestone, Users, Ruler, Gauge, Workflow, Calendar, FileText } from 'lucide-react'
 import { GaleriaFotos } from '@/taller/componentes/galeria-fotos'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { bloqueVisibleVidriera, badgeFormacionVisible } from '@/compartido/lib/visibilidad-vidriera'
@@ -9,7 +9,9 @@ import { labelOrganizacion, labelRegistro, labelEscalabilidad, rangoCapacidad, l
 
 // Contenido de la vidriera PÚBLICA (lo que ve la marca), en las 4 SECCIONES de V4 2.2
 // (Etapa 2.2-C1 2a vuelta), read-only y mostrando SOLO los bloques visibles:
-//   S1 Credenciales (forzado-visible): nombre + Etapa + ARCA + validaciones.
+//   S1 Credenciales (forzado-visible): nombre + Etapa + ARCA, SOLO eso. Las demás
+//      validaciones del recorrido (ART, Habilitación, Empleados, Bomberos, SyH, Nómina)
+//      son PRIVADAS (Mi recorrido) y NUNCA se exponen acá (V4 #4 / master 3.10).
 //   S2 Datos generales: ubicación (forzado-visible) + tipo de inscripción + año (gated).
 //   S3 Descripción: descripción (forzado-visible) → portfolio → procesos → prendas →
 //      capacidad (rango, nunca SAM) → equipo → espacio → maquinaria → organización (gated).
@@ -40,7 +42,6 @@ export interface VidrieraPublicaTaller {
   registroProduccion: string | null
   visibilidadVidriera: unknown
   modeloB_revisado: boolean
-  validaciones: { tipoDocumento: { nombre: string } }[]
   procesos: { id: string; proceso: { nombre: string } }[]
   prendas: { id: string; prenda: { nombre: string } }[]
   maquinaria: { id: string; nombre: string; cantidad: number }[]
@@ -92,13 +93,8 @@ export function VidrieraPublicaContenido({ taller }: { taller: VidrieraPublicaTa
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="default"><Milestone className="w-3 h-3 mr-1" />{nivelAEtapa(taller.nivel)}</Badge>
           {taller.verificadoAfip && <BadgeArca verificado={true} />}
-          {/* "CUIT/Monotributo" se omite (redundante con el bloque "Tipo de inscripción",
-              S2). El resto de validaciones (Habilitación municipal, ART, etc.) siguen. */}
-          {taller.validaciones
-            .filter((v) => v.tipoDocumento.nombre !== 'CUIT/Monotributo')
-            .map((v, i) => (
-              <Badge key={i} variant="success"><ShieldCheck className="w-3 h-3 mr-1" />{v.tipoDocumento.nombre}</Badge>
-            ))}
+          {/* SOLO Etapa + ARCA. Las validaciones del recorrido (ART, Habilitación,
+              Empleados, etc.) son privadas y NO se renderizan en la vidriera pública. */}
         </div>
       </div>
 

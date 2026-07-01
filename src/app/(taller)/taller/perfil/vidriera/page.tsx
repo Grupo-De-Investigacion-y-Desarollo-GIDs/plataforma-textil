@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
-import { Award, Download, MapPin, Milestone, ShieldCheck, Lock, Users, Ruler, Gauge, Workflow, Calendar, FileText, BookOpen } from 'lucide-react'
+import { Award, Download, MapPin, Milestone, Lock, Users, Ruler, Gauge, Workflow, Calendar, FileText, BookOpen } from 'lucide-react'
 import { PortfolioManager } from '@/taller/componentes/portfolio-manager'
 import { VerVidrieraModal } from '@/taller/componentes/ver-vidriera-modal'
 import { VidrieraPublicaContenido } from '@/taller/componentes/vidriera-publica-contenido'
@@ -26,7 +26,8 @@ const CATEGORIA_LABEL: Record<string, string> = {
 
 // Etapa 2.2-C1 (2a vuelta) — "Mi vidriera": toggles INLINE + descubribilidad.
 // Estructura en las 4 SECCIONES de Sergio:
-//   S1 Credenciales (forzado-visible, sin toggle): Etapa + ARCA + validaciones
+//   S1 Credenciales (forzado-visible, sin toggle): Etapa + ARCA (nada más — las demás
+//      validaciones del recorrido son privadas)
 //   S2 Datos generales: ubicación (forzado-visible) + tipo de inscripción (toggle) + año (toggle)
 //   S3 Descripción: descripción (forzado-visible) → portfolio → procesos → prendas →
 //      capacidad → equipo → espacio → maquinaria → organización (todos toggle excepto descripción)
@@ -77,10 +78,8 @@ export default async function TallerVidrieraPage() {
         include: { coleccion: { select: { titulo: true, institucion: true } } },
         orderBy: { fecha: 'desc' },
       },
-      validaciones: {
-        where: { estado: 'COMPLETADO' },
-        select: { tipoDocumento: { select: { nombre: true } } },
-      },
+      // Credenciales muestra SOLO Etapa + ARCA. Las validaciones del recorrido (ART,
+      // Habilitación, Empleados, etc.) son PRIVADAS (Mi recorrido) → no se consultan acá.
     },
   })
 
@@ -119,14 +118,9 @@ export default async function TallerVidrieraPage() {
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="default"><Milestone className="w-3 h-3 mr-1" />{nivelAEtapa(taller.nivel)}</Badge>
           <BadgeArca verificado={taller.verificadoAfip} />
-          {/* La validación "CUIT/Monotributo" se omite acá: es redundante con el bloque
-              "Tipo de inscripción" (S2). El resto de validaciones (Habilitación
-              municipal, ART, etc.) se siguen mostrando. */}
-          {taller.validaciones
-            .filter((v) => v.tipoDocumento.nombre !== 'CUIT/Monotributo')
-            .map((v, i) => (
-              <Badge key={i} variant="success"><ShieldCheck className="w-3 h-3 mr-1" />{v.tipoDocumento.nombre}</Badge>
-            ))}
+          {/* SOLO Etapa + ARCA. Las validaciones del recorrido (ART, Habilitación,
+              Empleados, etc.) son PRIVADAS (viven en Mi recorrido) y NUNCA se muestran
+              en la vidriera — evita filtrar los 7 requisitos a las marcas (V4 #4). */}
         </div>
         <p className="text-xs text-gray-400 mt-3">Siempre visible para las marcas.</p>
       </Card>

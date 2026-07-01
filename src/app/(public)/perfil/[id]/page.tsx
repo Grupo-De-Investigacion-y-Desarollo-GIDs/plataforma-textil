@@ -19,10 +19,8 @@ export default async function PerfilPublicoPage({ params }: { params: Promise<{ 
         include: { coleccion: { select: { titulo: true, institucion: true } } },
         orderBy: { fecha: 'desc' },
       },
-      validaciones: {
-        where: { estado: 'COMPLETADO' },
-        select: { tipoDocumento: { select: { nombre: true } } },
-      },
+      // Las validaciones del recorrido (ART, Habilitación, etc.) son PRIVADAS: no se
+      // consultan para la vidriera pública. Credenciales muestra SOLO Etapa + ARCA.
     },
   })
 

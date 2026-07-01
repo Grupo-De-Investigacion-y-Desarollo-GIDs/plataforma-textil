@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/compartido/lib/prisma'
+import { auth } from '@/compartido/lib/auth'
 import { getFeatureFlag } from '@/compartido/lib/features'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
@@ -21,6 +22,14 @@ export default async function DirectorioPage({
   searchParams?: Promise<{ q?: string; proceso?: string; prenda?: string; provincia?: string; partido?: string; page?: string }> | { q?: string; proceso?: string; prenda?: string; provincia?: string; partido?: string; page?: string }
 }) {
   if (!await getFeatureFlag('directorio_publico')) notFound()
+
+  // Bug 2 (QA #448): el layout (public) logueado ya envuelve en un container con
+  // padding lateral (max-w-7xl + px), pero el anónimo usa <main> full-width (para las
+  // páginas de marketing). El listado necesita su propio container SOLO cuando el
+  // usuario es anónimo — así no queda a ras del borde ni excede el encabezado, y no se
+  // duplica el padding cuando está logueado.
+  const session = await auth()
+  const wrapperClass = session?.user ? '' : 'max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6'
 
   const params = await Promise.resolve(searchParams ?? {})
   const query = (params.q || '').trim()
@@ -82,7 +91,7 @@ export default async function DirectorioPage({
   const hasFilters = query || procesoId || prendaId || provincia || partido
 
   return (
-    <div>
+    <div className={wrapperClass}>
       <div className="text-center mb-8">
         <h1 className="font-overpass font-bold text-3xl text-brand-blue mb-2">Directorio de Proveedores</h1>
         <p className="text-gray-600">Encontra talleres textiles registrados y verificados en la plataforma.</p>
