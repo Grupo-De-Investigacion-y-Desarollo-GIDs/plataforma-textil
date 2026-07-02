@@ -1,13 +1,13 @@
 # Etapa 2.3 — Discovery + Diseño (gracia 60 días + vidriera mínima)
 
-> **Estado:** DISCOVERY + DISEÑO para aprobar **antes** de implementar. NO se escribió código.
+> **Estado:** DISCOVERY + DISEÑO. **A (vidriera mínima) = HECHO** (PR #448, squash `9062603` en develop, 2026-07-02, CI verde unit+e2e). **B (gracia) = PENDIENTE** (decisiones ya resueltas, ver §3/§6).
 > Decisión de proceso: diseñar primero, no implementar y ajustar en QA.
 > Toda afirmación de "qué ya existe" está anclada con `archivo:línea`.
 
 La Etapa 2.3 tiene **dos piezas net-new independientes**:
 
-- **A — Vidriera mínima:** 4 requisitos + CUIT verificado para aparecer en el directorio. Sin gracia: si no la completás, no aparecés (sin desactivación).
-- **B — Gracia 60 días:** si pasan 60 días sin verificar CUIT → cuenta "pendiente formalización" (recuperable). Email recordatorio ~día 50. Recuperación automática al verificar.
+- **A — Vidriera mínima ✅ HECHO (`9062603`):** 4 requisitos + CUIT verificado para aparecer en el directorio. Sin gracia: si no la completás, no aparecés (sin desactivación).
+- **B — Gracia 60 días ⏳ PENDIENTE:** si pasan 60 días sin verificar CUIT → cuenta "pendiente formalización" (recuperable). Email recordatorio ~día 50. Recuperación automática al verificar.
 
 ---
 
@@ -188,11 +188,11 @@ La selección es función pura de `(createdAt, now, verificadoAfip, estadoCuenta
 
 **A y B son independientes** (no comparten datos ni código) → **separables**. Corte recomendado:
 
-- **PR A — Vidriera mínima** (bajo riesgo, **sin migración**): función `vidrieraMinimaCompleta` + cableado en ambos directorios + placeholder institucional + (recomendado) feedback al taller en Mi vidriera. Tests unit de la función + e2e del directorio. Ship primero — no depende de B ni de decisiones de schema.
+- **PR A — Vidriera mínima ✅ HECHO (#448, squash `9062603`, mergeado 2026-07-02, CI verde unit+e2e):** función `tallerCumpleVidrieraMinima`/`evaluarVidrieraMinima` + helpers + `DESCRIPCION_MIN_CHARS`/`FOTO_OBLIGATORIA` (en `visibilidad-vidriera.ts`); cableado en ambos directorios (público + marca); `TallerFotoPlaceholder` institucional; `VidrieraMinimaAviso` (feedback al taller en Mi vidriera). Req 2 = provincia+partido. Foto opcional en piloto (`FOTO_OBLIGATORIA=false`). Tests unit (14 casos) + e2e. **QA de Sergio (post-merge de la 1a versión) corrigió 2 bugs incluidos en el mismo PR:** Bug 1 CRÍTICO (regresión V4 #4) — Credenciales de la vidriera exponía las validaciones privadas del recorrido en 3 superficies (vidriera pública, Mi vidriera, detalle marca) → ahora SOLO Etapa + ARCA (render + query removidos; e2e `credenciales-vidriera.spec.ts`); Bug 2 — padding del listado /directorio anónimo. R-DIR (req 3) reutilizado intacto.
 - **PR B0 — Schema + enforcement** (Gerardo): migración (`EstadoCuenta` + `inactivadaAt` + `recordatorioCuitEnviadoAt`) + enforcement del estado (banner login + bloqueo cotizar/operar) + helper de recuperación. Es el prerequisito de B1 y el que necesita las decisiones #1/#2/#5.
 - **PR B1 — Cron + email + recuperación + tests** (Sergio): endpoint `api/cron/gracia-cuit` + `CRON_SECRET` + `crons` en `vercel.json` + `buildRecordatorioCuitEmail` + hook de recuperación en los 3 puntos de verificación + tests (las 3 capas de §4).
 
-Orden: **A** en paralelo (independiente). **B0 → B1** secuencial. B no arranca hasta cerrar Decisiones #1, #2, #5.
+Orden: ~~**A** en paralelo (independiente)~~ ✅ hecho. **B0 → B1** secuencial. B no arranca hasta cerrar Decisiones #1, #2, #5.
 
 ---
 
