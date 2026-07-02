@@ -81,3 +81,55 @@ export function estadoCuentaInicial(
     ? { estadoCuenta: 'ACTIVA', inicioGracia: null }
     : { estadoCuenta: 'EN_GRACIA', inicioGracia: ahora }
 }
+
+/**
+ * Campos a escribir cuando un taller EN_GRACIA o INACTIVA verifica su CUIT (B1):
+ * vuelve a ACTIVA y se limpia todo el reloj (inicioGracia, inactivadaAt y el marcador
+ * de idempotencia del recordatorio). PURA — la usa `sincronizarTaller` al setear
+ * `verificadoAfip: true`, asi la reactivacion es automatica y sin trámite extra.
+ */
+export function datosReactivacion(): {
+  estadoCuenta: 'ACTIVA'
+  inicioGracia: null
+  inactivadaAt: null
+  recordatorioCuitEnviadoAt: null
+} {
+  return {
+    estadoCuenta: 'ACTIVA',
+    inicioGracia: null,
+    inactivadaAt: null,
+    recordatorioCuitEnviadoAt: null,
+  }
+}
+
+/**
+ * Accion que el cron diario (B1) debe tomar sobre un taller EN_GRACIA a la fecha `ahora`.
+ * PURA — separa la DECISION (testeable con fechas fabricadas) de la EJECUCION (writes +
+ * emails en la route). El cron ya filtra por `estadoCuenta = EN_GRACIA`; esta funcion
+ * re-chequea de forma defensiva y clasifica:
+ *
+ *   - INACTIVAR    : el reloj llego a >=60 dias (clasificacion INACTIVA).
+ *   - RECORDATORIO : esta en la ventana [50, 60) y NO se envio el recordatorio todavia
+ *                    (idempotencia por `recordatorioCuitEnviadoAt`).
+ *   - NADA         : verificado, no EN_GRACIA, dia <50, o recordatorio ya enviado.
+ *
+ * La INACTIVACION tiene prioridad sobre el RECORDATORIO: si el cron se saltea corridas y
+ * el taller salta directo a >=60 sin haber recibido el recordatorio, se inactiva (y la
+ * route manda el email de inactivacion, no el de recordatorio).
+ */
+export type AccionGracia = 'NADA' | 'RECORDATORIO' | 'INACTIVAR'
+
+export function planificarAccionGracia(
+  taller: TallerGracia & {
+    estadoCuenta?: string | null
+    recordatorioCuitEnviadoAt?: Date | null
+  },
+  ahora: Date,
+): AccionGracia {
+  if (taller.verificadoAfip || taller.estadoCuenta !== 'EN_GRACIA') return 'NADA'
+
+  const { estado } = clasificarGracia(taller, ahora)
+  if (estado === 'INACTIVA') return 'INACTIVAR'
+  if (estado === 'VENCE_PRONTO' && !taller.recordatorioCuitEnviadoAt) return 'RECORDATORIO'
+  return 'NADA'
+}
