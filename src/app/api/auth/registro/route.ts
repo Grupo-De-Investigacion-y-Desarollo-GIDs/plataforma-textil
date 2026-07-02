@@ -5,6 +5,7 @@ import { logActividad } from '@/compartido/lib/log'
 import { consultarPadron, errorBloqueaRegistro, mensajeErrorArca, type DatosArca } from '@/compartido/lib/arca'
 import { sendEmail, buildBienvenidaEmail } from '@/compartido/lib/email'
 import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
+import { estadoCuentaInicial } from '@/compartido/lib/gracia'
 import { apiHandler, errorResponse, errorConflict } from '@/compartido/lib/api-errors'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
@@ -110,6 +111,8 @@ export const POST = apiHandler(async (req: NextRequest) => {
                   capacidadMensual: data.tallerData.capacidadMensual || 0,
                   verificadoAfip: cuitVerificado,
                   verificadoAfipAt: cuitVerificado ? new Date() : null,
+                  // Estado inicial de gracia (2.3-B0): { estadoCuenta, inicioGracia }.
+                  ...estadoCuentaInicial(cuitVerificado, new Date()),
                   tipoInscripcionAfip: datosArca?.tipoInscripcion ?? null,
                   categoriaMonotributo: datosArca?.categoriaMonotributo ?? null,
                   estadoCuitAfip: datosArca?.estadoCuit ?? null,
