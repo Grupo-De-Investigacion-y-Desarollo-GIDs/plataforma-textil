@@ -1,13 +1,13 @@
 # Etapa 2.3 — Discovery + Diseño (gracia 60 días + vidriera mínima)
 
-> **Estado:** DISCOVERY + DISEÑO. **A (vidriera mínima) = HECHO** (PR #448, squash `9062603` en develop, 2026-07-02, CI verde unit+e2e). **B (gracia) = PENDIENTE** (decisiones ya resueltas, ver §3/§6).
+> **Estado:** DISCOVERY + DISEÑO. **A (vidriera mínima) = HECHO** (PR #448, `9062603`). **B0 (schema + estado + helper + enforcement + banners) = HECHO** (PR #449, squash `23d20b0` en develop, 2026-07-02, CI verde unit+e2e). **B1 (cron + emails + reactivación + email de lanzamiento) = PENDIENTE** → cierra 2.3 y la Etapa 2.
 > Decisión de proceso: diseñar primero, no implementar y ajustar en QA.
 > Toda afirmación de "qué ya existe" está anclada con `archivo:línea`.
 
 La Etapa 2.3 tiene **dos piezas net-new independientes**:
 
 - **A — Vidriera mínima ✅ HECHO (`9062603`):** 4 requisitos + CUIT verificado para aparecer en el directorio. Sin gracia: si no la completás, no aparecés (sin desactivación).
-- **B — Gracia 60 días ⏳ PENDIENTE:** si pasan 60 días sin verificar CUIT → cuenta "pendiente formalización" (recuperable). Email recordatorio ~día 50. Recuperación automática al verificar.
+- **B — Gracia 60 días:** **B0 ✅ HECHO (`23d20b0`)** = schema (enum `EstadoCuenta` + campos Taller + migración/backfill amnistía) + helper puro `clasificarGracia` + estado al alta + enforcement (verificado: todo lo comercial ya gatea en `verificadoAfip`) + banners countdown/reactivación. **B1 ⏳ PENDIENTE** = cron (`api/cron/gracia-cuit`) + `CRON_SECRET` + `crons` en `vercel.json` + email recordatorio día 50 + reactivación automática al verificar + email de lanzamiento a existentes + transición EN_GRACIA→INACTIVA por tiempo.
 
 ---
 
@@ -189,10 +189,10 @@ La selección es función pura de `(createdAt, now, verificadoAfip, estadoCuenta
 **A y B son independientes** (no comparten datos ni código) → **separables**. Corte recomendado:
 
 - **PR A — Vidriera mínima ✅ HECHO (#448, squash `9062603`, mergeado 2026-07-02, CI verde unit+e2e):** función `tallerCumpleVidrieraMinima`/`evaluarVidrieraMinima` + helpers + `DESCRIPCION_MIN_CHARS`/`FOTO_OBLIGATORIA` (en `visibilidad-vidriera.ts`); cableado en ambos directorios (público + marca); `TallerFotoPlaceholder` institucional; `VidrieraMinimaAviso` (feedback al taller en Mi vidriera). Req 2 = provincia+partido. Foto opcional en piloto (`FOTO_OBLIGATORIA=false`). Tests unit (14 casos) + e2e. **QA de Sergio (post-merge de la 1a versión) corrigió 2 bugs incluidos en el mismo PR:** Bug 1 CRÍTICO (regresión V4 #4) — Credenciales de la vidriera exponía las validaciones privadas del recorrido en 3 superficies (vidriera pública, Mi vidriera, detalle marca) → ahora SOLO Etapa + ARCA (render + query removidos; e2e `credenciales-vidriera.spec.ts`); Bug 2 — padding del listado /directorio anónimo. R-DIR (req 3) reutilizado intacto.
-- **PR B0 — Schema + enforcement** (Gerardo): migración (`EstadoCuenta` + `inactivadaAt` + `recordatorioCuitEnviadoAt`) + enforcement del estado (banner login + bloqueo cotizar/operar) + helper de recuperación. Es el prerequisito de B1 y el que necesita las decisiones #1/#2/#5.
-- **PR B1 — Cron + email + recuperación + tests** (Sergio): endpoint `api/cron/gracia-cuit` + `CRON_SECRET` + `crons` en `vercel.json` + `buildRecordatorioCuitEmail` + hook de recuperación en los 3 puntos de verificación + tests (las 3 capas de §4).
+- **PR B0 — Schema + estado + helper + enforcement + banners ✅ HECHO (#449, squash `23d20b0`, mergeado 2026-07-02, CI verde unit+e2e):** enum `EstadoCuenta {ACTIVA,EN_GRACIA,INACTIVA}` (no reusa `User.active`) + campos Taller `estadoCuenta`/`inicioGracia`/`inactivadaAt`/`recordatorioCuitEnviadoAt` + migración `20260702120000` aditiva con **backfill=AMNISTÍA** (verificados→ACTIVA; no verificados→EN_GRACIA con `inicioGracia=NOW()`; nadie INACTIVA). Helper puro `src/compartido/lib/gracia.ts` (`clasificarGracia`/`estadoCuentaInicial`, tests día 0/49/50/59/60/61). Estado al alta en `crear-entidad-rol.ts` + registro inline. Banners `BannerGracia` (dashboard, countdown/reactivación, computado en vivo; coexiste con `BannerVidriera` por exclusión de `verificadoAfip`). **Enforcement = VERIFICADO, no net-new:** todo lo comercial ya gatea en `verificadoAfip` (cotizar 403, invitaciones 400, directorio where, operar orden por ownership+transitivo, Academia sin gate) → ningún gate faltaba. Login intacto. Decisiones #1/#2/#5 cerradas.
+- **PR B1 — Cron + email + reactivación + tests ⏳ PENDIENTE** (Sergio): endpoint `api/cron/gracia-cuit` + `CRON_SECRET` + `crons` en `vercel.json` + `buildRecordatorioCuitEmail` (día 50, usa el estado `VENCE_PRONTO` de `clasificarGracia`) + transición `EN_GRACIA→INACTIVA` por tiempo (setea `estadoCuenta`/`inactivadaAt`) + hook de reactivación al verificar CUIT en los 3 puntos (registro / `sincronizarTaller` / reverificación ESTADO, reset `estadoCuenta=ACTIVA`+`inicioGracia`/`inactivadaAt`/`recordatorioCuitEnviadoAt`=null) + email de lanzamiento a existentes + tests (las 3 capas de §4). **Cierra 2.3 y la Etapa 2.**
 
-Orden: ~~**A** en paralelo (independiente)~~ ✅ hecho. **B0 → B1** secuencial. B no arranca hasta cerrar Decisiones #1, #2, #5.
+Orden: ~~**A** (independiente)~~ ✅ · ~~**B0**~~ ✅ · **B1** pendiente. Decisiones #1/#2/#5 cerradas.
 
 ---
 
