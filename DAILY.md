@@ -3,6 +3,9 @@
 ## 2026-07-02
 
 ### Gerardo Breard
+- **20:34** `7a98302` — docs(etapa2-3): marcar B0 gracia HECHO (#449, 23d20b0)
+  - `.claude/specs/v4-etapa2-3-discovery.md`
+
 - **11:42** `1e7ceed` — docs(etapa2-3): marcar 2.3-A vidriera minima HECHO (#448, 9062603)
   - `.claude/specs/v4-etapa2-3-discovery.md`
 
