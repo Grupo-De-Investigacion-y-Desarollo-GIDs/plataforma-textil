@@ -8,6 +8,13 @@ import {
   tallerElegibleDirectorio,
   normalizarVisibilidad,
   samVisible,
+  descripcionVidrieraOk,
+  ubicacionVidrieraOk,
+  fotoVidrieraOk,
+  evaluarVidrieraMinima,
+  tallerCumpleVidrieraMinima,
+  DESCRIPCION_MIN_CHARS,
+  FOTO_OBLIGATORIA,
   type BloqueVidriera,
 } from '@/compartido/lib/visibilidad-vidriera'
 
@@ -313,6 +320,107 @@ describe('visibilidad-vidriera', () => {
     it('sin procesos ni prendas cargados => no elegible aunque flag=true', () => {
       const taller = { modeloB_revisado: true, visibilidadVidriera: null, procesos: [], prendas: [] }
       expect(tallerElegibleDirectorio(taller)).toBe(false)
+    })
+  })
+
+  // Vidriera mínima (Etapa 2.3-A): extiende R-DIR con descripción ≥50 + ubicación + foto.
+  describe('vidriera mínima: gate del directorio = R-DIR + descripción + ubicación + foto', () => {
+    // Taller base que CUMPLE los 4 requisitos (existente, procesos visibles).
+    const completo = () => ({
+      modeloB_revisado: true,
+      visibilidadVidriera: null,
+      procesos: [{ id: 'p1' }],
+      prendas: [],
+      descripcion: 'Taller de confección con más de cincuenta caracteres de descripción.',
+      provincia: 'Buenos Aires',
+      partido: 'Avellaneda',
+      portfolioFotos: ['https://x/foto.jpg'],
+    })
+
+    describe('helpers individuales', () => {
+      it('descripción: ≥50 chars ok, <50 falla, recorta espacios', () => {
+        expect(descripcionVidrieraOk({ descripcion: 'a'.repeat(DESCRIPCION_MIN_CHARS) })).toBe(true)
+        expect(descripcionVidrieraOk({ descripcion: 'a'.repeat(DESCRIPCION_MIN_CHARS - 1) })).toBe(false)
+        expect(descripcionVidrieraOk({ descripcion: '   ' + 'a'.repeat(49) + '   ' })).toBe(false)
+        expect(descripcionVidrieraOk({ descripcion: null })).toBe(false)
+        expect(descripcionVidrieraOk({})).toBe(false)
+      })
+
+      it('ubicación: exige provincia Y partido (no alcanza uno solo)', () => {
+        expect(ubicacionVidrieraOk({ provincia: 'BA', partido: 'Avellaneda' })).toBe(true)
+        expect(ubicacionVidrieraOk({ provincia: 'BA', partido: '' })).toBe(false)
+        expect(ubicacionVidrieraOk({ provincia: '', partido: 'Avellaneda' })).toBe(false)
+        expect(ubicacionVidrieraOk({ provincia: '  ', partido: '  ' })).toBe(false)
+        expect(ubicacionVidrieraOk({})).toBe(false)
+      })
+
+      it('foto: detecta al menos una foto cargada', () => {
+        expect(fotoVidrieraOk({ portfolioFotos: ['a'] })).toBe(true)
+        expect(fotoVidrieraOk({ portfolioFotos: [] })).toBe(false)
+        expect(fotoVidrieraOk({})).toBe(false)
+      })
+    })
+
+    it('taller con los 4 reqs + R-DIR => aparece (completa, faltan=[])', () => {
+      const res = evaluarVidrieraMinima(completo())
+      expect(res.completa).toBe(true)
+      expect(res.faltan).toEqual([])
+      expect(tallerCumpleVidrieraMinima(completo())).toBe(true)
+    })
+
+    it('sin descripción ≥50 => NO aparece (falta "descripcion")', () => {
+      const t = { ...completo(), descripcion: 'corta' }
+      expect(tallerCumpleVidrieraMinima(t)).toBe(false)
+      expect(evaluarVidrieraMinima(t).faltan).toContain('descripcion')
+    })
+
+    it('sin ubicación (falta partido) => NO aparece (falta "ubicacion")', () => {
+      const t = { ...completo(), partido: '' }
+      expect(tallerCumpleVidrieraMinima(t)).toBe(false)
+      expect(evaluarVidrieraMinima(t).faltan).toContain('ubicacion')
+    })
+
+    it('sin rubro/proceso visible (R-DIR falla) => NO aparece (falta "rubro")', () => {
+      const t = { ...completo(), procesos: [], prendas: [] }
+      expect(tallerCumpleVidrieraMinima(t)).toBe(false)
+      expect(evaluarVidrieraMinima(t).faltan).toContain('rubro')
+    })
+
+    it('rubro oculto por toggle (existe pero no visible) => NO aparece (R-DIR estricto)', () => {
+      const t = { ...completo(), visibilidadVidriera: { procesos: false }, prendas: [] }
+      expect(tallerCumpleVidrieraMinima(t)).toBe(false)
+      expect(evaluarVidrieraMinima(t).faltan).toContain('rubro')
+    })
+
+    it('PILOTO: sin foto => SÍ aparece (foto opcional con placeholder)', () => {
+      // Mientras FOTO_OBLIGATORIA sea false, la foto no excluye.
+      expect(FOTO_OBLIGATORIA).toBe(false)
+      const t = { ...completo(), portfolioFotos: [] }
+      expect(tallerCumpleVidrieraMinima(t)).toBe(true)
+      expect(evaluarVidrieraMinima(t).faltan).not.toContain('foto')
+    })
+
+    it('acumula múltiples faltantes a la vez', () => {
+      const t = { ...completo(), descripcion: 'x', partido: '', procesos: [], prendas: [] }
+      const faltan = evaluarVidrieraMinima(t).faltan
+      expect(faltan).toEqual(expect.arrayContaining(['descripcion', 'ubicacion', 'rubro']))
+    })
+
+    it('R-DIR sigue intacto: el req 3 delega en tallerElegibleDirectorio sin cambiarlo', () => {
+      // Un taller que pasa R-DIR pero NO la vidriera mínima confirma que son capas
+      // distintas y que R-DIR no se rompió al extenderlo.
+      const soloRdir = {
+        modeloB_revisado: true,
+        visibilidadVidriera: null,
+        procesos: [{ id: 'p1' }],
+        prendas: [],
+        descripcion: 'corta',
+        provincia: '',
+        partido: '',
+        portfolioFotos: [],
+      }
+      expect(tallerElegibleDirectorio(soloRdir)).toBe(true)        // R-DIR pasa
+      expect(tallerCumpleVidrieraMinima(soloRdir)).toBe(false)     // vidriera mínima no
     })
   })
 })

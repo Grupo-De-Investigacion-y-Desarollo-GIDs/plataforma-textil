@@ -3,15 +3,17 @@ export const dynamic = 'force-dynamic'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/compartido/lib/prisma'
+import { auth } from '@/compartido/lib/auth'
 import { getFeatureFlag } from '@/compartido/lib/features'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
-import { Star, MapPin, Users, ArrowRight, Factory } from 'lucide-react'
+import { Star, MapPin, Users, ArrowRight } from 'lucide-react'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { EmptyState } from '@/compartido/componentes/ui/empty-state'
 import { DirectorioFiltros } from '@/compartido/componentes/directorio-filtros'
+import { TallerFotoPlaceholder } from '@/compartido/componentes/taller-foto-placeholder'
 import { derivarUbicaciones } from '@/compartido/lib/directorio-ubicaciones'
-import { tallerElegibleDirectorio, bloqueVisiblePublico } from '@/compartido/lib/visibilidad-vidriera'
+import { tallerCumpleVidrieraMinima, bloqueVisiblePublico } from '@/compartido/lib/visibilidad-vidriera'
 import { rangoCapacidad } from '@/compartido/lib/taller-formulario'
 
 export default async function DirectorioPage({
@@ -20,6 +22,14 @@ export default async function DirectorioPage({
   searchParams?: Promise<{ q?: string; proceso?: string; prenda?: string; provincia?: string; partido?: string; page?: string }> | { q?: string; proceso?: string; prenda?: string; provincia?: string; partido?: string; page?: string }
 }) {
   if (!await getFeatureFlag('directorio_publico')) notFound()
+
+  // Bug 2 (QA #448): el layout (public) logueado ya envuelve en un container con
+  // padding lateral (max-w-7xl + px), pero el anónimo usa <main> full-width (para las
+  // páginas de marketing). El listado necesita su propio container SOLO cuando el
+  // usuario es anónimo — así no queda a ras del borde ni excede el encabezado, y no se
+  // duplica el padding cuando está logueado.
+  const session = await auth()
+  const wrapperClass = session?.user ? '' : 'max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6'
 
   const params = await Promise.resolve(searchParams ?? {})
   const query = (params.q || '').trim()
@@ -54,9 +64,10 @@ export default async function DirectorioPage({
       orderBy: { nombre: 'asc' },
     }),
     derivarUbicaciones(),
-    // R-DIR (§4.4): la visibilidad vive en JSONB (no queryable eficiente en SQL), así
-    // que traemos los candidatos por verificadoAfip + filtros y filtramos en app por
-    // elegibilidad (>=1 proceso/rubro con toggle activo). La paginación también es en app.
+    // Vidriera mínima (Etapa 2.3-A) + R-DIR (§4.4): la visibilidad vive en JSONB (no
+    // queryable eficiente en SQL), así que traemos los candidatos por verificadoAfip +
+    // filtros y filtramos en app por la vidriera mínima (descripción ≥50, ubicación,
+    // ≥1 rubro visible vía R-DIR; foto opcional en el piloto). La paginación es en app.
     prisma.taller.findMany({
       where: tallerWhere,
       include: {
@@ -71,15 +82,16 @@ export default async function DirectorioPage({
     }),
   ])
 
-  // R-DIR: solo talleres con >=1 proceso o rubro visible aparecen en el directorio.
-  const elegibles = candidatos.filter(tallerElegibleDirectorio)
+  // Vidriera mínima: solo talleres que cumplen los requisitos (descripción ≥50,
+  // ubicación declarada, ≥1 rubro visible) aparecen en el directorio. Foto opcional.
+  const elegibles = candidatos.filter(tallerCumpleVidrieraMinima)
   const totalTalleres = elegibles.length
   const talleres = elegibles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
   const hasFilters = query || procesoId || prendaId || provincia || partido
 
   return (
-    <div>
+    <div className={wrapperClass}>
       <div className="text-center mb-8">
         <h1 className="font-overpass font-bold text-3xl text-brand-blue mb-2">Directorio de Proveedores</h1>
         <p className="text-gray-600">Encontra talleres textiles registrados y verificados en la plataforma.</p>
@@ -124,9 +136,7 @@ export default async function DirectorioPage({
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Factory className="w-8 h-8 text-gray-300" />
-                    </div>
+                    <TallerFotoPlaceholder />
                   )}
                 </div>
                 <div className="p-4">
