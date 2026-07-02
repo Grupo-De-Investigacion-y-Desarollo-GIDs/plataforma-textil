@@ -11,6 +11,7 @@ import { calcularPasosTaller } from '@/compartido/lib/onboarding'
 import { ChecklistOnboarding } from '@/compartido/componentes/ui/checklist-onboarding'
 import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 import { BannerVidriera } from '@/taller/componentes/banner-vidriera'
+import { BannerGracia } from '@/taller/componentes/banner-gracia'
 
 export default async function TallerDashboardPage() {
   const session = await auth()
@@ -167,23 +168,10 @@ export default async function TallerDashboardPage() {
         </h1>
       </div>
 
-      {/* Banner taller no verificado */}
-      {taller && !taller.verificadoAfip && (
-        <div className="border-l-4 border-l-amber-400 bg-amber-50 rounded-card p-4">
-          <p className="font-overpass font-bold text-amber-800 mb-1">
-            Tu taller esta en proceso de formalizacion
-          </p>
-          <p className="text-sm text-amber-700">
-            Podes navegar la plataforma, capacitarte y subir documentos para avanzar. Una vez que la Coordinación verifique tu CUIT, vas a poder cotizar pedidos y aparecer en el directorio.
-          </p>
-          <Link
-            href="/taller/formalizacion"
-            className="inline-flex items-center gap-1 mt-2 text-sm font-semibold text-amber-800 hover:underline"
-          >
-            Ir a Formalizacion →
-          </Link>
-        </div>
-      )}
+      {/* Banner de gracia de CUIT (2.3-B0): countdown (EN_GRACIA) o reactivación
+          (INACTIVA) para talleres sin verificar. Reemplaza al banner genérico "en
+          proceso de formalización". Devuelve null para verificados. */}
+      {taller && <BannerGracia taller={taller} />}
 
       {/* Banner de cambio de etapa de formalización */}
       {cambioNivel && cambioNivel.nivelNuevo && (

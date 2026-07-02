@@ -34,6 +34,12 @@ describe('crearEntidadParaRol', () => {
     })
     expect(res).toEqual({ id: 't1' })
     expect(tx.taller.create).toHaveBeenCalled()
+    // 2.3-B0: taller verificado arranca ACTIVA sin reloj de gracia.
+    expect(tx.taller.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ estadoCuenta: 'ACTIVA', inicioGracia: null }),
+      }),
+    )
     expect(tx.validacion.createMany).toHaveBeenCalledWith({
       data: [
         { tallerId: 't1', tipo: 'CUIT/Monotributo', tipoDocumentoId: 'td1', estado: 'NO_INICIADO' },
@@ -41,6 +47,19 @@ describe('crearEntidadParaRol', () => {
       ],
     })
     expect(tx.marca.create).not.toHaveBeenCalled()
+  })
+
+  it('TALLER sin verificar: arranca EN_GRACIA con el reloj en su alta (2.3-B0)', async () => {
+    await crearEntidadParaRol(tx as unknown as Prisma.TransactionClient, {
+      userId: 'u1',
+      rol: 'TALLER',
+      nombre: 'Taller Nuevo',
+      cuit: '20-12345678-9',
+      verificadoAfip: false,
+    })
+    const arg = tx.taller.create.mock.calls[0][0] as { data: { estadoCuenta: string; inicioGracia: Date | null } }
+    expect(arg.data.estadoCuenta).toBe('EN_GRACIA')
+    expect(arg.data.inicioGracia).toBeInstanceOf(Date)
   })
 
   it('MARCA: crea la marca y NO crea validaciones', async () => {

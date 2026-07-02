@@ -1,5 +1,6 @@
 import type { Prisma } from '@prisma/client'
 import type { DatosArca } from './arca'
+import { estadoCuentaInicial } from './gracia'
 
 export type RolEntidad = 'TALLER' | 'MARCA'
 
@@ -31,6 +32,9 @@ export async function crearEntidadParaRol(
   }
 
   if (rol === 'TALLER') {
+    // Estado inicial de gracia (2.3-B0): sin verificar arranca EN_GRACIA con el reloj
+    // en su alta; verificado arranca ACTIVA sin reloj.
+    const gracia = estadoCuentaInicial(verificadoAfip, new Date())
     const taller = await tx.taller.create({
       data: {
         userId,
@@ -38,6 +42,8 @@ export async function crearEntidadParaRol(
         cuit,
         verificadoAfip,
         verificadoAfipAt: verificadoAfip ? new Date() : null,
+        estadoCuenta: gracia.estadoCuenta,
+        inicioGracia: gracia.inicioGracia,
         tipoInscripcionAfip: datosArca?.tipoInscripcion ?? null,
         categoriaMonotributo: datosArca?.categoriaMonotributo ?? null,
         estadoCuitAfip: datosArca?.estadoCuit ?? null,
