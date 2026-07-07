@@ -1,6 +1,7 @@
 import Afip from '@afipsdk/afip.js'
 import { prisma } from './prisma'
 import { logActividad } from './log'
+import { datosReactivacion } from './gracia'
 import type { TipoInscripcionAfip, EstadoCuit } from '@prisma/client'
 
 // ---------------------------------------------------------------------------
@@ -181,6 +182,11 @@ export async function sincronizarTaller(tallerId: string, force = false, userId?
       data: {
         verificadoAfip: true,
         verificadoAfipAt: new Date(),
+        // Reactivacion automatica (2.3-B1): si el taller estaba EN_GRACIA o INACTIVA,
+        // verificar el CUIT lo vuelve a ACTIVA y limpia el reloj (inicioGracia/inactivadaAt/
+        // recordatorioCuitEnviadoAt). Para un taller ya ACTIVA, escribir ACTIVA + nulls es
+        // idempotente (no cambia nada). Sin trámite extra: pasa por el flujo ARCA existente.
+        ...datosReactivacion(),
         tipoInscripcionAfip: resultado.datos.tipoInscripcion,
         categoriaMonotributo: resultado.datos.categoriaMonotributo ?? null,
         estadoCuitAfip: resultado.datos.estadoCuit,

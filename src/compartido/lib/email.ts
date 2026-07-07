@@ -296,6 +296,72 @@ export function buildInvitacionRegistroEmail(data: {
   }
 }
 
+// ── Gracia de CUIT (Etapa 2.3-B1) ──────────────────────────────────────────
+// Copy alineado con el banner del dashboard (BannerGracia). La regla de comms del
+// piloto: si se menciona al equipo, se firma "Coordinación" (nunca "Estado").
+
+/** Recordatorio del día ~50: countdown estimulante, CTA a verificar el CUIT. */
+export function buildRecordatorioCuitEmail(data: {
+  nombreTaller: string
+  diasRestantes: number
+}): { subject: string; html: string } {
+  const dias = data.diasRestantes === 1 ? 'queda 1 día' : `quedan ${data.diasRestantes} días`
+  const formalizarUrl = `${appBaseUrl}/taller/formalizacion`
+  return {
+    subject: `Te ${dias} para verificar tu CUIT - PDT`,
+    html: emailWrapper(`
+      <h2 style="margin: 0 0 12px; color: #b45309;">Te ${dias} para verificar tu CUIT</h2>
+      <p>Hola <strong>${data.nombreTaller}</strong>, para aparecer en el directorio y cotizar pedidos necesitás verificar tu CUIT.</p>
+      <p style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 4px;">
+        Todavía estás a tiempo: te <strong>${dias}</strong> dentro del período de gracia. Verificarlo lleva unos minutos.
+      </p>
+      <p>Mientras tanto seguís teniendo acceso a la Academia y los Recursos. Una vez verificado tu CUIT vas a poder cotizar pedidos y aparecer en el directorio.</p>
+      ${btnPrimario(formalizarUrl, 'Verificar mi CUIT')}
+      <p style="color: #64748b; margin-top: 16px;">Cualquier duda, escribinos y te acompañamos.<br><strong>Equipo de Coordinación</strong> · Plataforma Digital Textil</p>
+    `),
+  }
+}
+
+/** Aviso al momento de inactivarse (día 60): la cuenta quedó inactiva, invita a reactivar. */
+export function buildCuentaInactivaEmail(data: {
+  nombreTaller: string
+}): { subject: string; html: string } {
+  const formalizarUrl = `${appBaseUrl}/taller/formalizacion`
+  return {
+    subject: 'Tu cuenta quedó inactiva - PDT',
+    html: emailWrapper(`
+      <h2 style="margin: 0 0 12px; color: #dc2626;">Tu cuenta quedó inactiva</h2>
+      <p>Hola <strong>${data.nombreTaller}</strong>, pasaron los 60 días del período de gracia y tu cuenta quedó <strong>inactiva</strong> porque tu CUIT todavía no está verificado.</p>
+      <p style="background: #fef2f2; border-left: 4px solid #dc2626; padding: 12px 16px; border-radius: 4px;">
+        <strong>Tus datos siguen acá.</strong> Verificá tu CUIT para reactivar tu cuenta al instante y volver a aparecer en el directorio — sin trámites ni cargar todo de nuevo.
+      </p>
+      <p>Mientras tanto seguís teniendo acceso a la Academia y los Recursos.</p>
+      ${btnPrimario(formalizarUrl, 'Verificar mi CUIT y reactivar')}
+      <p style="color: #64748b; margin-top: 16px;">Estamos para ayudarte a completar el paso.<br><strong>Equipo de Coordinación</strong> · Plataforma Digital Textil</p>
+    `),
+  }
+}
+
+/** Email de lanzamiento (one-off manual): arranca el reloj de 60 días para los existentes. */
+export function buildLanzamientoGraciaEmail(data: {
+  nombreTaller: string
+}): { subject: string; html: string } {
+  const formalizarUrl = `${appBaseUrl}/taller/formalizacion`
+  return {
+    subject: 'Verificá tu CUIT en los próximos 60 días - PDT',
+    html: emailWrapper(`
+      <h2 style="margin: 0 0 12px; color: #1e3a5f;">Verificá tu CUIT para seguir activo</h2>
+      <p>Hola <strong>${data.nombreTaller}</strong>, estamos poniendo en marcha la verificación de CUIT en la Plataforma Digital Textil.</p>
+      <p style="background: #f0f9ff; border-left: 4px solid #1e3a5f; padding: 12px 16px; border-radius: 4px;">
+        Tenés <strong>60 días desde hoy</strong> para verificar tu CUIT. Una vez verificado vas a aparecer en el directorio y vas a poder cotizar pedidos de marcas formales.
+      </p>
+      <p>Es un trámite de pocos minutos. Si no lo verificás dentro de los 60 días, tu cuenta pasa a inactiva — pero tus datos quedan guardados y podés reactivarla verificando el CUIT en cualquier momento.</p>
+      ${btnPrimario(formalizarUrl, 'Verificar mi CUIT')}
+      <p style="color: #64748b; margin-top: 16px;">Cualquier duda, escribinos y te acompañamos en el proceso.<br><strong>Equipo de Coordinación</strong> · Plataforma Digital Textil</p>
+    `),
+  }
+}
+
 export function buildPedidoDisponibleEmail(data: {
   nombreTaller: string
   nombreMarca: string

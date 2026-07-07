@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest'
 import {
   clasificarGracia,
   estadoCuentaInicial,
+  datosReactivacion,
+  planificarAccionGracia,
   DIAS_GRACIA,
   DIAS_VENCE_PRONTO,
 } from '@/compartido/lib/gracia'
@@ -102,5 +104,68 @@ describe('estadoCuentaInicial (estado al alta)', () => {
     const r = clasificarGracia({ verificadoAfip: false, inicioGracia }, INICIO)
     expect(r.estado).toBe('EN_GRACIA')
     expect(r.diasRestantes).toBe(DIAS_GRACIA)
+  })
+})
+
+describe('datosReactivacion (verificar CUIT reactiva)', () => {
+  it('vuelve a ACTIVA y limpia todo el reloj de gracia', () => {
+    expect(datosReactivacion()).toEqual({
+      estadoCuenta: 'ACTIVA',
+      inicioGracia: null,
+      inactivadaAt: null,
+      recordatorioCuitEnviadoAt: null,
+    })
+  })
+})
+
+describe('planificarAccionGracia (decisión del cron, pura)', () => {
+  const enGracia = (extra: Partial<Parameters<typeof planificarAccionGracia>[0]> = {}) => ({
+    verificadoAfip: false,
+    estadoCuenta: 'EN_GRACIA' as const,
+    inicioGracia: INICIO,
+    recordatorioCuitEnviadoAt: null,
+    ...extra,
+  })
+
+  it('día 49 => NADA (aún no vence pronto)', () => {
+    expect(planificarAccionGracia(enGracia(), masDias(49))).toBe('NADA')
+  })
+
+  it('día 50 => RECORDATORIO (entra a la ventana)', () => {
+    expect(planificarAccionGracia(enGracia(), masDias(DIAS_VENCE_PRONTO))).toBe('RECORDATORIO')
+  })
+
+  it('día 55 => RECORDATORIO', () => {
+    expect(planificarAccionGracia(enGracia(), masDias(55))).toBe('RECORDATORIO')
+  })
+
+  it('día 50 con recordatorio YA enviado => NADA (idempotencia)', () => {
+    expect(
+      planificarAccionGracia(enGracia({ recordatorioCuitEnviadoAt: masDias(50) }), masDias(52)),
+    ).toBe('NADA')
+  })
+
+  it('día 60 => INACTIVAR', () => {
+    expect(planificarAccionGracia(enGracia(), masDias(DIAS_GRACIA))).toBe('INACTIVAR')
+  })
+
+  it('día 65 => INACTIVAR (aunque nunca se haya mandado el recordatorio: inactivar tiene prioridad)', () => {
+    expect(planificarAccionGracia(enGracia(), masDias(65))).toBe('INACTIVAR')
+  })
+
+  it('corrida perdida 48 -> 53: en el día 53 sigue mandando el RECORDATORIO', () => {
+    expect(planificarAccionGracia(enGracia(), masDias(53))).toBe('RECORDATORIO')
+  })
+
+  it('taller verificado => NADA aunque tenga reloj', () => {
+    expect(planificarAccionGracia(enGracia({ verificadoAfip: true }), masDias(65))).toBe('NADA')
+  })
+
+  it('taller ya INACTIVA (no EN_GRACIA) => NADA (no re-actúa, idempotencia)', () => {
+    expect(planificarAccionGracia(enGracia({ estadoCuenta: 'INACTIVA' }), masDias(65))).toBe('NADA')
+  })
+
+  it('taller ACTIVA => NADA', () => {
+    expect(planificarAccionGracia(enGracia({ estadoCuenta: 'ACTIVA' }), masDias(65))).toBe('NADA')
   })
 })

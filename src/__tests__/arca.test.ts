@@ -261,4 +261,31 @@ describe('sincronizarTaller', () => {
     expect(resultado.exitosa).toBe(false)
     expect(resultado.error).toContain('sin CUIT')
   })
+
+  // 2.3-B1: reactivación automática — verificar el CUIT limpia el reloj de gracia.
+  it('reactiva la cuenta (ACTIVA + reloj limpio) al verificar exitosamente', async () => {
+    mockGetTaxpayerDetails.mockResolvedValue(fixtureActivo)
+    mockFindUnique.mockResolvedValue({
+      id: 'taller-5',
+      cuit: '20-30123456-7',
+      verificadoAfipAt: null,
+    })
+    mockUpdate.mockResolvedValue({})
+
+    const resultado = await sincronizarTaller('taller-5', true)
+
+    expect(resultado.exitosa).toBe(true)
+    expect(mockUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 'taller-5' },
+        data: expect.objectContaining({
+          verificadoAfip: true,
+          estadoCuenta: 'ACTIVA',
+          inicioGracia: null,
+          inactivadaAt: null,
+          recordatorioCuitEnviadoAt: null,
+        }),
+      })
+    )
+  })
 })

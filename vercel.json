@@ -1,4 +1,7 @@
 {
   "regions": ["gru1"],
-  "ignoreCommand": "if [ \"$VERCEL_GIT_COMMIT_REF\" = \"gh-pages\" ]; then exit 0; fi; exit 1"
+  "ignoreCommand": "if [ \"$VERCEL_GIT_COMMIT_REF\" = \"gh-pages\" ]; then exit 0; fi; exit 1",
+  "crons": [
+    { "path": "/api/cron/gracia-cuit", "schedule": "0 11 * * *" }
+  ]
 }
