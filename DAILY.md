@@ -3,6 +3,13 @@
 ## 2026-07-09
 
 ### Gerardo Breard
+- **16:55** `39f10e7` — fix: eliminar seccion Recursos + ajustes de copy (aprobacion B1) + regresion onboarding
+  - `src/app/(public)/recursos/page.tsx`
+  - `src/compartido/componentes/layout/footer.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+  - `src/compartido/lib/email.ts`
+  - `src/compartido/lib/onboarding.ts`
+  - `src/taller/componentes/banner-gracia.tsx`
 - **19:37** `bacbf27` — docs(discovery): circuito CUIT + limbo verificacion ARCA (esperando decision Sergio)
   - `.claude/specs/v4-circuito-cuit-discovery.md`
 
