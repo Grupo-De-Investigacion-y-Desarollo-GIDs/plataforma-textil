@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-07-09
+
+### Gerardo Breard
+- **19:37** `bacbf27` — docs(discovery): circuito CUIT + limbo verificacion ARCA (esperando decision Sergio)
+  - `.claude/specs/v4-circuito-cuit-discovery.md`
+
+
 ## 2026-07-07
 
 ### Gerardo Breard
