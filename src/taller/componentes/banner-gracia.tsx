@@ -32,7 +32,7 @@ export function BannerGracia({
         </p>
         <p className="text-sm text-red-700">
           Verificá tu CUIT para reactivarla y aparecer en el directorio. Mientras tanto,
-          seguís teniendo acceso a la Academia y los Recursos.
+          seguís teniendo acceso a la Academia y a explorar la red de talleres.
         </p>
         <Link
           href="/taller/formalizacion"
@@ -53,7 +53,7 @@ export function BannerGracia({
       </p>
       <p className="text-sm text-amber-700">
         Una vez verificado tu CUIT vas a poder cotizar pedidos y aparecer en el directorio.
-        Mientras tanto, podés capacitarte en la Academia y usar los Recursos.
+        Mientras tanto, podés capacitarte en la Academia y explorar la red de talleres.
       </p>
       <Link
         href="/taller/formalizacion"

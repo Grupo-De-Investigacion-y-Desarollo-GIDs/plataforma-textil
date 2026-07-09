@@ -315,7 +315,7 @@ export function buildRecordatorioCuitEmail(data: {
       <p style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 4px;">
         Todavía estás a tiempo: te <strong>${dias}</strong> dentro del período de gracia. Verificarlo lleva unos minutos.
       </p>
-      <p>Mientras tanto seguís teniendo acceso a la Academia y los Recursos. Una vez verificado tu CUIT vas a poder cotizar pedidos y aparecer en el directorio.</p>
+      <p>Mientras tanto seguís teniendo acceso a la Academia y a explorar la red de talleres. Una vez verificado tu CUIT vas a poder cotizar pedidos y aparecer en el directorio.</p>
       ${btnPrimario(formalizarUrl, 'Verificar mi CUIT')}
       <p style="color: #64748b; margin-top: 16px;">Cualquier duda, escribinos y te acompañamos.<br><strong>Equipo de Coordinación</strong> · Plataforma Digital Textil</p>
     `),
@@ -335,7 +335,7 @@ export function buildCuentaInactivaEmail(data: {
       <p style="background: #fef2f2; border-left: 4px solid #dc2626; padding: 12px 16px; border-radius: 4px;">
         <strong>Tus datos siguen acá.</strong> Verificá tu CUIT para reactivar tu cuenta al instante y volver a aparecer en el directorio — sin trámites ni cargar todo de nuevo.
       </p>
-      <p>Mientras tanto seguís teniendo acceso a la Academia y los Recursos.</p>
+      <p>Mientras tanto seguís teniendo acceso a la Academia y a explorar la red de talleres.</p>
       ${btnPrimario(formalizarUrl, 'Verificar mi CUIT y reactivar')}
       <p style="color: #64748b; margin-top: 16px;">Estamos para ayudarte a completar el paso.<br><strong>Equipo de Coordinación</strong> · Plataforma Digital Textil</p>
     `),
