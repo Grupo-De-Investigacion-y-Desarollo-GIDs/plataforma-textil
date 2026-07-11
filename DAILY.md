@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-07-11
+
+### Gerardo Breard
+- **17:25** `1c177d3` — docs(backlog): G-17 — /academia-publica necesita contenido real antes de ampliar el piloto
+  - `.claude/specs/V4_BACKLOG.md`
+
+
 ## 2026-07-09
 
 ### Gerardo Breard
