@@ -168,6 +168,7 @@ Origen: cosas que vamos a aprender durante el piloto. **Este bloque está vacío
 | G-14 | Evaluar deshabilitar denuncias | Decision institucional: el equipo cuestiona si la plataforma deberia tener sistema de denuncias. Definir con OIT. Origen: feedback piloto #233 | 1h (decision) |
 | G-15 | Monto transaccionado en dashboard ESTADO | Agregar metrica de monto en ultimo mes. Ya planificado parcialmente en H-04. Origen: feedback piloto #234 | 2h |
 | G-16 | Renombrar rol ESTADO → COORD/COORDINACION | Cambio estructural: afecta enum Prisma, middleware, sidebar, headers, seeds, tests. Requiere migracion de DB. Origen: feedback piloto #236 | 6h |
+| G-17 | Contenido real en `/academia-publica` antes de la AMPLIACION del piloto | La pagina `/academia-publica` es hoy un placeholder "Proximamente". Al eliminar `/recursos` (PR #451), `/recursos` redirige a `/academia-publica` (anonimo/marca) o `/taller/aprender` (taller). Antes de **ampliar** el piloto hay que cargar contenido real (curado) en `/academia-publica`, si no el redirect y la seccion Academia publica caen en placeholder. **No bloqueante ahora** (el taller logueado —audiencia del banner de gracia— cae en `/taller/aprender`, que es la Academia real). **Depende del contenido de Matias.** Origen: QA #451 (Sergio) | (depende de contenido) |
 
 ---
 
