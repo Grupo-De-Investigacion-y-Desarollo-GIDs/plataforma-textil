@@ -5,16 +5,18 @@ import { NextRequest } from 'next/server'
 // e idempotencia. La DECISIÓN pura (planificarAccionGracia) se testea en gracia.test.ts;
 // acá se verifica que la ROUTE ejecuta los writes + emails correctos.
 
-const { mockFindMany, mockUpdate, mockSendEmail } = vi.hoisted(() => ({
+const { mockFindMany, mockUpdate, mockSendEmail, mockSincronizarTaller } = vi.hoisted(() => ({
   mockFindMany: vi.fn(),
   mockUpdate: vi.fn(),
   mockSendEmail: vi.fn().mockResolvedValue({ exito: true }),
+  mockSincronizarTaller: vi.fn(),
 }))
 
 vi.mock('@/compartido/lib/prisma', () => ({
   prisma: { taller: { findMany: mockFindMany, update: mockUpdate } },
 }))
 vi.mock('@/compartido/lib/log', () => ({ logActividad: vi.fn() }))
+vi.mock('@/compartido/lib/arca', () => ({ sincronizarTaller: mockSincronizarTaller }))
 vi.mock('@/compartido/lib/email', async (importActual) => {
   const actual = await importActual<typeof import('@/compartido/lib/email')>()
   return { ...actual, sendEmail: mockSendEmail }
@@ -24,6 +26,21 @@ import { GET } from '@/app/api/cron/gracia-cuit/route'
 
 const SECRET = 'test-cron-secret'
 const diasAtras = (n: number) => new Date(Date.now() - n * 86_400_000)
+
+// Helper compartido: un taller EN_GRACIA realista (con CUIT => elegible para el reintento
+// de Pieza D). Por defecto el reintento ARCA falla (mock en beforeEach) => cae al flujo
+// normal de recordatorio/inactivación, así los tests de acciones siguen valiendo.
+const enGracia = (id: string, dias: number, extra: Record<string, unknown> = {}) => ({
+  id,
+  nombre: `Taller ${id}`,
+  cuit: '20111111112',
+  verificadoAfip: false,
+  estadoCuenta: 'EN_GRACIA',
+  inicioGracia: diasAtras(dias),
+  recordatorioCuitEnviadoAt: null,
+  user: { email: `${id}@pdt.org.ar` },
+  ...extra,
+})
 
 function req(auth?: string): NextRequest {
   return new NextRequest('http://localhost/api/cron/gracia-cuit', {
@@ -35,6 +52,8 @@ beforeEach(() => {
   vi.clearAllMocks()
   mockSendEmail.mockResolvedValue({ exito: true })
   mockUpdate.mockResolvedValue({})
+  // Default: ARCA no valida en el reintento (no responde) => el taller sigue su curso normal.
+  mockSincronizarTaller.mockResolvedValue({ exitosa: false, error: 'ARCA_NO_RESPONDE', duracionMs: 0 })
   process.env.CRON_SECRET = SECRET
 })
 
@@ -61,17 +80,6 @@ describe('GET /api/cron/gracia-cuit — auth', () => {
 })
 
 describe('GET /api/cron/gracia-cuit — acciones', () => {
-  const enGracia = (id: string, dias: number, extra: Record<string, unknown> = {}) => ({
-    id,
-    nombre: `Taller ${id}`,
-    verificadoAfip: false,
-    estadoCuenta: 'EN_GRACIA',
-    inicioGracia: diasAtras(dias),
-    recordatorioCuitEnviadoAt: null,
-    user: { email: `${id}@pdt.org.ar` },
-    ...extra,
-  })
-
   it('día ~55 => manda recordatorio y sella recordatorioCuitEnviadoAt', async () => {
     mockFindMany.mockResolvedValue([enGracia('t-remind', 55)])
     const res = await GET(req(`Bearer ${SECRET}`))
@@ -177,5 +185,90 @@ describe('GET /api/cron/gracia-cuit — acciones', () => {
     const body2 = await r2.json()
     expect(body2.recordatorios).toBe(0)
     expect(mockSendEmail).not.toHaveBeenCalled()
+  })
+})
+
+describe('GET /api/cron/gracia-cuit — Pieza D (reintento ARCA)', () => {
+  it('reintento exitoso => reactiva y NO manda email ni sella/inactiva esa corrida', async () => {
+    // Día 55: sin el reintento recibiría el recordatorio. Pero ARCA valida => se reactiva y sale.
+    mockSincronizarTaller.mockResolvedValueOnce({ exitosa: true, duracionMs: 40 })
+    mockFindMany.mockResolvedValue([enGracia('t-cura', 55)])
+
+    const res = await GET(req(`Bearer ${SECRET}`))
+    const body = await res.json()
+
+    expect(mockSincronizarTaller).toHaveBeenCalledWith('t-cura', true)
+    expect(body.reintentosArca).toBe(1)
+    expect(body.reactivacionesAuto).toBe(1)
+    expect(body.recordatorios).toBe(0)
+    expect(body.inactivaciones).toBe(0)
+    // El cron NO hace su propio update (la reactivación la hizo sincronizarTaller) ni manda email.
+    expect(mockUpdate).not.toHaveBeenCalled()
+    expect(mockSendEmail).not.toHaveBeenCalled()
+  })
+
+  it('reintento fallido (ARCA caído) => cae al flujo normal y NO cuenta como error', async () => {
+    // Default mock: exitosa:false / ARCA_NO_RESPONDE. Día 55 => recordatorio normal.
+    mockFindMany.mockResolvedValue([enGracia('t-caido', 55)])
+
+    const res = await GET(req(`Bearer ${SECRET}`))
+    const body = await res.json()
+
+    expect(body.reintentosArca).toBe(1)
+    expect(body.reactivacionesAuto).toBe(0)
+    expect(body.recordatorios).toBe(1)
+    expect(body.errores).toBe(0) // un fallo de ARCA NO es error del cron
+    expect(mockSendEmail).toHaveBeenCalledTimes(1)
+  })
+
+  it('reintento exitoso día ~61 => evita la inactivación', async () => {
+    mockSincronizarTaller.mockResolvedValueOnce({ exitosa: true, duracionMs: 30 })
+    mockFindMany.mockResolvedValue([enGracia('t-borde', 61)])
+
+    const res = await GET(req(`Bearer ${SECRET}`))
+    const body = await res.json()
+
+    expect(body.reactivacionesAuto).toBe(1)
+    expect(body.inactivaciones).toBe(0)
+    expect(mockUpdate).not.toHaveBeenCalled()
+    expect(mockSendEmail).not.toHaveBeenCalled()
+  })
+
+  it('taller sin CUIT => no se reintenta, cae al flujo normal', async () => {
+    mockFindMany.mockResolvedValue([enGracia('t-sincuit', 55, { cuit: null })])
+
+    const res = await GET(req(`Bearer ${SECRET}`))
+    const body = await res.json()
+
+    expect(mockSincronizarTaller).not.toHaveBeenCalled()
+    expect(body.reintentosArca).toBe(0)
+    expect(body.recordatorios).toBe(1) // sigue su curso: recibe el recordatorio del día 55
+  })
+
+  it('reintento diario: se llama a ARCA en cada taller elegible (sin backoff)', async () => {
+    mockFindMany.mockResolvedValue([
+      enGracia('a', 10), // joven, igual se reintenta
+      enGracia('b', 55),
+      enGracia('c', 30),
+    ])
+
+    const res = await GET(req(`Bearer ${SECRET}`))
+    const body = await res.json()
+
+    expect(mockSincronizarTaller).toHaveBeenCalledTimes(3)
+    expect(body.reintentosArca).toBe(3)
+  })
+
+  it('error REAL de sincronizarTaller (DB) sí cuenta como error y no aborta el batch', async () => {
+    mockSincronizarTaller
+      .mockRejectedValueOnce(new Error('DB caída'))          // taller a: throw
+      .mockResolvedValueOnce({ exitosa: true, duracionMs: 20 }) // taller b: valida
+    mockFindMany.mockResolvedValue([enGracia('a', 55), enGracia('b', 55)])
+
+    const res = await GET(req(`Bearer ${SECRET}`))
+    const body = await res.json()
+
+    expect(body.errores).toBe(1)
+    expect(body.reactivacionesAuto).toBe(1) // el segundo taller no fue afectado por el fallo del primero
   })
 })

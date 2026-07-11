@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { logActividad } from '@/compartido/lib/log'
 import { planificarAccionGracia, clasificarGracia } from '@/compartido/lib/gracia'
+import { sincronizarTaller } from '@/compartido/lib/arca'
 import {
   sendEmail,
   buildRecordatorioCuitEmail,
@@ -12,6 +13,12 @@ import {
 // `vercel.json#crons` con `Authorization: Bearer ${CRON_SECRET}`.
 //
 // Qué hace cada corrida, sobre los talleres con estadoCuenta = EN_GRACIA:
+//   - REINTENTO ARCA (Pieza D del circuito CUIT V4): ANTES de clasificar, para cada taller
+//     sin verificar con CUIT, reintenta `sincronizarTaller(force=true)`. Si ARCA valida, el
+//     taller se reactiva solo (datosReactivacion) y sale de la gracia SIN recibir el email
+//     ni inactivarse esa corrida. Autocura el caso "CUIT correcto que falló por ARCA caído
+//     al registrarse". Reintento DIARIO sin backoff (población de piloto chica); un fallo de
+//     ARCA (no responde / CUIT malo) NO es error del cron: cae al flujo normal de abajo.
 //   - RECORDATORIO (ventana [50,60), sin recordatorio previo): manda el email día ~50
 //     y sella `recordatorioCuitEnviadoAt` (idempotencia: no re-envía).
 //   - INACTIVAR (>=60 días): estadoCuenta=INACTIVA + inactivadaAt=NOW + email de inactivación.
@@ -42,6 +49,7 @@ export async function GET(req: NextRequest) {
     select: {
       id: true,
       nombre: true,
+      cuit: true,
       verificadoAfip: true,
       estadoCuenta: true,
       inicioGracia: true,
@@ -54,15 +62,30 @@ export async function GET(req: NextRequest) {
   let inactivaciones = 0
   let sinEmail = 0
   let errores = 0
+  let reintentosArca = 0      // Pieza D: cuántos talleres se reintentaron contra ARCA
+  let reactivacionesAuto = 0  // Pieza D: cuántos validaron en el reintento y se reactivaron
 
   for (const taller of talleres) {
-    const accion = planificarAccionGracia(taller, ahora)
-    if (accion === 'NADA') continue
-
     const email = taller.user?.email
 
-    // Aislar cada taller: si uno falla (DB/email), no aborta el resto del batch.
+    // Aislar cada taller: si uno falla (DB/email/ARCA), no aborta el resto del batch.
     try {
+      // Pieza D — reintento ARCA antes de clasificar. Un fallo de ARCA (no responde o CUIT
+      // malo) devuelve { exitosa:false } SIN lanzar => no cuenta como error del cron; solo un
+      // error real (DB) cae al catch. Si valida, `sincronizarTaller` ya dejó el taller ACTIVA
+      // (datosReactivacion) => `continue` sin recordatorio ni inactivación esta corrida.
+      if (!taller.verificadoAfip && taller.cuit) {
+        reintentosArca++
+        const rescate = await sincronizarTaller(taller.id, true)
+        if (rescate.exitosa) {
+          reactivacionesAuto++
+          continue
+        }
+      }
+
+      const accion = planificarAccionGracia(taller, ahora)
+      if (accion === 'NADA') continue
+
       if (accion === 'RECORDATORIO') {
         const { diasRestantes } = clasificarGracia(taller, ahora)
         // Sellar ANTES de mandar (idempotencia): si el email falla, no se reintenta en la
@@ -104,6 +127,8 @@ export async function GET(req: NextRequest) {
   const resumen = {
     ok: true,
     evaluados: talleres.length,
+    reintentosArca,
+    reactivacionesAuto,
     recordatorios,
     inactivaciones,
     sinEmail,
