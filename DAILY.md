@@ -3,6 +3,9 @@
 ## 2026-07-11
 
 ### Gerardo Breard
+- **17:45** `844cddc` — docs(spec): circuito CUIT — spec de implementación A+D+B (DECIDIDO)
+  - `.claude/specs/v4-circuito-cuit-implementacion.md`
+
 - **17:25** `1c177d3` — docs(backlog): G-17 — /academia-publica necesita contenido real antes de ampliar el piloto
   - `.claude/specs/V4_BACKLOG.md`
 
