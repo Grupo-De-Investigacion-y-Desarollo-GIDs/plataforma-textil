@@ -94,8 +94,13 @@ export async function calcularPasosTaller(userId: string): Promise<PasoOnboardin
       href: '/taller/formalizacion',
     },
     {
+      // Reformulado (aprobación B1 de Sergio): "Recibir tu primera cotización aceptada"
+      // sonaba a marketplace/gamificación. Se acordó reformular en el QA de #439 (lista
+      // "PR aparte, no bloquean piloto"), pero nunca llegó a aplicarse — no fue rollback.
+      // La condición de completado sigue siendo la misma (tener una cotización aceptada =
+      // haberte conectado con una marca).
       id: 'cotizacion',
-      texto: 'Recibir tu primera cotizacion aceptada',
+      texto: 'Conectarte con tu primera marca',
       completado: (taller?.cotizaciones.length ?? 0) > 0,
       href: '/taller/pedidos/disponibles',
     },
