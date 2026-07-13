@@ -19,13 +19,17 @@ const registerSchema = z.object({
   phone: z.string().trim().optional(),
   tallerData: z.object({
     nombre: z.string().trim().min(1, 'Nombre de taller requerido'),
-    cuit: z.string().trim().min(1, 'CUIT requerido'),
+    // Normalizar a dígitos al GUARDAR (guiones/espacios fuera): el @unique de cuit compara
+    // strings exactos — "20-X..." y "20X..." coexistirían como cuentas distintas del mismo
+    // CUIT. Un valor que no queda en 11 dígitos lo corta ARCA (consultarPadron -> CUIT_INEXISTENTE
+    // -> errorBloqueaRegistro), asi que no hace falta refine acá.
+    cuit: z.string().trim().min(1, 'CUIT requerido').transform(c => c.replace(/\D/g, '')),
     ubicacion: z.string().trim().min(1, 'Ubicacion requerida').optional().nullable(),
     capacidadMensual: z.number().int().min(0).optional(),
   }).optional(),
   marcaData: z.object({
     nombre: z.string().trim().min(1, 'Nombre de marca requerido'),
-    cuit: z.string().trim().min(1, 'CUIT requerido'),
+    cuit: z.string().trim().min(1, 'CUIT requerido').transform(c => c.replace(/\D/g, '')),
     ubicacion: z.string().trim().min(1, 'Ubicacion requerida').optional().nullable(),
     tipo: z.string().trim().min(1, 'Tipo requerido').optional().nullable(),
   }).optional(),

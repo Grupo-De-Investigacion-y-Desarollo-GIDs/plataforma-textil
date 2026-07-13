@@ -89,9 +89,21 @@ export type CodigoErrorArca =
 // Función principal: consultarPadron
 // ---------------------------------------------------------------------------
 
-export async function consultarPadron(cuit: string, tallerId?: string, userId?: string | null): Promise<ResultadoConsulta> {
+export async function consultarPadron(cuitRaw: string, tallerId?: string, userId?: string | null): Promise<ResultadoConsulta> {
   const inicio = Date.now()
   const config = getConfig()
+
+  // Normalizar a dígitos ANTES de todo (guiones, espacios, puntos — lo que sea). Si no quedan
+  // 11 dígitos, el CUIT jamás existirá en ARCA: CUIT_INEXISTENTE explícito sin gastar la
+  // llamada. Antes solo se limpiaban guiones y parseInt truncaba en el primer no-dígito
+  // ("20 4..." consultaba el CUIT "20" en silencio). Cubre a TODOS los callers, incluidos
+  // el cron de gracia (Pieza D) y el mock (que así queda consistente con el path real).
+  const cuit = cuitRaw.replace(/\D/g, '')
+  if (cuit.length !== 11) {
+    await registrarConsulta(tallerId, cuit, 'padron-a13', false, null, 'CUIT_INEXISTENTE', inicio)
+    logAfipVerificacion(tallerId, cuit, false, 'CUIT_INEXISTENTE', userId)
+    return { exitosa: false, error: 'CUIT_INEXISTENTE', duracionMs: Date.now() - inicio }
+  }
 
   if (!config.enabled || config.provider === 'mock') {
     return mockConsulta(cuit)
@@ -99,7 +111,7 @@ export async function consultarPadron(cuit: string, tallerId?: string, userId?: 
 
   try {
     const sdk = getCliente()
-    const cuitNumero = parseInt(cuit.replace(/-/g, ''), 10)
+    const cuitNumero = parseInt(cuit, 10)
 
     // Timeout de 10 segundos para no bloquear registro si ARCA tarda
     const respuesta = await Promise.race([
