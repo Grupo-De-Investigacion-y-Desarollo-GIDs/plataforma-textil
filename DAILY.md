@@ -1,5 +1,12 @@
 # Daily Log
 
+## 2026-07-13
+
+### Gerardo Breard
+- **14:18** `f0d4a59` — chore: redeploy preview — tomar ARCA_PROVIDER=mock (demo Pieza D)
+
+
+
 ## 2026-07-11
 
 ### Gerardo Breard
