@@ -1,8 +1,19 @@
 # Daily Log
 
+## 2026-07-13
+
+### Gerardo Breard
+- **14:18** `f0d4a59` — chore: redeploy preview — tomar ARCA_PROVIDER=mock (demo Pieza D)
+
+
+
 ## 2026-07-11
 
 ### Gerardo Breard
+- **18:16** `db3686b` — feat: circuito CUIT Pieza D — reintento ARCA en el cron de gracia
+  - `src/__tests__/cron-gracia.test.ts`
+  - `src/app/api/cron/gracia-cuit/route.ts`
+
 - **17:45** `844cddc` — docs(spec): circuito CUIT — spec de implementación A+D+B (DECIDIDO)
   - `.claude/specs/v4-circuito-cuit-implementacion.md`
 
