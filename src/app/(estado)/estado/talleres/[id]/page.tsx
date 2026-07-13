@@ -17,6 +17,7 @@ import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { ReverificarButton } from './reverificar-button'
+import { CorregirCuitCoord } from './corregir-cuit-coord'
 import { VerDocumentoButton } from '@/taller/componentes/ver-documento-button'
 
 const estadoToStatus: Record<string, 'completed' | 'pending' | 'warning' | 'optional'> = {
@@ -469,7 +470,14 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
                 )}
               </div>
             ) : (
-              <p className="text-sm text-amber-600">Este taller no tiene verificacion de ARCA. Usa el boton para re-verificar.</p>
+              <>
+                <p className="text-sm text-amber-600">Este taller no tiene verificacion de ARCA. Usa el boton para re-verificar el CUIT almacenado, o corregilo abajo si la constancia muestra otro numero.</p>
+                {/* Pieza B — corregir el CUIT (comparacion lado a lado). Solo ESTADO (no ADMIN, que es
+                    solo lectura); un taller verificado no llega aca (esta rama es !verificadoAfip). */}
+                {!soloLectura && (
+                  <CorregirCuitCoord tallerId={taller.id} cuitDeclarado={taller.cuit ?? ''} />
+                )}
+              </>
             )}
           </div>
 
