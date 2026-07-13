@@ -2,7 +2,7 @@
 
 > **Estado:** ✅ **DECIDIDO — listo para implementar.** Enfoque **A + D + B** aprobado por Sergio; las 4 decisiones abiertas (§8) las cerró Gerardo. **C descartada** (saltearía el gate ARCA).
 > **Análisis de origen:** [`v4-circuito-cuit-discovery.md`](./v4-circuito-cuit-discovery.md) — ese doc es el *discovery* (por qué existe el limbo); **éste** es el *cómo se construye*. Todo `archivo:línea` fue re-verificado contra el código actual al escribir este spec.
-> **Corte de PRs:** **PR-1 = D** (reintento ARCA en el cron, prioridad 1) · **PR-2 = A + B** (comparten backend). Ver §6.
+> **Corte de PRs:** **PR-1 = D** ✅ **HECHO** (mergeado a develop, squash `02ed22d`, #452) · **PR-2 = A + B** (comparten backend, en curso). Ver §6.
 
 ---
 
@@ -216,7 +216,7 @@ Este helper es **el único write nuevo de `verificadoAfip=true`** — reusa exac
 
 | PR | Contenido | Depende de | Estimación |
 |---|---|---|---|
-| **PR-1 — D** | Reintento ARCA diario en el cron (§2) + contadores `reintentosArca`/`reactivacionesAuto` en el resumen + tests | — | S |
+| **PR-1 — D** ✅ HECHO (`02ed22d`, #452) | Reintento ARCA diario en el cron (§2) + contadores `reintentosArca`/`reactivacionesAuto` en el resumen + tests | — | S |
 | **PR-2 — A + B** | Helper `corregirYVerificarCuit` + refactor `aplicarDatosArca` + endpoint nuevo `corregir-cuit/[id]` (auth dual) · **A:** form self-service en `/taller/formalizacion` + cablear CTA del banner · **B:** UI comparación lado a lado en el panel ARCA de ESTADO + auditoría `CUIT_CORREGIDO` · tests | PR-1 no bloquea (solo evitar choque en `arca.ts`) | M |
 
 **PR-1 arranca ya** (este spec, §2). PR-2 después, sobre `arca.ts` ya tocado por PR-1 (rebasar si hace falta).
