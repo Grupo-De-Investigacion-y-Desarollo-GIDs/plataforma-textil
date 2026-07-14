@@ -65,13 +65,16 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
             'ESTADO_VALIDACION_APROBADA', 'ESTADO_VALIDACION_RECHAZADA', 'ESTADO_VALIDACION_REVOCADA',
             'ADMIN_VALIDACION_COMPLETADO', 'ADMIN_VALIDACION_RECHAZADO',
             'NIVEL_SUBIDO', 'NIVEL_BAJADO',
+            // Correcciones de CUIT (Piezas A/B): el evento sensible debe ser visible acá,
+            // venga del taller (self-service) o de COORD (override).
+            'CUIT_CORREGIDO',
           ],
         },
         detalles: { path: ['tallerId'], equals: id },
       },
       orderBy: { timestamp: 'desc' },
       take: 30,
-      include: { user: { select: { name: true } } },
+      include: { user: { select: { name: true, email: true } } },
     }),
   ])
 
@@ -287,7 +290,9 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
                       rel="noopener noreferrer"
                       className="text-brand-blue underline text-xs"
                     >
-                      Verificar en ARCA
+                      {/* Antes "Verificar en ARCA" — confundia con el boton de re-consulta del
+                          padrón en la pestaña Datos. Esto solo ABRE el sitio externo. QA #453 p2. */}
+                      Abrir el trámite en ARCA (sitio externo)
                     </a>
                   </div>
                 )}
@@ -356,11 +361,17 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
                   nivelNuevo?: string
                   motivo?: string
                   tipoDocumento?: string
+                  cuitAnterior?: string
+                  cuitNuevo?: string
                 }
                 const esEstado = log.accion.startsWith('ESTADO_')
                 const actor = log.user?.name ?? (esEstado ? 'Estado' : 'Admin (pre-V3)')
                 const descripcion =
-                  log.accion.includes('APROBADA') || log.accion.includes('COMPLETADO')
+                  // CUIT_CORREGIDO va PRIMERO: los matchers por substring de abajo son laxos
+                  // y un futuro rename podria pisarlo. El actor distingue taller vs COORD.
+                  log.accion === 'CUIT_CORREGIDO'
+                    ? `${log.user?.name || log.user?.email || 'Alguien'} corrigio el CUIT: ${detalles.cuitAnterior} → ${detalles.cuitNuevo} (verificado por ARCA)`
+                  : log.accion.includes('APROBADA') || log.accion.includes('COMPLETADO')
                     ? `${actor} aprobo ${detalles.tipoDocumento || 'una validacion'}`
                   : log.accion.includes('RECHAZADA') || log.accion.includes('RECHAZADO')
                     ? `${actor} rechazo ${detalles.tipoDocumento || 'una validacion'}${detalles.motivo ? ` — ${detalles.motivo}` : ''}`
