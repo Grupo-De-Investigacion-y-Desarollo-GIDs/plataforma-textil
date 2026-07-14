@@ -3,6 +3,10 @@
 ## 2026-07-13
 
 ### Gerardo Breard
+- **23:55** `8d86a65` — fix: QA #453 — CUIT_CORREGIDO visible en Historial + renombrar botones ARCA
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/(estado)/estado/talleres/[id]/reverificar-button.tsx`
+
 - **17:09** `14521a5` — feat: circuito CUIT Piezas A+B — corrección de CUIT + reverificación
   - `src/__tests__/corregir-cuit-helper.test.ts`
   - `src/__tests__/corregir-cuit-route.test.ts`
