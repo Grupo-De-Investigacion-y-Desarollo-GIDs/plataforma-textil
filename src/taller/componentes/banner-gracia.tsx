@@ -35,7 +35,7 @@ export function BannerGracia({
           seguís teniendo acceso a la Academia y a explorar la red de talleres.
         </p>
         <Link
-          href="/taller/formalizacion"
+          href="/taller/formalizacion#verificar-cuit"
           className="inline-flex items-center gap-1 mt-2 text-sm font-semibold text-red-800 hover:underline"
         >
           Verificar mi CUIT →
@@ -56,10 +56,10 @@ export function BannerGracia({
         Mientras tanto, podés capacitarte en la Academia y explorar la red de talleres.
       </p>
       <Link
-        href="/taller/formalizacion"
+        href="/taller/formalizacion#verificar-cuit"
         className="inline-flex items-center gap-1 mt-2 text-sm font-semibold text-amber-800 hover:underline"
       >
-        Ir a Formalización →
+        Verificar mi CUIT →
       </Link>
     </div>
   )

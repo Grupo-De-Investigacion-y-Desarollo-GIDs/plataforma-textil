@@ -3,6 +3,24 @@
 ## 2026-07-13
 
 ### Gerardo Breard
+- **23:55** `8d86a65` — fix: QA #453 — CUIT_CORREGIDO visible en Historial + renombrar botones ARCA
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/(estado)/estado/talleres/[id]/reverificar-button.tsx`
+
+- **17:09** `14521a5` — feat: circuito CUIT Piezas A+B — corrección de CUIT + reverificación
+  - `src/__tests__/corregir-cuit-helper.test.ts`
+  - `src/__tests__/corregir-cuit-route.test.ts`
+  - `src/app/(estado)/estado/talleres/[id]/corregir-cuit-coord.tsx`
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+  - `src/app/api/arca/corregir-cuit/[id]/route.ts`
+  - `src/compartido/lib/arca.ts`
+  - `src/taller/componentes/banner-gracia.tsx`
+  - `src/taller/componentes/corregir-cuit-form.tsx`
+
+- **16:11** `8f7bee8` — docs(spec): circuito CUIT — PR-1 (Pieza D) HECHO (02ed22d, #452)
+  - `.claude/specs/v4-circuito-cuit-implementacion.md`
+
 - **14:18** `f0d4a59` — chore: redeploy preview — tomar ARCA_PROVIDER=mock (demo Pieza D)
 
 

@@ -12,6 +12,7 @@ import { ExternalLink } from 'lucide-react'
 import { UploadButton } from '@/taller/componentes/upload-button'
 import { VerDocumentoButton } from '@/taller/componentes/ver-documento-button'
 import { MarcarRealizadoButton } from '@/taller/componentes/marcar-realizado-button'
+import { CorregirCuitForm } from '@/taller/componentes/corregir-cuit-form'
 import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 
 const estadoToStatus: Record<string, 'completed' | 'pending' | 'warning' | 'optional'> = {
@@ -27,7 +28,7 @@ export default async function TallerFormalizacionPage() {
 
   const taller = await prisma.taller.findFirst({
     where: { userId: session.user.id },
-    select: { id: true, nivel: true, puntaje: true },
+    select: { id: true, nivel: true, puntaje: true, cuit: true, verificadoAfip: true, estadoCuenta: true },
   })
 
   if (!taller) {
@@ -61,6 +62,17 @@ export default async function TallerFormalizacionPage() {
   return (
     <div className="space-y-6">
       <h1 className="font-serif font-bold text-3xl text-ink-primary">Mi recorrido</h1>
+
+      {/* Pieza A del circuito CUIT V4 — corregir/reverificar CUIT (self-service). Solo para
+          talleres SIN verificar (gracia o inactiva); un taller verificado no ve la acción.
+          Anclada en #verificar-cuit para el CTA de los banners de gracia/inactiva. */}
+      {!taller.verificadoAfip && (
+        <CorregirCuitForm
+          tallerId={taller.id}
+          cuitActual={taller.cuit ?? ''}
+          inactiva={taller.estadoCuenta === 'INACTIVA'}
+        />
+      )}
 
       {/* Resumen. La V4 descartó el porcentaje/ring de avance como gamificación:
           el recorrido se comunica por requisito (badges COMPLETADO/PENDIENTE más abajo),
@@ -115,7 +127,13 @@ export default async function TallerFormalizacionPage() {
                       title={td.label}
                       status={status}
                       description={
-                        estado === 'COMPLETADO'   ? `Verificado por ${validacion?.usuarioAprobador?.role === 'ESTADO' ? 'la Coordinación' : 'el equipo de PDT'}`
+                        // QA #453 p3 (opción a, Sergio): CUIT ya verificado por ARCA pero el paso
+                        // documental sigue sin aprobar — aclarar la independencia para no confundir.
+                        // NO cambia comportamiento: el paso lo sigue aprobando la Coordinación.
+                        // Solo PENDIENTE/NO_INICIADO: un RECHAZADO/VENCIDO debe seguir mostrando su motivo.
+                        taller.verificadoAfip && td.nombre === 'CUIT/Monotributo' && (estado === 'PENDIENTE' || estado === 'NO_INICIADO')
+                                                  ? 'Tu CUIT ya está verificado por ARCA — este paso documental lo revisa la Coordinación por separado.'
+                      : estado === 'COMPLETADO'   ? `Verificado por ${validacion?.usuarioAprobador?.role === 'ESTADO' ? 'la Coordinación' : 'el equipo de PDT'}`
                       : estado === 'PENDIENTE'    ? 'En revisión por el equipo de PDT'
                       : estado === 'VENCIDO'      ? 'Documento vencido — requiere actualización'
                       : estado === 'RECHAZADO'    ? `Rechazado: ${validacion?.detalle || 'Revisá la documentación'}`
