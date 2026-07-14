@@ -127,7 +127,13 @@ export default async function TallerFormalizacionPage() {
                       title={td.label}
                       status={status}
                       description={
-                        estado === 'COMPLETADO'   ? `Verificado por ${validacion?.usuarioAprobador?.role === 'ESTADO' ? 'la Coordinación' : 'el equipo de PDT'}`
+                        // QA #453 p3 (opción a, Sergio): CUIT ya verificado por ARCA pero el paso
+                        // documental sigue sin aprobar — aclarar la independencia para no confundir.
+                        // NO cambia comportamiento: el paso lo sigue aprobando la Coordinación.
+                        // Solo PENDIENTE/NO_INICIADO: un RECHAZADO/VENCIDO debe seguir mostrando su motivo.
+                        taller.verificadoAfip && td.nombre === 'CUIT/Monotributo' && (estado === 'PENDIENTE' || estado === 'NO_INICIADO')
+                                                  ? 'Tu CUIT ya está verificado por ARCA — este paso documental lo revisa la Coordinación por separado.'
+                      : estado === 'COMPLETADO'   ? `Verificado por ${validacion?.usuarioAprobador?.role === 'ESTADO' ? 'la Coordinación' : 'el equipo de PDT'}`
                       : estado === 'PENDIENTE'    ? 'En revisión por el equipo de PDT'
                       : estado === 'VENCIDO'      ? 'Documento vencido — requiere actualización'
                       : estado === 'RECHAZADO'    ? `Rechazado: ${validacion?.detalle || 'Revisá la documentación'}`

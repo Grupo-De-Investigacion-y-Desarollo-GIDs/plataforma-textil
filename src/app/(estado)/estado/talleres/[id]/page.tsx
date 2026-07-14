@@ -264,7 +264,12 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
                   title={labelPorNombre[v.tipo] ?? v.tipo}
                   status={estadoToStatus[v.estado] || 'optional'}
                   description={
-                    v.estado === 'COMPLETADO' ? 'Verificado'
+                    // QA #453 p3 (opción a): CUIT verificado por ARCA pero paso documental sin
+                    // aprobar — recordarle a COORD que la aprobación es independiente y suya.
+                    // Solo PENDIENTE/NO_INICIADO (un rechazo/vencido conserva su motivo).
+                    taller.verificadoAfip && v.tipo === 'CUIT/Monotributo' && (v.estado === 'PENDIENTE' || v.estado === 'NO_INICIADO')
+                      ? 'El CUIT ya esta verificado por ARCA — la aprobacion documental de este paso es independiente y la decide la Coordinacion.'
+                    : v.estado === 'COMPLETADO' ? 'Verificado'
                     : v.estado === 'PENDIENTE' && !v.documentoUrl && enlacePorNombre[v.tipo]
                       ? 'Tramite externo — verificar en ARCA/SIPA'
                     : v.estado === 'PENDIENTE' ? 'Pendiente de revision'
