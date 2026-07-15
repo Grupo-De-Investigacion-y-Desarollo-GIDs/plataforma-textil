@@ -116,7 +116,7 @@ describe('POST /api/usuarios/me/roles', () => {
     const res = await post({ rol: 'TALLER', nombre: 'Mi Taller', cuit: '30-71890234-5' })
     expect(res.status).toBe(200)
     expect(mockPadron).toHaveBeenCalledTimes(1)
-    expect(mockPadron).toHaveBeenCalledWith('30-71890234-5')
+    expect(mockPadron).toHaveBeenCalledWith('30718902345') // normalizado por el zod (PR-3)
   })
 
   it('B-02: CUIT verificado en User (sin entidad) → 200 SIN llamar a ARCA', async () => {
@@ -148,7 +148,7 @@ describe('POST /api/usuarios/me/roles', () => {
     const res = await post({ rol: 'MARCA', nombre: 'Mi Marca', cuit: '20-12345678-9' })
     expect(res.status).toBe(200)
     expect(mockPadron).toHaveBeenCalledTimes(1)
-    expect(mockPadron).toHaveBeenCalledWith('20-12345678-9')
+    expect(mockPadron).toHaveBeenCalledWith('20123456789') // normalizado por el zod (PR-3)
   })
 
   it('D: CUIT difiere del verificado → 200 LLAMANDO a ARCA como antes', async () => {
@@ -161,7 +161,7 @@ describe('POST /api/usuarios/me/roles', () => {
     const res = await post({ rol: 'MARCA', nombre: 'Mi Marca', cuit: '27-99999999-3' })
     expect(res.status).toBe(200)
     expect(mockPadron).toHaveBeenCalledTimes(1)
-    expect(mockPadron).toHaveBeenCalledWith('27-99999999-3')
+    expect(mockPadron).toHaveBeenCalledWith('27999999993') // normalizado por el zod (PR-3)
   })
 
   it('rol ya poseído → 409, sin crear entidad', async () => {
@@ -184,6 +184,17 @@ describe('POST /api/usuarios/me/roles', () => {
     const res = await post({ rol: 'MARCA', nombre: 'Mi Marca', cuit: '99-99999999-9' })
     expect(res.status).toBe(400)
     expect(mockCrear).not.toHaveBeenCalled()
+  })
+
+  it('normaliza el cuit a dígitos antes de verificar y persistir (PR-3 circuito CUIT)', async () => {
+    mockUserFind.mockResolvedValue({ id: 'u1', roles: [], role: 'TALLER', taller: { id: 't1' }, marca: null })
+    mockCrear.mockResolvedValue({ id: 'marca-1' })
+
+    const res = await post({ rol: 'MARCA', nombre: 'Mi Marca', cuit: '20-12345678-9' })
+    expect(res.status).toBe(200)
+    // consultarPadron y crearEntidadParaRol reciben el cuit SIN guiones (el zod lo transforma).
+    expect(mockPadron).toHaveBeenCalledWith('20123456789')
+    expect(mockCrear).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ cuit: '20123456789' }))
   })
 
   it('sin sesión → 401', async () => {

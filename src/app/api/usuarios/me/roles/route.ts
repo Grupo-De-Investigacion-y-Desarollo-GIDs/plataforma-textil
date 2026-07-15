@@ -32,7 +32,11 @@ import { logActividad } from '@/compartido/lib/log'
 const bodySchema = z.object({
   rol: z.enum(['TALLER', 'MARCA']),
   nombre: z.string().trim().min(1, 'Nombre requerido'),
-  cuit: z.string().trim().min(1, 'CUIT requerido'),
+  // Normalizar a dígitos al entrar (PR-3 circuito CUIT): crearEntidadParaRol persiste este
+  // valor tal cual en taller/marca — sin transform, el 2º rol era un borde de escritura de
+  // formato sucio que el registro ya no permite. Un valor que no queda en 11 dígitos lo
+  // corta consultarPadron (guard -> CUIT_INEXISTENTE -> errorBloqueaRegistro).
+  cuit: z.string().trim().min(1, 'CUIT requerido').transform(c => c.replace(/\D/g, '')),
 })
 
 export const POST = apiHandler(async (req: NextRequest) => {
