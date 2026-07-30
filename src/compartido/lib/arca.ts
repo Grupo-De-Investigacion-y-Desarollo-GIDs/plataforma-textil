@@ -139,6 +139,9 @@ export async function consultarPadron(cuit: string, tallerId?: string, userId?: 
 
     return { exitosa: true, datos, duracionMs: Date.now() - inicio }
   } catch (error: unknown) {
+    // Diagnóstico ARCA prod: el error crudo del SDK se perdía (solo quedaba el
+    // código clasificado). Loguearlo para ver el rechazo real de AFIP/afipsdk.
+    console.error('[arca] SDK error crudo:', error instanceof Error ? error.message : String(error), (error as { data?: unknown } | null)?.data ?? '')
     const codigo = clasificarError(error)
     await registrarConsulta(tallerId, cuit, 'padron-a13', false, null, codigo, inicio)
     logAfipVerificacion(tallerId, cuit, false, codigo, userId)
