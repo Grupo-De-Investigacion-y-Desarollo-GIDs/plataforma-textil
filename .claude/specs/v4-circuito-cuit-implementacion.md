@@ -259,3 +259,34 @@ Por qué A+B juntos: comparten el helper, el endpoint y el mapeo de campos ARCA;
 4. **Rate-limit del self-service → NO para el piloto** (§3.7). Consideración post-piloto, fuera de alcance.
 
 > **Estado: DECIDIDO.** PR-1 (D) arranca ya. PR-2 (A+B) queda listo para implementar sobre este spec.
+
+---
+
+## 9. Arquitectura mock/real de ARCA por ambiente (definición de Gerardo, 2026-07-30)
+
+### 9.1 Definición
+
+- **PROD → siempre real.** `ARCA_PROVIDER=afipsdk`. Nunca mock.
+- **DEV/Preview → necesita AMBOS a la vez:**
+  - **mock** para flujos sintéticos: e2e (CUITs dinámicos deterministas), demos, y el evento OIT de agosto sobre dev (público con datos sintéticos).
+  - **consulta real** para que un dev pruebe CUITs verdaderos contra ARCA.
+
+> El `ARCA_PROVIDER=mock` que se puso en Preview el 13-jul fue un **destrabe puntual** para las demos de la Pieza D — **no** la config final. Contradice esta definición (deja a dev sin consulta real). Este apartado fija la convivencia.
+
+### 9.2 Por qué NO sirve "selector por CUIT reservado"
+
+Los e2e live de registro generan **CUITs dinámicos** por timestamp para no colisionar con el `@unique`:
+`tests/e2e/registro-taller.spec.ts` → `20${ts.slice(-8)}5`; `registro-marca.spec.ts` → `30${ts.slice(-8)}7`. No son un set fijo enumerable, y esperan que el **mock** los valide como CUIT genérico ("TALLER MOCK SRL"). Una regla "CUITs reservados → mock, el resto → real" mandaría esos CUITs dinámicos al SDK real → `CUIT_INEXISTENTE` (bloquea) → **rompe los e2e de registro**. Descartada.
+
+### 9.3 Propuesta (la más simple que no rompe e2e ni el evento): default mock + override real explícito
+
+- **Preview mantiene `ARCA_PROVIDER=mock` como DEFAULT.** e2e, demos y evento quedan en mock determinista — **sin cambios, sin riesgo**.
+- **Override real por consulta, opt-in y gateado:** `consultarPadron(cuit, ..., { forzarReal })` salta la rama mock y pega al SDK real cuando `forzarReal` es true. El endpoint manual `GET /api/auth/verificar-cuit` lee `?real=1` y activa `forzarReal` **solo si**:
+  1. `VERCEL_ENV !== 'production'` (en prod el parámetro se ignora — prod ya es real), y
+  2. viene un token de dev en header (reusar `CI_BYPASS_TOKEN`, o `ARCA_DEV_REAL_TOKEN` nuevo).
+- **Por qué el token:** el evento abre dev a tablets públicas. Sin gate, un `?real=1` anónimo dejaría al público disparar llamadas reales a AFIP (costo/rate). El token deja el real solo para devs; el público y los e2e siguen en mock.
+- **Prod:** intacto — `provider=afipsdk`, el override es no-op.
+
+Costo: ~10 líneas (un flag opcional en `consultarPadron` + una condición en el endpoint). Cero cambios en e2e, demos o evento. **Pendiente de OK de Gerardo para implementar** (PR aparte, chico).
+
+> Alternativas consideradas y por qué no: *doble provider simultáneo* (dos clientes en memoria) agrega complejidad sin ventaja sobre el flag; *endpoint /verificar-real separado* duplica ruta y auth. El flag opt-in gateado es el mínimo.
