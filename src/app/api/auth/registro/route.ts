@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client'
 import { logActividad } from '@/compartido/lib/log'
 import { consultarPadron, errorBloqueaRegistro, mensajeErrorArca, type DatosArca } from '@/compartido/lib/arca'
 import { sendEmail, buildBienvenidaEmail } from '@/compartido/lib/email'
+import { TERMINOS_VERSION } from '@/compartido/lib/legal'
 import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
 import { apiHandler, errorResponse, errorConflict } from '@/compartido/lib/api-errors'
 import bcrypt from 'bcryptjs'
@@ -16,6 +17,11 @@ const registerSchema = z.object({
   name: z.string().trim().min(1).optional(),
   nombre: z.string().trim().min(1).optional(),
   phone: z.string().trim().optional(),
+  // Consentimiento legal obligatorio (T&C + privacidad). Validación server-side:
+  // sin `aceptaTerminos === true` el registro se rechaza con 400, no solo el zod del form.
+  aceptaTerminos: z.literal(true, {
+    errorMap: () => ({ message: 'Debes aceptar los terminos y condiciones y la politica de privacidad' }),
+  }),
   tallerData: z.object({
     nombre: z.string().trim().min(1, 'Nombre de taller requerido'),
     cuit: z.string().trim().min(1, 'CUIT requerido'),
@@ -94,6 +100,9 @@ export const POST = apiHandler(async (req: NextRequest) => {
         // el dato no se desincronice (ver spec v4-u-05). NO usar push: setear el array.
         roles: [data.role],
         activeMode: data.role,
+        // Consentimiento legal: prueba auditable de versión aceptada + cuándo.
+        terminosAceptadosVersion: TERMINOS_VERSION,
+        terminosAceptadosEn: new Date(),
         // MITIGACION #307 (temporal): marcar emailVerified al crear la cuenta para
         // no bloquear el onboarding. El paso "Verificar email" del checklist
         // (onboarding.ts) gatea con !!user.emailVerified y, sin flujo de verificacion
