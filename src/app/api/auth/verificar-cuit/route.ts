@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { consultarPadron, mensajeErrorArca, errorBloqueaRegistro } from '@/compartido/lib/arca'
-import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
+import { rateLimit, getClientIp, isRealArcaAllowed } from '@/compartido/lib/ratelimit'
 
 // GET /api/auth/verificar-cuit?cuit=XXXXXXXXXXX
 // No requiere autenticacion — se usa durante el registro (on blur)
@@ -15,7 +15,12 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ valid: false, error: 'CUIT invalido' }, { status: 400 })
     }
 
-    const resultado = await consultarPadron(cuit)
+    // §9 convivencia mock/real en dev: ?real=1 salta el mock y consulta el SDK real,
+    // pero solo si el request trae token de dev y no es produccion (isRealArcaAllowed).
+    // El publico del evento y los e2e (sin token) siguen en mock determinista.
+    const forzarReal = req.nextUrl.searchParams.get('real') === '1' && isRealArcaAllowed(req)
+
+    const resultado = await consultarPadron(cuit, undefined, undefined, { forzarReal })
 
     if (resultado.exitosa && resultado.datos) {
       return NextResponse.json({

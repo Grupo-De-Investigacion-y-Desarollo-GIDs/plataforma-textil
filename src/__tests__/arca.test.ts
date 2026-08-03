@@ -189,6 +189,29 @@ describe('consultarPadron', () => {
     expect(resultado.exitosa).toBe(false)
     expect(resultado.error).toBe('CUIT_INEXISTENTE')
   })
+
+  // §9 convivencia mock/real: forzarReal salta el mock y pega al SDK real
+  it('en modo mock, forzarReal=true consulta el SDK real (no el mock)', async () => {
+    process.env.ARCA_PROVIDER = 'mock'
+    mockGetTaxpayerDetails.mockResolvedValue(fixtureActivo)
+
+    const resultado = await consultarPadron('20301234567', undefined, undefined, { forzarReal: true })
+
+    // Pegó al SDK real (no al mock 'TALLER MOCK SRL')
+    expect(mockGetTaxpayerDetails).toHaveBeenCalledWith(20301234567)
+    expect(resultado.exitosa).toBe(true)
+    expect(resultado.datos!.nombre).toBe('COOPERATIVA DE TRABAJO TEXTIL PROGRESO LTDA')
+  })
+
+  it('en modo mock sin forzarReal usa el mock (no toca el SDK)', async () => {
+    process.env.ARCA_PROVIDER = 'mock'
+
+    const resultado = await consultarPadron('20301234567')
+
+    expect(mockGetTaxpayerDetails).not.toHaveBeenCalled()
+    expect(resultado.exitosa).toBe(true)
+    expect(resultado.datos!.nombre).toBe('TALLER MOCK SRL')
+  })
 })
 
 // ─── mensajeErrorArca ────────────────────────────────────────────────────────

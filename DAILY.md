@@ -1,5 +1,20 @@
 # Daily Log
 
+## 2026-07-30
+
+### Gerardo Breard
+- **11:22** `3bd679e` — docs(spec): arquitectura mock/real de ARCA por ambiente (§9)
+  - `.claude/specs/v4-circuito-cuit-implementacion.md`
+
+
+## 2026-07-16
+
+### Gerardo Breard
+- **09:07** `07372a4` — docs(seguridad): runbook re-scope de secrets + spec allowlist/MODO_EVENTO (handoff, sin implementar)
+  - `.claude/specs/RUNBOOK_RESCOPE_SECRETS.md`
+  - `.claude/specs/v4-a-proteger-registro-dev.md`
+
+
 ## 2026-07-13
 
 ### Gerardo Breard

@@ -259,3 +259,69 @@ Por qué A+B juntos: comparten el helper, el endpoint y el mapeo de campos ARCA;
 4. **Rate-limit del self-service → NO para el piloto** (§3.7). Consideración post-piloto, fuera de alcance.
 
 > **Estado: DECIDIDO.** PR-1 (D) arranca ya. PR-2 (A+B) queda listo para implementar sobre este spec.
+
+---
+
+## 9. Arquitectura mock/real de ARCA por ambiente (definición de Gerardo, 2026-07-30)
+
+### 9.1 Definición
+
+- **PROD → siempre real.** `ARCA_PROVIDER=afipsdk`. Nunca mock.
+- **DEV/Preview → necesita AMBOS a la vez:**
+  - **mock** para flujos sintéticos: e2e (CUITs dinámicos deterministas), demos, y el evento OIT de agosto sobre dev (público con datos sintéticos).
+  - **consulta real** para que un dev pruebe CUITs verdaderos contra ARCA.
+
+> El `ARCA_PROVIDER=mock` que se puso en Preview el 13-jul fue un **destrabe puntual** para las demos de la Pieza D — **no** la config final. Contradice esta definición (deja a dev sin consulta real). Este apartado fija la convivencia.
+
+### 9.2 Por qué NO sirve "selector por CUIT reservado"
+
+Los e2e live de registro generan **CUITs dinámicos** por timestamp para no colisionar con el `@unique`:
+`tests/e2e/registro-taller.spec.ts` → `20${ts.slice(-8)}5`; `registro-marca.spec.ts` → `30${ts.slice(-8)}7`. No son un set fijo enumerable, y esperan que el **mock** los valide como CUIT genérico ("TALLER MOCK SRL"). Una regla "CUITs reservados → mock, el resto → real" mandaría esos CUITs dinámicos al SDK real → `CUIT_INEXISTENTE` (bloquea) → **rompe los e2e de registro**. Descartada.
+
+### 9.3 Propuesta (la más simple que no rompe e2e ni el evento): default mock + override real explícito
+
+- **Preview mantiene `ARCA_PROVIDER=mock` como DEFAULT.** e2e, demos y evento quedan en mock determinista — **sin cambios, sin riesgo**.
+- **Override real por consulta, opt-in y gateado:** `consultarPadron(cuit, ..., { forzarReal })` salta la rama mock y pega al SDK real cuando `forzarReal` es true. El endpoint manual `GET /api/auth/verificar-cuit` lee `?real=1` y activa `forzarReal` **solo si**:
+  1. `VERCEL_ENV !== 'production'` (en prod el parámetro se ignora — prod ya es real), y
+  2. viene un token de dev en header (reusar `CI_BYPASS_TOKEN`, o `ARCA_DEV_REAL_TOKEN` nuevo).
+- **Por qué el token:** el evento abre dev a tablets públicas. Sin gate, un `?real=1` anónimo dejaría al público disparar llamadas reales a AFIP (costo/rate). El token deja el real solo para devs; el público y los e2e siguen en mock.
+- **Prod:** intacto — `provider=afipsdk`, el override es no-op.
+
+Costo: ~10 líneas (un flag opcional en `consultarPadron` + una condición en el endpoint). Cero cambios en e2e, demos o evento.
+
+> Alternativas consideradas y por qué no: *doble provider simultáneo* (dos clientes en memoria) agrega complejidad sin ventaja sobre el flag; *endpoint /verificar-real separado* duplica ruta y auth. El flag opt-in gateado es el mínimo.
+
+### 9.4 Implementado (runbook de invocación)
+
+Aprobado por Gerardo (2026-08-03) e implementado (rama `feature/arca-real-override-dev`, PR a develop):
+
+- `consultarPadron(cuitRaw, tallerId?, userId?, { forzarReal })` — `forzarReal=true` salta la rama mock.
+- Gate dedicado `isRealArcaAllowed(req)` en `ratelimit.ts` (función SEPARADA de `isCiBypass`, precedente B-04: una relajación futura del bypass de rate-limit no debe ensanchar quién dispara ARCA real).
+- Endpoint: `GET /api/auth/verificar-cuit?cuit=<11díg>&real=1` con header `x-ci-bypass: <CI_BYPASS_TOKEN>`.
+
+**Cómo se invoca (dev/preview, CUIT real de prueba):**
+```bash
+curl "https://<preview-url>/api/auth/verificar-cuit?cuit=20301234567&real=1" \
+  -H "x-ci-bypass: $CI_BYPASS_TOKEN"
+```
+- Sin el header (o token incorrecto) → cae al mock (comportamiento de e2e/demos/evento).
+- `real=1` sin ser dev, o en producción → ignorado (`isRealArcaAllowed` devuelve false; en prod además el provider ya es real).
+- El token es `CI_BYPASS_TOKEN` (ya seteado en Preview desde CI). Para el evento OIT: el público en tablets NO tiene el token → siempre mock; solo un dev con el token obtiene consulta real.
+
+**Observabilidad:** el mismo `console.error('[arca] SDK error crudo:', ...)` del hotfix #455 va en esta rama (línea idéntica) → el deploy grande no regresa la observabilidad ni genera conflicto.
+
+---
+
+## 10. Incidente ARCA real en PROD — cierre (03-ago-2026)
+
+**Causa raíz final:** la entrada `AFIP_SDK_TOKEN` de scope **Production** tenía un valor **inválido desde el 22-abr-2026** (entrada separada de la de Pre-Production/Preview, que era la buena). El SDK real nunca verificó en prod: 23 consultas, 0 éxitos, todas `AFIPSDK_ERROR` con fast-fail ~300-600ms (rechazo en la capa de auth de afipsdk.com, antes del WSAA).
+
+**Causa secundaria (ya corregida, no suficiente sola):** `AFIP_SDK_ENV` ausente en scope Production → `production:false` → SDK en modo homologación. Corregida el 30-jul (agregada a Production), pero el fix no destrabó porque el token seguía inválido.
+
+**Por qué pasó desapercibido 2 meses:** (a) el `catch` de `consultarPadron` descartaba el error crudo (sin `console.error`) → gate mudo; (b) el circuito degrada con gracia (`bloquea:false` en `AFIPSDK_ERROR`) + Pieza D reverifica sola → los 5 usuarios ya verificados no lo notaron; (c) Production no se redeployó entre el 13-jul y el 30-jul, así que el `ARCA_PROVIDER=mock` puesto en Preview nunca llegó a prod — prod corrió el SDK real (fallando) todo el tiempo, no el mock como se creía.
+
+**Fix (03-ago):** se borró la entrada mala de Production y se extendió la buena (Pre-Production, 02-may) a All Environments. Post-redeploy, `verificar-cuit?cuit=20304050607` → `CUIT_INEXISTENTE` con **duración 2021ms** (banda real vs. los ~400ms del rechazo) — consulta real exitosa, gate operativo. Confirmado en `consultas_arca` de PROD (fila `2026-08-03 15:03:47`).
+
+**Diagnóstico duradero (hotfix #455, `d037f56` en main):** `console.error` del error crudo en el catch — cierra el "gate mudo" para el futuro.
+
+**Prerequisito ARCA-verde del deploy grande develop→prod: SALDADO.**

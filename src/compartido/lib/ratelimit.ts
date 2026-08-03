@@ -173,6 +173,26 @@ export function isTestMutationAllowed(req: NextRequest): boolean {
 }
 
 /**
+ * §9 circuito CUIT: autoriza el override de consulta REAL a ARCA en DEV/Preview
+ * (?real=1 en verificar-cuit), donde el provider default es 'mock'. Es una función
+ * SEPARADA de isCiBypass a propósito (mismo motivo que isTestMutationAllowed): forzar
+ * llamadas reales a AFIP tiene costo/rate, y en el evento OIT dev se abre a público en
+ * tablets — no queremos que una futura relajación del bypass de rate-limit ensanche
+ * silenciosamente quién dispara ARCA real. Requiere token de dev + no-produccion.
+ * En produccion es irrelevante (el provider ya es 'afipsdk', siempre real).
+ */
+export function isRealArcaAllowed(req: NextRequest): boolean {
+  const bypassToken = process.env.CI_BYPASS_TOKEN
+  if (!bypassToken) return false
+
+  const currentEnv = process.env.VERCEL_ENV ?? 'development'
+  if (currentEnv === 'production') return false
+
+  const headerValue = req.headers.get('x-ci-bypass')
+  return headerValue === bypassToken
+}
+
+/**
  * Aplica rate limiting a una request.
  * Retorna NextResponse con 429 si se excede el limite, null si pasa.
  *
