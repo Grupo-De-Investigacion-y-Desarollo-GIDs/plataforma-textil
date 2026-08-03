@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { getClientIp, isCiBypass, isTestMutationAllowed } from '@/compartido/lib/ratelimit'
+import { getClientIp, isCiBypass, isTestMutationAllowed, isRealArcaAllowed } from '@/compartido/lib/ratelimit'
 import { NextRequest } from 'next/server'
 
 function makeReq(headers: Record<string, string> = {}): NextRequest {
@@ -134,5 +134,50 @@ describe('isTestMutationAllowed', () => {
     process.env.VERCEL_ENV = 'preview'
     const req = makeReq({ 'x-ci-bypass': 'wrong-token' })
     expect(isTestMutationAllowed(req)).toBe(false)
+  })
+})
+
+// §9 circuito CUIT: guard dedicado para el override de ARCA real en dev (?real=1).
+describe('isRealArcaAllowed', () => {
+  const savedEnv: Record<string, string | undefined> = {}
+
+  beforeEach(() => {
+    savedEnv.CI_BYPASS_TOKEN = process.env.CI_BYPASS_TOKEN
+    savedEnv.VERCEL_ENV = process.env.VERCEL_ENV
+  })
+
+  afterEach(() => {
+    if (savedEnv.CI_BYPASS_TOKEN === undefined) delete process.env.CI_BYPASS_TOKEN
+    else process.env.CI_BYPASS_TOKEN = savedEnv.CI_BYPASS_TOKEN
+    if (savedEnv.VERCEL_ENV === undefined) delete process.env.VERCEL_ENV
+    else process.env.VERCEL_ENV = savedEnv.VERCEL_ENV
+  })
+
+  it('permite si token matchea y env es preview', () => {
+    process.env.CI_BYPASS_TOKEN = 'test-secret-token'
+    process.env.VERCEL_ENV = 'preview'
+    const req = makeReq({ 'x-ci-bypass': 'test-secret-token' })
+    expect(isRealArcaAllowed(req)).toBe(true)
+  })
+
+  it('NO permite en production (el provider ya es real; evita abuso)', () => {
+    process.env.CI_BYPASS_TOKEN = 'test-secret-token'
+    process.env.VERCEL_ENV = 'production'
+    const req = makeReq({ 'x-ci-bypass': 'test-secret-token' })
+    expect(isRealArcaAllowed(req)).toBe(false)
+  })
+
+  it('NO permite sin token (publico del evento queda en mock)', () => {
+    process.env.CI_BYPASS_TOKEN = 'test-secret-token'
+    process.env.VERCEL_ENV = 'preview'
+    const req = makeReq({})
+    expect(isRealArcaAllowed(req)).toBe(false)
+  })
+
+  it('NO permite si el header no coincide', () => {
+    process.env.CI_BYPASS_TOKEN = 'real-token'
+    process.env.VERCEL_ENV = 'preview'
+    const req = makeReq({ 'x-ci-bypass': 'wrong-token' })
+    expect(isRealArcaAllowed(req)).toBe(false)
   })
 })

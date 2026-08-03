@@ -89,7 +89,12 @@ export type CodigoErrorArca =
 // Función principal: consultarPadron
 // ---------------------------------------------------------------------------
 
-export async function consultarPadron(cuitRaw: string, tallerId?: string, userId?: string | null): Promise<ResultadoConsulta> {
+export async function consultarPadron(
+  cuitRaw: string,
+  tallerId?: string,
+  userId?: string | null,
+  opts?: { forzarReal?: boolean },
+): Promise<ResultadoConsulta> {
   const inicio = Date.now()
   const config = getConfig()
 
@@ -105,7 +110,13 @@ export async function consultarPadron(cuitRaw: string, tallerId?: string, userId
     return { exitosa: false, error: 'CUIT_INEXISTENTE', duracionMs: Date.now() - inicio }
   }
 
-  if (!config.enabled || config.provider === 'mock') {
+  // §9 (convivencia mock/real en dev): en DEV/Preview el provider default es 'mock'
+  // (e2e/demos/evento). forzarReal=true salta el mock y pega al SDK real, para que un
+  // dev pruebe un CUIT verdadero. El gate de quién puede activarlo vive en el endpoint
+  // (token de dev + VERCEL_ENV != production). En PROD el provider ya es 'afipsdk', así
+  // que forzarReal es redundante (no cambia el path).
+  const forzarReal = opts?.forzarReal === true
+  if (!forzarReal && (!config.enabled || config.provider === 'mock')) {
     return mockConsulta(cuit)
   }
 
@@ -152,6 +163,9 @@ export async function consultarPadron(cuitRaw: string, tallerId?: string, userId
 
     return { exitosa: true, datos, duracionMs: Date.now() - inicio }
   } catch (error: unknown) {
+    // Diagnóstico ARCA prod: el error crudo del SDK se perdía (solo quedaba el
+    // código clasificado). Loguearlo para ver el rechazo real de AFIP/afipsdk.
+    console.error('[arca] SDK error crudo:', error instanceof Error ? error.message : String(error), (error as { data?: unknown } | null)?.data ?? '')
     const codigo = clasificarError(error)
     await registrarConsulta(tallerId, cuit, 'padron-a13', false, null, codigo, inicio)
     logAfipVerificacion(tallerId, cuit, false, codigo, userId)
