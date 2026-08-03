@@ -64,7 +64,7 @@ Development). Las de CI viven en **GitHub Actions secrets**. Localmente, en `.en
 | Variable | Para qué | Scope esperado | Notas de seguridad |
 |----------|----------|----------------|--------------------|
 | `DATABASE_URL` / `DIRECT_URL` | Conexión Postgres (pooler / directa) | Todos, por entorno | Distintos por entorno (DEV vs PROD) |
-| `NEXTAUTH_SECRET` | Firma de JWT de sesión | Todos | **Debe separarse por entorno** (ver hallazgo 1.2). Rotar invalida sesiones |
+| `NEXTAUTH_SECRET` | Firma de JWT de sesión | Production / Preview (entradas separadas) | **Separado por entorno el 2026-08-03** (ver hallazgo 1.2). Sin scope Development (no lo permite el plan y no se usa `vercel dev`). Rotar invalida sesiones del entorno |
 | `NEXTAUTH_URL` | URL base de auth | Por entorno | — |
 | `RESEND_API_KEY` | Envío de emails | Prod + Preview | Sin ella, email cae a modo dev (log, no manda) |
 | `EMAIL_FROM` (+ `EMAIL_FROM_NAME`, `EMAIL_REPLY_TO`) | Remitente | Prod + Preview | Dominio propio `notificaciones@plataformatextil.com.ar` |
@@ -73,7 +73,7 @@ Development). Las de CI viven en **GitHub Actions secrets**. Localmente, en `.en
 | `AFIP_SDK_TOKEN` | Token de afipsdk.com | Por entorno | Origen del incidente 1.4; mantener una sola entrada válida por entorno |
 | `AFIP_SDK_ENV` | `production` vs homologación | Prod = `production` | Ausente → cae a homologación |
 | `AFIP_CERT` / `AFIP_KEY` / `AFIP_CUIT_PLATAFORMA` / `ARCA_ENABLED` / `ARCA_PROVIDER` | Config ARCA | Por entorno | `ARCA_PROVIDER`: PROD real, DEV mock+`?real=1` |
-| `CRON_SECRET` | Protege el cron de gracia CUIT | **Prod (requerido)** | Sin ella el cron queda desprotegido |
+| `CRON_SECRET` | Protege el cron de gracia CUIT | Production / Preview (entradas separadas) | **Separado por entorno el 2026-08-03**: Production con el valor original, Preview con valor nuevo. Sin ella el cron queda desprotegido |
 | `CI_BYPASS_TOKEN` | Bypass de rate-limit / endpoints de test | **Sólo Preview/Dev** | **AUSENTE en Prod por diseño** |
 | `ANTHROPIC_API_KEY` / `VOYAGE_API_KEY` | RAG | Por entorno | — |
 
@@ -112,7 +112,9 @@ Development). Las de CI viven en **GitHub Actions secrets**. Localmente, en `.en
 2. **Registrador y propietario del dominio** + inventario DNS completo.
 3. **Política y calendario de rotación** de credenciales (por proveedor).
 4. **Planes/tiers** contratados de cada SaaS (para presupuesto y límites).
-5. Re-scope de `NEXTAUTH_SECRET` (hallazgo de seguridad 1.2) y confirmación de scopes ARCA.
+5. ~~Re-scope de `NEXTAUTH_SECRET` y `CRON_SECRET`~~ — **CERRADO 2026-08-03** (ambos separados
+   por entorno Production/Preview; ver hallazgo 1.2). Scopes ARCA confirmados en el cierre del
+   incidente 1.4.
 
 > Una vez que Sergio confirme titularidad y receptores, Gerardo cierra la parte técnica
 > (transferencia efectiva de owners, DNS y calendario de rotación).

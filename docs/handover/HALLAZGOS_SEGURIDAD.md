@@ -35,17 +35,21 @@ matriz.
   legítimamente). Convención documentada: `.env` y `.env.local` **siempre a DEV**.
 - **Refs:** dev ref `fjddgukwydsdcrqoxvns` · prod ref `nefbhacmjrzynnhvgfnl`.
 
-### 1.2 `NEXTAUTH_SECRET` compartido entre entornos (MITIGADO / acción de dashboard)
+### 1.2 `NEXTAUTH_SECRET` compartido entre entornos (CERRADO)
 - **Hallazgo:** una única entrada de `NEXTAUTH_SECRET` cubría todos los entornos en Vercel.
   Un JWT firmado en DEV/Preview **valida en PROD** (misma clave) → una sesión emitida en un
   entorno de menor confianza es aceptable en producción.
 - **Impacto:** ruptura del aislamiento de sesiones entre entornos (P0 en el runbook de
   re-scope).
-- **Estado:** documentado con procedimiento exacto en
-  `.claude/specs/RUNBOOK_RESCOPE_SECRETS.md`. La ejecución es una **tarea de dashboard de
-  Gerardo**: generar un secret separado para Preview/Development, dejando el de Production
-  aislado. Rotar invalida las sesiones activas de ese entorno (esperado).
-- **Pendiente:** ejecutar el re-scope (no rompe nada en runtime; es endurecimiento).
+- **Resolución (2026-08-03):** re-scope ejecutado en el dashboard de Vercel. `NEXTAUTH_SECRET`
+  quedó **separado por entorno**: entrada de **Production** intacta (aislada) + entrada
+  **nueva de Preview** con valor propio. **No hay entrada de Development**: el candado del
+  plan no permite el scope Development para esta variable y además el proyecto no usa
+  `vercel dev` (no hay runtime local que la consuma), por lo que el aislamiento
+  Production ↔ Preview es suficiente. Un JWT de Preview ya no valida en Production.
+  Procedimiento en `.claude/specs/RUNBOOK_RESCOPE_SECRETS.md`.
+- **Nota:** el re-scope rota el secret de Preview → invalida las sesiones activas de ese
+  entorno (esperado, sin impacto en producción).
 
 ### 1.3 `ARCA_PROVIDER` como entrada compartida — valor cruzado entre entornos (CERRADO)
 - **Hallazgo:** `ARCA_PROVIDER` era una entrada compartida; al ponerla en `mock` para
@@ -184,7 +188,7 @@ aplicable a esta plataforma es el de **Next.js + Vercel + Supabase RLS** (seccio
 | # | Hallazgo | Estado |
 |---|----------|--------|
 | 1.1 | `.env`→prod footgun | CERRADO (guards #395) |
-| 1.2 | `NEXTAUTH_SECRET` compartido | MITIGADO (re-scope pendiente, dashboard) |
+| 1.2 | `NEXTAUTH_SECRET` compartido | CERRADO (re-scope 03-ago: Production/Preview) |
 | 1.3 | `ARCA_PROVIDER` compartido | CERRADO |
 | 1.4 | Incidente ARCA prod (token) | CERRADO (03-ago) |
 | 1.5 | `CI_BYPASS_TOKEN` fuera de prod | CERRADO / correcto |
@@ -197,6 +201,7 @@ aplicable a esta plataforma es el de **Next.js + Vercel + Supabase RLS** (seccio
 | 4.1 | CSP + security headers | ABIERTO |
 | 4.2 | Rate limiting / CORS | CERRADO |
 
-**Abiertos que requieren trabajo:** re-scope de `NEXTAUTH_SECRET` (1.2, dashboard), gate de
-registro para el evento (3.1, implementar spec), CSP + headers (4.1, código). Todo lo demás
-está cerrado o mitigado con la promoción a producción como hito de activación de K-01.
+**Abiertos que requieren trabajo:** gate de registro para el evento (3.1, implementar spec) y
+CSP + headers (4.1, código). El re-scope de `NEXTAUTH_SECRET` (1.2) se ejecutó el 2026-08-03.
+Todo lo demás está cerrado o mitigado con la promoción a producción como hito de activación
+de K-01.

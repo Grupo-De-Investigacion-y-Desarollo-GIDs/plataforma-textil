@@ -186,7 +186,7 @@ aplica — lo gestiona Vercel. El hardening aplicable es Next.js + Vercel + Supa
 - **Reporte de cobertura con % de líneas** — instalar `@vitest/coverage-v8` — **Gera.**
 - **Matriz de riesgos** formal vs. pragmática — **decisión de Sergio** con Gera. El
   documento de hallazgos es la base pragmática.
-- Re-scope de `NEXTAUTH_SECRET` (Hallazgo 1.2) — **Gera** (dashboard).
+- ~~Re-scope de `NEXTAUTH_SECRET` (Hallazgo 1.2)~~ — **CERRADO 2026-08-03** (junto con `CRON_SECRET`, separados por entorno).
 
 ---
 

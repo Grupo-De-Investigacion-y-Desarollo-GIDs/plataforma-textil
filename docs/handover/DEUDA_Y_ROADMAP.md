@@ -51,12 +51,12 @@ auditoría; luego P-04→P-05→P-08 (derechos ARCO, ~18 h); P-06 y P-07 en para
 No están en un bloque del backlog pero salen del consolidado de seguridad
 (`docs/handover/HALLAZGOS_SEGURIDAD.md`) y conviene cerrarlos antes/junto con el Bloque A:
 
-| Ítem | Qué | Estimación | Ref |
-|------|-----|-----------|-----|
-| CSP + security headers | `headers()` en `next.config.ts` (CSP report-only, HSTS, X-Frame-Options, etc.) | ~3 h | Hallazgo 4.1 |
-| Re-scope `NEXTAUTH_SECRET` | Separar el secret por entorno (dashboard) | ~1 h | Hallazgo 1.2 |
-| Gate de registro para el evento OIT | Implementar allowlist + `MODO_EVENTO` | ~4 h | Hallazgo 3.1 · spec `v4-a-proteger-registro-dev.md` |
-| Saneo de CUITs en PROD | Normalizar CUITs con guiones (3 tablas) en el próximo deploy grande | ~1 h | `RUNBOOK_PROMOCION_PROD.md` §7 |
+| Ítem | Qué | Estimación | Estado | Ref |
+|------|-----|-----------|--------|-----|
+| CSP + security headers | `headers()` en `next.config.ts` (CSP report-only, HSTS, X-Frame-Options, etc.) | ~3 h | Pendiente | Hallazgo 4.1 |
+| Re-scope `NEXTAUTH_SECRET` + `CRON_SECRET` | Separar los secrets por entorno (dashboard) | ~1 h | **CERRADO 2026-08-03** | Hallazgo 1.2 |
+| Gate de registro para el evento OIT | Implementar allowlist + `MODO_EVENTO` | ~4 h | Pendiente | Hallazgo 3.1 · spec `v4-a-proteger-registro-dev.md` |
+| Saneo de CUITs en PROD | Normalizar CUITs con guiones (3 tablas) en el próximo deploy grande | ~1 h | Pendiente | `RUNBOOK_PROMOCION_PROD.md` §7 |
 
 ---
 
