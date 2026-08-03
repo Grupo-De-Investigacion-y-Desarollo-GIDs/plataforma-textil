@@ -973,7 +973,7 @@ async function main() {
       { clave: 'academia', valor: 'true', grupo: 'features_e1' },
       { clave: 'formalizacion', valor: 'true', grupo: 'features_e1' },
       { clave: 'dashboard_estado', valor: 'true', grupo: 'features_e1' },
-      { clave: 'denuncias', valor: 'true', grupo: 'features_e1' },
+      { clave: 'denuncias', valor: 'false', grupo: 'features_e1' }, // OFF explicito para el lanzamiento (canal de denuncias pendiente de definir OIT)
       // Feature flags E2
       { clave: 'publicacion_pedidos', valor: 'true', grupo: 'features_e2' },
       { clave: 'cotizaciones', valor: 'true', grupo: 'features_e2' },

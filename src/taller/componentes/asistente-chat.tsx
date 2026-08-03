@@ -77,7 +77,7 @@ export function AsistenteChat() {
               El asistente no está disponible en este momento.
             </p>
             <p className="text-xs text-gray-400 mt-1">
-              Para consultas escribí a soporte@plataformatextil.ar
+              Para consultas escribí a soporte@plataformatextil.com.ar
             </p>
           </div>
         ) : (
@@ -164,7 +164,7 @@ export function AsistenteChat() {
             )}
 
             <p className="text-xs text-gray-400">
-              El asistente responde basandose en el contenido de la plataforma. Para consultas especificas escribi a soporte@plataformatextil.ar
+              El asistente responde basandose en el contenido de la plataforma. Para consultas especificas escribi a soporte@plataformatextil.com.ar
             </p>
           </div>
         )

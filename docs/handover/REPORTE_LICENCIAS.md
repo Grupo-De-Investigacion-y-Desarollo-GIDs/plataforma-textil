@@ -12,22 +12,25 @@ Alcance: dependencias de **produccion** (`npm --production`) y servicios externo
 
 ## 1. Licencia del proyecto
 
-El repositorio incluye un archivo `LICENSE` en la raiz con licencia **MIT**:
+El repositorio incluye un archivo `LICENSE` en la raiz con licencia **Apache-2.0**:
 
-> MIT License
-> Copyright (c) 2026 Organizacion Internacional del Trabajo (OIT) y
+> Apache License, Version 2.0
+> Copyright 2026 Organizacion Internacional del Trabajo (OIT) y
 > Universidad Nacional de Tres de Febrero (UNTREF)
 
-La MIT es una licencia permisiva que autoriza uso, copia, modificacion, fusion,
-publicacion, distribucion, sublicenciamiento y venta, con la unica obligacion de
-conservar el aviso de copyright y el texto de la licencia en las copias. No
-impone copyleft ni obligaciones de apertura de codigo derivado.
+La Apache-2.0 es una licencia permisiva que autoriza uso, copia, modificacion,
+distribucion y sublicenciamiento, con la obligacion de conservar los avisos de
+copyright/atribucion y de señalar los archivos modificados. A diferencia de MIT,
+suma una **concesion expresa de patentes** y una clausula de terminacion ante
+litigios de patentes. No impone copyleft ni obligaciones de apertura de codigo
+derivado.
 
-**Gap (decision de Sergio):** el archivo `LICENSE` actual fija MIT con titularidad
-OIT + UNTREF, pero la **decision final** sobre la licencia del proyecto y su
-encuadre con las politicas de propiedad intelectual de UNTREF/OIT queda a cargo
-de Sergio en coordinacion con las areas legales de ambas instituciones. Esto
-incluye definir el documento de cesion de derechos correspondiente (ver seccion 5).
+**Decidido (Sergio, 2026-08-03):** la licencia del **codigo** es **Apache-2.0**
+con titularidad OIT + UNTREF (antes MIT). La **documentacion editorial** se
+distribuye bajo **CC BY 4.0 IGO** (ver `HANDOVER_PACKAGE.md`). La cesion de
+derechos formal (`CESION_DERECHOS`) y la validacion final con las areas legales
+de ambas instituciones quedan a coordinar (ver seccion 5); si OIT define otro
+encuadre, se ajusta.
 
 ---
 
@@ -59,13 +62,13 @@ produccion. **Total: 434 paquetes.**
 
 - **Predominan licencias permisivas** (MIT, ISC, Apache-2.0, BSD, 0BSD,
   Unlicense, MIT-0), que representan la amplia mayoria del arbol (~427 de 434).
-  Todas son compatibles con la distribucion del proyecto bajo MIT y no imponen
-  copyleft.
+  Todas son compatibles con la distribucion del proyecto bajo Apache-2.0 y no
+  imponen copyleft.
 - **UNLICENSED (1) = `pdt@0.1.0`**: es el **propio paquete del proyecto**
   (`package.json` marcado como privado). No es una dependencia de terceros ni un
   problema de licenciamiento; el campo `UNLICENSED`/`private` evita su
   publicacion accidental en el registro npm. La licencia efectiva del producto es
-  la del archivo `LICENSE` (MIT, seccion 1).
+  la del archivo `LICENSE` (Apache-2.0, seccion 1).
 - **LGPL-3.0-or-later (2)** son las unicas licencias con copyleft (debil) del
   arbol. Corresponden a los binarios nativos de **libvips** que empaqueta `sharp`
   (optimizacion de imagenes de Next.js):

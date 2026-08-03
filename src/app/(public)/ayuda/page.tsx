@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Mail, MessageCircle, ShieldCheck, FileText, User, BookOpen } from 'lucide-react'
+import { getFeatureFlag } from '@/compartido/lib/features'
 
 const faqItems = [
   {
@@ -20,7 +21,8 @@ const faqItems = [
   },
 ]
 
-export default function AyudaPage() {
+export default async function AyudaPage() {
+  const denunciasActivas = await getFeatureFlag('denuncias')
   return (
     <div className="space-y-6">
       <h1 className="font-overpass font-bold text-3xl text-brand-blue">Ayuda</h1>
@@ -90,27 +92,29 @@ export default function AyudaPage() {
       <section className="rounded-xl border border-gray-200 bg-white p-6">
         <h2 className="font-overpass font-bold text-xl text-brand-blue mb-4">Contacto</h2>
         <div className="space-y-3 text-sm text-gray-700">
-          <p className="flex items-center gap-2"><Mail className="w-4 h-4 text-brand-blue" /> soporte@plataformatextil.ar</p>
+          <p className="flex items-center gap-2"><Mail className="w-4 h-4 text-brand-blue" /> soporte@plataformatextil.com.ar</p>
           <p className="flex items-center gap-2"><MessageCircle className="w-4 h-4 text-brand-blue" /> Respuesta estimada: 24-48 hs habiles</p>
         </div>
       </section>
 
-      <section className="rounded-xl border border-amber-200 bg-amber-50 p-6">
-        <h2 className="font-overpass font-bold text-xl text-amber-800 mb-2">¿Queres reportar una situacion?</h2>
-        <p className="text-sm text-amber-700 mb-4">
-          Podes hacer una denuncia de forma anonima o consultar el estado de una denuncia existente.
-        </p>
-        <div className="flex gap-3">
-          <a href="/denunciar"
-            className="inline-flex items-center justify-center rounded-lg font-overpass font-semibold text-sm bg-amber-600 text-white px-4 py-2 hover:bg-amber-700 transition-colors">
-            Hacer una denuncia
-          </a>
-          <a href="/consultar-denuncia"
-            className="inline-flex items-center justify-center rounded-lg font-overpass font-semibold text-sm border border-amber-600 text-amber-700 px-4 py-2 hover:bg-amber-100 transition-colors">
-            Consultar estado
-          </a>
-        </div>
-      </section>
+      {denunciasActivas && (
+        <section className="rounded-xl border border-amber-200 bg-amber-50 p-6">
+          <h2 className="font-overpass font-bold text-xl text-amber-800 mb-2">¿Queres reportar una situacion?</h2>
+          <p className="text-sm text-amber-700 mb-4">
+            Podes hacer una denuncia de forma anonima o consultar el estado de una denuncia existente.
+          </p>
+          <div className="flex gap-3">
+            <a href="/denunciar"
+              className="inline-flex items-center justify-center rounded-lg font-overpass font-semibold text-sm bg-amber-600 text-white px-4 py-2 hover:bg-amber-700 transition-colors">
+              Hacer una denuncia
+            </a>
+            <a href="/consultar-denuncia"
+              className="inline-flex items-center justify-center rounded-lg font-overpass font-semibold text-sm border border-amber-600 text-amber-700 px-4 py-2 hover:bg-amber-100 transition-colors">
+              Consultar estado
+            </a>
+          </div>
+        </section>
+      )}
     </div>
   )
 }

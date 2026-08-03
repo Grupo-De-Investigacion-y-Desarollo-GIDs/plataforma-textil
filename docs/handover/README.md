@@ -15,10 +15,14 @@ la estructura estándar de OIT (puntos a–j) y enlaza cada entregable.
 | [BACKUP_RESTORE.md](./BACKUP_RESTORE.md) | e — backup/restore + retención |
 | [GUIA_DESARROLLO.md](./GUIA_DESARROLLO.md) | f — levantar local, tests, convenciones |
 | [COBERTURA_TESTS.md](./COBERTURA_TESTS.md) | g — 55 unit + 37 e2e + CI |
-| [HALLAZGOS_SEGURIDAD.md](./HALLAZGOS_SEGURIDAD.md) | g — hallazgos consolidados + estado |
 | [REPORTE_LICENCIAS.md](./REPORTE_LICENCIAS.md) | h — licencias de deps + tabla SaaS |
-| [INVENTARIO_ACCESOS.md](./INVENTARIO_ACCESOS.md) | d — cuentas, env vars (sin valores), DNS |
 | [DEUDA_Y_ROADMAP.md](./DEUDA_Y_ROADMAP.md) | i + backlog — Bloque A y roadmap post-entrega |
+
+> **Entregados por canal seguro separado (NO en el repositorio):** `HALLAZGOS_SEGURIDAD.md`
+> (g — hallazgos consolidados + estado) e `INVENTARIO_ACCESOS.md` (d — cuentas, env vars sin
+> valores, DNS). Describen superficie de ataque y mapa de credenciales; por decisión de Sergio
+> (2026-08-03) no viajan con el repositorio transferible y se entregan a OIT/UNTREF por un canal
+> aparte. Ver la nota en el documento maestro.
 
 Documentos relacionados fuera de esta carpeta:
 - `../handover-oit-analisis-y-division.md` — análisis base y división de tareas (Sergio).

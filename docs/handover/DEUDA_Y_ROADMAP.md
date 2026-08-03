@@ -49,7 +49,8 @@ auditoría; luego P-04→P-05→P-08 (derechos ARCO, ~18 h); P-06 y P-07 en para
 ## Prioridad inmediata — endurecimiento previo al escalamiento
 
 No están en un bloque del backlog pero salen del consolidado de seguridad
-(`docs/handover/HALLAZGOS_SEGURIDAD.md`) y conviene cerrarlos antes/junto con el Bloque A:
+(`HALLAZGOS_SEGURIDAD.md`, entregado por canal seguro separado — no está en el repo) y conviene
+cerrarlos antes/junto con el Bloque A:
 
 | Ítem | Qué | Estimación | Estado | Ref |
 |------|-----|-----------|--------|-----|
@@ -57,6 +58,28 @@ No están en un bloque del backlog pero salen del consolidado de seguridad
 | Re-scope `NEXTAUTH_SECRET` + `CRON_SECRET` | Separar los secrets por entorno (dashboard) | ~1 h | **CERRADO 2026-08-03** | Hallazgo 1.2 |
 | Gate de registro para el evento OIT | Implementar allowlist + `MODO_EVENTO` | ~4 h | Pendiente | Hallazgo 3.1 · spec `v4-a-proteger-registro-dev.md` |
 | Saneo de CUITs en PROD | Normalizar CUITs con guiones (3 tablas) en el próximo deploy grande | ~1 h | Pendiente | `RUNBOOK_PROMOCION_PROD.md` §7 |
+
+---
+
+## Checklist de transferencia del repositorio a OIT/UNTREF
+
+Al transferir el repositorio a la cuenta que designe OIT (cuando OIT designe receptor):
+
+- [ ] **Purga de documentos sensibles del historial de git.** `INVENTARIO_ACCESOS.md` y
+  `HALLAZGOS_SEGURIDAD.md` se retiraron de `docs/handover/` (decisión de Sergio, 2026-08-03) y
+  se entregan por canal seguro separado, pero **siguen presentes en commits previos del
+  historial**. Antes o durante la transferencia, evaluar purgarlos con
+  [`git filter-repo`](https://github.com/newren/git-filter-repo):
+  ```bash
+  git filter-repo --path docs/handover/INVENTARIO_ACCESOS.md \
+                  --path docs/handover/HALLAZGOS_SEGURIDAD.md --invert-paths
+  ```
+  (reescribe el historial → requiere push forzado y coordinación; hacerlo en el momento de la
+  transferencia, no antes, para no romper referencias del equipo actual).
+- [ ] **Rotar todos los secretos** tras entregar los accesos (los valores no están en el repo,
+  pero la titularidad de las cuentas cambia). Ver `RUNBOOK_RESCOPE_SECRETS.md`.
+- [ ] **Reasignar la titularidad institucional** de cuentas (Vercel, Supabase, Resend, GitHub,
+  dominio) — pendiente de definición OIT/UNTREF.
 
 ---
 
