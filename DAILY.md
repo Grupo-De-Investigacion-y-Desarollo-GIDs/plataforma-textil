@@ -3,6 +3,34 @@
 ## 2026-08-03
 
 ### Gerardo Breard
+- **17:30** `58a157f` — fix(pre-deploy): dominio .com.ar, flag denuncias OFF, LICENSE Apache-2.0, docs sensibles fuera del repo
+  - `LICENSE`
+  - `docs/handover/DEUDA_Y_ROADMAP.md`
+  - `docs/handover/GUIA_DESARROLLO.md`
+  - `docs/handover/HALLAZGOS_SEGURIDAD.md`
+  - `docs/handover/HANDOVER_PACKAGE.md`
+  - `docs/handover/INVENTARIO_ACCESOS.md`
+  - `docs/handover/README.md`
+  - `docs/handover/REPORTE_LICENCIAS.md`
+  - `package.json`
+  - `prisma/seed.ts`
+  - `src/app/(admin)/admin/integraciones/email/page.tsx`
+  - `src/app/(public)/ayuda/onboarding-marca/page.tsx`
+  - `src/app/(public)/ayuda/onboarding-taller/page.tsx`
+  - `src/app/(public)/ayuda/page.tsx`
+  - `src/app/(public)/consultar-denuncia/consultar-denuncia-form.tsx`
+  - `src/app/(public)/consultar-denuncia/page.tsx`
+  - `src/app/(public)/denunciar/denunciar-form.tsx`
+  - `src/app/(public)/denunciar/page.tsx`
+  - `src/app/(public)/privacidad/page.tsx`
+  - `src/app/(public)/terminos/page.tsx`
+  - `src/app/api/denuncias/[codigo]/route.ts`
+  - `src/compartido/componentes/pdf/certificado-pdf.tsx`
+  - `src/compartido/lib/arca.ts`
+  - `src/compartido/lib/content/institutional.ts`
+  - `src/compartido/lib/rag.ts`
+  - `src/taller/componentes/asistente-chat.tsx`
+
 - **15:50** `01d1438` — docs(handover): cerrar re-scope NEXTAUTH_SECRET + CRON_SECRET (2026-08-03)
   - `docs/handover/DEUDA_Y_ROADMAP.md`
   - `docs/handover/HALLAZGOS_SEGURIDAD.md`
