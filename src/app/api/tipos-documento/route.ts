@@ -9,7 +9,17 @@ export async function GET() {
     const session = await auth()
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
+    // K-05: select explicito — el panel de estado/documentos usa estos 7 campos.
     const tipos = await prisma.tipoDocumento.findMany({
+      select: {
+        id: true,
+        nombre: true,
+        descripcion: true,
+        requerido: true,
+        activo: true,
+        puntosOtorgados: true,
+        nivelMinimo: true,
+      },
       orderBy: { nombre: 'asc' },
     })
 
@@ -29,7 +39,8 @@ export async function POST(req: NextRequest) {
     if (!body.label?.trim()) return NextResponse.json({ error: 'Label requerido' }, { status: 400 })
     if (!body.nivelMinimo) return NextResponse.json({ error: 'Nivel mínimo requerido' }, { status: 400 })
 
-    const tipo = await prisma.tipoDocumento.create({
+    // K-05: el caller re-fetchea el GET tras crear; no lee este body.
+    await prisma.tipoDocumento.create({
       data: {
         nombre: body.nombre.trim(),
         label: body.label.trim(),
@@ -42,10 +53,11 @@ export async function POST(req: NextRequest) {
         orden: body.orden ?? 0,
         puntosOtorgados: body.puntosOtorgados ?? 10,
       },
+      select: { id: true },
     })
 
     invalidarCacheNivel()
-    return NextResponse.json(tipo, { status: 201 })
+    return NextResponse.json({ ok: true }, { status: 201 })
   } catch (error: unknown) {
     if (error && typeof error === 'object' && 'code' in error && (error as { code: string }).code === 'P2002') {
       return NextResponse.json({ error: 'Ya existe un tipo de documento con ese nombre' }, { status: 409 })
@@ -71,13 +83,15 @@ export async function PUT(req: NextRequest) {
     }
     if (body.puntosOtorgados !== undefined) data.puntosOtorgados = body.puntosOtorgados
 
-    const tipo = await prisma.tipoDocumento.update({
+    // K-05: el caller re-fetchea el GET tras editar; no lee este body.
+    await prisma.tipoDocumento.update({
       where: { id: body.id },
       data,
+      select: { id: true },
     })
 
     invalidarCacheNivel()
-    return NextResponse.json(tipo)
+    return NextResponse.json({ ok: true })
   } catch (error: unknown) {
     if (error && typeof error === 'object' && 'code' in error && (error as { code: string }).code === 'P2002') {
       return NextResponse.json({ error: 'Ya existe un tipo de documento con ese nombre' }, { status: 409 })

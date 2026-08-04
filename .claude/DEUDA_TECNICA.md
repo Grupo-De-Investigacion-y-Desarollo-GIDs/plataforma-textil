@@ -18,6 +18,39 @@ y prioridad sugerida.
 - **Prioridad:** baja (backlog post-piloto, decisión de Gerardo)
 - **Estimación:** 3-4h
 
+### F-06: Label de `ProgressRing` (`text-4xl` fijo) desborda el anillo a ≤320px
+- **Detectado en:** QA mobile de Etapa 2.1 (PR #439, 2026-06-22)
+- **Descripción:** `ProgressRing` renderiza el porcentaje con fuente fija
+  `text-4xl` (`src/compartido/componentes/ui/progress-ring.tsx:26`) que no
+  escala con la prop `size`. En usos chicos (`size=100`, card "Perfil X%
+  completo" de la vidriera del taller) el "100%" se desborda del anillo y
+  pisa el texto adyacente en pantallas ≤320px.
+- **Pre-existente:** la card es byte-idéntica a la vista anterior de
+  `/taller/perfil`; 2.1 solo la movió de lugar, no la introdujo. Afecta a
+  cualquier uso chico de `ProgressRing` (también el dashboard a `size=120`,
+  más leve).
+- **Impacto:** estético menor, solo a ≤320px; no afecta funcionalidad ni el
+  flujo del piloto. La página no tiene overflow horizontal.
+- **Prioridad:** baja (backlog post-piloto). Fix sugerido: escalar el
+  font-size del label con `size` (o pasar una clase de tamaño por prop).
+- **Estimación:** ~30 min
+
+### F-07: Mapeo requisito→curso de Academia (Mi recorrido)
+- **Detectado en:** Barrido del rol Taller (PR #439b, 2026-06-25)
+- **Descripción:** en "Mi recorrido" (`/taller/formalizacion`) el CTA de cursos
+  apunta a la Academia general (`/taller/aprender`), no a un curso puntual por
+  requisito. En #439b se ajustó el label a "Ver cursos relacionados" (en vez de
+  prometer un curso por requisito) justamente porque ese mapeo todavía no existe.
+- **Pendiente:** cuando **Matías cierre la curaduría** de cursos, mapear cada
+  requisito del recorrido a su curso específico de la Academia y enlazar el CTA
+  (o un botón por ítem del checklist) al curso correspondiente.
+- **Impacto:** menor (el CTA general ya funciona; solo se pierde el deep-link
+  fino requisito→curso). No bloquea el piloto.
+- **Prioridad:** media (depende de la curaduría de contenido de Matías).
+- **Estimación:** ~2-4h una vez disponible el catálogo curado.
+
+_F-04 sigue abierto (cosmético dashboards). F-06 abierto (ProgressRing mobile). F-07 abierto (mapeo requisito→curso, depende de Matías). F-05 resuelto — ver sección "Resueltas"._
+
 ## Backend / Arquitectura
 
 ### B-01: Tres paths de verificación de CUIT sin unificar
@@ -57,6 +90,8 @@ y prioridad sugerida.
   auto-corrección on-focus — a confirmar).
 - **Prioridad:** baja (PR aparte, no bloqueó #411 — criterio de Sergio).
 
+_B-07 resuelto — ver sección "Resueltas" (se arregló en frío, antes de que existan certificados)._
+
 ## Datos
 
 ### D-03: Reseed coordinado pendiente — 2º paso de recorrido de tallerOro (cobertura plena del test F-1)
@@ -87,6 +122,32 @@ _D-01 y D-02 resueltos en U-05 (#410) — ver sección "Resueltas"._
 - **Prioridad:** media (problema de productividad del agente)
 - **Estimación:** investigar (puede ser configuración WSL, devcontainer,
   o setup)
+- **Utilidad descubierta (M-03, 2026-06-18):** pese a T-01, **Playwright
+  SÍ funciona para verificación visual de UI**. `require('playwright')` y
+  `@playwright/test` están corruptos en /mnt/d (igual que tsc/vitest), pero
+  **`require('playwright-core')` carga bien** y usa el chromium ya instalado
+  en `~/.cache/ms-playwright`. Vía válida: script CJS dentro del dir del
+  proyecto (ESM desde /tmp no resuelve node_modules) → `chromium.launch()`
+  → navegar el **preview de Vercel del PR** (login público 200; para
+  rutas con auth, loguear con credenciales del seed) → screenshots en
+  320/375/414px → `Read` de los PNG. Para no redescubrirlo.
+- **Patrón de migraciones — `prisma migrate dev` ROTO por pgvector (2026-06-22, PR #437):**
+  `prisma migrate dev` falla con **P3006** porque valida contra una *shadow
+  database* que NO tiene la extensión `vector` (pgvector) que usa una migración
+  previa (`agregar_documento_rag`) → `ERROR: type "vector" does not exist`. **No
+  es un bug del cambio que se está migrando.** Patrón establecido del repo para
+  agregar una migración:
+  1. Editar `prisma/schema.prisma`.
+  2. **Crear la migración a mano**: `prisma/migrations/<TIMESTAMP>_<nombre>/migration.sql`
+     con el SQL (timestamp posterior a la última; formato `YYYYMMDDHHMMSS`).
+  3. Aplicar a DEV con **`prisma migrate deploy`** (NO usa shadow DB) tras
+     `npm run db:check` (guard anti-PROD). Confirmar `migrate status` "up to date" antes.
+  4. `prisma migrate generate`/`generate` para refrescar el client.
+  - Ojo extra (T-01): el `prisma` local de /mnt/d está roto → usar `npx prisma@6.19.2`
+    (la v7 que agarra npx por default ya no soporta `directUrl` en el schema).
+  - A futuro se podría arreglar `migrate dev` habilitando `vector` en la shadow DB
+    (config `prisma.config.ts` / `shadowDatabaseUrl` con la extensión), pero mientras
+    tanto: **migración manual + `migrate deploy`**.
 
 ### T-02: GitHub Actions outage intermitente selectivo
 - **Detectado en:** 2026-06-04 y volvió el 2026-06-07
@@ -96,43 +157,38 @@ _D-01 y D-02 resueltos en U-05 (#410) — ver sección "Resueltas"._
 - **Estado:** ticket abierto a GitHub Support
 - **Plan:** monitorear ticket; mientras tanto usar admin bypass
 
-### T-04: Directorio `e2e/` huérfano (no lo corre Playwright)
-- **Detectado en:** implementación Narrativa V4 Etapa 1 (2026-06-08)
-- **Descripción:** existen DOS carpetas de tests Playwright: `tests/e2e/`
-  (la real — `playwright.config.ts` tiene `testDir: './tests/e2e'`) y
-  `e2e/` (huérfana). Los archivos `e2e/checklist-sec*.spec.ts`,
-  `e2e/admin.spec.ts`, `e2e/auth.spec.ts`, etc. **nunca se ejecutan** en
-  CI ni con `npm run test:e2e`. Son ~12 specs de mantenimiento muerto.
-- **Impacto:** falsa sensación de cobertura. Cualquiera que edite `e2e/*`
-  (como pedía el spec de Etapa 1 para T-03) cree estar arreglando tests
-  que en realidad están inertes. Riesgo de divergencia silenciosa.
-- **Prioridad:** media (deuda de confiabilidad de la suite)
-- **Plan:** decidir entre (a) **migrar** los specs útiles de `e2e/` a
-  `tests/e2e/` y borrar la carpeta, o (b) **borrar** `e2e/` si son
-  duplicados/obsoletos de los de `tests/e2e/`. Verificar solapamiento
-  antes de borrar.
-- **Estimación:** 1-2h (auditar solapamiento + migrar/borrar)
+_T-04, T-05 y T-06 resueltos — ver sección "Resueltas"._
 
-### T-05: Test e2e u-09 no es idempotente (muta estado permanente)
-- **Detectado en:** Validación de T-04 (2026-06-08)
-- **Descripción:** e2e u-09-agregar-segundo-rol muta u09.test de
-  single-rol a multi-rol de forma irreversible. La DEV DB persiste
-  entre corridas, así que el test pasa la 1ra vez y falla la 2da
-  (ya no aparece agregar-rol-card porque el user ya tiene 2 roles).
-- **Impacto:** el test NO es CI-confiable sin un reseed previo en cada
-  corrida. Bloquea la migración limpia de u-09 a tests/e2e/ (los otros
-  3 U-specs no tienen este problema).
-- **Prioridad:** media — bloquea cerrar T-04 al 100% (3 de 4 specs
-  migran limpio, u-09 queda pendiente de este fix)
-- **Soluciones posibles:**
-  - Hook de cleanup en afterEach que resetee u09.test a single-rol
-    (vía API o DB directa)
-  - Usar un user throwaway creado/destruido en el propio test
-  - Documentar como "one-shot" (NO recomendado: rompe en 2da corrida)
-- **Relación:** ya estaba anticipado en el spec de U-08
-  (v4-u-08-tests-e2e-multi-rol.md, §3.3 aislamiento) — esto lo confirma
-  en la práctica
-- **Estimación:** 1-2h (el cleanup hook es lo más limpio)
+### T-07: Sin e2e del flujo de DENUNCIA (condicionado a G-14)
+- **Detectado en:** cierre de T-04 (2026-06-19), al auditar el huérfano `e2e/`.
+- **Descripción:** el flujo público de denuncia (`/denunciar` → código `DEN-2026-XXXXX`
+  → consultar estado) solo lo ejercitaban specs del directorio huérfano `e2e/`
+  (borrado en T-04). En la suite real `tests/e2e/` no hay cobertura del flujo.
+- **Por qué NO se recuperó en T-04:** el flujo **muta DB** (crea denuncias), así que un
+  e2e fiel necesitaría su propio reset (patrón T-05) — excede el scope de "borrar el
+  huérfano". Las otras conductas no cubiertas sí se recuperaron (FeedbackWidget →
+  `feedback-widget.spec.ts`; `/verificar` inválido → `verificar-certificado.spec.ts`).
+- **Condicionado a G-14:** existe una decisión institucional pendiente (master, **G-14**)
+  de **deshabilitar las denuncias**. **NO invertir en este e2e hasta resolver G-14** — si
+  la feature se deshabilita, la cobertura es trabajo perdido.
+- **Prioridad:** muy baja / bloqueada (depende de G-14).
+- **Estimación (si G-14 mantiene la feature):** 1.5-2h (flujo + reset de denuncias).
+
+### T-08: `limpiarPedidoTest` es un NO-OP silencioso (endpoint DELETE inexistente)
+- **Detectado en:** #439a (re-QA #439, 2026-06-24), al diagnosticar los "pedidos mock" del dashboard del taller.
+- **Descripción:** el helper `limpiarPedidoTest` en `tests/e2e/_helpers/cleanup.ts` llama a
+  `DELETE /api/pedidos/{omId}`, pero **ese endpoint no tiene handler DELETE** (`src/app/api/pedidos/[id]/route.ts`
+  solo expone GET y PUT). El `page.request.delete` devuelve 405, el helper hace `console.warn` y sigue → **limpieza
+  silenciosamente nula**. Además usa `omId` cuando el route resuelve por `id` interno (otro mismatch).
+- **Consecuencia:** los pedidos de test del e2e `flujo-comercial.spec.ts` **nunca se limpiaban** y se acumularon
+  en DEV (se encontraron **85** "Test-Prenda-*" que aparecían como "Pedidos activos" en el dashboard del taller del seed).
+- **Mitigado en #439a:** (a) `flujo-comercial.spec.ts` ahora cancela el pedido creado vía `PUT estado=CANCELADO`
+  (lo saca del filtro PENDIENTE/EN_EJECUCION del dashboard); (b) cleanup one-off en DEV (85 pedidos cancelados).
+  **El helper roto queda igual** (ningún test lo usa hoy).
+- **Severidad:** baja (ya mitigado; no afecta prod — el query del dashboard es correcto).
+- **Fix:** arreglar el helper (agregar handler DELETE con cascada, o cambiar a PUT→CANCELADO por `id`) **o eliminarlo**,
+  en un PR de limpieza.
+- **Relacionado:** **T-05** (patrón de e2e que mutan DB sin limpiar estado).
 
 ## Producto
 
@@ -154,24 +210,44 @@ _D-01 y D-02 resueltos en U-05 (#410) — ver sección "Resueltas"._
 
 ## Pendientes administrativos no técnicos (snapshot del sprint)
 
-### A-01: GitHub Pro suscripción accidental
-- **Detectado en:** 2026-06-04 durante destrabe del budget de Actions
-- **Descripción:** se contrató GitHub Pro USD 4/mes accidentalmente
-- **Acción:** cancelar en https://github.com/settings/billing/plans
-- **Urgencia:** ALTA (cobro recurrente real)
-
-### A-02: Aviso a 5 cuentas reales del incidente RLS
-- **Detectado en:** 2026-06-03 (incidente RLS)
-- **Descripción:** 5 cuentas reales (sebanestor83, cp.alanplummer,
-  sofia.rojo.sr, plummer.latam, cecilia.lavena) tienen sus hashes
-  bcrypt filtrados. Necesitan ser avisadas y se les debe pedir cambio
-  de contraseña.
-- **Estado:** pendiente desde el miércoles
-- **Sexta cuenta posible:** srodriguezunq (registro abandonado, posible
-  cuenta real adicional)
-- **Urgencia:** ALTA (afecta a personas reales)
+_A-01 y A-02 resueltos (confirmado por Gerardo, 2026-06-19) — ver sección "Resueltas"._
 
 ---
+
+## Candidatos al próximo deploy a PROD
+
+> Cambios mergeados a `develop` que corrigen algo **vivo en prod** y esperan el próximo
+> deploy. No justifican un deploy dedicado salvo que se indique; viajan con el próximo
+> cambio que vaya a prod.
+
+### DEPLOY-01 (CANDIDATO #1): Fix de consistencia de labels W-A
+- **PR / SHA:** #427, develop `64ecedf` (mergeado 2026-06-13, CI verde unit+e2e+Vercel).
+- **Qué corrige:** el perfil del taller y el dashboard sectorial de ESTADO mostraban
+  **labels viejos** de `escalabilidad` (`turnos`/`maquinaria` → "Sin capacidad de escalar"),
+  `organizacion` (`mixta` → "Prenda completa") y `registroProduccion` (`sin-sistematico`
+  → "Sin registro"). Fuente única `src/compartido/lib/taller-formulario.ts`.
+- **Por qué está vivo en prod:** W-A se deployó a prod el 2026-06-13; el bug viaja con él.
+  **Visible al taller en su propio perfil** (ve su escalabilidad/organización mal).
+- **Urgencia de deploy:** NO urge deploy dedicado. **Viaja con el próximo cambio que vaya a
+  prod**, o deploy chico solo si pasan **~4 días (≈2026-06-17)** sin nada más que promover.
+- **Riesgo de deploy:** bajo (solo presentación; sin schema/migración).
+
+### OBS-01 (PRERREQUISITO — bloquea el próximo deploy): setup externo de observabilidad
+- **Estado:** PENDIENTE (lo hace Gerardo; cuentas externas, Claude no puede crearlas).
+- **Qué falta (las 3 piezas externas):**
+  1. **UptimeRobot** — monitor tipo Keyword `"db":"up"` sobre `/api/health` cada 5 min.
+  2. **Canal Telegram** (recomendado) conectado a UptimeRobot como alert contact.
+  3. **Confirmar notificaciones de Vercel** (email de deploy fallido + integración Slack opcional).
+  - Antes de (1): **confirmar el dominio canónico de prod** para la URL del health
+    (`plataformatextil.com.ar` vs `plataforma-textil.vercel.app`).
+- **Por qué bloquea:** la parte de código ya está en develop (`/api/health`, runbook,
+  bitácora — #436, `dbec4e7`), pero sin el setup externo no hay alerta si algo se cae
+  en el piloto. Es **prerrequisito explícito del próximo deploy a prod según Sergio**
+  ("si algo se rompe en el piloto necesito poder verlo").
+- **Orden (importante):** hacer OBS-01 **ANTES** de coordinar la ventana de deploy con
+  Sergio, no después. La ventana no se agenda hasta que las 3 piezas estén activas.
+- **Guía paso a paso:** `.claude/specs/RUNBOOK_OBSERVABILIDAD.md` (§1 Vercel, §2 uptime,
+  §3 canal). Sentry queda **diferido** por decisión (no es parte de este gate).
 
 ## Cómo usar este archivo
 
@@ -183,6 +259,66 @@ _D-01 y D-02 resueltos en U-05 (#410) — ver sección "Resueltas"._
 - Items resueltos: mover a sección "Resueltas" con SHA o PR de fix
 
 ## Resueltas
+
+### T-04: Directorio `e2e/` huérfano — RESUELTA
+- **Resuelta en:** cierre de deuda e2e (PR #435, rama `fix/t05-t04-cobertura-e2e`,
+  2026-06-19). Commits `64688d0` (recuperar FeedbackWidget) + `31f6473` (borrar `e2e/`).
+- **Qué se hizo:** se auditó el huérfano (17 specs V3, live-login, copy stale) vs la
+  suite mantenida `tests/e2e/` (storageState). Cobertura mapeada 1:1 a specs modernos.
+  Se **borró** el directorio `e2e/` completo (nada lo importaba; Playwright nunca lo
+  corrió). Se **recuperó** la única conducta no cubierta: el FeedbackWidget → spec fresco
+  `tests/e2e/feedback-widget.spec.ts` (no copia literal: el huérfano asertaba "no aparece
+  sin sesión", hoy FALSO porque se monta en root layout). El `/verificar` inválido se
+  recuperó junto a B-07. La denuncia quedó como follow-up condicionado (**T-07**).
+
+### T-05: e2e u-09 no idempotente — RESUELTA (estaba stale)
+- **Resuelta en:** **#407** (`6365708`, 2026-06-09) — la entrada quedó stale en DEUDA.
+- **Verificado en:** cierre de deuda e2e (2026-06-19). `tests/e2e/u-09-agregar-segundo-rol.spec.ts`
+  tiene un `afterEach` que llama a `POST /api/test-utils/reset-seed-state?user=u09`: borra la
+  Marca creada por el test y restaura al usuario a single-rol (`roles=[TALLER]`,
+  `activeMode=TALLER`). Endpoint SOLO-CI con allowlist cerrado (`u09|julieta`), reset
+  por-usuario (no choca con u-04 en paralelo) y doble guard de prod. El test corre N veces
+  con el mismo resultado.
+
+### T-06: Sin e2e del FLUJO de W-A2–W-A5 — RESUELTA
+- **Resuelta en:** cierre de deuda e2e (PR #435, `175953b`, 2026-06-19).
+- **Fix:** `tests/e2e/w-a-formulario.spec.ts`, dos tests por aislamiento (DEV persiste +
+  fullyParallel): (a) UI — recorre el wizard y prueba el control condicional de W-A2
+  ("Organización mixta" revela el detalle), sin guardar; (b) persistencia — PUT parcial de
+  los campos W-A escalares (organizacion/detalle, registroProduccion, disponibilidad+
+  escalabilidad de W-A4, rolesFuncionales de W-A5) + re-lee `/api/talleres/me`. Campos
+  DISJUNTOS de `plantilla` → race-safe contra `desglose-plantilla.spec.ts`. Validado en
+  preview develop via playwright-core (UI reveal + PUT 200 + re-read de los 6 campos).
+
+### B-07: `verificar/page.tsx` renderizaba taller/coleccion como objetos — RESUELTA
+- **Resuelta en:** cierre de deuda e2e (PR #435, `78edbdc`, 2026-06-19). **En frío**, antes
+  de que existan certificados (prod/dev = 0) — desactiva la bomba latente.
+- **Fix:** tipar `taller`/`coleccion` como objetos (nullable) y renderizar `.nombre`/`.titulo`
+  en las 4 ubicaciones (válido + revocado). Test e2e `tests/e2e/verificar-certificado.spec.ts`:
+  mockea la forma REAL del endpoint y asserta que renderiza nombre/título como texto (guard
+  `not [object Object]`); + smoke del path inválido (404 → "Certificado no encontrado", recupera
+  la conducta del huérfano `e2e/`). Locators scopeados a `<main>` (duplicado de streaming SSR R19).
+
+### F-05: Desborde horizontal ~17px en /taller a 320px — RESUELTA
+- **Resuelta en:** cierre de deuda e2e (PR #435, `d7b5e3c` + commit de colecciones, 2026-06-19).
+- **Causa raíz (corregida durante la verificación):** el diagnóstico previo (#433) atribuía el
+  desborde al contenedor de toasts, pero al verificar a 320px con playwright-core la fuente
+  REAL del scroll a la derecha (scrollWidth 337 > 320) era la fila de **"colecciones
+  recomendadas"** del dashboard (`Link flex justify-between`): el título `{col.titulo}` no
+  truncaba y empujaba el bloque CTA derecho fuera del viewport. El contenedor de toasts era
+  una fuente secundaria (rubber-band a la izquierda con un toast visible).
+- **Fix (layout puro, dos partes):** (a) bloque izquierdo de la fila → `min-w-0 flex-1` con
+  título `truncate`; bloque derecho → `shrink-0`. (b) viewport de toasts acotado a
+  `max-w-[min(24rem,calc(100vw-2rem))]` (desktop sigue 24rem = `max-w-sm`). **Verificado a
+  320px y 375px: overflow 0.**
+- **Regresión:** `tests/e2e/taller-flujo.mobile.spec.ts` ahora asserta `expectNoHorizontalOverflow`
+  en `/taller` (antes lo omitía por F-05) → corre en los projects mobile (320/393px).
+
+### A-01: GitHub Pro suscripción accidental — RESUELTA
+- **Resuelta:** confirmado por Gerardo (2026-06-19). Suscripción cancelada.
+
+### A-02: Aviso a 5 cuentas reales del incidente RLS — RESUELTA
+- **Resuelta:** confirmado por Gerardo (2026-06-19). Cuentas avisadas / gestionadas.
 
 ### B-05: Race de clobbering de cookie en rolling JWT session — RESUELTA
 - **Detectado en:** Diagnóstico de fallos e2e u-09 en T-04 (2026-06-09)

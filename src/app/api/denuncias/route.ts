@@ -1,38 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
-import { requiereRolApi } from '@/compartido/lib/permisos'
 import { getFeatureFlag } from '@/compartido/lib/features'
 import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
 
-export async function GET(req: NextRequest) {
-  try {
-    const sesion = await requiereRolApi(['ADMIN', 'ESTADO'])
-    if (sesion instanceof NextResponse) return sesion
-
-    const { searchParams } = req.nextUrl
-    const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '10')
-    const estado = searchParams.get('estado')
-
-    const where: Record<string, unknown> = {}
-    if (estado) where.estado = estado
-
-    const [denuncias, total] = await Promise.all([
-      prisma.denuncia.findMany({
-        where,
-        include: { taller: { select: { nombre: true } } },
-        skip: (page - 1) * limit,
-        take: limit,
-        orderBy: { createdAt: 'desc' },
-      }),
-      prisma.denuncia.count({ where }),
-    ])
-
-    return NextResponse.json({ denuncias, total, page, totalPages: Math.ceil(total / limit) })
-  } catch (error) {
-    return NextResponse.json({ error: 'Error al obtener denuncias' }, { status: 500 })
-  }
-}
+// K-05/§6.8: el GET (list admin/estado) era codigo muerto — no hay panel que lo
+// consuma y el master no preve uno (G-14 hasta evalua deshabilitar denuncias). Se
+// elimino. El POST (denuncia anonima) y /api/denuncias/[codigo] (tracking) siguen vivos.
 
 // POST queda publico para denuncias anonimas
 export async function POST(req: NextRequest) {

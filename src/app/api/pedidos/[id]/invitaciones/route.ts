@@ -3,11 +3,16 @@ import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { modoActivo } from '@/compartido/lib/roles'
 import { sendEmail, buildInvitacionCotizarEmail } from '@/compartido/lib/email'
+import { rateLimit } from '@/compartido/lib/ratelimit'
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await auth()
     if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+
+    // K (§4.3): rate-limit por usuario — el POST dispara emails a los talleres invitados.
+    const blocked = await rateLimit(req, 'pedidos', session.user.id!)
+    if (blocked) return blocked
 
     const { id } = await params
     const body = await req.json()

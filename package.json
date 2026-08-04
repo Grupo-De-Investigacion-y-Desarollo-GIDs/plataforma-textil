@@ -4,7 +4,7 @@
   "private": true,
   "description": "Plataforma Digital Textil — Donde se encuentran talleres y marcas para producir formalmente. Desarrollado por UNTREF con el apoyo de la OIT.",
   "author": "UNTREF + OIT <contacto@plataformatextil.com.ar>",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "homepage": "https://plataformatextil.com.ar",
   "repository": {
     "type": "git",

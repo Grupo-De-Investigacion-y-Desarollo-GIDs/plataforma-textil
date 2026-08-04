@@ -12,11 +12,14 @@ export function ChecklistOnboarding({ pasos }: Props) {
 
   return (
     <div className="rounded-xl border border-brand-blue/20 bg-brand-blue/5 p-6">
-      <div className="flex items-center justify-between mb-4">
+      {/* El subtítulo "Tu recorrido de formalización: {etapa}" (issue 6) se quitó:
+          el recorrido ahora vive en su card dedicada en Inicio (change 2, QA Sergio),
+          sin duplicarse. Esta card queda enfocada en los pasos de onboarding. */}
+      <div className="flex items-start justify-between gap-3 mb-4">
         <h2 className="font-overpass font-bold text-lg text-brand-blue">
           Tus primeros pasos en la plataforma
         </h2>
-        <span className="text-xs text-gray-500 font-medium">
+        <span className="text-xs text-gray-500 font-medium shrink-0">
           {completados}/{pasos.length} completados
         </span>
       </div>

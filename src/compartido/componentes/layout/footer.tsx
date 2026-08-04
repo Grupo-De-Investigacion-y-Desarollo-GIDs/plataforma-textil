@@ -46,13 +46,13 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Col 3 — Recursos */}
+          {/* Col 3 — Enlaces útiles */}
           <div>
             <h3 className="font-overpass font-bold text-white text-xs uppercase tracking-widest mb-3">
-              Recursos
+              Enlaces útiles
             </h3>
             <ul className="space-y-2">
-              {FOOTER_LINKS.recursos.map(link => (
+              {FOOTER_LINKS.enlacesUtiles.map(link => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-sm hover:text-white transition-colors">
                     {link.label}

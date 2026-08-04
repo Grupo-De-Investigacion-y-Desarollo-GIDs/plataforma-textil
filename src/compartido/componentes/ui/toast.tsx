@@ -91,7 +91,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={{ toast }}>
       {children}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none max-w-sm w-full">
+      {/* F-05: el ancho se acota a min(24rem, 100vw-2rem) para no desbordar en
+          pantallas chicas. A <=320px, `right-4` + `w-full` (=100vw) empujaba el
+          borde izquierdo fuera del viewport (~17px de scroll horizontal). En
+          desktop sigue siendo 24rem (= max-w-sm), identico a antes. */}
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none w-full max-w-[min(24rem,calc(100vw-2rem))]">
         {toasts.map(t => {
           const Icon = iconByType[t.tipo]
           return (

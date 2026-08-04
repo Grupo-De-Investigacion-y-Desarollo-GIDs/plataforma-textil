@@ -32,7 +32,10 @@ export function ReverificarButton({ tallerId }: { tallerId: string }) {
         className="flex items-center gap-2 px-3 py-1.5 bg-brand-blue text-white rounded-lg text-xs font-semibold hover:bg-brand-blue/90 disabled:opacity-50"
       >
         <RefreshCw className={`w-3.5 h-3.5 ${verificando ? 'animate-spin' : ''}`} />
-        {verificando ? 'Verificando...' : 'Re-verificar contra ARCA'}
+        {/* "Re-consultar (CUIT actual)" y no "Re-verificar": deja claro que consulta el
+            padrón con el CUIT ALMACENADO (vs. "Corregir CUIT" abajo, y vs. el link externo
+            al trámite en la pestaña Formalización). QA #453 punto 2. */}
+        {verificando ? 'Consultando...' : 'Re-consultar ARCA (CUIT actual)'}
       </button>
       {resultado && (
         <span className={`text-xs ${resultado.exitosa ? 'text-green-600' : 'text-amber-600'}`}>

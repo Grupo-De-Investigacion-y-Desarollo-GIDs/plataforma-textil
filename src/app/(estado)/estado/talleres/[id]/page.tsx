@@ -17,6 +17,7 @@ import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 import { BadgeArca } from '@/compartido/componentes/badge-arca'
 import { ReverificarButton } from './reverificar-button'
+import { CorregirCuitCoord } from './corregir-cuit-coord'
 import { VerDocumentoButton } from '@/taller/componentes/ver-documento-button'
 
 const estadoToStatus: Record<string, 'completed' | 'pending' | 'warning' | 'optional'> = {
@@ -64,13 +65,16 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
             'ESTADO_VALIDACION_APROBADA', 'ESTADO_VALIDACION_RECHAZADA', 'ESTADO_VALIDACION_REVOCADA',
             'ADMIN_VALIDACION_COMPLETADO', 'ADMIN_VALIDACION_RECHAZADO',
             'NIVEL_SUBIDO', 'NIVEL_BAJADO',
+            // Correcciones de CUIT (Piezas A/B): el evento sensible debe ser visible acá,
+            // venga del taller (self-service) o de COORD (override).
+            'CUIT_CORREGIDO',
           ],
         },
         detalles: { path: ['tallerId'], equals: id },
       },
       orderBy: { timestamp: 'desc' },
       take: 30,
-      include: { user: { select: { name: true } } },
+      include: { user: { select: { name: true, email: true } } },
     }),
   ])
 
@@ -108,7 +112,7 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
         userId: taller!.userId,
         tipo: 'VALIDACION',
         titulo: `Documento aprobado: ${validacion.tipo}`,
-        mensaje: `El Estado aprobo tu ${validacion.tipo}.`,
+        mensaje: `La Coordinacion aprobo tu ${validacion.tipo}.`,
         canal: 'PLATAFORMA',
         link: '/taller/formalizacion',
       },
@@ -260,7 +264,12 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
                   title={labelPorNombre[v.tipo] ?? v.tipo}
                   status={estadoToStatus[v.estado] || 'optional'}
                   description={
-                    v.estado === 'COMPLETADO' ? 'Verificado'
+                    // QA #453 p3 (opción a): CUIT verificado por ARCA pero paso documental sin
+                    // aprobar — recordarle a COORD que la aprobación es independiente y suya.
+                    // Solo PENDIENTE/NO_INICIADO (un rechazo/vencido conserva su motivo).
+                    taller.verificadoAfip && v.tipo === 'CUIT/Monotributo' && (v.estado === 'PENDIENTE' || v.estado === 'NO_INICIADO')
+                      ? 'El CUIT ya esta verificado por ARCA — la aprobacion documental de este paso es independiente y la decide la Coordinacion.'
+                    : v.estado === 'COMPLETADO' ? 'Verificado'
                     : v.estado === 'PENDIENTE' && !v.documentoUrl && enlacePorNombre[v.tipo]
                       ? 'Tramite externo — verificar en ARCA/SIPA'
                     : v.estado === 'PENDIENTE' ? 'Pendiente de revision'
@@ -286,7 +295,9 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
                       rel="noopener noreferrer"
                       className="text-brand-blue underline text-xs"
                     >
-                      Verificar en ARCA
+                      {/* Antes "Verificar en ARCA" — confundia con el boton de re-consulta del
+                          padrón en la pestaña Datos. Esto solo ABRE el sitio externo. QA #453 p2. */}
+                      Abrir el trámite en ARCA (sitio externo)
                     </a>
                   </div>
                 )}
@@ -355,11 +366,17 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
                   nivelNuevo?: string
                   motivo?: string
                   tipoDocumento?: string
+                  cuitAnterior?: string
+                  cuitNuevo?: string
                 }
                 const esEstado = log.accion.startsWith('ESTADO_')
                 const actor = log.user?.name ?? (esEstado ? 'Estado' : 'Admin (pre-V3)')
                 const descripcion =
-                  log.accion.includes('APROBADA') || log.accion.includes('COMPLETADO')
+                  // CUIT_CORREGIDO va PRIMERO: los matchers por substring de abajo son laxos
+                  // y un futuro rename podria pisarlo. El actor distingue taller vs COORD.
+                  log.accion === 'CUIT_CORREGIDO'
+                    ? `${log.user?.name || log.user?.email || 'Alguien'} corrigio el CUIT: ${detalles.cuitAnterior} → ${detalles.cuitNuevo} (verificado por ARCA)`
+                  : log.accion.includes('APROBADA') || log.accion.includes('COMPLETADO')
                     ? `${actor} aprobo ${detalles.tipoDocumento || 'una validacion'}`
                   : log.accion.includes('RECHAZADA') || log.accion.includes('RECHAZADO')
                     ? `${actor} rechazo ${detalles.tipoDocumento || 'una validacion'}${detalles.motivo ? ` — ${detalles.motivo}` : ''}`
@@ -469,7 +486,14 @@ export default async function EstadoDetalleTallerPage({ params, searchParams }: 
                 )}
               </div>
             ) : (
-              <p className="text-sm text-amber-600">Este taller no tiene verificacion de ARCA. Usa el boton para re-verificar.</p>
+              <>
+                <p className="text-sm text-amber-600">Este taller no tiene verificacion de ARCA. Usa el boton para re-verificar el CUIT almacenado, o corregilo abajo si la constancia muestra otro numero.</p>
+                {/* Pieza B — corregir el CUIT (comparacion lado a lado). Solo ESTADO (no ADMIN, que es
+                    solo lectura); un taller verificado no llega aca (esta rama es !verificadoAfip). */}
+                {!soloLectura && (
+                  <CorregirCuitCoord tallerId={taller.id} cuitDeclarado={taller.cuit ?? ''} />
+                )}
+              </>
             )}
           </div>
 

@@ -34,8 +34,27 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
       dependencies: ['setup'],
+      // Desktop NO corre los specs mobile (tienen asserts de layout mobile-only)
+      testIgnore: /\.mobile\.spec\.ts$/,
     },
-    // Mobile testing se agrega en V4 (UX-04)
+    // Mobile (M-03 / Bloque B): solo el flujo CRITICO del taller en pantalla
+    // chica, no toda la suite (costo de CI). Ambos chromium-based (CI instala
+    // solo chromium). Cubren los fixes de #431: wizard navegable, KPI grid sin
+    // desborde, login stack, nav sticky.
+    {
+      name: 'mobile-chrome',
+      use: { ...devices['Pixel 5'] }, // 393px, dispositivo realista (UA/touch mobile)
+      dependencies: ['setup'],
+      testMatch: /\.mobile\.spec\.ts$/,
+    },
+    {
+      name: 'mobile-small',
+      // 320px = caso peor (la pantalla mas chica comun): estresa al maximo los
+      // fixes de wrap/stack/grid-cols-1 de #431.
+      use: { ...devices['Pixel 5'], viewport: { width: 320, height: 800 } },
+      dependencies: ['setup'],
+      testMatch: /\.mobile\.spec\.ts$/,
+    },
   ],
 
   webServer: process.env.CI ? undefined : {

@@ -133,14 +133,15 @@ describe('consultarPadron', () => {
     expect(resultado.error).toBe('AFIPSDK_ERROR')
   })
 
-  it('registra consulta en ConsultaArca para cada llamada', async () => {
+  it('registra consulta en ConsultaArca para cada llamada (cuit NORMALIZADO en el log)', async () => {
     mockGetTaxpayerDetails.mockResolvedValue(fixtureActivo)
     await consultarPadron('20-30123456-7', 'taller-123')
 
     expect(mockCreate).toHaveBeenCalledWith({
       data: expect.objectContaining({
         tallerId: 'taller-123',
-        cuit: '20-30123456-7',
+        // Se registra la forma normalizada (solo dígitos), no el string crudo.
+        cuit: '20301234567',
         endpoint: 'padron-a13',
         exitosa: true,
       }),
@@ -156,6 +157,37 @@ describe('consultarPadron', () => {
         tallerId: null,
       }),
     })
+  })
+
+  // ─── Normalización de formato (PR-3 circuito CUIT) ─────────────────────────
+
+  it('normaliza espacios y guiones antes de consultar (el SDK recibe el numero entero)', async () => {
+    mockGetTaxpayerDetails.mockResolvedValue(fixtureActivo)
+    const resultado = await consultarPadron('20 30123456 7')
+
+    // Antes: parseInt truncaba en el primer espacio y consultaba el CUIT "20".
+    expect(mockGetTaxpayerDetails).toHaveBeenCalledWith(20301234567)
+    expect(resultado.exitosa).toBe(true)
+  })
+
+  it('CUIT que no queda en 11 digitos -> CUIT_INEXISTENTE explicito, sin llamar al SDK', async () => {
+    const resultado = await consultarPadron('123-45')
+
+    expect(resultado.exitosa).toBe(false)
+    expect(resultado.error).toBe('CUIT_INEXISTENTE')
+    expect(mockGetTaxpayerDetails).not.toHaveBeenCalled()
+    // La consulta fallida igual queda registrada (observabilidad).
+    expect(mockCreate).toHaveBeenCalledWith({
+      data: expect.objectContaining({ cuit: '12345', exitosa: false, error: 'CUIT_INEXISTENTE' }),
+    })
+  })
+
+  it('el guard corta tambien en modo mock (consistencia mock/real)', async () => {
+    process.env.ARCA_PROVIDER = 'mock'
+    const resultado = await consultarPadron('20-123')
+
+    expect(resultado.exitosa).toBe(false)
+    expect(resultado.error).toBe('CUIT_INEXISTENTE')
   })
 })
 
@@ -260,5 +292,32 @@ describe('sincronizarTaller', () => {
 
     expect(resultado.exitosa).toBe(false)
     expect(resultado.error).toContain('sin CUIT')
+  })
+
+  // 2.3-B1: reactivación automática — verificar el CUIT limpia el reloj de gracia.
+  it('reactiva la cuenta (ACTIVA + reloj limpio) al verificar exitosamente', async () => {
+    mockGetTaxpayerDetails.mockResolvedValue(fixtureActivo)
+    mockFindUnique.mockResolvedValue({
+      id: 'taller-5',
+      cuit: '20-30123456-7',
+      verificadoAfipAt: null,
+    })
+    mockUpdate.mockResolvedValue({})
+
+    const resultado = await sincronizarTaller('taller-5', true)
+
+    expect(resultado.exitosa).toBe(true)
+    expect(mockUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 'taller-5' },
+        data: expect.objectContaining({
+          verificadoAfip: true,
+          estadoCuenta: 'ACTIVA',
+          inicioGracia: null,
+          inactivadaAt: null,
+          recordatorioCuitEnviadoAt: null,
+        }),
+      })
+    )
   })
 })

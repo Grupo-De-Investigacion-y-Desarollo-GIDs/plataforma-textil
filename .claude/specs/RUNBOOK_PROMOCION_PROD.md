@@ -276,3 +276,65 @@ Porque es un release de 105 commits, no un parche: el smoke cubre las features q
 - **Mergear #421** a develop (queda disponible el flag para el paso f).
 - Confirmar el **tier de Supabase** (decisión 2) — opcional, el `pg_dump` cubre.
 - Que Sergio confirme que correrá el **smoke ampliado** (§5), no solo el habitual.
+
+---
+
+## 7. ⏳ PRÓXIMO deploy — saneo one-time de CUITs (PR-3 circuito CUIT, 2026-07)
+
+> El seed guardó CUITs **con guiones** y el `@unique` de `cuit` compara strings exactos →
+> `"20-X..."` y `"20X..."` coexistirían como cuentas distintas del mismo CUIT. El código nuevo
+> (PR-3 `fix/cuit-normalizacion`) normaliza a dígitos en `consultarPadron` y en el registro,
+> pero las filas viejas de PROD quedan sucias hasta este saneo. **En DEV ya se corrió**
+> (2026-07-13: 5 talleres + 3 marcas normalizados, 0 colisiones). Correr en PROD **después**
+> de que el deploy aplique el código de PR-3.
+
+> **Cubre TRES tablas:** `talleres`, `marcas` y `users` (`users.cuit` es el "CUIT centralizado"
+> de U-02/D2, también `@unique`; en DEV está sin poblar — 0 de 16 — pero en PROD puede tener
+> datos del backfill multi-rol, por eso va defensivo).
+
+```sql
+-- 1) DIAGNÓSTICO (read-only): ¿cuántas filas sucias hay?
+SELECT id, cuit, "verificadoAfip", "estadoCuenta" FROM "talleres"
+WHERE cuit IS NOT NULL AND cuit !~ '^[0-9]{11}$';
+SELECT id, cuit FROM "marcas"
+WHERE cuit IS NOT NULL AND cuit !~ '^[0-9]{11}$';
+SELECT id, email, cuit FROM "users"
+WHERE cuit IS NOT NULL AND cuit !~ '^[0-9]{11}$';
+
+-- 2) COLISIONES (read-only): deben dar 0 filas las SEIS antes de tocar nada.
+--    (a) la forma normalizada ya existe en otra fila limpia:
+SELECT t1.id, t1.cuit FROM "talleres" t1
+WHERE t1.cuit !~ '^[0-9]{11}$' AND EXISTS (
+  SELECT 1 FROM "talleres" t2 WHERE t2.id <> t1.id AND t2.cuit = regexp_replace(t1.cuit, '\D', '', 'g'));
+SELECT m1.id, m1.cuit FROM "marcas" m1
+WHERE m1.cuit !~ '^[0-9]{11}$' AND EXISTS (
+  SELECT 1 FROM "marcas" m2 WHERE m2.id <> m1.id AND m2.cuit = regexp_replace(m1.cuit, '\D', '', 'g'));
+SELECT u1.id, u1.cuit FROM "users" u1
+WHERE u1.cuit !~ '^[0-9]{11}$' AND EXISTS (
+  SELECT 1 FROM "users" u2 WHERE u2.id <> u1.id AND u2.cuit = regexp_replace(u1.cuit, '\D', '', 'g'));
+--    (b) dos filas sucias que normalizan a lo mismo:
+SELECT regexp_replace(cuit,'\D','','g') AS norm, count(*) FROM "talleres"
+WHERE cuit !~ '^[0-9]{11}$' GROUP BY 1 HAVING count(*) > 1;
+SELECT regexp_replace(cuit,'\D','','g') AS norm, count(*) FROM "marcas"
+WHERE cuit !~ '^[0-9]{11}$' GROUP BY 1 HAVING count(*) > 1;
+SELECT regexp_replace(cuit,'\D','','g') AS norm, count(*) FROM "users"
+WHERE cuit !~ '^[0-9]{11}$' GROUP BY 1 HAVING count(*) > 1;
+
+-- 3) UPDATE (solo si 2 dio 0 filas en todas — si hay colisión, resolver a mano ANTES):
+UPDATE "talleres" SET cuit = regexp_replace(cuit,'\D','','g')
+WHERE cuit IS NOT NULL AND cuit !~ '^[0-9]{11}$';
+UPDATE "marcas" SET cuit = regexp_replace(cuit,'\D','','g')
+WHERE cuit IS NOT NULL AND cuit !~ '^[0-9]{11}$';
+UPDATE "users" SET cuit = regexp_replace(cuit,'\D','','g')
+WHERE cuit IS NOT NULL AND cuit !~ '^[0-9]{11}$';
+
+-- 4) VERIFICACIÓN post-saneo: las tres deben dar 0.
+SELECT count(*) FROM "talleres" WHERE cuit IS NOT NULL AND cuit !~ '^[0-9]{11}$';
+SELECT count(*) FROM "marcas" WHERE cuit IS NOT NULL AND cuit !~ '^[0-9]{11}$';
+SELECT count(*) FROM "users" WHERE cuit IS NOT NULL AND cuit !~ '^[0-9]{11}$';
+```
+
+⚠️ **Si corrés esto por script Node/Prisma** (no en el editor SQL de Supabase): escapar el
+patrón como `'\\D'` — en un template literal de JS, `\D` llega al SQL como `D` y el
+regexp_replace borra letras D en vez de no-dígitos (nos pasó en DEV; en el editor SQL va `\D`
+tal cual).

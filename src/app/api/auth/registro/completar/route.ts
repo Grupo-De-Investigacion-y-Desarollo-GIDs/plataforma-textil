@@ -3,6 +3,7 @@ import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { verificarCuit } from '@/compartido/lib/afip'
 import { crearEntidadParaRol } from '@/compartido/lib/crear-entidad-rol'
+import { rateLimit } from '@/compartido/lib/ratelimit'
 import { z } from 'zod'
 
 const schema = z.object({
@@ -16,6 +17,10 @@ export async function POST(req: NextRequest) {
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
   }
+
+  // K (§4.3): rate-limit por usuario — el completar dispara verificacion AFIP.
+  const blocked = await rateLimit(req, 'registro', session.user.id)
+  if (blocked) return blocked
 
   const raw = await req.json()
   const parsed = schema.safeParse(raw)

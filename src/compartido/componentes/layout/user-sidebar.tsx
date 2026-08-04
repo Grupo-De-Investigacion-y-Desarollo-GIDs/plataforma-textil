@@ -24,7 +24,6 @@ interface MenuItem {
 interface UserSidebarProps {
   userRole?: 'TALLER' | 'MARCA' | 'ESTADO' | 'ADMIN'
   userName?: string
-  userProgress?: number
   userLevel?: string
   /**
    * U-09 (QA #398): en páginas DEL USUARIO (ej. /cuenta) el sidebar muestra la
@@ -62,7 +61,6 @@ const menuItemsByRole: Record<string, MenuItem[]> = {
 export function UserSidebar({
   userRole = 'TALLER',
   userName = 'Usuario',
-  userProgress = 0,
   userLevel = 'Bronce',
   mostrarFormalizacion = true
 }: UserSidebarProps) {
@@ -172,29 +170,16 @@ export function UserSidebar({
                 <h2 className="font-overpass font-bold text-lg lg:text-base truncate">{userName}</h2>
                 <p className="text-white/70 text-sm lg:text-xs">
                   {!mostrarFormalizacion && 'Mi cuenta'}
-                  {mostrarFormalizacion && userRole === 'TALLER' && `Formalización ${userProgress}%`}
+                  {mostrarFormalizacion && userRole === 'TALLER' && 'Taller'}
                   {mostrarFormalizacion && userRole === 'MARCA' && 'Marca'}
                   {mostrarFormalizacion && userRole === 'ESTADO' && 'Ente Estatal'}
                   {mostrarFormalizacion && userRole === 'ADMIN' && 'Administrador'}
                 </p>
               </div>
             </div>
-
-            {/* Progress bar (solo para talleres, y no en páginas del usuario) */}
-            {mostrarFormalizacion && userRole === 'TALLER' && (
-              <div className="space-y-1">
-                <div className="flex justify-between text-xs text-white/60">
-                  <span>Progreso de formalización</span>
-                  <span className="font-semibold">{userProgress}%</span>
-                </div>
-                <div className="w-full h-2 bg-white/20 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-brand-red rounded-full transition-all duration-500"
-                    style={{ width: `${userProgress}%` }}
-                  />
-                </div>
-              </div>
-            )}
+            {/* "Formalización X%" + barra de progreso ELIMINADAS (degamificación V4,
+                coherente con la limpieza del dashboard #439b): el % de formalización
+                no se muestra como gráfico. El recorrido se comunica por etapa/badges. */}
           </div>
 
           {/* Navigation menu */}

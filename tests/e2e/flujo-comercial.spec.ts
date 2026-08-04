@@ -6,6 +6,23 @@ test.describe('Flujo comercial completo', () => {
   // Timeout largo: este test hace login/logout 3 veces + crea datos
   test.setTimeout(120000)
 
+  // Cleanup: este test crea un pedido real (con orden de manufactura asignada
+  // al taller del seed). Sin limpieza queda como "Pedido activo" en el dashboard
+  // del taller y se acumula en la DB de preview/dev en cada corrida. Cancelamos
+  // el pedido al terminar (lo saca del filtro PENDIENTE/EN_EJECUCION del dashboard).
+  // Best-effort: nunca hace fallar el test.
+  let pedidoIdParaLimpiar: string | null = null
+  test.afterEach(async ({ page }) => {
+    if (!pedidoIdParaLimpiar) return
+    try {
+      await loginAs(page, 'marca')
+      await page.request.put(`/api/pedidos/${pedidoIdParaLimpiar}`, { data: { estado: 'CANCELADO' } })
+    } catch {
+      // ignorar — la limpieza no debe afectar el resultado del test
+    }
+    pedidoIdParaLimpiar = null
+  })
+
   test('Marca crea pedido → taller cotiza → marca acepta', async ({ page }) => {
     await ensureNotProduction(page)
 
@@ -45,6 +62,7 @@ test.describe('Flujo comercial completo', () => {
     // Estamos en /marca/pedidos/[id]
     await page.waitForURL(/\/marca\/pedidos\/[\w-]+$/, { timeout: 10000 })
     const pedidoUrl = page.url()
+    pedidoIdParaLimpiar = pedidoUrl.split('/').pop() ?? null // para el cleanup (afterEach)
 
     // Verificar que el boton de publicar esta visible (estado BORRADOR)
     await expect(page.locator('button[data-action="publicar"]')).toBeVisible()

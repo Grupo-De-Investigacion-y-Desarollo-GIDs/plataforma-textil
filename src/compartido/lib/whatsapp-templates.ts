@@ -6,7 +6,7 @@ export const TEMPLATES = {
     `Felicitaciones! ${marca} acepto tu cotizacion del pedido "${pedido}". Revisa los proximos pasos -> ${enlace}`,
 
   documento_aprobado: ({ tipoDocumento, puntos, enlace }: { tipoDocumento: string; puntos: string; enlace: string }) =>
-    `El Estado aprobo tu ${tipoDocumento}. Sumaste ${puntos} puntos. Mira tu progreso -> ${enlace}`,
+    `La Coordinacion aprobo tu ${tipoDocumento}. Sumaste ${puntos} puntos. Mira tu progreso -> ${enlace}`,
 
   documento_rechazado: ({ tipoDocumento, motivo, enlace }: { tipoDocumento: string; motivo: string; enlace: string }) =>
     `Tu ${tipoDocumento} necesita correcciones.\nMotivo: ${motivo}\n\nIngresa para corregir -> ${enlace}`,

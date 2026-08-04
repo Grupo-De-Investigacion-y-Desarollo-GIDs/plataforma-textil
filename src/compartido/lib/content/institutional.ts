@@ -12,9 +12,9 @@ export const FOOTER_LINKS = {
     { label: '\u00bfC\u00f3mo funciona?', href: '/#como-funciona' },
     { label: 'Impacto', href: '/#impacto' },
   ],
-  recursos: [
+  enlacesUtiles: [
     { label: 'Centro de ayuda', href: '/ayuda' },
-    { label: 'Contacto', href: 'mailto:soporte@plataformatextil.ar' },
+    { label: 'Contacto', href: 'mailto:soporte@plataformatextil.com.ar' },
   ],
   legal: [
     { label: 'T\u00e9rminos y condiciones', href: '/terminos' },

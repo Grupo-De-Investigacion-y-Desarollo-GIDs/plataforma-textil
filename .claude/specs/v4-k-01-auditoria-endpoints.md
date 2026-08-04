@@ -23,13 +23,15 @@
 ### Hallazgos que requieren acción inmediata (🔴)
 
 > **ESTADO (2026-06-11):** C1/C2/C3 **RESUELTOS** en el hotfix quirúrgico **#414** (squash `0758fad`, mergeado a develop). C4 y los 🟡 quedan como plan ordenado del bloque K (K-02 + K-05 + barrido de rate-limit). Ver §3 para el detalle de cada fix.
+>
+> **CIERRE DEL BLOQUE K (2026-06-13, PR #423):** **K-05 ✅** (select explícito en §4.1) · **C4 ✅** (rate-limit + whitelist de `tipo`) · **rate-limit ✅** (barrido §4.3, 10 endpoints + 4 limiters nuevos) · **borrados ✅** (§6.8 + vestigiales: GET muertos eliminados — ver §6.8). Único pendiente: la **decisión de negocio** `configuracion-niveles` ADMIN/ESTADO (§8.3.b, de Sergio). El bloque K queda **cerrado** salvo esa decisión.
 
 | # | Endpoint | Problema | Anónimo explotable | Severidad | Estado |
 |---|---|---|---|---|---|
 | C1 | `GET /api/marcas/[id]` | Sin auth. Devuelve **PII** (email, teléfono, CUIT, pedidos) de cualquier marca por ID | **Sí** | Alta | ✅ RESUELTO (#414) |
 | C2 | `GET /api/talleres/[id]` | Sin auth. Devuelve **PII** (email, teléfono, nombre del dueño) de cualquier taller por ID | **Sí** | Alta | ✅ RESUELTO (#414) |
 | C3 | `GET /api/colecciones/[id]` | Sin auth. `include: { evaluacion: true }` filtra el **answer-key** (`preguntas[].correcta`) de las evaluaciones | **Sí** | Alta (integridad de certificación) | ✅ RESUELTO (#414) |
-| C4 | `GET /api/exportar` | Auth ADMIN/ESTADO OK, pero **sin rate-limit** y export de PII masiva (email/teléfono/CUIT de todo el padrón). Inconsistente con su gemelo `/api/estado/exportar` que sí limita | No (requiere rol) | Media (insider / cuenta comprometida) | ⏳ Plan bloque K |
+| C4 | `GET /api/exportar` | Auth ADMIN/ESTADO OK, pero **sin rate-limit** y export de PII masiva (email/teléfono/CUIT de todo el padrón). Inconsistente con su gemelo `/api/estado/exportar` que sí limita | No (requiere rol) | Media (insider / cuenta comprometida) | ✅ RESUELTO (PR #423) |
 
 **Mitigante clave para C1/C2/C3 (verificado en el hotfix):** las páginas públicas (`(public)/perfil/[id]`, `(public)/directorio`, `(public)/perfil-marca/[id]`) **consultan Prisma directamente server-side**, NO a través de estos endpoints. Además, al re-verificar callers se confirmó que **los GET de C1 y C2 no tienen ningún caller de `fetch`** (solo se usa el PUT de cada recurso — ver §6 "código muerto") y que el único caller del GET de C3 (panel CONTENIDO) no lee `evaluacion`. → cerrarlos con auth no rompió ninguna funcionalidad.
 
@@ -215,6 +217,9 @@ Leyenda — Auth: `RRA`=`requiereRolApi`, `auth()`=chequeo manual de sesión, `N
 ## 4. 🟡 Mejorables — patrones (insumo K-05 y validación de input)
 
 ### 4.1 K-05 — Endpoints SIN `select` explícito (devuelven objeto Prisma completo)
+
+> **✅ RESUELTO (PR #423, 2026-06-13).** Cada `select` se derivó del consumo real del/los caller(s). GET/list acotados; mutaciones cuyo body el caller no lee → `{ok:true}`. Los GET muertos de la lista (marcas/[id], talleres/[id], denuncias list, novedades list, auditorias) se **eliminaron** en vez de acotarse (ver §6.8). `cotizaciones/[id]` PUT era falso positivo (ya devolvía `{ok,moId}`; el `include` es interno). Guard de no-leak: `src/__tests__/k-05-no-leak.test.ts`.
+
 Estos retornan el modelo completo en `findUnique`/`findMany`/`create`/`update`. Riesgo: si el schema gana campos sensibles, se filtran automáticamente. **Lista exacta para K-05:**
 
 1. `/api/admin/config` (GET, PUT) — full ConfigSistema (posibles secretos en `valor`)
@@ -240,7 +245,10 @@ Estos retornan el modelo completo en `findUnique`/`findMany`/`create`/`update`. 
 PUT/POST que pasan `body.*` directo a Prisma sin schema: `/api/admin/config` PUT, `/api/admin/notas` POST, `/api/admin/notificaciones` POST, `/api/admin/usuarios` POST + `/[id]` PUT, `/api/auditorias` POST + PUT, `/api/certificados` PATCH/POST, `/api/colecciones/[id]/evaluacion` PUT/POST, `/api/contenido/novedades/[id]` PATCH, `/api/cotizaciones/[id]` PUT, `/api/denuncias` POST, `/api/validaciones` POST + `/[id]` PUT, `/api/ordenes/[id]` PUT, `/api/pedidos/[id]` PUT. (Casi todos detrás de auth/rol → riesgo de integridad, no de escalada; excepto `/api/denuncias` POST que es anónimo.)
 
 ### 4.3 Mutaciones costosas sin rate-limit
-`/api/auth/mi-cuenta` PUT (bcrypt), `/api/auth/password-reset` (+`/[token]`), `/api/auth/registro/completar` (AFIP), `/api/cotizaciones/[id]` PUT, `/api/pedidos/[id]/invitaciones` POST (dispara emails), `/api/contenido/novedades/upload`, `/api/estado/arca` POST (loop O(N) AFIP), `/api/log-error` (anónimo, log-flood), `/api/validaciones/[id]/signed-url`.
+
+> **✅ RESUELTO (PR #423, 2026-06-13).** Barrido completo con el helper `ratelimit.ts` (sin tocar el "fallar abierto" ni los limiters existentes). 4 limiters nuevos: `passwordReset` (5/1h), `cuenta` (10/1h), `arca` (5/1h), `logError` (30/1m). Públicos por IP, escritura por userId. No se cambió el comportamiento de login/magic-link.
+
+`/api/auth/mi-cuenta` PUT (bcrypt), `/api/auth/password-reset` (+`/[token]`), `/api/auth/registro/completar` (AFIP), `/api/cotizaciones/[id]` PUT, `/api/pedidos/[id]/invitaciones` POST (dispara emails), `/api/contenido/novedades/upload`, `/api/estado/arca` POST (loop O(N) AFIP), `/api/log-error` (anónimo, log-flood), `/api/validaciones/[id]/signed-url`. **Todos cubiertos.**
 
 ### 4.4 PII a rol ESTADO (decisión de negocio a confirmar)
 `/api/admin/logs`, `/api/admin/reporte-piloto`, `/api/admin/usuarios-buscar`, `/api/admin/whatsapp`, `/api/admin/observaciones*` exponen email/teléfono/CUIT a usuarios con membresía ESTADO. No es leak anónimo — se marca 🟡 para **confirmar** que ESTADO debe ver PII de contacto.
@@ -367,6 +375,8 @@ Helper hermano `ownershipMatrix` (mismo archivo `_helpers/auth-matrix.ts`): para
 
 8. **Código muerto que era superficie de ataque (hallazgo del hotfix #414).** Al re-verificar callers se confirmó que **los GET de `/api/marcas/[id]` y `/api/talleres/[id]` no tienen ningún caller de `fetch`** en el código: solo se usa el **PUT** de cada recurso (contactar-taller usa PUT; los editores de perfil del taller usan PUT). Eran handlers de lectura escritos por simetría con el PUT, nunca consumidos — una superficie anónima de fuga de PII sin función. En #414 quedaron **protegidos** con auth (defensivo, no resta nada operativo). **Decisión diferida a K-05:** si K-05 confirma que siguen sin uso, **eliminar el GET por completo es aún más seguro que mantenerlo protegido** (menos superficie, menos código que auditar). Evaluar en ese momento. (C3 no aplica: su GET sí tiene un caller real, el panel CONTENIDO.)
 
+   > **✅ EJECUTADO (PR #423, 2026-06-13, decisión de Gerardo).** Cero callers re-verificado antes de borrar. **Eliminados:** GET `/api/marcas/[id]`, GET `/api/talleres/[id]`, la ruta entera `/api/admin/notas` (GET+POST, reemplazada por `notas-seguimiento`), GET `/api/auditorias` (list), GET `/api/auditorias/[id]`, GET `/api/denuncias` (list), GET `/api/contenido/novedades` (list). Los 4 vestigiales se confirmaron sin panel previsto leyendo el master (auditorías: paneles existen pero leen Prisma; denuncias: G-14 hasta evalúa deshabilitarlas; novedades: panel lee Prisma, público usa `/api/novedades`). **Mantenido:** POST `/api/validaciones` (sin caller de fetch pero es el testigo POST/ADMIN/201 del test K-02). Tests actualizados: `k-01-criticos` C1/C2 ahora asertan que el GET fue eliminado; `k-02-auth-matrix` repunta auditorías/novedades de GET a POST (mismo gate, método vivo).
+
 ---
 
 ## 7. Casos testigo (control de calidad del método)
@@ -393,6 +403,8 @@ Los 5 testigos conocidos fueron encontrados y clasificados correctamente:
 ### Plan restante del bloque K
 - **K-02 tanda 1 — ✅ HECHA (#415, `39159eb`, 2026-06-12).** Helper reutilizable `authMatrix` (`src/__tests__/_helpers/auth-matrix.ts`) + 20 endpoints de auth-por-rol cubiertos, 110 tests (ver §5.1). CI verde. Sin cambios de comportamiento.
 - **K-02 tanda 2 — ✅ HECHA (matriz IDOR, §5.2).** Helper hermano `ownershipMatrix` + 12 recursos cubiertos. Hallazgo **C5** (`upload/imagenes` contexto `cotizacion`) → **✅ RESUELTO** (diseño A, elegibilidad). El resto de los recursos con ownership bloquean correctamente al no-owner (403).
-- **K-05:** `select` explícito en los ~17 endpoints de §4.1. **Reevaluar** ahí si los GET de `/api/marcas/[id]` y `/api/talleres/[id]` (código muerto, §6.8) se eliminan en vez de mantenerse protegidos.
-- **Barrido de rate-limit:** C4 (`/api/exportar`) + los faltantes de §4.3.
+- **K-05 — ✅ HECHA (PR #423).** `select` explícito en §4.1; GET muertos eliminados (§6.8). No-leak test: `k-05-no-leak.test.ts`.
+- **Barrido de rate-limit — ✅ HECHA (PR #423).** C4 (`/api/exportar`: rate-limit + whitelist) + todos los faltantes de §4.3 (10 endpoints, 4 limiters nuevos).
+
+**El bloque K queda CERRADO** salvo la única decisión de negocio pendiente: `configuracion-niveles/[id]` PUT y `/preview` excluyen ADMIN (§8.3.b) — decisión de Sergio, no es bug.
 

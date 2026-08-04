@@ -199,13 +199,17 @@ describe('POST /api/validaciones — solo ADMIN (crea, 201)', () => {
 
 // ─── Contenido / academia ────────────────────────────────────────────────────
 
-describe('GET /api/contenido/novedades — CONTENIDO/ADMIN', () => {
+// K-05: el GET (list) se elimino por codigo muerto. El gate (requiereRolApi
+// CONTENIDO/ADMIN) sigue vivo en el POST, que ejercemos aca con el mismo allow-list.
+describe('POST /api/contenido/novedades — CONTENIDO/ADMIN', () => {
   authMatrix(
     {
       importer: () => import('@/app/api/contenido/novedades/route'),
-      method: 'GET',
+      method: 'POST',
       url: '/api/contenido/novedades',
+      body: { titulo: 'T', descripcion: 'D', tipo: 'NOTICIA' },
       allow: ['CONTENIDO', 'ADMIN'],
+      successMode: 'passes-auth',
     },
     deps
   )
@@ -242,13 +246,17 @@ describe('POST /api/colecciones/[id]/evaluacion — solo TALLER (rinde la evalua
   )
 })
 
-describe('GET /api/auditorias — ADMIN/ESTADO', () => {
+// K-05: el GET (list) se elimino por codigo muerto. El gate (requiereRolApi
+// ADMIN/ESTADO) sigue vivo en el POST, que ejercemos aca con el mismo allow-list.
+describe('POST /api/auditorias — ADMIN/ESTADO', () => {
   authMatrix(
     {
       importer: () => import('@/app/api/auditorias/route'),
-      method: 'GET',
+      method: 'POST',
       url: '/api/auditorias',
+      body: { tallerId: 't1' },
       allow: ['ADMIN', 'ESTADO'],
+      successMode: 'passes-auth',
     },
     deps
   )

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
+import { rateLimit } from '@/compartido/lib/ratelimit'
 import bcrypt from 'bcryptjs'
 
 export async function GET() {
@@ -26,6 +27,10 @@ export async function PUT(req: NextRequest) {
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
     }
+
+    // K (§4.3): rate-limit por usuario (el PUT corre bcrypt al cambiar contrasena).
+    const blocked = await rateLimit(req, 'cuenta', session.user.id)
+    if (blocked) return blocked
 
     const body = await req.json()
     const updateData: Record<string, unknown> = {}

@@ -28,94 +28,25 @@ beforeEach(() => {
 })
 
 // ─── C1 — GET /api/marcas/[id] ───────────────────────────────────────────────
+// K-05/§6.8: la fuga se cerró de raíz ELIMINANDO el handler GET (era código muerto,
+// sin callers de fetch). Sin handler no hay superficie de fuga: el guard de regresión
+// ahora es "el GET no debe volver". El PUT (único método con caller real) sobrevive.
 
-describe('C1 — GET /api/marcas/[id]: cierra fuga de PII anonima', () => {
-  const marca = {
-    id: 'm1', userId: 'mu1', nombre: 'Marca X', cuit: '30700000001',
-    user: { email: 'dueno@marca.com', name: 'Dueño', phone: '+5491100000000', avatar: null },
-    pedidos: [],
-  }
-
-  it('anonimo → 401 y el body no filtra PII', async () => {
-    mockAuth.mockResolvedValue(null)
-    const { GET } = await import('@/app/api/marcas/[id]/route')
-    const res = await GET(getReq('http://localhost/api/marcas/m1'), { params: Promise.resolve({ id: 'm1' }) })
-    const body = await res.json()
-    expect(res.status).toBe(401)
-    expect(JSON.stringify(body)).not.toContain('30700000001')
-    expect(JSON.stringify(body)).not.toContain('dueno@marca.com')
-  })
-
-  it('usuario logueado que NO es dueño ni supervision → 403, sin PII', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'otro', role: 'TALLER' } })
-    mockPrisma.marca.findUnique.mockResolvedValue(marca)
-    const { GET } = await import('@/app/api/marcas/[id]/route')
-    const res = await GET(getReq('http://localhost/api/marcas/m1'), { params: Promise.resolve({ id: 'm1' }) })
-    const body = await res.json()
-    expect(res.status).toBe(403)
-    expect(JSON.stringify(body)).not.toContain('30700000001')
-    expect(JSON.stringify(body)).not.toContain('dueno@marca.com')
-  })
-
-  it('dueño de la marca → 200', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'mu1', role: 'MARCA' } })
-    mockPrisma.marca.findUnique.mockResolvedValue(marca)
-    const { GET } = await import('@/app/api/marcas/[id]/route')
-    const res = await GET(getReq('http://localhost/api/marcas/m1'), { params: Promise.resolve({ id: 'm1' }) })
-    expect(res.status).toBe(200)
-  })
-
-  it('ADMIN → 200 (supervision)', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'admin1', role: 'ADMIN' } })
-    mockPrisma.marca.findUnique.mockResolvedValue(marca)
-    const { GET } = await import('@/app/api/marcas/[id]/route')
-    const res = await GET(getReq('http://localhost/api/marcas/m1'), { params: Promise.resolve({ id: 'm1' }) })
-    expect(res.status).toBe(200)
+describe('C1 — GET /api/marcas/[id]: eliminado (era fuga de PII anonima)', () => {
+  it('el handler GET ya no existe; el PUT sobrevive', async () => {
+    const mod = await import('@/app/api/marcas/[id]/route')
+    expect(mod.GET).toBeUndefined()
+    expect(typeof mod.PUT).toBe('function')
   })
 })
 
 // ─── C2 — GET /api/talleres/[id] ─────────────────────────────────────────────
 
-describe('C2 — GET /api/talleres/[id]: cierra fuga de PII anonima', () => {
-  const taller = {
-    id: 't1', userId: 'tu1', nombre: 'Taller X',
-    user: { email: 'dueno@taller.com', phone: '+5491100000001', name: 'Titular' },
-    procesos: [], prendas: [], maquinaria: [], certificaciones: [], validaciones: [],
-  }
-
-  it('anonimo → 401 y el body no filtra PII', async () => {
-    mockAuth.mockResolvedValue(null)
-    const { GET } = await import('@/app/api/talleres/[id]/route')
-    const res = await GET(getReq('http://localhost/api/talleres/t1'), { params: Promise.resolve({ id: 't1' }) })
-    const body = await res.json()
-    expect(res.status).toBe(401)
-    expect(JSON.stringify(body)).not.toContain('dueno@taller.com')
-  })
-
-  it('usuario logueado que NO es dueño ni supervision → 403, sin PII', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'otro', role: 'MARCA' } })
-    mockPrisma.taller.findUnique.mockResolvedValue(taller)
-    const { GET } = await import('@/app/api/talleres/[id]/route')
-    const res = await GET(getReq('http://localhost/api/talleres/t1'), { params: Promise.resolve({ id: 't1' }) })
-    const body = await res.json()
-    expect(res.status).toBe(403)
-    expect(JSON.stringify(body)).not.toContain('dueno@taller.com')
-  })
-
-  it('dueño del taller → 200', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'tu1', role: 'TALLER' } })
-    mockPrisma.taller.findUnique.mockResolvedValue(taller)
-    const { GET } = await import('@/app/api/talleres/[id]/route')
-    const res = await GET(getReq('http://localhost/api/talleres/t1'), { params: Promise.resolve({ id: 't1' }) })
-    expect(res.status).toBe(200)
-  })
-
-  it('ESTADO → 200 (supervision)', async () => {
-    mockAuth.mockResolvedValue({ user: { id: 'estado1', role: 'ESTADO' } })
-    mockPrisma.taller.findUnique.mockResolvedValue(taller)
-    const { GET } = await import('@/app/api/talleres/[id]/route')
-    const res = await GET(getReq('http://localhost/api/talleres/t1'), { params: Promise.resolve({ id: 't1' }) })
-    expect(res.status).toBe(200)
+describe('C2 — GET /api/talleres/[id]: eliminado (era fuga de PII anonima)', () => {
+  it('el handler GET ya no existe; el PUT sobrevive', async () => {
+    const mod = await import('@/app/api/talleres/[id]/route')
+    expect(mod.GET).toBeUndefined()
+    expect(typeof mod.PUT).toBe('function')
   })
 })
 
@@ -150,9 +81,11 @@ describe('C3 — GET /api/colecciones/[id]: cierra fuga del answer-key', () => {
     const res = await GET(getReq('http://localhost/api/colecciones/c1'), { params: Promise.resolve({ id: 'c1' }) })
     const body = await res.json()
     expect(res.status).toBe(200)
-    // El include NO debe pedir evaluacion (de ahi salia preguntas[].correcta).
-    const includeArg = mockPrisma.coleccion.findUnique.mock.calls[0][0].include
-    expect(includeArg.evaluacion).toBeUndefined()
+    // K-05: el query usa `select` explicito (antes `include`). Ninguno debe pedir
+    // evaluacion (de ahi salia preguntas[].correcta).
+    const queryArg = mockPrisma.coleccion.findUnique.mock.calls[0][0]
+    expect(queryArg.include?.evaluacion).toBeUndefined()
+    expect(queryArg.select?.evaluacion).toBeUndefined()
     // Y el body no contiene ni la relacion ni el campo correcta.
     expect(body.evaluacion).toBeUndefined()
     expect(JSON.stringify(body)).not.toContain('correcta')

@@ -1,5 +1,293 @@
 # Daily Log
 
+## 2026-08-03
+
+### Gerardo Breard
+- **17:30** `58a157f` — fix(pre-deploy): dominio .com.ar, flag denuncias OFF, LICENSE Apache-2.0, docs sensibles fuera del repo
+  - `LICENSE`
+  - `docs/handover/DEUDA_Y_ROADMAP.md`
+  - `docs/handover/GUIA_DESARROLLO.md`
+  - `docs/handover/HALLAZGOS_SEGURIDAD.md`
+  - `docs/handover/HANDOVER_PACKAGE.md`
+  - `docs/handover/INVENTARIO_ACCESOS.md`
+  - `docs/handover/README.md`
+  - `docs/handover/REPORTE_LICENCIAS.md`
+  - `package.json`
+  - `prisma/seed.ts`
+  - `src/app/(admin)/admin/integraciones/email/page.tsx`
+  - `src/app/(public)/ayuda/onboarding-marca/page.tsx`
+  - `src/app/(public)/ayuda/onboarding-taller/page.tsx`
+  - `src/app/(public)/ayuda/page.tsx`
+  - `src/app/(public)/consultar-denuncia/consultar-denuncia-form.tsx`
+  - `src/app/(public)/consultar-denuncia/page.tsx`
+  - `src/app/(public)/denunciar/denunciar-form.tsx`
+  - `src/app/(public)/denunciar/page.tsx`
+  - `src/app/(public)/privacidad/page.tsx`
+  - `src/app/(public)/terminos/page.tsx`
+  - `src/app/api/denuncias/[codigo]/route.ts`
+  - `src/compartido/componentes/pdf/certificado-pdf.tsx`
+  - `src/compartido/lib/arca.ts`
+  - `src/compartido/lib/content/institutional.ts`
+  - `src/compartido/lib/rag.ts`
+  - `src/taller/componentes/asistente-chat.tsx`
+
+- **15:50** `01d1438` — docs(handover): cerrar re-scope NEXTAUTH_SECRET + CRON_SECRET (2026-08-03)
+  - `docs/handover/DEUDA_Y_ROADMAP.md`
+  - `docs/handover/HALLAZGOS_SEGURIDAD.md`
+  - `docs/handover/HANDOVER_PACKAGE.md`
+  - `docs/handover/INVENTARIO_ACCESOS.md`
+
+- **15:46** `ffb0bcb` — docs(handover): cerrar re-scope NEXTAUTH_SECRET + CRON_SECRET (2026-08-03)
+  - `DAILY.md`
+
+- **15:45** `53a47db` — docs(handover): cerrar re-scope NEXTAUTH_SECRET + CRON_SECRET (2026-08-03)
+  - `docs/07_cronograma.md`
+  - `docs/handover/DEUDA_Y_ROADMAP.md`
+  - `docs/handover/HALLAZGOS_SEGURIDAD.md`
+  - `docs/handover/HANDOVER_PACKAGE.md`
+  - `docs/handover/INVENTARIO_ACCESOS.md`
+
+
+## 2026-07-13
+
+### Gerardo Breard
+- **23:55** `8d86a65` — fix: QA #453 — CUIT_CORREGIDO visible en Historial + renombrar botones ARCA
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/(estado)/estado/talleres/[id]/reverificar-button.tsx`
+
+- **17:09** `14521a5` — feat: circuito CUIT Piezas A+B — corrección de CUIT + reverificación
+  - `src/__tests__/corregir-cuit-helper.test.ts`
+  - `src/__tests__/corregir-cuit-route.test.ts`
+  - `src/app/(estado)/estado/talleres/[id]/corregir-cuit-coord.tsx`
+  - `src/app/(estado)/estado/talleres/[id]/page.tsx`
+  - `src/app/(taller)/taller/formalizacion/page.tsx`
+  - `src/app/api/arca/corregir-cuit/[id]/route.ts`
+  - `src/compartido/lib/arca.ts`
+  - `src/taller/componentes/banner-gracia.tsx`
+  - `src/taller/componentes/corregir-cuit-form.tsx`
+
+- **16:11** `8f7bee8` — docs(spec): circuito CUIT — PR-1 (Pieza D) HECHO (02ed22d, #452)
+  - `.claude/specs/v4-circuito-cuit-implementacion.md`
+
+- **14:18** `f0d4a59` — chore: redeploy preview — tomar ARCA_PROVIDER=mock (demo Pieza D)
+
+
+
+## 2026-07-11
+
+### Gerardo Breard
+- **18:16** `db3686b` — feat: circuito CUIT Pieza D — reintento ARCA en el cron de gracia
+  - `src/__tests__/cron-gracia.test.ts`
+  - `src/app/api/cron/gracia-cuit/route.ts`
+
+- **17:45** `844cddc` — docs(spec): circuito CUIT — spec de implementación A+D+B (DECIDIDO)
+  - `.claude/specs/v4-circuito-cuit-implementacion.md`
+
+- **17:25** `1c177d3` — docs(backlog): G-17 — /academia-publica necesita contenido real antes de ampliar el piloto
+  - `.claude/specs/V4_BACKLOG.md`
+
+
+## 2026-07-09
+
+### Gerardo Breard
+- **16:55** `39f10e7` — fix: eliminar seccion Recursos + ajustes de copy (aprobacion B1) + regresion onboarding
+  - `src/app/(public)/recursos/page.tsx`
+  - `src/compartido/componentes/layout/footer.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+  - `src/compartido/lib/email.ts`
+  - `src/compartido/lib/onboarding.ts`
+  - `src/taller/componentes/banner-gracia.tsx`
+- **19:37** `bacbf27` — docs(discovery): circuito CUIT + limbo verificacion ARCA (esperando decision Sergio)
+  - `.claude/specs/v4-circuito-cuit-discovery.md`
+
+
+## 2026-07-07
+
+### Gerardo Breard
+- **14:06** `122f09a` — docs(etapa2-3): marcar B1 HECHO (#450, 5b567d5) — Etapa 2 COMPLETA
+  - `.claude/specs/v4-etapa2-3-discovery.md`
+
+
+## 2026-07-02
+
+### Gerardo Breard
+- **20:34** `7a98302` — docs(etapa2-3): marcar B0 gracia HECHO (#449, 23d20b0)
+  - `.claude/specs/v4-etapa2-3-discovery.md`
+
+- **11:42** `1e7ceed` — docs(etapa2-3): marcar 2.3-A vidriera minima HECHO (#448, 9062603)
+  - `.claude/specs/v4-etapa2-3-discovery.md`
+
+
+## 2026-06-27
+
+### Gerardo Breard
+- **18:09** `52fc53f` — docs(etapa2): 2.2-A HECHO (#442, a12c798) + #439b (#440) + sidebar (#443) mergeados
+  - `.claude/specs/v4-narrativa-etapa-2-discovery.md`
+
+- **15:51** `074c260` — fix: 2.2-A — modelo de distribución de info por contexto (QA Sergio, reemplaza issue B)
+  - `src/app/(taller)/taller/page.tsx`
+  - `src/app/(taller)/taller/perfil/layout.tsx`
+  - `src/app/(taller)/taller/perfil/page.tsx`
+  - `src/app/(taller)/taller/perfil/perfil-header-tabs.tsx`
+  - `src/compartido/componentes/ui/checklist-onboarding.tsx`
+
+
+## 2026-06-24
+
+### Gerardo Breard
+- **18:26** `7a67b40` — docs(2.2): flag modeloB_revisado YA en develop (#441) — 2.2-B desbloqueada
+  - `.claude/specs/v4-etapa2-2-vidriera-discovery.md`
+
+- **17:58** `856e5b4` — feat(schema): flag modeloB_revisado en Taller (prep 2.2-B, privacy-by-default)
+  - `prisma/migrations/20260624120000_agregar_modelob_revisado/migration.sql`
+  - `prisma/schema.prisma`
+
+
+## 2026-06-23
+
+### Gerardo Breard
+- **17:35** `6c11c22` — docs(etapa2): cerrar spec 2.2 con la matriz final de Sergio
+  - `.claude/specs/v4-etapa2-2-vidriera-discovery.md`
+
+
+## 2026-06-22
+
+### Gerardo Breard
+- **13:05** `5b4c113` — docs(spec): Etapa 2 — modelo corregido por Sergio (21-jun)
+  - `.claude/specs/v4-narrativa-etapa-2-discovery.md`
+
+- **12:30** `614392f` — docs(deuda): T-01 — patron migracion manual + migrate deploy (pgvector rompe migrate dev)
+  - `.claude/DEUDA_TECNICA.md`
+
+
+## 2026-06-21
+
+### Gerardo Breard
+- **17:48** `66676ab` — docs(spec): propuesta schema visibilidad vidriera (Etapa 2.2 / Modelo B)
+  - `.claude/specs/v4-etapa2-visibilidad-schema-propuesta.md`
+
+- **16:50** `4cbe96b` — docs(spec): discovery Etapa 2 narrativa V4 (relevamiento, no implementa)
+  - `.claude/specs/v4-narrativa-etapa-2-discovery.md`
+
+- **16:23** `ff546e0` — docs(deuda): OBS-01 — setup externo de observabilidad PENDIENTE (gate del deploy)
+  - `.claude/BITACORA_PROD.md`
+  - `.claude/DEUDA_TECNICA.md`
+
+- **15:56** `7e30efd` — docs(observabilidad): bitacora de prod + runbook de observabilidad
+  - `.claude/BITACORA_PROD.md`
+  - `.claude/specs/RUNBOOK_OBSERVABILIDAD.md`
+
+- **15:54** `fcc260e` — feat(health): endpoint /api/health con check de DB para sondas externas
+  - `src/app/api/health/route.ts`
+
+- **15:43** `ee10ad9` — docs(narrativa): guardar copy de Etapas 2-3 como spec de referencia
+  - `.claude/specs/v4-narrativa-etapas-2-3-copy.md`
+
+
+## 2026-06-19
+
+### Gerardo Breard
+- **14:34** `7cc1ec1` — fix(f-05): truncar titulo en colecciones recomendadas (/taller 320px)
+  - `src/app/(taller)/taller/page.tsx`
+
+- **12:24** `cf1106f` — docs(deuda): cerrar T-04/T-05/T-06/B-07/F-05 + A-01/A-02; T-07 denuncia
+  - `.claude/DEUDA_TECNICA.md`
+
+- **12:21** `d7b5e3c` — fix(f-05): acotar ancho del contenedor de toasts (desborde 320px)
+  - `src/compartido/componentes/ui/toast.tsx`
+
+- **12:17** `78edbdc` — fix(b-07): verificar/page.tsx renderiza taller/coleccion como objetos
+  - `src/app/(public)/verificar/page.tsx`
+  - `tests/e2e/verificar-certificado.spec.ts`
+
+- **11:26** `175953b` — test(t-06): e2e de flujo del formulario del taller (W-A2..W-A5)
+  - `tests/e2e/w-a-formulario.spec.ts`
+
+- **11:18** `31f6473` — test(t-04): borrar directorio e2e/ huerfano (16 specs V3 + helper)
+  - `e2e/admin.spec.ts`
+  - `e2e/auth.spec.ts`
+  - `e2e/checklist-sec1-2.spec.ts`
+  - `e2e/checklist-sec3-4.spec.ts`
+  - `e2e/checklist-sec5-6.spec.ts`
+  - `e2e/checklist-sec7-8.spec.ts`
+  - `e2e/checklist-sec9-10.spec.ts`
+  - `e2e/contenido.spec.ts`
+  - `e2e/estado.spec.ts`
+  - `e2e/feedback.spec.ts`
+  - `e2e/helpers/auth.ts`
+  - `e2e/marca.spec.ts`
+  - `e2e/pedidos.spec.ts`
+  - `e2e/publico.spec.ts`
+  - `e2e/registro.spec.ts`
+  - `e2e/seguridad-roles.spec.ts`
+  - `e2e/taller.spec.ts`
+
+
+## 2026-06-18
+
+### Gerardo Breard
+- **17:51** `64688d0` — test(t-04): recuperar cobertura del FeedbackWidget como spec fresco
+  - `tests/e2e/feedback-widget.spec.ts`
+
+
+## 2026-06-13
+
+### Gerardo Breard
+- **16:20** `575c3f2` — feat: K barrido de rate-limit (C4 + §4.3)
+  - `src/app/api/auth/mi-cuenta/route.ts`
+  - `src/app/api/auth/password-reset/[token]/route.ts`
+  - `src/app/api/auth/password-reset/route.ts`
+  - `src/app/api/auth/registro/completar/route.ts`
+  - `src/app/api/contenido/novedades/upload/route.ts`
+  - `src/app/api/cotizaciones/[id]/route.ts`
+  - `src/app/api/estado/arca/route.ts`
+  - `src/app/api/exportar/route.ts`
+  - `src/app/api/log-error/route.ts`
+  - `src/app/api/pedidos/[id]/invitaciones/route.ts`
+  - `src/app/api/validaciones/[id]/signed-url/route.ts`
+  - `src/compartido/lib/ratelimit.ts`
+
+- **16:14** `71e92f5` — refactor: K-05 borrar GET muertos (§6.8 + vestigiales) — decision de Gerardo
+  - `src/__tests__/k-01-criticos.test.ts`
+  - `src/__tests__/k-02-auth-matrix.test.ts`
+  - `src/app/api/admin/notas/route.ts`
+  - `src/app/api/auditorias/[id]/route.ts`
+  - `src/app/api/auditorias/route.ts`
+  - `src/app/api/contenido/novedades/route.ts`
+  - `src/app/api/denuncias/route.ts`
+  - `src/app/api/marcas/[id]/route.ts`
+  - `src/app/api/talleres/[id]/route.ts`
+
+- **13:48** `aec1908` — feat: K-05 select explicito en endpoints de §4.1 (Fase 1)
+  - `src/__tests__/k-01-criticos.test.ts`
+  - `src/app/api/admin/config/route.ts`
+  - `src/app/api/admin/logs/route.ts`
+  - `src/app/api/catalogos/route.ts`
+  - `src/app/api/certificados/[id]/route.ts`
+  - `src/app/api/colecciones/[id]/route.ts`
+  - `src/app/api/colecciones/route.ts`
+  - `src/app/api/contenido/novedades/[id]/route.ts`
+  - `src/app/api/estado/configuracion-niveles/[id]/route.ts`
+  - `src/app/api/estado/configuracion-niveles/route.ts`
+  - `src/app/api/marcas/route.ts`
+  - `src/app/api/ordenes/[id]/route.ts`
+  - `src/app/api/pedidos/[id]/route.ts`
+  - `src/app/api/talleres/route.ts`
+  - `src/app/api/tipos-documento/route.ts`
+  - `src/app/api/validaciones/[id]/route.ts`
+
+- **10:39** `c4289db` — docs: registrar deploy a prod 2026-06-13 en DAILY.md (#422, merge 3333016)
+  - `DAILY.md`
+
+- **10:04** `3333016` — 🚀 DEPLOY A PROD (release mayor) — merge `develop` → `main` (#422, merge commit, preserva historia)
+  - **Release mayor:** 105 commits; prod no se actualizaba desde el 01-jun. Vercel deploy `plataforma-textil-rrld0fe3i` → ● Ready.
+  - **Migraciones aplicadas:** 4 que estaban pendientes en la DB (`agregar_imagen_coleccion`, `agregar_tipo_pedido`, `k01_rls_revoke_anon`, `u05_backfill_roles_activemode`). Las otras 2 (`multirol_y_arca`, `formulario_taller`) ya estaban en prod desde mayo → `migrate deploy` solo aplicó las pendientes. "All migrations successfully applied", sin error.
+  - **Contenido del release:** bloque U multi-rol completo, B-05 (fix race sesión), formulario taller W-A, tipo de pedido, endurecimiento RLS K-01 (Fase 3 efectiva en prod), landing X-06 (G-20 "no se encuentra cómo registrarse" RESUELTO), hotfixes de seguridad C1/C2/C3 (fugas anónimas de PII) + C5 (IDOR upload cotización).
+  - **Punto de retorno:** backup diario de Supabase 03:27 AR (PITR no contratado; el pg_dump del runbook no fue viable porque `DATABASE_URL`/`DIRECT_URL` de prod son Sensitive en Vercel y `env pull` las trae vacías).
+  - **Verificación técnica (checklist a-e):** home 200 + landing X-06 (CTAs de registro presentes); 3 endpoints hotfix (`marcas`/`talleres`/`colecciones` [id]) → 401 anónimo; `/api/auth/session` 200; Prisma lee post-RLS (dropdowns de directorio poblados con filas reales). **Prod sano**, sin rollback.
+  - **Nota:** directorio vacío de talleres en prod = esperado (filtro `verificadoAfip: true`, aún sin talleres verificados en AFIP). No es regresión.
+  - **PENDIENTE post-deploy (sin correr):** crear cuenta de Sergio en prod (faltan email + rol), su smoke, y backfill validaciones D-02 con `--exclude <email-smoke>` (solo con OK explícito de Gerardo).
+
 ## 2026-06-12
 
 ### Gerardo Breard

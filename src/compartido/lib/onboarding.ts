@@ -62,28 +62,23 @@ export async function calcularEtapa(userId: string, role: string): Promise<Etapa
 }
 
 export async function calcularPasosTaller(userId: string): Promise<PasoOnboarding[]> {
-  const [user, taller] = await Promise.all([
-    prisma.user.findUnique({ where: { id: userId }, select: { emailVerified: true } }),
-    prisma.taller.findUnique({
-      where: { userId },
-      include: {
-        _count: { select: { validaciones: true } },
-        cotizaciones: { where: { estado: 'ACEPTADA' }, take: 1, select: { id: true } },
-      },
-    }),
-  ])
+  const taller = await prisma.taller.findUnique({
+    where: { userId },
+    include: {
+      _count: { select: { validaciones: true } },
+      cotizaciones: { where: { estado: 'ACEPTADA' }, take: 1, select: { id: true } },
+    },
+  })
 
+  // El paso "Verificar email" se removió del checklist (#439b): era un paso
+  // fantasma — `emailVerified` se setea al crear la cuenta (mitigación #307,
+  // ver registro/route.ts), así que nunca queda pendiente. El checklist de
+  // Marca mantiene el mismo paso; limpiarlo queda fuera del barrido del rol Taller.
   return [
     {
       id: 'cuenta',
       texto: 'Crear cuenta',
       completado: true,
-      href: '/cuenta',
-    },
-    {
-      id: 'email',
-      texto: 'Verificar email',
-      completado: !!user?.emailVerified,
       href: '/cuenta',
     },
     {
@@ -99,8 +94,13 @@ export async function calcularPasosTaller(userId: string): Promise<PasoOnboardin
       href: '/taller/formalizacion',
     },
     {
+      // Reformulado (aprobación B1 de Sergio): "Recibir tu primera cotización aceptada"
+      // sonaba a marketplace/gamificación. Se acordó reformular en el QA de #439 (lista
+      // "PR aparte, no bloquean piloto"), pero nunca llegó a aplicarse — no fue rollback.
+      // La condición de completado sigue siendo la misma (tener una cotización aceptada =
+      // haberte conectado con una marca).
       id: 'cotizacion',
-      texto: 'Recibir tu primera cotizacion aceptada',
+      texto: 'Conectarte con tu primera marca',
       completado: (taller?.cotizaciones.length ?? 0) > 0,
       href: '/taller/pedidos/disponibles',
     },

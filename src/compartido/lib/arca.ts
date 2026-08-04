@@ -1,6 +1,7 @@
 import Afip from '@afipsdk/afip.js'
 import { prisma } from './prisma'
 import { logActividad } from './log'
+import { datosReactivacion } from './gracia'
 import type { TipoInscripcionAfip, EstadoCuit } from '@prisma/client'
 
 // ---------------------------------------------------------------------------
@@ -61,7 +62,7 @@ export interface ResultadoConsulta {
 
 // Email de soporte para mensajes de error al usuario
 function contactoPdt(): string {
-  return process.env.EMAIL_SUPPORT || 'soporte@plataformatextil.ar'
+  return process.env.EMAIL_SUPPORT || 'soporte@plataformatextil.com.ar'
 }
 
 // Mensajes de error orientados al usuario
@@ -88,9 +89,21 @@ export type CodigoErrorArca =
 // Función principal: consultarPadron
 // ---------------------------------------------------------------------------
 
-export async function consultarPadron(cuit: string, tallerId?: string, userId?: string | null): Promise<ResultadoConsulta> {
+export async function consultarPadron(cuitRaw: string, tallerId?: string, userId?: string | null): Promise<ResultadoConsulta> {
   const inicio = Date.now()
   const config = getConfig()
+
+  // Normalizar a dígitos ANTES de todo (guiones, espacios, puntos — lo que sea). Si no quedan
+  // 11 dígitos, el CUIT jamás existirá en ARCA: CUIT_INEXISTENTE explícito sin gastar la
+  // llamada. Antes solo se limpiaban guiones y parseInt truncaba en el primer no-dígito
+  // ("20 4..." consultaba el CUIT "20" en silencio). Cubre a TODOS los callers, incluidos
+  // el cron de gracia (Pieza D) y el mock (que así queda consistente con el path real).
+  const cuit = cuitRaw.replace(/\D/g, '')
+  if (cuit.length !== 11) {
+    await registrarConsulta(tallerId, cuit, 'padron-a13', false, null, 'CUIT_INEXISTENTE', inicio)
+    logAfipVerificacion(tallerId, cuit, false, 'CUIT_INEXISTENTE', userId)
+    return { exitosa: false, error: 'CUIT_INEXISTENTE', duracionMs: Date.now() - inicio }
+  }
 
   if (!config.enabled || config.provider === 'mock') {
     return mockConsulta(cuit)
@@ -98,7 +111,7 @@ export async function consultarPadron(cuit: string, tallerId?: string, userId?: 
 
   try {
     const sdk = getCliente()
-    const cuitNumero = parseInt(cuit.replace(/-/g, ''), 10)
+    const cuitNumero = parseInt(cuit, 10)
 
     // Timeout de 10 segundos para no bloquear registro si ARCA tarda
     const respuesta = await Promise.race([
@@ -181,16 +194,7 @@ export async function sincronizarTaller(tallerId: string, force = false, userId?
   if (resultado.exitosa && resultado.datos) {
     await prisma.taller.update({
       where: { id: tallerId },
-      data: {
-        verificadoAfip: true,
-        verificadoAfipAt: new Date(),
-        tipoInscripcionAfip: resultado.datos.tipoInscripcion,
-        categoriaMonotributo: resultado.datos.categoriaMonotributo ?? null,
-        estadoCuitAfip: resultado.datos.estadoCuit,
-        fechaInscripcionAfip: resultado.datos.fechaInscripcion ?? null,
-        actividadesAfip: resultado.datos.actividades,
-        domicilioFiscalAfip: resultado.datos.domicilioFiscal ?? undefined,
-      },
+      data: aplicarDatosArca(resultado.datos),
     })
   } else if (resultado.error === 'CUIT_INACTIVO' || resultado.error === 'CUIT_INEXISTENTE') {
     // Marcar como no verificado si ARCA dice explicitamente que no es valido
@@ -204,6 +208,100 @@ export async function sincronizarTaller(tallerId: string, force = false, userId?
     })
   }
   // Si es ARCA_NO_RESPONDE o AFIPSDK_ERROR, no tocamos el estado actual
+
+  return resultado
+}
+
+// ---------------------------------------------------------------------------
+// Datos a escribir en el taller cuando una verificación ARCA es EXITOSA
+// ---------------------------------------------------------------------------
+
+// Único lugar que setea `verificadoAfip: true` (invariante del circuito CUIT V4: el flag
+// solo lo escribe una verificación ARCA exitosa, nunca un click humano). Reactiva el taller
+// (datosReactivacion: ACTIVA + reloj limpio) y vuelca los datos de ARCA. Compartido por
+// `sincronizarTaller` (CUIT almacenado) y `corregirYVerificarCuit` (CUIT corregido).
+function aplicarDatosArca(datos: DatosArca) {
+  return {
+    verificadoAfip: true,
+    verificadoAfipAt: new Date(),
+    // Reactivacion automatica: si el taller estaba EN_GRACIA o INACTIVA, verificar el CUIT lo
+    // vuelve a ACTIVA y limpia el reloj (inicioGracia/inactivadaAt/recordatorioCuitEnviadoAt).
+    // Para un taller ya ACTIVA es idempotente.
+    ...datosReactivacion(),
+    tipoInscripcionAfip: datos.tipoInscripcion,
+    categoriaMonotributo: datos.categoriaMonotributo ?? null,
+    estadoCuitAfip: datos.estadoCuit,
+    fechaInscripcionAfip: datos.fechaInscripcion ?? null,
+    actividadesAfip: datos.actividades,
+    domicilioFiscalAfip: datos.domicilioFiscal ?? undefined,
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Corrección de CUIT + verificación (Piezas A y B del circuito CUIT V4)
+// ---------------------------------------------------------------------------
+
+// Backend compartido por el self-service del taller (A) y el override de COORD (B). Valida un
+// CUIT CANDIDATO contra ARCA y, SOLO si valida, lo persiste + verifica + reactiva. Es el único
+// write nuevo de `verificadoAfip: true` (via aplicarDatosArca). Devuelve un ResultadoConsulta;
+// `error` lleva los códigos de dominio propios (YA_VERIFICADO / CUIT_EN_USO / TALLER_NO_ENCONTRADO)
+// o el código de ARCA (CUIT_INEXISTENTE, etc.) cuando la verificación no valida.
+export async function corregirYVerificarCuit(
+  tallerId: string,
+  cuitCandidato: string,
+  actorUserId: string,
+): Promise<ResultadoConsulta> {
+  const cuit = cuitCandidato.replace(/-/g, '')
+
+  const taller = await prisma.taller.findUnique({
+    where: { id: tallerId },
+    select: { id: true, cuit: true, verificadoAfip: true },
+  })
+  if (!taller) return { exitosa: false, error: 'TALLER_NO_ENCONTRADO', duracionMs: 0 }
+  // Gating (invariante): un taller ya verificado NO puede tocar su CUIT (evita swap de identidad
+  // sobre una cuenta validada). Se rechaza ANTES de gastar una llamada a ARCA.
+  if (taller.verificadoAfip) return { exitosa: false, error: 'YA_VERIFICADO', duracionMs: 0 }
+
+  const resultado = await consultarPadron(cuit, taller.id, actorUserId)
+  // ARCA no validó (inexistente / inactivo / sin actividad / no responde) -> NO se persiste nada.
+  if (!(resultado.exitosa && resultado.datos)) return resultado
+
+  const cuitAnterior = taller.cuit
+  try {
+    // Transacción: chequear colisión @unique y persistir juntos (evita TOCTOU).
+    await prisma.$transaction(async (tx) => {
+      const colision = await tx.taller.findFirst({
+        where: { cuit, id: { not: taller.id } },
+        select: { id: true },
+      })
+      if (colision) {
+        const e = new Error('CUIT_EN_USO') as Error & { code?: string }
+        e.code = 'CUIT_EN_USO'
+        throw e
+      }
+      await tx.taller.update({
+        where: { id: taller.id },
+        data: { cuit, ...aplicarDatosArca(resultado.datos!) },
+      })
+    })
+  } catch (e) {
+    // Colisión detectada (o carrera que igual pega el @unique): mensaje neutro, sin filtrar
+    // datos del otro taller. No se persistió el cambio.
+    const code = (e as { code?: string })?.code
+    if (code === 'CUIT_EN_USO' || code === 'P2002') {
+      return { exitosa: false, error: 'CUIT_EN_USO', duracionMs: resultado.duracionMs }
+    }
+    throw e
+  }
+
+  // Auditoría: el cambio de CUIT es un evento sensible. Queda quién (actor + implícito rol por
+  // el userId), cuándo (timestamp del log) y el CUIT anterior/nuevo.
+  logActividad('CUIT_CORREGIDO', actorUserId, {
+    tallerId: taller.id,
+    cuitAnterior,
+    cuitNuevo: cuit,
+    exitosa: true,
+  })
 
   return resultado
 }

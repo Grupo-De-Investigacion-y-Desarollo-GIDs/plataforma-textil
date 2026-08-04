@@ -7,6 +7,7 @@ import { Card } from '@/compartido/componentes/ui/card'
 import { Button } from '@/compartido/componentes/ui/button'
 import { Input } from '@/compartido/componentes/ui/input'
 import { Badge } from '@/compartido/componentes/ui/badge'
+import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 import { useToast } from '@/compartido/componentes/ui/toast'
 
 const STEPS = [
@@ -243,6 +244,13 @@ export default function WizardPage() {
 
   return (
     <div className="max-w-3xl mx-auto py-6 px-4">
+      {/* Salida del wizard: el taller no queda "atrapado" en el flujo de pasos. */}
+      <Breadcrumbs items={[
+        { label: 'Mi taller', href: '/taller/perfil' },
+        { label: 'Mi gestión productiva', href: '/taller/perfil/gestion' },
+        { label: 'Completar perfil productivo' },
+      ]} />
+
       {/* Progress bar */}
       <div className="mb-2 flex items-center gap-2">
         <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -329,10 +337,10 @@ export default function WizardPage() {
         <div>
           <h2 className="font-serif font-bold text-xl text-brand-blue mb-4">Contanos sobre tu equipo de trabajo</h2>
           <p className="text-sm font-semibold mb-2">¿Cuántas personas trabajan en producción?</p>
-          <div className="flex gap-2 mb-4">
+          <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 mb-4">
             {['1-2', '3-5', '6-10', '11-20', '+20'].map(v => (
               <button key={v} type="button" onClick={() => setTamanoEquipo(v)}
-                className={`flex-1 py-2 rounded-lg border text-sm font-semibold transition-colors ${tamanoEquipo === v ? 'bg-brand-blue text-white border-brand-blue' : 'bg-white border-gray-300 hover:border-brand-blue'}`}>
+                className={`py-2 rounded-lg border text-sm font-semibold transition-colors ${tamanoEquipo === v ? 'bg-brand-blue text-white border-brand-blue' : 'bg-white border-gray-300 hover:border-brand-blue'}`}>
                 {v}
               </button>
             ))}
@@ -691,8 +699,11 @@ export default function WizardPage() {
           </Card>
 
           <div className="flex gap-3 justify-center">
-            <Button onClick={() => handleSave('/taller/perfil')} variant="secondary" disabled={saving}>
-              {saving ? 'Guardando...' : 'Ver mi perfil'}
+            {/* Coordinación 2.2-A (#442): la vidriera se movió de /taller/perfil
+                (ahora "Datos básicos") a /taller/perfil/vidriera. El botón apunta
+                ahí para que "Ver mi vidriera" caiga en la vidriera real. */}
+            <Button onClick={() => handleSave('/taller/perfil/vidriera')} variant="secondary" disabled={saving}>
+              {saving ? 'Guardando...' : 'Ver mi vidriera'}
             </Button>
             <Button onClick={() => handleSave('/taller/aprender')} disabled={saving}>
               {saving ? 'Guardando...' : 'Guardar e ir a Cursos'}
@@ -703,10 +714,24 @@ export default function WizardPage() {
 
       {/* Navigation */}
       {step > 0 && step < 13 && (
-        <div className="flex justify-between mt-6">
-          <Button variant="secondary" onClick={prev} icon={<ArrowLeft className="w-4 h-4" />}>Atrás</Button>
-          <Button onClick={next} icon={<ArrowRight className="w-4 h-4" />}>Siguiente</Button>
-        </div>
+        <>
+          <div className="flex justify-between mt-6 sticky bottom-0 -mx-4 px-4 py-3 bg-white/95 backdrop-blur border-t border-gray-100 sm:static sm:mx-0 sm:px-0 sm:py-0 sm:bg-transparent sm:backdrop-blur-none sm:border-0">
+            <Button variant="secondary" onClick={prev} icon={<ArrowLeft className="w-4 h-4" />}>Atrás</Button>
+            <Button onClick={next} icon={<ArrowRight className="w-4 h-4" />}>Siguiente</Button>
+          </div>
+          {/* Salida guardando progreso parcial desde cualquier paso intermedio.
+              Reusa handleSave (PUT con el estado actual) y vuelve a Mi gestión productiva. */}
+          <div className="text-center mt-3">
+            <button
+              type="button"
+              onClick={() => handleSave('/taller/perfil/gestion')}
+              disabled={saving}
+              className="text-sm text-gray-500 hover:underline disabled:opacity-50"
+            >
+              {saving ? 'Guardando...' : 'Guardar y completar después'}
+            </button>
+          </div>
+        </>
       )}
     </div>
   )

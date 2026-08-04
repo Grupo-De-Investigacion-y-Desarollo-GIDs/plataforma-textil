@@ -47,7 +47,7 @@ function MagicLinkForm() {
   }
 
   return (
-    <form onSubmit={handleMagicLink} className="mt-3 flex gap-2">
+    <form onSubmit={handleMagicLink} className="mt-3 flex flex-col sm:flex-row gap-2">
       <input
         type="email"
         value={email}

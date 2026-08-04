@@ -26,6 +26,20 @@ enum NivelTaller {
   ORO
 }
 
+// Etapa 2.3-B: ciclo de vida de la cuenta del taller respecto de la gracia de 60 dias
+// para verificar CUIT. NO reusa User.active (inerte en login + colisiona con el baneo
+// de admin). Estado ALMACENADO (coarse): lo mantienen el alta/backfill (2.3-B0) y el
+// cron (2.3-B1). El estado FINO para banners/emails lo computa `clasificarGracia` en vivo.
+//   - ACTIVA:    CUIT verificado (o cuenta al dia). No aplica gracia.
+//   - EN_GRACIA: sin verificar, dentro de los 60 dias desde `inicioGracia`.
+//   - INACTIVA:  vencio la gracia (60+ dias) sin verificar. Recuperable al verificar CUIT.
+// En los 3 estados el login + Academia + Recursos siguen abiertos (restringido != cerrado).
+enum EstadoCuenta {
+  ACTIVA
+  EN_GRACIA
+  INACTIVA
+}
+
 enum EstadoPedido {
   BORRADOR
   PUBLICADO
@@ -290,6 +304,32 @@ model Taller {
   disponibilidad       String?    // W-A4: disponibilidad para nuevos pedidos
   paradasFrecuencia    String?
   rolesFuncionales     Json?      // W-A5: roles funcionales del taller
+
+  // Etapa 2.2 / Modelo B (§1.3): visibilidad por bloque de la vidriera.
+  // Objeto { formacion?, equipo?, espacio?, capacidad?, organizacion?, maquinaria? } (bool).
+  // null o key ausente = visible (default behavior-preserving). Solo `false` explicito oculta.
+  // Credenciales (etapa + ARCA) nunca se oculta; SAM nunca se expone en publico.
+  visibilidadVidriera  Json?
+
+  // Etapa 2.2-B (§5): privacy-by-default. Decide como se interpreta el null de
+  // visibilidadVidriera. false (taller nuevo) => null se trata como OCULTO; true
+  // (existentes via backfill, o tras revisar la config) => respeta null=visible (#437).
+  // La logica de render condicional que LO USA es 2.2-B; este campo solo lo modela.
+  modeloB_revisado  Boolean  @default(false)
+
+  // Etapa 2.3-B: gracia de 60 dias para verificar CUIT.
+  // - estadoCuenta: estado ALMACENADO (default ACTIVA; el alta/backfill y el cron de B1
+  //   lo setean). El estado FINO para banners/emails lo computa `clasificarGracia` desde
+  //   `inicioGracia`, no este campo.
+  // - inicioGracia: cuando arranca el reloj de 60 dias. Existentes = fecha de lanzamiento
+  //   (backfill = NOW() de la migracion, amnistia); nuevos sin verificar = su alta. NULL
+  //   si esta verificado (no aplica gracia).
+  // - inactivadaAt: cuando paso a INACTIVA (lo setea el cron de B1). NULL si nunca inactiva.
+  // - recordatorioCuitEnviadoAt: idempotencia del email dia ~50 (lo setea el cron de B1).
+  estadoCuenta              EstadoCuenta @default(ACTIVA)
+  inicioGracia              DateTime?
+  inactivadaAt              DateTime?
+  recordatorioCuitEnviadoAt DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -7,9 +7,10 @@ import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { Badge } from '@/compartido/componentes/ui/badge'
 import { Card } from '@/compartido/componentes/ui/card'
-import { Star, MapPin, Users, TrendingUp, Clock, Award, ShieldCheck } from 'lucide-react'
+import { Star, MapPin, Users, TrendingUp, Clock, Award, ShieldCheck, Milestone } from 'lucide-react'
 import { Breadcrumbs } from '@/compartido/componentes/ui/breadcrumbs'
 import { ContactarTaller } from '@/marca/componentes/contactar-taller'
+import { nivelAEtapa } from '@/compartido/lib/formalizacion'
 
 export default async function TallerPerfilMarcaPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth()
@@ -25,10 +26,8 @@ export default async function TallerPerfilMarcaPage({ params }: { params: Promis
       maquinaria: true,
       certificaciones: { where: { activa: true } },
       certificados: { include: { coleccion: true } },
-      validaciones: {
-        where: { estado: 'COMPLETADO' },
-        select: { tipoDocumento: { select: { nombre: true } } },
-      },
+      // Las validaciones del recorrido (ART, Habilitación, etc.) son PRIVADAS: no se
+      // consultan para la vista de marca. Credenciales muestra SOLO Etapa + ARCA.
     },
   })
 
@@ -54,16 +53,14 @@ export default async function TallerPerfilMarcaPage({ params }: { params: Promis
           </div>
           <div className="flex-1">
             <h1 className="font-serif font-bold text-2xl text-ink-primary mb-1">{taller.nombre}</h1>
-            {(taller.verificadoAfip || taller.validaciones.length > 0) && (
-              <div className="flex flex-wrap items-center gap-2 mb-1">
-                {taller.verificadoAfip && (
-                  <Badge variant="success"><ShieldCheck className="w-3 h-3 mr-1" />CUIT verificado</Badge>
-                )}
-                {taller.validaciones.map((v: { tipoDocumento: { nombre: string } }, i: number) => (
-                  <Badge key={i} variant="success"><ShieldCheck className="w-3 h-3 mr-1" />{v.tipoDocumento.nombre}</Badge>
-                ))}
-              </div>
-            )}
+            {/* Credenciales: SOLO Etapa + ARCA. Las validaciones del recorrido (ART,
+                Habilitación, Empleados, etc.) son privadas y NO se muestran a la marca. */}
+            <div className="flex flex-wrap items-center gap-2 mb-1">
+              <Badge variant="default"><Milestone className="w-3 h-3 mr-1" />{nivelAEtapa(taller.nivel)}</Badge>
+              {taller.verificadoAfip && (
+                <Badge variant="success"><ShieldCheck className="w-3 h-3 mr-1" />CUIT verificado</Badge>
+              )}
+            </div>
             {taller.ubicacion && <p className="flex items-center gap-1 text-gray-600 text-sm"><MapPin className="w-4 h-4" /> {taller.ubicacion}</p>}
             <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
               <Star className="w-4 h-4 text-yellow-500" /> {taller.rating.toFixed(1)} ({taller.pedidosCompletados} valoraciones)

@@ -3,58 +3,9 @@ import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { modoActivo } from '@/compartido/lib/roles'
 
-export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    // K-01 C1: este GET exponia PII (email/telefono/CUIT + pedidos) sin auth.
-    // Gate: mismo modelo que el PUT de este archivo (dueño o ADMIN) + ESTADO
-    // para lectura de supervision. El GET no tiene callers de fetch; las
-    // paginas publicas (perfil-marca/[id], directorio) leen Prisma directo.
-    const session = await auth()
-    if (!session?.user) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-    }
-
-    const { id } = await params
-    const role = modoActivo(session.user)
-
-    const marca = await prisma.marca.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        userId: true,
-        nombre: true,
-        cuit: true,
-        ubicacion: true,
-        tipo: true,
-        website: true,
-        volumenMensual: true,
-        frecuenciaCompra: true,
-        rating: true,
-        pedidosRealizados: true,
-        verificadoAfip: true,
-        createdAt: true,
-        updatedAt: true,
-        user: { select: { email: true, name: true, phone: true, avatar: true } },
-        pedidos: { select: { id: true, omId: true, estado: true, tipoPrenda: true, cantidad: true, fechaCreacion: true } },
-      },
-    })
-
-    if (!marca) {
-      return NextResponse.json({ error: 'Marca no encontrada' }, { status: 404 })
-    }
-
-    const esDueno = marca.userId === session.user.id
-    const esSupervision = role === 'ADMIN' || role === 'ESTADO'
-    if (!esDueno && !esSupervision) {
-      return NextResponse.json({ error: 'Sin acceso a esta marca' }, { status: 403 })
-    }
-
-    return NextResponse.json(marca)
-  } catch (error) {
-    console.error('Error en GET /api/marcas/[id]:', error)
-    return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })
-  }
-}
+// K-05/§6.8: el GET de esta ruta era codigo muerto (sin callers de fetch; las
+// paginas publicas leen Prisma directo). Se elimino por completo — menos superficie
+// que un GET protegido. Las lecturas de marca van por Prisma server-side.
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -75,7 +26,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
     const body = await req.json()
 
-    const marca = await prisma.marca.update({
+    // K-05: el unico caller (contactar-taller) solo chequea res.ok; no lee el body.
+    await prisma.marca.update({
       where: { id },
       data: {
         nombre: body.nombre,
@@ -85,9 +37,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         volumenMensual: body.volumenMensual,
         frecuenciaCompra: body.frecuenciaCompra,
       },
+      select: { id: true },
     })
 
-    return NextResponse.json(marca)
+    return NextResponse.json({ ok: true })
   } catch (error) {
     console.error('Error en PUT /api/marcas/[id]:', error)
     return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })

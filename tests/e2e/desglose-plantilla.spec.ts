@@ -8,7 +8,9 @@ test.describe('W-A1 Desglose de plantilla por categoría', () => {
       await ensureNotProduction(page)
       await loginAs(page, 'taller')
 
-      await page.goto('/taller/perfil', { waitUntil: 'load', timeout: 30_000 })
+      // Etapa 2.1: el perfil productivo (Composición del equipo) vive ahora
+      // en la sub-tab "Mi gestión productiva" (/taller/perfil/gestion).
+      await page.goto('/taller/perfil/gestion', { waitUntil: 'load', timeout: 30_000 })
 
       // Debe mostrar "Composición del equipo" con datos del seed
       await expect(page.getByText('Composición del equipo')).toBeVisible({ timeout: 10_000 })

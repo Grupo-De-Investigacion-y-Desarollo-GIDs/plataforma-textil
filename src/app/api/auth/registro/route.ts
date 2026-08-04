@@ -5,6 +5,7 @@ import { logActividad } from '@/compartido/lib/log'
 import { consultarPadron, errorBloqueaRegistro, mensajeErrorArca, type DatosArca } from '@/compartido/lib/arca'
 import { sendEmail, buildBienvenidaEmail } from '@/compartido/lib/email'
 import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
+import { estadoCuentaInicial } from '@/compartido/lib/gracia'
 import { apiHandler, errorResponse, errorConflict } from '@/compartido/lib/api-errors'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
@@ -18,13 +19,17 @@ const registerSchema = z.object({
   phone: z.string().trim().optional(),
   tallerData: z.object({
     nombre: z.string().trim().min(1, 'Nombre de taller requerido'),
-    cuit: z.string().trim().min(1, 'CUIT requerido'),
+    // Normalizar a dígitos al GUARDAR (guiones/espacios fuera): el @unique de cuit compara
+    // strings exactos — "20-X..." y "20X..." coexistirían como cuentas distintas del mismo
+    // CUIT. Un valor que no queda en 11 dígitos lo corta ARCA (consultarPadron -> CUIT_INEXISTENTE
+    // -> errorBloqueaRegistro), asi que no hace falta refine acá.
+    cuit: z.string().trim().min(1, 'CUIT requerido').transform(c => c.replace(/\D/g, '')),
     ubicacion: z.string().trim().min(1, 'Ubicacion requerida').optional().nullable(),
     capacidadMensual: z.number().int().min(0).optional(),
   }).optional(),
   marcaData: z.object({
     nombre: z.string().trim().min(1, 'Nombre de marca requerido'),
-    cuit: z.string().trim().min(1, 'CUIT requerido'),
+    cuit: z.string().trim().min(1, 'CUIT requerido').transform(c => c.replace(/\D/g, '')),
     ubicacion: z.string().trim().min(1, 'Ubicacion requerida').optional().nullable(),
     tipo: z.string().trim().min(1, 'Tipo requerido').optional().nullable(),
   }).optional(),
@@ -110,6 +115,8 @@ export const POST = apiHandler(async (req: NextRequest) => {
                   capacidadMensual: data.tallerData.capacidadMensual || 0,
                   verificadoAfip: cuitVerificado,
                   verificadoAfipAt: cuitVerificado ? new Date() : null,
+                  // Estado inicial de gracia (2.3-B0): { estadoCuenta, inicioGracia }.
+                  ...estadoCuentaInicial(cuitVerificado, new Date()),
                   tipoInscripcionAfip: datosArca?.tipoInscripcion ?? null,
                   categoriaMonotributo: datosArca?.categoriaMonotributo ?? null,
                   estadoCuitAfip: datosArca?.estadoCuit ?? null,
