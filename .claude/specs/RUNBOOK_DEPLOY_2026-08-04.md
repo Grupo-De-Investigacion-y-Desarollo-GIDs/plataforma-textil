@@ -27,27 +27,40 @@ Todo esto se chequeó ayer contra prod; sirve para no ejecutar a ciegas:
 | `GOOGLE_CLIENT_ID/SECRET` prod | **ausentes** → Google OAuth NO operativo (esperado) | `vercel env ls` |
 
 > El PR pre-deploy (#459: dominio `.com.ar`, denuncias OFF en seed, LICENSE Apache-2.0, docs
-> sensibles fuera del repo) **debe estar mergeado a develop ANTES** de arrancar el paso 1.
+> sensibles fuera del repo) **ya está mergeado a develop** (squash `c454135`, 2026-08-04, QA de
+> Sergio OK). develop verde (unit + e2e sobre `c454135`). El runbook `RUNBOOK_DEPLOY_2026-08-04.md`
+> también está en develop.
 
 ---
 
 ## 1. Snapshot de prod (condición de Sergio) — ANTES de merged develop→main
 
 `pg_dump` custom-format del prod, verificado sin restaurar. Ver `RUNBOOK_PROMOCION_PROD.md` §1
-para el detalle (instalación de `pg_dump 17`, uso del **session pooler puerto 5432**, credenciales
-a archivo gitignored). Resumen:
+para el detalle (instalación de `pg_dump 17`, uso del **session pooler puerto 5432**).
+
+> ⚠️ **OJO — el connection string de prod NO sale por `vercel env pull` (verificado 2026-08-03).**
+> `DATABASE_URL` y `DIRECT_URL` están marcadas **Sensitive** en Vercel → `env pull` las trae
+> **vacías** (mismo bloqueo que el 13-jun). Hay que obtener el string por otra vía:
+> **Supabase dashboard → Project `nefbhacmjrzynnhvgfnl` → Settings → Database → Connection string**
+> (usar el **Session pooler, puerto 5432**; NO el Transaction pooler 6543, que rompe `pg_dump`).
+> Si la password no está a mano, se resetea ahí mismo (invalida la anterior — cuidado si algún
+> proceso la usa).
 
 ```bash
-# Traer credenciales prod a un archivo gitignored (NO commitear)
-vercel env pull .env.prod --environment=production
-# Dump (usar DIRECT_URL de prod = session pooler :5432, NO el :6543)
+# Con el string del dashboard en una var local (NO commitear, NO escribir a archivo trackeado):
+export PROD_DIRECT_URL='postgresql://postgres.<ref>:<pass>@aws-...pooler.supabase.com:5432/postgres'
 pg_dump "$PROD_DIRECT_URL" -Fc -f "backup-prod-2026-08-04.dump"
-# Verificar integridad sin restaurar (debe listar ~44 tablas + exit 0)
-pg_restore -l "backup-prod-2026-08-04.dump" | head
-shred -u .env.prod   # borrar credenciales
+pg_restore -l "backup-prod-2026-08-04.dump" | head   # debe listar ~44 tablas + exit 0
+unset PROD_DIRECT_URL
 ```
 
-✅ No avanzar al paso 2 sin el `.dump` verificado.
+> **Plan B si no se consigue el string a tiempo:** el **backup automático diario de Supabase**
+> (~03:27 AR) es el punto de retorno usado el 13-jun. Las 3 migraciones son aditivas y el
+> rollback de código es un revert de `main` (ver §4 y `RUNBOOK_PROMOCION_PROD.md` §4), así que el
+> operativo no queda sin red aunque el `pg_dump` on-demand falle. Igual, **intentar el `pg_dump`
+> primero** (condición explícita de Sergio).
+
+✅ No avanzar al paso 2 sin snapshot: `.dump` verificado **o** confirmación del backup diario de hoy.
 
 ---
 
@@ -63,18 +76,28 @@ build**, contra el prod DB, automáticamente.
 2. `20260624120000_agregar_modelob_revisado`
 3. `20260702120000_etapa2_3b0_gracia_estado_cuenta`
 
-```bash
-# (opcional pre-check, read-only, contra prod): confirmar que son 3
-npx prisma migrate status   # con .env apuntando a prod DIRECT_URL, luego revertir a dev
+> ⚠️ **NO es fast-forward.** `main` tiene 2 commits que `develop` no tiene: el merge de release
+> del 13-jun (`3333016`, PR #422) y el **hotfix `#455` aplicado directo a prod** (`d037f56`,
+> `console.error` del error crudo de ARCA en `arca.ts`). Por eso **`git merge --ff-only` FALLA** —
+> hay que usar un **merge commit** (PR `develop→main` o `--no-ff`), igual que en junio.
+>
+> **Merge de prueba ya corrido (2026-08-04):** `develop→main` mergea **limpio, sin conflictos**;
+> el hotfix #455 **sobrevive** (adición de un solo lado, git la conserva) y quedan Apache-2.0 +
+> denuncias gateado. No hace falta back-mergear #455 a develop antes: el merge lo preserva solo.
 
+```bash
+# (opcional pre-check, read-only): confirmar que son 3 (usar el PROD_DIRECT_URL del dashboard, §1)
+npx prisma migrate status   # NO tocar .env; pasar la URL por env inline y revertir
+
+# Promoción vía PR (recomendado, como #422) o merge commit local:
 git checkout main && git pull
-git merge --ff-only origin/develop   # o el mecanismo de PR develop→main del repo
+git merge --no-ff origin/develop -m "release: v2.0.0 — Etapa 2 + circuito CUIT + pre-deploy (#459)"
 git push origin main
 ```
 
-> Vercel toma el push a `main` y hace el build+deploy. Seguir el build en el dashboard;
-> si `prisma migrate deploy` falla, el deploy se aborta y prod queda en la versión anterior
-> (ver Rollback, `RUNBOOK_PROMOCION_PROD.md` §4).
+> Vercel toma el push a `main` y hace el build+deploy (`prisma migrate deploy` aplica las 3
+> migraciones). Seguir el build en el dashboard; si `migrate deploy` falla, el deploy se aborta y
+> prod queda en la versión anterior (ver Rollback, `RUNBOOK_PROMOCION_PROD.md` §4).
 
 ---
 
