@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
+import { getFeatureFlag } from '@/compartido/lib/features'
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ codigo: string }> }) {
   try {
+    if (!await getFeatureFlag('denuncias')) {
+      return NextResponse.json({ error: 'Funcionalidad no disponible' }, { status: 503 })
+    }
     const { codigo } = await params
     const denuncia = await prisma.denuncia.findUnique({
       where: { codigo },

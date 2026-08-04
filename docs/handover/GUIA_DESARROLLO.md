@@ -178,4 +178,4 @@ El flujo de trabajo es **spec-first**: toda funcionalidad nace de un spec en `.c
 
 ---
 
-_Desarrollado por UNTREF con el apoyo de la OIT. Distribuido bajo licencia MIT._
+_Desarrollado por UNTREF con el apoyo de la OIT. Codigo bajo licencia Apache-2.0; documentacion editorial bajo CC BY 4.0 IGO._

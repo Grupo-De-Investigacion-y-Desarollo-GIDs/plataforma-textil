@@ -37,11 +37,20 @@ esta decisión está en `docs/handover-oit-analisis-y-division.md` (autor: Sergi
 | Runbook operativo consolidado | `docs/handover/RUNBOOK_OPERATIVO.md` | b, d |
 | Backup y restore | `docs/handover/BACKUP_RESTORE.md` | e |
 | Reporte de licencias + SaaS | `docs/handover/REPORTE_LICENCIAS.md` | h |
-| Hallazgos de seguridad | `docs/handover/HALLAZGOS_SEGURIDAD.md` | g |
 | Cobertura de tests | `docs/handover/COBERTURA_TESTS.md` | g |
-| Inventario de accesos | `docs/handover/INVENTARIO_ACCESOS.md` | d |
 | Deuda técnica y roadmap | `docs/handover/DEUDA_Y_ROADMAP.md` | i, backlog |
 | Runbooks fuente | `.claude/specs/RUNBOOK_*.md` | b, d, e |
+| Hallazgos de seguridad | **canal seguro separado** (no en el repo) | g |
+| Inventario de accesos | **canal seguro separado** (no en el repo) | d |
+
+> **Nota de seguridad (decisión de Sergio, 2026-08-03).** `HALLAZGOS_SEGURIDAD.md` (consolidado
+> de hallazgos y superficie de ataque) e `INVENTARIO_ACCESOS.md` (mapa de qué credencial vive en
+> qué proveedor) **se retiraron del repositorio** y se entregan a OIT/UNTREF **por un canal seguro
+> separado**. Motivo: el repositorio se transfiere a la cuenta que designe OIT y desde ahí la
+> decisión de abrirlo deja de ser del equipo; estos dos documentos no deben viajar con el código.
+> Quedan en el **historial de git** de commits previos: la transferencia final debe contemplar la
+> opción de **purga con `git filter-repo`** (anotado en el checklist de transferencia de
+> `DEUDA_Y_ROADMAP.md`).
 
 ### Convención de responsables y estado
 
@@ -111,9 +120,10 @@ deploy grande).
 ## d) Configuración, acceso y credenciales — PARCIAL / COORDINACIÓN
 
 **(i) Qué se entrega hoy:**
-- **`docs/handover/INVENTARIO_ACCESOS.md`** — inventario técnico: qué cuenta/servicio vive
-  dónde, tabla de variables de entorno por scope (**sin valores**), proyectos Supabase,
-  DNS/dominios, contactos de escalamiento.
+- **`INVENTARIO_ACCESOS.md`** — inventario técnico: qué cuenta/servicio vive dónde, tabla de
+  variables de entorno por scope (**sin valores**), proyectos Supabase, DNS/dominios, contactos
+  de escalamiento. **Se entrega por canal seguro separado, no está en el repositorio** (decisión
+  de Sergio, 2026-08-03; ver nota de seguridad en el "Mapa del paquete").
 - **`.claude/specs/RUNBOOK_RESCOPE_SECRETS.md`** — procedimiento de re-scope y rotación de
   secretos (NEXTAUTH_SECRET, ARCA_PROVIDER, CRON_SECRET, etc.).
 - `.env.example` en el repo lista todas las variables necesarias.
@@ -173,8 +183,10 @@ automatizar el snapshot pre-deploy (hoy manual). Gera. Ver los "gaps declarados"
 **(i) Qué se entrega hoy:**
 - **`docs/handover/COBERTURA_TESTS.md`** — **55 suites unitarias** (Vitest) + **37 specs
   E2E** (Playwright), agrupadas por área; CI como gate de merge.
-- **`docs/handover/HALLAZGOS_SEGURIDAD.md`** — consolidado de hallazgos con estado
-  (gestión de secretos, incidente ARCA, K-01 RLS, IDOR, rate limiting/CORS, evento OIT).
+- **`HALLAZGOS_SEGURIDAD.md`** — consolidado de hallazgos con estado (gestión de secretos,
+  incidente ARCA, K-01 RLS, IDOR, rate limiting/CORS, evento OIT). **Se entrega por canal seguro
+  separado, no está en el repositorio** (decisión de Sergio, 2026-08-03; describe la superficie
+  de ataque — ver nota de seguridad en el "Mapa del paquete").
 - CORS y rate limiting (Upstash) implementados y testeados. `docs/seguridad/cookies.md`.
 
 **(ii) Cambia por stack:** el hardening tradicional (nginx, firewall, patcheo del SO) no
@@ -236,7 +248,7 @@ en un stack tradicional; es central en esta entrega.
 - Los **manuales de operación y administración** (punto f, Sergio) — suplen las sesiones de
   transferencia formales.
 - La **lista de contactos de escalamiento** y el **calendario de rotación** (punto d,
-  `INVENTARIO_ACCESOS.md`).
+  `INVENTARIO_ACCESOS.md` — entregado por canal seguro separado).
 - La **guía de desarrollo** y los **runbooks** (puntos b y f) para el equipo técnico
   receptor.
 

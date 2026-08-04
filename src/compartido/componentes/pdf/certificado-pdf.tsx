@@ -48,7 +48,7 @@ export function CertificadoPDF({ nombreTaller, nombreCurso, calificacion, codigo
             Fecha de emision: {new Date(fecha).toLocaleDateString('es-AR')}
           </Text>
           <Text style={styles.codigo}>
-            Verificar en: plataformatextil.ar/verificar?code={codigo}
+            Verificar en: plataformatextil.com.ar/verificar?code={codigo}
           </Text>
         </View>
       </Page>

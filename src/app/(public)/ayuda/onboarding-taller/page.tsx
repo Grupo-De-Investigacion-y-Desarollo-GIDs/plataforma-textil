@@ -123,7 +123,7 @@ export default function OnboardingTallerPage() {
       <section className="bg-brand-blue/5 rounded-xl border border-brand-blue/20 p-6">
         <h2 className="font-overpass font-bold text-xl text-brand-blue mb-3">Necesitas ayuda?</h2>
         <div className="space-y-2 text-sm text-gray-700">
-          <p>📧 soporte@plataformatextil.ar</p>
+          <p>📧 soporte@plataformatextil.com.ar</p>
           <p>📱 Respuesta estimada: 24-48 hs habiles</p>
         </div>
       </section>

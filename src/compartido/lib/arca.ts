@@ -62,7 +62,7 @@ export interface ResultadoConsulta {
 
 // Email de soporte para mensajes de error al usuario
 function contactoPdt(): string {
-  return process.env.EMAIL_SUPPORT || 'soporte@plataformatextil.ar'
+  return process.env.EMAIL_SUPPORT || 'soporte@plataformatextil.com.ar'
 }
 
 // Mensajes de error orientados al usuario

@@ -69,7 +69,7 @@ export async function generarRespuesta(
 Ayudas a talleres textiles con preguntas sobre formalizacion, tramites y uso de la plataforma.
 Responde siempre en espanol, de forma clara y concisa.
 Si en el contexto hay links en formato markdown, incluílos en tu respuesta para que el usuario pueda navegar directamente.
-Solo responde basandote en el contexto provisto. Si no sabes, deci que no tenes esa informacion y sugeri contactar soporte@plataformatextil.ar.`
+Solo responde basandote en el contexto provisto. Si no sabes, deci que no tenes esa informacion y sugeri contactar soporte@plataformatextil.com.ar.`
 
   const contextoTexto = contexto
     .map((d) => `## ${d.titulo}\n${d.contenido}`)

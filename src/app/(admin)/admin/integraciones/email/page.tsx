@@ -32,7 +32,7 @@ export default function AdminIntegracionEmailPage() {
         <h2 className="font-serif font-bold text-brand-blue mb-4">API de Resend</h2>
         <div className="space-y-4">
           <Input label="API Key" type="password" value="............" disabled onChange={() => {}} />
-          <Input label="Email remitente" value="noreply@plataformatextil.ar" disabled onChange={() => {}} />
+          <Input label="Email remitente" value="noreply@plataformatextil.com.ar" disabled onChange={() => {}} />
           <Input label="Nombre remitente" value="Plataforma Digital Textil" disabled onChange={() => {}} />
         </div>
       </Card>
