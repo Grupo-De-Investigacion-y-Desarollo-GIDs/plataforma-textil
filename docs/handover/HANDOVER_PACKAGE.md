@@ -40,6 +40,13 @@ esta decisión está en `docs/handover-oit-analisis-y-division.md` (autor: Sergi
 | Cobertura de tests | `docs/handover/COBERTURA_TESTS.md` | g |
 | Deuda técnica y roadmap | `docs/handover/DEUDA_Y_ROADMAP.md` | i, backlog |
 | Runbooks fuente | `.claude/specs/RUNBOOK_*.md` | b, d, e |
+| Condiciones de producción (Sergio) | `docs/handover/CONDICIONES_PRODUCCION.md` | b |
+| Decisiones técnicas (Sergio) | `docs/handover/DECISIONES_TECNICAS.md` | b, f |
+| Especificaciones de continuidad (Sergio) | `docs/handover/ESPECIFICACIONES_CONTINUIDAD.md` | f, i |
+| Manual de operación (Sergio) | `docs/operacion/MANUAL_OPERACION.md` | f |
+| Manual de administración (Sergio) | `docs/operacion/MANUAL_ADMINISTRACION.md` | f |
+| Términos y condiciones (Sergio) | `docs/legal/TERMINOS_Y_CONDICIONES.md` | i |
+| Política de privacidad (Sergio) | `docs/legal/POLITICA_DE_PRIVACIDAD.md` | i |
 | Hallazgos de seguridad | **canal seguro separado** (no en el repo) | g |
 | Inventario de accesos | **canal seguro separado** (no en el repo) | d |
 
