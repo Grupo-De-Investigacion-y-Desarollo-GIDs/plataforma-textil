@@ -3,6 +3,9 @@
 ## 2026-08-05
 
 ### Gerardo Breard
+- **11:11** `de5e7d6` — test: actualizar acceso-verificado — ADMIN ya no fuerza verificadoAfip
+  - `src/__tests__/acceso-verificado.test.ts`
+
 - **11:04** `180a662` — fix(post-deploy): filtro talleres por rol, link verificar-cuit, rename tab documentos
   - `next.config.ts`
   - `src/__tests__/post-deploy-talleres-filtro.test.ts`
