@@ -1,5 +1,21 @@
 # Daily Log
 
+## 2026-08-05
+
+### Gerardo Breard
+- **14:29** `ca290ba` — feat(registro): P-01+P-02+P-03 — consentimiento, paginas legales, aviso de proposito
+  - `next.config.ts`
+  - `prisma/migrations/20260805120000_add_consentimiento/migration.sql`
+  - `prisma/schema.prisma`
+  - `src/__tests__/legal.test.ts`
+  - `src/app/(auth)/registro/page.tsx`
+  - `src/app/(public)/privacidad/page.tsx`
+  - `src/app/(public)/terminos/page.tsx`
+  - `src/app/api/auth/registro/completar/route.ts`
+  - `src/app/api/auth/registro/route.ts`
+  - `src/compartido/lib/legal.ts`
+
+
 ## 2026-08-03
 
 ### Gerardo Breard
