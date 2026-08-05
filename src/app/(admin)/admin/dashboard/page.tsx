@@ -33,7 +33,7 @@ const menuItems = [
   { href: '/admin/notificaciones', icon: Bell, label: 'Notificaciones' },
   { href: '/admin/logs', icon: Activity, label: 'Logs' },
   { href: '/admin/procesos', icon: Settings, label: 'Procesos' },
-  { href: '/estado/documentos', icon: FileText, label: 'Documentos' },
+  { href: '/estado/documentos', icon: FileText, label: 'Tipos de documento' },
   { href: '/admin/configuracion', icon: Settings, label: 'Configuración' },
   { href: '/admin/integraciones', icon: Settings, label: 'Integraciones' },
 ]

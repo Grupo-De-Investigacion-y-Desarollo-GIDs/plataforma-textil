@@ -36,7 +36,11 @@ export async function GET(req: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '10')
 
-    const where: Record<string, unknown> = { verificadoAfip: true }
+    // Filtro por verificacion ARCA: OBLIGATORIO para MARCA (no debe ver/invitar
+    // talleres sin verificar). ADMIN/ESTADO (Coordinacion) ven TODOS —incluidos los
+    // EN_GRACIA sin verificar— para la vista regulatoria del panel.
+    const where: Record<string, unknown> = {}
+    if (!esAdmin) where.verificadoAfip = true
 
     // Filtro por nivel solo para ADMIN/ESTADO
     if (esAdmin) {
