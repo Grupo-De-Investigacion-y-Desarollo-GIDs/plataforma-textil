@@ -206,8 +206,31 @@ model User {
   notasSeguimientoCreadas   NotaSeguimiento[] @relation("autorNotas")
   observacionesCreadas      ObservacionCampo[] @relation("ObservacionAutor")
   observacionesRecibidas    ObservacionCampo[] @relation("ObservacionUser")
+  consentimientos           Consentimiento[]
 
   @@map("users")
+}
+
+// P-01: consentimiento legal explicito y auditable (T&C, privacidad, visibilidad).
+// La `version` referencia LEGAL_VERSION vigente al aceptar (src/compartido/lib/legal.ts):
+// lo que el usuario acepta ES lo que se le mostro.
+enum TipoConsent {
+  TERMINOS
+  PRIVACIDAD
+  VISIBILIDAD
+}
+
+model Consentimiento {
+  id         String      @id @default(cuid())
+  userId     String
+  tipo       TipoConsent
+  version    String
+  aceptadoEn DateTime    @default(now())
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, tipo, version])
+  @@index([userId])
+  @@map("consentimientos")
 }
 
 model Account {

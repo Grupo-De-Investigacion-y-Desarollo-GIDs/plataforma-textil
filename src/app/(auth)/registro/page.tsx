@@ -41,6 +41,8 @@ const personalInfoSchema = z
     confirmPassword: z.string().min(1, 'Confirma tu contrasena'),
     phone: z.string().optional(),
     terminos: z.boolean().refine(v => v === true, 'Debes aceptar los terminos y condiciones'),
+    privacidad: z.boolean().refine(v => v === true, 'Debes aceptar la politica de privacidad'),
+    visibilidad: z.boolean().refine(v => v === true, 'Debes aceptar la visibilidad de tus datos para marcas'),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Las contrasenas no coinciden',
@@ -144,10 +146,12 @@ function StepPersonalInfo({
 }) {
   const { register, handleSubmit, formState: { errors }, watch } = useForm<PersonalInfoData>({
     resolver: zodResolver(personalInfoSchema),
-    defaultValues: { terminos: false, ...defaultValues },
+    defaultValues: { terminos: false, privacidad: false, visibilidad: false, ...defaultValues },
   })
 
   const terminosValue = watch('terminos')
+  const privacidadValue = watch('privacidad')
+  const visibilidadValue = watch('visibilidad')
 
   return (
     <div>
@@ -157,6 +161,20 @@ function StepPersonalInfo({
       <p className="text-sm text-gray-500 text-center mb-6">
         Completa tu informacion personal
       </p>
+
+      {/* P-03: aviso de proposito — que datos se piden, para que y quien los ve */}
+      <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-4 mb-4 text-sm text-gray-600">
+        <p className="font-semibold text-brand-blue mb-1">Qué datos te pedimos y por qué</p>
+        <ul className="list-disc pl-5 space-y-0.5">
+          <li><strong>Nombre y email:</strong> para crear tu cuenta y enviarte avisos.</li>
+          <li><strong>CUIT:</strong> para verificar tu identidad ante ARCA (paso siguiente).</li>
+          <li><strong>Datos del taller/marca:</strong> algunos son <strong>visibles para las marcas</strong> en el directorio, para que puedan encontrarte y contactarte.</li>
+        </ul>
+        <p className="mt-2">
+          Detalle completo en la{' '}
+          <a href="/privacidad" target="_blank" className="text-brand-blue font-semibold hover:underline">política de privacidad</a>.
+        </p>
+      </div>
 
       <form onSubmit={handleSubmit(onNext)} className="space-y-4">
         <div className="relative">
@@ -190,6 +208,25 @@ function StepPersonalInfo({
           </span>
         </label>
         {errors.terminos && <p className="text-xs text-red-500 -mt-2">{errors.terminos.message}</p>}
+
+        <label className={`flex items-start gap-3 cursor-pointer rounded-lg border p-3 transition-colors ${privacidadValue ? 'border-brand-blue bg-blue-50/40' : 'border-gray-200'}`}>
+          <input type="checkbox" className="mt-0.5 accent-[var(--color-brand-blue)]" {...register('privacidad')} />
+          <span className="text-sm text-gray-600">
+            Acepto la{' '}
+            <a href="/privacidad" target="_blank" className="text-brand-blue font-semibold hover:underline">politica de privacidad</a>
+          </span>
+        </label>
+        {errors.privacidad && <p className="text-xs text-red-500 -mt-2">{errors.privacidad.message}</p>}
+
+        <label className={`flex items-start gap-3 cursor-pointer rounded-lg border p-3 transition-colors ${visibilidadValue ? 'border-brand-blue bg-blue-50/40' : 'border-gray-200'}`}>
+          <input type="checkbox" className="mt-0.5 accent-[var(--color-brand-blue)]" {...register('visibilidad')} />
+          <span className="text-sm text-gray-600">
+            Acepto que algunos de mis datos sean{' '}
+            <a href="/privacidad" target="_blank" className="text-brand-blue font-semibold hover:underline">visibles para las marcas</a>
+            {' '}en el directorio
+          </span>
+        </label>
+        {errors.visibilidad && <p className="text-xs text-red-500 -mt-2">{errors.visibilidad.message}</p>}
 
         <div className="flex gap-3 pt-2">
           {showBack && (
