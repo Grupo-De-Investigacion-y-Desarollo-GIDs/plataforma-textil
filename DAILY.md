@@ -3,6 +3,10 @@
 ## 2026-08-05
 
 ### Gerardo Breard
+- **15:52** `180fad6` — chore(migracion): wire veredicto verificadoAfip por evidencia + ROL_FORZADO Alan
+  - `scripts/migracion-piloto/lista.txt`
+  - `scripts/migracion-piloto/migrar.ts`
+
 - **14:02** `e8f5e3b` — chore(migracion-piloto): scripts dry-run + migracion selectiva dev->prod
   - `scripts/migracion-piloto/README.md`
   - `scripts/migracion-piloto/dry-run.ts`
