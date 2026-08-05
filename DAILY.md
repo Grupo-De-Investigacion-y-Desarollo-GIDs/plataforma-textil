@@ -1,5 +1,17 @@
 # Daily Log
 
+## 2026-08-05
+
+### Gerardo Breard
+- **11:04** `180a662` — fix(post-deploy): filtro talleres por rol, link verificar-cuit, rename tab documentos
+  - `next.config.ts`
+  - `src/__tests__/post-deploy-talleres-filtro.test.ts`
+  - `src/app/(admin)/admin/dashboard/page.tsx`
+  - `src/app/api/talleres/route.ts`
+  - `src/compartido/lib/content/institutional.ts`
+  - `src/taller/componentes/proximo-nivel-card.tsx`
+
+
 ## 2026-08-03
 
 ### Gerardo Breard
