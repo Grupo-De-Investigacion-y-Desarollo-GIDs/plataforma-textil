@@ -3,6 +3,10 @@
 ## 2026-08-05
 
 ### Gerardo Breard
+- **15:31** `fee0e34` — test: mockear consentimiento.createMany en tests de registro (P-01)
+  - `src/__tests__/registro-cuit-normalizacion.test.ts`
+  - `src/__tests__/u-05-cierre-fuente.test.ts`
+
 - **14:29** `ca290ba` — feat(registro): P-01+P-02+P-03 — consentimiento, paginas legales, aviso de proposito
   - `next.config.ts`
   - `prisma/migrations/20260805120000_add_consentimiento/migration.sql`
