@@ -19,6 +19,7 @@ vi.mock('@/compartido/lib/prisma', () => ({
     taller: { findUnique: mockTallerFindUnique },
     // El guard de consultarPadron registra la consulta fallida (observabilidad).
     consultaArca: { create: vi.fn().mockResolvedValue({}) },
+    consentimiento: { createMany: vi.fn() },
   },
 }))
 vi.mock('@/compartido/lib/log', () => ({ logActividad: vi.fn() }))
