@@ -1,2 +1,16 @@
-# Lista del piloto — CONGELADA por Sergio (un email por línea, # = comentario)
-# Pendiente: Sergio marca antes del mediodía
+# Lista del piloto — CONGELADA (definición de Gerardo, 2026-08-05). 14 migran.
+jointexcooperativa@gmail.com
+cp.alanplummer@gmail.com
+# ^ MERGE: solo sumar rol TALLER a su user de prod (NO tiene taller en dev)
+monibasterrechea@gmail.com
+icoll3382@gmail.com
+icaaindumentaria@gmail.com
+antocarunchio@gmail.com
+solve.vtt@gmail.com
+jhennyflontiveros123@gmail.com
+vicosixx@gmail.com
+monicagodoyleiva@gmail.com
+csamaniego@ciaindumentaria.com.ar
+gustavosamuelian@gmail.com
+info@vaninaf.com
+gerencia.capucchinotextil@gmail.com

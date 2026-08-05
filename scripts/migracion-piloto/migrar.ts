@@ -7,8 +7,9 @@
  * RAMAS:
  *   - MERGE (Alan y cualquier email ya en prod): NO crea user; adjunta el Taller de
  *     dev al user de prod (userId = prod) y suma el rol TALLER.
- *   - MOCK ("TALLER MOCK SRL"): se migra con verificadoAfip=false, estadoCuenta=EN_GRACIA,
- *     inicioGracia=NOW(), verificadoAfipAt=null → circuito de re-verificación limpio.
+ *   - verificadoAfip POR EVIDENCIA (set VERIFICADOS, de consultas_arca reales de dev), NO
+ *     por el nombre. Sin evidencia: talleres → EN_GRACIA+inicioGracia=NOW; marcas → solo
+ *     verificadoAfip=false (las marcas no tienen reloj de gracia). ROL_FORZADO para Alan.
  *   - Catálogos globales (ProcesoProductivo/TipoPrenda/TipoDocumento): se remapean por
  *     NOMBRE dev→prod (los IDs pueden diferir entre seeds).
  *   - Certs migrados: qrCode=NULL (se regenera on-demand con el NEXTAUTH_URL de prod).
@@ -37,6 +38,21 @@ const devStore = createClient(reqEnv('DEV_SUPABASE_URL'), reqEnv('DEV_SUPABASE_S
 const prodStore = createClient(reqEnv('PROD_SUPABASE_URL'), reqEnv('PROD_SUPABASE_SERVICE_ROLE_KEY'))
 
 const log = (...a: unknown[]) => console.log(EXECUTE ? '[EXEC]' : '[DRY]', ...a)
+
+// VEREDICTO verificadoAfip POR EVIDENCIA de consultas_arca de dev (consulta real
+// exitosa >200ms), NO por el nombre "TALLER MOCK SRL". Aprobado por Gerardo 2026-08-05.
+// Los que NO están acá → verificadoAfip=false (talleres además EN_GRACIA+inicioGracia=NOW).
+const VERIFICADOS = new Set<string>([
+  'monibasterrechea@gmail.com',        // TALLER — 2 consultas reales (1978ms)
+  'jointexcooperativa@gmail.com',      // TALLER — 2 reales (1637ms, jurídica/razonSocial)
+  'monicagodoyleiva@gmail.com',        // MARCA  — 2 reales (1100ms)
+  'csamaniego@ciaindumentaria.com.ar', // MARCA  — 2 reales (1083ms) [contacto sensible: solo copia datos, NO email]
+])
+
+// Emails que en el MERGE fuerzan un rol específico (independiente de la entidad de dev).
+const ROL_FORZADO: Record<string, string> = {
+  'cp.alanplummer@gmail.com': 'TALLER', // SIN-ENTIDAD en dev; solo suma rol TALLER a su user MARCA de prod
+}
 
 // ── Remapeo de catálogos globales por nombre (cache) ─────────────────────────
 const cache = { proceso: new Map<string, string>(), prenda: new Map<string, string>(), tipoDoc: new Map<string, string>() }
@@ -98,28 +114,31 @@ async function migrarUno(email: string) {
       } })
       log(`  user creado (id ${u.id}, roles ${u.roles.join('+')})`)
     } else {
-      const nuevoRol = u.taller ? 'TALLER' : 'MARCA'
+      // ROL_FORZADO: Alan no tiene entidad en dev (registro incompleto) → se le suma
+      // TALLER a su user de prod (MARCA) por decisión de Gerardo. El resto: el rol de la
+      // entidad que trae de dev.
+      const nuevoRol = ROL_FORZADO[email] ?? (u.taller ? 'TALLER' : 'MARCA')
       if (EXECUTE && !prodUser!.roles.includes(nuevoRol as never)) {
         await tx.user.update({ where: { id: prodUser!.id }, data: { roles: { set: [...prodUser!.roles, nuevoRol as never] } } })
       }
       log(`  MERGE: rol ${nuevoRol} → user prod ${prodUser!.email} (roles ${prodUser!.roles.join('+')})`)
     }
 
-    // 2. TALLER (+ mock reset) con userId destino
+    // 2. TALLER — verificadoAfip POR EVIDENCIA (VERIFICADOS). Sin evidencia → EN_GRACIA
+    // con reloj nuevo (inicioGracia=NOW) para el circuito de re-verificación real.
     if (u.taller) {
       const t = u.taller
-      const esMock = t.nombre === 'TALLER MOCK SRL'
+      const verif = VERIFICADOS.has(email)
       const data = {
         id: t.id, userId: destUserId, nombre: t.nombre, cuit: t.cuit, ubicacion: t.ubicacion,
         provincia: t.provincia, capacidadMensual: t.capacidadMensual, nivel: t.nivel, puntaje: t.puntaje,
-        // MOCK → reset del reloj de gracia; real verificado → se preserva
-        verificadoAfip: esMock ? false : t.verificadoAfip,
-        verificadoAfipAt: esMock ? null : t.verificadoAfipAt,
-        estadoCuenta: esMock ? 'EN_GRACIA' : t.estadoCuenta,
-        inicioGracia: esMock ? new Date() : t.inicioGracia,
+        verificadoAfip: verif,
+        verificadoAfipAt: verif ? (t.verificadoAfipAt ?? new Date()) : null,
+        estadoCuenta: verif ? 'ACTIVA' : 'EN_GRACIA',
+        inicioGracia: verif ? null : new Date(),
       }
       if (EXECUTE) await tx.taller.create({ data: data as never })
-      log(`  taller "${t.nombre}"${esMock ? ' [reset EN_GRACIA]' : ''}`)
+      log(`  taller "${t.nombre}" → ${verif ? 'ACTIVA (verificado)' : 'EN_GRACIA (sin evidencia real)'}`)
 
       // 2b. Procesos / Prendas (remap por nombre) + Maquinaria
       const procs = await dev.tallerProceso.findMany({ where: { tallerId: t.id } })
@@ -156,12 +175,14 @@ async function migrarUno(email: string) {
       }
     }
 
-    // 3. MARCA (multi-rol) — misma lógica de id/userId
+    // 3. MARCA (marca-only o multi-rol como solve). Las marcas NO tienen reloj de gracia:
+    // solo verificadoAfip por evidencia.
     if (u.marca) {
       const m = u.marca
+      const verif = VERIFICADOS.has(email)
       const yaMarca = await prod.marca.findUnique({ where: { userId: destUserId } })
-      if (!yaMarca && EXECUTE) await tx.marca.create({ data: { ...m, userId: destUserId } as never })
-      log(`  marca "${m.nombre}"${yaMarca ? ' (ya existía)' : ''}`)
+      if (!yaMarca && EXECUTE) await tx.marca.create({ data: { ...m, userId: destUserId, verificadoAfip: verif } as never })
+      log(`  marca "${m.nombre}" → verificadoAfip=${verif}${yaMarca ? ' (ya existía, skip)' : ''}`)
     }
 
     // 3b. Avatar en storage
