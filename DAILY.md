@@ -1,5 +1,13 @@
 # Daily Log
 
+## 2026-08-06
+
+### Gerardo Breard
+- **13:18** `819e3e8` — docs(handover): anexo migración piloto a prod (05-ago) + gitignore *.dump
+  - `.gitignore`
+  - `docs/handover/HANDOVER_PACKAGE.md`
+
+
 ## 2026-08-05
 
 ### Gerardo Breard
