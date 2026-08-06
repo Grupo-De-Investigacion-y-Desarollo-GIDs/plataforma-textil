@@ -292,8 +292,9 @@ gap con responsable y fecha.
 Registro del traslado de los usuarios reales del piloto de **DEV → PROD** (el hueco que
 faltaba documentar). Read-only sobre el diagnóstico, escritura controlada por script.
 
-**Qué migró (14 usuarios, lista congelada por Gerardo):** 8 talleres + 5 marcas + 1 rol.
-- **Conteos prod:** users 9→22 · talleres 5→13 · marcas 3→9.
+**Qué migró (14 usuarios, lista congelada por Gerardo; +1 el 06-ago):** 8 talleres + 5 marcas + 1 rol,
+más **paoguerschuny** (marca "Estudio praline", registrada después del padrón — migrada individual el 06-ago).
+- **Conteos prod:** users 9→**23** · talleres 5→13 · marcas 3→**10**.
 - **`cp.alanplummer`** (ya MARCA en prod): **MERGE** — se le sumó el rol TALLER a su user
   existente (no se duplicó identidad; no tenía entidad en dev).
 - **`solve.vtt`** multi-rol: migró taller **y** marca.
