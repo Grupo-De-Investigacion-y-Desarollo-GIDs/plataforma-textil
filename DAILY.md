@@ -1,5 +1,14 @@
 # Daily Log
 
+## 2026-08-06
+
+### Gerardo Breard
+- **16:53** `84c0e47` — docs(seguridad): PIA (9 proveedores + DPA) + HARDENING.md; ISRA por canal separado
+  - `docs/handover/HANDOVER_PACKAGE.md`
+  - `docs/legal/PIA.md`
+  - `docs/seguridad/HARDENING.md`
+
+
 ## 2026-08-03
 
 ### Gerardo Breard
