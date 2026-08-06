@@ -47,6 +47,9 @@ esta decisión está en `docs/handover-oit-analisis-y-division.md` (autor: Sergi
 | Manual de administración (Sergio) | `docs/operacion/MANUAL_ADMINISTRACION.md` | f |
 | Términos y condiciones (Sergio) | `docs/legal/TERMINOS_Y_CONDICIONES.md` | i |
 | Política de privacidad (Sergio) | `docs/legal/POLITICA_DE_PRIVACIDAD.md` | i |
+| PIA — evaluación de impacto en privacidad | `docs/legal/PIA.md` | i |
+| Hardening — controles aplicados | `docs/seguridad/HARDENING.md` | g |
+| ISRA — evaluación de riesgo | **canal seguro separado** (no en el repo) | g |
 | Hallazgos de seguridad | **canal seguro separado** (no en el repo) | g |
 | Inventario de accesos | **canal seguro separado** (no en el repo) | d |
 
