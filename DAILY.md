@@ -3,6 +3,13 @@
 ## 2026-08-06
 
 ### Gerardo Breard
+- **14:08** `f1f8029` — feat(registro): gate por ambiente + allowlist (spec v4-a) — proteger dev
+  - `src/__tests__/registro-cuit-normalizacion.test.ts`
+  - `src/__tests__/registro-gate.test.ts`
+  - `src/__tests__/u-05-cierre-fuente.test.ts`
+  - `src/app/api/auth/registro/route.ts`
+  - `src/compartido/lib/registro-gate.ts`
+
 - **14:03** `d97e2e7` — docs(handover): incorporar los 7 documentos de Sergio (handover/operacion/legal) (#461)
   - `docs/handover/CONDICIONES_PRODUCCION.md`
   - `docs/handover/DECISIONES_TECNICAS.md`
