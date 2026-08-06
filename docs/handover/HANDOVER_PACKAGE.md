@@ -16,6 +16,16 @@ demás documentos del paquete cuelgan de acá.
 **declarados** con responsable y fecha. Es una entrega honesta y completa en cobertura, no
 un documento aspiracional. La v1.1+ refina los gaps a medida que se cierran.
 
+> **Nota de proceso — merges del 06-ago con CI indisponible.** Algunos PRs (#464 scripts+anexo,
+> #467 PIA+HARDENING; y #463/#465 al llegar el QA de Sergio) se mergearon con **merge
+> administrativo** porque **GitHub Actions estuvo caído por un incidente oficial**
+> (githubstatus.com, activo desde las **15:22 UTC del 2026-08-06**, sin resolución al cierre del
+> día) — no fue quota, billing ni el código. **Validación aplicada en su lugar:** suite de tests
+> local **completa 806/806 verde** (2026-08-06), **previews de Vercel verdes** (deploys por PR),
+> y **QA funcional de Sergio** en #463/#465. **Validación retroactiva comprometida:** al
+> restaurarse Actions, un push a `develop` corre la suite completa en CI y su run verde se enlaza
+> acá para cerrar el círculo.
+
 ### Nota sobre el stack (por qué hay "N/A por diseño")
 
 El PDT se construyó intencionalmente sobre un stack **managed serverless** (Vercel +
@@ -47,6 +57,9 @@ esta decisión está en `docs/handover-oit-analisis-y-division.md` (autor: Sergi
 | Manual de administración (Sergio) | `docs/operacion/MANUAL_ADMINISTRACION.md` | f |
 | Términos y condiciones (Sergio) | `docs/legal/TERMINOS_Y_CONDICIONES.md` | i |
 | Política de privacidad (Sergio) | `docs/legal/POLITICA_DE_PRIVACIDAD.md` | i |
+| PIA — evaluación de impacto en privacidad | `docs/legal/PIA.md` | i |
+| Hardening — controles aplicados | `docs/seguridad/HARDENING.md` | g |
+| ISRA — evaluación de riesgo | **canal seguro separado** (no en el repo) | g |
 | Hallazgos de seguridad | **canal seguro separado** (no en el repo) | g |
 | Inventario de accesos | **canal seguro separado** (no en el repo) | d |
 
