@@ -1,30 +1,10 @@
 # Daily Log
 
-## 2026-08-06
+## 2026-08-04
 
 ### Gerardo Breard
-- **13:35** `fa7433e` — ci: re-trigger checks sobre el fix de tests (fee0e34)
-
-
-
-## 2026-08-05
-
-### Gerardo Breard
-- **15:31** `fee0e34` — test: mockear consentimiento.createMany en tests de registro (P-01)
-  - `src/__tests__/registro-cuit-normalizacion.test.ts`
-  - `src/__tests__/u-05-cierre-fuente.test.ts`
-
-- **14:29** `ca290ba` — feat(registro): P-01+P-02+P-03 — consentimiento, paginas legales, aviso de proposito
-  - `next.config.ts`
-  - `prisma/migrations/20260805120000_add_consentimiento/migration.sql`
-  - `prisma/schema.prisma`
-  - `src/__tests__/legal.test.ts`
-  - `src/app/(auth)/registro/page.tsx`
-  - `src/app/(public)/privacidad/page.tsx`
-  - `src/app/(public)/terminos/page.tsx`
-  - `src/app/api/auth/registro/completar/route.ts`
-  - `src/app/api/auth/registro/route.ts`
-  - `src/compartido/lib/legal.ts`
+- **16:11** `b58dc94` — spec: P-01+P-02(recortado)+P-03 — consentimiento, paginas legales, aviso de proposito
+  - `.claude/specs/v4-p01-p02-p03-consentimiento.md`
 
 
 ## 2026-08-03
