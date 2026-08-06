@@ -1,25 +1,10 @@
 # Daily Log
 
-## 2026-08-06
+## 2026-08-04
 
 ### Gerardo Breard
-- **13:18** `819e3e8` — docs(handover): anexo migración piloto a prod (05-ago) + gitignore *.dump
-  - `.gitignore`
-  - `docs/handover/HANDOVER_PACKAGE.md`
-
-
-## 2026-08-05
-
-### Gerardo Breard
-- **15:52** `180fad6` — chore(migracion): wire veredicto verificadoAfip por evidencia + ROL_FORZADO Alan
-  - `scripts/migracion-piloto/lista.txt`
-  - `scripts/migracion-piloto/migrar.ts`
-
-- **14:02** `e8f5e3b` — chore(migracion-piloto): scripts dry-run + migracion selectiva dev->prod
-  - `scripts/migracion-piloto/README.md`
-  - `scripts/migracion-piloto/dry-run.ts`
-  - `scripts/migracion-piloto/lista.txt`
-  - `scripts/migracion-piloto/migrar.ts`
+- **16:11** `b58dc94` — spec: P-01+P-02(recortado)+P-03 — consentimiento, paginas legales, aviso de proposito
+  - `.claude/specs/v4-p01-p02-p03-consentimiento.md`
 
 
 ## 2026-08-03
