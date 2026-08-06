@@ -16,6 +16,16 @@ demás documentos del paquete cuelgan de acá.
 **declarados** con responsable y fecha. Es una entrega honesta y completa en cobertura, no
 un documento aspiracional. La v1.1+ refina los gaps a medida que se cierran.
 
+> **Nota de proceso — merges del 06-ago con CI indisponible.** Algunos PRs (#464 scripts+anexo,
+> #467 PIA+HARDENING; y #463/#465 al llegar el QA de Sergio) se mergearon con **merge
+> administrativo** porque **GitHub Actions estuvo caído por un incidente oficial**
+> (githubstatus.com, activo desde las **15:22 UTC del 2026-08-06**, sin resolución al cierre del
+> día) — no fue quota, billing ni el código. **Validación aplicada en su lugar:** suite de tests
+> local **completa 806/806 verde** (2026-08-06), **previews de Vercel verdes** (deploys por PR),
+> y **QA funcional de Sergio** en #463/#465. **Validación retroactiva comprometida:** al
+> restaurarse Actions, un push a `develop` corre la suite completa en CI y su run verde se enlaza
+> acá para cerrar el círculo.
+
 ### Nota sobre el stack (por qué hay "N/A por diseño")
 
 El PDT se construyó intencionalmente sobre un stack **managed serverless** (Vercel +
@@ -47,6 +57,9 @@ esta decisión está en `docs/handover-oit-analisis-y-division.md` (autor: Sergi
 | Manual de administración (Sergio) | `docs/operacion/MANUAL_ADMINISTRACION.md` | f |
 | Términos y condiciones (Sergio) | `docs/legal/TERMINOS_Y_CONDICIONES.md` | i |
 | Política de privacidad (Sergio) | `docs/legal/POLITICA_DE_PRIVACIDAD.md` | i |
+| PIA — evaluación de impacto en privacidad | `docs/legal/PIA.md` | i |
+| Hardening — controles aplicados | `docs/seguridad/HARDENING.md` | g |
+| ISRA — evaluación de riesgo | **canal seguro separado** (no en el repo) | g |
 | Hallazgos de seguridad | **canal seguro separado** (no en el repo) | g |
 | Inventario de accesos | **canal seguro separado** (no en el repo) | d |
 
@@ -287,5 +300,48 @@ gap con responsable y fecha.
 
 ---
 
-*Versión 1.0 · 2026-08-03 · Entrega inicial. Los gaps se cierran en versiones sucesivas de
-este paquete.*
+## Anexo — Migración del piloto a producción (2026-08-05)
+
+Registro del traslado de los usuarios reales del piloto de **DEV → PROD** (el hueco que
+faltaba documentar). Read-only sobre el diagnóstico, escritura controlada por script.
+
+**Qué migró (14 usuarios, lista congelada por Gerardo; +1 el 06-ago):** 8 talleres + 5 marcas + 1 rol,
+más **paoguerschuny** (marca "Estudio praline", registrada después del padrón — migrada individual el 06-ago).
+- **Conteos prod:** users 9→**23** · talleres 5→13 · marcas 3→**10**.
+- **`cp.alanplummer`** (ya MARCA en prod): **MERGE** — se le sumó el rol TALLER a su user
+  existente (no se duplicó identidad; no tenía entidad en dev).
+- **`solve.vtt`** multi-rol: migró taller **y** marca.
+
+**Criterio de `verificadoAfip` — POR EVIDENCIA, no por el flag de dev:** se consultó
+`consultas_arca` de dev buscando una **consulta ARCA real exitosa** (duración >200 ms; el
+mock responde en ~1-50 ms y siempre con nombre "TALLER MOCK SRL"). 
+- **4 verificados** (evidencia real): jointexcooperativa, monibasterrechea (talleres →
+  ACTIVA), monicagodoyleiva, csamaniego (marcas → verificadoAfip=true).
+- **El resto → sin verificar:** talleres a `EN_GRACIA` con `inicioGracia=NOW()` (circuito de
+  re-verificación real); marcas a `verificadoAfip=false` (sin reloj de gracia). Incluye 4
+  talleres que en dev figuraban `verificadoAfip=true` por el **mock** pero sin evidencia real.
+- **Invariante verificada:** `/api/talleres` a una MARCA sigue mostrando **solo verificados**
+  (6 en prod); ningún taller EN_GRACIA migrado se filtra al directorio.
+
+**Qué NO migró (y por qué):** sesiones, notificaciones, `log_actividad`, cotizaciones/órdenes
+y el historial `consultas_arca` (ruido operativo de dev). Documentos de storage: 0 (los
+talleres del piloto no habían subido ninguno). Certificados/progreso: fuera de la 1ª tanda.
+
+**Cierre de dev:** los 14 se **eliminaron de dev** (sus copias viven en prod); el seed+demo
+quedó intacto (11 `@pdt.org.ar` + roles ADMIN/ESTADO/CONTENIDO) y el directorio de dev **no
+muestra personas reales**. Conteos dev: users 26→12 · talleres 14→6 · marcas 10→4.
+
+**Export documental de dev (registro histórico de la actividad del piloto):** `pg_dump`
+custom-format con timestamp, verificado con `pg_restore -l` (80 tablas). **Decisión de Sergio:
+export documentado, no instancia viva.** El archivo (`backup-dev-piloto-<ts>.dump`) **NO va al
+repositorio** (contiene PII real) — se guarda en almacenamiento seguro junto al inventario de
+accesos (canal separado). Snapshot de prod pre-migración conservado igual (`backup-prod-<ts>.dump`).
+
+**Herramientas (en el repo):** `scripts/migracion-piloto/` — `dry-run.ts` (diagnóstico
+read-only), `migrar.ts` (migración con las ramas MERGE/verdict/remap-catálogos), `README.md`.
+El veredicto por email vive en `migrar.ts` (`VERIFICADOS`).
+
+---
+
+*Versión 1.0 · 2026-08-03 · Entrega inicial. Anexo de migración 2026-08-05. Los gaps se cierran
+en versiones sucesivas de este paquete.*
