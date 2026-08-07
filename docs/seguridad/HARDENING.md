@@ -19,6 +19,12 @@ Era **una sola entrada compartida** entre Production y Preview → un JWT firmad
 separadas de **Production** y **Preview** (sin Development: el candado del plan no permite ese
 scope y no se usa `vercel dev`). Runbook: `.claude/specs/RUNBOOK_RESCOPE_SECRETS.md`.
 
+**Rotación de Production (2026-08-07).** Se rotó el `NEXTAUTH_SECRET` de **Production** tras
+detectarse una **copia local suelta** del valor posterior al cierre del 03-08. Se borró la entrada
+vieja y se creó una nueva (solo-Production; Preview intacta); el **redeploy `v2.1.0` la horneó**.
+Efecto esperado: **sesiones de prod vigentes invalidadas** (re-login). Historia completa en el
+**ISRA v3** (canal separado).
+
 ### 1.2 `CRON_SECRET` — separado (CERRADO 2026-08-03)
 El cron de gracia (`/api/cron/gracia-cuit`) se protege con `Authorization: Bearer ${CRON_SECRET}`
 y **no falla abierto** (401 si falta; cubierto por test). Separado: **Production** con el valor

@@ -136,9 +136,9 @@ tras definición de titularidad.
 artefacto es el **commit + tag**, no un ejecutable. Si OIT lo pide explícitamente, se genera
 un tarball del árbol en el tag.
 
-**(iii) Gaps:** `v2.0.0` **ya está en producción** (deploy 04-ago). El próximo tag será
-**`v2.1.0`** al promover el trabajo de esta semana (P-01/02/03 + filtro + gate registro +
-auditorías off), si el 2º deploy se ejecuta — runbook `.claude/specs/RUNBOOK_DEPLOY_v2.1.0.md`.
+**(iii) Gaps:** `v2.1.0` **ya está en producción** (deploy 07-ago, `b3e4be1`): P-01/02/03 +
+legales `_WEB` + filtro + gate registro + auditorías off + fix admin/usuarios + PIA/HARDENING.
+`v2.0.0` (04-ago, `4fa2979`) es el release anterior. Runbook `.claude/specs/RUNBOOK_DEPLOY_v2.1.0.md`.
 
 ---
 
@@ -293,21 +293,31 @@ Cierre del grueso del trabajo de ingeniería del piloto.
   (dominio `.com.ar`, LICENSE Apache-2.0, denuncias OFF, docs sensibles fuera del repo).
 - **Migración del piloto dev→prod** (05-06 ago): 23 usuarios reales en prod, `verificadoAfip`
   **por evidencia** de `consultas_arca`, export documental de dev (canal separado). Ver anexo.
-- **8 PRs de la semana** a `develop`: `#462` spec consentimiento · `#463` filtro talleres por
-  rol · `#464` scripts+anexo migración · `#465` P-01/P-02/P-03 (consentimiento + legales +
+- **10 PRs de la semana** a `develop`: `#462` spec consentimiento · `#463` filtro talleres por
+  rol · `#464` scripts+anexo migración · `#465` P-01/P-02/P-03 (consentimiento + legales `_WEB` +
   registro) · `#466` gate de registro (v4-a) · `#467` PIA + HARDENING · `#468` auditorías off
-  · `#469` runbook v2.1.0. *(#465 pendiente de merge tras el re-QA de Sergio.)*
+  · `#469` runbook v2.1.0 · `#472` fix `admin/usuarios` (límite/contadores, hallazgo de Sergio)
+  · `#473` gate 403 con redirección a producción.
 - **ISRA / PIA entregados:** `PIA.md` + `HARDENING.md` (repo) + actualización del ISRA (canal
   separado) — 9 proveedores con tabla de DPA (8 con DPA + AFIP SDK gap), Google OAuth
   planificada/no-operativa.
 - **Incidente de GitHub Actions** (06-ago): algunos merges con merge administrativo + **validación
   retroactiva verde** al restaurarse el servicio (ver "Nota de proceso" al inicio).
+- **2º deploy `v2.1.0` a producción** (07-ago, `b3e4be1`): `develop → main` (`--no-ff`), migración
+  aditiva `add_consentimiento` aplicada, **`NEXTAUTH_SECRET` de Production rotado** antes del merge
+  (horneado en el build; sesiones viejas invalidadas = esperado). Verificación post-deploy OK.
+  Bitácora: `.claude/BITACORA_PROD.md`.
+- **Saneo de roles en prod** (07-ago): 6 usuarios MARCA quedaron con el escalar `role=TALLER`
+  (cosmético — el auth resuelve por `activeMode`/`roles`; nadie perdió acceso). Causa en
+  `migrar.ts` (fix documental) + `UPDATE` de 6 filas. Detalle: `scripts/migracion-piloto/README.md`.
+- **Incidente Pampa/Pura Sangre** (07-ago, S3): dos altas rebotadas por el gate en
+  `dev.plataformatextil.com.ar` (por diseño); sin pérdida de datos. Fix de copy (#473) + envío del
+  link de producción. Bitácora.
 
-**Artefacto de la entrega (tag) — dos variantes según se ejecute el 2º deploy hoy:**
-- **CON 2º deploy → `v2.1.0`:** P-01/02/03 + filtro + gate registro + auditorías off + PIA/HARDENING.
-  Runbook `.claude/specs/RUNBOOK_DEPLOY_v2.1.0.md` (1 migración aditiva `add_consentimiento`).
-- **SIN 2º deploy → `v2.0.0`** (04-ago, `4fa2979`) sigue siendo el artefacto identificable en prod;
-  el trabajo de esta semana queda en `develop` (no liberado) para el próximo deploy.
+**Artefacto de la entrega (tag): `v2.1.0` — EN PRODUCCIÓN.**
+- **`v2.1.0`** sobre `b3e4be1` (deploy 07-ago): P-01/02/03 + legales `_WEB` + filtro talleres por
+  rol + gate registro (con redirección) + auditorías off + fix admin/usuarios + PIA/HARDENING.
+  1 migración aditiva `add_consentimiento`. `v2.0.0` (04-ago, `4fa2979`) queda como release anterior.
 
 **Freeze:** desde la entrega, **congelamiento de código** — no se toca salvo hotfix crítico,
 alineado con el freeze del cronograma. El evento corre sobre el entorno de demo con datos sintéticos.
@@ -320,7 +330,7 @@ alineado con el freeze del cronograma. El evento corre sobre el entorno de demo 
 |-------|--------|--------|-------------------------------|
 | a | Código y repositorios | **ENTREGADO** | — |
 | b | Infraestructura y despliegue | **ENTREGADO** | DNS/tier (Gera, tras titularidad) |
-| c | Artefactos ejecutables | **ENTREGADO** | v2.0.0 en prod (04-ago); tag v2.1.0 al 2º deploy (Gera) |
+| c | Artefactos ejecutables | **ENTREGADO** | v2.1.0 en prod (07-ago, `b3e4be1`); v2.0.0 release anterior |
 | d | Config, acceso, credenciales | **COORDINACIÓN** | Titularidad institucional (Sergio) |
 | e | Datos y migraciones | **ENTREGADO** | tier/Storage/automatizar snapshot (Gera) |
 | f | Documentación técnica/funcional | **PARCIAL** | Manuales en repo; falta conciliar admin (Sergio) |
