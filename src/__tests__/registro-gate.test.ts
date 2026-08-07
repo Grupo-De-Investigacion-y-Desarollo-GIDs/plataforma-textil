@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { modoRegistro, emailPermitido, esEmailDeTest } from '@/compartido/lib/registro-gate'
+import { modoRegistro, emailPermitido, esEmailDeTest, MENSAJE_REGISTRO_RESTRINGIDO, URL_REGISTRO_PROD } from '@/compartido/lib/registro-gate'
 
 // Spec v4-a: gate de registro por ambiente + allowlist. Helper puro.
 describe('registro-gate — modoRegistro', () => {
@@ -37,6 +37,17 @@ describe('registro-gate — emailPermitido', () => {
   })
   it('dominio sin @ inicial se trata como email exacto (no matchea)', () => {
     expect(emailPermitido('quien@oit.org', 'oit.org')).toBe(false)
+  })
+})
+
+describe('registro-gate — MENSAJE_REGISTRO_RESTRINGIDO (copy del 403)', () => {
+  it('redirige a producción con el enlace completo', () => {
+    expect(URL_REGISTRO_PROD).toBe('https://plataformatextil.com.ar/registro')
+    expect(MENSAJE_REGISTRO_RESTRINGIDO).toContain(URL_REGISTRO_PROD)
+    expect(MENSAJE_REGISTRO_RESTRINGIDO).toContain('Plataforma Digital Textil')
+  })
+  it('no deja el copy viejo (sin enlace) que confundió en el piloto', () => {
+    expect(MENSAJE_REGISTRO_RESTRINGIDO).not.toContain('Escribi a soporte')
   })
 })
 
