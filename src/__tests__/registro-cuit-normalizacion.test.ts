@@ -46,6 +46,7 @@ function req(body: unknown): NextRequest {
 beforeEach(() => {
   vi.clearAllMocks()
   process.env.ARCA_PROVIDER = 'mock' // mock valida cualquier CUIT de 11 dígitos
+  process.env.VERCEL_ENV = 'production' // gate de registro (spec v4-a) = no-op en prod
   mockUserFindUnique.mockResolvedValue(null)
   mockUserCreate.mockResolvedValue({ id: 'u1', email: 'x@x.com', name: null, role: 'TALLER' })
   mockTallerFindUnique.mockResolvedValue(null) // salta el createMany de validaciones

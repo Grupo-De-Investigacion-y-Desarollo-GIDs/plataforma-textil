@@ -8,6 +8,7 @@ import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
 import { estadoCuentaInicial } from '@/compartido/lib/gracia'
 import { LEGAL_VERSION, TIPOS_CONSENT } from '@/compartido/lib/legal'
 import { apiHandler, errorResponse, errorConflict } from '@/compartido/lib/api-errors'
+import { modoRegistro, emailPermitido, esEmailDeTest } from '@/compartido/lib/registro-gate'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 
@@ -64,6 +65,18 @@ export const POST = apiHandler(async (req: NextRequest) => {
   }
 
   const data = parsed.data
+
+  // Gate de registro por ambiente (spec v4-a). En production es 'abierto' (no-op).
+  // Fuera de prod: 'allowlist' (solo REGISTRO_ALLOWLIST) salvo MODO_EVENTO=on. Corre
+  // ANTES de ARCA para no gastar una consulta al padrón en un registro que se rechaza.
+  const modoReg = modoRegistro()
+  if (modoReg === 'allowlist' && !emailPermitido(data.email) && !esEmailDeTest(data.email)) {
+    return errorResponse({
+      code: 'REGISTRO_RESTRINGIDO',
+      message: 'El registro en este ambiente de pruebas esta limitado. Escribi a soporte si necesitas acceso.',
+      status: 403,
+    })
+  }
 
   // Verificar CUIT con ARCA via arca.ts
   let cuitVerificado = false
@@ -146,6 +159,10 @@ export const POST = apiHandler(async (req: NextRequest) => {
     })
 
     logActividad('AUTH_REGISTRO', user.id, { email: data.email, role: data.role })
+    // Marca de registro sintético para el barrido de limpieza post-evento (spec v4-a §2.4).
+    if (modoReg === 'evento') {
+      logActividad('REGISTRO_MODO_EVENTO', user.id, { email: data.email, role: data.role })
+    }
 
     // P-01: persistir el consentimiento (el front exige los 3 checkboxes; se registran
     // los 3 tipos con la version legal vigente). @@unique evita duplicados en reintentos.

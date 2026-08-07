@@ -19,6 +19,16 @@
 ## 2026-08-06
 
 ### Gerardo Breard
+- **22:49** `311a62a` — Merge remote-tracking branch 'origin/develop' into feature/proteger-registro-dev
+
+
+- **22:21** `612fa51` — test(e2e): /estado/auditorias ahora devuelve 404 (ruta retirada)
+  - `tests/e2e/roles-estado.spec.ts`
+
+- **22:01** `a4684a4` — fix(estado): retirar Auditorías del menú de Coordinación + cerrar la ruta (404)
+  - `src/app/(estado)/estado/auditorias/page.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+
 - **21:50** `339a2cd` — fix(legal): publicar solo el cuerpo (extracción estructural) + remark-gfm + textos nuevos + acentos registro
   - `docs/legal/POLITICA_DE_PRIVACIDAD.md`
   - `docs/legal/TERMINOS_Y_CONDICIONES.md`

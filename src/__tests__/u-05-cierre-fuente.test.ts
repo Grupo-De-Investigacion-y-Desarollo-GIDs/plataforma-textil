@@ -67,6 +67,7 @@ const reqCompletar = (body: unknown) =>
 
 beforeEach(() => {
   vi.clearAllMocks()
+  process.env.VERCEL_ENV = 'production' // gate de registro (spec v4-a) = no-op en prod
   mockPadron.mockResolvedValue({ exitosa: true, datos: { nombre: 'X' } })
 })
 
