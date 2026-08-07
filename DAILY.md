@@ -3,6 +3,9 @@
 ## 2026-08-06
 
 ### Gerardo Breard
+- **22:21** `612fa51` — test(e2e): /estado/auditorias ahora devuelve 404 (ruta retirada)
+  - `tests/e2e/roles-estado.spec.ts`
+
 - **22:01** `a4684a4` — fix(estado): retirar Auditorías del menú de Coordinación + cerrar la ruta (404)
   - `src/app/(estado)/estado/auditorias/page.tsx`
   - `src/compartido/lib/content/institutional.ts`
