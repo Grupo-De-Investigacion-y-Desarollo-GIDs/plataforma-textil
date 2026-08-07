@@ -89,6 +89,13 @@ Es la lectura previa de la **revisión semanal** del piloto (pedido de Sergio:
   `backup-prod-v2.1.0-20260807-150357.dump` (verificado). Verificación post-deploy: health
   `ok/up`; legales `_WEB` sin marcadores/controles/nombres-de-cookies (2 tablas); `admin/usuarios`
   Total=23; CUITs malformados = 0; auditorías/denuncias OFF.
+- **Verificaciones diferidas** (necesitan cuenta/alta real, no automatizables):
+  - **Login post-rotación:** lo hace **Sergio con su cuenta** (07-ago). A nivel infra el auth
+    no da errores de descifrado con el secret nuevo (`session`/`csrf`/`providers` OK, `/login`
+    200); falta el login humano end-to-end.
+  - **Persistencia de consentimiento:** la valida el **primer alta real** (escribe 3 filas en
+    `consentimientos`: TERMINOS/PRIVACIDAD/VISIBILIDAD, `version=LEGAL_VERSION`). Pampa Textil /
+    Pura Sangre en camino (redirigidos al registro de producción).
 - **Qué se aprendió / acción de seguimiento:**
   - **Saneo de roles (escalar `role` legacy):** 6 usuarios MARCA migrados quedaron con
     `users.role = TALLER` (causa: `migrar.ts` no seteaba el escalar → `@default(TALLER)`).
