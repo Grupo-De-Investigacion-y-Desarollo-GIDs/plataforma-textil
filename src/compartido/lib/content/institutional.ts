@@ -39,7 +39,7 @@ export const TABS_BY_ROLE = {
   ESTADO: [
     { label: 'Dashboard', href: '/estado' },
     { label: 'Talleres', href: '/estado/talleres' },
-    { label: 'Documentos', href: '/estado/documentos' },
+    { label: 'Tipos de documento', href: '/estado/documentos' },
     { label: 'Etapas', href: '/estado/configuracion-niveles' },
     { label: 'Auditorías', href: '/estado/auditorias' },
     { label: 'Demanda insatisfecha', href: '/estado/demanda-insatisfecha' },

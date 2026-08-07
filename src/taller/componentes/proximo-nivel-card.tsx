@@ -31,7 +31,7 @@ function ordenarPasos(info: ProximoNivelInfo): Paso[] {
       puntos: 10,
       prioridad: 1,
       requerido: true,
-      accion: { texto: 'Verificar ahora', href: '/taller/perfil/verificar-cuit' },
+      accion: { texto: 'Verificar ahora', href: '/taller/formalizacion#verificar-cuit' },
     })
   }
 
