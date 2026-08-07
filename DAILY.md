@@ -3,6 +3,9 @@
 ## 2026-08-06
 
 ### Gerardo Breard
+- **22:49** `311a62a` — Merge remote-tracking branch 'origin/develop' into feature/proteger-registro-dev
+
+
 - **22:21** `612fa51` — test(e2e): /estado/auditorias ahora devuelve 404 (ruta retirada)
   - `tests/e2e/roles-estado.spec.ts`
 
