@@ -27,6 +27,7 @@ export default async function middleware(req: NextRequest) {
     '/',
     '/login',
     '/acceso-rapido',
+    '/demo',           // Evento: acceso por tarjetas (gateado por MODO_EVENTO en la page)
     '/registro',
     '/olvide-contrasena',
     '/restablecer',

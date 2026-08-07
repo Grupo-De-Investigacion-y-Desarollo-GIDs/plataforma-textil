@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
+import { esCuentaDemo, MENSAJE_CUENTA_DEMO } from '@/compartido/lib/demo'
 import bcrypt from 'bcryptjs'
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ token: string }> }) {
@@ -20,6 +21,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ tok
 
     if (!record || record.expires < new Date()) {
       return NextResponse.json({ error: 'Token inválido o expirado' }, { status: 400 })
+    }
+
+    // Guard de evento: las cuentas demo (@pdt.org.ar) no cambian credenciales.
+    if (esCuentaDemo(record.identifier)) {
+      return NextResponse.json({ error: MENSAJE_CUENTA_DEMO }, { status: 403 })
     }
 
     const hashedPassword = await bcrypt.hash(password, 10)
