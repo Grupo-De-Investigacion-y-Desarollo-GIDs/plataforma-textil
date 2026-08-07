@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { modoRegistro, emailPermitido } from '@/compartido/lib/registro-gate'
+import { modoRegistro, emailPermitido, esEmailDeTest } from '@/compartido/lib/registro-gate'
 
 // Spec v4-a: gate de registro por ambiente + allowlist. Helper puro.
 describe('registro-gate — modoRegistro', () => {
@@ -37,5 +37,19 @@ describe('registro-gate — emailPermitido', () => {
   })
   it('dominio sin @ inicial se trata como email exacto (no matchea)', () => {
     expect(emailPermitido('quien@oit.org', 'oit.org')).toBe(false)
+  })
+})
+
+describe('registro-gate — esEmailDeTest (TLDs reservados)', () => {
+  it('permite los TLDs de test que usan los e2e (.test) y otros reservados', () => {
+    expect(esEmailDeTest('test-taller-123@laaguja.test')).toBe(true)
+    expect(esEmailDeTest('x@dulcemoda.test')).toBe(true)
+    expect(esEmailDeTest('a@b.example')).toBe(true)
+    expect(esEmailDeTest('a@b.invalid')).toBe(true)
+  })
+  it('NO trata como test un email real', () => {
+    expect(esEmailDeTest('persona@gmail.com')).toBe(false)
+    expect(esEmailDeTest('x@ciaindumentaria.com.ar')).toBe(false)
+    expect(esEmailDeTest('x@testing.com')).toBe(false)
   })
 })

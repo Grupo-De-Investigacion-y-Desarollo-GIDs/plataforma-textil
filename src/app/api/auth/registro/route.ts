@@ -7,7 +7,7 @@ import { sendEmail, buildBienvenidaEmail } from '@/compartido/lib/email'
 import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
 import { estadoCuentaInicial } from '@/compartido/lib/gracia'
 import { apiHandler, errorResponse, errorConflict } from '@/compartido/lib/api-errors'
-import { modoRegistro, emailPermitido } from '@/compartido/lib/registro-gate'
+import { modoRegistro, emailPermitido, esEmailDeTest } from '@/compartido/lib/registro-gate'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 
@@ -69,7 +69,7 @@ export const POST = apiHandler(async (req: NextRequest) => {
   // Fuera de prod: 'allowlist' (solo REGISTRO_ALLOWLIST) salvo MODO_EVENTO=on. Corre
   // ANTES de ARCA para no gastar una consulta al padrón en un registro que se rechaza.
   const modoReg = modoRegistro()
-  if (modoReg === 'allowlist' && !emailPermitido(data.email)) {
+  if (modoReg === 'allowlist' && !emailPermitido(data.email) && !esEmailDeTest(data.email)) {
     return errorResponse({
       code: 'REGISTRO_RESTRINGIDO',
       message: 'El registro en este ambiente de pruebas esta limitado. Escribi a soporte si necesitas acceso.',

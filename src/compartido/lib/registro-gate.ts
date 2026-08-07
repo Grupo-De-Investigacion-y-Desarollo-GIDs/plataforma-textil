@@ -23,3 +23,13 @@ export function emailPermitido(email: string, csv: string = process.env.REGISTRO
     entrada.startsWith('@') ? e.endsWith(entrada) : e === entrada
   )
 }
+
+/**
+ * true si el email usa un TLD reservado de test (RFC 2606/6761): `.test`, `.example`,
+ * `.invalid`, `.localhost`. Son sintéticos y no enrutables a una persona real; los e2e
+ * de registro usan `@*.test`. Se permiten en modo allowlist para que el CI corra sin
+ * abrir el gate a emails reales (una cuenta `@x.test` es basura no-entregable, no un leak).
+ */
+export function esEmailDeTest(email: string): boolean {
+  return /\.(test|example|invalid|localhost)$/i.test(email.trim())
+}
