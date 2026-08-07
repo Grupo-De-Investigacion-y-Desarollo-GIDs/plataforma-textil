@@ -41,7 +41,6 @@ export const TABS_BY_ROLE = {
     { label: 'Talleres', href: '/estado/talleres' },
     { label: 'Tipos de documento', href: '/estado/documentos' },
     { label: 'Etapas', href: '/estado/configuracion-niveles' },
-    { label: 'Auditorías', href: '/estado/auditorias' },
     { label: 'Demanda insatisfecha', href: '/estado/demanda-insatisfecha' },
     { label: 'Datos sectoriales', href: '/estado/sector' },
     { label: 'Exportar', href: '/estado/exportar' },
