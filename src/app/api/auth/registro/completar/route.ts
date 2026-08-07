@@ -3,6 +3,7 @@ import { auth } from '@/compartido/lib/auth'
 import { prisma } from '@/compartido/lib/prisma'
 import { verificarCuit } from '@/compartido/lib/afip'
 import { crearEntidadParaRol } from '@/compartido/lib/crear-entidad-rol'
+import { LEGAL_VERSION, TIPOS_CONSENT } from '@/compartido/lib/legal'
 import { rateLimit } from '@/compartido/lib/ratelimit'
 import { z } from 'zod'
 
@@ -63,6 +64,11 @@ export async function POST(req: NextRequest) {
       // no tenía taller/marca → es single-rol). Sincronizamos roles=[role]/activeMode=role
       // junto al role para no regenerar el dato desincronizado. Ver spec v4-u-05.
       data: { role, roles: [role], activeMode: role, registroCompleto: true },
+    })
+    // P-01: consentimiento al completar el alta (OAuth/magic-link). Mismos 3 tipos.
+    await tx.consentimiento.createMany({
+      data: TIPOS_CONSENT.map(tipo => ({ userId: user.id, tipo, version: LEGAL_VERSION })),
+      skipDuplicates: true,
     })
   })
 

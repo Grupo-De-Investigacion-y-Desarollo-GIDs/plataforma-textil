@@ -40,7 +40,9 @@ const personalInfoSchema = z
     password: z.string().min(8, 'La contrasena debe tener al menos 8 caracteres'),
     confirmPassword: z.string().min(1, 'Confirma tu contrasena'),
     phone: z.string().optional(),
-    terminos: z.boolean().refine(v => v === true, 'Debes aceptar los terminos y condiciones'),
+    terminos: z.boolean().refine(v => v === true, 'Debes aceptar los términos y condiciones'),
+    privacidad: z.boolean().refine(v => v === true, 'Debes aceptar la política de privacidad'),
+    visibilidad: z.boolean().refine(v => v === true, 'Debes aceptar la visibilidad de tus datos para marcas'),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Las contrasenas no coinciden',
@@ -144,10 +146,12 @@ function StepPersonalInfo({
 }) {
   const { register, handleSubmit, formState: { errors }, watch } = useForm<PersonalInfoData>({
     resolver: zodResolver(personalInfoSchema),
-    defaultValues: { terminos: false, ...defaultValues },
+    defaultValues: { terminos: false, privacidad: false, visibilidad: false, ...defaultValues },
   })
 
   const terminosValue = watch('terminos')
+  const privacidadValue = watch('privacidad')
+  const visibilidadValue = watch('visibilidad')
 
   return (
     <div>
@@ -155,8 +159,22 @@ function StepPersonalInfo({
         Datos personales
       </h2>
       <p className="text-sm text-gray-500 text-center mb-6">
-        Completa tu informacion personal
+        Completá tu información personal
       </p>
+
+      {/* P-03: aviso de proposito — que datos se piden, para que y quien los ve */}
+      <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-4 mb-4 text-sm text-gray-600">
+        <p className="font-semibold text-brand-blue mb-1">Qué datos te pedimos y por qué</p>
+        <ul className="list-disc pl-5 space-y-0.5">
+          <li><strong>Nombre y email:</strong> para crear tu cuenta y enviarte avisos.</li>
+          <li><strong>CUIT:</strong> para verificar tu identidad ante ARCA (paso siguiente).</li>
+          <li><strong>Datos del taller/marca:</strong> algunos son <strong>visibles para las marcas</strong> en el directorio, para que puedan encontrarte y contactarte.</li>
+        </ul>
+        <p className="mt-2">
+          Detalle completo en la{' '}
+          <a href="/privacidad" target="_blank" className="text-brand-blue font-semibold hover:underline">política de privacidad</a>.
+        </p>
+      </div>
 
       <form onSubmit={handleSubmit(onNext)} className="space-y-4">
         <div className="relative">
@@ -168,7 +186,7 @@ function StepPersonalInfo({
           <Mail className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
         <div className="relative">
-          <Input label="Contrasena (minimo 8 caracteres)" type="password" placeholder="........" error={errors.password?.message} {...register('password')} />
+          <Input label="Contraseña (mínimo 8 caracteres)" type="password" placeholder="........" error={errors.password?.message} {...register('password')} />
           <Lock className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
         <div className="relative">
@@ -176,7 +194,7 @@ function StepPersonalInfo({
           <Lock className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
         <div className="relative">
-          <Input label="Telefono WhatsApp (opcional)" type="tel" placeholder="Ej: 11 2345 6789" error={errors.phone?.message} {...register('phone')} />
+          <Input label="Teléfono WhatsApp (opcional)" type="tel" placeholder="Ej: 11 2345 6789" error={errors.phone?.message} {...register('phone')} />
           <p className="text-xs text-gray-400 mt-1 ml-1">Te enviamos avisos importantes por WhatsApp (pedidos, aprobaciones)</p>
           <Phone className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
@@ -185,11 +203,30 @@ function StepPersonalInfo({
           <input type="checkbox" className="mt-0.5 accent-[var(--color-brand-blue)]" {...register('terminos')} />
           <span className="text-sm text-gray-600">
             Acepto los{' '}
-            <a href="/terminos" target="_blank" className="text-brand-blue font-semibold hover:underline">terminos y condiciones</a>
+            <a href="/terminos" target="_blank" className="text-brand-blue font-semibold hover:underline">términos y condiciones</a>
             {' '}de la Plataforma Digital Textil
           </span>
         </label>
         {errors.terminos && <p className="text-xs text-red-500 -mt-2">{errors.terminos.message}</p>}
+
+        <label className={`flex items-start gap-3 cursor-pointer rounded-lg border p-3 transition-colors ${privacidadValue ? 'border-brand-blue bg-blue-50/40' : 'border-gray-200'}`}>
+          <input type="checkbox" className="mt-0.5 accent-[var(--color-brand-blue)]" {...register('privacidad')} />
+          <span className="text-sm text-gray-600">
+            Acepto la{' '}
+            <a href="/privacidad" target="_blank" className="text-brand-blue font-semibold hover:underline">política de privacidad</a>
+          </span>
+        </label>
+        {errors.privacidad && <p className="text-xs text-red-500 -mt-2">{errors.privacidad.message}</p>}
+
+        <label className={`flex items-start gap-3 cursor-pointer rounded-lg border p-3 transition-colors ${visibilidadValue ? 'border-brand-blue bg-blue-50/40' : 'border-gray-200'}`}>
+          <input type="checkbox" className="mt-0.5 accent-[var(--color-brand-blue)]" {...register('visibilidad')} />
+          <span className="text-sm text-gray-600">
+            Acepto que algunos de mis datos sean{' '}
+            <a href="/privacidad" target="_blank" className="text-brand-blue font-semibold hover:underline">visibles para las marcas</a>
+            {' '}en el directorio
+          </span>
+        </label>
+        {errors.visibilidad && <p className="text-xs text-red-500 -mt-2">{errors.visibilidad.message}</p>}
 
         <div className="flex gap-3 pt-2">
           {showBack && (
@@ -375,7 +412,7 @@ function RegistroContent() {
       const res = await fetch(`/api/auth/verificar-email?email=${encodeURIComponent(data.email)}`)
       const body = await res.json()
       if (!body.disponible) {
-        setError('El email ya esta registrado. Si ya tenes cuenta, podes iniciar sesion.')
+        setError('El email ya está registrado. Si ya tenés cuenta, podés iniciar sesión.')
         return
       }
     } catch {
@@ -466,9 +503,9 @@ function RegistroContent() {
       )}
 
       <p className="mt-6 text-center text-sm text-gray-600">
-        ¿Ya tenes cuenta?{' '}
+        ¿Ya tenés cuenta?{' '}
         <Link href="/login" className="font-semibold text-brand-blue hover:underline">
-          Iniciar sesion
+          Iniciar sesión
         </Link>
       </p>
     </Card>

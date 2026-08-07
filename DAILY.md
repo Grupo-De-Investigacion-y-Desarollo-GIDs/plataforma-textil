@@ -1,5 +1,30 @@
 # Daily Log
 
+## 2026-08-07
+
+### Gerardo Breard
+- **14:14** `7e1db26` — Merge remote-tracking branch 'origin/develop' into feat/p01-p03-consentimiento
+
+
+- **14:11** `91f5123` — ci: forzar corrida de tests (synchronize perdido) [legales _WEB]
+
+
+- **14:03** `2f9cd70` — fix(admin/usuarios): límite real (100) + contadores Total/Talleres/Marcas por COUNT
+  - `src/__tests__/admin-usuarios-api.test.ts`
+  - `src/app/(admin)/admin/usuarios/page.tsx`
+  - `src/app/api/admin/usuarios/route.ts`
+
+
+- **13:44** `5d2be6f` — feat(legal): publicar versiones _WEB depuradas (Sergio) en /terminos y /privacidad
+  - `docs/legal/web/LEEME.md`
+  - `docs/legal/web/POLITICA_DE_PRIVACIDAD_WEB.md`
+  - `docs/legal/web/TERMINOS_Y_CONDICIONES_WEB.md`
+  - `src/__tests__/legal.test.ts`
+  - `src/app/(public)/privacidad/page.tsx`
+  - `src/app/(public)/terminos/page.tsx`
+  - `src/compartido/lib/legal.ts`
+
+
 ## 2026-08-06
 
 ### Gerardo Breard
@@ -16,6 +41,17 @@
 - **22:01** `a4684a4` — fix(estado): retirar Auditorías del menú de Coordinación + cerrar la ruta (404)
   - `src/app/(estado)/estado/auditorias/page.tsx`
   - `src/compartido/lib/content/institutional.ts`
+
+- **21:50** `339a2cd` — fix(legal): publicar solo el cuerpo (extracción estructural) + remark-gfm + textos nuevos + acentos registro
+  - `docs/legal/POLITICA_DE_PRIVACIDAD.md`
+  - `docs/legal/TERMINOS_Y_CONDICIONES.md`
+  - `package-lock.json`
+  - `package.json`
+  - `src/__tests__/legal.test.ts`
+  - `src/app/(auth)/registro/page.tsx`
+  - `src/app/(public)/privacidad/page.tsx`
+  - `src/app/(public)/terminos/page.tsx`
+  - `src/compartido/lib/legal.ts`
 
 
 ## 2026-08-04

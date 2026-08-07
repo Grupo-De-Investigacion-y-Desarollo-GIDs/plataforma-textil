@@ -6,8 +6,9 @@ import { consultarPadron, errorBloqueaRegistro, mensajeErrorArca, type DatosArca
 import { sendEmail, buildBienvenidaEmail } from '@/compartido/lib/email'
 import { rateLimit, getClientIp } from '@/compartido/lib/ratelimit'
 import { estadoCuentaInicial } from '@/compartido/lib/gracia'
+import { LEGAL_VERSION, TIPOS_CONSENT } from '@/compartido/lib/legal'
 import { apiHandler, errorResponse, errorConflict } from '@/compartido/lib/api-errors'
-import { modoRegistro, emailPermitido, esEmailDeTest } from '@/compartido/lib/registro-gate'
+import { modoRegistro, emailPermitido, esEmailDeTest, MENSAJE_REGISTRO_RESTRINGIDO } from '@/compartido/lib/registro-gate'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 
@@ -72,7 +73,7 @@ export const POST = apiHandler(async (req: NextRequest) => {
   if (modoReg === 'allowlist' && !emailPermitido(data.email) && !esEmailDeTest(data.email)) {
     return errorResponse({
       code: 'REGISTRO_RESTRINGIDO',
-      message: 'El registro en este ambiente de pruebas esta limitado. Escribi a soporte si necesitas acceso.',
+      message: MENSAJE_REGISTRO_RESTRINGIDO,
       status: 403,
     })
   }
@@ -162,6 +163,13 @@ export const POST = apiHandler(async (req: NextRequest) => {
     if (modoReg === 'evento') {
       logActividad('REGISTRO_MODO_EVENTO', user.id, { email: data.email, role: data.role })
     }
+
+    // P-01: persistir el consentimiento (el front exige los 3 checkboxes; se registran
+    // los 3 tipos con la version legal vigente). @@unique evita duplicados en reintentos.
+    await prisma.consentimiento.createMany({
+      data: TIPOS_CONSENT.map(tipo => ({ userId: user.id, tipo, version: LEGAL_VERSION })),
+      skipDuplicates: true,
+    })
 
     if (data.role === 'TALLER') {
       const nuevoTaller = await prisma.taller.findUnique({ where: { userId: user.id }, select: { id: true } })
