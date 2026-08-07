@@ -1,6 +1,6 @@
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { leerDocLegal, soloCuerpoLegal } from '@/compartido/lib/legal'
+import { leerDocLegal } from '@/compartido/lib/legal'
 
 export default async function TerminosPage() {
   let md: string
@@ -16,7 +16,7 @@ export default async function TerminosPage() {
   }
   return (
     <div className="prose max-w-none">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{soloCuerpoLegal(md)}</ReactMarkdown>
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{md}</ReactMarkdown>
     </div>
   )
 }
