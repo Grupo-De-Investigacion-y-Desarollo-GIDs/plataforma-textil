@@ -18,6 +18,13 @@ Es la lectura previa de la **revisión semanal** del piloto (pedido de Sergio:
 > coordinar la ventana de deploy, no después. Detalle y pasos: `OBS-01` en
 > `.claude/DEUDA_TECNICA.md` + `RUNBOOK_OBSERVABILIDAD.md`.
 
+> 🗓️ **Recordatorio post-evento (miércoles 12) — rollback `MODO_EVENTO`:** para el evento
+> del martes 11 se seteó `MODO_EVENTO=on` en **Vercel → Preview (branch `develop`)** (07-ago).
+> Esto (a) abre el registro en el preview y (b) habilita la página `/demo`. **El miércoles hay
+> que quitarla:** `vercel env rm MODO_EVENTO preview develop --yes` (o borrarla del dashboard),
+> y redeployar `develop`. Solo afecta **dev/preview**; prod nunca la tiene (el gate es no-op en
+> production). Barrido de altas sintéticas del evento: logs `REGISTRO_MODO_EVENTO` (spec v4-a §2.4).
+
 ## Severidades
 
 | Sev | Significado | Ejemplo |

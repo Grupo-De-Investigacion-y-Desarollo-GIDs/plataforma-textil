@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import { buildValidacionesFaltantes } from './validaciones-helper'
+import { seedEvento } from '../scripts/seed-evento'
 
 const prisma = new PrismaClient()
 
@@ -1316,6 +1317,13 @@ async function main() {
   }
 
   console.log('  ✓ 5 novedades')
+
+  // ============================================
+  // EVENTO DEMO (martes 11) — cuentas para las tablets + gracia (demo.gracia)
+  // Lógica en scripts/seed-evento.ts (idempotente, también corre standalone).
+  // ============================================
+  const ev = await seedEvento(prisma)
+  console.log(`  ✓ Evento demo: ${ev.talleres} talleres + ${ev.marcas} marcas de escritura + ${ev.gracia} en gracia (demo.gracia)`)
 
   // ============================================
   // U-05: NORMALIZACIÓN roles[]/activeMode (cierre de fuente)

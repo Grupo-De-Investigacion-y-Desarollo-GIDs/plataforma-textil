@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/compartido/lib/prisma'
 import { auth } from '@/compartido/lib/auth'
 import { rateLimit } from '@/compartido/lib/ratelimit'
+import { esCuentaDemo, MENSAJE_CUENTA_DEMO } from '@/compartido/lib/demo'
 import bcrypt from 'bcryptjs'
 
 export async function GET() {
@@ -50,6 +51,12 @@ export async function PUT(req: NextRequest) {
       const user = await prisma.user.findUnique({ where: { id: session.user.id } })
       if (!user?.password) {
         return NextResponse.json({ error: 'Usuario no encontrado' }, { status: 404 })
+      }
+
+      // Guard de evento: las cuentas demo (@pdt.org.ar) no cambian credenciales
+      // (varias tablets rotan sobre ellas; un cambio rompe la siguiente).
+      if (esCuentaDemo(user.email)) {
+        return NextResponse.json({ error: MENSAJE_CUENTA_DEMO }, { status: 403 })
       }
 
       const valid = await bcrypt.compare(body.currentPassword, user.password)
