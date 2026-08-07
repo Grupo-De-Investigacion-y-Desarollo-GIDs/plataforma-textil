@@ -110,6 +110,10 @@ async function migrarUno(email: string) {
       if (EXECUTE) await tx.user.create({ data: {
         id: u.id, email: u.email, emailVerified: u.emailVerified, password: u.password,
         name: u.name, phone: u.phone, avatar: u.avatar, active: u.active, registroCompleto: u.registroCompleto,
+        // FIX (post-mortem 07-ago): setear el escalar `role`. Sin esta línea el create caía
+        // al @default(TALLER) del schema y quedaba desincronizado de activeMode → 6 usuarios
+        // MARCA migrados con role=TALLER (saneados en prod el 07-ago; ver README §Saneo).
+        role: u.activeMode ?? u.role,
         roles: u.roles, activeMode: u.activeMode, cuit: u.cuit, verificadoAfip: u.verificadoAfip,
       } })
       log(`  user creado (id ${u.id}, roles ${u.roles.join('+')})`)

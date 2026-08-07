@@ -67,3 +67,61 @@ Es la lectura previa de la **revisión semanal** del piloto (pedido de Sergio:
   - Este deploy es el motivo de montar observabilidad **antes** del piloto: con
     105 commits acumulados, una caída habría sido difícil de diagnosticar sin
     alertas. Ver `RUNBOOK_OBSERVABILIDAD.md`.
+
+---
+
+## 2026-08-07 — Deploy a PROD (v2.1.0 — 2º deploy, develop → main)
+
+- **Tipo:** Deploy
+- **Severidad:** N/A (sin incidente)
+- **Qué pasó:** 2º release a prod tras `v2.0.0` (04-ago). Merge `develop` → `main`
+  (`--no-ff`, dos commits: `786a783` release + `b3e4be1` gate copy), **tag `v2.1.0`**
+  sobre `b3e4be1`. Contenido: consentimiento **P-01/02/03** + páginas legales `_WEB`
+  depuradas + filtro `/api/talleres` por rol + gate de registro (con redirección a prod)
+  + Auditorías retirada + fix `admin/usuarios` (límite/contadores) + PIA/HARDENING.
+  **1 migración aditiva** `add_consentimiento` (enum `TipoConsent` + tabla `consentimientos`).
+- **Detección:** N/A (deploy planificado, runbook `.claude/specs/RUNBOOK_DEPLOY_v2.1.0.md`).
+- **Impacto:** prod al día con develop. Migración aplicada (tabla `consentimientos` existe).
+  **`NEXTAUTH_SECRET` de Production rotado** antes del merge (Gerardo) → horneado en el build;
+  **sesiones vigentes invalidadas = esperado** (todos re-login). Estado: 23 users / 13 talleres
+  / 10 marcas; 11 talleres verificados + 2 EN_GRACIA (el cron reverificó/reactivó el resto).
+- **Cómo se resolvió:** N/A — exitoso (Vercel dep `b3e4be18` = success). Snapshot previo
+  `backup-prod-v2.1.0-20260807-150357.dump` (verificado). Verificación post-deploy: health
+  `ok/up`; legales `_WEB` sin marcadores/controles/nombres-de-cookies (2 tablas); `admin/usuarios`
+  Total=23; CUITs malformados = 0; auditorías/denuncias OFF.
+- **Qué se aprendió / acción de seguimiento:**
+  - **Saneo de roles (escalar `role` legacy):** 6 usuarios MARCA migrados quedaron con
+    `users.role = TALLER` (causa: `migrar.ts` no seteaba el escalar → `@default(TALLER)`).
+    **Cosmético** (auth resuelve por `activeMode`/`roles`; nadie perdió acceso). Saneado en prod
+    el 07-ago con `UPDATE users SET role="activeMode" WHERE "activeMode" IS NOT NULL AND role<>"activeMode"`
+    (**6 filas**; verificado por SELECT antes/después). Fix del script + evidencia:
+    `scripts/migracion-piloto/README.md` §Post-mortem.
+  - **CI y PRs con conflicto:** un PR con conflicto de merge NO dispara los workflows
+    `pull_request` (GitHub no crea el merge-ref → el checkout falla). Resolver el conflicto
+    (mergear base a la rama) ANTES de esperar CI. Costó dos triggers perdidos en `#465`.
+
+---
+
+## 2026-08-07 — Incidente: registros de Pampa Textil / Pura Sangre "perdidos"
+
+- **Tipo:** Incidente
+- **Severidad:** S3 (confusión de usuario; sin pérdida de datos ni caída)
+- **Qué pasó:** dos altas (`Pampa Textil` taller, `Pura Sangre` marca, ~11:03 UTC) no
+  aparecían en prod. **Diagnóstico:** se hicieron en **`dev.plataformatextil.com.ar`**
+  (preview de `develop`, base DEV) y el **gate #466 las rechazó con HTTP 403**
+  (`REGISTRO_RESTRINGIDO`; modo `allowlist`, `MODO_EVENTO` off, emails fuera de la allowlist).
+  No se creó nada — ni en dev ni en prod. Prod **nunca** recibió esos POST.
+- **Detección:** Gerardo (SQL en prod: cero filas por fecha y por nombre).
+- **Impacto:** 2 personas creyeron haberse registrado y no quedaron. El link de **dev**
+  circuló durante el piloto. Cero pérdida de datos (las altas nunca se materializaron).
+- **Cómo se resolvió:** logs de Vercel Production confirmaron 2 `POST /api/auth/registro`
+  → **403 `REGISTRO_RESTRINGIDO`**, `branch=develop`, deployment preview alias
+  `dev.plataformatextil.com.ar`. Las 7 `consultas_arca` de esa mañana eran del **cron
+  `gracia-cuit`** (reverificación del piloto), no de estos registros. Acciones: (a) se les
+  mandó el link de **producción** `https://plataformatextil.com.ar/registro`; (b) **PR #473**
+  — el 403 ahora **redirige a producción** en el copy (evita repetir la confusión).
+- **Qué se aprendió / acción de seguimiento:** el gate operó **por diseño** (cerró el
+  registro abierto en dev), pero el mensaje no redirigía. `dev.plataformatextil.com.ar`
+  queda operativo **con** la restricción (gate + redirección) como ambiente de pruebas del
+  receptor documentado; su retiro es decisión del receptor post-transferencia (ver inventario
+  de accesos).

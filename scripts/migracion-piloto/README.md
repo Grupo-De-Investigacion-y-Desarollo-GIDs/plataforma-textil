@@ -39,4 +39,32 @@ npx tsx scripts/migracion-piloto/migrar.ts scripts/migracion-piloto/lista.txt --
 - **NO migra:** sesiones, notificaciones, logActividad, cotizaciones/órdenes, historial ConsultaArca (ruido).
 - Las copias de Storage ocurren dentro de la `$transaction` (I/O de red con la tx abierta). Para 14 users está OK (timeout 60s); si escala, mover la copia fuera de la tx.
 - Colisiones `User.email`/`User.cuit` @unique: el dry-run las reporta; hoy sólo Alan (email) colisiona → MERGE.
+
+## Post-mortem — escalar `role` desincronizado (saneado 07-ago-2026)
+
+**Síntoma:** 6 usuarios MARCA migrados quedaron con el escalar `users.role = TALLER`
+(pero `roles = {MARCA}`, `activeMode = MARCA`, entidad marca). Emails afectados:
+`csamaniego@ciaindumentaria.com.ar`, `gerencia.capucchinotextil@gmail.com`,
+`gustavosamuelian@gmail.com`, `info@vaninaf.com`, `monicagodoyleiva@gmail.com`,
+`paoguerschuny@gmail.com`.
+
+**Causa raíz:** el `user.create` de `migrar.ts` (rama INSERT) copiaba `roles` y
+`activeMode` pero **no** el escalar `role` → caía al `@default(TALLER)` del schema.
+
+**Impacto real: ninguno operativo.** El auth resuelve todo por `activeMode`/`roles`
+(`auth.config.ts`: `token.role = activeMode`); el escalar `role` sólo es fallback si
+`activeMode` es null (no era el caso). Es dato muerto → cosmético (a lo sumo un panel que
+lea `users.role` crudo mostraría "TALLER"). No se le negó acceso a nadie.
+
+**Fix del script (documental, no re-ejecutado):** se agregó `role: u.activeMode ?? u.role`
+al create (ver `migrar.ts`, rama INSERT). El script es one-off; no se re-corre.
+
+**Saneo en prod (Gerardo, 07-ago):**
+```sql
+-- Antes: SELECT email, role, roles, "activeMode" FROM users
+--        WHERE "activeMode" IS NOT NULL AND role <> "activeMode";  → 6 filas
+UPDATE users SET role = "activeMode"
+WHERE "activeMode" IS NOT NULL AND role <> "activeMode";           -- 6 filas afectadas
+-- Después: el mismo SELECT → 0 filas (verificado).
 ```
+No tocó al ADMIN (`activeMode` null) ni a los ya alineados (`solve.vtt`, `cp.alanplummer`).

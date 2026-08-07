@@ -28,6 +28,10 @@
 ## 2026-08-06
 
 ### Gerardo Breard
+- **23:17** `2a8f54f` — docs(handover): cierre documental de la semana — estado final + tags + freeze
+  - `CHANGELOG.md`
+  - `docs/handover/HANDOVER_PACKAGE.md`
+
 - **22:49** `311a62a` — Merge remote-tracking branch 'origin/develop' into feature/proteger-registro-dev
 
 

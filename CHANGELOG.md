@@ -15,12 +15,41 @@ Convención de entornos:
 
 ---
 
-## [No liberado] — `v2.0.0` (rama `develop`)
+## [2.1.0] — 2026-08-07 — Release de producción
 
-Trabajo acumulado en `develop` desde la release 1.0.0, pendiente de promoción a producción
-(ver `docs/handover/RUNBOOK_OPERATIVO.md` y `.claude/specs/RUNBOOK_PROMOCION_PROD.md`). Es
-un **release mayor** (multi-rol, vidriera Modelo B, circuito CUIT/ARCA, endurecimiento de
-seguridad), no un parche.
+2º deploy de la semana del 06-ago. **Tag `v2.1.0` sobre `b3e4be1`** (2026-08-07). Aditivo sobre
+v2.0.0: **1 migración** (`add_consentimiento`). Deploy `develop → main` (`--no-ff`) con **rotación
+de `NEXTAUTH_SECRET`** de Production horneada en el build (sesiones previas invalidadas). Runbook
+`.claude/specs/RUNBOOK_DEPLOY_v2.1.0.md`; bitácora `.claude/BITACORA_PROD.md`.
+
+### Privacidad y consentimiento (P-01 / P-02 / P-03)
+- Consentimiento explícito y **auditable** en el registro: tabla `Consentimiento` (tipo + versión + fecha), 3 checkboxes obligatorios y aviso de propósito (#465).
+- Páginas legales `/terminos` y `/privacidad` publicadas desde las versiones **depuradas** `docs/legal/web/*_WEB.md` (de Sergio, verificadas byte a byte; sin marcadores ni detalle interno) con remark-gfm (#461, #465).
+
+### Seguridad
+- Gate de registro por ambiente + allowlist — cierra el registro abierto en dev/preview (permite TLDs de test para CI) (#466).
+- Mensaje del 403 del gate con **redirección al registro de producción** — evita la confusión del piloto (altas rebotadas en el link de dev) (#473).
+- **PIA** (evaluación de impacto en privacidad) + **HARDENING** (controles aplicados) — 9 proveedores + tabla de DPA; Google OAuth planificada/no-operativa (#467).
+
+### Directorio y Coordinación
+- Filtro de `/api/talleres` por rol: MARCA/público solo verificados; ADMIN/ESTADO todos. Fix del enlace verificar-CUIT + rename del tab a "Tipos de documento" (#463).
+- **Auditorías** retirada del menú de Coordinación (tab + ruta 404) (#468).
+
+### Panel de administración
+- `admin/usuarios`: límite real (100) y contadores Total/Talleres/Marcas por **COUNT** de la base (antes se derivaban de la página → con >10 usuarios el total era erróneo) (#472).
+
+### Datos y operación
+- **Migración documentada del piloto** dev→prod (23 usuarios reales, veredicto por evidencia, export de dev) + scripts + anexo (#464).
+- Runbook del 2º deploy v2.1.0 (#469).
+- **Saneo de roles** en prod: escalar `role` legacy alineado con `activeMode` en 6 usuarios MARCA (cosmético; fix documental en `migrar.ts`).
+
+---
+
+## [2.0.0] — 2026-08-04 — Release de producción
+
+Deploy a producción del trabajo acumulado en `develop` desde la 1.0.0. **Tag `v2.0.0` sobre
+`4fa2979`** (2026-08-04). Es un **release mayor** (multi-rol, vidriera Modelo B, circuito
+CUIT/ARCA, endurecimiento de seguridad), no un parche.
 
 ### Multi-rol y autenticación (Bloque U)
 - Sesión multi-rol (TALLER ↔ MARCA) con helper y middleware; toggle de modo activo (#391, #393, #396, #397).
