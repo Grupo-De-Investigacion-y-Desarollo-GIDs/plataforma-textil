@@ -1,5 +1,18 @@
 # Daily Log
 
+## 2026-08-07
+
+### Gerardo Breard
+- **13:44** `5d2be6f` — feat(legal): publicar versiones _WEB depuradas (Sergio) en /terminos y /privacidad
+  - `docs/legal/web/LEEME.md`
+  - `docs/legal/web/POLITICA_DE_PRIVACIDAD_WEB.md`
+  - `docs/legal/web/TERMINOS_Y_CONDICIONES_WEB.md`
+  - `src/__tests__/legal.test.ts`
+  - `src/app/(public)/privacidad/page.tsx`
+  - `src/app/(public)/terminos/page.tsx`
+  - `src/compartido/lib/legal.ts`
+
+
 ## 2026-08-06
 
 ### Gerardo Breard
