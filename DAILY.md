@@ -3,6 +3,17 @@
 ## 2026-08-07
 
 ### Gerardo Breard
+- **20:00** `76b43e5` — feat(evento): página /demo (login directo) + cuentas de escritura + guard de demo
+  - `prisma/seed.ts`
+  - `scripts/seed-evento.ts`
+  - `src/__tests__/demo-guard.test.ts`
+  - `src/app/(auth)/demo/demo-login.tsx`
+  - `src/app/(auth)/demo/page.tsx`
+  - `src/app/api/auth/mi-cuenta/route.ts`
+  - `src/app/api/auth/password-reset/[token]/route.ts`
+  - `src/compartido/lib/demo.ts`
+  - `src/middleware.ts`
+
 - **14:14** `7e1db26` — Merge remote-tracking branch 'origin/develop' into feat/p01-p03-consentimiento
 
 
