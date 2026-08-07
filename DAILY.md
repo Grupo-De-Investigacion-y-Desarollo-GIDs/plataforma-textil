@@ -3,6 +3,9 @@
 ## 2026-08-07
 
 ### Gerardo Breard
+- **14:11** `91f5123` — ci: forzar corrida de tests (synchronize perdido) [legales _WEB]
+
+
 - **13:44** `5d2be6f` — feat(legal): publicar versiones _WEB depuradas (Sergio) en /terminos y /privacidad
   - `docs/legal/web/LEEME.md`
   - `docs/legal/web/POLITICA_DE_PRIVACIDAD_WEB.md`
