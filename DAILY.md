@@ -3,6 +3,9 @@
 ## 2026-08-07
 
 ### Gerardo Breard
+- **14:14** `7e1db26` — Merge remote-tracking branch 'origin/develop' into feat/p01-p03-consentimiento
+
+
 - **14:11** `91f5123` — ci: forzar corrida de tests (synchronize perdido) [legales _WEB]
 
 
