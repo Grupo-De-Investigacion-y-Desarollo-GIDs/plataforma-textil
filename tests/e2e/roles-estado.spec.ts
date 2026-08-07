@@ -28,11 +28,14 @@ test.describe('D-01 Roles ESTADO — flujos principales', () => {
     await expect(page.getByRole('heading', { name: 'Tipos de Documento' })).toBeVisible()
   })
 
-  test('ESTADO puede acceder a /estado/auditorias', async ({ page }) => {
+  test('ESTADO /estado/auditorias retirada — muestra "no encontrada", no el contenido', async ({ page }) => {
     await ensureNotProduction(page)
     await loginEstado(page)
     await page.goto('/estado/auditorias')
-    await expect(page.getByRole('heading', { name: 'Auditorias' })).toBeVisible()
+    // Ruta cerrada con notFound() → se renderiza la página "Pagina no encontrada"
+    // (mismo criterio que denuncias; el status HTTP puede ser 200 con el body 404).
+    await expect(page.getByRole('heading', { name: /no encontrada/i })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /Auditor/i })).not.toBeVisible()
   })
 
   test('ESTADO sidebar muestra accesos personales (F1+F3)', async ({ page }) => {

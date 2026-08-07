@@ -3,22 +3,19 @@
 ## 2026-08-06
 
 ### Gerardo Breard
-- **14:08** `f1f8029` — feat(registro): gate por ambiente + allowlist (spec v4-a) — proteger dev
-  - `src/__tests__/registro-cuit-normalizacion.test.ts`
-  - `src/__tests__/registro-gate.test.ts`
-  - `src/__tests__/u-05-cierre-fuente.test.ts`
-  - `src/app/api/auth/registro/route.ts`
-  - `src/compartido/lib/registro-gate.ts`
+- **22:21** `612fa51` — test(e2e): /estado/auditorias ahora devuelve 404 (ruta retirada)
+  - `tests/e2e/roles-estado.spec.ts`
 
-- **14:03** `d97e2e7` — docs(handover): incorporar los 7 documentos de Sergio (handover/operacion/legal) (#461)
-  - `docs/handover/CONDICIONES_PRODUCCION.md`
-  - `docs/handover/DECISIONES_TECNICAS.md`
-  - `docs/handover/ESPECIFICACIONES_CONTINUIDAD.md`
-  - `docs/handover/HANDOVER_PACKAGE.md`
-  - `docs/legal/POLITICA_DE_PRIVACIDAD.md`
-  - `docs/legal/TERMINOS_Y_CONDICIONES.md`
-  - `docs/operacion/MANUAL_ADMINISTRACION.md`
-  - `docs/operacion/MANUAL_OPERACION.md`
+- **22:01** `a4684a4` — fix(estado): retirar Auditorías del menú de Coordinación + cerrar la ruta (404)
+  - `src/app/(estado)/estado/auditorias/page.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+
+
+## 2026-08-04
+
+### Gerardo Breard
+- **16:11** `b58dc94` — spec: P-01+P-02(recortado)+P-03 — consentimiento, paginas legales, aviso de proposito
+  - `.claude/specs/v4-p01-p02-p03-consentimiento.md`
 
 
 ## 2026-08-03
