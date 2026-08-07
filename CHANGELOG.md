@@ -15,12 +15,34 @@ Convención de entornos:
 
 ---
 
-## [No liberado] — `v2.0.0` (rama `develop`)
+## [No liberado] — `v2.1.0` (rama `develop`)
 
-Trabajo acumulado en `develop` desde la release 1.0.0, pendiente de promoción a producción
-(ver `docs/handover/RUNBOOK_OPERATIVO.md` y `.claude/specs/RUNBOOK_PROMOCION_PROD.md`). Es
-un **release mayor** (multi-rol, vidriera Modelo B, circuito CUIT/ARCA, endurecimiento de
-seguridad), no un parche.
+Trabajo de la semana del 06-ago, **pendiente del 2º deploy** a producción (runbook
+`.claude/specs/RUNBOOK_DEPLOY_v2.1.0.md`). Aditivo sobre v2.0.0 (1 migración: `add_consentimiento`).
+
+### Privacidad y consentimiento (P-01 / P-02 / P-03)
+- Consentimiento explícito y **auditable** en el registro: tabla `Consentimiento` (tipo + versión + fecha), 3 checkboxes obligatorios y aviso de propósito (#465).
+- Páginas legales `/terminos` y `/privacidad` publicadas desde `docs/legal/*.md` (render solo-cuerpo por estructura + remark-gfm) (#461, #465).
+
+### Seguridad
+- Gate de registro por ambiente + allowlist — cierra el registro abierto en dev/preview (permite TLDs de test para CI) (#466).
+- **PIA** (evaluación de impacto en privacidad) + **HARDENING** (controles aplicados) — 9 proveedores + tabla de DPA; Google OAuth planificada/no-operativa (#467).
+
+### Directorio y Coordinación
+- Filtro de `/api/talleres` por rol: MARCA/público solo verificados; ADMIN/ESTADO todos. Fix del enlace verificar-CUIT + rename del tab a "Tipos de documento" (#463).
+- **Auditorías** retirada del menú de Coordinación (tab + ruta 404) (#468).
+
+### Datos y operación
+- **Migración documentada del piloto** dev→prod (23 usuarios reales, veredicto por evidencia, export de dev) + scripts + anexo (#464).
+- Runbook del 2º deploy v2.1.0 (#469).
+
+---
+
+## [2.0.0] — 2026-08-04 — Release de producción
+
+Deploy a producción del trabajo acumulado en `develop` desde la 1.0.0. **Tag `v2.0.0` sobre
+`4fa2979`** (2026-08-04). Es un **release mayor** (multi-rol, vidriera Modelo B, circuito
+CUIT/ARCA, endurecimiento de seguridad), no un parche.
 
 ### Multi-rol y autenticación (Bloque U)
 - Sesión multi-rol (TALLER ↔ MARCA) con helper y middleware; toggle de modo activo (#391, #393, #396, #397).

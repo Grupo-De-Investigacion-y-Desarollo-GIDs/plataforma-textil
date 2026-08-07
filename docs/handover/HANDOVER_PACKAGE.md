@@ -127,16 +127,18 @@ tras definición de titularidad.
 ## c) Artefactos ejecutables — ENTREGADO (adaptado)
 
 **(i) Qué se entrega hoy:**
-- **Tag de release `v1.0.0`** apuntando al commit de producción **`3333016`** (deploy
-  2026-06-13). Es el artefacto identificable de la release 1.0.
+- **Tag de release `v1.0.0`** → commit `3333016` (deploy 2026-06-13). Release 1.0 (piloto inicial).
+- **Tag de release `v2.0.0`** → commit `4fa2979` (deploy 2026-08-04). Etapa 2 + circuito CUIT +
+  pre-deploy. **Es el artefacto identificable vigente en producción.**
 - Cada commit es identificable por SHA; el estado desplegado es reproducible desde el tag.
 
 **(ii) N/A por diseño:** no se generan tarballs ni hashes de binario — en serverless el
 artefacto es el **commit + tag**, no un ejecutable. Si OIT lo pide explícitamente, se genera
 un tarball del árbol en el tag.
 
-**(iii) Gaps:** `v2.0.0` se tagueará al promover `develop` a producción (Gera, en el próximo
-deploy grande).
+**(iii) Gaps:** `v2.0.0` **ya está en producción** (deploy 04-ago). El próximo tag será
+**`v2.1.0`** al promover el trabajo de esta semana (P-01/02/03 + filtro + gate registro +
+auditorías off), si el 2º deploy se ejecuta — runbook `.claude/specs/RUNBOOK_DEPLOY_v2.1.0.md`.
 
 ---
 
@@ -282,19 +284,49 @@ documentación anterior; se agendan si OIT las requiere.
 
 ---
 
+## Cierre de la semana y estado de la entrega (2026-08-07)
+
+Cierre del grueso del trabajo de ingeniería del piloto.
+
+**Lo que se hizo esta semana:**
+- **Deploy `v2.0.0` a producción** (04-ago, `4fa2979`): Etapa 2 + circuito CUIT + pre-deploy
+  (dominio `.com.ar`, LICENSE Apache-2.0, denuncias OFF, docs sensibles fuera del repo).
+- **Migración del piloto dev→prod** (05-06 ago): 23 usuarios reales en prod, `verificadoAfip`
+  **por evidencia** de `consultas_arca`, export documental de dev (canal separado). Ver anexo.
+- **8 PRs de la semana** a `develop`: `#462` spec consentimiento · `#463` filtro talleres por
+  rol · `#464` scripts+anexo migración · `#465` P-01/P-02/P-03 (consentimiento + legales +
+  registro) · `#466` gate de registro (v4-a) · `#467` PIA + HARDENING · `#468` auditorías off
+  · `#469` runbook v2.1.0. *(#465 pendiente de merge tras el re-QA de Sergio.)*
+- **ISRA / PIA entregados:** `PIA.md` + `HARDENING.md` (repo) + actualización del ISRA (canal
+  separado) — 9 proveedores con tabla de DPA (8 con DPA + AFIP SDK gap), Google OAuth
+  planificada/no-operativa.
+- **Incidente de GitHub Actions** (06-ago): algunos merges con merge administrativo + **validación
+  retroactiva verde** al restaurarse el servicio (ver "Nota de proceso" al inicio).
+
+**Artefacto de la entrega (tag) — dos variantes según se ejecute el 2º deploy hoy:**
+- **CON 2º deploy → `v2.1.0`:** P-01/02/03 + filtro + gate registro + auditorías off + PIA/HARDENING.
+  Runbook `.claude/specs/RUNBOOK_DEPLOY_v2.1.0.md` (1 migración aditiva `add_consentimiento`).
+- **SIN 2º deploy → `v2.0.0`** (04-ago, `4fa2979`) sigue siendo el artefacto identificable en prod;
+  el trabajo de esta semana queda en `develop` (no liberado) para el próximo deploy.
+
+**Freeze:** desde la entrega, **congelamiento de código** — no se toca salvo hotfix crítico,
+alineado con el freeze del cronograma. El evento corre sobre el entorno de demo con datos sintéticos.
+
+---
+
 ## Resumen de estado por punto
 
 | Punto | Título | Estado | Gaps principales (responsable) |
 |-------|--------|--------|-------------------------------|
 | a | Código y repositorios | **ENTREGADO** | — |
 | b | Infraestructura y despliegue | **ENTREGADO** | DNS/tier (Gera, tras titularidad) |
-| c | Artefactos ejecutables | **ENTREGADO** | tag v2.0 en próximo deploy (Gera) |
+| c | Artefactos ejecutables | **ENTREGADO** | v2.0.0 en prod (04-ago); tag v2.1.0 al 2º deploy (Gera) |
 | d | Config, acceso, credenciales | **COORDINACIÓN** | Titularidad institucional (Sergio) |
 | e | Datos y migraciones | **ENTREGADO** | tier/Storage/automatizar snapshot (Gera) |
-| f | Documentación técnica/funcional | **PARCIAL** | Manuales operación/admin (Sergio) |
-| g | Calidad, pruebas y seguridad | **PARCIAL** | CSP+headers, coverage %, matriz riesgos (Gera/Sergio) |
-| h | Licencias y PI | **PARCIAL** | Licencia definitiva + cesión (Sergio) |
-| i | Cumplimiento y legal | **COORDINACIÓN** | Bloque A P-01..P-10 (Gera/Sergio) + IGDS de OIT |
+| f | Documentación técnica/funcional | **PARCIAL** | Manuales en repo; falta conciliar admin (Sergio) |
+| g | Calidad, pruebas y seguridad | **PARCIAL** | PIA+HARDENING entregados; pendiente CSP+headers, coverage % (Gera) |
+| h | Licencias y PI | **PARCIAL** | Licencia **Apache-2.0 definida**; falta cesión de derechos (Sergio) |
+| i | Cumplimiento y legal | **PARCIAL / COORDINACIÓN** | P-01/02/03 hechos + PIA; Bloque A ahora **P-04..P-08** (Gera) + IGDS de OIT |
 | j | Transferencia operativa | **CUBIERTO** | Manuales (Sergio) |
 
 **Bloqueante para escalar más allá del piloto:** únicamente el **Bloque A** (punto i), que a
@@ -346,5 +378,6 @@ El veredicto por email vive en `migrar.ts` (`VERIFICADOS`).
 
 ---
 
-*Versión 1.0 · 2026-08-03 · Entrega inicial. Anexo de migración 2026-08-05. Los gaps se cierran
-en versiones sucesivas de este paquete.*
+*Versión 1.0 · 2026-08-03 (entrega inicial) · Anexo de migración 2026-08-05 · **Cierre de la
+semana 2026-08-07** (v2.0.0 en producción, v2.1.0 preparado, freeze). Los gaps se cierran en
+versiones sucesivas de este paquete.*
