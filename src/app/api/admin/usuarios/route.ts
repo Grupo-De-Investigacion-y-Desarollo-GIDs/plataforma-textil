@@ -22,7 +22,10 @@ export async function GET(req: NextRequest) {
     }
 
     const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '10')
+    // Límite real (antes 10): con >10 usuarios el listado quedaba capado y el panel
+    // calculaba los contadores sobre la página devuelta. 100 alcanza el piloto; si algún
+    // día se supera, el cliente ya recibe `total`/`totalPages` para paginar.
+    const limit = parseInt(searchParams.get('limit') || '100')
     const role = searchParams.get('role')
     const q = searchParams.get('q')
 
@@ -30,7 +33,7 @@ export async function GET(req: NextRequest) {
     if (role) where.role = role
     if (q) where.OR = [{ name: { contains: q, mode: 'insensitive' } }, { email: { contains: q, mode: 'insensitive' } }]
 
-    const [usuarios, total] = await Promise.all([
+    const [usuarios, total, porRol] = await Promise.all([
       prisma.user.findMany({
         where,
         select: { id: true, email: true, name: true, role: true, active: true, createdAt: true, phone: true },
@@ -39,9 +42,21 @@ export async function GET(req: NextRequest) {
         orderBy: { createdAt: 'desc' },
       }),
       prisma.user.count({ where }),
+      // Contadores por rol sobre la BASE (COUNT/groupBy), no sobre la página: las StatCards
+      // Total/Talleres/Marcas deben reflejar la plataforma, no las filas visibles.
+      prisma.user.groupBy({ by: ['role'], where, _count: { _all: true } }),
     ])
 
-    return NextResponse.json({ usuarios, total, page, totalPages: Math.ceil(total / limit) })
+    const conteoRol = Object.fromEntries(porRol.map(g => [g.role, g._count._all])) as Record<string, number>
+
+    return NextResponse.json({
+      usuarios,
+      total,
+      totalTalleres: conteoRol.TALLER ?? 0,
+      totalMarcas: conteoRol.MARCA ?? 0,
+      page,
+      totalPages: Math.ceil(total / limit),
+    })
   } catch (error) {
     return NextResponse.json({ error: 'Error al obtener usuarios' }, { status: 500 })
   }
