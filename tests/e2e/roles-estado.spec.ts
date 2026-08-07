@@ -28,11 +28,14 @@ test.describe('D-01 Roles ESTADO — flujos principales', () => {
     await expect(page.getByRole('heading', { name: 'Tipos de Documento' })).toBeVisible()
   })
 
-  test('ESTADO puede acceder a /estado/auditorias', async ({ page }) => {
+  test('ESTADO /estado/auditorias devuelve 404 (retirada antes del evento)', async ({ page }) => {
     await ensureNotProduction(page)
     await loginEstado(page)
-    await page.goto('/estado/auditorias')
-    await expect(page.getByRole('heading', { name: 'Auditorias' })).toBeVisible()
+    // Auditorías se retiró del menú de Coordinación y la ruta se cerró (notFound()).
+    const response = await page.goto('/estado/auditorias')
+    if (response) {
+      expect(response.status()).toBe(404)
+    }
   })
 
   test('ESTADO sidebar muestra accesos personales (F1+F3)', async ({ page }) => {
