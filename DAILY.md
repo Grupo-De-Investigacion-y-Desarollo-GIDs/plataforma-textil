@@ -1,5 +1,13 @@
 # Daily Log
 
+## 2026-08-06
+
+### Gerardo Breard
+- **22:01** `a4684a4` — fix(estado): retirar Auditorías del menú de Coordinación + cerrar la ruta (404)
+  - `src/app/(estado)/estado/auditorias/page.tsx`
+  - `src/compartido/lib/content/institutional.ts`
+
+
 ## 2026-08-04
 
 ### Gerardo Breard
