@@ -29,7 +29,6 @@ La Plataforma tiene por finalidad vincular a los actores del sector textil argen
 - Módulo de capacitación (Academia) con cursos y certificaciones.
 - Herramientas de seguimiento institucional para el organismo público responsable.
 - Publicación de novedades y contenidos editoriales del sector.
-- Cuando se encuentre habilitado, un canal de denuncias sobre condiciones laborales, accesible sin necesidad de registro y anónimo por defecto.
 
 La Plataforma no interviene en la ejecución comercial de los acuerdos entre marcas y talleres, no gestiona pagos, no procesa facturación ni participa en la logística de entrega. Su rol se limita a facilitar el encuentro entre las partes y a acompañar el proceso de formalización.
 

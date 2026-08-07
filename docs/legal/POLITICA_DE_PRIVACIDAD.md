@@ -71,23 +71,11 @@ La Plataforma recolecta los siguientes datos personales:
 
 La Clave Única de Identificación Tributaria (CUIT) se verifica automáticamente contra el padrón oficial de ARCA (Agencia de Recaudación y Control Aduanero, ex-AFIP) al momento del registro y en verificaciones periódicas posteriores. La consulta no se realiza de forma directa: la Plataforma utiliza un **servicio intermediario especializado**, que recibe el CUIT declarado, consulta el padrón y devuelve el resultado (ver Sección 8). La Plataforma almacena ese resultado —tipo de inscripción, categoría, actividades declaradas y domicilio fiscal declarado— para las finalidades descriptas en la Sección 4.
 
-### 3.5 Canal de denuncias
-
-La Plataforma puede habilitar un canal de denuncias sobre condiciones laborales, accesible sin necesidad de registro. Cuando este canal está activo, se recolecta:
-
-- El tipo de denuncia y una descripción en texto libre redactada por quien denuncia.
-- Opcionalmente, la identificación del taller al que refiere la denuncia y un archivo de evidencia adjunto.
-- Un código de seguimiento que permite a quien denuncia consultar el estado de su denuncia sin identificarse.
-
-**Las denuncias son anónimas por defecto**: la Plataforma no solicita ni registra el nombre, el correo electrónico ni ningún otro dato identificatorio de quien denuncia. La dirección IP se utiliza únicamente para el control de tasa de solicitudes y no se vincula a la denuncia almacenada.
-
-El acceso al contenido de las denuncias está restringido a los roles institucionales autorizados.
-
-### 3.6 Datos personales sensibles
+### 3.5 Datos personales sensibles
 
 La Plataforma **no solicita ni recolecta deliberadamente datos personales sensibles** conforme a la definición del artículo 2 de la Ley 25.326 (origen racial o étnico, opiniones políticas, convicciones religiosas o filosóficas, afiliación sindical, información sobre salud, información sobre orientación sexual) ni conforme a la definición de "sensitive personal data" de la Directiva IGDS 457. Ningún formulario de la Plataforma incluye campos destinados a recoger ese tipo de información.
 
-Corresponde no obstante una advertencia: los campos de **texto libre** de la Plataforma —en particular la descripción de una denuncia (Sección 3.5), pero también las comunicaciones entre Usuarios y las observaciones de campo— pueden contener datos sensibles si quien los redacta decide incluirlos por iniciativa propia. La Plataforma no puede impedirlo técnicamente. Esa información recibe el mismo tratamiento de confidencialidad y el mismo régimen de acceso restringido que el resto de los datos, y no se utiliza para ninguna finalidad distinta de las declaradas en la Sección 4.
+Corresponde no obstante una advertencia: los campos de **texto libre** de la Plataforma —las comunicaciones entre Usuarios y las observaciones de campo— pueden contener datos sensibles si quien los redacta decide incluirlos por iniciativa propia. La Plataforma no puede impedirlo técnicamente. Esa información recibe el mismo tratamiento de confidencialidad y el mismo régimen de acceso restringido que el resto de los datos, y no se utiliza para ninguna finalidad distinta de las declaradas en la Sección 4.
 
 ---
 
@@ -295,8 +283,7 @@ La presente Política se rige por las leyes de la República Argentina, sin perj
 | Tabla de subprocesadores (Sección 8) | Verificada contra las dependencias efectivamente utilizadas. Se incorporaron los servicios de analítica y de medición de rendimiento del proveedor de alojamiento, que faltaban. Se aclaró el alcance real de WhatsApp y del asistente inteligente. |
 | Detalle de cookies (Sección 10) | Completado con las dos cookies reales, su finalidad, su duración y sus atributos de seguridad. Se corrigió la mención a una cookie de preferencias que no existe: el rol activo viaja dentro de la cookie de sesión. |
 | Eliminación de cuenta y portabilidad (Secciones 6 y 9) | Confirmado que **no existe función de autoservicio**. Se redactó en consecuencia: ambos derechos se ejercen por solicitud y se atienden manualmente. |
-| Canal de denuncias (Sección 3.5) | Incorporado. No estaba descripto en el borrador anterior. |
-| Datos sensibles (Sección 3.6) | Matizado: la Plataforma no los solicita, pero los campos de texto libre pueden contenerlos por iniciativa de quien los redacta. |
+| Datos sensibles (Sección 3.5) | Matizado: la Plataforma no los solicita, pero los campos de texto libre pueden contenerlos por iniciativa de quien los redacta. |
 | Certificaciones de seguridad (Sección 11) | La Plataforma no tiene certificación propia. Queda como definición institucional si corresponde declarar las de UNTREF o las de los proveedores. |
 
 **B. Definiciones institucionales pendientes** — marcadas como `[INSTITUCIONAL A CONFIRMAR]`. No dependen del equipo de desarrollo:

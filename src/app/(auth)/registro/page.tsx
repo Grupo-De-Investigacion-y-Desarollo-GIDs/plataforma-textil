@@ -40,8 +40,8 @@ const personalInfoSchema = z
     password: z.string().min(8, 'La contrasena debe tener al menos 8 caracteres'),
     confirmPassword: z.string().min(1, 'Confirma tu contrasena'),
     phone: z.string().optional(),
-    terminos: z.boolean().refine(v => v === true, 'Debes aceptar los terminos y condiciones'),
-    privacidad: z.boolean().refine(v => v === true, 'Debes aceptar la politica de privacidad'),
+    terminos: z.boolean().refine(v => v === true, 'Debes aceptar los términos y condiciones'),
+    privacidad: z.boolean().refine(v => v === true, 'Debes aceptar la política de privacidad'),
     visibilidad: z.boolean().refine(v => v === true, 'Debes aceptar la visibilidad de tus datos para marcas'),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -159,7 +159,7 @@ function StepPersonalInfo({
         Datos personales
       </h2>
       <p className="text-sm text-gray-500 text-center mb-6">
-        Completa tu informacion personal
+        Completá tu información personal
       </p>
 
       {/* P-03: aviso de proposito — que datos se piden, para que y quien los ve */}
@@ -186,7 +186,7 @@ function StepPersonalInfo({
           <Mail className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
         <div className="relative">
-          <Input label="Contrasena (minimo 8 caracteres)" type="password" placeholder="........" error={errors.password?.message} {...register('password')} />
+          <Input label="Contraseña (mínimo 8 caracteres)" type="password" placeholder="........" error={errors.password?.message} {...register('password')} />
           <Lock className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
         <div className="relative">
@@ -194,7 +194,7 @@ function StepPersonalInfo({
           <Lock className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
         <div className="relative">
-          <Input label="Telefono WhatsApp (opcional)" type="tel" placeholder="Ej: 11 2345 6789" error={errors.phone?.message} {...register('phone')} />
+          <Input label="Teléfono WhatsApp (opcional)" type="tel" placeholder="Ej: 11 2345 6789" error={errors.phone?.message} {...register('phone')} />
           <p className="text-xs text-gray-400 mt-1 ml-1">Te enviamos avisos importantes por WhatsApp (pedidos, aprobaciones)</p>
           <Phone className="absolute right-3 top-[38px] w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
@@ -203,7 +203,7 @@ function StepPersonalInfo({
           <input type="checkbox" className="mt-0.5 accent-[var(--color-brand-blue)]" {...register('terminos')} />
           <span className="text-sm text-gray-600">
             Acepto los{' '}
-            <a href="/terminos" target="_blank" className="text-brand-blue font-semibold hover:underline">terminos y condiciones</a>
+            <a href="/terminos" target="_blank" className="text-brand-blue font-semibold hover:underline">términos y condiciones</a>
             {' '}de la Plataforma Digital Textil
           </span>
         </label>
@@ -213,7 +213,7 @@ function StepPersonalInfo({
           <input type="checkbox" className="mt-0.5 accent-[var(--color-brand-blue)]" {...register('privacidad')} />
           <span className="text-sm text-gray-600">
             Acepto la{' '}
-            <a href="/privacidad" target="_blank" className="text-brand-blue font-semibold hover:underline">politica de privacidad</a>
+            <a href="/privacidad" target="_blank" className="text-brand-blue font-semibold hover:underline">política de privacidad</a>
           </span>
         </label>
         {errors.privacidad && <p className="text-xs text-red-500 -mt-2">{errors.privacidad.message}</p>}
@@ -412,7 +412,7 @@ function RegistroContent() {
       const res = await fetch(`/api/auth/verificar-email?email=${encodeURIComponent(data.email)}`)
       const body = await res.json()
       if (!body.disponible) {
-        setError('El email ya esta registrado. Si ya tenes cuenta, podes iniciar sesion.')
+        setError('El email ya está registrado. Si ya tenés cuenta, podés iniciar sesión.')
         return
       }
     } catch {
@@ -503,9 +503,9 @@ function RegistroContent() {
       )}
 
       <p className="mt-6 text-center text-sm text-gray-600">
-        ¿Ya tenes cuenta?{' '}
+        ¿Ya tenés cuenta?{' '}
         <Link href="/login" className="font-semibold text-brand-blue hover:underline">
-          Iniciar sesion
+          Iniciar sesión
         </Link>
       </p>
     </Card>
