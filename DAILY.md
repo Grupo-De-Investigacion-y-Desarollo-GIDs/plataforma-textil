@@ -9,6 +9,12 @@
 - **14:11** `91f5123` — ci: forzar corrida de tests (synchronize perdido) [legales _WEB]
 
 
+- **14:03** `2f9cd70` — fix(admin/usuarios): límite real (100) + contadores Total/Talleres/Marcas por COUNT
+  - `src/__tests__/admin-usuarios-api.test.ts`
+  - `src/app/(admin)/admin/usuarios/page.tsx`
+  - `src/app/api/admin/usuarios/route.ts`
+
+
 - **13:44** `5d2be6f` — feat(legal): publicar versiones _WEB depuradas (Sergio) en /terminos y /privacidad
   - `docs/legal/web/LEEME.md`
   - `docs/legal/web/POLITICA_DE_PRIVACIDAD_WEB.md`
