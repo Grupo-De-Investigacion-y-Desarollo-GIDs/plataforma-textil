@@ -22,9 +22,12 @@ un documento aspiracional. La v1.1+ refina los gaps a medida que se cierran.
 > (githubstatus.com, activo desde las **15:22 UTC del 2026-08-06**, sin resolución al cierre del
 > día) — no fue quota, billing ni el código. **Validación aplicada en su lugar:** suite de tests
 > local **completa 806/806 verde** (2026-08-06), **previews de Vercel verdes** (deploys por PR),
-> y **QA funcional de Sergio** en #463/#465. **Validación retroactiva comprometida:** al
-> restaurarse Actions, un push a `develop` corre la suite completa en CI y su run verde se enlaza
-> acá para cerrar el círculo.
+> y **QA funcional de Sergio** en #463/#465. **✅ Validación retroactiva EJECUTADA:** Actions se
+> restauró el **2026-08-07 (~00:50 UTC)**; al mergear #463 a `develop` (commit `4cfd421`) corrió la
+> **suite completa en CI — Unit ✅ + E2E ✅**
+> ([run](https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil/actions/runs/31137979978)).
+> Como los merges administrativos de ayer (#464/#467) están en ese mismo estado de `develop`, el
+> mismo run los **retro-valida**. Círculo cerrado.
 
 ### Nota sobre el stack (por qué hay "N/A por diseño")
 
