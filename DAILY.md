@@ -1,5 +1,20 @@
 # Daily Log
 
+## 2026-08-06
+
+### Gerardo Breard
+- **21:50** `339a2cd` — fix(legal): publicar solo el cuerpo (extracción estructural) + remark-gfm + textos nuevos + acentos registro
+  - `docs/legal/POLITICA_DE_PRIVACIDAD.md`
+  - `docs/legal/TERMINOS_Y_CONDICIONES.md`
+  - `package-lock.json`
+  - `package.json`
+  - `src/__tests__/legal.test.ts`
+  - `src/app/(auth)/registro/page.tsx`
+  - `src/app/(public)/privacidad/page.tsx`
+  - `src/app/(public)/terminos/page.tsx`
+  - `src/compartido/lib/legal.ts`
+
+
 ## 2026-08-04
 
 ### Gerardo Breard
