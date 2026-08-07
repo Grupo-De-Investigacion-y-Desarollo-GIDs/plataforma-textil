@@ -125,7 +125,9 @@ describe('GET /api/talleres — filtro verificadoAfip', () => {
     await GET(req)
 
     const callArgs = mockPrisma.taller.findMany.mock.calls[0][0]
-    expect(callArgs.where.verificadoAfip).toBe(true)
+    // Post-deploy: ADMIN/ESTADO (Coordinacion) NO fuerzan verificadoAfip — ven todos
+    // los talleres, incluidos los EN_GRACIA sin verificar (vista regulatoria).
+    expect(callArgs.where.verificadoAfip).toBeUndefined()
     expect(callArgs.where.nivel).toBe('ORO')
     expect(callArgs.where.nombre).toEqual({ contains: 'Test', mode: 'insensitive' })
   })

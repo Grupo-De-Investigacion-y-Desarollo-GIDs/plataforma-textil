@@ -13,6 +13,7 @@ vi.mock('@/compartido/lib/prisma', () => ({
     taller: { findUnique: vi.fn() },
     tipoDocumento: { findMany: vi.fn().mockResolvedValue([]) },
     validacion: { createMany: vi.fn() },
+    consentimiento: { createMany: vi.fn() },
     $transaction: vi.fn(),
   },
 }))
@@ -66,6 +67,7 @@ const reqCompletar = (body: unknown) =>
 
 beforeEach(() => {
   vi.clearAllMocks()
+  process.env.VERCEL_ENV = 'production' // gate de registro (spec v4-a) = no-op en prod
   mockPadron.mockResolvedValue({ exitosa: true, datos: { nombre: 'X' } })
 })
 
@@ -122,7 +124,7 @@ describe('U-05 cierre de fuente — POST /api/auth/registro/completar', () => {
     mockAuth.mockResolvedValue({ user: { id: 'u1' } })
     mockVerificarCuit.mockResolvedValue({ valid: true })
     // $transaction(cb) ejecuta el callback con un tx que expone user.update
-    mockTx.mockImplementation(async (cb: (tx: unknown) => unknown) => cb({ user: { update: txUserUpdate } }))
+    mockTx.mockImplementation(async (cb: (tx: unknown) => unknown) => cb({ user: { update: txUserUpdate }, consentimiento: { createMany: vi.fn() } }))
   })
 
   const txUserUpdate = vi.fn()
