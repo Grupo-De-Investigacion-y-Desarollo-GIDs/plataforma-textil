@@ -4,6 +4,18 @@
 
 export type ModoRegistro = 'abierto' | 'allowlist' | 'evento'
 
+/** URL pública del registro de PRODUCCIÓN (a donde se dirige a la gente real). */
+export const URL_REGISTRO_PROD = 'https://plataformatextil.com.ar/registro'
+
+/**
+ * Copy del 403 cuando el gate bloquea un registro fuera de prod. Incluye el enlace a
+ * producción para redirigir a la persona: durante el piloto circuló el link de dev y
+ * hubo altas que se creyeron hechas y quedaron rebotadas por el gate (Pampa/Pura Sangre).
+ */
+export const MENSAJE_REGISTRO_RESTRINGIDO =
+  'El registro en este ambiente de pruebas está limitado. Para registrarte en la ' +
+  `Plataforma Digital Textil, ingresá en ${URL_REGISTRO_PROD}`
+
 /** Modo según ambiente + flag. En production siempre 'abierto' (no-op, sin cambio). */
 export function modoRegistro(env: NodeJS.ProcessEnv = process.env): ModoRegistro {
   if (env.VERCEL_ENV === 'production') return 'abierto'
