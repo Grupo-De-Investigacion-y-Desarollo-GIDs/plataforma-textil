@@ -42,6 +42,9 @@ export default function AdminUsuariosPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [toast, setToast] = useState('')
+  // Contadores globales servidos por la API (COUNT/groupBy sobre la base), no derivados
+  // de la página: con >10 usuarios el listado se pagina y `usuarios.length` no es el total.
+  const [stats, setStats] = useState({ total: 0, totalTalleres: 0, totalMarcas: 0 })
 
   function showToast(msg: string) {
     setToast(msg)
@@ -49,8 +52,11 @@ export default function AdminUsuariosPage() {
   }
 
   function refreshUsuarios() {
-    fetch('/api/admin/usuarios').then(r => r.json())
-      .then((d: { usuarios?: Usuario[] }) => setUsuarios(d.usuarios || []))
+    fetch('/api/admin/usuarios?limit=100').then(r => r.json())
+      .then((d: { usuarios?: Usuario[]; total?: number; totalTalleres?: number; totalMarcas?: number }) => {
+        setUsuarios(d.usuarios || [])
+        setStats({ total: d.total ?? 0, totalTalleres: d.totalTalleres ?? 0, totalMarcas: d.totalMarcas ?? 0 })
+      })
       .catch(() => {})
   }
 
@@ -99,7 +105,10 @@ export default function AdminUsuariosPage() {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/admin/usuarios').then(r => r.json()).then((d: { usuarios?: Usuario[] }) => setUsuarios(d.usuarios || [])).catch(() => {}),
+      fetch('/api/admin/usuarios?limit=100').then(r => r.json()).then((d: { usuarios?: Usuario[]; total?: number; totalTalleres?: number; totalMarcas?: number }) => {
+        setUsuarios(d.usuarios || [])
+        setStats({ total: d.total ?? 0, totalTalleres: d.totalTalleres ?? 0, totalMarcas: d.totalMarcas ?? 0 })
+      }).catch(() => {}),
       fetch('/api/admin/usuarios?incompletos=true').then(r => r.json()).then((d: { usuarios?: RegistroIncompleto[] }) => setRegistrosIncompletos(d.usuarios || [])).catch(() => {})
     ]).finally(() => setLoading(false))
   }, [])
@@ -110,9 +119,6 @@ export default function AdminUsuariosPage() {
     const matchRol = !filtroRol || u.role === filtroRol
     return matchSearch && matchRol
   })
-
-  const totalTalleres = usuarios.filter(u => u.role === 'TALLER').length
-  const totalMarcas = usuarios.filter(u => u.role === 'MARCA').length
 
   const columns = [
     { header: 'Usuario', accessor: (row: Usuario) => (
@@ -163,9 +169,9 @@ export default function AdminUsuariosPage() {
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <StatCard value={String(usuarios.length)} label="Total" variant="success" />
-        <StatCard value={String(totalTalleres)} label="Talleres" variant="warning" />
-        <StatCard value={String(totalMarcas)} label="Marcas" variant="muted" />
+        <StatCard value={String(stats.total)} label="Total" variant="success" />
+        <StatCard value={String(stats.totalTalleres)} label="Talleres" variant="warning" />
+        <StatCard value={String(stats.totalMarcas)} label="Marcas" variant="muted" />
       </div>
 
       <div className="flex gap-3 mb-4">

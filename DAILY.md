@@ -1,5 +1,14 @@
 # Daily Log
 
+## 2026-08-07
+
+### Gerardo Breard
+- **14:03** `2f9cd70` — fix(admin/usuarios): límite real (100) + contadores Total/Talleres/Marcas por COUNT
+  - `src/__tests__/admin-usuarios-api.test.ts`
+  - `src/app/(admin)/admin/usuarios/page.tsx`
+  - `src/app/api/admin/usuarios/route.ts`
+
+
 ## 2026-08-06
 
 ### Gerardo Breard
