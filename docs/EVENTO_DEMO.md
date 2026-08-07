@@ -14,7 +14,11 @@ Todas las cuentas demo usan la misma: **`pdt2026`**. No aparece en la página; e
 Las cuentas demo (`@pdt.org.ar`) **no pueden cambiar su contraseña ni correo** (guard):
 si un visitante lo intenta, recibe un aviso y la cuenta sigue intacta para la tablet siguiente.
 
-## Las 13 cuentas
+## Las 11 cuentas (solo Talleres y Marcas — público del evento)
+
+> Coordinación/Estado y el usuario multi-rol **no** van en `/demo` (es para el público:
+> talleres y marcas). Siguen en el seed: si el presentador quiere mostrarlos, entra por
+> `/acceso-rapido` o login normal.
 
 ### Talleres
 | Cuenta | Email | Uso | Flujo |
@@ -24,8 +28,7 @@ si un visitante lo intenta, recibe un aviso y la cuenta sigue intacta para la ta
 | Taller Lanús | `demo.taller3@pdt.org.ar` | **Tablet 3** (escritura) | Taller verificado — cotiza un pedido |
 | Corte Ramos Mejía | `demo.taller4@pdt.org.ar` | **Tablet 4** (escritura) | Taller verificado — cotiza un pedido |
 | Costura del Oeste | `demo.gracia@pdt.org.ar` | showcase | Taller en **período de gracia** (CUIT sin verificar, banner) |
-| Corte Sur SRL (Carlos Mendoza) | `carlos.mendoza@pdt.org.ar` | showcase | Taller **consolidado ORO** (validaciones, academia, órdenes) |
-| Julieta Benítez | `julieta.benitez@pdt.org.ar` | showcase | **Multi-rol** — toggle taller ↔ marca |
+| Corte Sur SRL (Carlos Mendoza) | `carlos.mendoza@pdt.org.ar` | showcase | Taller **consolidado (Oro)** — formalización completa, órdenes en curso |
 
 ### Marcas
 | Cuenta | Email | Uso | Flujo |
@@ -36,12 +39,10 @@ si un visitante lo intenta, recibe un aviso y la cuenta sigue intacta para la ta
 | Amapola (Valentina Ramos) | `valentina.ramos@pdt.org.ar` | showcase | Marca con pedido publicado recibiendo cotizaciones |
 | Urbano Textil (Martín Echevarría) | `martin.echevarria@pdt.org.ar` | showcase | Marca con **producción en curso** (órdenes) |
 
-### Coordinación
-| Cuenta | Email | Uso | Flujo |
-|---|---|---|---|
-| Ana Belén Torres | `anabelen.torres@pdt.org.ar` | showcase | **Estado** — dashboard del sector, talleres, auditorías |
+**7 cuentas de escritura** (4 talleres + 3 marcas, una por tablet → sin pisarse) + **4 showcase** = 11.
 
-**7 cuentas de escritura** (4 talleres + 3 marcas, una por tablet → sin pisarse) + **6 showcase**.
+Las de escritura vienen con datos presentables: talleres con formalización y vidriera (y varios
+con una cotización enviada), marcas con un pedido publicado recibiendo cotizaciones.
 
 ## Concurrencia
 Las 7 de escritura son independientes: cada tablet opera la suya. Los talleres cotizan los mismos
@@ -62,8 +63,8 @@ Idempotente, sin resetear: `npx tsx scripts/seed-evento.ts` (o incluido en `npm 
 > Para el evento del martes preparamos una página de acceso — **https://dev.plataformatextil.com.ar/demo** —
 > donde cada persona entra a la plataforma con **un solo toque**, sin usuario ni contraseña: la
 > pantalla muestra 13 tarjetas separadas en Talleres, Marcas y Coordinación, y al tocar "Entrar como…"
-> se abre directo el panel de esa cuenta. Hay 7 cuentas pensadas para las tablets (4 talleres y 3
-> marcas, una por dispositivo, para que no se pisen entre sí) y 6 más de recorrido: un taller en
-> período de gracia, un taller consolidado, un usuario que opera como taller y marca a la vez, una
-> marca con pedido publicado, una marca con producción en curso y el panel del Estado. Es el entorno
-> de demostración con datos de prueba; no toca el sistema real. **El QR debe apuntar a esa URL.**
+> se abre directo el panel de esa cuenta. La pantalla muestra 11 tarjetas separadas en **Talleres**
+> y **Marcas**: 7 pensadas para las tablets (4 talleres y 3 marcas, una por dispositivo, para que no
+> se pisen entre sí) y 4 más de recorrido: un taller en período de gracia, un taller consolidado, una
+> marca con pedido publicado y una marca con producción en curso. Es el entorno de demostración con
+> datos de prueba; no toca el sistema real. **El QR debe apuntar a esa URL.**
