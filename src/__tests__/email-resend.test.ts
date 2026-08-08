@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
 const mockSend = vi.fn()
 
@@ -16,6 +16,12 @@ beforeEach(() => {
   process.env.EMAIL_FROM = 'test@resend.dev'
   process.env.EMAIL_FROM_NAME = 'Test PDT'
   process.env.EMAIL_REPLY_TO = 'reply@test.com'
+  // El envío real solo ocurre en producción (fuera de prod se loguea, no se manda).
+  process.env.VERCEL_ENV = 'production'
+})
+
+afterEach(() => {
+  delete process.env.VERCEL_ENV
 })
 
 describe('sendEmail (Resend)', () => {
@@ -90,5 +96,20 @@ describe('sendEmail (Resend)', () => {
     expect(mockSend).toHaveBeenCalledWith(expect.objectContaining({
       from: 'Mi Plataforma <noreply@pdt.ar>',
     }))
+  })
+})
+
+describe('sendEmail — gating por ambiente', () => {
+  it('en preview NO envía (loguea) aunque haya API key', async () => {
+    process.env.VERCEL_ENV = 'preview'
+    const result = await sendEmail({ to: 'taller@pdt.org.ar', subject: 'x', html: '<p>x</p>' })
+    expect(result.exito).toBe(true)
+    expect(mockSend).not.toHaveBeenCalled()
+  })
+  it('sin API key NO envía (loguea)', async () => {
+    delete process.env.RESEND_API_KEY
+    const result = await sendEmail({ to: 'x@test.com', subject: 'x', html: '<p>x</p>' })
+    expect(result.exito).toBe(true)
+    expect(mockSend).not.toHaveBeenCalled()
   })
 })
