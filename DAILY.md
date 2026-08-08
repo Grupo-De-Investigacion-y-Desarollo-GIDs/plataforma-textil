@@ -1,5 +1,23 @@
 # Daily Log
 
+## 2026-08-08
+
+### Gerardo Breard
+- **19:31** `f17a1de` — fix(evento): QA de Sergio — rate limits, logout→/demo, timeout, emails gateados
+  - `docs/EVENTO_DEMO.md`
+  - `src/__tests__/evento-ratelimit.test.ts`
+  - `src/app/(admin)/logout-button.tsx`
+  - `src/app/(auth)/acceso-rapido/page.tsx`
+  - `src/app/(auth)/demo/demo-login.tsx`
+  - `src/app/layout.tsx`
+  - `src/app/providers.tsx`
+  - `src/compartido/componentes/evento/evento-provider.tsx`
+  - `src/compartido/componentes/layout/header.tsx`
+  - `src/compartido/componentes/ui/logout-button.tsx`
+  - `src/compartido/lib/email.ts`
+  - `src/compartido/lib/ratelimit.ts`
+
+
 ## 2026-08-07
 
 ### Gerardo Breard
