@@ -104,7 +104,7 @@ export default function AccesoRapidoPage() {
         setLoading(null)
       }
     } catch {
-      setError('Error de conexion. Intenta de nuevo en unos segundos.')
+      setError('Demasiados intentos — espera unos minutos e intenta de nuevo.')
       setLoading(null)
     }
   }

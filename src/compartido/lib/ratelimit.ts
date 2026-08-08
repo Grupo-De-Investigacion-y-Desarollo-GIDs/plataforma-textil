@@ -123,6 +123,19 @@ const limiters = crearLimiters()
 
 export type LimiterKey = keyof NonNullable<typeof limiters>
 
+// Modo evento (martes 11): en el venue las ~7 tablets salen por UNA sola IP → los límites
+// por IP bloquearían el uso normal. Con MODO_EVENTO=on se saltan los límites de los flujos
+// del evento. Solo existe en preview; en prod MODO_EVENTO nunca se setea (el bypass no aplica).
+// Se mantienen limitados los de costo/abuso externo (arca, chat, exportar, denuncias, etc.).
+const KEYS_EVENTO: ReadonlySet<LimiterKey> = new Set([
+  'login', 'pedidos', 'cotizaciones', 'upload', 'registro', 'verificarCuit', 'cuenta', 'feedback',
+])
+
+/** true si `key` es un flujo del evento y MODO_EVENTO=on → se salta su rate limit. */
+export function esFlujoRelajadoEnEvento(key: LimiterKey, env: NodeJS.ProcessEnv = process.env): boolean {
+  return env.MODO_EVENTO === 'on' && KEYS_EVENTO.has(key)
+}
+
 /**
  * Obtiene la IP del cliente. Prioriza x-real-ip (seteado por Vercel edge,
  * un solo valor confiable) sobre x-forwarded-for (puede contener cadena
@@ -189,6 +202,8 @@ export async function rateLimit(
 ): Promise<NextResponse | null> {
   if (!limiters) return null
   if (isCiBypass(req)) return null
+  // Modo evento: saltar los límites de los flujos del evento (solo en preview).
+  if (esFlujoRelajadoEnEvento(limiterKey)) return null
 
   try {
     const limiter = limiters[limiterKey]

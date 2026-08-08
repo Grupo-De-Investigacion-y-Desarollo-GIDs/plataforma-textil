@@ -89,11 +89,11 @@ export function DemoLogin() {
         router.push(c.redirect)
         router.refresh()
       } else {
-        setError(`No se pudo entrar como ${c.nombre}. Si probaste varias veces seguidas, esperá unos segundos y reintentá.`)
+        setError(`No se pudo entrar como ${c.nombre}. Si venías probando varias veces, esperá unos minutos (demasiados intentos) y reintentá.`)
         setLoading(null)
       }
     } catch {
-      setError('Error de conexión. Reintentá en unos segundos.')
+      setError('Demasiados intentos — esperá unos minutos y reintentá.')
       setLoading(null)
     }
   }
