@@ -11,6 +11,7 @@ import { NotificacionesBell } from './notificaciones-bell'
 import { ModoToggle } from './modo-toggle'
 import { useSidebar } from './sidebar-context'
 import { INSTITUTIONAL, TABS_BY_ROLE } from '@/compartido/lib/content/institutional'
+import { useLogoutCallbackUrl } from '@/compartido/componentes/evento/evento-provider'
 
 interface HeaderProps {
   userName?: string
@@ -55,6 +56,7 @@ export function Header({
   const pathname = usePathname()
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const logoutUrl = useLogoutCallbackUrl()
 
   // BUG B (QA #398): el Pill "Modo X" tomaba activeMode/roles de un prop server-side
   // que quedaba vencido tras session.update() (se veía "Modo Marca" y luego "Modo Taller").
@@ -215,7 +217,7 @@ export function Header({
                     Mi cuenta
                   </Link>
                   <button
-                    onClick={() => { setMenuOpen(false); signOut({ callbackUrl: '/login' }) }}
+                    onClick={() => { setMenuOpen(false); signOut({ callbackUrl: logoutUrl }) }}
                     className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-overpass text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
                   >
                     <LogOut className="w-4 h-4 text-gray-400" />

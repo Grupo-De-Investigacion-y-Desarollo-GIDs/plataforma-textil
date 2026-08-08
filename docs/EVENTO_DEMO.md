@@ -53,18 +53,37 @@ pedidos. Las showcase son de lectura → no hay conflicto aunque varias tablets 
 Quitar la env var: `vercel env rm MODO_EVENTO preview develop --yes` (o dashboard) + redeployar
 `develop`. Cierra el registro del preview y oculta `/demo`. Prod nunca se ve afectada.
 
-## Poblar/repoblar las cuentas en dev
-Idempotente, sin resetear: `npx tsx scripts/seed-evento.ts` (o incluido en `npm run db:seed`).
+## Comportamiento en modo evento (`MODO_EVENTO=on`, solo preview)
+- **Rate limits relajados:** se saltan los límites por IP de los flujos del evento
+  (login, pedidos, cotizaciones, uploads, registro, verificar-CUIT, cuenta, feedback) — el
+  venue sale por una sola IP con ~7 tablets. Prod nunca los relaja (no tiene el flag).
+- **Logout → `/demo`:** cerrar sesión (en cualquiera de los 3 botones) vuelve a `/demo`, no a `/login`.
+- **Timeout de inactividad:** 12 min sin interacción → cierra sesión y vuelve a `/demo` (higiene:
+  nadie hereda la sesión del anterior).
+- **Emails en preview:** NO se envían (se loguean). El envío real de Resend ocurre solo en producción
+  → publicar un pedido no manda correos a los `@pdt.org.ar` del seed.
+
+## Reseed entre tandas (1 comando, idempotente, ~1 min)
+Si en una pausa conviene volver las cuentas de escritura al estado limpio (sin pedidos/cotizaciones
+creados en la tanda), correr **sin resetear** la base:
+```bash
+npx tsx scripts/seed-evento.ts
+```
+Decisión de correrlo queda para el día (lo corre Gerardo si hace falta). **No está automatizado.**
+
+## Riesgos aceptados
+- **QR escaneable por cualquiera:** riesgo aceptado. Son datos sintéticos, el sistema real no se toca;
+  el timeout de 12 min acota la ventana de una sesión abierta, y las cuentas rotuladas "Tablet N"
+  desalientan al público de teléfono. Nada más barato lo impide; se declara.
 
 ---
 
 ## Párrafo para Cecilia / Matías
 
 > Para el evento del martes preparamos una página de acceso — **https://dev.plataformatextil.com.ar/demo** —
-> donde cada persona entra a la plataforma con **un solo toque**, sin usuario ni contraseña: la
-> pantalla muestra 13 tarjetas separadas en Talleres, Marcas y Coordinación, y al tocar "Entrar como…"
-> se abre directo el panel de esa cuenta. La pantalla muestra 11 tarjetas separadas en **Talleres**
-> y **Marcas**: 7 pensadas para las tablets (4 talleres y 3 marcas, una por dispositivo, para que no
-> se pisen entre sí) y 4 más de recorrido: un taller en período de gracia, un taller consolidado, una
-> marca con pedido publicado y una marca con producción en curso. Es el entorno de demostración con
-> datos de prueba; no toca el sistema real. **El QR debe apuntar a esa URL.**
+> donde cada persona entra a la plataforma con **un solo toque**, sin usuario ni contraseña. La pantalla
+> muestra 11 tarjetas separadas en **Talleres** y **Marcas**, y al tocar "Entrar como…" se abre directo el
+> panel de esa cuenta: 7 están pensadas para las tablets (4 talleres y 3 marcas, una por dispositivo, para
+> que no se pisen entre sí) y 4 son de recorrido (un taller en período de gracia, un taller consolidado, una
+> marca con pedido publicado y una marca con producción en curso). Es el entorno de demostración con datos
+> de prueba; no toca el sistema real. **El QR debe apuntar a esa URL.**

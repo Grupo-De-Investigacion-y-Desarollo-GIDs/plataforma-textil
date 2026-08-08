@@ -18,7 +18,11 @@ function getResend(): Resend {
 }
 
 export async function sendEmail({ to, subject, html }: EmailOptions): Promise<{ exito: boolean; id?: string; error?: string }> {
-  if (!process.env.RESEND_API_KEY) {
+  // El envío REAL ocurre solo en producción. Fuera de prod (preview/dev/local/test) se
+  // loguea y no se manda: preview tiene RESEND_API_KEY, y las cuentas del seed usan
+  // @pdt.org.ar (inexistentes) → publicar un pedido dispararía rebotes que dañan la
+  // reputación del dominio. Antes solo el "no key" caía a dev; ahora todo lo no-prod.
+  if (process.env.VERCEL_ENV !== 'production' || !process.env.RESEND_API_KEY) {
     console.log(`[EMAIL-DEV] To: ${to} | Subject: ${subject}`)
     console.log(`[EMAIL-DEV] Body: ${html.substring(0, 200)}...`)
     return { exito: true }

@@ -26,7 +26,7 @@ export default function RootLayout({
       <body
         className="antialiased"
       >
-        <Providers>
+        <Providers modoEvento={process.env.MODO_EVENTO === 'on'}>
           {children}
           <FeedbackWidgetWrapper />
           <Analytics />
