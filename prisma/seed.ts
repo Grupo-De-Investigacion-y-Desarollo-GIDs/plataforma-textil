@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import { buildValidacionesFaltantes } from './validaciones-helper'
 import { seedEvento } from '../scripts/seed-evento'
+import { seedEventoImagenes } from '../scripts/seed-evento-imagenes'
 
 const prisma = new PrismaClient()
 
@@ -1343,6 +1344,12 @@ async function main() {
     })
   }
   console.log(`  ✓ U-05 normalización: ${usersSinNormalizar.length} users sincronizados (roles/activeMode)`)
+
+  // ============================================
+  // IMÁGENES DEMO (evento) — sube assets a Storage DEV (idempotente) y asigna URLs.
+  // Va al final: necesita todas las cuentas y pedidos ya creados. Reseed-safe.
+  // ============================================
+  await seedEventoImagenes(prisma)
 
   // ============================================
   // RESUMEN
