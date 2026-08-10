@@ -1,5 +1,63 @@
 # Daily Log
 
+## 2026-08-10
+
+### Gerardo Breard
+- **17:17** `82edbca` — feat(evento): imágenes demo reseed-safe para las 11 cuentas (talleres + marcas)
+  - `docs/EVENTO_DEMO.md`
+  - `prisma/seed.ts`
+  - `scripts/seed-evento-assets/NOTA_LOGOS_MARCA.md`
+  - `scripts/seed-evento-assets/README_PROGRAMADOR.md`
+  - `scripts/seed-evento-assets/manifest.json`
+  - `scripts/seed-evento-assets/marcas/MAR_001_indumentaria_aurora/MAR_001_01_producto_vestidos.jpg`
+  - `scripts/seed-evento-assets/marcas/MAR_001_indumentaria_aurora/MAR_001_02_producto_campera.jpg`
+  - `scripts/seed-evento-assets/marcas/MAR_001_indumentaria_aurora/MAR_001_03_local_showroom.jpg`
+  - `scripts/seed-evento-assets/marcas/MAR_001_indumentaria_aurora/MAR_001_logo.png`
+  - `scripts/seed-evento-assets/marcas/MAR_002_moda_delta/MAR_002_01_producto_remeras.jpg`
+  - `scripts/seed-evento-assets/marcas/MAR_002_moda_delta/MAR_002_02_producto_buzos.jpg`
+  - `scripts/seed-evento-assets/marcas/MAR_002_moda_delta/MAR_002_03_local_showroom.jpg`
+  - `scripts/seed-evento-assets/marcas/MAR_002_moda_delta/MAR_002_logo.png`
+  - `scripts/seed-evento-assets/marcas/MAR_003_textiles_del_plata/MAR_003_01_producto_ropa_trabajo.jpg`
+  - `scripts/seed-evento-assets/marcas/MAR_003_textiles_del_plata/MAR_003_02_producto_pantalones.jpg`
+  - `scripts/seed-evento-assets/marcas/MAR_003_textiles_del_plata/MAR_003_03_local_showroom.jpg`
+  - `scripts/seed-evento-assets/marcas/MAR_003_textiles_del_plata/MAR_003_logo.png`
+  - `scripts/seed-evento-assets/marcas/MAR_004_amapola/MAR_004_01_producto_vestidos.jpg`
+  - `scripts/seed-evento-assets/marcas/MAR_004_amapola/MAR_004_02_producto_remeras.jpg`
+  - `scripts/seed-evento-assets/marcas/MAR_004_amapola/MAR_004_03_local_showroom.jpg`
+  - `scripts/seed-evento-assets/marcas/MAR_004_amapola/MAR_004_logo.png`
+  - `scripts/seed-evento-assets/marcas/MAR_005_urbano_textil/MAR_005_01_producto_campera.jpg`
+  - `scripts/seed-evento-assets/marcas/MAR_005_urbano_textil/MAR_005_02_producto_buzos.jpg`
+  - `scripts/seed-evento-assets/marcas/MAR_005_urbano_textil/MAR_005_03_local_showroom.jpg`
+  - `scripts/seed-evento-assets/marcas/MAR_005_urbano_textil/MAR_005_logo.png`
+  - `scripts/seed-evento-assets/sha256sums.txt`
+  - `scripts/seed-evento-assets/talleres/TAL_001_confecciones_belgrano/TAL_001_01_taller.jpg`
+  - `scripts/seed-evento-assets/talleres/TAL_001_confecciones_belgrano/TAL_001_02_producto_remeras.jpg`
+  - `scripts/seed-evento-assets/talleres/TAL_001_confecciones_belgrano/TAL_001_03_control_calidad.jpg`
+  - `scripts/seed-evento-assets/talleres/TAL_001_confecciones_belgrano/TAL_001_logo.png`
+  - `scripts/seed-evento-assets/talleres/TAL_002_textil_avellaneda/TAL_002_01_taller.jpg`
+  - `scripts/seed-evento-assets/talleres/TAL_002_textil_avellaneda/TAL_002_02_producto_ropa_trabajo.jpg`
+  - `scripts/seed-evento-assets/talleres/TAL_002_textil_avellaneda/TAL_002_03_proceso_corte.jpg`
+  - `scripts/seed-evento-assets/talleres/TAL_002_textil_avellaneda/TAL_002_logo.png`
+  - `scripts/seed-evento-assets/talleres/TAL_003_taller_lanus/TAL_003_01_taller.jpg`
+  - `scripts/seed-evento-assets/talleres/TAL_003_taller_lanus/TAL_003_02_producto_buzos.jpg`
+  - `scripts/seed-evento-assets/talleres/TAL_003_taller_lanus/TAL_003_03_proceso_armado_buzos.jpg`
+  - `scripts/seed-evento-assets/talleres/TAL_003_taller_lanus/TAL_003_logo.png`
+  - `scripts/seed-evento-assets/talleres/TAL_004_corte_ramos_mejia/TAL_004_01_proceso_overlock.jpg`
+  - `scripts/seed-evento-assets/talleres/TAL_004_corte_ramos_mejia/TAL_004_02_proceso_bolsillos_cierres.jpg`
+  - `scripts/seed-evento-assets/talleres/TAL_004_corte_ramos_mejia/TAL_004_03_proceso_corte_denim.jpg`
+  - `scripts/seed-evento-assets/talleres/TAL_004_corte_ramos_mejia/TAL_004_logo.png`
+  - `scripts/seed-evento-assets/talleres/TAL_005_costura_del_oeste/TAL_005_01_proceso_dobladillo.jpg`
+  - `scripts/seed-evento-assets/talleres/TAL_005_costura_del_oeste/TAL_005_02_proceso_reparaciones.jpg`
+  - `scripts/seed-evento-assets/talleres/TAL_005_costura_del_oeste/TAL_005_03_proceso_arreglos.jpg`
+  - `scripts/seed-evento-assets/talleres/TAL_005_costura_del_oeste/TAL_005_logo.png`
+  - `scripts/seed-evento-assets/talleres/TAL_006_corte_sur_srl/TAL_006_01_taller.jpg`
+  - `scripts/seed-evento-assets/talleres/TAL_006_corte_sur_srl/TAL_006_02_producto_pantalones.jpg`
+  - `scripts/seed-evento-assets/talleres/TAL_006_corte_sur_srl/TAL_006_03_produccion_pantalones.jpg`
+  - `scripts/seed-evento-assets/talleres/TAL_006_corte_sur_srl/TAL_006_logo.png`
+  - `scripts/seed-evento-imagenes.ts`
+  - `src/__tests__/evento-imagenes.test.ts`
+
+
 ## 2026-08-08
 
 ### Gerardo Breard
