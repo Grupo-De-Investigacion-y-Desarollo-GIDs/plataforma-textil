@@ -3,6 +3,11 @@
 ## 2026-08-10
 
 ### Gerardo Breard
+- **20:59** `31364af` — fix(seed): restaurar los 6 cursos reales (colecciones+videos) que el reseed pisó con placeholders
+  - `prisma/seed.ts`
+  - `scripts/seed-cursos.ts`
+  - `src/__tests__/seed-cursos.test.ts`
+
 - **17:17** `82edbca` — feat(evento): imágenes demo reseed-safe para las 11 cuentas (talleres + marcas)
   - `docs/EVENTO_DEMO.md`
   - `prisma/seed.ts`
