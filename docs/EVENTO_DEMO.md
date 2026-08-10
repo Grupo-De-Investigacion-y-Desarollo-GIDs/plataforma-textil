@@ -71,6 +71,24 @@ npx tsx scripts/seed-evento.ts
 ```
 Decisión de correrlo queda para el día (lo corre Gerardo si hace falta). **No está automatizado.**
 
+## Imágenes de las cuentas (reseed-safe)
+Las 11 cuentas tienen fotos reales (material sintético, 640×640). Los assets viven **en el repo**
+(`scripts/seed-evento-assets/`, 1.6 MB) y se suben al Storage de DEV de forma **idempotente por path
+determinístico** (`demo/<user_code>/…`: si ya existe, no re-sube). Las URLs se **reasignan en cada
+corrida del seed**, así que:
+- **Talleres (6):** `portfolioFotos = [foto01, foto02, foto03, LOGO]` — el logo va **último** (la tarjeta
+  del directorio muestra `portfolioFotos[0]` en aspect-video; la primera debe ser foto de taller).
+- **Marcas (5):** `Pedido.imagenes = [foto01, foto02, foto03]` — los logos de marca **no se usan** (el
+  modelo `Marca` no tiene campo de logo; ver `scripts/seed-evento-assets/NOTA_LOGOS_MARCA.md`).
+
+El **reseed liviano** (`scripts/seed-evento.ts`) **no borra** las imágenes (los upsert no tocan
+`portfolioFotos`/`imagenes`). El **reseed completo** (`db:seed` / `migrate reset`) las **reasigna**
+solo: los objetos de Storage sobreviven al wipe de la DB (probado: 0 subidas, 39 ya estaban). Si alguna
+vez faltaran, reasignarlas sin resetear con:
+```bash
+npx tsx --env-file=.env.local scripts/seed-evento-imagenes.ts
+```
+
 ## Riesgos aceptados
 - **QR escaneable por cualquiera:** riesgo aceptado. Son datos sintéticos, el sistema real no se toca;
   el timeout de 12 min acota la ventana de una sesión abierta, y las cuentas rotuladas "Tablet N"
