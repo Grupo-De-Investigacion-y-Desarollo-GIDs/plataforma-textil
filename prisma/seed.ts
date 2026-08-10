@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs'
 import { buildValidacionesFaltantes } from './validaciones-helper'
 import { seedEvento } from '../scripts/seed-evento'
 import { seedEventoImagenes } from '../scripts/seed-evento-imagenes'
+import { seedCursos } from '../scripts/seed-cursos'
 
 const prisma = new PrismaClient()
 
@@ -798,110 +799,13 @@ async function main() {
   // COLECCIONES DE CAPACITACIÓN (3)
   // ============================================
 
-  // Colección 1: Seguridad e Higiene
-  const col1 = await prisma.coleccion.create({
-    data: {
-      titulo: 'Seguridad e Higiene en el Taller Textil',
-      descripcion: 'Fundamentos de seguridad laboral para talleres textiles. Cubre normativa vigente, uso de EPP, prevención de incendios y ergonomía en el puesto de trabajo.',
-      categoria: 'Seguridad',
-      duracion: '2h 30min',
-      institucion: 'OIT Argentina',
-      orden: 1,
-      procesosTarget: [],
-      formalizacionTarget: ['Habilitación bomberos', 'Plan de seguridad e higiene', 'Empleados registrados'],
-    },
-  })
-
-  await prisma.video.createMany({
-    data: [
-      { coleccionId: col1.id, titulo: 'Introducción a la SST en la industria textil', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duracion: '15:00', orden: 1 },
-      { coleccionId: col1.id, titulo: 'Equipos de protección personal para costureras', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duracion: '20:00', orden: 2 },
-      { coleccionId: col1.id, titulo: 'Prevención de incendios y plan de evacuación', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duracion: '18:00', orden: 3 },
-    ],
-  })
-
-  await prisma.evaluacion.create({
-    data: {
-      coleccionId: col1.id,
-      preguntas: [
-        { pregunta: '¿Cuál es la primera medida de seguridad al detectar un principio de incendio?', opciones: ['Usar el extintor', 'Evacuar y dar aviso', 'Llamar a bomberos', 'Apagar las máquinas'], correcta: 1 },
-        { pregunta: '¿Cada cuánto debe renovarse la póliza de ART?', opciones: ['Cada 6 meses', 'Anualmente', 'Cada 2 años', 'No se renueva'], correcta: 1 },
-        { pregunta: '¿Qué EPP es obligatorio para operarios de corte?', opciones: ['Casco', 'Guante de malla metálica', 'Barbijo', 'Lentes de sol'], correcta: 1 },
-      ],
-      puntajeMinimo: 60,
-    },
-  })
-
-  // Colección 2: Cálculo de Costos
-  const col2 = await prisma.coleccion.create({
-    data: {
-      titulo: 'Cálculo de Costos y Presupuestos',
-      descripcion: 'Aprende a calcular el costo real de producción de una prenda, elaborar presupuestos para marcas y definir márgenes de ganancia sostenibles.',
-      categoria: 'Gestión',
-      duracion: '3h',
-      institucion: 'INTI Textiles',
-      orden: 2,
-      procesosTarget: [pConfeccion.id, pCorte.id],
-      formalizacionTarget: ['Nómina digital'],
-    },
-  })
-
-  await prisma.video.createMany({
-    data: [
-      { coleccionId: col2.id, titulo: 'Estructura de costos en confección textil', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duracion: '22:00', orden: 1 },
-      { coleccionId: col2.id, titulo: 'Cálculo de SAM y minuto productivo', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duracion: '25:00', orden: 2 },
-      { coleccionId: col2.id, titulo: 'Cómo armar un presupuesto para marcas', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duracion: '18:00', orden: 3 },
-      { coleccionId: col2.id, titulo: 'Márgenes de ganancia y punto de equilibrio', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duracion: '20:00', orden: 4 },
-    ],
-  })
-
-  await prisma.evaluacion.create({
-    data: {
-      coleccionId: col2.id,
-      preguntas: [
-        { pregunta: '¿Qué significa SAM en la industria textil?', opciones: ['Sistema de Alta Manufactura', 'Standard Allowed Minutes', 'Servicio de Asistencia Mecánica', 'Seguro de Actividad Manufacturera'], correcta: 1 },
-        { pregunta: '¿Qué componente NO forma parte del costo directo de una prenda?', opciones: ['Tela', 'Mano de obra', 'Alquiler del local', 'Avíos (botones, cierres)'], correcta: 2 },
-        { pregunta: '¿Cómo se calcula la capacidad mensual de un taller?', opciones: ['Cantidad de máquinas x 100', '(Horas x 60 / SAM) x eficiencia x máquinas x 22', 'Metros cuadrados x 10', 'Empleados x 500'], correcta: 1 },
-      ],
-      puntajeMinimo: 60,
-    },
-  })
-
-  // Colección 3: Formalización
-  const col3 = await prisma.coleccion.create({
-    data: {
-      titulo: 'Formalización y Registro del Taller',
-      descripcion: 'Guía práctica para formalizar tu taller textil. Inscripción en AFIP, monotributo, ART, habilitaciones municipales y beneficios de estar en regla.',
-      categoria: 'Formalización',
-      duracion: '1h 45min',
-      institucion: 'UNTREF',
-      orden: 3,
-      procesosTarget: [],
-      formalizacionTarget: ['CUIT/Monotributo', 'Habilitación municipal', 'ART'],
-    },
-  })
-
-  await prisma.video.createMany({
-    data: [
-      { coleccionId: col3.id, titulo: 'Por qué formalizar tu taller', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duracion: '12:00', orden: 1 },
-      { coleccionId: col3.id, titulo: 'Monotributo, ART y habilitaciones paso a paso', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duracion: '20:00', orden: 2 },
-      { coleccionId: col3.id, titulo: 'Beneficios del registro en la plataforma PDT', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', duracion: '15:00', orden: 3 },
-    ],
-  })
-
-  await prisma.evaluacion.create({
-    data: {
-      coleccionId: col3.id,
-      preguntas: [
-        { pregunta: '¿Qué documento necesitás para inscribirte como monotributista?', opciones: ['Pasaporte', 'CUIL y clave fiscal nivel 3', 'Título universitario', 'Certificado de domicilio'], correcta: 1 },
-        { pregunta: '¿Qué es la ART?', opciones: ['Asociación de Registros Textiles', 'Aseguradora de Riesgos del Trabajo', 'Autoridad Regulatoria Tributaria', 'Agencia de Recaudación Textil'], correcta: 1 },
-        { pregunta: '¿Cuál es el principal beneficio de formalizar un taller?', opciones: ['Pagar más impuestos', 'Acceso a marcas, crédito y protección legal', 'Tener más empleados', 'Comprar máquinas importadas'], correcta: 1 },
-      ],
-      puntajeMinimo: 60,
-    },
-  })
-
-  console.log('  ✓ 3 colecciones con 10 videos y 3 evaluaciones')
+  // Cursos REALES (colecciones + videos + evaluaciones). Lógica en scripts/seed-cursos.ts
+  // (contenido curado del piloto, recuperado del backup 6-ago tras un reseed que lo pisó).
+  // Vive fuera del seed para blindarlo contra futuros reseeds. Devuelve titulo→coleccionId.
+  const cursos = await seedCursos(prisma)
+  const colSegId = cursos.get('Seguridad e higiene en el taller')!
+  const colHabId = cursos.get('Habilitación del taller textil')!
+  const colMonoId = cursos.get('Inscripción al Monotributo')!
 
   // ============================================
   // PROGRESO + CERTIFICADOS
@@ -909,30 +813,30 @@ async function main() {
 
   // Plata: completó colección 1 (SST), tiene certificado
   await prisma.progresoCapacitacion.create({
-    data: { tallerId: tallerPlata.id, coleccionId: col1.id, porcentajeCompletado: 100, videosVistos: 3 },
+    data: { tallerId: tallerPlata.id, coleccionId: colSegId, porcentajeCompletado: 100, videosVistos: 3 },
   })
   await prisma.certificado.create({
-    data: { tallerId: tallerPlata.id, coleccionId: col1.id, codigo: 'PDT-CERT-2026-000041', calificacion: 80 },
+    data: { tallerId: tallerPlata.id, coleccionId: colSegId, codigo: 'PDT-CERT-2026-000041', calificacion: 80 },
   })
 
   // Plata: empezó colección 2 (50%)
   await prisma.progresoCapacitacion.create({
-    data: { tallerId: tallerPlata.id, coleccionId: col2.id, porcentajeCompletado: 50, videosVistos: 2 },
+    data: { tallerId: tallerPlata.id, coleccionId: colHabId, porcentajeCompletado: 50, videosVistos: 2 },
   })
 
   // Oro: completó las 3 colecciones, tiene 3 certificados
   await prisma.progresoCapacitacion.createMany({
     data: [
-      { tallerId: tallerOro.id, coleccionId: col1.id, porcentajeCompletado: 100, videosVistos: 3 },
-      { tallerId: tallerOro.id, coleccionId: col2.id, porcentajeCompletado: 100, videosVistos: 4 },
-      { tallerId: tallerOro.id, coleccionId: col3.id, porcentajeCompletado: 100, videosVistos: 3 },
+      { tallerId: tallerOro.id, coleccionId: colSegId, porcentajeCompletado: 100, videosVistos: 3 },
+      { tallerId: tallerOro.id, coleccionId: colHabId, porcentajeCompletado: 100, videosVistos: 4 },
+      { tallerId: tallerOro.id, coleccionId: colMonoId, porcentajeCompletado: 100, videosVistos: 3 },
     ],
   })
   await prisma.certificado.createMany({
     data: [
-      { tallerId: tallerOro.id, coleccionId: col1.id, codigo: 'PDT-CERT-2026-000012', calificacion: 100 },
-      { tallerId: tallerOro.id, coleccionId: col2.id, codigo: 'PDT-CERT-2026-000013', calificacion: 90 },
-      { tallerId: tallerOro.id, coleccionId: col3.id, codigo: 'PDT-CERT-2026-000014', calificacion: 95 },
+      { tallerId: tallerOro.id, coleccionId: colSegId, codigo: 'PDT-CERT-2026-000012', calificacion: 100 },
+      { tallerId: tallerOro.id, coleccionId: colHabId, codigo: 'PDT-CERT-2026-000013', calificacion: 90 },
+      { tallerId: tallerOro.id, coleccionId: colMonoId, codigo: 'PDT-CERT-2026-000014', calificacion: 95 },
     ],
   })
 
@@ -1257,7 +1161,7 @@ async function main() {
 
   // Progreso bronce (recien empezo)
   await prisma.progresoCapacitacion.create({
-    data: { tallerId: tallerBronce.id, coleccionId: col3.id, porcentajeCompletado: 33, videosVistos: 1 },
+    data: { tallerId: tallerBronce.id, coleccionId: colMonoId, porcentajeCompletado: 33, videosVistos: 1 },
   })
 
   console.log('  ✓ 5 logs adicionales + progreso bronce')
