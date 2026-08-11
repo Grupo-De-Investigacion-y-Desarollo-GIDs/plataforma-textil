@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { CURSOS } from '../../scripts/seed-cursos'
+
+const EVALUACIONES = JSON.parse(
+  readFileSync(join(__dirname, '../../scripts/seed-cursos-evaluaciones.json'), 'utf-8'),
+) as Record<string, { preguntas: Array<{ texto?: string; pregunta?: string; opciones: string[]; correcta: number }>; puntajeMinimo: number }>
+
 
 describe('seed-cursos — cursos reales (no placeholders)', () => {
   it('son 6 cursos con id, titulo y video propios', () => {
@@ -25,11 +32,20 @@ describe('seed-cursos — cursos reales (no placeholders)', () => {
     expect(new Set(vidIds).size).toBe(vidIds.length)
   })
 
-  it('las evaluaciones tienen preguntas con opciones y respuesta correcta válida', () => {
+  it('TODOS los cursos tienen evaluación (sin ella el avance se corta)', () => {
+    // Regresión: dejar cursos sin evaluación rompe la progresión (Sergio, evento).
     for (const c of CURSOS) {
-      if (!c.evaluacion) continue
-      expect(c.evaluacion.puntajeMinimo).toBeGreaterThan(0)
-      for (const q of c.evaluacion.preguntas as Array<{ opciones: string[]; correcta: number }>) {
+      expect(EVALUACIONES[c.id], `curso "${c.titulo}" sin evaluación`).toBeDefined()
+    }
+    expect(Object.keys(EVALUACIONES)).toHaveLength(6)
+  })
+
+  it('las evaluaciones tienen preguntas con opciones y respuesta correcta válida', () => {
+    for (const [, ev] of Object.entries(EVALUACIONES)) {
+      expect(ev.puntajeMinimo).toBeGreaterThan(0)
+      expect(ev.preguntas.length).toBeGreaterThanOrEqual(3)
+      for (const q of ev.preguntas) {
+        expect(q.texto ?? q.pregunta, 'pregunta sin texto').toBeTruthy()
         expect(q.opciones.length).toBeGreaterThanOrEqual(2)
         expect(q.correcta).toBeGreaterThanOrEqual(0)
         expect(q.correcta).toBeLessThan(q.opciones.length)
