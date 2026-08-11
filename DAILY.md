@@ -3,6 +3,11 @@
 ## 2026-08-10
 
 ### Gerardo Breard
+- **22:29** `53bfbd0` — fix(seed): restaurar las 6 evaluaciones reales de los cursos (avance se cortaba sin ellas)
+  - `scripts/seed-cursos-evaluaciones.json`
+  - `scripts/seed-cursos.ts`
+  - `src/__tests__/seed-cursos.test.ts`
+
 - **20:59** `31364af` — fix(seed): restaurar los 6 cursos reales (colecciones+videos) que el reseed pisó con placeholders
   - `prisma/seed.ts`
   - `scripts/seed-cursos.ts`
