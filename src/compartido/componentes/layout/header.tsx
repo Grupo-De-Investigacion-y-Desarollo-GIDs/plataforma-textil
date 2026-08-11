@@ -11,7 +11,7 @@ import { NotificacionesBell } from './notificaciones-bell'
 import { ModoToggle } from './modo-toggle'
 import { useSidebar } from './sidebar-context'
 import { INSTITUTIONAL, TABS_BY_ROLE } from '@/compartido/lib/content/institutional'
-import { useLogoutCallbackUrl } from '@/compartido/componentes/evento/evento-provider'
+import { useLogoutCallbackUrl, useModoEvento } from '@/compartido/componentes/evento/evento-provider'
 
 interface HeaderProps {
   userName?: string
@@ -57,6 +57,7 @@ export function Header({
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const logoutUrl = useLogoutCallbackUrl()
+  const esEvento = useModoEvento()
 
   // BUG B (QA #398): el Pill "Modo X" tomaba activeMode/roles de un prop server-side
   // que quedaba vencido tras session.update() (se veía "Modo Marca" y luego "Modo Taller").
@@ -169,6 +170,19 @@ export function Header({
                 <span className="w-1.5 h-1.5 rounded-full bg-yellow-500" />
                 Ambiente piloto
               </span>
+            )}
+
+            {/* Modo evento: botón de salida VISIBLE (la tablet la usa público rotando;
+                el "Cerrar sesión" del dropdown no es descubrible). Cierra sesión → /demo. */}
+            {esEvento && (
+              <button
+                onClick={() => signOut({ callbackUrl: logoutUrl })}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-overpass font-semibold bg-brand-red text-white hover:bg-red-700 transition-colors"
+                aria-label="Salir del demo"
+              >
+                <LogOut className="w-4 h-4" />
+                Salir
+              </button>
             )}
 
             <NotificacionesBell />
