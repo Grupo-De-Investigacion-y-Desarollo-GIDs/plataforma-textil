@@ -11,7 +11,19 @@
 // progreso/certificados). Ids fijos = idempotente y estable entre reseeds.
 
 import { PrismaClient } from '@prisma/client'
+import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+
+const DIR = dirname(fileURLToPath(import.meta.url))
+
+// Evaluaciones REALES (una por curso), recuperadas del backup 6-ago. Keyed por
+// coleccionId. Formato curado del piloto: { texto, correcta, opciones, explicacion }
+// (la app lee p.texto ?? p.pregunta). Sin evaluación, el curso no puede completarse:
+// al marcar el video como visto no se abre la evaluación y el avance se corta.
+const EVALUACIONES = JSON.parse(
+  readFileSync(join(DIR, 'seed-cursos-evaluaciones.json'), 'utf-8'),
+) as Record<string, { preguntas: unknown[]; puntajeMinimo: number }>
 
 interface CursoDef {
   id: string
@@ -25,7 +37,6 @@ interface CursoDef {
   procesosTargetNombres: string[]
   formalizacionTarget: string[]
   video: { id: string; titulo: string; youtubeUrl: string; duracion: string | null; orden: number }
-  evaluacion?: { preguntas: unknown[]; puntajeMinimo: number }
 }
 
 export const CURSOS: CursoDef[] = [
@@ -39,14 +50,6 @@ export const CURSOS: CursoDef[] = [
     procesosTargetNombres: [],
     formalizacionTarget: [],
     video: { id: 'cmsc7p7w90001ld04omr38vfj', titulo: 'Plan Seguridad Higiene', youtubeUrl: 'https://youtu.be/27H6Cp8V8as', duracion: null, orden: 1 },
-    evaluacion: {
-      preguntas: [
-        { pregunta: '¿Cuál es la primera medida de seguridad al detectar un principio de incendio?', opciones: ['Usar el extintor', 'Evacuar y dar aviso', 'Llamar a bomberos', 'Apagar las máquinas'], correcta: 1 },
-        { pregunta: '¿Cada cuánto debe renovarse la póliza de ART?', opciones: ['Cada 6 meses', 'Anualmente', 'Cada 2 años', 'No se renueva'], correcta: 1 },
-        { pregunta: '¿Qué EPP es obligatorio para operarios de corte?', opciones: ['Casco', 'Guante de malla metálica', 'Barbijo', 'Lentes de sol'], correcta: 1 },
-      ],
-      puntajeMinimo: 60,
-    },
   },
   {
     id: 'cmsc5vsob000bjp04n43xe7ki',
@@ -69,14 +72,6 @@ export const CURSOS: CursoDef[] = [
     procesosTargetNombres: [],
     formalizacionTarget: ['Habilitación bomberos', 'Plan de seguridad e higiene', 'Empleados registrados'],
     video: { id: 'cmsc6cqpo000ljp04qegevfqb', titulo: 'Inscripción al monotributo', youtubeUrl: 'https://youtu.be/ozMRk8YA2rI', duracion: null, orden: 1 },
-    evaluacion: {
-      preguntas: [
-        { pregunta: '¿Qué documento necesitás para inscribirte como monotributista?', opciones: ['Pasaporte', 'CUIL y clave fiscal nivel 3', 'Título universitario', 'Certificado de domicilio'], correcta: 1 },
-        { pregunta: '¿Qué es la ART?', opciones: ['Asociación de Registros Textiles', 'Aseguradora de Riesgos del Trabajo', 'Autoridad Regulatoria Tributaria', 'Agencia de Recaudación Textil'], correcta: 1 },
-        { pregunta: '¿Cuál es el principal beneficio de formalizar un taller?', opciones: ['Pagar más impuestos', 'Acceso a marcas, crédito y protección legal', 'Tener más empleados', 'Comprar máquinas importadas'], correcta: 1 },
-      ],
-      puntajeMinimo: 60,
-    },
   },
   {
     id: 'cmsc39pxr0000l504wjqw7pde',
@@ -127,6 +122,7 @@ export async function seedCursos(prisma: PrismaClient): Promise<Map<string, stri
   await prisma.coleccion.deleteMany() // cascade: video, evaluacion, progresoCapacitacion
 
   const map = new Map<string, string>()
+  let conEval = 0
   for (const c of CURSOS) {
     const col = await prisma.coleccion.create({
       data: {
@@ -146,12 +142,14 @@ export async function seedCursos(prisma: PrismaClient): Promise<Map<string, stri
     await prisma.video.create({
       data: { id: c.video.id, coleccionId: col.id, titulo: c.video.titulo, youtubeUrl: c.video.youtubeUrl, duracion: c.video.duracion, orden: c.video.orden },
     })
-    if (c.evaluacion) {
-      await prisma.evaluacion.create({ data: { coleccionId: col.id, preguntas: c.evaluacion.preguntas as never, puntajeMinimo: c.evaluacion.puntajeMinimo } })
+    // Cada curso lleva su evaluación real (sin ella el avance se corta al terminar el video).
+    const ev = EVALUACIONES[c.id]
+    if (ev) {
+      await prisma.evaluacion.create({ data: { coleccionId: col.id, preguntas: ev.preguntas as never, puntajeMinimo: ev.puntajeMinimo } })
+      conEval++
     }
     map.set(c.titulo, col.id)
   }
-  const conEval = CURSOS.filter(c => c.evaluacion).length
   console.log(`  ✓ ${CURSOS.length} cursos reales (colecciones + ${CURSOS.length} videos + ${conEval} evaluaciones)`)
   return map
 }

@@ -1,0 +1,322 @@
+{
+  "cmq7iq5a9003gvobme7c0unc0": {
+    "preguntas": [
+      {
+        "texto": "1. ¿Para qué sirve la inscripción en el Monotributo?",
+        "correcta": 1,
+        "opciones": [
+          "Para habilitar el local",
+          "Para registrar la actividad y avanzar hacia la facturación",
+          "Para contratar una ART"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "2. ¿Qué datos se necesitan para ingresar al portal?",
+        "correcta": 0,
+        "opciones": [
+          "CUIT y clave fiscal",
+          "Sólo el DNI",
+          "El número de habilitación"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "3. ¿Qué actividad debe declararse?",
+        "correcta": 2,
+        "opciones": [
+          "La más económica",
+          "La que eligió otro taller",
+          "La que describe el trabajo real"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "4. ¿Cuándo conviene confirmar la adhesión?",
+        "correcta": 0,
+        "opciones": [
+          "Después de revisar todos los datos",
+          "Apenas se abre la pantalla",
+          "Antes de cargar el domicilio"
+        ],
+        "explicacion": ""
+      }
+    ],
+    "puntajeMinimo": 60
+  },
+  "cmsc5vsob000bjp04n43xe7ki": {
+    "preguntas": [
+      {
+        "texto": "1. ¿Qué significa habilitar un taller?",
+        "correcta": 0,
+        "opciones": [
+          "Autorizar una actividad en un lugar determinado",
+          "Inscribir trabajadores",
+          "Registrar una marca"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "2. ¿La Mixtura significa que el taller ya está habilitado?",
+        "correcta": 1,
+        "opciones": [
+          "Sí, siempre",
+          "No, también hay que revisar el uso y sus condiciones",
+          "Sólo si el local es pequeño"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "3. ¿Cuál es el punto de partida para verificar el espacio?",
+        "correcta": 1,
+        "opciones": [
+          "El nombre del dueño",
+          "La dirección y la parcela exactas",
+          "La cantidad de máquinas"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "4. ¿Qué corresponde si no se cumple una condición de la vía Exprés?",
+        "correcta": 2,
+        "opciones": [
+          "Ignorarla",
+          "Cambiar la actividad declarada",
+          "Analizar la vía con intervención profesional"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "5. ¿Qué debe hacerse después de presentar?",
+        "correcta": 0,
+        "opciones": [
+          "Guardar la constancia y seguir las comunicaciones",
+          "Eliminar los documentos",
+          "Esperar sin revisar el trámite"
+        ],
+        "explicacion": ""
+      }
+    ],
+    "puntajeMinimo": 60
+  },
+  "cmq7iq5tg003mvobm2ipan3ou": {
+    "preguntas": [
+      {
+        "texto": "1. ¿Qué comunica el alta temprana?",
+        "correcta": 0,
+        "opciones": [
+          "El comienzo de una relación laboral",
+          "La venta de una prenda",
+          "La habilitación del espacio"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "2. ¿Qué dato identifica al trabajador?",
+        "correcta": 1,
+        "opciones": [
+          "CUIT del empleador",
+          "CUIL del trabajador",
+          "Número de expediente"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "3. ¿Qué es el domicilio de explotación?",
+        "correcta": 0,
+        "opciones": [
+          "El lugar donde se realizan efectivamente las tareas",
+          "Cualquier domicilio fiscal",
+          "La dirección de la ART"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "4. ¿Cuándo debe confirmarse el alta?",
+        "correcta": 0,
+        "opciones": [
+          "Cuando todos los datos fueron revisados",
+          "Antes de identificar al trabajador",
+          "Sin revisar la fecha de inicio"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "5. ¿Qué debe hacerse con la constancia?",
+        "correcta": 2,
+        "opciones": [
+          "Usarla como habilitación",
+          "Eliminarla",
+          "Revisarla, entregarla y guardar un respaldo"
+        ],
+        "explicacion": ""
+      }
+    ],
+    "puntajeMinimo": 60
+  },
+  "cmq7iq6cr003tvobm7e9hrila": {
+    "preguntas": [
+      {
+        "texto": "1. ¿Qué se presenta para su análisis en este trámite?",
+        "correcta": 0,
+        "opciones": [
+          "Un plano de prevención contra incendios",
+          "El Libro de Sueldos",
+          "Una factura"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "2. ¿En qué formato se carga inicialmente el plano?",
+        "correcta": 1,
+        "opciones": [
+          "Una fotografía",
+          "DWF con la carátula indicada",
+          "Una planilla de cálculo"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "3. Si el taller es alquilado, ¿qué puede solicitarse?",
+        "correcta": 2,
+        "opciones": [
+          "La constancia del Monotributo",
+          "El recibo de sueldo",
+          "Autorización del propietario"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "4. ¿Cuándo es obligatoria la encomienda profesional según la fuente?",
+        "correcta": 0,
+        "opciones": [
+          "En permiso de ejecución o regularización",
+          "Sólo para consultar TAD",
+          "Nunca"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "5. ¿Qué debe hacerse ante una observación en TAD?",
+        "correcta": 1,
+        "opciones": [
+          "Ignorarla",
+          "Responder con la corrección dentro del plazo",
+          "Iniciar otro expediente sin revisar"
+        ],
+        "explicacion": ""
+      }
+    ],
+    "puntajeMinimo": 60
+  },
+  "cmsc5v3hc0008jp04zgv3wbh5": {
+    "preguntas": [
+      {
+        "texto": "1. ¿Qué es un peligro?",
+        "correcta": 2,
+        "opciones": [
+          "Una constancia administrativa",
+          "La fecha de una inspección",
+          "Algo con capacidad de causar daño"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "2. ¿Qué medida debe priorizarse?",
+        "correcta": 1,
+        "opciones": [
+          "Depender sólo del cuidado personal",
+          "Eliminar o controlar el peligro en su origen",
+          "No registrar el problema"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "3. ¿Qué debe incluir una acción del plan?",
+        "correcta": 2,
+        "opciones": [
+          "Sólo el nombre del taller",
+          "Únicamente una fotografía y planos",
+          "Responsable, fecha y verificación"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "4. ¿Qué conviene hacer con un incidente sin lesión?",
+        "correcta": 0,
+        "opciones": [
+          "Registrarlo y analizar sus causas",
+          "Ignorarlo",
+          "Ocultarlo del plan"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "5. ¿Cuándo debe actualizarse el plan?",
+        "correcta": 0,
+        "opciones": [
+          "Ante cambios, incidentes o nuevas condiciones",
+          "Sólo al abrir el taller",
+          "Nunca, una vez escrito"
+        ],
+        "explicacion": ""
+      }
+    ],
+    "puntajeMinimo": 60
+  },
+  "cmsc39pxr0000l504wjqw7pde": {
+    "preguntas": [
+      {
+        "texto": "1. ¿Qué permite generar el Libro de Sueldos Digital?",
+        "correcta": 0,
+        "opciones": [
+          "El libro y la declaración de Seguridad Social",
+          "La habilitación del local",
+          "El contrato con la ART  "
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "2. ¿Qué significa parametrizar?",
+        "correcta": 1,
+        "opciones": [
+          "Cambiar la CUIT",
+          "Relacionar conceptos del empleador con conceptos ARCA",
+          "Elegir la dirección del taller"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "3. ¿Qué debe hacerse si los datos laborales previos son incorrectos?",
+        "correcta": 2,
+        "opciones": [
+          "Ignorarlos",
+          "Forzarlos en la liquidación",
+          "Corregirlos en el sistema de origen"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "4. ¿Qué indica el color rojo al validar?",
+        "correcta": 1,
+        "opciones": [
+          "La liquidación está aceptada",
+          "La liquidación tiene inconsistencias",
+          "El libro fue descargado"
+        ],
+        "explicacion": ""
+      },
+      {
+        "texto": "5. ¿Cuándo debe aceptarse una liquidación?",
+        "correcta": 0,
+        "opciones": [
+          "Cuando está completa y válida",
+          "Antes de validarla",
+          "Con errores pendientes"
+        ],
+        "explicacion": ""
+      }
+    ],
+    "puntajeMinimo": 60
+  }
+}
