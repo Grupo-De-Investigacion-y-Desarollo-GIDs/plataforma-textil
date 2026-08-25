@@ -4,7 +4,22 @@
 
 _Desarrollado por UNTREF con el apoyo de la OIT._
 
-![Stack](https://img.shields.io/badge/Next.js-16-black) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Prisma](https://img.shields.io/badge/Prisma-6-2D3748) ![Tailwind](https://img.shields.io/badge/Tailwind-4-38B2AC) ![License](https://img.shields.io/badge/License-MIT-green) ![Status](https://img.shields.io/badge/Status-V3%20cerrado%20%E2%80%A2%20V4%20en%20curso-orange)
+![Stack](https://img.shields.io/badge/Next.js-16-black) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Prisma](https://img.shields.io/badge/Prisma-6-2D3748) ![Tailwind](https://img.shields.io/badge/Tailwind-4-38B2AC) ![License](https://img.shields.io/badge/License-Apache--2.0-green) ![Status](https://img.shields.io/badge/Status-Piloto%20en%20producci%C3%B3n%20%E2%80%A2%20en%20transferencia-blue)
+
+---
+
+> ## 📦 ¿Venís a recibir el proyecto? Empezá acá
+>
+> La plataforma está en **transferencia al nuevo equipo responsable**. Todo lo que necesitás para tomar la operación está en dos lugares:
+>
+> - **[`docs/transferencia/`](docs/transferencia/)** — el plan del traspaso y lo que queda por delante:
+>   - **[SPEC_TRANSFERENCIA.md](docs/transferencia/SPEC_TRANSFERENCIA.md)** — plan operativo en 6 fases (entrega limpia → cuentas → rotación → reunión → acompañamiento → acta) + bloqueantes institucionales.
+>   - **[BACKLOG_PENDIENTES.md](docs/transferencia/BACKLOG_PENDIENTES.md)** — todo lo pendiente, priorizado (Crítico / Importante / Mejora): **qué recibís y qué te queda por hacer**.
+>   - **[INVENTARIO_LIMPIEZA.md](docs/transferencia/INVENTARIO_LIMPIEZA.md)** — clasificación del árbol del repo (A/B/C/D).
+>   - **[AUDITORIA_HISTORIA_GIT.md](docs/transferencia/AUDITORIA_HISTORIA_GIT.md)** — qué hay en la historia git (secretos: ninguno; PII del piloto: sí).
+> - **[`docs/handover/`](docs/handover/)** — el paquete de handover v1.0 (checklist OIT a–j): arquitectura, runbook operativo, backup/restore, deuda y roadmap, guía de desarrollo, cobertura de tests.
+>
+> El resto de este README es la referencia general del proyecto.
 
 ---
 
@@ -47,11 +62,11 @@ Para evitar confusiones de quienes lleguen al repo buscando otro tipo de platafo
 
 | Aspecto | Estado |
 |---|---|
-| **Versión actual** | V3 (cerrada en mayo 2026) |
-| **Próxima versión** | V4 (en planificación, ~440h estimadas) |
+| **Ciclo** | Piloto en producción — **en transferencia al nuevo equipo** (ver [`docs/transferencia/`](docs/transferencia/)) |
+| **Última versión en prod** | `v2.1.0` — Etapa 2 completa (vidriera + gracia CUIT) |
 | **Despliegue producción** | https://plataformatextil.com.ar |
 | **Despliegue desarrollo** | https://dev.plataformatextil.com.ar |
-| **Licencia** | MIT (ver [LICENSE](LICENSE)) |
+| **Licencia** | Apache-2.0 (código) · CC BY 4.0 IGO (documentación) — ver [LICENSE](LICENSE) |
 | **Repositorio** | https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil |
 | **Issues** | [GitHub Issues](https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil/issues) |
 | **QAs auditados** | [GitHub Pages](https://grupo-de-investigacion-y-desarollo-gids.github.io/plataforma-textil/) |
@@ -71,36 +86,36 @@ La plataforma tiene 5 roles funcionales:
 | **ADMIN** | Equipo de gestión PDT | Modera contenido, valida documentación, administra usuarios |
 | **CONTENIDO** | Curadores institucionales | Gestiona Academia, recursos institucionales y documentación pública |
 
+> Un mismo usuario puede tener **varios roles** (multi-rol) y alternar el modo activo desde el header.
+
 ---
 
 ## Stack tecnológico
 
 | Categoría | Tecnología |
 |---|---|
-| **Framework** | [Next.js 16](https://nextjs.org/) (App Router, React Compiler activado) |
+| **Framework** | [Next.js 16](https://nextjs.org/) (App Router, Turbopack) |
 | **Lenguaje** | [TypeScript 5](https://www.typescriptlang.org/) |
 | **UI** | [React 19](https://react.dev/) + [Tailwind CSS 4](https://tailwindcss.com/) (config CSS nativa) |
 | **Iconos** | [Lucide React](https://lucide.dev/) |
-| **Base de datos** | [PostgreSQL](https://www.postgresql.org/) en [Supabase](https://supabase.com/) (región sa-east-1) |
+| **Base de datos** | [PostgreSQL 17](https://www.postgresql.org/) en [Supabase](https://supabase.com/) (región sa-east-1) |
 | **ORM** | [Prisma 6](https://www.prisma.io/) |
-| **Autenticación** | [NextAuth v5](https://authjs.dev/) (magic links + Google OAuth) |
-| **Storage** | [Supabase Storage](https://supabase.com/storage) (multi-bucket) |
+| **Autenticación** | [NextAuth v5](https://authjs.dev/) (JWT; magic links + Google OAuth planificado) |
+| **Storage** | [Supabase Storage](https://supabase.com/storage) (bucket `imagenes` público, `documentos` privado) |
 | **Email** | [Resend](https://resend.com/) (transaccional, dominio propio verificado) |
-| **DNS y forwarding** | [Cloudflare](https://cloudflare.com/) (DNS + Email Routing) |
 | **Verificación CUIT** | [AfipSDK](https://afipsdk.com/) (integración con ARCA) |
-| **Asistente IA (RAG)** | [Claude API](https://www.anthropic.com/) + [Voyage AI](https://www.voyageai.com/) (embeddings 512 dim) + Supabase pgvector |
-| **PDF** | [@react-pdf/renderer](https://react-pdf.org/) (certificados, órdenes de manufactura) |
-| **QR** | [qrcode](https://www.npmjs.com/package/qrcode) |
+| **Asistente IA (RAG)** | [Claude API](https://www.anthropic.com/) + [Voyage AI](https://www.voyageai.com/) (embeddings) + Supabase pgvector |
+| **PDF / QR** | [@react-pdf/renderer](https://react-pdf.org/) + [qrcode](https://www.npmjs.com/package/qrcode) (certificados, órdenes) |
 | **Gráficos** | [Recharts](https://recharts.org/) |
 | **Formularios** | [react-hook-form](https://react-hook-form.com/) + [Zod](https://zod.dev/) |
-| **Excel** | [ExcelJS](https://github.com/exceljs/exceljs) (exportes ESTADO) |
 | **Rate limiting** | [Upstash Redis](https://upstash.com/) + [@upstash/ratelimit](https://github.com/upstash/ratelimit) |
-| **Tests unitarios** | [Vitest 4](https://vitest.dev/) (33 tests) |
-| **Tests E2E** | [Playwright](https://playwright.dev/) (24 tests V3 + 16 legacy) |
-| **Lint** | [ESLint 9](https://eslint.org/) (config Next.js) |
-| **Hosting** | [Vercel](https://vercel.com/) (CI/CD automático desde GitHub) |
-| **Registrador del dominio** | [NIC.ar](https://nic.ar/) |
-| **Analytics** | [@vercel/analytics](https://vercel.com/docs/analytics) + [@vercel/speed-insights](https://vercel.com/docs/speed-insights) |
+| **Tests** | [Vitest](https://vitest.dev/) (unitarios) + [Playwright](https://playwright.dev/) (E2E) |
+| **Lint** | [ESLint 9](https://eslint.org/) |
+| **Hosting / CI-CD** | [Vercel](https://vercel.com/) (deploy automático desde GitHub) |
+| **Dominio** | [NIC Argentina](https://nic.ar/) (`.com.ar`), DNS gestionado en Vercel |
+| **Monitoreo** | [UptimeRobot](https://uptimerobot.com/) sobre `/api/health` |
+
+> El inventario completo de servicios/cuentas (con refs) está en [SPEC_TRANSFERENCIA.md § Apéndice](docs/transferencia/SPEC_TRANSFERENCIA.md). Los **valores de credenciales** viven en el `INVENTARIO_ACCESOS` (canal seguro separado, fuera del repo).
 
 ---
 
@@ -108,9 +123,9 @@ La plataforma tiene 5 roles funcionales:
 
 ### Requisitos previos
 
-- Node.js 20 o superior
+- Node.js 20 o superior (24 LTS recomendado)
 - npm 10 o superior
-- PostgreSQL local o acceso a Supabase
+- Acceso a un proyecto Supabase de desarrollo (o PostgreSQL local)
 - Variables de entorno configuradas (ver `.env.example`)
 
 ### Instalación rápida
@@ -129,7 +144,7 @@ cp .env.example .env         # usado por el Prisma CLI (migraciones)
 # Editar ambos con los valores de DEV. Obtenerlos con:
 #   vercel env pull --environment=preview .env.local
 # y copiar DATABASE_URL/DIRECT_URL tambien a .env.
-# NUNCA dejar .env apuntando a PROD (ver "seguridad de la DB" en .env.example).
+# NUNCA dejar .env apuntando a PROD (ver "seguridad de la DB" abajo).
 
 # 4. Generar cliente Prisma
 npx prisma generate
@@ -146,7 +161,7 @@ npm run dev
 
 La aplicación queda disponible en http://localhost:3000.
 
-Para instrucciones detalladas (variables de entorno completas, configuración de Supabase, troubleshooting), ver [.claude/specs/handover/SETUP.md](.claude/specs/handover/SETUP.md).
+Para la guía detallada (variables completas, Supabase, troubleshooting), ver **[docs/handover/GUIA_DESARROLLO.md](docs/handover/GUIA_DESARROLLO.md)**.
 
 ### Scripts disponibles
 
@@ -159,8 +174,6 @@ Para instrucciones detalladas (variables de entorno completas, configuración de
 | `npm run test` | Tests unitarios con Vitest (una vez) |
 | `npm run test:watch` | Tests unitarios en modo watch |
 | `npm run test:e2e` | Tests E2E con Playwright |
-| `npm run test:e2e:ui` | Tests E2E con interfaz visual de Playwright |
-| `npm run test:e2e:headed` | Tests E2E con browser visible |
 | `npm run db:migrate` | `prisma migrate dev` con guard anti-PROD |
 | `npm run db:push` | `prisma db push` con guard anti-PROD |
 | `npm run db:reset` | `prisma migrate reset` con guard anti-PROD |
@@ -168,6 +181,8 @@ Para instrucciones detalladas (variables de entorno completas, configuración de
 | `npm run db:seed` | Cargar datos de prueba (bloquea PROD salvo `ALLOW_PROD_SEED=1`) |
 
 > **Seguridad DB:** los scripts `db:*` bloquean si `DATABASE_URL` apunta a PROD. Para operar contra PROD deliberadamente: `ALLOW_PROD=1 npm run db:migrate` (o `ALLOW_PROD_SEED=1 npm run db:seed`). El `build` no lleva guard porque Vercel lo corre legítimamente contra PROD en el deploy de producción.
+>
+> ⚠️ **El reseed (`db:seed`/`db:reset`) BORRA todo DEV** (deleteMany de todas las tablas). DEV es solo para datos demo; hacer snapshot y coordinar antes. El contenido curado (cursos, imágenes demo) vive en el seed (`scripts/seed-*.ts`) para sobrevivir un reseed.
 
 ---
 
@@ -180,16 +195,9 @@ El despliegue es automático vía Vercel a partir de los pushes a las ramas:
 | `main` | Producción | https://plataformatextil.com.ar |
 | `develop` | Development | https://dev.plataformatextil.com.ar |
 
-Cada push a esas ramas dispara un build en Vercel que:
+Cada push a esas ramas dispara un build en Vercel que corre migraciones Prisma (`prisma migrate deploy`), genera el cliente y hace `next build`. Las pull requests generan **preview deploys** con URL única. Salud: `GET /api/health` (200 db:up / 503 db:down) y `GET /api/health/version` (SHA/env/ref).
 
-1. Corre migraciones Prisma (`prisma migrate deploy`)
-2. Genera el cliente Prisma (`prisma generate`)
-3. Hace build de Next.js (`next build`)
-4. Despliega a la URL correspondiente
-
-Las pull requests generan **preview deploys** con URL única para revisión.
-
-Para detalles completos de configuración (DNS, Resend, variables, Cloudflare, etc.), ver [.claude/specs/handover/DEPLOY.md](.claude/specs/handover/DEPLOY.md).
+Para detalles completos (DNS, Resend, variables, refs de Supabase), ver **[docs/handover/ARQUITECTURA_DEPLOY.md](docs/handover/ARQUITECTURA_DEPLOY.md)** y **[docs/handover/RUNBOOK_OPERATIVO.md](docs/handover/RUNBOOK_OPERATIVO.md)**.
 
 ---
 
@@ -197,112 +205,94 @@ Para detalles completos de configuración (DNS, Resend, variables, Cloudflare, e
 
 ```
 plataforma-textil/
-├── .claude/                    # Specs, QAs y herramientas de desarrollo
-│   ├── specs/                  # Especificaciones funcionales por versión (v1, v2, v3, v4)
-│   ├── auditorias/             # QAs de auditoría con HTML público
-│   └── METODOLOGIA_V4.md       # Método de trabajo vigente para V4
+├── src/                        # Código fuente de la app
+│   ├── app/                    # App Router (páginas + API routes, por grupo de rol)
+│   ├── compartido/             # Componentes y librerías compartidas
+│   ├── lib/                    # Utilidades (auth, prisma, email, rag…)
+│   └── __tests__/              # Tests unitarios con Vitest
 │
-├── .github/workflows/          # GitHub Actions (CI/CD)
-│   ├── e2e.yml                 # Tests E2E con Playwright
-│   └── qa-pages.yml            # Publicación automática de QAs en GitHub Pages
-│
-├── docs/                       # Documentación funcional y técnica
-│   ├── 01_estrategia/          # Contexto y estrategia
-│   ├── 02_funcional/           # Casos de uso, historias de usuario, pantallas
-│   ├── 03_tecnico/             # Arquitectura, API, schema, design system
-│   ├── 04_operacional/         # Hoja de ruta, decisiones, sprints
-│   ├── Diseño/                 # Propuesta visual V4, mockups, assets
-│   └── auditoria/              # AS-IS, GAP, ROADMAP
-│
-├── prisma/                     # Schema y migraciones de PostgreSQL
+├── prisma/                     # Schema + 42 migraciones + seed (reseed-safe)
 │   ├── schema.prisma
-│   └── migrations/             # 28 migraciones (feb 2026 → may 2026)
+│   ├── migrations/
+│   └── seed.ts
+│
+├── scripts/                    # Scripts de seed, migración de piloto, ARCA, QA de datos
+│   ├── seed-cursos.ts          # Cursos reales (reseed-safe)
+│   ├── seed-evento-*.ts        # Imágenes demo (reseed-safe)
+│   └── migracion-piloto/       # ⚠️ contiene PII real (ver AUDITORIA_HISTORIA_GIT.md)
+│
+├── tests/                      # Tests E2E con Playwright (tests/e2e + tests/fixtures)
+│
+├── tools/                      # Scripts auxiliares (generate-qa.js, perf-check.js…)
 │
 ├── public/                     # Assets estáticos (fuentes, imágenes)
 │
-├── src/                        # Código fuente de la app
-│   ├── app/                    # App Router de Next.js (páginas + API routes)
-│   ├── compartido/             # Componentes y librerías compartidas
-│   ├── lib/                    # Utilidades (auth, prisma, email, rag, etc.)
-│   └── __tests__/              # Tests unitarios con Vitest
+├── docs/                       # Documentación
+│   ├── transferencia/          # ← Traspaso al nuevo equipo (empezá acá)
+│   ├── handover/               # ← Paquete de handover v1.0 (checklist OIT a–j)
+│   ├── legal/                  # PIA, términos, privacidad
+│   ├── seguridad/              # HARDENING, cookies
+│   ├── operacion/              # Manuales de operación y administración
+│   ├── 01_estrategia…04_operacional/  # Documentación funcional y de planificación
+│   └── auditoria/              # AS-IS, GAP, ROADMAP
 │
-├── tests/                      # Tests E2E con Playwright
-│   ├── e2e/                    # Tests V3 (24 archivos)
-│   └── fixtures/               # Fixtures compartidos
+├── .claude/                    # Specs (~140), auditorías QA, skills, hooks, bitácora
+│   └── specs/                  # Especificaciones por versión (histórico de decisiones)
 │
-├── tools/                      # Scripts auxiliares
-│   └── generate-qa.js          # Generador de QAs interactivos en HTML
+├── .github/workflows/          # GitHub Actions (test.yml, e2e.yml, qa-pages.yml)
 │
 ├── CLAUDE.md                   # Instrucciones para Claude Code (asistente de IA)
-├── LICENSE                     # Licencia MIT
+├── LICENSE                     # Apache-2.0
 └── README.md                   # Este archivo
 ```
+
+> El árbol está en proceso de curaduría pre-transferencia. La clasificación de qué es vigente / histórico / descartable está en [INVENTARIO_LIMPIEZA.md](docs/transferencia/INVENTARIO_LIMPIEZA.md).
 
 ---
 
 ## Documentación
 
-### Documentación funcional (qué hace la PDT)
+### Para recibir y operar el proyecto (empezá por acá)
 
-- [Contexto del proyecto](docs/01_estrategia/01_CONTEXTO.md)
-- [Funciones](docs/02_funcional/02_FUNCIONES.md)
-- [Casos de uso](docs/02_funcional/03_CASOS_USO.md)
-- [Historias de usuario](docs/02_funcional/HISTORIAS_USUARIO.md)
-- [Pantallas MVP](docs/02_funcional/PANTALLAS_MVP.md)
-- [Matriz pantallas-funciones](docs/02_funcional/MATRIZ_PANTALLAS_FUNCIONES.md)
+- **[docs/transferencia/](docs/transferencia/)** — plan de traspaso + backlog + inventario + auditoría de historia.
+- **[docs/handover/HANDOVER_PACKAGE.md](docs/handover/HANDOVER_PACKAGE.md)** — checklist OIT a–j de lo entregado.
+- **[docs/handover/RUNBOOK_OPERATIVO.md](docs/handover/RUNBOOK_OPERATIVO.md)** — operación día a día, deploy IDs, escalamiento.
+- **[docs/handover/GUIA_DESARROLLO.md](docs/handover/GUIA_DESARROLLO.md)** — setup detallado.
+- **[docs/handover/BACKUP_RESTORE.md](docs/handover/BACKUP_RESTORE.md)** — backups y restauración.
+- **[docs/handover/DEUDA_Y_ROADMAP.md](docs/handover/DEUDA_Y_ROADMAP.md)** — deuda técnica + roadmap.
+- **[docs/handover/COBERTURA_TESTS.md](docs/handover/COBERTURA_TESTS.md)** — cobertura de tests.
 
-### Documentación técnica (cómo está construida)
+### Legal y seguridad
 
-- [Arquitectura](docs/03_tecnico/05_ARQUITECTURA.md)
-- [Plan de schema](docs/03_tecnico/PLAN_SCHEMA.md)
-- [Contrato de API](docs/03_tecnico/API_CONTRACT.md)
-- [Sistema de diseño](docs/03_tecnico/DESIGN_SYSTEM.md)
-- [Estrategia de testing](docs/03_tecnico/ESTRATEGIA_TESTING.md)
-- [Integraciones](docs/03_tecnico/06_INTEGRACIONES.md)
+- [docs/legal/PIA.md](docs/legal/PIA.md) — Privacy Impact Assessment.
+- [docs/legal/POLITICA_DE_PRIVACIDAD.md](docs/legal/POLITICA_DE_PRIVACIDAD.md) · [docs/legal/TERMINOS_Y_CONDICIONES.md](docs/legal/TERMINOS_Y_CONDICIONES.md)
+- [docs/seguridad/HARDENING.md](docs/seguridad/HARDENING.md) — endurecimiento y hallazgos.
 
-### Documentación operativa (cómo se trabaja en V4)
+### Operación
 
-- [Master V4](docs/Diseño/MASTER_V4.md.pdf) — Documento estratégico de planificación
-- [Metodología V4](.claude/METODOLOGIA_V4.md) — Método vigente para el desarrollo
-- [Plantilla de spec V4](.claude/specs/TEMPLATE_SPEC_V4.md)
-- [Plantilla de QA V4](.claude/auditorias/TEMPLATE_QA_V4.md)
-- [Decisiones tomadas](docs/04_operacional/DECISIONES.md)
-- [Hoja de ruta](docs/04_operacional/04_HOJA_RUTA.md)
+- [docs/operacion/MANUAL_OPERACION.md](docs/operacion/MANUAL_OPERACION.md) · [docs/operacion/MANUAL_ADMINISTRACION.md](docs/operacion/MANUAL_ADMINISTRACION.md)
 
-### Documentación de handover (para retomar el proyecto)
+### Funcional y técnica (referencia / histórico)
 
-Para que otros equipos puedan tomar el proyecto y operarlo, hay una serie de documentos en `.claude/specs/handover/`:
-
-- `SETUP.md` — Instalación detallada paso a paso
-- `DEPLOY.md` — Configuración de producción (Vercel, Supabase, Resend, Cloudflare, NIC.ar)
-- `ARCHITECTURE.md` — Arquitectura del sistema en profundidad
-- `DECISIONS.md` — Registro consolidado de decisiones importantes
-- `KNOWN_ISSUES.md` — Bugs conocidos y workarounds
-- `ROLES.md` — Definición de roles y permisos
-- `API.md` — Endpoints públicos e internos
-- `HOW_TO_ADD_SPEC.md` — Cómo crear un spec nuevo siguiendo la metodología V4
-- `HOW_TO_RUN_QA.md` — Cómo correr una auditoría QA
-- `CONTRIBUTING.md` — Cómo contribuir al proyecto
-
-> **Nota:** Algunos documentos de handover se completan progresivamente durante el desarrollo de V4. Si encontrás un documento faltante o desactualizado, abrí un issue o contactanos.
+- Funcional: [`docs/02_funcional/`](docs/02_funcional/) (casos de uso, historias, pantallas).
+- Técnica: [`docs/03_tecnico/`](docs/03_tecnico/) (arquitectura, API, schema, design system).
+- Decisiones y specs ejecutadas: [`.claude/specs/`](.claude/specs/) (histórico de decisiones por versión).
 
 ---
 
 ## Cómo contribuir
 
-Por ahora la contribución externa está limitada al equipo de desarrollo PDT. Si querés colaborar:
+La contribución está limitada al equipo responsable de la PDT.
 
 1. **Reportar bugs:** abrí un [issue](https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil/issues) con el template correspondiente.
 2. **Proponer mejoras:** abrí un issue con la etiqueta `enhancement`.
-3. **Forks y derivados:** la licencia MIT permite fork y uso del código. Si tu organización quiere usar la PDT como base, contactanos para coordinar.
-
-Para contribuciones internas del equipo PDT, ver `.claude/specs/handover/CONTRIBUTING.md` (en preparación).
+3. **Forks y derivados:** la licencia Apache-2.0 permite fork y uso del código conservando la atribución y el aviso de licencia. Ver [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
 ## Licencia
 
-Este proyecto se distribuye bajo licencia **MIT**. Ver [LICENSE](LICENSE) para más detalles.
+El **código** se distribuye bajo **Apache-2.0** (ver [LICENSE](LICENSE)). La **documentación** se distribuye bajo **CC BY 4.0 IGO**.
 
 **Copyright (c) 2026 Organización Internacional del Trabajo (OIT) y Universidad Nacional de Tres de Febrero (UNTREF).**
 
@@ -314,6 +304,7 @@ Este proyecto se distribuye bajo licencia **MIT**. Ver [LICENSE](LICENSE) para m
 |---|---|
 | Soporte técnico de la app | soporte@plataformatextil.com.ar |
 | Consultas generales | contacto@plataformatextil.com.ar |
+| Privacidad / datos | privacidad@plataformatextil.com.ar |
 | Issues del repo | [GitHub Issues](https://github.com/Grupo-De-Investigacion-y-Desarollo-GIDs/plataforma-textil/issues) |
 
 ---
@@ -323,6 +314,3 @@ Este proyecto se distribuye bajo licencia **MIT**. Ver [LICENSE](LICENSE) para m
 **Desarrollado por UNTREF con el apoyo de la OIT.**
 
 Este proyecto es resultado del trabajo conjunto de profesionales de distintas disciplinas (desarrollo, sociología, ciencias políticas, economía, contaduría, diseño UX/UI) coordinados a través de la Universidad Nacional de Tres de Febrero con el apoyo institucional y financiero de la Organización Internacional del Trabajo.
-
-
-<!-- CI: re-trigger Actions sobre PR #396 (budget destrabado 2026-06-05) -->
